@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for module txdlfmodules</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">Digital Library Framework</label>
+			<label index="mlang_labels_tabdescr">These modules allow you to manage your digitized documents and collections.</label>
+			<label index="mlang_labels_tablabel">DLF Base Modules</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="mlang_tabs_tab">Digital Library Framework</label>
+			<label index="mlang_labels_tabdescr">Diese Module erlauben Ihnen die Verwaltung Ihrer digitalisierten Dokumente und Sammlungen.</label>
+			<label index="mlang_labels_tablabel">DLF Basismodule</label>
+		</languageKey>
+	</data>
+</T3locallang>

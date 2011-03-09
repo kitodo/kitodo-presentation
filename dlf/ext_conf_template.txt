@@ -1,0 +1,23 @@
+# cat=Basic; type=string; label=DLF User-Agent: (default is "Digital Library Framework")
+useragent = Digital Library Framework
+
+# cat=Basic; type=string; label=Additional METS fileGrps: comma-separated list of @USE attribute values (default is "MIN,MAX")
+fileGrps = MIN,MAX
+
+# cat=Solr; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkSolrConnection]; label=Solr Connection
+solrConnect = 0
+
+# cat=Solr; type=string; label=Solr Server Host: (default is "localhost")
+solrHost = localhost
+
+# cat=Solr; type=int[0-65535]; label=Solr Server Port: (default is "8180")
+solrPort = 8180
+
+# cat=Solr; type=string; label=Solr Server Path: (default is "/solr/")
+solrPath = /solr/
+
+# cat=Solr; type=string; label=Solr Server User: (default is "")
+solrUser =
+
+# cat=Solr; type=string; label=Solr Server Password: (default is "")
+solrPass =

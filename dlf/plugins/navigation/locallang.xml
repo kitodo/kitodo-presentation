@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin tx_dlf_navigation</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Options</label>
+			<label index="tt_content.pi_flexform.pageStep">How many pages should be skipped by "fast-forward" and "rewind" buttons?</label>
+			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="firstPage">First Page</label>
+			<label index="backXPages">Back %d Pages</label>
+			<label index="prevPage">Previous Page</label>
+			<label index="selectPage">Page</label>
+			<label index="nextPage">Next Page</label>
+			<label index="forwardXPages">Forward %d Pages</label>
+			<label index="lastPage">Last Page</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+			<label index="tt_content.pi_flexform.pageStep">Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?</label>
+			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="firstPage">Erste Seite</label>
+			<label index="backXPages">%d Seiten zurück</label>
+			<label index="prevPage">Vorherige Seite</label>
+			<label index="selectPage">Seite</label>
+			<label index="nextPage">Nächste Seite</label>
+			<label index="forwardXPages">%d Seiten weiter</label>
+			<label index="lastPage">Letzte Seite</label>
+		</languageKey>
+	</data>
+</T3locallang>

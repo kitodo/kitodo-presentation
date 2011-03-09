@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin tx_dlf_search</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Options</label>
+			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
+			<label index="tt_content.pi_flexform.limit">Maximum results</label>
+			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
+			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="label.query">Search for:</label>
+			<label index="label.submit">Search</label>
+			<label index="searchfor">Search for: "%s"</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
+			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
+			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
+			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="label.query">Suchen nach:</label>
+			<label index="label.submit">Suchen</label>
+			<label index="searchfor">Suche nach: "%s"</label>
+		</languageKey>
+	</data>
+</T3locallang>
