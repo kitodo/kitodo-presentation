@@ -1,0 +1,4 @@
+﻿[.bzrignore]
+.buildpath
+.project
+.settings
