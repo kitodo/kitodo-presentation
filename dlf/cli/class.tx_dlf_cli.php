@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -36,8 +36,7 @@ if (!defined('TYPO3_cliMode')) {
  * CLI script for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2010, Sebastian Meyer, SLUB Dresden
- * @version	$Id: class.tx_dlf_cli.php 481 2010-12-22 18:22:54Z smeyer $
+ * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
@@ -81,9 +80,9 @@ class tx_dlf_cli extends t3lib_cli {
 				$doc = tx_dlf_document::getInstance($this->cli_args['-doc'][0], 0, TRUE);
 
 				// ...save it to the database...
-				if (!$doc->save(intval($this->cli_args['-pid'][0]), $this->cli_args['-core'][0])) {
+				if (!($doc instanceof tx_dlf_document) || !$doc->save(intval($this->cli_args['-pid'][0]), $this->cli_args['-core'][0])) {
 
-					$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed'.LF);
+					$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed'.LF, TRUE);
 
 					return 1;
 

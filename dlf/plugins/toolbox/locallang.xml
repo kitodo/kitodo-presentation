@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin tx_dlf_toolbox</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Options</label>
+			<label index="tt_content.pi_flexform.tools">Tools</label>
+			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="label">Toolbox</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+			<label index="tt_content.pi_flexform.tools">Werkzeuge</label>
+			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="label">Werkzeugkasten</label>
+		</languageKey>
+	</data>
+</T3locallang>

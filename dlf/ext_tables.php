@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -262,9 +262,24 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_toc'] = 'pi_f
 
 t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_toc', $_EXTKEY.'_toc'), 'list_type');
 
-t3lib_extMgm::addStaticFile($_EXTKEY,'plugins/toc/', 'Table of Contents');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/toc/', 'Table of Contents');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_toc', 'FILE:EXT:'.$_EXTKEY.'/plugins/toc/flexform.xml');
+
+// Plugin "toolbox".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_toolbox'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_toolbox'] = 'pi_flexform';
+
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_toolbox', $_EXTKEY.'_toolbox'), 'list_type');
+
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_toolbox', 'FILE:EXT:'.$_EXTKEY.'/plugins/toolbox/flexform.xml');
+
+// Tool "toolsDfgviewer".
+t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/toolbox/tools/dfgviewer/', 'Tool: DFG Viewer');
+
+// Tool "toolsPdf".
+t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/toolbox/tools/pdf/', 'Tool: PDF Download');
 
 // Register modules.
 if (TYPO3_MODE == 'BE')	{

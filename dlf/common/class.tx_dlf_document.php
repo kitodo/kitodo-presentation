@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,8 +30,7 @@
  * Document class 'tx_dlf_document' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2010, Sebastian Meyer, SLUB Dresden
- * @version	$Id: class.tx_dlf_document.php 487 2010-12-22 19:55:15Z smeyer $
+ * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
@@ -74,7 +73,7 @@ class tx_dlf_document {
 
 	/**
 	 * This holds the configuration for all supported metadata encodings
-	 * It's set in @see loadFormats()
+	 * @see loadFormats()
 	 *
 	 * @var	array
 	 * @access protected
@@ -386,8 +385,10 @@ class tx_dlf_document {
 	 */
 	public function getLogicalStructure($id, $recursive = FALSE) {
 
+		// Is the requested logical unit already loaded?
 		if (!$recursive && !empty($this->logicalUnits[$id])) {
 
+			// Yes. Return it.
 			return $this->logicalUnits[$id];
 
 		} elseif (($_div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]'))) {
@@ -401,6 +402,7 @@ class tx_dlf_document {
 
 			$this->registerNamespaces($_struct);
 
+			// Extract identity information.
 			$_details = array ();
 
 			$_details['id'] = (string) $_struct['ID'];
@@ -470,6 +472,7 @@ class tx_dlf_document {
 
 				foreach ($_children as $_child) {
 
+					// Repeat for all children.
 					$_details['children'][] = $this->getLogicalStructure((string) $_child, TRUE);
 
 				}
@@ -666,13 +669,15 @@ class tx_dlf_document {
 
 			foreach ($_divs as $_div) {
 
-				// Check if there are physical structure nodes for this logical structure.
+				// Are there physical structure nodes for this logical structure?
 				if (!empty($this->smLinks[(string) $_div['ID']])) {
 
+					// Yes. That's what we're looking for.
 					return (string) $_div['ID'];
 
 				} elseif (!$id) {
 
+					// No. Remember this anyway, but keep looking for a better one.
 					$id = (string) $_div['ID'];
 
 				}
@@ -781,9 +786,11 @@ class tx_dlf_document {
 	 */
 	public function registerNamespaces(SimpleXMLElement &$obj) {
 
-		// Register METS' and XLINK's namespaces.
+		// Register mandatory METS' and XLINK's namespaces.
 		$obj->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
 
+		// This one can become a problem, because MODS uses its own custom XLINK schema.
+		// @see http://comments.gmane.org/gmane.comp.text.mods/1126
 		$obj->registerXPathNamespace('xlink', 'http://www.w3.org/1999/xlink');
 
 		$this->loadFormats();

@@ -27,35 +27,46 @@
  */
 
 /**
- * Interface 'tx_dlf_format' for the 'dlf' extension.
+ * Tool 'Link to DFG Viewer' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
- * @abstract
  */
-interface tx_dlf_format {
+class tx_dlf_toolsDfgviewer extends tx_dlf_plugin {
+
+	// Changed to prevent overwriting the main extension's parameters.
+	public $prefixId = 'tx_dlf_toolsDfgviewer';
+
+	public $scriptRelPath = 'plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php';
 
 	/**
-	 * This extracts metadata from XML
+	 * The main method of the PlugIn
 	 *
 	 * @access	public
 	 *
-	 * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
-	 * @param	array		&$metadata: The metadata array to fill
+	 * @param	string		$content: The PlugIn content
+	 * @param	array		$conf: The PlugIn configuration
 	 *
-	 * @return	void
+	 * @return	string		The content that is displayed on the website
 	 */
-	public function extractMetadata(SimpleXMLElement $xml, array &$metadata);
+	public function main($content, $conf) {
+
+		$this->init($conf);
+
+		// Turn cache off.
+		$this->setCache(FALSE);
+
+		return '';
+
+	}
 
 }
 
-/* No xclasses for interfaces!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_format.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_format.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php']);
 }
-*/
 
 ?>

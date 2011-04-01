@@ -1,4 +1,26 @@
 <?php
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  All rights reserved
+*
+*  This script is part of the TYPO3 project. The TYPO3 project is
+*  free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
 
 $extensionPath = t3lib_extMgm::extPath('dlf');
 
@@ -24,7 +46,10 @@ return array (
 	'tx_dlf_oai' => $extensionPath.'plugins/oai/class.tx_dlf_oai.php',
 	'tx_dlf_pageview' => $extensionPath.'plugins/pageview/class.tx_dlf_pageview.php',
 	'tx_dlf_search' => $extensionPath.'plugins/search/class.tx_dlf_search.php',
-	'tx_dlf_toc' => $extensionPath.'plugins/toc/class.tx_dlf_toc.php'
+	'tx_dlf_toc' => $extensionPath.'plugins/toc/class.tx_dlf_toc.php',
+	'tx_dlf_toolbox' => $extensionPath.'plugins/toolbox/class.tx_dlf_toolbox.php',
+	'tx_dlf_toolsDfgviewer' => $extensionPath.'plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php',
+	'tx_dlf_toolsPdf' => $extensionPath.'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php'
 );
 
 ?>

@@ -115,6 +115,9 @@
 			<label index="tt_content.dlf_pageview">DLF: Page View</label>
 			<label index="tt_content.dlf_search">DLF: Search</label>
 			<label index="tt_content.dlf_toc">DLF: Table of Contents</label>
+			<label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
+			<label index="tx_dlf_toolbox.toolsDfgviewer">Link to DFG Viewer</label>
+			<label index="tx_dlf_toolbox.toolsPdf">PDF Download</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_documents">Dokumente</label>
@@ -226,6 +229,9 @@
 			<label index="tt_content.dlf_pageview">DLF: Seitenansicht</label>
 			<label index="tt_content.dlf_search">DLF: Suche</label>
 			<label index="tt_content.dlf_toc">DLF: Inhaltsverzeichnis</label>
+			<label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
+			<label index="tx_dlf_toolbox.toolsDfgviewer">Link zum DFG-Viewer</label>
+			<label index="tx_dlf_toolbox.toolsPdf">PDF-Download</label>
 		</languageKey>
 	</data>
 </T3locallang>

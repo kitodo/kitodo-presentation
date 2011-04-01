@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,8 +30,7 @@
  * Helper class 'tx_dlf_helper' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2010, Sebastian Meyer, SLUB Dresden
- * @version	$Id: class.tx_dlf_helper.php 499 2010-12-23 12:40:24Z smeyer $
+ * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
@@ -309,7 +308,7 @@ class tx_dlf_helper {
 		}
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'static_languages.'.$field.' AS '.$field,
+			'static_languages.'.$field.' AS language',
 			'static_languages',
 			'static_languages.lg_iso_2='.$GLOBALS['TYPO3_DB']->fullQuoteStr($code, 'static_languages'),
 			'',
@@ -321,7 +320,7 @@ class tx_dlf_helper {
 
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-			return $resArray[$field];
+			return $resArray['language'];
 
 		} else {
 

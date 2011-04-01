@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -40,6 +40,17 @@ t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/pageview/class.tx_dlf_pageview.php'
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/search/class.tx_dlf_search.php', '_search', 'list_type', TRUE);
 
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toc/class.tx_dlf_toc.php', '_toc', 'list_type', TRUE);
+
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/class.tx_dlf_toolbox.php', '_toolbox', 'list_type', FALSE);
+
+// Register tools for toolbox plugin.
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php', '_toolsDfgviewer', 'includeLib', FALSE);
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][t3lib_extMgm::getCN($_EXTKEY).'_toolsDfgviewer'] = 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_toolbox.toolsDfgviewer';
+
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php', '_toolsPdf', 'includeLib', FALSE);
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][t3lib_extMgm::getCN($_EXTKEY).'_toolsPdf'] = 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_toolbox.toolsPdf';
 
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:'.$_EXTKEY.'/hooks/class.tx_dlf_tcemain.php:tx_dlf_tcemain';

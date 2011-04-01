@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,23 +22,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-########################################################################
-# Extension Manager/Repository config file for ext: "dlf"
-#
-# Auto generated 01-12-2008 15:36
-#
-# Manual updates:
-# Only the data in the array - anything else is removed by next write.
-# "version" and "dependencies" must not be touched!
-########################################################################
-
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Digital Library Framework',
-	'description' => 'Base classes, plugins and modules of the Digital Library Framework. The DLF is a toolset for building a METS-based Digital Library.',
+	'title' => 'Goobi.Presentation',
+	'description' => 'Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Goobi Digitization Suite.',
 	'category' => 'fe',
 	'author' => 'Sebastian Meyer',
 	'author_email' => 'sebastian.meyer@slub-dresden.de',
-	'author_company' => '<br /><a href="http://www.slub-dresden.de/en/" target="_blank">Saxon State and University Library Dresden &lt;www.slub-dresden.de&gt;</a>',
+	'author_company' => '<br /><a href="http://www.slub-dresden.de/en/" target="_blank">Saxon State and University Library Dresden &lt;www.slub-dresden.de&gt;</a><br /><a href="https://launchpad.net/goobi" target="_blank">The Goobi Community</a>',
 	'shy' => '',
 	'priority' => '',
 	'module' => '',
