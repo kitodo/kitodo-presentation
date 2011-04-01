@@ -812,7 +812,7 @@ $TCA['tx_dlf_collections'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'nospace,uniqueInPid',
+				'eval' => 'nospace,alphanum_x,uniqueInPid',
 			),
 		),
 		'description' => array (
