@@ -1,5 +1,5 @@
 # cat=Basic; type=string; label=DLF User-Agent: (default is "Digital Library Framework")
-useragent = Digital Library Framework
+useragent = Goobi.Presentation
 
 # cat=Basic; type=string; label=Additional METS fileGrps: comma-separated list of @USE attribute values (default is "MIN,MAX")
 fileGrps = MIN,MAX
