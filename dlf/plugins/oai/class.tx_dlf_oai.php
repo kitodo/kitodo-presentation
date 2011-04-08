@@ -328,10 +328,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$resultSet = unserialize($_resArray['options']);
 
-		$piVars = json_decode($resultSet->metadata['piVars']);
-
 		// Get template and fill with data.
-		if ($piVars['verb'] == 'ListRecords') {
+		if ($this->piVars['verb'] == 'ListRecords') {
 
 			$_itemTemplate = $this->cObj->getSubpart($this->template, '###LISTRECORDS_ITEM###');
 
@@ -382,7 +380,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				if ($piVars['verb'] == 'ListRecords') {
 
-					switch ($this->piVars['metadataPrefix']) {
+					switch ($resultSet->metadata['metadataPrefix']) {
 
 						case 'oai_dc':
 
@@ -449,7 +447,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$resultSet->metadata = array (
 				'offset' => intval($resultSet->metadata['offset'] + $this->conf['limit']),
-				'piVars' => json_encode($piVars),
+				'metadataPrefix' => $resultSet->metadata['metadataPrefix'],
 			);
 
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
@@ -470,7 +468,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		// Substitute subpart marker.
-		if ($piVars['verb'] == 'ListRecords') {
+		if ($this->piVars['verb'] == 'ListRecords') {
 
 			$template = $this->cObj->getSubpart($this->template, '###LISTRECORDS###');
 
@@ -854,7 +852,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				$resultSet->metadata = array (
 					'offset' => intval($this->conf['limit']),
-					'piVars' => json_encode($this->piVars),
+					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
@@ -1279,7 +1277,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				$resultSet->metadata = array (
 					'offset' => intval($this->conf['limit']),
-					'piVars' => json_encode($this->piVars),
+					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
