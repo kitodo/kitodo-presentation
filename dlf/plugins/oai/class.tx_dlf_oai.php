@@ -378,7 +378,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				}
 
-				if ($piVars['verb'] == 'ListRecords') {
+				if ($this->piVars['verb'] == 'ListRecords') {
 
 					switch ($resultSet->metadata['metadataPrefix']) {
 
