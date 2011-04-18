@@ -104,6 +104,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 					'uid' => $doc->uid,
 					'page' => $doc->page,
 					'title' => array ($doc->title),
+					'volume' => array ($doc->volume),
 					'author' => array ($doc->author),
 					'year' => array ($doc->year),
 					'place' => array ($doc->place),

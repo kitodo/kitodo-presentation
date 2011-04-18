@@ -235,7 +235,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 		}
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type',
+			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -266,6 +266,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				'uid' => $resArray['uid'],
 				'page' => 1,
 				'title' => array ($resArray['title']),
+				'volume' => array ($resArray['volume']),
 				'author' => array ($resArray['author']),
 				'year' => array ($resArray['year']),
 				'place' => array ($resArray['place']),
