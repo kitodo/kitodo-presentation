@@ -665,20 +665,20 @@ class tx_dlf_document {
 		// Get all logical structure nodes with metadata.
 		if (($_divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
 
-			$this->_getSmLinks();
-
 			foreach ($_divs as $_div) {
 
+				$_id = (string) $_div['ID'];
+
 				// Are there physical structure nodes for this logical structure?
-				if (!empty($this->smLinks[(string) $_div['ID']])) {
+				if ($this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.$_id.'"]')) {
 
 					// Yes. That's what we're looking for.
-					return (string) $_div['ID'];
+					return $_id;
 
 				} elseif (!$id) {
 
 					// No. Remember this anyway, but keep looking for a better one.
-					$id = (string) $_div['ID'];
+					$id = $_id;
 
 				}
 
