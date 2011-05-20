@@ -40,6 +40,14 @@ class tx_dlf_toc extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/toc/class.tx_dlf_toc.php';
 
 	/**
+	 * This holds the active entries according to the currently selected page
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $activeEntries = array ();
+
+	/**
 	 * This builds an array for one menu entry
 	 *
 	 * @access	protected
@@ -67,15 +75,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		$entryArray['ITEM_STATE'] = 'NO';
 
 		// Build menu links based on the $entry['points'] array.
-		if (!empty($entry['points'][0]) && t3lib_div::testInt($entry['points'][0])) {
+		if (!empty($entry['points']) && t3lib_div::testInt($entry['points'])) {
 
-			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('page' => $entry['points'][0]), TRUE, FALSE, $this->conf['targetPid']);
+			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('page' => $entry['points']), TRUE, FALSE, $this->conf['targetPid']);
 
-		} elseif (!empty($entry['points'][0]) && is_string($entry['points'][0])) {
+		} elseif (!empty($entry['points']) && is_string($entry['points'])) {
 
-			$_doc = tx_dlf_document::getInstance($entry['points'][0], ($this->conf['excludeOther'] ? $this->conf['pages'] : 0));
+			$_doc = tx_dlf_document::getInstance($entry['points'], ($this->conf['excludeOther'] ? $this->conf['pages'] : 0));
 
-			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points'][0]), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points']), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
 
 		} elseif (!empty($entry['points']['doc'])) {
 
@@ -88,7 +96,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		}
 
 		// Set "ITEM_STATE" to "CUR" if this entry points to current page.
-		if (!empty($this->piVars['page']) && in_array($this->piVars['page'], $entry['points'])) {
+		if (in_array($entry['id'], $this->activeEntries)) {
 
 			$entryArray['ITEM_STATE'] = 'CUR';
 
@@ -102,14 +110,14 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			// 2. Current menu node is in rootline
 			// 3. Current menu node points to another file
 			// 4. There are no physical pages in the current METS file
-			if (!empty($this->conf['menuConf.']['expAll']) || $entryArray['ITEM_STATE'] == 'CUR' || is_string($entry['points'][0]) || !$this->doc->physicalPages) {
+			if (!empty($this->conf['menuConf.']['expAll']) || $entryArray['ITEM_STATE'] == 'CUR' || is_string($entry['points']) || !$this->doc->physicalPages) {
 
 				$entryArray['_SUB_MENU'] = array ();
 
 				foreach ($entry['children'] as $_child) {
 
 					// Set "ITEM_STATE" to "ACT" if this entry points to current page and has sub-entries pointing to the same page.
-					if (!empty($this->piVars['page']) && in_array($this->piVars['page'], $_child['points'])) {
+					if (in_array($_child['id'], $this->activeEntries)) {
 
 						$entryArray['ITEM_STATE'] = 'ACT';
 
@@ -215,6 +223,17 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		// Does the document have physical pages or is it an external file?
 		if ($this->doc->physicalPages || !t3lib_div::testInt($this->doc->uid)) {
+
+			// Get all logical units the current page is a part of.
+			if (!empty($this->piVars['page']) && $this->doc->physicalPages) {
+
+				foreach ($this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']]['id'].'"]') as $_logId) {
+
+					$this->activeEntries[] = (string) $_logId->attributes('http://www.w3.org/1999/xlink')->from;
+
+				}
+
+			}
 
 			// Go through table of contents and create all menu entries.
 			foreach ($this->doc->tableOfContents as $_entry) {

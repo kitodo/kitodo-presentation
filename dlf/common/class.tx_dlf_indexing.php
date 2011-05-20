@@ -354,7 +354,7 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('pid', $doc->pid);
 
-			$solrDoc->setField('page', $logicalUnit['points'][0]);
+			$solrDoc->setField('page', $logicalUnit['points']);
 
 			$solrDoc->setField('partof', $doc->parentid);
 
