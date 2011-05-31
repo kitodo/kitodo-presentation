@@ -226,7 +226,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 							}
 
-							$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points'][0]) : 1))), TRUE, $this->conf['targetPid']);
+							$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
 
 						// Translate name of holding library.
 						} elseif ($_index_name == 'owner') {

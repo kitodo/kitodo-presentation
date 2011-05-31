@@ -208,23 +208,6 @@ class tx_dlf_document {
 	protected static $registry = array ();
 
 	/**
-	 * This holds the smLinks of the document
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $smLinks = array ();
-
-	/**
-	 * Are the METS file's smLinks loaded?
-	 * @see $smLinks
-	 *
-	 * @var	boolean
-	 * @access protected
-	 */
-	protected $smLinksLoaded = FALSE;
-
-	/**
 	 * This holds the PID for the structure definitions
 	 *
 	 * @var	integer
@@ -320,7 +303,7 @@ class tx_dlf_document {
 	 *
 	 * @param	mixed		$uid: The unique identifier of the document to parse or URL of XML file
 	 * @param	integer		$pid: If > 0, then only document with this PID gets loaded
-	 * @param	boolean		$forceReload: Force reloading the document
+	 * @param	boolean		$forceReload: Force reloading the document instead of returning the cached instance
 	 *
 	 * @return	tx_dlf_document		Instance of this class
 	 */
@@ -396,8 +379,6 @@ class tx_dlf_document {
 			// Load physical pages and smLinks.
 			$this->_getPhysicalPages();
 
-			$this->_getSmLinks();
-
 			$_struct = $_div[0];
 
 			$this->registerNamespaces($_struct);
@@ -415,44 +396,28 @@ class tx_dlf_document {
 
 			$_details['type'] = (string) $_struct['TYPE'];
 
-			// Get the physical pages or external file this structure element is pointing at.
-			$_details['points'] = array ();
+			// Get the physical page or external file this structure element is pointing at.
+			$_details['points'] = '';
 
 			// Is there a mptr node?
 			if (($_mptr = $_struct->xpath('./mets:mptr[@LOCTYPE="URL"]'))) {
 
 				// Yes. Get the file reference.
-				$_details['points'][] = (string) $_mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+				$_details['points'] = (string) $_mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
 			// Are there any physical pages?
 			} elseif ($this->physicalPages) {
 
-				// Yes. Get all physical pages related to this structure element.
-				if (!empty($this->smLinks[(string) $_struct['ID']])) {
+				// Yes. Get first physical page related to this structure element.
+				if (($_smLink = $this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.(string) $_struct['ID'].'"]'))) {
 
-					foreach ($this->smLinks[(string) $_struct['ID']] as $_smLink) {
+					$_details['points'] = tx_dlf_helper::array_search_recursive($_smLink[0]->attributes('http://www.w3.org/1999/xlink')->to, $this->physicalPages);
 
-						$_key = tx_dlf_helper::array_search_recursive($_smLink, $this->physicalPages);
-
-						// Check if smLink points to the "physSequence" element.
-						if ($_key === 0) {
-
-							$_keys = array_keys($this->physicalPages);
-
-							array_shift($_keys);
-
-							$_details['points'] = $_keys;
-
-						} else {
-
-							$_details['points'][] = $_key;
-
-						}
-
-					}
+					// Check if smLink points to the "physSequence" element (in which case it should point to the first image).
+					$_details['points'] = max(intval($_details['points']), 1);
 
 					// Get page number of the first page related to this structure element.
-					$_details['pagination'] = $this->physicalPages[$_details['points'][0]]['label'];
+					$_details['pagination'] = $this->physicalPages[$_details['points']]['label'];
 
 				} else {
 
@@ -665,20 +630,20 @@ class tx_dlf_document {
 		// Get all logical structure nodes with metadata.
 		if (($_divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
 
-			$this->_getSmLinks();
-
 			foreach ($_divs as $_div) {
 
+				$_id = (string) $_div['ID'];
+
 				// Are there physical structure nodes for this logical structure?
-				if (!empty($this->smLinks[(string) $_div['ID']])) {
+				if ($this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.$_id.'"]')) {
 
 					// Yes. That's what we're looking for.
-					return (string) $_div['ID'];
+					return $_id;
 
 				} elseif (!$id) {
 
 					// No. Remember this anyway, but keep looking for a better one.
-					$id = (string) $_div['ID'];
+					$id = $_id;
 
 				}
 
@@ -1041,9 +1006,9 @@ class tx_dlf_document {
 		// Get UID of superior document.
 		$partof = 0;
 
-		if (!empty($this->tableOfContents[0]['points'][0]) && !t3lib_div::testInt($this->tableOfContents[0]['points'][0])) {
+		if (!empty($this->tableOfContents[0]['points']) && !t3lib_div::testInt($this->tableOfContents[0]['points'])) {
 
-			$superior = tx_dlf_document::getInstance($this->tableOfContents[0]['points'][0]);
+			$superior = tx_dlf_document::getInstance($this->tableOfContents[0]['points']);
 
 			if ($superior->pid != $pid) {
 
@@ -1413,37 +1378,6 @@ class tx_dlf_document {
 	protected function _getPid() {
 
 		return $this->pid;
-
-	}
-
-	/**
-	 * This builds an array of all smLinks of the document
-	 *
-	 * @access	protected
-	 *
-	 * @return	array		The smLinks of the document
-	 */
-	protected function _getSmLinks() {
-
-		if (!$this->smLinksLoaded) {
-
-			$_smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
-
-			if ($_smLinks) {
-
-				foreach ($_smLinks as $_smLink) {
-
-					$this->smLinks[(string) $_smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $_smLink->attributes('http://www.w3.org/1999/xlink')->to;
-
-				}
-
-			}
-
-			$this->smLinksLoaded = TRUE;
-
-		}
-
-		return $this->smLinks;
 
 	}
 
