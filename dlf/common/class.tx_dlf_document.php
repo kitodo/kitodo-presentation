@@ -376,7 +376,7 @@ class tx_dlf_document {
 
 		} elseif (($_div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]'))) {
 
-			// Load physical pages and smLinks.
+			// Load physical pages.
 			$this->_getPhysicalPages();
 
 			$_struct = $_div[0];
