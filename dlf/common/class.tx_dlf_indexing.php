@@ -129,12 +129,12 @@ class tx_dlf_indexing {
 	 *
 	 * @access	public
 	 *
-	 * @param	tx_dlf_document		&$doc: The document to index
+	 * @param	tx_dlf_document		&$doc: The document to add
 	 * @param	integer		$core: UID of the Solr core to use
 	 *
-	 * @return	void
+	 * @return	integer		0 on success or 1 on failure
 	 */
-	public static function addToIndex(tx_dlf_document &$doc, $core = 1) {
+	public static function add(tx_dlf_document &$doc, $core = 1) {
 
 		if (in_array($doc->uid, self::$processedDocs)) {
 
@@ -147,7 +147,7 @@ class tx_dlf_indexing {
 			// Handle multi-volume documents.
 			if ($doc->parentid) {
 
-				$errors = self::addToIndex(tx_dlf_document::getInstance($doc->parentid, 0, TRUE), $core);
+				$errors = self::add(tx_dlf_document::getInstance($doc->parentid, 0, TRUE), $core);
 
 			}
 
@@ -248,6 +248,106 @@ class tx_dlf_indexing {
 	}
 
 	/**
+	 * Delete document from Solr index
+	 *
+	 * @access	public
+	 *
+	 * @param	integer		$uid: UID of the document to delete
+	 *
+	 * @return	integer		0 on success or 1 on failure
+	 */
+	public static function delete($uid) {
+
+		// Sanitize input.
+		$uid = max(intval($uid), 0);
+
+		// Get Solr core for document.
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_dlf_solrcores.uid AS uid,tx_dlf_documents.title AS title',
+			'tx_dlf_solrcores,tx_dlf_documents',
+			'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.$uid.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+			'',
+			'',
+			'1'
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+			list ($core, $title) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+			// Establish Solr connection.
+			if (self::solrConnect($core)) {
+
+				try {
+
+					// Delete Solr document.
+					self::$solr->deleteByQuery('uid:'.$uid);
+
+					self::$solr->commit();
+
+				} catch (Exception $e) {
+
+					if (!defined('TYPO3_cliMode')) {
+
+						$_message = t3lib_div::makeInstance(
+							't3lib_FlashMessage',
+							$GLOBALS['LANG']->getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+							$GLOBALS['LANG']->getLL('flash.error', TRUE),
+							t3lib_FlashMessage::ERROR,
+							TRUE
+						);
+
+						t3lib_FlashMessageQueue::addMessage($_message);
+
+					}
+
+					trigger_error('Apache Solr exception thrown: '.$e->getMessage(), E_USER_ERROR);
+
+					return 1;
+
+				}
+
+			} else {
+
+				if (!defined('TYPO3_cliMode')) {
+
+					$_message = t3lib_div::makeInstance(
+						't3lib_FlashMessage',
+						$GLOBALS['LANG']->getLL('flash.solrNoConnection', TRUE),
+						$GLOBALS['LANG']->getLL('flash.error', TRUE),
+						t3lib_FlashMessage::ERROR,
+						TRUE
+					);
+
+					t3lib_FlashMessageQueue::addMessage($_message);
+
+				}
+
+				trigger_error('Could not connect to Apache Solr server', E_USER_ERROR);
+
+				return 1;
+
+			}
+
+			if (!defined('TYPO3_cliMode')) {
+
+				$_message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentDeleted'), $title, $uid)),
+					$GLOBALS['LANG']->getLL('flash.done', TRUE),
+					t3lib_FlashMessage::OK,
+					TRUE
+				);
+
+				t3lib_FlashMessageQueue::addMessage($_message);
+
+			}
+
+		}
+
+	}
+
+	/**
 	 * Load indexing configuration
 	 *
 	 * @access	protected
@@ -326,7 +426,7 @@ class tx_dlf_indexing {
 	 * @param	tx_dlf_document		&$doc: The METS document
 	 * @param	array		$logicalUnit: Array of the logical unit to process
 	 *
-	 * @return	void
+	 * @return	integer		0 on success or 1 on failure
 	 */
 	protected static function process(tx_dlf_document &$doc, array $logicalUnit) {
 
@@ -498,15 +598,19 @@ class tx_dlf_indexing {
 	 *
 	 * @return	boolean		TRUE on success or FALSE on failure
 	 */
-	protected static function solrConnect($core, $pid) {
+	protected static function solrConnect($core, $pid = 0) {
 
 		if (!self::$solr) {
 
 			// Connect to Solr server.
 			if (self::$solr = tx_dlf_solr::solrConnect($core)) {
 
-				// Load indexing configuration.
-				self::loadIndexConf($pid);
+				// Load indexing configuration if needed.
+				if ($pid) {
+
+					self::loadIndexConf($pid);
+
+				}
 
 			} else {
 

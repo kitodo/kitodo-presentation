@@ -107,6 +107,8 @@
 			<label index="tx_dlf_libraries.tab1">General</label>
 			<label index="tx_dlf_libraries.tab2">Translation</label>
 			<label index="tx_dlf_libraries.tab3">Catalogs</label>
+			<label index="tx_dlf_toolbox.toolsDfgviewer">Link to DFG Viewer</label>
+			<label index="tx_dlf_toolbox.toolsPdf">PDF Download</label>
 			<label index="tt_content.dlf_collection">DLF: Collection</label>
 			<label index="tt_content.dlf_listview">DLF: List View</label>
 			<label index="tt_content.dlf_metadata">DLF: Metadata</label>
@@ -116,8 +118,6 @@
 			<label index="tt_content.dlf_search">DLF: Search</label>
 			<label index="tt_content.dlf_toc">DLF: Table of Contents</label>
 			<label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
-			<label index="tx_dlf_toolbox.toolsDfgviewer">Link to DFG Viewer</label>
-			<label index="tx_dlf_toolbox.toolsPdf">PDF Download</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_documents">Dokumente</label>
@@ -221,6 +221,8 @@
 			<label index="tx_dlf_libraries.tab1">Allgemein</label>
 			<label index="tx_dlf_libraries.tab2">Übersetzung</label>
 			<label index="tx_dlf_libraries.tab3">Kataloge</label>
+			<label index="tx_dlf_toolbox.toolsDfgviewer">Link zum DFG-Viewer</label>
+			<label index="tx_dlf_toolbox.toolsPdf">PDF-Download</label>
 			<label index="tt_content.dlf_collection">DLF: Kollektion</label>
 			<label index="tt_content.dlf_listview">DLF: Listenansicht</label>
 			<label index="tt_content.dlf_metadata">DLF: Metadaten</label>
@@ -230,8 +232,6 @@
 			<label index="tt_content.dlf_search">DLF: Suche</label>
 			<label index="tt_content.dlf_toc">DLF: Inhaltsverzeichnis</label>
 			<label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
-			<label index="tx_dlf_toolbox.toolsDfgviewer">Link zum DFG-Viewer</label>
-			<label index="tx_dlf_toolbox.toolsPdf">PDF-Download</label>
 		</languageKey>
 	</data>
 </T3locallang>

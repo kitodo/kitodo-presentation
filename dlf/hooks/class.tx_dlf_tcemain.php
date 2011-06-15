@@ -38,7 +38,7 @@
 class tx_dlf_tcemain {
 
 	/**
-	 * Post-processing hook for the process_datamap() method.
+	 * Field post-processing hook for the process_datamap() method.
 	 *
 	 * @access	public
 	 *
@@ -187,6 +187,77 @@ class tx_dlf_tcemain {
 
 	}
 
+	/**
+	 * After database operations hook for the process_datamap() method.
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$status: 'new' or 'update'
+	 * @param	string		$table: The destination table
+	 * @param	integer		$id: The uid of the record
+	 * @param	array		&$fieldArray: Array of field values
+	 * @param	t3lib_TCEmain		$pObj: The parent object
+	 *
+	 * @return	void
+	 */
+	public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, $pObj) {
+
+		if ($status == "update") {
+
+			switch ($table) {
+
+				// After database operations for table "tx_dlf_documents".
+				case 'tx_dlf_documents':
+
+					// Delete/re-index document in Solr according to "hidden" status in database.
+					if (isset($fieldArray['hidden'])) {
+
+						// Get Solr core.
+						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+							'tx_dlf_solrcores.index_name AS index_name',
+							'tx_dlf_solrcores,tx_dlf_documents',
+							'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+							'',
+							'',
+							'1'
+						);
+
+						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+							list ($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+							// Establish Solr connection.
+							if ($solr = tx_dlf_solr::solrConnect($core)) {
+
+								if ($fieldArray['hidden']) {
+
+									// Delete Solr document.
+									$solr->deleteByQuery('uid:'.$id);
+
+									$solr->commit();
+
+								} else {
+
+									// Reindex document.
+									$doc = tx_dlf_document::getInstance($id);
+
+									$doc->save($doc->pid, $core);
+
+								}
+
+							}
+
+						}
+
+					}
+
+					break;
+
+			}
+
+		}
+
+	}
 	/**
 	 * Post-processing hook for the process_cmdmap() method.
 	 *

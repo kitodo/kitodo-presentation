@@ -1100,7 +1100,7 @@ class tx_dlf_document {
 		// Add document to index.
 		if ($core) {
 
-			tx_dlf_indexing::addToIndex($this, $core);
+			tx_dlf_indexing::add($this, $core);
 
 		}
 
