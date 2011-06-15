@@ -346,10 +346,18 @@ class tx_dlf_document {
 		// Create new instance...
 		$instance = new self($uid, $pid);
 
-		// ...and save it to registry and session.
+		// ...and save it to registry.
 		self::$registry[$instance->uid] = $instance;
 
-		tx_dlf_helper::saveToSession(self::$registry, get_class($instance));
+		// Load extension configuration
+		$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+
+		// Save document to session if caching is enabled.
+		if (!empty($_extConf['caching'])) {
+
+			tx_dlf_helper::saveToSession(self::$registry, get_class($instance));
+
+		}
 
 		// Return new instance.
 		return $instance;

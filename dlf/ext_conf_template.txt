@@ -1,8 +1,11 @@
-# cat=Basic; type=string; label=DLF User-Agent: (default is "Digital Library Framework")
+# cat=Basic; type=string; label=DLF User-Agent: (default is "Goobi.Presentation")
 useragent = Goobi.Presentation
 
 # cat=Basic; type=string; label=Additional METS fileGrps: comma-separated list of @USE attribute values (default is "MIN,MAX")
 fileGrps = MIN,MAX
+
+# cat=Basic; type=boolean; label=Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "false")
+caching = 0
 
 # cat=Solr; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkSolrConnection]; label=Solr Connection
 solrConnect = 0
