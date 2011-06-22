@@ -411,6 +411,8 @@ class tx_dlf_document {
 
 			$_details['label'] = (isset($_struct['LABEL']) ? (string) $_struct['LABEL'] : '');
 
+			$_details['volume'] = '';
+
 			$_details['pagination'] = '';
 
 			$_details['type'] = (string) $_struct['TYPE'];
