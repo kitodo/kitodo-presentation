@@ -416,7 +416,7 @@ class tx_dlf_indexing {
 
 			unset ($metadata['place_sorting']);
 
-			$solrDoc->setField('volume', $metadata['volume'][0], self::$fieldBoost['volume']);
+			$solrDoc->setField('volume', $metadata['volume'][0], self::$fieldboost['volume']);
 
 			unset ($metadata['volume']);
 
