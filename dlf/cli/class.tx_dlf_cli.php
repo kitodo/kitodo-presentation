@@ -111,6 +111,10 @@ class tx_dlf_cli extends t3lib_cli {
 
 }
 
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/cli/class.tx_dlf_cli.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/cli/class.tx_dlf_cli.php']);
+}
+
 $SOBE = t3lib_div::makeInstance('tx_dlf_cli');
 
 $SOBE->main();
