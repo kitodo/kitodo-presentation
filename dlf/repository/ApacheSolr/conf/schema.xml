@@ -124,10 +124,12 @@ Changelog:
 		<field name="type" type="string" indexed="true" stored="true" required="true" default="" />
 		<!-- Next four fields are used for displaying search hits. -->
 		<field name="title" type="standard" indexed="true" stored="true" required="true" default="" multiValued="false" />
+		<field name="volume" type="standard" indexed="true" stored="true" multiValued="false" />
 		<field name="author" type="standard" indexed="true" stored="true" multiValued="true" />
 		<field name="year" type="standard" indexed="true" stored="true" multiValued="true" />
 		<field name="place" type="standard" indexed="true" stored="true" multiValued="true" />
-		<!-- For sorting purposes, the year of publication should be handled as an integer. -->
+		<!-- For sorting purposes, the some fields should be handled as an integer. -->
+		<field name="volume_sorting" type="int" indexed="true" stored="false" multiValued="false" />
 		<field name="year_sorting" type="int" indexed="true" stored="false" multiValued="false" />
 		<!-- CatchAll field. See <copyField> below. -->
 		<field name="default" type="standard" indexed="true" stored="false" required="true" default="" multiValued="true" />

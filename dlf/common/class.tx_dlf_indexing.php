@@ -396,7 +396,7 @@ class tx_dlf_indexing {
 
 			if (!empty($metadata['year_sorting'][0])) {
 
-				$solrDoc->setField('year_sorting', $metadata['year_sorting'][0]);
+				$solrDoc->setField('year_sorting', intval($metadata['year_sorting'][0]));
 
 			}
 
@@ -415,6 +415,18 @@ class tx_dlf_indexing {
 			}
 
 			unset ($metadata['place_sorting']);
+
+			$solrDoc->setField('volume', $metadata['volume'][0], self::$fieldboost['volume']);
+
+			unset ($metadata['volume']);
+
+			if (!empty($metadata['volume_sorting'][0])) {
+
+				$solrDoc->setField('volume_sorting', intval($metadata['volume_sorting'][0]));
+
+			}
+
+			unset ($metadata['volume_sorting']);
 
 			foreach ($metadata as $index_name => $data) {
 

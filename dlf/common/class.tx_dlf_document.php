@@ -392,6 +392,8 @@ class tx_dlf_document {
 
 			$_details['label'] = (isset($_struct['LABEL']) ? (string) $_struct['LABEL'] : '');
 
+			$_details['volume'] = '';
+
 			$_details['pagination'] = '';
 
 			$_details['type'] = (string) $_struct['TYPE'];
@@ -504,6 +506,7 @@ class tx_dlf_document {
 			'urn' => array (),
 			'purl' => array (),
 			'type' => array (),
+			'volume' => array (),
 			'volume_sorting' => array (),
 			'collection' => array (),
 			'owner' => array (),
@@ -702,9 +705,9 @@ class tx_dlf_document {
 
 			// Get available data formats from database.
 			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'type,other_type,root,namespace,class',
+				'tx_dlf_formats.type AS type,tx_dlf_formats.other_type AS other_type,tx_dlf_formats.root AS root,tx_dlf_formats.namespace AS namespace,tx_dlf_formats.class AS class',
 				'tx_dlf_formats',
-				'pid=0'.tx_dlf_helper::whereClause('tx_dlf_formats'),
+				'tx_dlf_formats.pid=0'.tx_dlf_helper::whereClause('tx_dlf_formats'),
 				'',
 				'',
 				''
@@ -1062,6 +1065,7 @@ class tx_dlf_document {
 			'metadata' => json_encode($listed),
 			'structure' => $structure,
 			'partof' => $partof,
+			'volume' => $metadata['volume'][0],
 			'volume_sorting' => $metadata['volume_sorting'][0],
 			'collections' => $collections,
 			'owner' => $owner,
