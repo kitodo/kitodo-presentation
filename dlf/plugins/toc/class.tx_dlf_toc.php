@@ -61,8 +61,10 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray = array ();
 
-		// Set "title", "type" and "pagination" from $entry array.
+		// Set "title", "volume", "type" and "pagination" from $entry array.
 		$entryArray['title'] = $entry['label'];
+
+		$entryArray['volume'] = $entry['volume'];
 
 		$entryArray['type'] = $this->pi_getLL($entry['type'], tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
@@ -262,7 +264,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 			// Build table of contents from database.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_structures.index_name AS type',
+				'tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_structures.index_name AS type',
 				'tx_dlf_documents,tx_dlf_structures',
 				$whereClause,
 				'',
@@ -281,6 +283,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 					$_entry = array (
 						'label' => $resArray['title'],
 						'type' => $resArray['type'],
+						'volume' => $resArray['volume'],
 						'pagination' => '',
 						'points' => array ('doc' => $resArray['uid'])
 					);

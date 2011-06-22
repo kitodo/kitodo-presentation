@@ -27,7 +27,7 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 $TCA['tx_dlf_documents'] = array (
 	'ctrl' => $TCA['tx_dlf_documents']['ctrl'],
 	'interface' => array (
-		'showRecordFieldList' => 'title,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
+		'showRecordFieldList' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
 		'maxDBListItems' => 50,
 		'maxSingleDBListItems' => 250,
 	),
@@ -242,6 +242,16 @@ $TCA['tx_dlf_documents'] = array (
 				'default' => 0,
 			),
 		),
+		'volume' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.volume',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'trim',
+			),
+		),
 		'volume_sorting' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.volume_sorting',
@@ -319,7 +329,7 @@ $TCA['tx_dlf_documents'] = array (
 		'2' => array ('showitem' => 'author_sorting', 'canNotCollapse' => 1),
 		'3' => array ('showitem' => 'year_sorting', 'canNotCollapse' => 1),
 		'4' => array ('showitem' => 'place_sorting', 'canNotCollapse' => 1),
-		'5' => array ('showitem' => 'partof, --linebreak--, volume_sorting', 'canNotCollapse' => 1),
+		'5' => array ('showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
 	),
 );
 
