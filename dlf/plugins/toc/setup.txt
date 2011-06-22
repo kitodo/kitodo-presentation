@@ -7,7 +7,7 @@ plugin.tx_dlf_toc.menuConf {
 	1.NO.stdWrap.crop = 55 | &nbsp;... | 1
 	1.NO.stdWrap.ifEmpty.field = type
 	1.NO.stdWrap.ifEmpty.append.fieldRequired = volume
-	1.NO.stdWrao.ifEmpty.append = TEXT
+	1.NO.stdWrap.ifEmpty.append = TEXT
 	1.NO.stdWrap.ifEmpty.append.field = volume
 	1.NO.stdWrap.ifEmpty.append.wrap = &nbsp;|
 	1.NO.stdWrap.dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span>
