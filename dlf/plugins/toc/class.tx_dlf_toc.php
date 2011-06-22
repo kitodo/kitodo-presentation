@@ -53,8 +53,10 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray = array ();
 
-		// Set "title", "type" and "pagination" from $entry array.
+		// Set "title", "volume", "type" and "pagination" from $entry array.
 		$entryArray['title'] = $entry['label'];
+
+		$entryArray['volume'] = $entry['volume'];
 
 		$entryArray['type'] = $this->pi_getLL($entry['type'], tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
