@@ -278,7 +278,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 								'tx_dlf_documents',
 								'tx_dlf_relations',
 								'tx_dlf_collections',
-								'AND tx_dlf_documents.partof=0 AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+								'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 								'',
 								'',
 								''
@@ -290,7 +290,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 							$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 								'tx_dlf_documents.title AS title,tx_dlf_documents.uid AS uid',
 								'tx_dlf_documents',
-								'tx_dlf_documents.partof=0 AND tx_dlf_documents.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_documents'),
+								'tx_dlf_documents.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_documents'),
 								'',
 								'',
 								''
