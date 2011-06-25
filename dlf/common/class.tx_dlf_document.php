@@ -532,17 +532,25 @@ class tx_dlf_document {
 			'owner' => array (),
 		);
 
-		// Get the logical structure node.
-		$_structure = $this->getLogicalStructure($id);
+		// Get the logical structure node's DMDID.
+		if (!empty($this->logicalUnits[$id])) {
 
-		if (($_dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@DMDID'))) {
+			$_dmdId = $this->logicalUnits[$id]['dmdId'];
+
+		} else {
+
+			$_dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@DMDID');
+
+			$_dmdId = (string) $_dmdId[0];
+
+		}
+
+		if (!empty($_dmdId)) {
 
 			// Load available metadata formats and dmdSecs.
 			$this->loadFormats();
 
 			$this->_getDmdSec();
-
-			$_dmdId = (string) $_dmdId[0];
 
 			// Is this metadata format supported?
 			if (!empty($this->formats[$this->dmdSec[$_dmdId]['type']]['class'])) {
@@ -574,8 +582,14 @@ class tx_dlf_document {
 
 			}
 
-			// Get the structure.
-			if (($_struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@TYPE'))) {
+			// Get the structure's type.
+			if (!empty($this->logicalUnits[$id])) {
+
+				$_metadata['type'] = $this->logicalUnits[$id]['type'];
+
+			} else {
+
+				$_struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@TYPE');
 
 				$_metadata['type'] = array ((string) $_struct[0]);
 
