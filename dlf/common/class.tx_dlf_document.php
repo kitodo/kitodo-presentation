@@ -975,7 +975,7 @@ class tx_dlf_document {
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
-			'tx_dlf_documents.pid='.intval($pid).' AND tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_documents.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->uid, 'tx_dlf_documents').' AND NOT tx_dlf_collections.fe_cruser_id=0',
+			'AND tx_dlf_documents.pid='.intval($pid).' AND tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_documents.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->uid, 'tx_dlf_documents').' AND NOT tx_dlf_collections.fe_cruser_id=0',
 			'',
 			'',
 			''
