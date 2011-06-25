@@ -87,7 +87,7 @@ class tx_dlf_mods implements tx_dlf_format {
 
 					$name = array ();
 
-					$j = 4;
+					$k = 4;
 
 					foreach ($nameParts as $namePart) {
 
@@ -109,11 +109,11 @@ class tx_dlf_mods implements tx_dlf_format {
 
 						} else {
 
-							$name[$j] = (string) $namePart;
+							$name[$k] = (string) $namePart;
 
 						}
 
-						$j++;
+						$k++;
 
 					}
 
