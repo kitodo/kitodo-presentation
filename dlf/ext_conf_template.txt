@@ -1,8 +1,8 @@
 # cat=Basic; type=string; label=DLF User-Agent: (default is "Goobi.Presentation")
 useragent = Goobi.Presentation
 
-# cat=Basic; type=string; label=Additional METS fileGrps: comma-separated list of @USE attribute values (default is "MIN,MAX")
-fileGrps = MIN,MAX
+# cat=Basic; type=string; label=Additional METS fileGrps: comma-separated list of @USE attribute values (default is "DEFAULT,MIN,MAX,THUMBS")
+fileGrps = DEFAULT,MIN,MAX,THUMBS
 
 # cat=Basic; type=boolean; label=Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "false")
 caching = 0

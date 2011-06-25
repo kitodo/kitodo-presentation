@@ -98,7 +98,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$imageData = array ();
 
-		$_fileGrps = array_merge(array ('THUMBS', 'DEFAULT'), t3lib_div::trimExplode(',', $this->conf['fileGrps']));
+		$_fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
 
 		foreach ($_fileGrps as $_fileGrp) {
 

@@ -1326,7 +1326,7 @@ class tx_dlf_document {
 
 				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 
-				$_useGrps = array_merge(array ('THUMBS', 'DEFAULT'), t3lib_div::trimExplode(',', $extConf['fileGrps']));
+				$_useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
 
 				// Yes. Get concordance of @FILEID and @USE attributes.
 				$_fileUse = array ();
@@ -1361,7 +1361,12 @@ class tx_dlf_document {
 				// Get the file representations from fileSec node.
 				foreach ($_physNode[0]->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
 
-					$_physSeq[0]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+					// Check if file has valid @USE attribute.
+					if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
+
+						$_physSeq[0]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+
+					}
 
 				}
 
@@ -1379,7 +1384,12 @@ class tx_dlf_document {
 					// Get the file representations from fileSec node.
 					foreach ($_pageNode->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
 
-						$_pages[(int) $_pageNode['ORDER']]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+						// Check if file has valid @USE attribute.
+						if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
+
+							$_pages[(int) $_pageNode['ORDER']]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+
+						}
 
 					}
 
