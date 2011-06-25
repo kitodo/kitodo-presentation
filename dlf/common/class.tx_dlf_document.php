@@ -402,6 +402,18 @@ class tx_dlf_document {
 
 			$_details['volume'] = '';
 
+			if (empty($_details['label'])) {
+
+				$_metadata = $this->getMetadata($id);
+
+				if (!empty($_metadata['volume'][0])) {
+
+					$_details['volume'] = $_metadata['volume'][0];
+
+				}
+
+			}
+
 			$_details['pagination'] = '';
 
 			$_details['type'] = (string) $_struct['TYPE'];
