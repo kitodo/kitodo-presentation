@@ -916,7 +916,7 @@ class tx_dlf_document {
 			''
 		);
 
-		for ($i = 0; $i < $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i++) {
+		for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
 
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
@@ -981,7 +981,7 @@ class tx_dlf_document {
 			''
 		);
 
-		for ($i = 0; $i < $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i++) {
+		for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
 
 			list ($collections[]) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 

@@ -347,7 +347,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$complete = FALSE;
 
-		for ($i = $resultSet->metadata['offset']; $i < intval($resultSet->metadata['offset'] + $this->conf['limit']); $i++) {
+		for ($i = $resultSet->metadata['offset'], $j = intval($resultSet->metadata['offset'] + $this->conf['limit']); $i < $j; $i++) {
 
 			$markerArray = array (
 				'###RECORD_DELETED###' => '',
@@ -793,7 +793,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$complete = FALSE;
 
-			for ($i = 0; $i < intval($this->conf['limit']); $i++) {
+			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
 
 				$markerArray = array (
 					'###RECORD_DELETED###' => '',
@@ -1181,7 +1181,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$complete = FALSE;
 
-			for ($i = 0; $i < intval($this->conf['limit']); $i++) {
+			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
 
 				$markerArray = array (
 					'###RECORD_DELETED###' => '',

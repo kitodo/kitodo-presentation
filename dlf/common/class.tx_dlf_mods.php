@@ -78,7 +78,7 @@ class tx_dlf_mods implements tx_dlf_format {
 
 		if ($authors) {
 
-			for ($i = 0; $i < count($authors); $i++) {
+			for ($i = 0, $j = count($authors); $i < $j; $i++) {
 
 				$authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 

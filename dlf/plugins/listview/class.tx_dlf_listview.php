@@ -265,7 +265,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$this->loadConfig();
 
-		for ($i = $this->piVars['pointer'] * $this->conf['limit']; $i < ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i++) {
+		for ($i = $this->piVars['pointer'] * $this->conf['limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i < $j; $i++) {
 
 			if (empty($this->list->elements[$i])) {
 

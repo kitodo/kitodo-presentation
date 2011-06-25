@@ -93,7 +93,7 @@ class tx_dlf_helper {
 
 		$checksum = 0;
 
-		for ($i = 0; $i < strlen($digits); $i++) {
+		for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
 
 			$checksum += (9 - $i) * intval(substr($digits, $i, 1));
 
@@ -398,7 +398,7 @@ class tx_dlf_helper {
 
 		$digits = '';
 
-		for ($i = 0; $i < strlen($urn); $i++) {
+		for ($i = 0, $j = strlen($urn); $i < $j; $i++) {
 
 			$digits .= $concordance[substr($urn, $i, 1)];
 
@@ -406,7 +406,7 @@ class tx_dlf_helper {
 
 		$checksum = 0;
 
-		for ($i = 0; $i < strlen($digits); $i++) {
+		for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
 
 			$checksum += ($i + 1) * intval(substr($digits, $i, 1));
 
@@ -603,7 +603,7 @@ class tx_dlf_helper {
 
 			$_schemas = explode(' ', (string) $_schemaLocation->attributes('http://www.w3.org/2001/XMLSchema-instance')->schemaLocation);
 
-			for ($i = 1; $i <= count($_schemas); $i++) {
+			for ($i = 1, $j = count($_schemas); $i <= $j; $i++) {
 
 				if ($_schemas[$i] == 'http://www.loc.gov/METS/') {
 
