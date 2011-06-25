@@ -108,13 +108,21 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				$_fileGrpUrl = $this->doc->getFileLocation($this->doc->physicalPages[$page]['files'][$_fileGrp]);
 
-				$_fileGrpSize = getimagesize($_fileGrpUrl);
+				if (file_exists($_fileGrpUrl)) {
 
-				$imageData[] = array (
-					'width' => $_fileGrpSize[0],
-					'height' => $_fileGrpSize[1],
-					'url' => $_fileGrpUrl
-				);
+					$_fileGrpSize = getimagesize($_fileGrpUrl);
+
+					$imageData[] = array (
+						'width' => $_fileGrpSize[0],
+						'height' => $_fileGrpSize[1],
+						'url' => $_fileGrpUrl
+					);
+
+				} else {
+
+					trigger_error('File "'.$_fileGrpUrl.'" not found.', E_USER_WARNING);
+
+				}
 
 			}
 
