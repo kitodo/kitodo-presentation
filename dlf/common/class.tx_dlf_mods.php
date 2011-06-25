@@ -76,7 +76,7 @@ class tx_dlf_mods implements tx_dlf_format {
 
 		}
 
-		if ($authors) {
+		if (is_array($authors)) {
 
 			for ($i = 0, $j = count($authors); $i < $j; $i++) {
 
@@ -157,7 +157,7 @@ class tx_dlf_mods implements tx_dlf_format {
 
 		}
 
-		if ($places) {
+		if (is_array($places)) {
 
 			foreach ($places as $place) {
 
@@ -195,7 +195,7 @@ class tx_dlf_mods implements tx_dlf_format {
 
 		}
 
-		if ($years) {
+		if (is_array($years)) {
 
 			foreach ($years as $year) {
 
