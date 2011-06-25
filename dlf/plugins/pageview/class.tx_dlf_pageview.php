@@ -108,7 +108,10 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				$_fileGrpUrl = $this->doc->getFileLocation($this->doc->physicalPages[$page]['files'][$_fileGrp]);
 
-				if (file_exists($_fileGrpUrl)) {
+				// Check file's existence.
+				$_headers = @get_headers($_fileGrpUrl);
+
+				if (is_array($_headers) && preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/', $_headers[0])) {
 
 					$_fileGrpSize = getimagesize($_fileGrpUrl);
 
