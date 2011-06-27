@@ -246,7 +246,7 @@ class tx_dlf_helper {
 
 		if (!$uid || !$pid || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'))) {
 
-			trigger_error('At least one argument is not valid', E_USER_WARNING);
+			trigger_error('At least one argument is not valid: UID='.$uid.' PID='.$pid.' TABLE='.$table, E_USER_WARNING);
 
 			return '';
 
@@ -269,7 +269,7 @@ class tx_dlf_helper {
 
 		}
 
-		trigger_error('No "index_name" with UID '.$uid.' found for PID '.$pid.' in table '.$table, E_USER_WARNING);
+		trigger_error('No "index_name" with UID '.$uid.' found for PID '.$pid.' in TABLE '.$table, E_USER_WARNING);
 
 		return '';
 

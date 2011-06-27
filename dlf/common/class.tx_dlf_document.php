@@ -496,7 +496,7 @@ class tx_dlf_document {
 
 		if (!$mPid) {
 
-			trigger_error('No PID for metadata definitions found', E_USER_WARNING);
+			trigger_error('Invalid PID ('.$mPid.') for metadata definitions', E_USER_WARNING);
 
 			return array ();
 
@@ -849,7 +849,7 @@ class tx_dlf_document {
 
 		} elseif (!$pid) {
 
-			trigger_error('No PID given to save document', E_USER_WARNING);
+			trigger_error('Invalid PID ('.$pid.') given to save document', E_USER_WARNING);
 
 			return FALSE;
 
@@ -873,6 +873,9 @@ class tx_dlf_document {
 			$this->uid = uniqid('NEW');
 
 		}
+
+		// Set PID for metadata definitions.
+		$this->mPid = $pid;
 
 		// Get metadata array.
 		$metadata = $this->getTitledata($pid);
@@ -901,6 +904,12 @@ class tx_dlf_document {
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 			list ($structure) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+		} else {
+
+			trigger_error('Could not identify structure type', E_USER_ERROR);
+
+			return FALSE;
 
 		}
 
@@ -1617,7 +1626,7 @@ class tx_dlf_document {
 
 		// Get document PID and location from database.
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_documents.uid,tx_dlf_documents.pid,tx_dlf_documents.partof,tx_dlf_documents.location',
+			'tx_dlf_documents.uid AS uid,tx_dlf_documents.pid AS pid,tx_dlf_documents.partof AS partof,tx_dlf_documents.location AS location',
 			'tx_dlf_documents',
 			$whereClause,
 			'',
