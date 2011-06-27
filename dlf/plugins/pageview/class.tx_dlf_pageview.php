@@ -123,7 +123,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				} else {
 
-					trigger_error('File "'.$_fileGrpUrl.'" not found.', E_USER_WARNING);
+					trigger_error('File "'.$_fileGrpUrl.'" not found', E_USER_WARNING);
 
 				}
 

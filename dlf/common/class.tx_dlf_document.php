@@ -585,7 +585,7 @@ class tx_dlf_document {
 			// Get the structure's type.
 			if (!empty($this->logicalUnits[$id])) {
 
-				$_metadata['type'] = $this->logicalUnits[$id]['type'];
+				$_metadata['type'] = array ($this->logicalUnits[$id]['type']);
 
 			} else {
 
