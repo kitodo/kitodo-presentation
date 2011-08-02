@@ -80,11 +80,11 @@ class tx_dlf_cli extends t3lib_cli {
 				$doc = tx_dlf_document::getInstance($this->cli_args['-doc'][0], 0, TRUE);
 
 				// ...save it to the database...
-				if (!($doc instanceof tx_dlf_document) || !$doc->save(intval($this->cli_args['-pid'][0]), $this->cli_args['-core'][0])) {
+				if ($doc === NULL || !$doc->save(intval($this->cli_args['-pid'][0]), $this->cli_args['-core'][0])) {
 
 					$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed'.LF, TRUE);
 
-					return 1;
+					exit (1);
 
 				}
 
@@ -98,7 +98,7 @@ class tx_dlf_cli extends t3lib_cli {
 
 		}
 
-		return 0;
+		exit (0);
 
 	}
 

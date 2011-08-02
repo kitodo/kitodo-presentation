@@ -736,15 +736,11 @@ class tx_dlf_helper {
 
 					trigger_error('There are no entries with PID '.$pid.' in table '.$table.' or you are not allowed to access them', E_USER_ERROR);
 
-					exit;
-
 				}
 
 			} else {
 
 				trigger_error('The table '.$table.' is not allowed for translation', E_USER_ERROR);
-
-				exit;
 
 			}
 
@@ -821,7 +817,7 @@ class tx_dlf_helper {
 
 			trigger_error('Unexpected TYPO3_MODE', E_USER_ERROR);
 
-			exit;
+			return ' AND 1=-1';
 
 		}
 

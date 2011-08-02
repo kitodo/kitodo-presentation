@@ -53,15 +53,15 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		$this->init($conf);
 
-		// Quit without doing anything if required piVars are not set.
-		if (!$this->checkPIvars()) {
+		// Load current document.
+		$this->loadDocument();
+
+		// Quit without doing anything if required variables are not set.
+		if ($this->doc === NULL) {
 
 			return $content;
 
 		}
-
-		// Load current document.
-		$this->loadDocument();
 
 		$metadata = array ();
 
