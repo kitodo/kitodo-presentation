@@ -447,6 +447,12 @@ class tx_dlf_document {
 
 				}
 
+			// Is this the toplevel structure?
+			} elseif ($_details['id'] == $this->getToplevelId()) {
+
+				// Yes. Point to itself.
+				$_details['points'] = 1;
+
 			}
 
 			// Keep for later usage.
