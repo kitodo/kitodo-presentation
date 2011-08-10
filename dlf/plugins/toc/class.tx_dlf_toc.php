@@ -95,10 +95,6 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 			}
 
-		} elseif (!empty($entry['points']['doc'])) {
-
-			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => $entry['points']['doc'], 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
-
 		} else {
 
 			$entryArray['doNotLinkIt'] = 1;
@@ -282,7 +278,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-				$menuArray[0]['ITEM_STATE'] .= 'IFSUB';
+				$menuArray[0]['ITEM_STATE'] = 'CURIFSUB';
 
 				$menuArray[0]['_SUB_MENU'] = array ();
 
