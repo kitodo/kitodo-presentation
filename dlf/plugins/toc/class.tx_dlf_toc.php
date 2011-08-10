@@ -70,9 +70,9 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray['pagination'] = $entry['pagination'];
 
-		$entryArray['doNotLinkIt'] = 0;
-
 		$entryArray['_OVERRIDE_HREF'] = '';
+
+		$entryArray['doNotLinkIt'] = 1;
 
 		$entryArray['ITEM_STATE'] = 'NO';
 
@@ -80,6 +80,8 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		if (!empty($entry['points']) && t3lib_div::testInt($entry['points'])) {
 
 			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('page' => $entry['points']), TRUE, FALSE, $this->conf['targetPid']);
+
+			$entryArray['doNotLinkIt'] = 0;
 
 		} elseif (!empty($entry['points']) && is_string($entry['points'])) {
 
@@ -89,15 +91,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 				$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points']), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
 
-			} else {
-
-				$entryArray['doNotLinkIt'] = 1;
+				$entryArray['doNotLinkIt'] = 0;
 
 			}
 
-		} else {
+		} elseif (!empty($entry['targetUid'])) {
 
-			$entryArray['doNotLinkIt'] = 1;
+			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => $entry['targetUid'], 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+
+			$entryArray['doNotLinkIt'] = 0;
 
 		}
 
@@ -289,7 +291,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 						'type' => $resArray['type'],
 						'volume' => $resArray['volume'],
 						'pagination' => '',
-						'points' => array ('doc' => $resArray['uid'])
+						'targetUid' => $resArray['uid']
 					);
 
 					$menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($_entry, FALSE);
