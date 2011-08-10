@@ -182,7 +182,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		// Save document to database and index.
 		$doc = tx_dlf_document::getInstance($uid, 0, TRUE);
 
-		if (!$doc->save($doc->pid, $this->data['core'])) {
+		if ($doc === NULL || !$doc->save($doc->pid, $this->data['core'])) {
 
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
@@ -211,8 +211,6 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		$this->markerArray['CONTENT'] .= '<script type="text/javascript">window.location.href=unescape("'.t3lib_div::rawUrlEncodeJS(t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'indexLoop', $this->prefixId => array ('core' => $this->data['core']), 'random' => uniqid())))).'");</script>';
 
 		$this->printContent();
-
-		exit;
 
 	}
 
@@ -248,7 +246,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 						// Save document to database and index.
 						$doc = tx_dlf_document::getInstance($this->data['id'], 0, TRUE);
 
-						if (!$doc->save($this->id, $this->data['core'])) {
+						if ($doc === NULL || !$doc->save($this->id, $this->data['core'])) {
 
 							$_message = t3lib_div::makeInstance(
 								't3lib_FlashMessage',
@@ -279,7 +277,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 								'tx_dlf_relations',
 								'tx_dlf_collections',
 								'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-								'',
+								'tx_dlf_documents.uid',
 								'',
 								''
 							);

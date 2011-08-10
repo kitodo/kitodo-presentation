@@ -85,7 +85,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 			$_doc = tx_dlf_document::getInstance($entry['points'], ($this->conf['excludeOther'] ? $this->conf['pages'] : 0));
 
-			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points']), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+			if ($_doc !== NULL) {
+
+				$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points']), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+
+			} else {
+
+				$entryArray['doNotLinkIt'] = 1;
+
+			}
 
 		} elseif (!empty($entry['points']['doc'])) {
 
@@ -211,15 +219,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$this->init($conf);
 
-		// Quit without doing anything if required piVars are not set.
-		if (!$this->checkPIvars()) {
+		// Load current document.
+		$this->loadDocument();
+
+		// Quit without doing anything if required variables are not set.
+		if ($this->doc === NULL) {
 
 			return array ();
 
 		}
-
-		// Load current document.
-		$this->loadDocument();
 
 		$menuArray = array ();
 

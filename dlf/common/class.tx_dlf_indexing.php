@@ -147,7 +147,19 @@ class tx_dlf_indexing {
 			// Handle multi-volume documents.
 			if ($doc->parentid) {
 
-				$errors = self::add(tx_dlf_document::getInstance($doc->parentid, 0, TRUE), $core);
+				$parent = tx_dlf_document::getInstance($doc->parentid, 0, TRUE);
+
+				if ($parent !== NULL) {
+
+					$errors = self::add($parent, $core);
+
+				} else {
+
+					trigger_error('Could not load multi-volume work with UID '.$doc->parentid, E_USER_ERROR);
+
+					return 1;
+
+				}
 
 			}
 
