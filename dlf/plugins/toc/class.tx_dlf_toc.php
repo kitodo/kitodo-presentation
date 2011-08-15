@@ -169,9 +169,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		}
 
-		// Quit without doing anything if required piVars are not set.
-		if (!$this->checkPIvars()) {
+		// Check for required variable.
+		if (!empty($this->piVars['id'])) {
 
+			// Set default values for page if not set.
+			$this->piVars['page'] = (!empty($this->piVars['page']) ? max(intval($this->piVars['page']), 1) : 1);
+
+		} else {
+
+			// Quit without doing anything.
 			return $content;
 
 		}

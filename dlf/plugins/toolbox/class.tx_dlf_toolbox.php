@@ -56,8 +56,8 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 		// Turn cache off.
 		$this->setCache(FALSE);
 
-		// Quit without doing anything if required piVars are not set.
-		if (!$this->checkPIvars(TRUE)) {
+		// Quit without doing anything if required variable is not set.
+		if (empty($this->piVars['id'])) {
 
 			return $content;
 
