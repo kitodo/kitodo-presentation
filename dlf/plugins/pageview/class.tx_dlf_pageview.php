@@ -159,7 +159,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		} else {
 
-			$this->piVars['page'] = min($this->piVars['page'], $this->doc->numPages);
+			// Set default values for page if not set.
+			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
 		}
 
