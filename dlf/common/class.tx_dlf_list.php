@@ -73,13 +73,7 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function add(array $elements, $position = -1) {
 
-		$position = intval($position);
-
-		if ($position < 0 || $position > $this->count) {
-
-			$position = $this->count;
-
-		}
+		$position = t3lib_div::intInRange($position, 0, $this->count, $this->count);
 
 		array_splice($this->elements, $position, 0, $elements);
 
@@ -137,9 +131,9 @@ class tx_dlf_list implements t3lib_Singleton {
 
 		}
 
-		array_splice($this->elements, $position - 1, 0, $this->elements[$position]);
+		$element = $this->remove($position);
 
-		array_splice($this->elements, $position + 1, 1);
+		$this->add(array ($element), $position - 1);
 
 	}
 
@@ -164,9 +158,9 @@ class tx_dlf_list implements t3lib_Singleton {
 
 		}
 
-		array_splice($this->elements, $position + 2, 0, $this->elements[$position]);
+		$element = $this->remove($position);
 
-		array_splice($this->elements, $position, 1);
+		$this->add(array ($element), $position + 1);
 
 	}
 
