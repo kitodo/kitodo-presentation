@@ -36,7 +36,8 @@ CREATE TABLE tx_dlf_documents (
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
+    KEY parent (pid),
+    INDEX partof (partof)
 );
 
 --
