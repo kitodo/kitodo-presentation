@@ -39,6 +39,8 @@ t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/pageview/class.tx_dlf_pageview.php'
 
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/search/class.tx_dlf_search.php', '_search', 'list_type', TRUE);
 
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/statistics/class.tx_dlf_statistics.php', '_statistics', 'list_type', TRUE);
+
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toc/class.tx_dlf_toc.php', '_toc', 'list_type', TRUE);
 
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/class.tx_dlf_toolbox.php', '_toolbox', 'list_type', FALSE);
