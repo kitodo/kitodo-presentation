@@ -61,10 +61,35 @@ class tx_dlf_statistics extends tx_dlf_plugin {
 		}
 
 		// Get description.
-		$content = $this->pi_RTEcssText($conf['description']);
+		$content .= $this->pi_RTEcssText($this->conf['description']);
 
 		// Check for selected collections.
 		if ($this->conf['collections']) {
+
+			// Include only selected collections.
+			$resultTitles = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_dlf_documents.uid AS uid',
+				'tx_dlf_documents',
+				'tx_dlf_relations',
+				'tx_dlf_collections',
+				'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')'.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'tx_dlf_documents.uid',
+				'',
+				''
+			);
+
+			$resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_dlf_documents.uid AS uid',
+				'tx_dlf_documents',
+				'tx_dlf_relations',
+				'tx_dlf_collections',
+				'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').') AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')'.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'tx_dlf_documents.uid',
+				'',
+				''
+			);
+
+		} else {
 
 			// Include all collections.
 			$resultTitles = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -79,33 +104,8 @@ class tx_dlf_statistics extends tx_dlf_plugin {
 			$resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_documents.uid AS uid',
 				'tx_dlf_documents',
-				'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper('tx_dlf_documents').')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+				'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
 				'',
-				'',
-				''
-			);
-
-		} else {
-
-			// Include only selected collections.
-			$resultTitles = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_dlf_documents.uid AS uid',
-				'tx_dlf_documents',
-				'tx_dlf_relations',
-				'tx_dlf_collections',
-				'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['page']).' AND tx_dlf_documents.partof=0 AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')'.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-				'tx_dlf_documents.uid',
-				'',
-				''
-			);
-
-			$resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_dlf_documents.uid AS uid',
-				'tx_dlf_documents',
-				'tx_dlf_relations',
-				'tx_dlf_collections',
-				'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['page']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper('tx_dlf_documents').') AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')'.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-				'tx_dlf_documents.uid',
 				'',
 				''
 			);
