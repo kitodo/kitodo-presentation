@@ -59,6 +59,7 @@ class tx_dlf_tcemain {
 				// Field post-processing for table "tx_dlf_documents".
 				case 'tx_dlf_documents':
 
+					// Set sorting fields if empty.
 					if (empty($fieldArray['title_sorting']) && !empty($fieldArray['title'])) {
 
 						$fieldArray['title_sorting'] = $fieldArray['title'];
@@ -97,12 +98,14 @@ class tx_dlf_tcemain {
 				case 'tx_dlf_metadata':
 				case 'tx_dlf_structures':
 
+					// Set label as index name if empty.
 					if (empty($fieldArray['index_name']) && !empty($fieldArray['label'])) {
 
 						$fieldArray['index_name'] = $fieldArray['label'];
 
 					}
 
+					// Set index name as label if empty.
 					if (empty($fieldArray['label']) && !empty($fieldArray['index_name'])) {
 
 						$fieldArray['label'] = $fieldArray['index_name'];
@@ -178,6 +181,53 @@ class tx_dlf_tcemain {
 					trigger_error('Could not create new Solr core "dlfCore'.$coreNumber.'"', E_USER_WARNING);
 
 					$fieldArray = NULL;
+
+					break;
+
+			}
+
+		} elseif ($status == 'update') {
+
+			switch ($table) {
+
+				// Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
+				case 'tx_dlf_metadata':
+				case 'tx_dlf_structures':
+
+					// The index name should not be changed in production.
+					if (isset($fieldArray['index_name'])) {
+
+						if (count($fieldArray) < 2) {
+
+							// Unset the whole field array.
+							$fieldArray = NULL;
+
+						} else {
+
+							// Get current index name.
+							$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+								$table.'.index_name AS index_name',
+								$table,
+								$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+								'',
+								'',
+								'1'
+							);
+
+							if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+								$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+								// Reset index name to current.
+								$fieldArray['index_name'] = $resArray['index_name'];
+
+							}
+
+						}
+
+						trigger_error('Prevented change of "index_name" for UID '.intval($id).' in table "'.htmlspecialchars($table).'"', E_USER_NOTICE);
+
+					}
 
 					break;
 
