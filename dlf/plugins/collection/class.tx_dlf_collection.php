@@ -126,7 +126,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		// Get collections.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,COUNT(tx_dlf_documents.uid) AS titles',
+			'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,tx_dlf_collections.description AS description,COUNT(tx_dlf_documents.uid) AS titles',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -195,6 +195,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 				// Link collection's title to list view.
 				$markerArray[$resArray['uid']]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);
+
+				// Add description.
+				$markerArray[$resArray['uid']]['###DESCRIPTION###'] = $this->pi_RTEcssText($resArray['description']);
 
 				// Build statistic's output.
 				$_labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
