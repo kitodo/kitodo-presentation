@@ -98,6 +98,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		$orderBy = 'tx_dlf_collections.label';
 
+		// Handle collections set by configuration.
 		if ($this->conf['collections']) {
 
 			if (count(explode(',', $this->conf['collections'])) == 1) {
@@ -106,12 +107,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 			}
 
-			$additionalWhere .= ' AND tx_dlf_collections.uid IN ('.trim($this->conf['collections'], ' ,').')';
+			$additionalWhere .= ' AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
 
-			$orderBy = 'FIELD(tx_dlf_collections.uid, '.trim($this->conf['collections'], ' ,').')';
+			$orderBy = 'FIELD(tx_dlf_collections.uid, '.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
 
 		}
 
+		// Should user-defined collections be shown, too?
 		if ($this->conf['show_userdefined']) {
 
 			$additionalWhere .= ' AND NOT tx_dlf_collections.fe_cruser_id=0';
@@ -122,20 +124,21 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		}
 
+		// Get collections.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,COUNT(tx_dlf_documents.uid) AS count',
+			'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,COUNT(tx_dlf_documents.uid) AS titles',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
 			'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0'.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-			'tx_dlf_collections.label',
+			'tx_dlf_collections.uid',
 			$orderBy,
 			''
 		);
 
 		$count = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
 
-		$output = '';
+		$content = '';
 
 		if ($count == 1) {
 
@@ -145,15 +148,32 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		} elseif ($count > 1) {
 
+			// Get number of volumes per collection.
+			$resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_dlf_collections.uid AS uid,COUNT(tx_dlf_documents.uid) AS volumes',
+				'tx_dlf_documents',
+				'tx_dlf_relations',
+				'tx_dlf_collections',
+				'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').')'.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'tx_dlf_collections.uid',
+				'',
+				''
+			);
+
+			$volumes = array ();
+
+			while ($resArrayVolumes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultVolumes)) {
+
+				$volumes[$resArrayVolumes['uid']] = $resArrayVolumes['volumes'];
+
+			}
+
+			// Process results.
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-				$title = htmlspecialchars($resArray['label']);
-
-				$markerArray[$resArray['uid']]['###COUNT###'] = htmlspecialchars($resArray['count'].$this->pi_getLL('titles', '', FALSE));
-
+				// Merge plugin variables with new set of values.
 				$additionalParams = array ('collection' => $resArray['uid']);
 
-				// Merge plugin variables with new set of values.
 				if (is_array($this->piVars)) {
 
 					$piVars = $this->piVars;
@@ -171,11 +191,19 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 				$conf['parameter'] = $GLOBALS['TSFE']->id;
 
-				$conf['title'] = $markerArray['###COUNT###'];
-
 				$conf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
 
-				$markerArray[$resArray['uid']]['###TITLE###'] = $this->cObj->typoLink($title, $conf);
+				// Link collection's title to list view.
+				$markerArray[$resArray['uid']]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);
+
+				// Build statistic's output.
+				$_labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
+
+				$markerArray[$resArray['uid']]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$_labelTitles);
+
+				$_labelVolumes = $this->pi_getLL(($volumes[$resArray['uid']] > 1 ? 'volumes' : 'volume'), '', FALSE);
+
+				$markerArray[$resArray['uid']]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$_labelVolumes);
 
 			}
 
@@ -183,15 +211,15 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 			foreach ($markerArray as $_markerArray) {
 
-				$output .= $this->cObj->substituteMarkerArray($entry, $_markerArray);
+				$content .= $this->cObj->substituteMarkerArray($entry, $_markerArray);
 
 			}
 
-			return $this->cObj->substituteSubpart($this->template, '###ENTRY###', $output, TRUE);
+			return $this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE);
 
 		}
 
-		return $output;
+		return $content;
 
 	}
 
@@ -239,7 +267,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
-			'AND tx_dlf_documents.partof=0 AND tx_dlf_collections.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($id, 'tx_dlf_collections').' AND tx_dlf_collections.pid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->conf['pages'], 'tx_dlf_collections').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'AND tx_dlf_documents.partof=0 AND tx_dlf_collections.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($id, 'tx_dlf_collections').' AND tx_dlf_collections.pid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->conf['pages'], 'tx_dlf_collections').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 			'',
 			$orderBy,
 			''

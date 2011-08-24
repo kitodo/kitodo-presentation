@@ -117,6 +117,7 @@
 			<label index="tt_content.dlf_oai">DLF: OAI-PMH Interface</label>
 			<label index="tt_content.dlf_pageview">DLF: Page View</label>
 			<label index="tt_content.dlf_search">DLF: Search</label>
+			<label index="tt_content.dlf_statistics">DLF: Statistics</label>
 			<label index="tt_content.dlf_toc">DLF: Table of Contents</label>
 			<label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
 		</languageKey>
@@ -232,6 +233,7 @@
 			<label index="tt_content.dlf_oai">DLF: OAI-PMH-Schnittstelle</label>
 			<label index="tt_content.dlf_pageview">DLF: Seitenansicht</label>
 			<label index="tt_content.dlf_search">DLF: Suche</label>
+			<label index="tt_content.dlf_statistics">DLF: Statistik</label>
 			<label index="tt_content.dlf_toc">DLF: Inhaltsverzeichnis</label>
 			<label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
 		</languageKey>
