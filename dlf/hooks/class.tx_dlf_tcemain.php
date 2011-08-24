@@ -241,7 +241,15 @@ class tx_dlf_tcemain {
 									// Reindex document.
 									$doc = tx_dlf_document::getInstance($id);
 
-									$doc->save($doc->pid, $core);
+									if ($doc !== NULL) {
+
+										$doc->save($doc->pid, $core);
+
+									} else {
+
+										trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
+
+									}
 
 								}
 
@@ -303,7 +311,15 @@ class tx_dlf_tcemain {
 
 							$doc = tx_dlf_document::getInstance($id);
 
-							$doc->save($doc->pid, $core);
+							if ($doc !== NULL) {
+
+								$doc->save($doc->pid, $core);
+
+							} else {
+
+								trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
+
+							}
 
 							break;
 
@@ -321,7 +337,15 @@ class tx_dlf_tcemain {
 							// Reindex document.
 							$doc = tx_dlf_document::getInstance($id);
 
-							$doc->save($doc->pid, $core);
+							if ($doc !== NULL) {
+
+								$doc->save($doc->pid, $core);
+
+							} else {
+
+								trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
+
+							}
 
 							break;
 

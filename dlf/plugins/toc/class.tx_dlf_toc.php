@@ -70,9 +70,9 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray['pagination'] = $entry['pagination'];
 
-		$entryArray['doNotLinkIt'] = 0;
-
 		$entryArray['_OVERRIDE_HREF'] = '';
+
+		$entryArray['doNotLinkIt'] = 1;
 
 		$entryArray['ITEM_STATE'] = 'NO';
 
@@ -81,19 +81,25 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('page' => $entry['points']), TRUE, FALSE, $this->conf['targetPid']);
 
+			$entryArray['doNotLinkIt'] = 0;
+
 		} elseif (!empty($entry['points']) && is_string($entry['points'])) {
 
 			$_doc = tx_dlf_document::getInstance($entry['points'], ($this->conf['excludeOther'] ? $this->conf['pages'] : 0));
 
-			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points']), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+			if ($_doc !== NULL) {
 
-		} elseif (!empty($entry['points']['doc'])) {
+				$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points']), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
 
-			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => $entry['points']['doc'], 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+				$entryArray['doNotLinkIt'] = 0;
 
-		} else {
+			}
 
-			$entryArray['doNotLinkIt'] = 1;
+		} elseif (!empty($entry['targetUid'])) {
+
+			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => $entry['targetUid'], 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+
+			$entryArray['doNotLinkIt'] = 0;
 
 		}
 
@@ -163,9 +169,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		}
 
-		// Quit without doing anything if required piVars are not set.
-		if (!$this->checkPIvars()) {
+		// Check for required variable.
+		if (!empty($this->piVars['id'])) {
 
+			// Set default values for page if not set.
+			$this->piVars['page'] = (!empty($this->piVars['page']) ? max(intval($this->piVars['page']), 1) : 1);
+
+		} else {
+
+			// Quit without doing anything.
 			return $content;
 
 		}
@@ -211,15 +223,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$this->init($conf);
 
-		// Quit without doing anything if required piVars are not set.
-		if (!$this->checkPIvars()) {
+		// Load current document.
+		$this->loadDocument();
+
+		// Quit without doing anything if required variables are not set.
+		if ($this->doc === NULL) {
 
 			return array ();
 
 		}
-
-		// Load current document.
-		$this->loadDocument();
 
 		$menuArray = array ();
 
@@ -274,7 +286,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-				$menuArray[0]['ITEM_STATE'] .= 'IFSUB';
+				$menuArray[0]['ITEM_STATE'] = 'CURIFSUB';
 
 				$menuArray[0]['_SUB_MENU'] = array ();
 
@@ -285,7 +297,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 						'type' => $resArray['type'],
 						'volume' => $resArray['volume'],
 						'pagination' => '',
-						'points' => array ('doc' => $resArray['uid'])
+						'targetUid' => $resArray['uid']
 					);
 
 					$menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($_entry, FALSE);

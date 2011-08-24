@@ -347,15 +347,19 @@ class tx_dlf_document {
 		$instance = new self($uid, $pid);
 
 		// ...and save it to registry.
-		self::$registry[$instance->uid] = $instance;
+		if ($instance !== NULL) {
 
-		// Load extension configuration
-		$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+			self::$registry[$instance->uid] = $instance;
 
-		// Save document to session if caching is enabled.
-		if (!empty($_extConf['caching'])) {
+			// Load extension configuration
+			$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
 
-			tx_dlf_helper::saveToSession(self::$registry, get_class($instance));
+			// Save document to session if caching is enabled.
+			if (!empty($_extConf['caching'])) {
+
+				tx_dlf_helper::saveToSession(self::$registry, get_class($instance));
+
+			}
 
 		}
 
@@ -446,6 +450,12 @@ class tx_dlf_document {
 					trigger_error('No physical element related to logical element with @ID '.(string) $_struct['ID'], E_USER_WARNING);
 
 				}
+
+			// Is this the toplevel structure?
+			} elseif ($_details['id'] == $this->getToplevelId()) {
+
+				// Yes. Point to itself.
+				$_details['points'] = 1;
 
 			}
 
@@ -578,7 +588,7 @@ class tx_dlf_document {
 
 				trigger_error('Invalid class/method '.$_class.'->extractMetadata()', E_USER_ERROR);
 
-				exit;
+				return array ();
 
 			}
 
@@ -720,8 +730,6 @@ class tx_dlf_document {
 
 			trigger_error('No valid METS part found in document with UID '.$this->uid, E_USER_ERROR);
 
-			exit;
-
 		}
 
 	}
@@ -834,7 +842,7 @@ class tx_dlf_document {
 
 			trigger_error('Saving documents is only allowed in the backend!', E_USER_ERROR);
 
-			exit;
+			return FALSE;
 
 		}
 
@@ -1056,13 +1064,17 @@ class tx_dlf_document {
 
 			$superior = tx_dlf_document::getInstance($this->tableOfContents[0]['points']);
 
-			if ($superior->pid != $pid) {
+			if ($superior !== NULL) {
 
-				$superior->save($pid);
+				if ($superior->pid != $pid) {
+
+					$superior->save($pid);
+
+				}
+
+				$partof = $superior->uid;
 
 			}
-
-			$partof = $superior->uid;
 
 		}
 
@@ -1234,7 +1246,7 @@ class tx_dlf_document {
 
 			trigger_error('No PID for metadata definitions found', E_USER_ERROR);
 
-			exit;
+			return array ();
 
 		}
 
@@ -1646,7 +1658,7 @@ class tx_dlf_document {
 
 			trigger_error('There is no record with UID '.$uid.' or you are not allowed to access it', E_USER_ERROR);
 
-			exit;
+			return;
 
 		}
 
@@ -1679,7 +1691,7 @@ class tx_dlf_document {
 			trigger_error('Could not load XML file from '.$location, E_USER_ERROR);
 			// TODO: libxml_get_errors() || libxml_get_last_error() || libxml_clear_errors()
 
-			exit;
+			return;
 
 		}
 
@@ -1805,7 +1817,7 @@ class tx_dlf_document {
 			trigger_error('Could not reload XML from session', E_USER_ERROR);
 			// TODO: libxml_get_errors() || libxml_get_last_error() || libxml_clear_errors()
 
-			exit;
+			return;
 
 		}
 

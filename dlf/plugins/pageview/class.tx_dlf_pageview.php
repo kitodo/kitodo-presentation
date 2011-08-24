@@ -149,23 +149,18 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$this->init($conf);
 
-		// Quit without doing anything if required piVars are not set.
-		if (!$this->checkPIvars()) {
-
-			return $content;
-
-		}
-
+		// Load current document.
 		$this->loadDocument();
 
-		// Check if this document has any images.
-		if ($this->doc->numPages < 1) {
+		// Quit without doing anything if required variables are not set.
+		if ($this->doc === NULL || $this->doc->numPages < 1) {
 
 			return $content;
 
 		} else {
 
-			$this->piVars['page'] = min($this->piVars['page'], $this->doc->numPages);
+			// Set default values for page if not set.
+			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
 		}
 
