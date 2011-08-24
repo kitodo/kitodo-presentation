@@ -47,7 +47,8 @@ Viewer.prototype.run = function(){
 		maxExtent: new OpenLayers.Bounds(0, 0, size_disp.w, size_disp.h),
 		controls: [new OpenLayers.Control.Navigation()],
 		numZoomLevels: 7,
-		fractionalZoom: true
+		fractionalZoom: true,
+		theme: null
 	};
 	this.map = new OpenLayers.Map("tx-dlf-map", options);
 	var bounds = new OpenLayers.Bounds(0, 0, size_disp.w, size_disp.h);
