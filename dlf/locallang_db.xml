@@ -111,6 +111,7 @@
 			<label index="tx_dlf_toolbox.toolsDfgviewer">Link to DFG Viewer</label>
 			<label index="tx_dlf_toolbox.toolsPdf">PDF Download</label>
 			<label index="tt_content.dlf_collection">DLF: Collection</label>
+			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
 			<label index="tt_content.dlf_listview">DLF: List View</label>
 			<label index="tt_content.dlf_metadata">DLF: Metadata</label>
 			<label index="tt_content.dlf_navigation">DLF: Navigation</label>
@@ -227,6 +228,7 @@
 			<label index="tx_dlf_toolbox.toolsDfgviewer">Link zum DFG-Viewer</label>
 			<label index="tx_dlf_toolbox.toolsPdf">PDF-Download</label>
 			<label index="tt_content.dlf_collection">DLF: Kollektion</label>
+			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
 			<label index="tt_content.dlf_listview">DLF: Listenansicht</label>
 			<label index="tt_content.dlf_metadata">DLF: Metadaten</label>
 			<label index="tt_content.dlf_navigation">DLF: Navigation</label>

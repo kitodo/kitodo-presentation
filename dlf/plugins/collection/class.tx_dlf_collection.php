@@ -196,6 +196,19 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				// Link collection's title to list view.
 				$markerArray[$resArray['uid']]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);
 
+				// Add feed link if applicable.
+				if (!empty($this->conf['targetFeed'])) {
+
+					$_img = '<img src="'.t3lib_extMgm::siteRelPath($this->extKey).'res/icon_txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
+
+					$markerArray[$resArray['uid']]['###FEED###'] = $this->pi_linkTP($_img, array ($this->prefixId => array ('collection' => $resArray['uid'])), FALSE, $this->conf['targetFeed']);
+
+				} else {
+
+					$markerArray[$resArray['uid']]['###FEED###'] = '';
+
+				}
+
 				// Add description.
 				$markerArray[$resArray['uid']]['###DESCRIPTION###'] = $this->pi_RTEcssText($resArray['description']);
 
