@@ -47,7 +47,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 	 * @param	string		$content: The PlugIn content
 	 * @param	array		$conf: The PlugIn configuration
 	 *
-	 * @return	string		The content that is displayed on the website
+	 * @return	void
 	 */
 	public function main($content, $conf) {
 
