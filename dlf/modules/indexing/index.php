@@ -182,7 +182,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		// Save document to database and index.
 		$doc = tx_dlf_document::getInstance($uid, 0, TRUE);
 
-		if ($doc === NULL || !$doc->save($doc->pid, $this->data['core'])) {
+		if (!$doc->ready || !$doc->save($doc->pid, $this->data['core'])) {
 
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
@@ -246,7 +246,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 						// Save document to database and index.
 						$doc = tx_dlf_document::getInstance($this->data['id'], 0, TRUE);
 
-						if ($doc === NULL || !$doc->save($this->id, $this->data['core'])) {
+						if (!$doc->ready || !$doc->save($this->id, $this->data['core'])) {
 
 							$_message = t3lib_div::makeInstance(
 								't3lib_FlashMessage',

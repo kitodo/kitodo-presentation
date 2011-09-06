@@ -165,9 +165,11 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 			// Get instance of tx_dlf_document.
 			$this->doc = tx_dlf_document::getInstance($this->piVars['id'], $pid);
 
-			if ($this->doc === NULL) {
+			if (!$this->doc->ready) {
 
 				trigger_error('Failed to load document with UID '.$this->piVars['id'], E_USER_ERROR);
+
+				$this->doc = NULL;
 
 			}
 

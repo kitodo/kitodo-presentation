@@ -149,7 +149,7 @@ class tx_dlf_indexing {
 
 				$parent = tx_dlf_document::getInstance($doc->parentid, 0, TRUE);
 
-				if ($parent !== NULL) {
+				if ($parent->ready) {
 
 					$errors = self::add($parent, $core);
 
@@ -354,6 +354,14 @@ class tx_dlf_indexing {
 				t3lib_FlashMessageQueue::addMessage($_message);
 
 			}
+
+			return 0;
+
+		} else {
+
+			trigger_error('Could not find document with UID '.$uid, E_USER_ERROR);
+
+			return 1;
 
 		}
 

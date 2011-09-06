@@ -200,6 +200,14 @@ class tx_dlf_document {
 	protected $pid = 0;
 
 	/**
+	 * Is the document instantiated successfully?
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $ready = FALSE;
+
+	/**
 	 * This holds the singleton object of each document with its UID as array key
 	 *
 	 * @var	array(tx_dlf_document)
@@ -347,7 +355,7 @@ class tx_dlf_document {
 		$instance = new self($uid, $pid);
 
 		// ...and save it to registry.
-		if ($instance !== NULL) {
+		if ($instance->ready) {
 
 			self::$registry[$instance->uid] = $instance;
 
@@ -705,7 +713,7 @@ class tx_dlf_document {
 	/**
 	 * This sets some basic class properties
 	 *
-	 * @access protected
+	 * @access	protected
 	 *
 	 * @return	void
 	 */
@@ -726,11 +734,69 @@ class tx_dlf_document {
 			// Register namespaces.
 			$this->registerNamespaces($this->mets);
 
+			// Instantiation successful.
+			$this->ready = TRUE;
+
 		} else {
 
 			trigger_error('No valid METS part found in document with UID '.$this->uid, E_USER_ERROR);
 
 		}
+
+	}
+
+	/**
+	 * Load XML file from URL
+	 *
+	 * @access	protected
+	 *
+	 * @param	string		$location: The URL of the file to load
+	 *
+	 * @return	boolean		TRUE on success or FALSE on failure
+	 */
+	protected function load($location) {
+
+		// Load XML file.
+		if (t3lib_div::isValidUrl($location)) {
+
+			// Load extension configuration
+			$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+
+			// Set user-agent to identify self when fetching XML data.
+			if (!empty($_extConf['useragent'])) {
+
+				@ini_set('user_agent', $_extConf['useragent']);
+
+			}
+
+			// Load XML from file...
+			$_libxmlErrors = libxml_use_internal_errors(TRUE);
+
+			$_xml = @simplexml_load_file($location);
+
+			libxml_use_internal_errors($_libxmlErrors);
+
+			// ...and set some basic properties.
+			if ($_xml !== FALSE) {
+
+				$this->xml = $_xml;
+
+				return TRUE;
+
+			} else {
+
+				trigger_error('Could not load XML file from '.$location, E_USER_ERROR);
+				// TODO: libxml_get_errors() || libxml_get_last_error() || libxml_clear_errors()
+
+			}
+
+		} else {
+
+			trigger_error('File location "'.$location.'" is not a valid URL', E_USER_ERROR);
+
+		}
+
+		return FALSE;
 
 	}
 
@@ -1451,6 +1517,19 @@ class tx_dlf_document {
 	}
 
 	/**
+	 * This returns $this->ready via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		Is the document instantiated successfully?
+	 */
+	protected function _getReady() {
+
+		return $this->ready;
+
+	}
+
+	/**
 	 * This returns $this->sPid via __get()
 	 *
 	 * @access	protected
@@ -1650,48 +1729,29 @@ class tx_dlf_document {
 
 			list ($this->uid, $this->pid, $this->parentid, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($_result);
 
+			// Load XML file...
+			if ($this->load($location)) {
+
+				// ...and set some basic properties.
+				$this->init();
+
+			}
+
 		} elseif (!empty($location)) {
 
 			$this->uid = $location;
 
+			// Load XML file...
+			if ($this->load($location)) {
+
+				// ...and set some basic properties.
+				$this->init();
+
+			}
+
 		} else {
 
 			trigger_error('There is no record with UID '.$uid.' or you are not allowed to access it', E_USER_ERROR);
-
-			return;
-
-		}
-
-		// Load extension configuration
-		$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
-
-		// Set user-agent to identify self when fetching XML data.
-		if (!empty($_extConf['useragent'])) {
-
-			ini_set('user_agent', $_extConf['useragent']);
-
-		}
-
-		// Load XML from file...
-		$_libxmlErrors = libxml_use_internal_errors(TRUE);
-
-		$_xml = @simplexml_load_file($location);
-
-		libxml_use_internal_errors($_libxmlErrors);
-
-		if ($_xml !== FALSE) {
-
-			// ...and set some basic properties.
-			$this->xml = $_xml;
-
-			$this->init();
-
-		} else {
-
-			trigger_error('Could not load XML file from '.$location, E_USER_ERROR);
-			// TODO: libxml_get_errors() || libxml_get_last_error() || libxml_clear_errors()
-
-			return;
 
 		}
 
@@ -1776,7 +1836,7 @@ class tx_dlf_document {
 	 */
 	public function __toString() {
 
-		$_xml = new DOMDocument('1.0');
+		$_xml = new DOMDocument('1.0', 'utf-8');
 
 		$_xml->appendChild($_xml->importNode(dom_import_simplexml($this->mets), TRUE));
 
@@ -1816,8 +1876,6 @@ class tx_dlf_document {
 
 			trigger_error('Could not reload XML from session', E_USER_ERROR);
 			// TODO: libxml_get_errors() || libxml_get_last_error() || libxml_clear_errors()
-
-			return;
 
 		}
 

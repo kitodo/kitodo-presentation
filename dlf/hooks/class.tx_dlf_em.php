@@ -70,7 +70,7 @@ class tx_dlf_em {
 		}
 
 		// Set port if not set.
-		$port = (intval($conf['solrPort']) > 0 ? intval($conf['solrPort']) : 8180);
+		$port = t3lib_div::intInRange($conf['solrPort'], 0, 65535, 8180);
 
 		// Trim path and append trailing slash.
 		$path = (trim($conf['solrPath'], '/') ? trim($conf['solrPath'], '/').'/' : '');

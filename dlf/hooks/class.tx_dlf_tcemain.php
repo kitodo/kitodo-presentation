@@ -291,7 +291,7 @@ class tx_dlf_tcemain {
 									// Reindex document.
 									$doc = tx_dlf_document::getInstance($id);
 
-									if ($doc !== NULL) {
+									if ($doc->ready) {
 
 										$doc->save($doc->pid, $core);
 
@@ -361,7 +361,7 @@ class tx_dlf_tcemain {
 
 							$doc = tx_dlf_document::getInstance($id);
 
-							if ($doc !== NULL) {
+							if ($doc->ready) {
 
 								$doc->save($doc->pid, $core);
 
@@ -387,7 +387,7 @@ class tx_dlf_tcemain {
 							// Reindex document.
 							$doc = tx_dlf_document::getInstance($id);
 
-							if ($doc !== NULL) {
+							if ($doc->ready) {
 
 								$doc->save($doc->pid, $core);
 
