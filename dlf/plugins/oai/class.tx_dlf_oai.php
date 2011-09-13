@@ -48,27 +48,34 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	protected $error = FALSE;
 
 	/**
+	 * This holds the OAI DOM object
+	 *
+	 * @var	DOMDocument
+	 * @access protected
+	 */
+	protected $oai;
+
+	/**
 	 * This holds the configuration for all supported metadata prefixes
 	 *
 	 * @var	array
 	 * @access protected
 	 */
 	protected $formats = array (
-//		'oai_dc' => array (
-//			'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
-//			'namespace' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-//		),
-//		'epicur' => array (
-//			'schema' => 'http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd',
-//			'namespace' => 'urn:nbn:de:1111-2004033116',
-//		),
-//		'ese' => array (
-//			'schema' => 'http://www.europeana.eu/schemas/ese/ESE-V3.3.xsd',
-//			'namespace' => 'http://www.europeana.eu/schemas/ese/',
-//		),
+		'oai_dc' => array (
+			'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+			'namespace' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+			'requiredFields' => array ('record_id'),
+		),
+		'epicur' => array (
+			'schema' => 'http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd',
+			'namespace' => 'urn:nbn:de:1111-2004033116',
+			'requiredFields' => array ('purl', 'urn'),
+		),
 		'mets' => array (
 			'schema' => 'http://www.loc.gov/standards/mets/version17/mets.v1-7.xsd',
 			'namespace' => 'http://www.loc.gov/METS/',
+			'requiredFields' => array ('location'),
 		)
 	);
 
@@ -82,7 +89,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	protected function deleteExpiredTokens() {
 
 		// Delete expired resumption tokens.
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+		$_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
 			'tx_dlf_tokens',
 			'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.tstamp<'.intval($GLOBALS['EXEC_TIME'] - $this->conf['expired'])
 		);
@@ -103,18 +110,17 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	 *
 	 * @param	string		$type: Error type
 	 *
-	 * @return	string		Substitution for subpart "###ERROR###"
+	 * @return	DOMElement		XML node to add to the OAI response
 	 */
 	protected function error($type) {
 
 		$this->error = TRUE;
 
-		$markerArray = array (
-			'###ERROR_CODE###' => $type,
-			'###ERROR_MESSAGE###' => $this->pi_getLL($type, $type, TRUE)
-		);
+		$error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', $this->pi_getLL($type, $type, TRUE));
 
-		return $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###ERROR###'), $markerArray);
+		$error->setAttribute('code', $type);
+
+		return $error;
 
 	}
 
@@ -154,6 +160,204 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	}
 
 	/**
+	 * Get unqualified Dublin Core data.
+	 * @see http://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
+	 *
+	 * @access	protected
+	 *
+	 * @param	array		$metadata: The metadata array
+	 *
+	 * @return	DOMElement		XML node to add to the OAI response
+	 */
+	protected function getDcData(array $metadata) {
+
+		$oai_dc = $this->oai->createElementNS($this->formats['oai_dc']['namespace'], 'oai_dc:dc');
+
+		$oai_dc->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:dc', 'http://purl.org/dc/elements/1.1/');
+
+		$oai_dc->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+
+		$oai_dc->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', $this->formats['oai_dc']['namespace'].' '.$this->formats['oai_dc']['schema']);
+
+		$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['record_id'], ENT_NOQUOTES, 'UTF-8')));
+
+		if (!empty($metadata['purl'])) {
+
+			$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8')));
+
+		}
+
+		if (!empty($metadata['urn'])) {
+
+			$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8')));
+
+		}
+
+		if (!empty($metadata['title'])) {
+
+			$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:title', htmlspecialchars($metadata['title'], ENT_NOQUOTES, 'UTF-8')));
+
+		}
+
+		if (!empty($metadata['author'])) {
+
+			$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:creator', htmlspecialchars($metadata['author'], ENT_NOQUOTES, 'UTF-8')));
+
+		}
+
+		if (!empty($metadata['year'])) {
+
+			$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:date', htmlspecialchars($metadata['year'], ENT_NOQUOTES, 'UTF-8')));
+
+		}
+
+		if (!empty($metadata['place'])) {
+
+			$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:coverage', htmlspecialchars($metadata['place'], ENT_NOQUOTES, 'UTF-8')));
+
+		}
+
+		$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:format', 'application/mets+xml'));
+
+		$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:type', 'text'));
+
+		if (!empty($metadata['partof'])) {
+
+			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_documents.record_id',
+				'tx_dlf_documents',
+				'tx_dlf_documents.uid='.intval($metadata['partof']).tx_dlf_helper::whereClause('tx_dlf_documents'),
+				'',
+				'',
+				'1'
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+
+				$_partof = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+
+				$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:relation', htmlspecialchars($_partof['record_id'], ENT_NOQUOTES, 'UTF-8')));
+
+			}
+
+		}
+
+		return $oai_dc;
+
+	}
+
+	/**
+	 * Get epicur data.
+	 * @see http://www.persistent-identifier.de/?link=210
+	 *
+	 * @access	protected
+	 *
+	 * @param	array		$metadata: The metadata array
+	 *
+	 * @return	DOMElement		XML node to add to the OAI response
+	 */
+	protected function getEpicurData(array $metadata) {
+
+		// Create epicur element.
+		$epicur = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:epicur');
+
+		$epicur->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+
+		$epicur->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', $this->formats['epicur']['namespace'].' '.$this->formats['epicur']['schema']);
+
+		// Add administrative data.
+		$admin = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:administrative_data');
+
+		$delivery = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:delivery');
+
+		$update = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:update_status');
+
+		// Do we update an URN or register a new one?
+		if ($metadata['tstamp'] == $metadata['crdate']) {
+
+			$update->setAttribute('type', 'urn_new');
+
+		} else {
+
+			$update->setAttribute('type', 'url_update_general');
+
+		}
+
+		$delivery->appendChild($update);
+
+		$transfer = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:transfer');
+
+		$transfer->setAttribute('type', 'http');
+
+		$delivery->appendChild($transfer);
+
+		$admin->appendChild($delivery);
+
+		$epicur->appendChild($admin);
+
+		// Add record data.
+		$record = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:record');
+
+		$identifier = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier', htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8'));
+
+		$identifier->setAttribute('scheme', 'urn:nbn:de');
+
+		$record->appendChild($identifier);
+
+		$resource = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:resource');
+
+		$ident = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier', htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8'));
+
+		$ident->setAttribute('scheme', 'url');
+
+		$ident->setAttribute('type', 'frontpage');
+
+		$ident->setAttribute('role', 'primary');
+
+		$resource->appendChild($ident);
+
+		$format = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:format', 'text/html');
+
+		$format->setAttribute('scheme', 'imt');
+
+		$resource->appendChild($format);
+
+		$record->appendChild($resource);
+
+		$epicur->appendChild($record);
+
+		return $epicur;
+
+	}
+
+	/**
+	 * Get METS data.
+	 * @see http://www.loc.gov/standards/mets/docs/mets.v1-7.html
+	 *
+	 * @access	protected
+	 *
+	 * @param	array		$metadata: The metadata array
+	 *
+	 * @return	DOMElement		XML node to add to the OAI response
+	 */
+	protected function getMetsData(array $metadata) {
+
+		// Load METS file.
+		$xml = new DOMDocument();
+
+		$xml->load($metadata['location']);
+
+		// Get root element.
+		$root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
+
+		// Import node into DOMDocument.
+		$mets = $this->oai->importNode($root->item(0), TRUE);
+
+		return $mets;
+
+	}
+
+	/**
 	 * The main method of the PlugIn
 	 *
 	 * @access	public
@@ -174,20 +378,50 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		// Get GET and POST variables.
 		$this->getUrlParams();
 
-		// Load template file.
-		if (!empty($this->conf['templateFile'])) {
-
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-		} else {
-
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/oai/template.tmpl'), '###TEMPLATE###');
-
-		}
-
 		// Delete expired resumption tokens.
 		$this->deleteExpiredTokens();
 
+		// Create XML document.
+		$this->oai = new DOMDocument('1.0', 'utf-8');
+
+		// Add processing instruction (aka XSL stylesheet).
+		if (!empty($this->conf['stylesheet'])) {
+
+			// Resolve "EXT:" prefix in file path.
+			if (substr($this->conf['stylesheet'], 0, 4) == 'EXT:') {
+
+				list ($_extKey, $_filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
+
+				if (t3lib_extMgm::isLoaded($_extKey)) {
+
+					$this->conf['stylesheet'] = t3lib_extMgm::siteRelPath($_extKey).$_filePath;
+
+				}
+
+			}
+
+			$_stylesheet = t3lib_div::locationHeaderUrl($this->conf['stylesheet']);
+
+		} else {
+
+			// Use default stylesheet if no custom stylesheet is given.
+			$_stylesheet = t3lib_div::locationHeaderUrl(t3lib_extMgm::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
+
+		}
+
+		$this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.htmlspecialchars($_stylesheet, ENT_NOQUOTES, 'UTF-8').'"'));
+
+		// Create root element.
+		$root = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'OAI-PMH');
+
+		$root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+
+		$root->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
+
+		// Add response date.
+		$root->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'responseDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'])));
+
+		// Get response data.
 		switch ($this->piVars['verb']) {
 
 			case 'GetRecord':
@@ -232,49 +466,28 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		}
 
-		// Set response date, base url and request.
-		$markerArray = array (
-			'###RESPONSEDATE###' => gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME']),
-			'###BASE_URL###' => t3lib_div::locationHeaderUrl($this->pi_getPageLink($GLOBALS['TSFE']->id)),
-			'###REQUEST###' => ''
-		);
+		// Add request.
+		$request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request', htmlspecialchars(t3lib_div::locationHeaderUrl($this->pi_getPageLink($GLOBALS['TSFE']->id)), ENT_NOQUOTES, 'UTF-8'));
 
 		if (!$this->error) {
 
 			foreach ($this->piVars as $key => $value) {
 
-				$markerArray['###REQUEST###'] .= ' '.$key.'="'.$value.'"';
+				$request->setAttribute($key, htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8'));
 
 			}
 
 		}
 
-		// Set XSL transformation stylesheet.
-		if (!empty($this->conf['stylesheet'])) {
+		$root->appendChild($request);
 
-			// Resolve "EXT:" prefix in file path.
-			if (substr($this->conf['stylesheet'], 0, 4) == 'EXT:') {
+		// Add response data.
+		$root->appendChild($response);
 
-				list ($_extKey, $_filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
+		// Build XML output.
+		$this->oai->appendChild($root);
 
-				if (t3lib_extMgm::isLoaded($_extKey)) {
-
-					$this->conf['stylesheet'] = t3lib_extMgm::siteRelPath($_extKey).$_filePath;
-
-				}
-
-			}
-
-			$markerArray['###STYLESHEET###'] = t3lib_div::locationHeaderUrl($this->conf['stylesheet']);
-
-		} else {
-
-			$markerArray['###STYLESHEET###'] = t3lib_div::locationHeaderUrl(t3lib_extMgm::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
-
-		}
-
-		// Substitute markers and subparts.
-		$content = trim($this->cObj->substituteSubpart($this->cObj->substituteMarkerArray($this->template, $markerArray), '###RESPONSE###', $response, TRUE));
+		$content = $this->oai->saveXML();
 
 		// Send headers.
 		header('HTTP/1.1 200 OK');
@@ -328,105 +541,15 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$resultSet = unserialize($_resArray['options']);
 
-		// Get template and fill with data.
-		if ($this->piVars['verb'] == 'ListRecords') {
-
-			$_itemTemplate = $this->cObj->getSubpart($this->template, '###LISTRECORDS_ITEM###');
-
-		} else {
-
-			$_itemTemplate = $this->cObj->getSubpart($this->template, '###LISTIDENTIFIERS_ITEM###');
-
-		}
-
-		$_specTemplate = $this->cObj->getSubpart($_itemTemplate, '###RECORD_SETSPEC_ITEM###');
-
-		$_recordTemplate = $this->cObj->getSubpart($_itemTemplate, '###RECORD_METADATA###');
-
-		$content = '';
-
 		$complete = FALSE;
+
+		$todo = array ();
+
+		$resume = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $this->piVars['verb']);
 
 		for ($i = $resultSet->metadata['offset'], $j = intval($resultSet->metadata['offset'] + $this->conf['limit']); $i < $j; $i++) {
 
-			$markerArray = array (
-				'###RECORD_DELETED###' => '',
-				'###RECORD_IDENTIFIER###' => $resultSet->elements[$i]['record_id'],
-				'###RECORD_DATESTAMP###' => gmdate('Y-m-d\TH:i:s\Z', $resultSet->elements[$i]['tstamp']),
-			);
-
-			$subpartArray = array (
-				'###RECORD_SETSPEC_ITEM###' => '',
-				'###RECORD_METADATA###' => '',
-			);
-
-			// Check if document is deleted or hidden.
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',
-				'tx_dlf_documents',
-				'tx_dlf_documents.uid='.intval($resultSet->elements[$i]['uid']).tx_dlf_helper::whereClause('tx_dlf_documents'),
-				'',
-				'',
-				'1'
-			);
-
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-				foreach (explode(' ', $resultSet->elements[$i]['collections']) as $_spec) {
-
-					$subpartArray['###RECORD_SETSPEC_ITEM###'] .= $this->cObj->substituteMarkerArray($_specTemplate, array ('###RECORD_SETSPEC###' => $_spec));
-
-				}
-
-				if ($this->piVars['verb'] == 'ListRecords') {
-
-					switch ($resultSet->metadata['metadataPrefix']) {
-
-						case 'oai_dc':
-
-							// TODO!
-
-							break;
-
-						case 'epicur':
-
-							// TODO!
-
-							break;
-
-						case 'ese':
-
-							// TODO!
-
-							break;
-
-						case 'mets':
-
-							$xml = simplexml_load_file($resultSet->elements[$i]['location']);
-
-							$xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-
-							$mets = $xml->xpath('//mets:mets');
-
-							$recordMarker['###RECORD_XML###'] = trim(str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $mets[0]->asXML()));
-
-							break;
-
-					}
-
-					$subpartArray['###RECORD_METADATA###'] = $this->cObj->substituteMarkerArray($_recordTemplate, $recordMarker);
-
-				}
-
-			} else {
-
-				$markerArray['###RECORD_DELETED###'] = ' status="deleted"';
-
-			}
-
-			$_content = $this->cObj->substituteSubpartArray($_itemTemplate, $subpartArray);
-
-			$content .= $this->cObj->substituteMarkerArray($_content, $markerArray);
+			$todo[] = $resultSet->elements[$i]['uid'];
 
 			if (empty($resultSet->elements[$i + 1])) {
 
@@ -438,19 +561,114 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		}
 
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+			'tx_dlf_documents',
+			'tx_dlf_relations',
+			'tx_dlf_collections',
+			'AND tx_dlf_documents.uid IN ('.implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($todo)).') AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'tx_dlf_documents.uid',
+			'tx_dlf_documents.tstamp',
+			''
+		);
+
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+			// Add header node.
+			$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
+
+			$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
+
+			$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
+
+			// Check if document is deleted or hidden.
+			// TODO: Use TYPO3 API functions here!
+			if ($resArray['deleted'] || $resArray['hidden']) {
+
+				// Add "deleted" status.
+				$header->setAttribute('status', 'deleted');
+
+				if ($this->piVars['verb'] == 'ListRecords') {
+
+					// Add record node.
+					$record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
+
+					$record->appendChild($header);
+
+					$resume->appendChild($record);
+
+				} elseif ($this->piVars['verb'] == 'ListIdentifiers') {
+
+					$resume->appendChild($header);
+
+				}
+
+			} else {
+
+				// Add sets.
+				foreach (explode(' ', $resArray['collections']) as $_spec) {
+
+					$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+
+				}
+
+				if ($this->piVars['verb'] == 'ListRecords') {
+
+					// Add record node.
+					$record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
+
+					$record->appendChild($header);
+
+					// Add metadata node.
+					$metadata = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
+
+					switch ($this->piVars['metadataPrefix']) {
+
+						case 'oai_dc':
+
+							$metadata->appendChild($this->getDcData($resArray));
+
+							break;
+
+						case 'epicur':
+
+							$metadata->appendChild($this->getEpicurData($resArray));
+
+							break;
+
+						case 'mets':
+
+							$metadata->appendChild($this->getMetsData($resArray));
+
+							break;
+
+					}
+
+					$record->appendChild($metadata);
+
+					$resume->appendChild($record);
+
+				} elseif ($this->piVars['verb'] == 'ListIdentifiers') {
+
+					$resume->appendChild($header);
+
+				}
+
+			}
+
+		}
+
 		if (!$complete) {
 
 			// Save result set to database and generate resumption token.
 			$token = uniqid();
-
-			$resumptionToken['###RESUMPTIONTOKEN###'] = '<resumptionToken completeListSize="'.$resultSet->count.'" cursor="'.$resultSet->metadata['offset'].'">'.$token.'</resumptionToken>';
 
 			$resultSet->metadata = array (
 				'offset' => intval($resultSet->metadata['offset'] + $this->conf['limit']),
 				'metadataPrefix' => $resultSet->metadata['metadataPrefix'],
 			);
 
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+			$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				'tx_dlf_tokens',
 				array (
 					'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -460,31 +678,30 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				)
 			);
 
-		} else {
+			if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
 
-			// List completed, no new resumption token needed.
-			$resumptionToken['###RESUMPTIONTOKEN###'] = '<resumptionToken completeListSize="'.$resultSet->count.'" cursor="'.$resultSet->metadata['offset'].'" />';
+				$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
 
-		}
+			} else {
 
-		// Substitute subpart marker.
-		if ($this->piVars['verb'] == 'ListRecords') {
+				trigger_error('Could not create resumption token', E_USER_ERROR);
 
-			$template = $this->cObj->getSubpart($this->template, '###LISTRECORDS###');
-
-			$template = $this->cObj->substituteMarkerArray($template, $resumptionToken);
-
-			return $this->cObj->substituteSubpart($template, '###LISTRECORDS_ITEM###', $content, TRUE);
+			}
 
 		} else {
 
-			$template = $this->cObj->getSubpart($this->template, '###LISTIDENTIFIERS###');
-
-			$template = $this->cObj->substituteMarkerArray($template, $resumptionToken);
-
-			return $this->cObj->substituteSubpart($template, '###LISTIDENTIFIERS_ITEM###', $content, TRUE);
+			// Result set complete. No more resumption token needed.
+			$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
 
 		}
+
+		$resumptionToken->setAttribute('cursor', $resultSet->metadata['offset']);
+
+		$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+
+		$resume->appendChild($resumptionToken);
+
+		return $resume;
 
 	}
 
@@ -520,8 +737,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			}
 
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_dlf_documents.uid AS uid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.tstamp AS tstamp,tx_dlf_documents.location AS location,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+			$_result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
 				'tx_dlf_documents',
 				'tx_dlf_relations',
 				'tx_dlf_collections',
@@ -531,98 +748,172 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				'1'
 			);
 
-			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
 
 				return $this->error('idDoesNotExist');
 
 			} else {
 
-				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
 
-				// Get template and fill with data.
-				$_itemTemplate = $this->cObj->getSubpart($this->template, '###GETRECORD###');
+				// Check for required fields.
+				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
 
-				$_specTemplate = $this->cObj->getSubpart($_itemTemplate, '###RECORD_SETSPEC_ITEM###');
+					if (empty($resArray[$required])) {
 
-				$_recordTemplate = $this->cObj->getSubpart($_itemTemplate, '###RECORD_METADATA###');
+						return $this->error('cannotDisseminateFormat');
 
-				$markerArray = array (
-					'###RECORD_DELETED###' => '',
-					'###RECORD_IDENTIFIER###' => $resArray['record_id'],
-					'###RECORD_DATESTAMP###' => gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp']),
-				);
+					}
 
-				$subpartArray = array (
-					'###RECORD_SETSPEC_ITEM###' => '',
-					'###RECORD_METADATA###' => '',
-				);
+				}
 
-				// Check if document is deleted or hidden.
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'*',
-					'tx_dlf_documents',
-					'tx_dlf_documents.uid='.intval($resArray['uid']).tx_dlf_helper::whereClause('tx_dlf_documents'),
-					'',
-					'',
-					'1'
-				);
+				// Add record node.
+				$GetRecord = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'GetRecord');
 
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+				$record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
+
+				// Add header node.
+				$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
+
+				// Handle deleted documents.
+				// TODO: Use TYPO3 API functions here!
+				if ($resArray['deleted'] || $resArray['hidden']) {
+
+					$header->setAttribute('status', 'deleted');
+
+					$record->appendChild($header);
+
+				} else {
 
 					foreach (explode(' ', $resArray['collections']) as $_spec) {
 
-						$subpartArray['###RECORD_SETSPEC_ITEM###'] .= $this->cObj->substituteMarkerArray($_specTemplate, array ('###RECORD_SETSPEC###' => $_spec));
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
+
+					$record->appendChild($header);
+
+					// Add metadata node.
+					$metadata = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
 
 					switch ($this->piVars['metadataPrefix']) {
 
 						case 'oai_dc':
 
-							// TODO!
+							$metadata->appendChild($this->getDcData($resArray));
 
 							break;
 
 						case 'epicur':
 
-							// TODO!
-
-							break;
-
-						case 'ese':
-
-							// TODO!
+							$metadata->appendChild($this->getEpicurData($resArray));
 
 							break;
 
 						case 'mets':
 
-							$xml = simplexml_load_file($resArray['location']);
-
-							$xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-
-							$mets = $xml->xpath('//mets:mets');
-
-							$recordMarker['###RECORD_XML###'] = trim(str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $mets[0]->asXML()));
+							$metadata->appendChild($this->getMetsData($resArray));
 
 							break;
 
 					}
 
-					$subpartArray['###RECORD_METADATA###'] = $this->cObj->substituteMarkerArray($_recordTemplate, $recordMarker);
-
-				} else {
-
-					$markerArray['###RECORD_DELETED###'] = ' status="deleted"';
+					$record->appendChild($metadata);
 
 				}
 
-				// Substitute subparts and markers.
-				$template = $this->cObj->substituteSubpartArray($_itemTemplate, $subpartArray);
+				$GetRecord->appendChild($record);
 
-				return $this->cObj->substituteMarkerArray($template, $markerArray);
+				return $GetRecord;
 
 			}
+
+		}
+
+	}
+
+	/**
+	 * Process verb "Identify"
+	 *
+	 * @access	protected
+	 *
+	 * @return	DOMElement		XML node to add to the OAI response
+	 */
+	protected function verbIdentify() {
+
+		// Check for invalid arguments.
+		if (count($this->piVars) > 1) {
+
+			return $this->error('badArgument');
+
+		}
+
+		// Get repository name and administrative contact.
+		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_dlf_libraries.oai_label AS oai_label,tx_dlf_libraries.contact AS contact',
+			'tx_dlf_libraries',
+			'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).tx_dlf_helper::whereClause('tx_dlf_libraries'),
+			'',
+			'',
+			''
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+
+			// Get earliest datestamp.
+			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_documents.tstamp AS tstamp',
+				'tx_dlf_documents',
+				'tx_dlf_documents.pid='.intval($this->conf['pages']),
+				'',
+				'tx_dlf_documents.tstamp ASC',
+				'1'
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+
+				list ($_timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($_result);
+
+				$datestamp = gmdate('Y-m-d\TH:i:s\Z', $_timestamp);
+
+			} else {
+
+				$datestamp = '0000-00-00T00:00:00Z';
+
+				trigger_error('No records found with PID '.$this->conf['pages'], E_USER_WARNING);
+
+			}
+
+			// Add identification node.
+			$Identify = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'Identify');
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'repositoryName', htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES, 'UTF-8')));
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'baseURL', htmlspecialchars(t3lib_div::locationHeaderUrl($this->pi_getPageLink($GLOBALS['TSFE']->id)), ENT_NOQUOTES, 'UTF-8')));
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'protocolVersion', '2.0'));
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'adminEmail', htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES, 'UTF-8')));
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'earliestDatestamp', $datestamp));
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'deletedRecord', 'transient'));
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'granularity', 'YYYY-MM-DDThh:mm:ssZ'));
+
+			return $Identify;
+
+		} else {
+
+			trigger_error('OAI interface needs more configuration', E_USER_ERROR);
+
+			exit;
 
 		}
 
@@ -742,6 +1033,17 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			}
 
+			// Check "from" and "until" for same granularity.
+			if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
+
+				if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
+
+					return $this->error('badArgument');
+
+				}
+
+			}
+
 		}
 
 		// Select records from database.
@@ -752,7 +1054,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_documents.uid AS uid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.tstamp AS tstamp,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+			'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -773,67 +1075,64 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-				$results[] = $resArray;
+				// Check for required fields.
+				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
 
-			}
+					if (empty($resArray[$required])) {
 
-			// Save result set as list object.
-			$resultSet = t3lib_div::makeInstance('tx_dlf_list');
-
-			$resultSet->reset();
-
-			$resultSet->add($results);
-
-			// Get template and fill with data.
-			$_itemTemplate = $this->cObj->getSubpart($this->template, '###LISTIDENTIFIERS_ITEM###');
-
-			$_specTemplate = $this->cObj->getSubpart($_itemTemplate, '###RECORD_SETSPEC_ITEM###');
-
-			$content = '';
-
-			$complete = FALSE;
-
-			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
-
-				$markerArray = array (
-					'###RECORD_DELETED###' => '',
-					'###RECORD_IDENTIFIER###' => $resultSet->elements[$i]['record_id'],
-					'###RECORD_DATESTAMP###' => gmdate('Y-m-d\TH:i:s\Z', $resultSet->elements[$i]['tstamp']),
-				);
-
-				$subpartArray = array (
-					'###RECORD_SETSPEC_ITEM###' => '',
-				);
-
-				// Check if document is deleted or hidden.
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'*',
-					'tx_dlf_documents',
-					'tx_dlf_documents.uid='.intval($resultSet->elements[$i]['uid']).tx_dlf_helper::whereClause('tx_dlf_documents'),
-					'',
-					'',
-					'1'
-				);
-
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-					foreach (explode(' ', $resultSet->elements[$i]['collections']) as $_spec) {
-
-						$subpartArray['###RECORD_SETSPEC_ITEM###'] .= $this->cObj->substituteMarkerArray($_specTemplate, array ('###RECORD_SETSPEC###' => $_spec));
+						// Skip documents with missing required fields.
+						continue 2;
 
 					}
 
+				}
+
+				$results[] = $resArray;
+
+				// Save only UIDs for resumption token.
+				$results['resumptionList'][] = array ('uid' => $resArray['uid']);
+
+			}
+
+			if (empty($results)) {
+
+				return $this->error('noRecordsMatch');
+
+			}
+
+			$complete = FALSE;
+
+			$ListIdentifiers = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListIdentifiers');
+
+			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
+
+				$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($results[$i]['record_id'], ENT_NOQUOTES, 'UTF-8')));
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $results[$i]['tstamp'])));
+
+				// Check if document is deleted or hidden.
+				// TODO: Use TYPO3 API functions here!
+				if ($results[$i]['deleted'] || $results[$i]['hidden']) {
+
+					// Add "deleted" status.
+					$header->setAttribute('status', 'deleted');
+
 				} else {
 
-					$markerArray['###RECORD_DELETED###'] = ' status="deleted"';
+					// Add sets.
+					foreach (explode(' ', $results[$i]['collections']) as $_spec) {
+
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+
+					}
 
 				}
 
-				$_content = $this->cObj->substituteSubpartArray($_itemTemplate, $subpartArray);
+				$ListIdentifiers->appendChild($header);
 
-				$content .= $this->cObj->substituteMarkerArray($_content, $markerArray);
-
-				if (empty($resultSet->elements[$i + 1])) {
+				if (empty($results[$i + 1])) {
 
 					$complete = TRUE;
 
@@ -845,17 +1144,22 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			if (!$complete) {
 
+				// Save result set as list object.
+				$resultSet = t3lib_div::makeInstance('tx_dlf_list');
+
+				$resultSet->reset();
+
+				$resultSet->add($results['resumptionList']);
+
 				// Save result set to database and generate resumption token.
 				$token = uniqid();
-
-				$resumptionToken['###RESUMPTIONTOKEN###'] = '<resumptionToken completeListSize="'.$resultSet->count.'" cursor="0">'.$token.'</resumptionToken>';
 
 				$resultSet->metadata = array (
 					'offset' => intval($this->conf['limit']),
 					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_dlf_tokens',
 					array (
 						'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -865,93 +1169,27 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					)
 				);
 
-			} else {
+				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
 
-				// Complete list returned, no resumption token needed.
-				$resumptionToken['###RESUMPTIONTOKEN###'] = '';
+					$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
+
+					$resumptionToken->setAttribute('cursor', '0');
+
+					$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+
+					$ListIdentifiers->appendChild($resumptionToken);
+
+				} else {
+
+					trigger_error('Could not create resumption token', E_USER_ERROR);
+
+				}
 
 			}
 
-			// Substitute subpart marker.
-			$template = $this->cObj->getSubpart($this->template, '###LISTIDENTIFIERS###');
-
-			$template = $this->cObj->substituteMarkerArray($template, $resumptionToken);
-
-			return $this->cObj->substituteSubpart($template, '###LISTIDENTIFIERS_ITEM###', $content, TRUE);
+			return $ListIdentifiers;
 
 		}
-
-	}
-
-	/**
-	 * Process verb "Identify"
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		Substitution for subpart "###RESPONSE###"
-	 */
-	protected function verbIdentify() {
-
-		// Check for invalid arguments.
-		if (count($this->piVars) > 1) {
-
-			return $this->error('badArgument');
-
-		}
-
-		// Get repository name and administrative contact.
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_libraries.oai_label AS oai_label,tx_dlf_libraries.contact AS contact',
-			'tx_dlf_libraries',
-			'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).tx_dlf_helper::whereClause('tx_dlf_libraries'),
-			'',
-			'',
-			''
-		);
-
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
-
-			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
-
-			$markerArray = array (
-				'###IDENTIFY_NAME###' => htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES, 'UTF-8'),
-				'###IDENTIFY_URL###' => t3lib_div::locationHeaderUrl($this->pi_getPageLink($GLOBALS['TSFE']->id)),
-				'###IDENTIFY_MAIL###' => trim(str_replace('mailto:', '', $resArray['contact']))
-			);
-
-		} else {
-
-			trigger_error('OAI interface needs more configuration', E_USER_ERROR);
-
-			exit;
-
-		}
-
-		// Get earliest datestamp.
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_documents.tstamp AS tstamp',
-			'tx_dlf_documents',
-			'tx_dlf_documents.pid='.intval($this->conf['pages']),
-			'',
-			'tx_dlf_documents.tstamp ASC',
-			'1'
-		);
-
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
-
-			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
-
-			$markerArray['###IDENTIFY_DATE###'] = gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp']);
-
-		} else {
-
-			$markerArray['###IDENTIFY_DATE###'] = '0000-00-00T00:00:00Z';
-
-			trigger_error('No records found with PID '.$this->conf['pages'], E_USER_WARNING);
-
-		}
-
-		return $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###IDENTIFY###'), $markerArray);
 
 	}
 
@@ -960,9 +1198,11 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	 *
 	 * @access	protected
 	 *
-	 * @return	string		Substitution for subpart "###RESPONSE###"
+	 * @return	DOMElement		XML node to add to the OAI response
 	 */
 	protected function verbListMetadataFormats() {
+
+		$resArray = array ();
 
 		// Check for invalid arguments.
 		if (count($this->piVars) > 1) {
@@ -987,30 +1227,51 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 					return $this->error('idDoesNotExist');
 
+				} else {
+
+					$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
 				}
 
 			}
 
 		}
 
-		// Get template and fill with data.
-		$_itemTemplate = $this->cObj->getSubpart($this->template, '###LISTMETADATAFORMATS_ITEM###');
-
-		$content = '';
+		// Add metadata formats node.
+		$ListMetadaFormats = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListMetadataFormats');
 
 		foreach ($this->formats as $prefix => $details) {
 
-			$markerArray = array (
-				'###LISTMETADATAFORMATS_PREFIX###' => $prefix,
-				'###LISTMETADATAFORMATS_SCHEMA###' => $details['schema'],
-				'###LISTMETADATAFORMATS_NAMESPACE###' => $details['namespace']
-			);
+			// Check for required fields.
+			if (!empty($resArray)) {
 
-			$content .= $this->cObj->substituteMarkerArray($_itemTemplate, $markerArray);
+				foreach ($details['requiredFields'] as $required) {
+
+					if (empty($resArray[$required])) {
+
+						// Skip metadata formats whose requirements are not met.
+						continue 2;
+
+					}
+
+				}
+
+			}
+
+			// Add format node.
+			$format = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadataFormat');
+
+			$format->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadataPrefix', htmlspecialchars($prefix, ENT_NOQUOTES, 'UTF-8')));
+
+			$format->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'schema', htmlspecialchars($details['schema'], ENT_NOQUOTES, 'UTF-8')));
+
+			$format->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadataNamespace', htmlspecialchars($details['namespace'], ENT_NOQUOTES, 'UTF-8')));
+
+			$ListMetadaFormats->appendChild($format);
 
 		}
 
-		return $this->cObj->substituteSubpart($this->cObj->getSubpart($this->template, '###LISTMETADATAFORMATS###'), '###LISTMETADATAFORMATS_ITEM###', $content, TRUE);
+		return $ListMetadaFormats;
 
 	}
 
@@ -1128,6 +1389,17 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			}
 
+			// Check "from" and "until" for same granularity.
+			if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
+
+				if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
+
+					return $this->error('badArgument');
+
+				}
+
+			}
+
 		}
 
 		// Select records from database.
@@ -1138,7 +1410,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_documents.uid AS uid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.tstamp AS tstamp,tx_dlf_documents.location AS location,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+			'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -1159,106 +1431,92 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
+				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
+
+					if (empty($resArray[$required])) {
+
+						// Skip records which do not meet the requirements.
+						continue 2;
+
+					}
+
+				}
+
 				$results[] = $resArray;
+
+				// Save only UIDs for resumption token.
+				$results['resumptionList'][] = array ('uid' => $resArray['uid']);
 
 			}
 
-			// Save result set as list object.
-			$resultSet = t3lib_div::makeInstance('tx_dlf_list');
-
-			$resultSet->reset();
-
-			$resultSet->add($results);
-
-			// Get template and fill with data.
-			$_itemTemplate = $this->cObj->getSubpart($this->template, '###LISTRECORDS_ITEM###');
-
-			$_specTemplate = $this->cObj->getSubpart($_itemTemplate, '###RECORD_SETSPEC_ITEM###');
-
-			$_recordTemplate = $this->cObj->getSubpart($_itemTemplate, '###RECORD_METADATA###');
-
-			$content = '';
-
 			$complete = FALSE;
+
+			$ListRecords = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListRecords');
 
 			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
 
-				$markerArray = array (
-					'###RECORD_DELETED###' => '',
-					'###RECORD_IDENTIFIER###' => $resultSet->elements[$i]['record_id'],
-					'###RECORD_DATESTAMP###' => gmdate('Y-m-d\TH:i:s\Z', $resultSet->elements[$i]['tstamp']),
-				);
+				// Add record node.
+				$record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
 
-				$subpartArray = array (
-					'###RECORD_SETSPEC_ITEM###' => '',
-					'###RECORD_METADATA###' => '',
-				);
+				// Add header node.
+				$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($results[$i]['record_id'], ENT_NOQUOTES, 'UTF-8')));
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $results[$i]['tstamp'])));
 
 				// Check if document is deleted or hidden.
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'*',
-					'tx_dlf_documents',
-					'tx_dlf_documents.uid='.intval($resultSet->elements[$i]['uid']).tx_dlf_helper::whereClause('tx_dlf_documents'),
-					'',
-					'',
-					'1'
-				);
+				// TODO: Use TYPO3 API functions here!
+				if ($results[$i]['deleted'] || $results[$i]['hidden']) {
 
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+					// Add "deleted" status.
+					$header->setAttribute('status', 'deleted');
 
-					foreach (explode(' ', $resultSet->elements[$i]['collections']) as $_spec) {
+					$record->appendChild($header);
 
-						$subpartArray['###RECORD_SETSPEC_ITEM###'] .= $this->cObj->substituteMarkerArray($_specTemplate, array ('###RECORD_SETSPEC###' => $_spec));
+				} else {
+
+					// Add sets.
+					foreach (explode(' ', $results[$i]['collections']) as $_spec) {
+
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
+
+					$record->appendChild($header);
+
+					// Add metadata node.
+					$metadata = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
 
 					switch ($this->piVars['metadataPrefix']) {
 
 						case 'oai_dc':
 
-							// TODO!
+							$metadata->appendChild($this->getDcData($results[$i]));
 
 							break;
 
 						case 'epicur':
 
-							// TODO!
-
-							break;
-
-						case 'ese':
-
-							// TODO!
+							$metadata->appendChild($this->getEpicurData($results[$i]));
 
 							break;
 
 						case 'mets':
 
-							$xml = simplexml_load_file($resultSet->elements[$i]['location']);
-
-							$xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-
-							$mets = $xml->xpath('//mets:mets');
-
-							$recordMarker['###RECORD_XML###'] = trim(str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $mets[0]->asXML()));
+							$metadata->appendChild($this->getMetsData($results[$i]));
 
 							break;
 
 					}
 
-					$subpartArray['###RECORD_METADATA###'] = $this->cObj->substituteMarkerArray($_recordTemplate, $recordMarker);
-
-				} else {
-
-					$markerArray['###RECORD_DELETED###'] = ' status="deleted"';
+					$record->appendChild($metadata);
 
 				}
 
-				$_content = $this->cObj->substituteSubpartArray($_itemTemplate, $subpartArray);
+				$ListRecords->appendChild($record);
 
-				$content .= $this->cObj->substituteMarkerArray($_content, $markerArray);
-
-				if (empty($resultSet->elements[$i + 1])) {
+				if (empty($results[$i + 1])) {
 
 					$complete = TRUE;
 
@@ -1270,17 +1528,22 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			if (!$complete) {
 
+				// Save result set as list object.
+				$resultSet = t3lib_div::makeInstance('tx_dlf_list');
+
+				$resultSet->reset();
+
+				$resultSet->add($results['resumptionList']);
+
 				// Save result set to database and generate resumption token.
 				$token = uniqid();
-
-				$resumptionToken['###RESUMPTIONTOKEN###'] = '<resumptionToken completeListSize="'.$resultSet->count.'" cursor="0">'.$token.'</resumptionToken>';
 
 				$resultSet->metadata = array (
 					'offset' => intval($this->conf['limit']),
 					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_dlf_tokens',
 					array (
 						'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -1290,19 +1553,25 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					)
 				);
 
-			} else {
+				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
 
-				// Complete list returned, no resumption token needed.
-				$resumptionToken['###RESUMPTIONTOKEN###'] = '';
+					$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
+
+					$resumptionToken->setAttribute('cursor', '0');
+
+					$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+
+					$ListRecords->appendChild($resumptionToken);
+
+				} else {
+
+					trigger_error('Could not create resumption token', E_USER_ERROR);
+
+				}
 
 			}
 
-			// Substitute subpart marker.
-			$template = $this->cObj->getSubpart($this->template, '###LISTRECORDS###');
-
-			$template = $this->cObj->substituteMarkerArray($template, $resumptionToken);
-
-			return $this->cObj->substituteSubpart($template, '###LISTRECORDS_ITEM###', $content, TRUE);
+			return $ListRecords;
 
 		}
 
@@ -1356,23 +1625,23 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		}
 
-		// Get template and fill with data.
-		$_itemTemplate = $this->cObj->getSubpart($this->template, '###LISTSETS_ITEM###');
-
-		$content = '';
+		// Add set list node.
+		$ListSets = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListSets');
 
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
-			$markerArray = array (
-				'###LISTSETS_SPEC###' => htmlspecialchars($resArray['oai_name']),
-				'###LISTSETS_NAME###' => htmlspecialchars($resArray['label'])
-			);
+			// Add set node.
+			$set = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'set');
 
-			$content .= $this->cObj->substituteMarkerArray($_itemTemplate, $markerArray);
+			$set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($resArray['oai_name'], ENT_NOQUOTES, 'UTF-8')));
+
+			$set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setName', htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
+
+			$ListSets->appendChild($set);
 
 		}
 
-		return $this->cObj->substituteSubpart($this->cObj->getSubpart($this->template, '###LISTSETS###'), '###LISTSETS_ITEM###', $content, TRUE);
+		return $ListSets;
 
 	}
 
