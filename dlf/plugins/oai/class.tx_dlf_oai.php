@@ -569,7 +569,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			'AND tx_dlf_documents.uid IN ('.implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($todo)).') AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
 			'tx_dlf_documents.uid',
 			'tx_dlf_documents.tstamp',
-			''
+			$this->conf['limit']
 		);
 
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -956,6 +956,15 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				return $this->error('cannotDisseminateFormat');
 
+			} else {
+
+				// Check for required fields.
+				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
+
+					$where .= ' AND NOT tx_dlf_documents.'.$required.'=""';
+
+				}
+
 			}
 
 			// Check "set" for valid value.
@@ -1054,7 +1063,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+			'tx_dlf_documents.uid',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -1075,22 +1084,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-				// Check for required fields.
-				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-
-					if (empty($resArray[$required])) {
-
-						// Skip documents with missing required fields.
-						continue 2;
-
-					}
-
-				}
-
-				$results[] = $resArray;
-
 				// Save only UIDs for resumption token.
-				$results['resumptionList'][] = array ('uid' => $resArray['uid']);
+				$results[] = array ('uid' => $resArray['uid']);
 
 			}
 
@@ -1102,35 +1097,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$complete = FALSE;
 
+			$todo = array ();
+
 			$ListIdentifiers = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListIdentifiers');
 
 			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
 
-				$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
-
-				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($results[$i]['record_id'], ENT_NOQUOTES, 'UTF-8')));
-
-				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $results[$i]['tstamp'])));
-
-				// Check if document is deleted or hidden.
-				// TODO: Use TYPO3 API functions here!
-				if ($results[$i]['deleted'] || $results[$i]['hidden']) {
-
-					// Add "deleted" status.
-					$header->setAttribute('status', 'deleted');
-
-				} else {
-
-					// Add sets.
-					foreach (explode(' ', $results[$i]['collections']) as $_spec) {
-
-						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
-
-					}
-
-				}
-
-				$ListIdentifiers->appendChild($header);
+				$todo[] = $results[$i]['uid'];
 
 				if (empty($results[$i + 1])) {
 
@@ -1142,6 +1115,47 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			}
 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+				'tx_dlf_documents',
+				'tx_dlf_relations',
+				'tx_dlf_collections',
+				'AND tx_dlf_documents.uid IN ('.implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($todo)).') AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'tx_dlf_documents.uid',
+				'tx_dlf_documents.tstamp',
+				$this->conf['limit']
+			);
+
+			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+				$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
+
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
+
+				// Check if document is deleted or hidden.
+				// TODO: Use TYPO3 API functions here!
+				if ($resArray['deleted'] || $resArray['hidden']) {
+
+					// Add "deleted" status.
+					$header->setAttribute('status', 'deleted');
+
+				} else {
+
+					// Add sets.
+					foreach (explode(' ', $resArray['collections']) as $_spec) {
+
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+
+					}
+
+				}
+
+				$ListIdentifiers->appendChild($header);
+
+			}
+
 			if (!$complete) {
 
 				// Save result set as list object.
@@ -1149,7 +1163,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				$resultSet->reset();
 
-				$resultSet->add($results['resumptionList']);
+				$resultSet->add($results);
 
 				// Save result set to database and generate resumption token.
 				$token = uniqid();
@@ -1312,6 +1326,15 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				return $this->error('cannotDisseminateFormat');
 
+			} else {
+
+				// Check for required fields.
+				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
+
+					$where .= ' AND NOT tx_dlf_documents.'.$required.'=""';
+
+				}
+
 			}
 
 			// Check "set" for valid value.
@@ -1410,7 +1433,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+			'tx_dlf_documents.uid',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -1431,29 +1454,43 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-
-					if (empty($resArray[$required])) {
-
-						// Skip records which do not meet the requirements.
-						continue 2;
-
-					}
-
-				}
-
-				$results[] = $resArray;
-
 				// Save only UIDs for resumption token.
-				$results['resumptionList'][] = array ('uid' => $resArray['uid']);
+				$results[] = array ('uid' => $resArray['uid']);
 
 			}
 
 			$complete = FALSE;
 
+			$todo = array ();
+
 			$ListRecords = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListRecords');
 
 			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
+
+				$todo[] = $results[$i]['uid'];
+
+				if (empty($results[$i + 1])) {
+
+					$complete = TRUE;
+
+					break;
+
+				}
+
+			}
+
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+				'tx_dlf_documents',
+				'tx_dlf_relations',
+				'tx_dlf_collections',
+				'AND tx_dlf_documents.uid IN ('.implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($todo)).') AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'tx_dlf_documents.uid',
+				'tx_dlf_documents.tstamp',
+				$this->conf['limit']
+			);
+
+			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 				// Add record node.
 				$record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
@@ -1461,13 +1498,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				// Add header node.
 				$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
 
-				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($results[$i]['record_id'], ENT_NOQUOTES, 'UTF-8')));
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
 
-				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $results[$i]['tstamp'])));
+				$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
 
 				// Check if document is deleted or hidden.
 				// TODO: Use TYPO3 API functions here!
-				if ($results[$i]['deleted'] || $results[$i]['hidden']) {
+				if ($resArray['deleted'] || $resArray['hidden']) {
 
 					// Add "deleted" status.
 					$header->setAttribute('status', 'deleted');
@@ -1477,7 +1514,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				} else {
 
 					// Add sets.
-					foreach (explode(' ', $results[$i]['collections']) as $_spec) {
+					foreach (explode(' ', $resArray['collections']) as $_spec) {
 
 						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
 
@@ -1492,19 +1529,19 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 						case 'oai_dc':
 
-							$metadata->appendChild($this->getDcData($results[$i]));
+							$metadata->appendChild($this->getDcData($resArray));
 
 							break;
 
 						case 'epicur':
 
-							$metadata->appendChild($this->getEpicurData($results[$i]));
+							$metadata->appendChild($this->getEpicurData($resArray));
 
 							break;
 
 						case 'mets':
 
-							$metadata->appendChild($this->getMetsData($results[$i]));
+							$metadata->appendChild($this->getMetsData($resArray));
 
 							break;
 
@@ -1516,14 +1553,6 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				$ListRecords->appendChild($record);
 
-				if (empty($results[$i + 1])) {
-
-					$complete = TRUE;
-
-					break;
-
-				}
-
 			}
 
 			if (!$complete) {
@@ -1533,7 +1562,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				$resultSet->reset();
 
-				$resultSet->add($results['resumptionList']);
+				$resultSet->add($results);
 
 				// Save result set to database and generate resumption token.
 				$token = uniqid();
