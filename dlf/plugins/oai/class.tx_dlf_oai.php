@@ -116,7 +116,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$this->error = TRUE;
 
-		$error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', $this->pi_getLL($type, $type, TRUE));
+		$error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', htmlspecialchars($this->pi_getLL($type, $type, FALSE), ENT_NOQUOTES, 'UTF-8'));
 
 		$error->setAttribute('code', $type);
 
@@ -342,16 +342,37 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	 */
 	protected function getMetsData(array $metadata) {
 
+		$mets = NULL;
+
 		// Load METS file.
 		$xml = new DOMDocument();
 
-		$xml->load($metadata['location']);
+		if ($xml->load($metadata['location'])) {
 
-		// Get root element.
-		$root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
+			// Get root element.
+			$root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
 
-		// Import node into DOMDocument.
-		$mets = $this->oai->importNode($root->item(0), TRUE);
+			if ($root->item(0) instanceof DOMNode) {
+
+				// Import node into DOMDocument.
+				$mets = $this->oai->importNode($root->item(0), TRUE);
+
+			} else {
+
+				trigger_error('No METS node found in file "'.$location.'"', E_USER_ERROR);
+			}
+
+		} else {
+
+			trigger_error('Could not load file "'.$location.'"', E_USER_ERROR);
+
+		}
+
+		if ($mets === NULL) {
+
+			$mets = $this->oai->createElementNS('http://goobi.org/', 'goobi:error', htmlspecialchars($this->pi_getLL('error', 'Error!', FALSE), ENT_NOQUOTES, 'UTF-8'));
+
+		}
 
 		return $mets;
 

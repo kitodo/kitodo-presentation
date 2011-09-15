@@ -21,6 +21,7 @@
 			<label index="noRecordsMatch">The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.</label>
 			<label index="noMetadataFormats">There are no metadata formats available for the specified item.</label>
 			<label index="noSetHierarchy">The repository does not support sets or the value of the set argument is invalid.</label>
+			<label index="error">An error occured, please try again later. If this happens consistently, please contact the administrator.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -38,6 +39,7 @@
 			<label index="noRecordsMatch">Die Anfrage ergab eine leere Treffermenge.</label>
 			<label index="noMetadataFormats">Für den gewünschten Datensatz werden keine Datenformate unterstützt.</label>
 			<label index="noSetHierarchy">Das Repository unterstützt keine Sets oder der Wert des Parameters "set" ist ungültig.</label>
+			<label index="error">Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal. Sollte der Fehler dauerhaft auftreten, kontaktieren Sie bitte den Administrator.</label>
 		</languageKey>
 	</data>
 </T3locallang>
