@@ -645,6 +645,13 @@ class tx_dlf_document {
 
 			}
 
+			// Set title to empty string if not present.
+			if (empty($_metadata['title'][0])) {
+
+				$_metadata['title'][0] = '';
+
+			}
+
 		} else {
 
 			// There is no dmdSec for this structure node.

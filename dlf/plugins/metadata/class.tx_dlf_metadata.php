@@ -125,7 +125,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		}
 
-		// Prepend metadata output with titledata?
+		// Get titledata?
 		if (empty($metadata)) {
 
 			$_data = $this->doc->getTitleData($this->conf['pages']);
@@ -134,7 +134,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 			$_data['type'][0] = $this->pi_getLL($_data['type'][0], tx_dlf_helper::translate($_data['type'][0], 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
-			array_unshift($metadata, $_data);
+			$metadata[] = $_data;
 
 		}
 
@@ -229,9 +229,9 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 							}
 
 							// Get title of parent document if needed.
-							if (empty($_value) && $this->conf['getTitle']) {
+							if (empty($_value) && $this->conf['getTitle'] && $this->doc->parentid) {
 
-								$_value = '['.tx_dlf_document::getTitle($this->doc->uid, TRUE).']';
+								$_value = '['.tx_dlf_document::getTitle($this->doc->parentid, TRUE).']';
 
 							}
 
