@@ -16,7 +16,6 @@
 			<label index="tt_content.pi_flexform.rootline.all">all</label>
 			<label index="tt_content.pi_flexform.rootline.titledata">titledata only</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
-			<label index="noTitle">[no title]</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -29,7 +28,6 @@
 			<label index="tt_content.pi_flexform.rootline.all">alle</label>
 			<label index="tt_content.pi_flexform.rootline.titledata">nur Titeldaten</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
-			<label index="noTitle">[kein Titel]</label>
 		</languageKey>
 	</data>
 </T3locallang>

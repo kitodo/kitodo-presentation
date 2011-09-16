@@ -235,14 +235,11 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 							}
 
-							// Set fake title if still not present.
-							if (empty($_value)) {
+							if (!empty($_value)) {
 
-								$_value = $this->pi_getLL('noTitle');
+								$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
 
 							}
-
-							$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
 
 						// Translate name of holding library.
 						} elseif ($_index_name == 'owner' && !empty($_value)) {
