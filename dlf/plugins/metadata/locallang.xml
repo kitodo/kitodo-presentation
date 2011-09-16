@@ -9,6 +9,7 @@
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected page</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
+			<label index="tt_content.pi_flexform.getTitle">Show title of parent document if document has no title itself</label>
 			<label index="tt_content.pi_flexform.showFull">Show all available metadata</label>
 			<label index="tt_content.pi_flexform.rootline">Show metadata of superior structures</label>
 			<label index="tt_content.pi_flexform.rootline.none">none</label>
@@ -20,6 +21,7 @@
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Seite anzeigen</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
+			<label index="tt_content.pi_flexform.getTitle">Bei Bedarf Titel des übergeordneten Dokuments anzeigen</label>
 			<label index="tt_content.pi_flexform.showFull">Alle verfügbaren Metadaten anzeigen</label>
 			<label index="tt_content.pi_flexform.rootline">Metadaten übergeordneter Strukturen anzeigen</label>
 			<label index="tt_content.pi_flexform.rootline.none">keine</label>

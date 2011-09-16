@@ -135,6 +135,12 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Link title to pageview.
 					if ($_index_name == 'title') {
 
+						if (empty($_value) && $this->conf['getTitle']) {
+
+							$_value = '['.tx_dlf_document::getTitle($this->list->elements[$number]['uid'], TRUE).']';
+
+						}
+
 						$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $this->list->elements[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
 					} elseif ($_index_name == 'type' ) {

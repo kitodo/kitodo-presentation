@@ -9,6 +9,7 @@
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.limit">Documents per page</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
+			<label index="tt_content.pi_flexform.getTitle">Show title of parent document if document has no title itself</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
 			<label index="nohits">Nothing found.</label>
 			<label index="count">Entries %d to %d of %d.</label>
@@ -22,6 +23,7 @@
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.limit">Dokumente pro Seite</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
+			<label index="tt_content.pi_flexform.getTitle">Bei Bedarf Titel des übergeordneten Dokuments anzeigen</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
 			<label index="nohits">Keine Treffer.</label>
 			<label index="count">Einträge %d bis %d von %d.</label>

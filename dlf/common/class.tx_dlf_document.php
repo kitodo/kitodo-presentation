@@ -657,6 +657,62 @@ class tx_dlf_document {
 	}
 
 	/**
+	 * This determines a title for the given document
+	 *
+	 * @access	public
+	 *
+	 * @param	integer		$uid: The UID of the document
+	 * @param	boolean		$recursive: Search superior documents for a title, too?
+	 *
+	 * @return	string		The title of the document itself or a parent document
+	 */
+	public static function getTitle($uid, $recursive = FALSE) {
+
+		$title = '';
+
+		// Sanitize input.
+		$uid = max(intval($uid), 0);
+
+		if ($uid) {
+
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_documents.title,tx_dlf_documents.partof',
+				'tx_dlf_documents',
+				'tx_dlf_documents.uid='.$uid.tx_dlf_helper::whereClause('tx_dlf_documents'),
+				'',
+				'',
+				'1'
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+				// Get title information.
+				list ($title, $partof) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+				// Search parent documents recursively for a title?
+				if ($recursive && empty($title) && intval($partof)) {
+
+					$title = self::getTitle($partof, TRUE);
+
+				}
+
+			} else {
+
+				trigger_error('No document with UID '.$uid.' found', E_USER_WARNING);
+
+			}
+
+		} else {
+
+			trigger_error('No UID given for document', E_USER_ERROR);
+
+		}
+
+		return $title;
+
+	}
+
+	/**
 	 * This extracts all the metadata for the toplevel logical structure node
 	 *
 	 * @access	public

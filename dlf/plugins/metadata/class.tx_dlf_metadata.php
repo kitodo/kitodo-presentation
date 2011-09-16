@@ -226,6 +226,13 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 							}
 
+							// Get title of parent document if needed.
+							if (empty($_value) && $this->conf['getTitle']) {
+
+								$_value = '['.tx_dlf_document::getTitle($this->doc->uid, TRUE).']';
+
+							}
+
 							$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
 
 						// Translate name of holding library.
