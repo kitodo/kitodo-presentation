@@ -124,7 +124,9 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		foreach ($this->metadata as $_index_name => $_wrap) {
 
-			if (!empty($this->list->elements[$number][$_index_name]) && !empty($this->labels[$_index_name])) {
+			$hasValue = FALSE;
+
+			if (is_array($this->list->elements[$number][$_index_name]) && !empty($this->labels[$_index_name])) {
 
 				$fieldwrap = $this->parseTS($_wrap);
 
@@ -143,21 +145,31 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 						$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $this->list->elements[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
-					} elseif ($_index_name == 'type' ) {
+					} elseif ($_index_name == 'type' && !empty($_value)) {
 
 						$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
-					} else {
+					} elseif (!empty($_value)) {
 
 						$_value = htmlspecialchars($_value);
 
 					}
 
-					$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+					if (!empty($_value)) {
+
+						$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+
+						$hasValue = TRUE;
+
+					}
 
 				}
 
-				$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+				if ($hasValue) {
+
+					$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+
+				}
 
 			}
 

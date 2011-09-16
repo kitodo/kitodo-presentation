@@ -209,7 +209,9 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 			foreach ($metaList as $_index_name => $_wrap) {
 
-				if (!empty($_metadata[$_index_name]) && tx_dlf_helper::isTranslatable($_index_name, 'tx_dlf_metadata', $this->conf['pages'])) {
+				$hasValue = FALSE;
+
+				if (is_array($_metadata[$_index_name]) && tx_dlf_helper::isTranslatable($_index_name, 'tx_dlf_metadata', $this->conf['pages'])) {
 
 					$fieldwrap = $this->parseTS($_wrap);
 
@@ -236,21 +238,31 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 							$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
 
 						// Translate name of holding library.
-						} elseif ($_index_name == 'owner') {
+						} elseif ($_index_name == 'owner' && !empty($_value)) {
 
 							$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
 
-						} else {
+						} elseif (!empty($_value)) {
 
 							$_value = htmlspecialchars($_value);
 
 						}
 
-						$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+						if (!empty($_value)) {
+
+							$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+
+							$hasValue = TRUE;
+
+						}
 
 					}
 
-					$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+					if ($hasValue) {
+
+						$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+
+					}
 
 				}
 
