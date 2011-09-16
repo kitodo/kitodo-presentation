@@ -137,9 +137,17 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Link title to pageview.
 					if ($_index_name == 'title') {
 
+						// Get title of parent document if needed.
 						if (empty($_value) && $this->conf['getTitle']) {
 
 							$_value = '['.tx_dlf_document::getTitle($this->list->elements[$number]['uid'], TRUE).']';
+
+						}
+
+						// Set fake title if still not present.
+						if (empty($_value)) {
+
+							$_value = $this->pi_getLL('noTitle');
 
 						}
 

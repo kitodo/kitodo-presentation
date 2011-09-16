@@ -18,6 +18,7 @@
 			<label index="page">%d</label>
 			<label index="separator"> - </label>
 			<label index="orderBy">Order by: </label>
+			<label index="noTitle">[no title]</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -32,6 +33,7 @@
 			<label index="page">%d</label>
 			<label index="separator"> - </label>
 			<label index="orderBy">Sortieren nach: </label>
+			<label index="noTitle">[kein Titel]</label>
 		</languageKey>
 	</data>
 </T3locallang>
