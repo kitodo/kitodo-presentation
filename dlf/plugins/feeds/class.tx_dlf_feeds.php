@@ -118,7 +118,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 			}
 
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.uid AS uid,tx_dlf_documents.author AS author,tx_dlf_documents.record_id AS guid,tx_dlf_documents.tstamp AS tstamp,tx_dlf_documents.crdate AS crdate',
+				'tx_dlf_documents.uid AS uid,tx_dlf_documents.partof AS partof,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.record_id AS guid,tx_dlf_documents.tstamp AS tstamp,tx_dlf_documents.crdate AS crdate',
 				'tx_dlf_documents',
 				'tx_dlf_relations',
 				'tx_dlf_collections',
@@ -135,6 +135,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 					$item = $rss->createElement('item');
 
+					// Is this document new or updated?
 					if ($resArray['crdate'] == $resArray['tstamp']) {
 
 						$title = $this->pi_getLL('new');
@@ -145,9 +146,14 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 					}
 
+					// Get title information.
 					if (!empty($resArray['title'])) {
 
 						$title .= $resArray['title'];
+
+					} elseif (!empty($resArray['partof'])) {
+
+						$title .= '['.tx_dlf_document::getTitle($resArray['partof'], TRUE).']';
 
 					} else {
 
@@ -155,6 +161,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 					}
 
+					// Append volume information.
 					if (!empty($resArray['volume'])) {
 
 						$title .= ', '.$this->pi_getLL('volume').' '.$resArray['volume'];
@@ -163,16 +170,20 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 					$item->appendChild($rss->createElement('title', htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8')));
 
+					// Add link.
 					$item->appendChild($rss->createElement('link', htmlspecialchars(t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->conf['targetPid'], '', array ($this->prefixId => array ('id' => $resArray['uid'])))), ENT_NOQUOTES, 'UTF-8')));
 
+					// Add author if applicable.
 					if (!empty($resArray['author'])) {
 
 						$item->appendChild($rss->createElement('author', htmlspecialchars($resArray['author'], ENT_NOQUOTES, 'UTF-8')));
 
 					}
 
+					// Add online publication date.
 					$item->appendChild($rss->createElement('pubDate', date('r', $resArray['crdate'])));
 
+					// Add internal record identifier.
 					$item->appendChild($rss->createElement('guid', htmlspecialchars($resArray['guid'], ENT_NOQUOTES, 'UTF-8')));
 
 					$channel->appendChild($item);

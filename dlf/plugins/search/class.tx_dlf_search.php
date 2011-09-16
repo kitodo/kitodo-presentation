@@ -103,12 +103,12 @@ class tx_dlf_search extends tx_dlf_plugin {
 				$_list[] = array (
 					'uid' => $doc->uid,
 					'page' => $doc->page,
-					'title' => array ($doc->title),
-					'volume' => array ($doc->volume),
-					'author' => array ($doc->author),
-					'year' => array ($doc->year),
-					'place' => array ($doc->place),
-					'type' => array ($doc->type),
+					'title' => (is_array($doc->title) ? $doc->title : array ($doc->title)),
+					'volume' => (is_array($doc->volume) ? $doc->volume : array ($doc->volume)),
+					'author' => (is_array($doc->author) ? $doc->author : array ($doc->author)),
+					'year' => (is_array($doc->year) ? $doc->year : array ($doc->year)),
+					'place' => (is_array($doc->place) ? $doc->place : array ($doc->place)),
+					'type' => (is_array($doc->type) ? $doc->type : array ($doc->type)),
 					'subparts' => array ()
 				);
 
