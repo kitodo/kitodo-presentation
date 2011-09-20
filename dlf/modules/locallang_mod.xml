@@ -6,14 +6,14 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="mlang_tabs_tab">Digital Library Framework</label>
+			<label index="mlang_tabs_tab">Goobi.Presentation</label>
 			<label index="mlang_labels_tabdescr">These modules allow you to manage your digitized documents and collections.</label>
-			<label index="mlang_labels_tablabel">DLF Base Modules</label>
+			<label index="mlang_labels_tablabel">Goobi Base Modules</label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="mlang_tabs_tab">Digital Library Framework</label>
+			<label index="mlang_tabs_tab">Goobi.Presentation</label>
 			<label index="mlang_labels_tabdescr">Diese Module erlauben Ihnen die Verwaltung Ihrer digitalisierten Dokumente und Sammlungen.</label>
-			<label index="mlang_labels_tablabel">DLF Basismodule</label>
+			<label index="mlang_labels_tablabel">Goobi Basismodule</label>
 		</languageKey>
 	</data>
 </T3locallang>
