@@ -173,6 +173,34 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			}
 
+		} elseif (!empty($this->piVars['recordId'])) {
+
+			// Get UID of document with given record identifier.
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_documents.uid',
+				'tx_dlf_documents',
+				'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
+				'',
+				'',
+				'1'
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
+
+				list ($this->piVars['id']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+				// Unset plugin variable to avoid infinite looping.
+				unset ($this->piVars['recordId']);
+
+				// Try to load document.
+				$this->loadDocument();
+
+			} else {
+
+				trigger_error('Failed to load document with record ID '.$this->piVars['recordId'], E_USER_ERROR);
+
+			}
+
 		} else {
 
 			trigger_error('No UID given for document', E_USER_ERROR);
