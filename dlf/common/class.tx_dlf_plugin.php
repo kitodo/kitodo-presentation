@@ -189,8 +189,11 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 				list ($this->piVars['id']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
-				// Unset plugin variable to avoid infinite looping.
-				unset ($this->piVars['recordId']);
+				// Set superglobal $_GET array.
+				$_GET[$this->prefixId]['id'] = $this->piVars['id'];
+
+				// Unset variable to avoid infinite looping.
+				unset ($this->piVars['recordId'], $_GET[$this->prefixId]['recordId']);
 
 				// Try to load document.
 				$this->loadDocument();
