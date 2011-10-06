@@ -643,7 +643,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					// Add metadata node.
 					$metadata = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
 
-					switch ($this->piVars['metadataPrefix']) {
+					switch ($resultSet->metadata['metadataPrefix']) {
 
 						case 'oai_dc':
 
