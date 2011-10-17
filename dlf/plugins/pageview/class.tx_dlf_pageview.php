@@ -60,10 +60,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_olJS_lang'] = '	<script type="text/javascript" src="'.$_langFile.'"></script>';
 
-			} else {
-
-				trigger_error('There is no localization for OpenLayers for language '.$GLOBALS['TSFE']->lang, E_USER_NOTICE);
-
 			}
 
 		}
