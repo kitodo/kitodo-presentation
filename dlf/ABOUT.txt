@@ -1,0 +1,63 @@
+Goobi Digital Library Suite (Community Edition)
+===============================================
+
+Goobi is an open source software suite intended to support mass digitization
+projects for cultural heritage institutions. Goobi is widely-used and
+cooperatively maintained by major German libraries and digitization service
+providers.
+Goobi consists of several independent modules serving different purposes such as
+controlling the digitization workflow, enriching descriptive and structural
+metadata, and presenting the results to the public in a modern and convenient
+way.
+
+About Goobi.Presentation
+------------------------
+
+Goobi.Presentation is a feature-rich framework for building a METS-based digital
+library. It is highly customizable through an user-friendly backend and flexible
+design templates. Since it is based on the great free and open source Content
+Management System TYPO3 (http://typo3.org), it integrates perfectly with your
+website and can easily be managed by editors. Goobi.Presentation provides a
+comprehensive toolset covering all basic requirements for presenting digitized
+book media.
+
+About the naming of Goobi.Presentation
+--------------------------------------
+
+The Goobi Software Suite is used for digitizing huge amounts of books, journals,
+newspapers, and other printed and hand-written material, and making it available
+to the public. Thus Goobi helps collecting, archiving and providing knowledge to
+everyone. This is a great task that inspired many writers of not only science
+fiction and fantasy novels, too. Thus there are many brilliant stories in which
+libraries or librarians play an important role.
+We therefore decided to name each major release of Goobi.Presentation after a
+fictional librarian from one of these novels who ideally shares our vision of
+collecting and publishing the entirety of human knowledge one day (or at least
+is an extraordinary remarkable character in the plot).
+
+1.0: Horace Worblehat
+Horace Worblehat is the Librarian of the Library of the Unseen University (UU)
+in Terry Pratchett's fantasy series of "Discworld" novels.
+Like the Bodleian Library at Oxford, the UU Library features chained books –
+although at Oxford this is done to protect the books from the students, whereas
+at UU it is done to protect the students from the books. The high concentration
+of magical lore makes it possible for the Library to contain every book ever
+written, possibly written, unwritten and yet to be written.
+The Librarian appeared in the first novel of the series and was transformed into
+an orang-utan by accident while handling a magical book in a later novel. On
+discovering that being an orang-utan had certain advantages for a librarian - he
+can climb up to high shelves, for example - he refused to be transformed back
+into a human and has remained an orang-utan ever since.
+(partly from http://en.wikipedia.org/wiki/Unseen_University)
+
+1.1: Patterson Tchung
+In Frank Herbert's book "Direct Descent" the 81st century Earth has been
+hollowed out entirely and turned into a planet-sized library. The innards of the
+Earth were used to construct a fleet of ships that colonized the stars while the
+people who remained behind dedicated themselves to the pursuit of knowledge.
+They sent wave after wave of librarians out who collected knowledge, returned to
+Earth, created programming about their discoveries and then broadcast those
+programs to everyone in the universe for free.
+The director of this library is (in the second part of the book) an intelligent
+simian named Patterson Tchung.
+(partly from http://www.omphalosbookreviews.com/index.php/reviews/info/453)
