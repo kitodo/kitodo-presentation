@@ -316,6 +316,7 @@ class tx_dlf_tcemain {
 		}
 
 	}
+
 	/**
 	 * Post-processing hook for the process_cmdmap() method.
 	 *
@@ -353,26 +354,6 @@ class tx_dlf_tcemain {
 					switch ($command) {
 
 						case 'move':
-
-							// Delete and reindex document.
-							$solr->deleteByQuery('uid:'.$id);
-
-							$solr->commit();
-
-							$doc = tx_dlf_document::getInstance($id);
-
-							if ($doc->ready) {
-
-								$doc->save($doc->pid, $core);
-
-							} else {
-
-								trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
-
-							}
-
-							break;
-
 						case 'delete':
 
 							// Delete Solr document.
@@ -380,7 +361,11 @@ class tx_dlf_tcemain {
 
 							$solr->commit();
 
-							break;
+							if ($command == 'delete') {
+
+								break;
+
+							}
 
 						case 'undelete':
 
