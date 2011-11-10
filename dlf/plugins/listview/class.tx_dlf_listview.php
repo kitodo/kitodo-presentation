@@ -82,23 +82,59 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
-		$output = ($this->piVars['pointer'] > 0 ? $this->pi_linkTP_keepPIvars($this->pi_getLL('firstPage', '&lt;'), array ('pointer' => $this->piVars['pointer'] - 1), TRUE) : $this->pi_getLL('firstPage', '&lt;'));
+		// Get separator.
+		$separator = $this->pi_getLL('separator', ' - ');
 
-		$output .= $this->pi_getLL('separator', ' - ');
+		// Add link to previous page.
+		if ($this->piVars['pointer'] > 0) {
+
+			$output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;'), array ('pointer' => $this->piVars['pointer'] - 1), TRUE).$separator;
+
+		} else {
+
+			$output = $this->pi_getLL('prevPage', '&lt;').$separator;
+
+		}
 
 		$i = 0;
 
 		while ($i < $maxPages) {
 
-			$output .= ($this->piVars['pointer'] != $i ? $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d'), $i + 1), array ('pointer' => $i), TRUE) : sprintf($this->pi_getLL('page', '%d'), $i + 1));
+			if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
 
-			$output .= $this->pi_getLL('separator', ' - ');
+				if ($this->piVars['pointer'] != $i) {
+
+					$output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d'), $i + 1), array ('pointer' => $i), TRUE).$separator;
+
+				} else {
+
+					$output .= sprintf($this->pi_getLL('page', '%d'), $i + 1).$separator;
+
+				}
+
+				$skip = TRUE;
+
+			} elseif ($skip == TRUE) {
+
+				$output .= $this->pi_getLL('skip', '...').$separator;
+
+				$skip = FALSE;
+
+			}
 
 			$i++;
 
 		}
 
-		$output .= ($this->piVars['pointer'] < $maxPages - 1 ? $this->pi_linkTP_keepPIvars($this->pi_getLL('lastPage', '&gt;'), array ('pointer' => $this->piVars['pointer'] + 1), TRUE) : $this->pi_getLL('lastPage', '&gt;'));
+		if ($this->piVars['pointer'] < $maxPages - 1) {
+
+			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;'), array ('pointer' => $this->piVars['pointer'] + 1), TRUE);
+
+		} else {
+
+			$output .= $this->pi_getLL('nextPage', '&gt;');
+
+		}
 
 		return $output;
 
