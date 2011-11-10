@@ -1763,10 +1763,6 @@ class tx_dlf_document {
 
 					$this->recordid = (string) $_objId[0]['OBJID'];
 
-				} elseif (!empty($_objId[0]['ID'])) {
-
-					$this->recordid = (string) $_objId[0]['ID'];
-
 				}
 
 				// Check for post-processing hooks.
