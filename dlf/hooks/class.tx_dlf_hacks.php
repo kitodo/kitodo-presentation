@@ -45,11 +45,11 @@ class tx_dlf_hacks {
 	 * @access	public
 	 *
 	 * @param	SimpleXMLElement		&$xml: The XML object
-	 * @param	mixed		&$record_id: The record identifier
+	 * @param	mixed		$record_id: The record identifier
 	 *
-	 * @return	void
+	 * @return	mixed		The record identifier
 	 */
-	public function construct_postProcessRecordId(SimpleXMLElement &$xml, &$record_id) {
+	public function construct_postProcessRecordId(SimpleXMLElement &$xml, $record_id) {
 
 		if (!$record_id) {
 
@@ -89,15 +89,17 @@ class tx_dlf_hacks {
 
 				$_recordId = $xml->xpath('//mets:dmdSec[@ID="'.$_id.'"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
 
-				if ($_recordId) {
+				if (!empty($_recordId[0])) {
 
-					$record_id = $_recordId[0];
+					return $_recordId[0];
 
 				}
 
 			}
 
 		}
+
+		return $record_id;
 
 	}
 

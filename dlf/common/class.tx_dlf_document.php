@@ -208,6 +208,14 @@ class tx_dlf_document {
 	protected $ready = FALSE;
 
 	/**
+	 * The METS file's record identifier.
+	 *
+	 * @var	string
+	 * @access protected
+	 */
+	protected $recordid;
+
+	/**
 	 * This holds the singleton object of each document with its UID as array key
 	 *
 	 * @var	array(tx_dlf_document)
@@ -730,7 +738,12 @@ class tx_dlf_document {
 	 */
 	public function getTitledata($mPid = 0) {
 
-		return $this->getMetadata($this->getToplevelId(), $mPid);
+		$titledata = $this->getMetadata($this->getToplevelId(), $mPid);
+
+		// Set record identifier for METS file.
+		array_unshift($titledata['record_id'], $this->recordid);
+
+		return $titledata;
 
 	}
 
@@ -1595,6 +1608,19 @@ class tx_dlf_document {
 	}
 
 	/**
+	 * This returns $this->recordid via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		The METS file's record identifier
+	 */
+	protected function _getRecordid() {
+
+		return $this->recordid;
+
+	}
+
+	/**
 	 * This returns $this->sPid via __get()
 	 *
 	 * @access	protected
@@ -1721,8 +1747,6 @@ class tx_dlf_document {
 			$location = (string) $uid;
 
 			// Get record identifier to check with database.
-			$record_id = NULL;
-
 			$_libxmlErrors = libxml_use_internal_errors(TRUE);
 
 			$xml = @simplexml_load_file($location);
@@ -1737,11 +1761,7 @@ class tx_dlf_document {
 
 				if (!empty($_objId[0]['OBJID'])) {
 
-					$record_id = (string) $_objId[0]['OBJID'];
-
-				} elseif (!empty($_objId[0]['ID'])) {
-
-					$record_id = (string) $_objId[0]['ID'];
+					$this->recordid = (string) $_objId[0]['OBJID'];
 
 				}
 
@@ -1752,7 +1772,7 @@ class tx_dlf_document {
 
 					if (method_exists($hookObj, 'construct_postProcessRecordId')) {
 
-						$hookObj->construct_postProcessRecordId($xml, $record_id);
+						$this->recordid = $hookObj->construct_postProcessRecordId($xml, $this->recordid);
 
 					}
 
@@ -1762,7 +1782,7 @@ class tx_dlf_document {
 
 			if ($record_id) {
 
-				$whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($record_id, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
+				$whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordid, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
 
 			} else {
 
@@ -1782,7 +1802,7 @@ class tx_dlf_document {
 
 		// Get document PID and location from database.
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_documents.uid AS uid,tx_dlf_documents.pid AS pid,tx_dlf_documents.partof AS partof,tx_dlf_documents.location AS location',
+			'tx_dlf_documents.uid AS uid,tx_dlf_documents.pid AS pid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.partof AS partof,tx_dlf_documents.location AS location',
 			'tx_dlf_documents',
 			$whereClause,
 			'',
@@ -1792,7 +1812,7 @@ class tx_dlf_document {
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result) > 0) {
 
-			list ($this->uid, $this->pid, $this->parentid, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($_result);
+			list ($this->uid, $this->pid, $this->recordid, $this->parentid, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($_result);
 
 			// Load XML file...
 			if ($this->load($location)) {
