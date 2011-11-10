@@ -10,6 +10,7 @@ controlling the digitization workflow, enriching descriptive and structural
 metadata, and presenting the results to the public in a modern and convenient
 way.
 
+
 About Goobi.Presentation
 ------------------------
 
@@ -20,6 +21,7 @@ Management System TYPO3 (http://typo3.org), it integrates perfectly with your
 website and can easily be managed by editors. Goobi.Presentation provides a
 comprehensive toolset covering all basic requirements for presenting digitized
 book media.
+
 
 About the naming of Goobi.Presentation
 --------------------------------------
