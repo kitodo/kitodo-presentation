@@ -91,7 +91,7 @@ class tx_dlf_hacks {
 
 				if (!empty($_recordId[0])) {
 
-					return $_recordId[0];
+					return (string) $_recordId[0];
 
 				}
 
