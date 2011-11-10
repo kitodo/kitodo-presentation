@@ -13,10 +13,11 @@
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
 			<label index="nohits">Nothing found.</label>
 			<label index="count">Entries %d to %d of %d.</label>
-			<label index="firstPage">&lt;</label>
-			<label index="lastPage">&gt;</label>
+			<label index="prevPage">&lt;</label>
+			<label index="nextPage">&gt;</label>
 			<label index="page">%d</label>
 			<label index="separator"> - </label>
+			<label index="skip">...</label>
 			<label index="orderBy">Order by: </label>
 			<label index="noTitle">[no title]</label>
 		</languageKey>
@@ -28,10 +29,11 @@
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
 			<label index="nohits">Keine Treffer.</label>
 			<label index="count">Einträge %d bis %d von %d.</label>
-			<label index="firstPage">&lt;</label>
-			<label index="lastPage">&gt;</label>
+			<label index="prevPage">&lt;</label>
+			<label index="nextPage">&gt;</label>
 			<label index="page">%d</label>
 			<label index="separator"> - </label>
+			<label index="skip">...</label>
 			<label index="orderBy">Sortieren nach: </label>
 			<label index="noTitle">[kein Titel]</label>
 		</languageKey>
