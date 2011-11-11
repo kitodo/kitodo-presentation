@@ -61,7 +61,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'prod_id' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.prod_id',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.prod_id',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -71,7 +71,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'location' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.location',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.location',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -81,7 +81,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'record_id' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.record_id',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.record_id',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -91,7 +91,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'opac_id' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.opac_id',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.opac_id',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -101,7 +101,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'union_id' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.union_id',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.union_id',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -111,7 +111,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'urn' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.urn',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.urn',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -121,7 +121,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'purl' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.purl',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.purl',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -131,7 +131,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'title' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.title',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.title',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -141,7 +141,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'title_sorting' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.title_sorting',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.title_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -151,7 +151,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'author' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.author',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.author',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -161,7 +161,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'author_sorting' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.author_sorting',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.author_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -171,7 +171,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'year' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.year',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.year',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -181,7 +181,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'year_sorting' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.year_sorting',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.year_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -191,7 +191,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'place' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.place',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.place',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -201,7 +201,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'place_sorting' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.place_sorting',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.place_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -216,7 +216,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'structure' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.structure',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.structure',
 			'config' => array (
 				'type' => 'select',
 				'foreign_table' => 'tx_dlf_structures',
@@ -228,11 +228,11 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'partof' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.partof',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.partof.none', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof.none', 0),
 				),
 				'foreign_table' => 'tx_dlf_documents',
 				'foreign_table_where' => 'AND tx_dlf_documents.pid=###CURRENT_PID### ORDER BY tx_dlf_documents.title_sorting',
@@ -244,7 +244,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'volume' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.volume',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.volume',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -254,7 +254,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'volume_sorting' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.volume_sorting',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.volume_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -264,7 +264,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'collections' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.collections',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.collections',
 			'config' => array (
 				'type' => 'select',
 				'foreign_table' => 'tx_dlf_collections',
@@ -281,7 +281,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'owner' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.owner',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.owner',
 			'config' => array (
 				'type' => 'select',
 				'foreign_table' => 'tx_dlf_libraries',
@@ -293,11 +293,11 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'solrcore' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.solrcore',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.solrcore',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.solrcore.none', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_documents.solrcore.none', 0),
 				),
 				'foreign_table' => 'tx_dlf_solrcores',
 				'foreign_table_where' => 'AND tx_dlf_solrcores.pid=0 ORDER BY tx_dlf_solrcores.label',
@@ -308,11 +308,11 @@ $TCA['tx_dlf_documents'] = array (
 		),
 		'status' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.status',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.status',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.status.default', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_documents.status.default', 0),
 				),
 				'size' => 1,
 				'minitems' => 1,
@@ -322,7 +322,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author;;2, year;;3, place;;4, structure;;5;;2-2-2, collections;;;;3-3-3, metadata, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author;;2, year;;3, place;;4, structure;;5;;2-2-2, collections;;;;3-3-3, metadata, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'title_sorting', 'canNotCollapse' => 1),
@@ -381,7 +381,7 @@ $TCA['tx_dlf_structures'] = array (
 		),
 		'toplevel' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.toplevel',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.toplevel',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -389,7 +389,7 @@ $TCA['tx_dlf_structures'] = array (
 		),
 		'label' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -399,7 +399,7 @@ $TCA['tx_dlf_structures'] = array (
 		),
 		'index_name' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.index_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.index_name',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -409,7 +409,7 @@ $TCA['tx_dlf_structures'] = array (
 		),
 		'oai_name' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.oai_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.oai_name',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -419,11 +419,11 @@ $TCA['tx_dlf_structures'] = array (
 		),
 		'status' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.status',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.status',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.status.default', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_structures.status.default', 0),
 				),
 				'size' => 1,
 				'minitems' => 1,
@@ -433,7 +433,7 @@ $TCA['tx_dlf_structures'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label;;1, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label;;1, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1),
@@ -488,7 +488,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'label' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -498,7 +498,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'index_name' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.index_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.index_name',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -508,11 +508,11 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'encoded' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.encoded',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.encoded',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.encoded.none', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.encoded.none', 0),
 				),
 				'foreign_table' => 'tx_dlf_formats',
 				'foreign_table_where' => 'ORDER BY tx_dlf_formats.type',
@@ -524,7 +524,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'xpath' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.xpath',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.xpath',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -534,7 +534,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'default_value' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.default_value',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.default_value',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -544,7 +544,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'wrap' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.wrap',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.wrap',
 			'config' => array (
 				'type' => 'text',
 				'cols' => 48,
@@ -556,7 +556,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'tokenized' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.tokenized',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tokenized',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -564,7 +564,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'stored' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.stored',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.stored',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -572,7 +572,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'indexed' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.indexed',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.indexed',
 			'config' => array (
 				'type' => 'check',
 				'default' => 1,
@@ -580,7 +580,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'boost' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.boost',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.boost',
 			'config' => array (
 				'type' => 'input',
 				'size' => 5,
@@ -591,7 +591,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'is_sortable' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.is_sortable',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.is_sortable',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -599,7 +599,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'is_facet' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.is_facet',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.is_facet',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -607,7 +607,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'is_listed' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.is_listed',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.is_listed',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -615,11 +615,11 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 		'status' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.status',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.status',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.status.default', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.status.default', 0),
 				),
 				'size' => 1,
 				'minitems' => 1,
@@ -629,7 +629,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, encoded;;;;2-2-2, xpath, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, encoded;;;;2-2-2, xpath, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed', 'canNotCollapse' => 1),
@@ -644,7 +644,7 @@ $TCA['tx_dlf_formats'] = array (
 	'feInterface' => $TCA['tx_dlf_formats']['feInterface'],
 	'columns' => array (
 		'type' => array (
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_formats.type',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.type',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -653,14 +653,14 @@ $TCA['tx_dlf_formats'] = array (
 			),
 		),
 		'other_type' => array (
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_formats.other_type',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.other_type',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
 			),
 		),
 		'root' => array (
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_formats.root',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.root',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -669,7 +669,7 @@ $TCA['tx_dlf_formats'] = array (
 			),
 		),
 		'namespace' => array (
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_formats.namespace',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.namespace',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -678,7 +678,7 @@ $TCA['tx_dlf_formats'] = array (
 			),
 		),
 		'class' => array (
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_formats.class',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.class',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -688,7 +688,7 @@ $TCA['tx_dlf_formats'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_formats.tab1, type;;;;1-1-1, other, root;;;;2-2-2, namespace, class;;;;3-3-3'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, other, root;;;;2-2-2, namespace, class;;;;3-3-3'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),
@@ -703,7 +703,7 @@ $TCA['tx_dlf_solrcores'] = array (
 	'feInterface' => $TCA['tx_dlf_solrcores']['feInterface'],
 	'columns' => array (
 		'label' => array (
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_solrcores.label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -712,7 +712,7 @@ $TCA['tx_dlf_solrcores'] = array (
 			),
 		),
 		'index_name' => array (
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_solrcores.index_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.index_name',
 			'config' => array (
 				'type' => 'input',
 				'form_type' => 'none',
@@ -723,7 +723,7 @@ $TCA['tx_dlf_solrcores'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_solrcores.tab1, label;;;;1-1-1, index_name;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.tab1, label;;;;1-1-1, index_name;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),
@@ -796,7 +796,7 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'label' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -806,7 +806,7 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'index_name' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.index_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_name',
 			'config' => array (
 				'type' => 'input',
 				'form_type' => 'none',
@@ -817,7 +817,7 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'oai_name' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.oai_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.oai_name',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -827,7 +827,7 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'description' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.description',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.description',
 			'config' => array (
 				'type' => 'text',
 				'cols' => 30,
@@ -838,7 +838,7 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'documents' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.documents',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.documents',
 			'config' => array (
 				'type' => 'select',
 				'foreign_table' => 'tx_dlf_documents',
@@ -856,11 +856,11 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'owner' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.owner',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.owner',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.owner.none', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.owner.none', 0),
 				),
 				'foreign_table' => 'tx_dlf_libraries',
 				'foreign_table_where' => 'AND tx_dlf_libraries.sys_language_uid IN (-1,0) ORDER BY tx_dlf_libraries.label',
@@ -871,11 +871,11 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'fe_cruser_id' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.fe_cruser_id',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_cruser_id',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.fe_cruser_id.none', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_cruser_id.none', 0),
 				),
 				'foreign_table' => 'fe_users',
 				'foreign_table_where' => 'ORDER BY fe_users.username',
@@ -886,7 +886,7 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'fe_admin_lock' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.fe_admin_lock',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_admin_lock',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -894,11 +894,11 @@ $TCA['tx_dlf_collections'] = array (
 		),
 		'status' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.status',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.status',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.status.default', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.status.default', 0),
 				),
 				'size' => 1,
 				'minitems' => 1,
@@ -908,7 +908,7 @@ $TCA['tx_dlf_collections'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.tab1, label;;1;;1-1-1, description;;;;2-2-2, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id;;2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab1, label;;1;;1-1-1, description;;;;2-2-2, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id;;2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1),
@@ -956,7 +956,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'label' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -966,7 +966,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'index_name' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.index_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.index_name',
 			'config' => array (
 				'type' => 'input',
 				'form_type' => 'none',
@@ -977,7 +977,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'website' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.website',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.website',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -987,7 +987,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'contact' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.contact',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.contact',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -997,7 +997,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'image' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.image',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.image',
 			'config' => array (
 				'type' => 'group',
 				'internal_type' => 'file',
@@ -1012,7 +1012,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'oai_label' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.oai_label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.oai_label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -1021,7 +1021,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'oai_base' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.oai_base',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.oai_base',
 			'config' => array (
 				'type' => 'group',
 				'internal_type' => 'db',
@@ -1033,7 +1033,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'opac_label' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.opac_label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.opac_label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -1042,7 +1042,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'opac_base' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.opac_base',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.opac_base',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -1052,7 +1052,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'union_label' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.union_label',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.union_label',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -1061,7 +1061,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 		'union_base' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.union_base',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.union_base',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -1071,7 +1071,7 @@ $TCA['tx_dlf_libraries'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.tab1, label;;1;;1-1-1, website;;;;2-2-2, contact, image;;;;3-3-3, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries.tab3, oai_label;;2;;1-1-1, opac_label;;3;;2-2-2, union_label;;4;;3-3-3'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.tab1, label;;1;;1-1-1, website;;;;2-2-2, contact, image;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.tab3, oai_label;;2;;1-1-1, opac_label;;3;;2-2-2, union_label;;4;;3-3-3'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name', 'canNotCollapse' => 1),

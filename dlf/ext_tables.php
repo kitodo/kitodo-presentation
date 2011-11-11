@@ -27,7 +27,7 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 // Register database tables.
 $TCA['tx_dlf_documents'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_documents',
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents',
 		'label'     => 'title',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -50,7 +50,7 @@ $TCA['tx_dlf_documents'] = array (
 
 $TCA['tx_dlf_structures'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_structures',
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures',
 		'label'     => 'label',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -75,7 +75,7 @@ $TCA['tx_dlf_structures'] = array (
 
 $TCA['tx_dlf_metadata'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_metadata',
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata',
 		'label'     => 'label',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -100,7 +100,7 @@ $TCA['tx_dlf_metadata'] = array (
 
 $TCA['tx_dlf_formats'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_formats',
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats',
 		'label'     => 'type',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -119,7 +119,7 @@ $TCA['tx_dlf_formats'] = array (
 
 $TCA['tx_dlf_solrcores'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_solrcores',
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores',
 		'label'     => 'label',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -138,7 +138,7 @@ $TCA['tx_dlf_solrcores'] = array (
 
 $TCA['tx_dlf_collections'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_collections',
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections',
 		'label'     => 'label',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -166,7 +166,7 @@ $TCA['tx_dlf_collections'] = array (
 
 $TCA['tx_dlf_libraries'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang_db.xml:tx_dlf_libraries',
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries',
 		'label'     => 'label',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -197,7 +197,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collectio
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_collection'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_collection', $_EXTKEY.'_collection'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_collection', $_EXTKEY.'_collection'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_collection', 'FILE:EXT:'.$_EXTKEY.'/plugins/collection/flexform.xml');
 
@@ -206,7 +206,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_feeds'] =
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_feeds'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_feeds', $_EXTKEY.'_feeds'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_feeds', $_EXTKEY.'_feeds'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_feeds', 'FILE:EXT:'.$_EXTKEY.'/plugins/feeds/flexform.xml');
 
@@ -215,7 +215,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_listview'
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_listview'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_listview', $_EXTKEY.'_listview'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_listview', $_EXTKEY.'_listview'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_listview', 'FILE:EXT:'.$_EXTKEY.'/plugins/listview/flexform.xml');
 
@@ -224,7 +224,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_metadata'
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_metadata'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_metadata', $_EXTKEY.'_metadata'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_metadata', $_EXTKEY.'_metadata'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_metadata', 'FILE:EXT:'.$_EXTKEY.'/plugins/metadata/flexform.xml');
 
@@ -233,7 +233,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_navigatio
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_navigation'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_navigation', $_EXTKEY.'_navigation'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_navigation', $_EXTKEY.'_navigation'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_navigation', 'FILE:EXT:'.$_EXTKEY.'/plugins/navigation/flexform.xml');
 
@@ -242,7 +242,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_oai'] = '
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_oai'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_oai', $_EXTKEY.'_oai'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_oai', $_EXTKEY.'_oai'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_oai', 'FILE:EXT:'.$_EXTKEY.'/plugins/oai/flexform.xml');
 
@@ -251,7 +251,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pageview'
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pageview'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_pageview', $_EXTKEY.'_pageview'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_pageview', $_EXTKEY.'_pageview'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_pageview', 'FILE:EXT:'.$_EXTKEY.'/plugins/pageview/flexform.xml');
 
@@ -260,7 +260,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_search'] 
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_search'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_search', $_EXTKEY.'_search'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_search', $_EXTKEY.'_search'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_search', 'FILE:EXT:'.$_EXTKEY.'/plugins/search/flexform.xml');
 
@@ -269,7 +269,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_statistic
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_statistics'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_statistics', $_EXTKEY.'_statistics'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_statistics', $_EXTKEY.'_statistics'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_statistics', 'FILE:EXT:'.$_EXTKEY.'/plugins/statistics/flexform.xml');
 
@@ -278,7 +278,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_toc'] = '
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_toc'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_toc', $_EXTKEY.'_toc'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_toc', $_EXTKEY.'_toc'), 'list_type');
 
 t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/toc/', 'Table of Contents');
 
@@ -289,7 +289,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_toolbox']
 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_toolbox'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang_db.xml:tt_content.dlf_toolbox', $_EXTKEY.'_toolbox'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_toolbox', $_EXTKEY.'_toolbox'), 'list_type');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_toolbox', 'FILE:EXT:'.$_EXTKEY.'/plugins/toolbox/flexform.xml');
 

@@ -49,6 +49,9 @@ class tx_dlf_em {
 	 */
 	public function checkSolrConnection(&$params, &$pObj) {
 
+		// Load localization file.
+		$GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
+
 		// Get Solr credentials.
 		$conf = t3lib_div::_POST('data');
 
@@ -97,8 +100,8 @@ class tx_dlf_em {
 
 				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					'The status code returned by Apache Solr is <strong>'.htmlspecialchars((string) $status[0]).'</strong>.',
-					'Connection established!',
+					sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
+					$GLOBALS['LANG']->getLL('solr.connected'),
 					($status[0] == 0 ? t3lib_FlashMessage::OK : t3lib_FlashMessage::WARNING),
 					FALSE
 				);
@@ -111,8 +114,8 @@ class tx_dlf_em {
 
 		$message = t3lib_div::makeInstance(
 			't3lib_FlashMessage',
-			'Apache Solr was not reachable with the given details.',
-			'Connection failed!',
+			sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
+			$GLOBALS['LANG']->getLL('solr.notConnected'),
 			t3lib_FlashMessage::ERROR,
 			FALSE
 		);

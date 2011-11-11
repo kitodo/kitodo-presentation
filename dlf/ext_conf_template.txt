@@ -1,26 +1,26 @@
-# cat=Basic; type=string; label=DLF User-Agent: (default is "Goobi.Presentation")
+# cat=Basic; type=string; label=LLL:EXT:dlf/locallang.xml:config.useragent
 useragent = Goobi.Presentation
 
-# cat=Basic; type=string; label=Additional METS fileGrps: comma-separated list of @USE attribute values (default is "DEFAULT,MIN,MAX,THUMBS")
+# cat=Basic; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrps
 fileGrps = DEFAULT,MIN,MAX,THUMBS
 
-# cat=Basic; type=boolean; label=Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "false")
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.caching
 caching = 0
 
-# cat=Solr; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkSolrConnection]; label=Solr Connection
+# cat=Solr; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkSolrConnection]; label=LLL:EXT:dlf/locallang.xml:config.solrConnect
 solrConnect = 0
 
-# cat=Solr; type=string; label=Solr Server Host: (default is "localhost")
+# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrHost
 solrHost = localhost
 
-# cat=Solr; type=int[0-65535]; label=Solr Server Port: (default is "8180")
+# cat=Solr; type=int[0-65535]; label=LLL:EXT:dlf/locallang.xml:config.solrPort
 solrPort = 8180
 
-# cat=Solr; type=string; label=Solr Server Path: (default is "/solr/")
+# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrPath
 solrPath = /solr/
 
-# cat=Solr; type=string; label=Solr Server User: (default is "")
+# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrUser
 solrUser =
 
-# cat=Solr; type=string; label=Solr Server Password: (default is "")
+# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrPass
 solrPass =
