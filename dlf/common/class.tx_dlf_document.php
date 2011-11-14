@@ -208,7 +208,7 @@ class tx_dlf_document {
 	protected $ready = FALSE;
 
 	/**
-	 * The METS file's record identifier.
+	 * The METS file's record identifier
 	 *
 	 * @var	string
 	 * @access protected
@@ -1612,7 +1612,7 @@ class tx_dlf_document {
 	 *
 	 * @access	protected
 	 *
-	 * @return	boolean		The METS file's record identifier
+	 * @return	mixed		The METS file's record identifier
 	 */
 	protected function _getRecordid() {
 
