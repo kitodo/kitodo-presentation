@@ -1208,7 +1208,7 @@ class tx_dlf_document {
 
 			$superior = tx_dlf_document::getInstance($this->tableOfContents[0]['points']);
 
-			if ($superior !== NULL) {
+			if ($superior->ready) {
 
 				if ($superior->pid != $pid) {
 
@@ -1780,7 +1780,7 @@ class tx_dlf_document {
 
 			}
 
-			if ($record_id) {
+			if ($this->recordid) {
 
 				$whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordid, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
 
