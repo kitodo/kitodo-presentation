@@ -201,6 +201,9 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 		$content = $rss->saveXML();
 
+		// Clean output buffer.
+		t3lib_div::cleanOutputBuffers();
+
 		// Send headers.
 		header('HTTP/1.1 200 OK');
 
