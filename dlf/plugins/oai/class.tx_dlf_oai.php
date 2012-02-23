@@ -510,6 +510,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$content = $this->oai->saveXML();
 
+		// Clean output buffer.
+		t3lib_div::cleanOutputBuffers();
+
 		// Send headers.
 		header('HTTP/1.1 200 OK');
 
