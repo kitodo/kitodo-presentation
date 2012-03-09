@@ -105,35 +105,13 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 		}
 
 		// Read FlexForm configuration
-		$this->pi_initPIflexForm();
+		$flexFormConf = array ();
 
-		if ($this->cObj->data['pi_flexform']['data']) {
+		$this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
 
-			foreach ($this->cObj->data['pi_flexform']['data'] as $sheetName => $sheet) {
+		if (!empty($flexFormConf)) {
 
-				foreach ($sheet as $langName => $lang) {
-
-					foreach (array_keys($lang) as $key) {
-
-						$flexFormConf[$key] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], $key, $sheetName, $langName);
-
-						if (!$flexFormConf[$key]) {
-
-							unset($flexFormConf[$key]);
-
-						}
-
-					}
-
-				}
-
-			}
-
-			if (is_array($flexFormConf)) {
-
-				$conf = t3lib_div::array_merge_recursive_overrule($conf, $flexFormConf);
-
-			}
+			$conf = t3lib_div::array_merge_recursive_overrule($conf, $flexFormConf);
 
 		}
 
