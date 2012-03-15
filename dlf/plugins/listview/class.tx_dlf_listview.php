@@ -98,6 +98,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$i = 0;
 
+		// Add links to pages.
 		while ($i < $maxPages) {
 
 			if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
@@ -126,6 +127,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
+		// Add link to next page.
 		if ($this->piVars['pointer'] < $maxPages - 1) {
 
 			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;'), array ('pointer' => $this->piVars['pointer'] + 1), TRUE);
@@ -219,27 +221,100 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
-//		if (!empty($this->list->elements[$number]['subparts'])) {
-//
-//			foreach ($this->list->elements[$number]['subparts'] as $_subpart) {
-//
-//				$subpart = $this->getSubEntry($_subpart, $template);
+		if (!empty($this->list->elements[$number]['subparts'])) {
+
+			$subpart = $this->getSubEntries($number, $template);
+
+		}
 
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###SUBTEMPLATE###', $subpart, TRUE), $markerArray);
 
 	}
 
 	/**
-	 * Renders one sub-entry of the list
+	 * Renders all sub-entries of one entry
 	 *
 	 * @access	protected
 	 *
 	 * @param	integer		$number: The number of the entry
 	 * @param	string		$template: Parsed template subpart
 	 *
-	 * @return	string		The rendered entry ready for output
+	 * @return	string		The rendered entries ready for output
 	 */
-	protected function getSubEntry($number, $template) {
+	protected function getSubEntries($number, $template) {
+
+		$content = '';
+
+		foreach ($this->list->elements[$number]['subparts'] as $subpart) {
+
+			$markerArray['###SUBMETADATA###'] = '';
+
+			foreach ($this->metadata as $_index_name => $_wrap) {
+
+				$hasValue = FALSE;
+
+				if (is_array($subpart[$_index_name]) && !empty($this->labels[$_index_name])) {
+
+					$fieldwrap = $this->parseTS($_wrap);
+
+					$field = $this->cObj->stdWrap(htmlspecialchars($this->labels[$_index_name]), $fieldwrap['key.']);
+
+					foreach ($subpart[$_index_name] as $_value) {
+
+						// Link title to pageview.
+						if ($_index_name == 'title') {
+
+							// Get title of parent document if needed.
+							if (empty($_value) && $this->conf['getTitle']) {
+
+								$_value = '['.tx_dlf_document::getTitle($subpart['uid'], TRUE).']';
+
+							}
+
+							// Set fake title if still not present.
+							if (empty($_value)) {
+
+								$_value = $this->pi_getLL('noTitle');
+
+							}
+
+							$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+
+						} elseif ($_index_name == 'type' && !empty($_value)) {
+
+							$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+
+						} elseif (!empty($_value)) {
+
+							$_value = htmlspecialchars($_value);
+
+						}
+
+						if (!empty($_value)) {
+
+							$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+
+							$hasValue = TRUE;
+
+						}
+
+					}
+
+					if ($hasValue) {
+
+						$markerArray['###SUBMETADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+
+					}
+
+				}
+
+			}
+
+			$content .= $this->cObj->substituteMarkerArray($template['subentry'], $markerArray);
+
+		}
+
+		return $this->cObj->substituteSubpart($this->cObj->getSubpart($this->template, '###SUBTEMPLATE###'), '###SUBENTRY###', $content, TRUE);
 
 	}
 
@@ -313,6 +388,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		}
 
 		$subpartArray['entry'] = $this->cObj->getSubpart($this->template, '###ENTRY###');
+
+		$subpartArray['subentry'] = $this->cObj->getSubpart($this->template, '###SUBENTRY###');
 
 		// Set some variable defaults.
 		if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= $this->list->count) {

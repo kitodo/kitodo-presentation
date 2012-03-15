@@ -250,87 +250,101 @@ class tx_dlf_collection extends tx_dlf_plugin {
 	 */
 	protected function showSingleCollection($id) {
 
-		$orderBy = 'tx_dlf_documents.title_sorting';
-
-		if (!empty($this->piVars['order'])) {
-
-			switch ($this->piVars['order']) {
-
-				case 'title':
-				case 'author':
-				case 'place':
-				case 'year':
-
-					$orderBy = 'tx_dlf_documents.'.$this->piVars['order'].'_sorting ASC';
-
-					break;
-
-				case '-title':
-				case '-author':
-				case '-place':
-				case '-year':
-
-					$orderBy = 'tx_dlf_documents.'.substr($this->piVars['order'], 1).'_sorting DESC';
-
-					break;
-
-			}
-
-		}
-
+		// Get all documents in collection.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type',
+			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type,tx_dlf_documents.partof AS partof',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
-			'AND tx_dlf_documents.partof=0 AND tx_dlf_collections.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($id, 'tx_dlf_collections').' AND tx_dlf_collections.pid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->conf['pages'], 'tx_dlf_collections').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'AND tx_dlf_collections.uid='.intval($id).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 			'',
-			$orderBy,
+			'tx_dlf_documents.title_sorting ASC',
 			''
 		);
 
-		$_list = array ();
+		$toplevel = array ();
 
+		// Process results.
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 			if (empty($_metadata)) {
 
 				$_metadata = array (
-					'uid' => $id,
 					'label' => $resArray['collLabel'],
 					'description' => $this->pi_RTEcssText($resArray['collDesc']),
 					'options' => array (
-						'orderBy' => $this->piVars['order']
+						'source' => 'collection',
+						'select' => $id,
+						'order' => 'title'
 					)
 				);
 
 			}
 
-			$_list[] = array (
-				'uid' => $resArray['uid'],
-				'page' => 1,
-				'title' => array ($resArray['title']),
-				'volume' => array ($resArray['volume']),
-				'author' => array ($resArray['author']),
-				'year' => array ($resArray['year']),
-				'place' => array ($resArray['place']),
-				'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages'])),
-				'subparts' => array ()
-			);
+			// Split toplevel documents from volumes.
+			if ($resArray['partof'] == 0) {
+
+				$toplevel[$resArray['uid']] = array (
+					'uid' => $resArray['uid'],
+					'page' => 1,
+					'title' => array ($resArray['title']),
+					'volume' => array ($resArray['volume']),
+					'author' => array ($resArray['author']),
+					'year' => array ($resArray['year']),
+					'place' => array ($resArray['place']),
+					'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages'])),
+					'subparts' => array ()
+				);
+
+			} else {
+
+				$subparts[$resArray['partof']][$resArray['volume_sorting']] = array (
+					'uid' => $resArray['uid'],
+					'page' => 1,
+					'title' => array ($resArray['title']),
+					'volume' => array ($resArray['volume']),
+					'author' => array ($resArray['author']),
+					'year' => array ($resArray['year']),
+					'place' => array ($resArray['place']),
+					'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages']))
+				);
+
+			}
 
 		}
 
+		// Add volumes to the corresponding toplevel documents.
+		foreach ($subparts as $partof => $parts) {
+
+			if (!empty($toplevel[$partof])) {
+
+				ksort($parts);
+
+				$toplevel[$partof]['subparts'] = array_values($parts);
+
+			}
+
+		}
+
+		// Save list of documents.
 		$list = t3lib_div::makeInstance('tx_dlf_list');
 
 		$list->reset();
 
-		$list->add($_list);
+		$list->add(array_values($toplevel));
 
 		$list->metadata = $_metadata;
 
 		$list->save();
 
+		// Clean output buffer.
+		t3lib_div::cleanOutputBuffers();
+
+		// Send headers.
 		header('Location: '.t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->conf['targetPid'])));
+
+		// Flush output buffer and end script processing.
+		ob_end_flush();
 
 		exit;
 
