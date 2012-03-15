@@ -165,7 +165,7 @@ class tx_dlf_list implements t3lib_Singleton {
 	}
 
 	/**
-	 * This empties the current list
+	 * This clears the current list
 	 *
 	 * @access	public
 	 *

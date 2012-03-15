@@ -14,6 +14,7 @@
 			<label index="label.query">Search for:</label>
 			<label index="label.submit">Search</label>
 			<label index="searchfor">Search for: "%s"</label>
+			<label index="hits">%d hits found.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -24,6 +25,7 @@
 			<label index="label.query">Suchen nach:</label>
 			<label index="label.submit">Suchen</label>
 			<label index="searchfor">Suche nach: "%s"</label>
+			<label index="hits">Die Suche ergab %d Treffer.</label>
 		</languageKey>
 	</data>
 </T3locallang>

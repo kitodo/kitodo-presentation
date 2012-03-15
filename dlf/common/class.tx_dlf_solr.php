@@ -112,7 +112,10 @@ class tx_dlf_solr {
 		$solr = t3lib_div::makeInstance('Apache_Solr_Service', $host, $port, $path);
 
 		// Check if connection is established.
-		if ($solr->ping()) {
+		if ($solr->ping() !== FALSE) {
+
+			// Do not collapse single value arrays.
+			$solr->setCollapseSingleValueArrays = FALSE;
 
 			return $solr;
 
