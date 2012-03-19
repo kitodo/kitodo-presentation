@@ -48,11 +48,11 @@ t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toc/class.tx_dlf_toc.php', '_toc', 
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/class.tx_dlf_toolbox.php', '_toolbox', 'list_type', FALSE);
 
 // Register tools for toolbox plugin.
-t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php', '_toolsDfgviewer', 'includeLib', FALSE);
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php', '_toolsDfgviewer', '', FALSE);
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][t3lib_extMgm::getCN($_EXTKEY).'_toolsDfgviewer'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsDfgviewer';
 
-t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php', '_toolsPdf', 'includeLib', FALSE);
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php', '_toolsPdf', '', FALSE);
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][t3lib_extMgm::getCN($_EXTKEY).'_toolsPdf'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsPdf';
 

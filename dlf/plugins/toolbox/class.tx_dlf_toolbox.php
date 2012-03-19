@@ -74,9 +74,6 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 
 		}
 
-		// Set toolbox label.
-		$markerArray['###LABEL###'] = $this->pi_getLL('label', '', TRUE);
-
 		// Build data array.
 		$data = array ();
 
@@ -125,7 +122,7 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 
 		}
 
-		return $this->pi_wrapInBaseClass($this->cObj->substituteSubpart($this->cObj->substituteMarkerArray($this->template, $markerArray), '###TOOLS###', $content, TRUE));
+		return $this->pi_wrapInBaseClass($this->cObj->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
 
 	}
 
