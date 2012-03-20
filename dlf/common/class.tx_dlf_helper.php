@@ -276,55 +276,41 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Get language name from 'static_info_tables'
-	 * TODO: 3-stellige Sprachcodes
+	 * Get language name from ISO code
 	 *
 	 * @access	public
 	 *
-	 * @param	string		$code: ISO 3166-2 language code
+	 * @param	string		$code: ISO 639-1 or ISO 639-2/B language code
 	 *
 	 * @return	string		Localized full name of language or unchanged input
 	 */
 	public static function getLanguageName($code) {
 
-		$code = strtoupper(trim($code));
+		$code = strtolower(trim($code));
 
-		if (!preg_match('/^[A-Z]{2}$/', $code) || !t3lib_extMgm::isLoaded('static_info_tables')) {
+		if (preg_match('/^[a-z]{3}$/', $code)) {
 
-			trigger_error('Invalid language code or extension "static_info_tables" not loaded', E_USER_WARNING);
+			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'/lib/ISO-639/iso-639-2b.xml', FALSE, TRUE);
+
+		} elseif (preg_match('/^[a-z]{2}$/', $code)) {
+
+			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'/lib/ISO-639/iso-639-1.xml', FALSE, TRUE);
+
+		} else {
+
+			trigger_error('Invalid language code '.strtoupper($code), E_USER_WARNING);
 
 			return $code;
 
 		}
 
-		if (!$GLOBALS['TSFE']->lang || !t3lib_extMgm::isLoaded('static_info_tables_'.$GLOBALS['TSFE']->lang)) {
+		if (!empty($iso639['default'][$code])) {
 
-			$field = 'lg_name_en';
-
-		} else {
-
-			$field = 'lg_name_'.$GLOBALS['TSFE']->lang;
-
-		}
-
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'static_languages.'.$field.' AS language',
-			'static_languages',
-			'static_languages.lg_iso_2='.$GLOBALS['TYPO3_DB']->fullQuoteStr($code, 'static_languages'),
-			'',
-			'',
-			'1'
-		);
-
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-
-			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-			return $resArray['language'];
+			return $GLOBALS['LANG']->getLLL($code, $iso639, FALSE);
 
 		} else {
 
-			trigger_error('Language code not found in extension "static_info_tables"', E_USER_WARNING);
+			trigger_error('Language code '.strtoupper($code).' not found', E_USER_WARNING);
 
 			return $code;
 
