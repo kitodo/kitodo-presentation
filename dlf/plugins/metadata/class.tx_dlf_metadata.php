@@ -202,11 +202,25 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		}
 
+		// Save original data array.
+		$cObjData = $this->cObj->data;
+
 		// Parse the metadata arrays.
 		foreach ($metadata as $_metadata) {
 
 			$markerArray['###METADATA###'] = '';
 
+			// Reset content object's data array.
+			$this->cObj->data = $cObjData;
+
+			// Load all the metadata values into the content object's data array.
+			foreach ($_metadata as $_index_name => $_value) {
+
+				$this->cObj->data[$_index_name] = implode($this->conf['separator'], $_value);
+
+			}
+
+			// Process each metadate.
 			foreach ($metaList as $_index_name => $_wrap) {
 
 				$hasValue = FALSE;
@@ -245,6 +259,11 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 						} elseif ($_index_name == 'owner' && !empty($_value)) {
 
 							$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
+
+						// Translate ISO 639 language code.
+						} elseif ($_index_name == 'language' && !empty($_value)) {
+
+							$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
 
 						} elseif (!empty($_value)) {
 
