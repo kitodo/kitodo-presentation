@@ -286,31 +286,29 @@ class tx_dlf_helper {
 	 */
 	public static function getLanguageName($code) {
 
-		$code = strtolower(trim($code));
+		$_code = strtolower(trim($code));
 
-		if (preg_match('/^[a-z]{3}$/', $code)) {
+		if (preg_match('/^[a-z]{3}$/', $_code)) {
 
 			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'/lib/ISO-639/iso-639-2b.xml', FALSE, TRUE);
 
-		} elseif (preg_match('/^[a-z]{2}$/', $code)) {
+		} elseif (preg_match('/^[a-z]{2}$/', $_code)) {
 
 			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'/lib/ISO-639/iso-639-1.xml', FALSE, TRUE);
 
 		} else {
 
-			trigger_error('Invalid language code '.strtoupper($code), E_USER_WARNING);
-
 			return $code;
 
 		}
 
-		if (!empty($iso639['default'][$code])) {
+		if (!empty($iso639['default'][$_code])) {
 
-			return $GLOBALS['LANG']->getLLL($code, $iso639, FALSE);
+			return $GLOBALS['LANG']->getLLL($_code, $iso639, FALSE);
 
 		} else {
 
-			trigger_error('Language code '.strtoupper($code).' not found', E_USER_WARNING);
+			trigger_error('Language code "'.$code.'" not found', E_USER_WARNING);
 
 			return $code;
 

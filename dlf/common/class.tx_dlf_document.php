@@ -631,20 +631,40 @@ class tx_dlf_document {
 				''
 			);
 
+			// We need a DOMDocument here, because SimpleXML doesn't support XPath functions properly.
+			$_domNode = dom_import_simplexml($this->dmdSec[$_dmdId]['xml']);
+
+			$_domXPath = new DOMXPath($_domNode->ownerDocument);
+
+			// OK, now make the XPath queries.
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
-				if ($resArray['xpath'] && ($_values = $this->dmdSec[$_dmdId]['xml']->xpath($resArray['xpath']))) {
+				if ($resArray['xpath'] && ($_values = $_domXPath->evaluate($resArray['xpath'], $_domNode))) {
 
-					$_metadata[$resArray['index_name']] = array ();
+					// Check if the XPath query returned a node list or typed result.
+					if ($_values instanceof DOMNodeList) {
 
-					foreach ($_values as $_value) {
+						if ($_values->length > 0) {
 
-						$_metadata[$resArray['index_name']][] = (string) $_value;
+							$_metadata[$resArray['index_name']] = array ();
+
+							foreach ($_values as $_value) {
+
+								$_metadata[$resArray['index_name']][] = trim($_value->nodeValue);
+
+							}
+
+						}
+
+					} else {
+
+						$_metadata[$resArray['index_name']][0] = trim((string) $_values);
 
 					}
 
 				}
 
+				// Set default value if applicable.
 				if (empty($_metadata[$resArray['index_name']][0]) && $resArray['default_value']) {
 
 					$_metadata[$resArray['index_name']] = array ($resArray['default_value']);
