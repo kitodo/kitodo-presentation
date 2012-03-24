@@ -96,10 +96,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 		$channel->appendChild($rss->createElement('pubDate', date('r', $GLOBALS['EXEC_TIME'])));
 
-		// Load extension configuration
-		$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
-
-		$channel->appendChild($rss->createElement('generator', htmlspecialchars($_extconf['useragent'], ENT_NOQUOTES, 'UTF-8')));
+		$channel->appendChild($rss->createElement('generator', htmlspecialchars($this->conf['useragent'], ENT_NOQUOTES, 'UTF-8')));
 
 		// Add item elements.
 		if (!$this->conf['excludeOther'] || empty($this->piVars['collection']) || t3lib_div::inList($this->conf['collections'], $this->piVars['collection'])) {

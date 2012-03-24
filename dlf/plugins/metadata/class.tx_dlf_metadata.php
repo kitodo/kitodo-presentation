@@ -97,8 +97,6 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 						$_data['_id'] = $id;
 
-						$_data['type'][0] = $this->pi_getLL($_data['type'][0], tx_dlf_helper::translate($_data['type'][0], 'tx_dlf_structures', $this->conf['pages']), FALSE);
-
 						$metadata[] = $_data;
 
 					}
@@ -115,8 +113,6 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 					$_data['_id'] = $id;
 
-					$_data['type'][0] = $this->pi_getLL($_data['type'][0], tx_dlf_helper::translate($_data['type'][0], 'tx_dlf_structures', $this->conf['pages']), FALSE);
-
 					$metadata[] = $_data;
 
 				}
@@ -131,8 +127,6 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			$_data = $this->doc->getTitleData($this->conf['pages']);
 
 			$_data['_id'] = '';
-
-			$_data['type'][0] = $this->pi_getLL($_data['type'][0], tx_dlf_helper::translate($_data['type'][0], 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
 			$metadata[] = $_data;
 
@@ -259,6 +253,11 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 						} elseif ($_index_name == 'owner' && !empty($_value)) {
 
 							$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
+
+						// Translate document type.
+						} elseif ($_index_name == 'type' && !empty($_value)) {
+
+							$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
 						// Translate ISO 639 language code.
 						} elseif ($_index_name == 'language' && !empty($_value)) {
