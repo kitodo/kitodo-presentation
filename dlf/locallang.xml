@@ -52,6 +52,7 @@
 			<label index="tx_dlf_metadata.encoded">Encoding</label>
 			<label index="tx_dlf_metadata.encoded.none">none</label>
 			<label index="tx_dlf_metadata.xpath">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace)</label>
+			<label index="tx_dlf_metadata.xpath_sorting">XPath for sorting (optional)</label>
 			<label index="tx_dlf_metadata.default_value">Default Value</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
 			<label index="tx_dlf_metadata.tokenized">Tokenize in Search Index?</label>
@@ -182,6 +183,7 @@
 			<label index="tx_dlf_metadata.encoded">Datenformat</label>
 			<label index="tx_dlf_metadata.encoded.none">keines</label>
 			<label index="tx_dlf_metadata.xpath">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum)</label>
+			<label index="tx_dlf_metadata.xpath_sorting">XPath für Sortierfeld (optional)</label>
 			<label index="tx_dlf_metadata.default_value">Standardwert</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
 			<label index="tx_dlf_metadata.tokenized">Im Suchindex in Tokens zerlegen?</label>

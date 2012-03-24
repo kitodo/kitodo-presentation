@@ -396,7 +396,7 @@ class tx_dlf_indexing {
 
 		// Get the metadata indexing options.
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.stored AS stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.boost AS boost',
+			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.stored AS stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.boost AS boost',
 			'tx_dlf_metadata',
 			'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 			'',
@@ -421,6 +421,18 @@ class tx_dlf_indexing {
 			if ($_indexing['indexed']) {
 
 				self::$indexed[] = $_indexing['index_name'];
+
+			}
+
+			if ($_indexing['is_sortable']) {
+
+				self::$sortables[] = $_indexing['index_name'];
+
+			}
+
+			if ($_indexing['is_facet']) {
+
+				self::$facets[] = $_indexing['index_name'];
 
 			}
 
@@ -488,73 +500,19 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('type', $logicalUnit['type'], self::$fieldboost['type']);
 
-			unset ($metadata['type']);
-
 			$solrDoc->setField('title', $metadata['title'][0], self::$fieldboost['title']);
-
-			unset ($metadata['title']);
-
-			$solrDoc->setField('title_sorting', $metadata['title_sorting'][0]);
-
-			unset ($metadata['title_sorting']);
 
 			$solrDoc->setField('author', $metadata['author'], self::$fieldboost['author']);
 
-			$solrDoc->setField('author_faceting', $metadata['author']);
-
-			unset ($metadata['author']);
-
-			if (!empty($metadata['author_sorting'][0])) {
-
-				$solrDoc->setField('author_sorting', $metadata['author_sorting'][0]);
-
-			}
-
-			unset ($metadata['author_sorting']);
-
 			$solrDoc->setField('year', $metadata['year'], self::$fieldboost['year']);
-
-			$solrDoc->setField('year_faceting', $metadata['year']);
-
-			unset ($metadata['year']);
-
-			if (!empty($metadata['year_sorting'][0])) {
-
-				$solrDoc->setField('year_sorting', intval($metadata['year_sorting'][0]));
-
-			}
-
-			unset ($metadata['year_sorting']);
 
 			$solrDoc->setField('place', $metadata['place'], self::$fieldboost['place']);
 
-			$solrDoc->setField('place_faceting', $metadata['place']);
-
-			unset ($metadata['place']);
-
-			if (!empty($metadata['place_sorting'][0])) {
-
-				$solrDoc->setField('place_sorting', $metadata['place_sorting'][0]);
-
-			}
-
-			unset ($metadata['place_sorting']);
-
 			$solrDoc->setField('volume', $metadata['volume'][0], self::$fieldboost['volume']);
-
-			unset ($metadata['volume']);
-
-			if (!empty($metadata['volume_sorting'][0])) {
-
-				$solrDoc->setField('volume_sorting', intval($metadata['volume_sorting'][0]));
-
-			}
-
-			unset ($metadata['volume_sorting']);
 
 			foreach ($metadata as $index_name => $data) {
 
-				if (!empty($data)) {
+				if (strpos($index_name, '_sorting') === FALSE && !empty($data)) {
 
 					$suffix = (in_array($index_name, self::$tokenized) ? 't' : 'u');
 
@@ -564,11 +522,19 @@ class tx_dlf_indexing {
 
 					$solrDoc->setField($index_name.'_'.$suffix, $data, self::$fieldboost[$index_name]);
 
-					// Add sortable fields to index.
-					$solrDoc->setField($index_name.'_sorting', $data[0]);
+					if (in_array($index_name, self::$sortables)) {
 
-					// Add facets to index.
-					$solrDoc->setField($index_name.'_faceting', $data);
+						// Add sortable fields to index.
+						$solrDoc->setField($index_name.'_sorting', $metadata[$index_name.'_sorting'][0]);
+
+					}
+
+					if (in_array($index_name, self::$facets)) {
+
+						// Add facets to index.
+						$solrDoc->setField($index_name.'_faceting', $data);
+
+					}
 
 				}
 

@@ -83,6 +83,7 @@ CREATE TABLE tx_dlf_metadata (
     index_name tinytext NOT NULL,
     encoded int(11) DEFAULT '0' NOT NULL,
     xpath text NOT NULL,
+    xpath_sorting text NOT NULL,
     default_value text NOT NULL,
     wrap text NOT NULL,
     tokenized tinyint(4) DEFAULT '0' NOT NULL,

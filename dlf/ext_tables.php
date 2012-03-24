@@ -92,6 +92,7 @@ $TCA['tx_dlf_metadata'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfmetadata.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
+		'requestUpdate' => 'is_sortable',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',

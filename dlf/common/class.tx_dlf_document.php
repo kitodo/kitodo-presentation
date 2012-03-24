@@ -623,7 +623,7 @@ class tx_dlf_document {
 
 			// Get the additional metadata from database.
 			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.default_value AS default_value',
+				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value',
 				'tx_dlf_metadata,tx_dlf_formats',
 				'tx_dlf_metadata.pid='.$mPid.' AND ((tx_dlf_metadata.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$_dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.encoded=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata').tx_dlf_helper::whereClause('tx_dlf_formats'),
 				'',
@@ -639,6 +639,7 @@ class tx_dlf_document {
 			// OK, now make the XPath queries.
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
+				// Set metadata field's value(s).
 				if ($resArray['xpath'] && ($_values = $_domXPath->evaluate($resArray['xpath'], $_domNode))) {
 
 					// Check if the XPath query returned a node list or typed result.
@@ -650,7 +651,7 @@ class tx_dlf_document {
 
 							foreach ($_values as $_value) {
 
-								$_metadata[$resArray['index_name']][] = trim($_value->nodeValue);
+								$_metadata[$resArray['index_name']][] = trim((string) $_value->nodeValue);
 
 							}
 
@@ -671,12 +672,42 @@ class tx_dlf_document {
 
 				}
 
+				// Set sorting value if applicable.
+				if (!empty($_metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
+
+					if ($resArray['xpath_sorting'] && ($_values = $_domXPath->evaluate($resArray['xpath_sorting'], $_domNode))) {
+
+						// Check if the XPath query returned a node list or typed result.
+						if ($_values instanceof DOMNodeList) {
+
+							if ($_values->length > 0) {
+
+								$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values[0]->nodeValue);
+
+							}
+
+						} else {
+
+							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values);
+
+						}
+
+					} else {
+
+						$_metadata[$resArray['index_name'].'_sorting'][0] = $_metadata[$resArray['index_name']][0];
+
+					}
+
+				}
+
 			}
 
 			// Set title to empty string if not present.
 			if (empty($_metadata['title'][0])) {
 
 				$_metadata['title'][0] = '';
+
+				$_metadata['title_sorting'][0] = '';
 
 			}
 

@@ -443,7 +443,7 @@ $TCA['tx_dlf_structures'] = array (
 $TCA['tx_dlf_metadata'] = array (
 	'ctrl' => $TCA['tx_dlf_metadata']['ctrl'],
 	'interface' => array (
-		'showRecordFieldList' => 'label,index_name,encoding,xpath,default,tokenized,stored,indexed,is_sortable,is_facet',
+		'showRecordFieldList' => 'label,index_name,encoding,xpath,xpath_sorting,default,tokenized,stored,indexed,is_sortable,is_facet',
 	),
 	'feInterface' => $TCA['tx_dlf_metadata']['feInterface'],
 	'columns' => array (
@@ -525,6 +525,17 @@ $TCA['tx_dlf_metadata'] = array (
 		'xpath' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.xpath',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 1024,
+				'eval' => 'trim',
+			),
+		),
+		'xpath_sorting' => array (
+			'exclude' => 1,
+			'displayCond' => 'FIELD:is_sortable:REQ:true',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.xpath_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -629,7 +640,7 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, encoded;;;;2-2-2, xpath, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, encoded;;;;2-2-2, xpath, xpath_sorting, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed', 'canNotCollapse' => 1),
