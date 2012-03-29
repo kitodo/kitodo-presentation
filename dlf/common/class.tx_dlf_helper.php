@@ -290,11 +290,11 @@ class tx_dlf_helper {
 
 		if (preg_match('/^[a-z]{3}$/', $_code)) {
 
-			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'/lib/ISO-639/iso-639-2b.xml', FALSE, TRUE);
+			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml', FALSE, TRUE);
 
 		} elseif (preg_match('/^[a-z]{2}$/', $_code)) {
 
-			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'/lib/ISO-639/iso-639-1.xml', FALSE, TRUE);
+			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml', FALSE, TRUE);
 
 		} else {
 

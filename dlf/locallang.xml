@@ -122,6 +122,8 @@
 			<label index="tt_content.dlf_statistics">DLF: Statistics</label>
 			<label index="tt_content.dlf_toc">DLF: Table of Contents</label>
 			<label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
+			<label index="config.cliUserGroup">CLI user/group</label>
+			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (default is "Goobi.Presentation")</label>
 			<label index="config.fileGrps">Additional METS fileGrps: comma-separated list of @USE attribute values (default is "DEFAULT,MIN,MAX,THUMBS")</label>
 			<label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
@@ -135,6 +137,32 @@
 			<label index="solr.status">The status code returned by Apache Solr is &lt;strong&gt;%s&lt;/strong&gt;.</label>
 			<label index="solr.notConnected">Connection failed!</label>
 			<label index="solr.error">Apache Solr was not reachable under &lt;strong&gt;%s&lt;/strong&gt;.</label>
+			<label index="cliUserGroup.usrRealName">Goobi.Presentation command line indexer</label>
+			<label index="cliUserGroup.usrOkay">User "_cli_dlf" configured and enabled!</label>
+			<label index="cliUserGroup.usrOkayMsg">The backend user for the command line indexer exists and is configured properly.</label>
+			<label index="cliUserGroup.usrConfigured">User "_cli_dlf" configured successfully!</label>
+			<label index="cliUserGroup.usrConfiguredMsg">The backend user for the command line indexer was configured properly.</label>
+			<label index="cliUserGroup.usrNotConfigured">User "_cli_dlf" not configured!</label>
+			<label index="cliUserGroup.usrNotConfiguredMsg">The backend user for the command line indexer exists, but is not configured properly.</label>
+			<label index="cliUserGroup.usrCreated">User "_cli_dlf" created successfully!</label>
+			<label index="cliUserGroup.usrCreatedMsg">The backend user for the command line indexer was created and configured properly.</label>
+			<label index="cliUserGroup.usrNotCreated">User "_cli_dlf" not created!</label>
+			<label index="cliUserGroup.usrNotCreatedMsg">The backend user for the command line indexer does not exist.</label>
+			<label index="cliUserGroup.grpDescription">Usergroup for the Goobi.Presentation command line indexer.</label>
+			<label index="cliUserGroup.grpOkay">Usergroup "_cli_dlf" configured and enabled!</label>
+			<label index="cliUserGroup.grpOkayMsg">The backend usergroup for the command line indexer exists and is configured properly.</label>
+			<label index="cliUserGroup.grpConfigured">Usergroup "_cli_dlf" configured successfully!</label>
+			<label index="cliUserGroup.grpConfiguredMsg">The backend usergroup for the command line indexer was configured properly.</label>
+			<label index="cliUserGroup.grpNotConfigured">Usergroup "_cli_dlf" not configured!</label>
+			<label index="cliUserGroup.grpNotConfiguredMsg">The backend usergroup for the command line indexer exists, but is not configured properly.</label>
+			<label index="cliUserGroup.grpCreated">Usergroup "_cli_dlf" created successfully!</label>
+			<label index="cliUserGroup.grpCreatedMsg">The backend usergroup for the command line indexer was created and configured properly.</label>
+			<label index="cliUserGroup.grpNotCreated">Usergroup "_cli_dlf" not created!</label>
+			<label index="cliUserGroup.grpNotCreatedMsg">The backend usergroup for the command line indexer does not exist.</label>
+			<label index="cliUserGroup.cliOkay">Command Line Interface available!</label>
+			<label index="cliUserGroup.cliOkayMsg">The TYPO3 command line interface is available for the indexer to use.</label>
+			<label index="cliUserGroup.cliNotOkay">Command Line Interface not available!</label>
+			<label index="cliUserGroup.cliNotOkayMsg">The TYPO3 command line interface is not available for the indexer to use.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_documents">Dokumente</label>
@@ -253,6 +281,8 @@
 			<label index="tt_content.dlf_statistics">DLF: Statistik</label>
 			<label index="tt_content.dlf_toc">DLF: Inhaltsverzeichnis</label>
 			<label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
+			<label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
+			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (Standard ist "Goobi.Presentation")</label>
 			<label index="config.fileGrps">Zusätzliche METS fileGrps: Komma-getrennte Liste von @USE Attributwerten (Standard ist "DEFAULT,MIN,MAX,THUMBS")</label>
 			<label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
@@ -266,6 +296,32 @@
 			<label index="solr.status">Apache Solr gibt den Statuscode &lt;strong&gt;%s&lt;/strong&gt; zurück.</label>
 			<label index="solr.notConnected">Verbindung fehlgeschlagen!</label>
 			<label index="solr.error">Apache Solr ist unter &lt;strong&gt;%s&lt;/strong&gt; nicht erreichbar.</label>
+			<label index="cliUserGroup.usrRealName">Goobi.Presentation Kommandozeilen-Indexierungsdienst</label>
+			<label index="cliUserGroup.usrOkay">Nutzer "_cli_dlf" eingerichtet!</label>
+			<label index="cliUserGroup.usrOkayMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst ist korrekt konfiguriert und aktiviert.</label>
+			<label index="cliUserGroup.usrConfigured">Nutzer "_cli_dlf" erfolgreich konfiguriert!</label>
+			<label index="cliUserGroup.usrConfiguredMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst wurde erfolgreich konfiguriert.</label>
+			<label index="cliUserGroup.usrNotConfigured">Nutzer "_cli_dlf" nicht konfiguriert!</label>
+			<label index="cliUserGroup.usrNotConfiguredMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst existiert, ist aber nicht korrekt konfiguriert.</label>
+			<label index="cliUserGroup.usrCreated">Nutzer "_cli_dlf" erfolgreich angelegt!</label>
+			<label index="cliUserGroup.usrCreatedMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst wurde erfolgreich angelegt und konfiguriert.</label>
+			<label index="cliUserGroup.usrNotCreated">Nutzer "_cli_dlf" nicht angelegt!</label>
+			<label index="cliUserGroup.usrNotCreatedMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst existiert nicht.</label>
+			<label index="cliUserGroup.grpDescription">Nutzergruppe für den Goobi.Presentation Kommandozeilen-Indexierungsdienst.</label>
+			<label index="cliUserGroup.grpOkay">Nutzergruppe "_cli_dlf" eingerichtet!</label>
+			<label index="cliUserGroup.grpOkayMsg">Die Nutzergruppe für den Kommandozeilen-Indexierungsdienst ist korrekt konfiguriert und aktiviert.</label>
+			<label index="cliUserGroup.grpConfigured">Nutzergruppe "_cli_dlf" erfolgreich konfiguriert!</label>
+			<label index="cliUserGroup.grpConfiguredMsg">Die Nutzergruppe für den Kommandozeilen-Indexierungsdienst wurde erfolgreich konfiguriert.</label>
+			<label index="cliUserGroup.grpNotConfigured">Nutzergruppe "_cli_dlf" nicht konfiguriert!</label>
+			<label index="cliUserGroup.grpNotConfiguredMsg">Die Nutzergruppe für den Kommandozeilen-Indexierungsdienst existiert, ist aber nicht korrekt konfiguriert.</label>
+			<label index="cliUserGroup.grpCreated">Nutzergruppe "_cli_dlf" erfolgreich angelegt!</label>
+			<label index="cliUserGroup.grpCreatedMsg">Die Nutzergruppe für den Kommandozeilen-Indexierungsdienst wurde erfolgreich angelegt und konfiguriert.</label>
+			<label index="cliUserGroup.grpNotCreated">Nutzergruppe "_cli_dlf" nicht angelegt!</label>
+			<label index="cliUserGroup.grpNotCreatedMsg">Die Nutzergruppe für den Kommandozeilen-Indexierungsdienst existiert nicht.</label>
+			<label index="cliUserGroup.cliOkay">Kommandozeilen-Schnittstelle verfügbar!</label>
+			<label index="cliUserGroup.cliOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst zur Verfügung.</label>
+			<label index="cliUserGroup.cliNotOkay">Kommandozeilen-Schnittstelle nicht verfügbar!</label>
+			<label index="cliUserGroup.cliNotOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst nicht zur Verfügung.</label>
 		</languageKey>
 	</data>
 </T3locallang>

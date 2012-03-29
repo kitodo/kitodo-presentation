@@ -210,7 +210,15 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			// Load all the metadata values into the content object's data array.
 			foreach ($_metadata as $_index_name => $_value) {
 
-				$this->cObj->data[$_index_name] = implode($this->conf['separator'], $_value);
+				if (is_array($_value)) {
+
+					$this->cObj->data[$_index_name] = implode($this->conf['separator'], $_value);
+
+				} else {
+
+					$this->cObj->data[$_index_name] = $_value;
+
+				}
 
 			}
 
