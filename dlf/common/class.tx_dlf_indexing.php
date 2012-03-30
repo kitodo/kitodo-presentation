@@ -134,7 +134,7 @@ class tx_dlf_indexing {
 	 *
 	 * @return	integer		0 on success or 1 on failure
 	 */
-	public static function add(tx_dlf_document &$doc, $core = 1) {
+	public static function add(tx_dlf_document &$doc, $core = 0) {
 
 		if (in_array($doc->uid, self::$processedDocs)) {
 
@@ -242,8 +242,8 @@ class tx_dlf_indexing {
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
 					$GLOBALS['LANG']->getLL('flash.solrNoConnection', TRUE),
-					$GLOBALS['LANG']->getLL('flash.error', TRUE),
-					t3lib_FlashMessage::ERROR,
+					$GLOBALS['LANG']->getLL('flash.warning', TRUE),
+					t3lib_FlashMessage::WARNING,
 					TRUE
 				);
 
@@ -251,7 +251,7 @@ class tx_dlf_indexing {
 
 			}
 
-			trigger_error('Could not connect to Apache Solr server', E_USER_ERROR);
+			trigger_error('Could not connect to Apache Solr server', E_USER_WARNING);
 
 			return 1;
 

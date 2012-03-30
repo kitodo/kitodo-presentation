@@ -56,6 +56,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Disable caching for this plugin.
 		$this->setCache(FALSE);
 
+		// Quit without doing anything if required variables are not set.
+		if (empty($this->conf['solrcore'])) {
+
+			trigger_error('Incomplete configuration for plugin '.get_class($this), E_USER_NOTICE);
+
+			return $content;
+
+		}
+
 		if (empty($this->piVars['query'])) {
 
 			// Load template file.
@@ -83,12 +92,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			return $this->pi_wrapInBaseClass($content);
 
-		} else {
+		} elseif (($solr = tx_dlf_solr::solrConnect($this->conf['solrcore'])) !== NULL) {
 
-			// Get Solr instance...
-			$solr = tx_dlf_solr::solrConnect($this->conf['solrcore']);
-
-			// ...and perform search.
+			// Perform search.
 			$query = $solr->search($this->piVars['query'], 0, $this->conf['limit'], array ());
 
 			$numHits = count($query->response->docs);

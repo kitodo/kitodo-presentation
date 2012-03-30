@@ -771,8 +771,8 @@ class tx_dlf_helper {
 
 		if (TYPO3_MODE === 'FE') {
 
-			// Tables "tx_dlf_solrcores" and "tx_dlf_formats" always have PID 0.
-			if (in_array($table, array ('tx_dlf_solrcores', 'tx_dlf_formats'))) {
+			// Table "tx_dlf_formats" always has PID 0.
+			if ($table == 'tx_dlf_formats') {
 
 				return t3lib_BEfunc::deleteClause($table);
 

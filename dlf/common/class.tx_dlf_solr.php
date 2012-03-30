@@ -55,7 +55,7 @@ class tx_dlf_solr {
 	 *
 	 * @return	mixed		Instance of Apache_Solr_Service or NULL on failure
 	 */
-	public static function solrConnect($core = 1) {
+	public static function solrConnect($core = 0) {
 
 		// Load class.
 		if (!class_exists('Apache_Solr_Service')) {
@@ -97,7 +97,7 @@ class tx_dlf_solr {
 
 			} else {
 
-				trigger_error('Could not find Solr core with UID '.$core, E_USER_ERROR);
+				trigger_error('Could not find Solr core with UID '.$core, E_USER_NOTICE);
 
 				return;
 

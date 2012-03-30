@@ -70,7 +70,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		$_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
 			'tx_dlf_solrcores',
-			'tx_dlf_solrcores.pid=0'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+			'1=1'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
 			'',
 			'',
 			''
@@ -134,7 +134,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		$_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
 			'tx_dlf_solrcores',
-			'tx_dlf_solrcores.pid=0'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+			'1=1'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
 			'',
 			'',
 			''

@@ -54,7 +54,9 @@ class tx_dlf_statistics extends tx_dlf_plugin {
 		$this->init($conf);
 
 		// Quit without doing anything if required configuration variables are not set.
-		if (!$this->conf['pages']) {
+		if (empty($this->conf['pages'])) {
+
+			trigger_error('Incomplete configuration for plugin '.get_class($this), E_USER_NOTICE);
 
 			return $content;
 

@@ -148,6 +148,61 @@ class tx_dlf_tceforms {
 	}
 
 	/**
+	 * Helper to get flexform's items array for plugin "tx_dlf_search"
+	 *
+	 * @access	public
+	 *
+	 * @param	array		&$params: An array with parameters
+	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 *
+	 * @return	void
+	 */
+	public function itemsProcFunc_solrList(&$params, &$pObj) {
+
+		if ($params['row']['pi_flexform']) {
+
+			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+
+			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+
+			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
+			// i.e. instead of "18" it reads "pages_18|Title"
+			if (!t3lib_div::testInt($pages)) {
+
+				$_parts = explode('|', $pages);
+
+				$pages = array_pop(explode('_', $_parts[0]));
+
+			}
+
+			if ($pages > 0) {
+
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'label,uid',
+					'tx_dlf_solrcores',
+					'pid IN ('.intval($pages).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+					'',
+					'label',
+					''
+				);
+
+				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+
+					while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+
+						$params['items'][] = $resArray;
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
 	 * Helper to get flexform's items array for plugin "tx_dlf_toolbox"
 	 *
 	 * @access	public

@@ -1031,7 +1031,7 @@ class tx_dlf_document {
 	 *
 	 * @return	boolean		TRUE on success or FALSE on failure
 	 */
-	public function save($pid = 0, $core = 1) {
+	public function save($pid = 0, $core = 0) {
 
 		if (TYPO3_MODE !== 'BE') {
 
@@ -1043,6 +1043,9 @@ class tx_dlf_document {
 
 		// Make sure $pid is a non-negative integer.
 		$pid = max(intval($pid), 0);
+
+		// Make sure $core is a non-negative integer.
+		$core = max(intval($core), 0);
 
 		// If $pid is not given, try to get it elsewhere.
 		if (!$pid && $this->pid) {
@@ -1263,7 +1266,7 @@ class tx_dlf_document {
 
 				if ($superior->pid != $pid) {
 
-					$superior->save($pid);
+					$superior->save($pid, $core);
 
 				}
 
@@ -1347,6 +1350,10 @@ class tx_dlf_document {
 		if ($core) {
 
 			tx_dlf_indexing::add($this, $core);
+
+		} else {
+
+			trigger_error('Invalid UID for Solr core ('.$core.') given to index document', E_USER_NOTICE);
 
 		}
 

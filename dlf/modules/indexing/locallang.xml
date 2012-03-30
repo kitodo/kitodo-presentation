@@ -13,6 +13,7 @@
 			<label index="form.submit">Start indexing</label>
 			<label index="flash.attention">Attention!</label>
 			<label index="flash.done">Done!</label>
+			<label index="flash.warning">Warning!</label>
 			<label index="flash.error">Error!</label>
 			<label index="flash.running">Please wait...</label>
 			<label index="flash.newCollection">New collection "%s" [%u] added to database.</label>
@@ -33,6 +34,7 @@
 			<label index="form.submit">Indexierung starten</label>
 			<label index="flash.attention">Achtung!</label>
 			<label index="flash.done">Fertig!</label>
+			<label index="flash.warning">Warnung!</label>
 			<label index="flash.error">Fehler!</label>
 			<label index="flash.running">Indexierung läuft...</label>
 			<label index="flash.newCollection">Neue Sammlung "%s" [%u] zur Datenbank hinzugefügt.</label>

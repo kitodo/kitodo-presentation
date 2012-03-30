@@ -163,7 +163,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		// Check for typoscript configuration to prevent fatal error.
 		if (empty($this->conf['menuConf.'])) {
 
-			trigger_error('No typoscript configuration for table of contents available', E_USER_ERROR);
+			trigger_error('No typoscript configuration for table of contents available', E_USER_NOTICE);
 
 			return $content;
 
