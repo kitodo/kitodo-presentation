@@ -292,18 +292,8 @@ $TCA['tx_dlf_documents'] = array (
 			),
 		),
 		'solrcore' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.solrcore',
 			'config' => array (
-				'type' => 'select',
-				'items' => array (
-					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_documents.solrcore.none', 0),
-				),
-				'foreign_table' => 'tx_dlf_solrcores',
-				'foreign_table_where' => 'AND tx_dlf_solrcores.pid=0 ORDER BY tx_dlf_solrcores.label',
-				'size' => 1,
-				'minitems' => 1,
-				'maxitems' => 1,
+				'type' => 'passthrough',
 			),
 		),
 		'status' => array (
@@ -322,7 +312,7 @@ $TCA['tx_dlf_documents'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author;;2, year;;3, place;;4, structure;;5;;2-2-2, collections;;;;3-3-3, metadata, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author;;2, year;;3, place;;4, structure;;5;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'title_sorting', 'canNotCollapse' => 1),

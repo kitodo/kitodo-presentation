@@ -129,7 +129,7 @@ $TCA['tx_dlf_solrcores'] = array (
 		'delete' => 'deleted',
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfsolrcores.png',
-		'rootLevel'	=> 0,
+		'rootLevel'	=> -1,
 		'adminOnly' => 1,
 		'dividers2tabs' => 2,
 	),

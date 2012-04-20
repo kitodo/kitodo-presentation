@@ -29,8 +29,6 @@
 			<label index="tx_dlf_documents.volume_sorting">Number of Volume (Sorting)</label>
 			<label index="tx_dlf_documents.collections">Collections</label>
 			<label index="tx_dlf_documents.owner">Owner</label>
-			<label index="tx_dlf_documents.solrcore">Solr Core</label>
-			<label index="tx_dlf_documents.solrcore.none">none</label>
 			<label index="tx_dlf_documents.status">Status</label>
 			<label index="tx_dlf_documents.status.default">default</label>
 			<label index="tx_dlf_documents.tab1">Titledata</label>
@@ -188,8 +186,6 @@
 			<label index="tx_dlf_documents.volume_sorting">Bandnummer (Sortierung)</label>
 			<label index="tx_dlf_documents.collections">Sammlungen</label>
 			<label index="tx_dlf_documents.owner">Besitzer</label>
-			<label index="tx_dlf_documents.solrcore">Solr Kern</label>
-			<label index="tx_dlf_documents.solrcore.none">keiner</label>
 			<label index="tx_dlf_documents.status">Status</label>
 			<label index="tx_dlf_documents.status.default">Standard</label>
 			<label index="tx_dlf_documents.tab1">Titeldaten</label>
