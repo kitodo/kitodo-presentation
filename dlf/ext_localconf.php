@@ -66,4 +66,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/common/class.tx_dlf_document.php'
 // Register command line scripts.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array ('EXT:'.$_EXTKEY.'/cli/class.tx_dlf_cli.php', '_CLI_dlf');
 
+// Register solr suggest eID.
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_suggest'] = 'EXT:'.$_EXTKEY.'/plugins/search/class.tx_dlf_search_suggest.php';
 ?>
