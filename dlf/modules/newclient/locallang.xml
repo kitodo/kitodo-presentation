@@ -104,6 +104,7 @@
 			<label index="volume">Volume</label>
 			<label index="collection">Collection(s)</label>
 			<label index="owner">Owner</label>
+			<label index="language">Language</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="title">Neuer Mandant</label>
@@ -204,6 +205,7 @@
 			<label index="volume">Band</label>
 			<label index="collection">Sammlung(en)</label>
 			<label index="owner">Besitzer</label>
+			<label index="language">Sprache</label>
 		</languageKey>
 	</data>
 </T3locallang>
