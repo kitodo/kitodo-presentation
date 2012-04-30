@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2012 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -36,22 +36,12 @@ if (!defined('TYPO3_cliMode')) {
  * CLI script for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+ * @copyright	Copyright (c) 2012, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
  */
 class tx_dlf_cli extends t3lib_cli {
-
-	public $cli_help = array (
-		'name' => 'Command Line Interface for the Digital Library Framework',
-		'synopsis' => '###OPTIONS###',
-		'description' => '',
-		'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
-		'options' => '',
-		'license' => 'GNU GPL - free software!',
-		'author' => 'Sebastian Meyer <sebastian.meyer@slub-dresden.de>',
-	);
 
 	/**
 	 * Main function of the script.
@@ -79,10 +69,20 @@ class tx_dlf_cli extends t3lib_cli {
 				// Get the document...
 				$doc = tx_dlf_document::getInstance($this->cli_args['-doc'][0], 0, TRUE);
 
-				// ...save it to the database...
-				if (!$doc->ready || !$doc->save(intval($this->cli_args['-pid'][0]), $this->cli_args['-core'][0])) {
+				if ($doc->ready) {
 
-					$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed'.LF, TRUE);
+					// ...and save it to the database...
+					if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0]))) {
+
+						$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed'.LF, TRUE);
+
+						exit (1);
+
+					}
+
+				} else {
+
+					$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' could not be loaded.'.LF, TRUE);
 
 					exit (1);
 
@@ -103,6 +103,17 @@ class tx_dlf_cli extends t3lib_cli {
 	}
 
 	public function __construct() {
+
+		// Set basic information about the script.
+		$this->cli_help = array (
+			'name' => 'Command Line Interface for Goobi.Presentation',
+			'synopsis' => '###OPTIONS###',
+			'description' => 'Currently the only task available is "index".'.LF.'Try "/PATH/TO/TYPO3/cli_dispatch.phpsh dlf index" to view more options.',
+			'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
+			'options' => '',
+			'license' => 'GNU GPL - free software!',
+			'author' => 'Sebastian Meyer <sebastian.meyer@slub-dresden.de>',
+		);
 
 		// Run parent constructor.
 		parent::t3lib_cli();

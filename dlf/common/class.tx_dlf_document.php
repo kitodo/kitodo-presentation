@@ -884,9 +884,11 @@ class tx_dlf_document {
 	protected function load($location) {
 
 		// Load XML file.
-		// There is a bug in filter_var($var, FILTER_VALIDATE_URL) in PHP < 5.3.3.
-		// (see https://bugs.php.net/bug.php?id=51192)
-		if (version_compare(phpversion(), '5.3.3', '<') || t3lib_div::isValidUrl($location)) {
+		if (t3lib_div::isValidUrl($location)
+			// There is a bug in filter_var($var, FILTER_VALIDATE_URL) in PHP < 5.3.3 which causes
+			// the function to validate URLs containing whitespaces and invalidate URLs containing
+			// hyphens. (see https://bugs.php.net/bug.php?id=51192)
+			|| version_compare(phpversion(), '5.3.3', '<')) {
 
 			// Load extension configuration
 			$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);

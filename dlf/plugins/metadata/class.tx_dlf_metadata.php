@@ -107,13 +107,17 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 				$_id = array_pop($_ids);
 
-				foreach ($_id as $id) {
+				if (is_array($_id)) {
 
-					$_data = $this->doc->getMetadata($id, $this->conf['pages']);
+					foreach ($_id as $id) {
 
-					$_data['_id'] = $id;
+						$_data = $this->doc->getMetadata($id, $this->conf['pages']);
 
-					$metadata[] = $_data;
+						$_data['_id'] = $id;
+
+						$metadata[] = $_data;
+
+					}
 
 				}
 
