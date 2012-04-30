@@ -127,6 +127,10 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 
+		$this->doc->bodyTagAdditions = 'class="ext-dlf-modules"';
+
+		$this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
+
 		$this->data = t3lib_div::_GPmerged($this->prefixId);
 
 	}
@@ -173,6 +177,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 	 */
 	protected function printContent() {
 
+		// Add Javascript for function menu.
 		$this->doc->JScode .= '
 			<script type="text/javascript">
 				script_ended = 0;
@@ -182,14 +187,22 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 			</script>
 		';
 
+		// Add Javascript for convenient module switch.
 		$this->doc->postCode .= '
 			<script type="text/javascript">
 				script_ended = 1;
-				if (top.fsMod) top.fsMod.recentIds["web"] = '.intval($this->id).';
 			</script>
 		';
 
+		// Render output.
 		$this->content .= $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
+
+		// Set defaults for buttons and menu.
+		if (empty($this->buttonArray['RELOAD'])) {
+
+			$this->buttonArray['RELOAD'] = '<a href="'.$GLOBALS['MCONF']['_'].'" title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.reload', TRUE).'">'.t3lib_iconWorks::getSpriteIcon('actions-system-refresh').'</a>';
+
+		}
 
 		if (empty($this->buttonArray['SHORTCUT'])) {
 

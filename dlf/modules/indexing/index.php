@@ -87,8 +87,6 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		);
 
 		// TODO: Ändern!
-		$this->doc->form = '<form name="'.$this->prefixId.'[form]" id="tx-dlf-modIndexing-form" action="" method="post">';
-
 		$form = '<label for="tx-dlf-modIndexing-id">Kollektion:</label>';
 
 		$form .= '<select id="tx-dlf-modIndexing-collection" name="'.$this->prefixId.'[collection]">';
@@ -141,8 +139,6 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		);
 
 		// TODO: Ändern!
-		$this->doc->form = '<form name="'.$this->prefixId.'[form]" id="tx-dlf-modIndexing-form" action="" method="post">';
-
 		$form = '<label for="tx-dlf-modIndexing-id">METS-Datei:</label>';
 
 		$form .= '<input type="text" id="tx-dlf-modIndexing-id" name="'.$this->prefixId.'[id]" value="" /><br />';

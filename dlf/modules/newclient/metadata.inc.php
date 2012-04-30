@@ -1,0 +1,227 @@
+<?php
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2012 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  All rights reserved
+*
+*  This script is part of the TYPO3 project. The TYPO3 project is
+*  free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+
+// Define metadata elements.
+// @see http://dfg-viewer.de/en/profile-of-the-metadata/
+// TODO: Should not be hard-coded!
+$metadata = array (
+	'prod_id' => array (
+		'encoded' => 1,
+		'xpath' => './mods:identifier[@type="goobi"]',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 0,
+		'boost' => 0.00,
+		'is_sortable' => 0,
+		'is_facet' => 0,
+		'is_listed' => 0,
+	),
+	'record_id' => array (
+		'encoded' => 1,
+		'xpath' => './mods:recordInfo/mods:recordIdentifier',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 0,
+		'is_listed' => 0,
+	),
+	'union_id' => array (
+		'encoded' => 1,
+		'xpath' => './mods:identifier[@type="ppn"]',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 0,
+		'is_listed' => 0,
+	),
+	'opac_id' => array (
+		'encoded' => 1,
+		'xpath' => './mods:identifier[@type="opac"]',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 0,
+		'is_listed' => 0,
+	),
+	'urn' => array (
+		'encoded' => 1,
+		'xpath' => './mods:identifier[@type="urn"]',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => "key.wrap = <dt>|</dt>\nvalue.setContentToCurrent = 1\nvalue.typolink.parameter.current = 1\nvalue.typolink.parameter.prepend = TEXT\nvalue.typolink.parameter.prepend.value = http://nbn-resolving.de/\nvalue.wrap = <dd>|</dd>",
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 0,
+		'is_listed' => 0,
+	),
+	'purl' => array (
+		'encoded' => 1,
+		'xpath' => './mods:identifier[@type="purl"]',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => "key.wrap = <dt>|</dt>\nvalue.setContentToCurrent = 1\nvalue.typolink.parameter.current = 1\nvalue.wrap = <dd>|</dd>",
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 0,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 0,
+		'is_listed' => 0,
+	),
+	'owner' => array (
+		'encoded' => 1,
+		'xpath' => './mods:name[./mods:role/mods:roleTerm="own"]/mods:displayForm',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 1,
+		'is_listed' => 0,
+	),
+	'collection' => array (
+		'encoded' => 1,
+		'xpath' => './mods:relatedItem[@type="series"]/mods:titleInfo/mods:title',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 1,
+		'stored' => 0,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 1,
+		'is_listed' => 0,
+	),
+	'year' => array (
+		'encoded' => 1,
+		'xpath' => '',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 1,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 1,
+		'is_facet' => 1,
+		'is_listed' => 1,
+	),
+	'place' => array (
+		'encoded' => 1,
+		'xpath' => '',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 1,
+		'stored' => 1,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 1,
+		'is_facet' => 1,
+		'is_listed' => 1,
+	),
+	'author' => array (
+		'encoded' => 1,
+		'xpath' => '',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 1,
+		'stored' => 1,
+		'indexed' => 1,
+		'boost' => 2.00,
+		'is_sortable' => 1,
+		'is_facet' => 1,
+		'is_listed' => 1,
+	),
+	'volume' => array (
+		'encoded' => 1,
+		'xpath' => './mods:part/mods:detail/mods:number',
+		'xpath_sorting' => './mods:part[@type="host"]/@order',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 1,
+		'indexed' => 0,
+		'boost' => 1.00,
+		'is_sortable' => 1,
+		'is_facet' => 0,
+		'is_listed' => 1,
+	),
+	'title' => array (
+		'encoded' => 1,
+		'xpath' => 'concat(./mods:titleInfo/mods:nonSort, " ", ./mods:titleInfo/mods:title)',
+		'xpath_sorting' => './mods:titleInfo/mods:title',
+		'default_value' => '',
+		'wrap' => "key.wrap = <dt class=\"tx-dlf-metadata-title\">|</dt>\nvalue.wrap = <dd class=\"tx-dlf-metadata-title\">|</dd>",
+		'tokenized' => 1,
+		'stored' => 1,
+		'indexed' => 1,
+		'boost' => 2.00,
+		'is_sortable' => 1,
+		'is_facet' => 0,
+		'is_listed' => 1,
+	),
+	'type' => array (
+		'encoded' => 0,
+		'xpath' => '',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => "key.wrap = <dt class=\"tx-dlf-metadata-type\">|</dt>\nvalue.wrap = <dd class=\"tx-dlf-metadata-type\">|</dd>",
+		'tokenized' => 0,
+		'stored' => 1,
+		'indexed' => 0,
+		'boost' => 1.00,
+		'is_sortable' => 1,
+		'is_facet' => 1,
+		'is_listed' => 1,
+	),
+);
+
+?>

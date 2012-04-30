@@ -51,20 +51,6 @@ class tx_dlf_mods implements tx_dlf_format {
 
 		$xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-		// Get "title" and "title_sorting".
-		if (($title = $xml->xpath('./mods:titleInfo/mods:title'))) {
-
-			$metadata['title'][0] = $metadata['title_sorting'][0] = (string) $title[0];
-
-			// Prepend any "nonSort" parts to the title.
-			if (($nonSort = $xml->xpath('./mods:titleInfo/mods:nonSort'))) {
-
-				$metadata['title'][0] = (string) $nonSort[0].' '.$metadata['title'][0];
-
-			}
-
-		}
-
 		// Get "author" and "author_sorting".
 		$authors = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code"][@authority="marcrelator"]="aut"]');
 

@@ -398,7 +398,7 @@ $TCA['tx_dlf_structures'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,nospace',
+				'eval' => 'required,nospace,alphanum_x',
 			),
 		),
 		'oai_name' => array (
@@ -497,7 +497,7 @@ $TCA['tx_dlf_metadata'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,nospace',
+				'eval' => 'required,nospace,alphanum_x',
 			),
 		),
 		'encoded' => array (
@@ -555,6 +555,7 @@ $TCA['tx_dlf_metadata'] = array (
 				'cols' => 48,
 				'rows' => 20,
 				'wrap' => 'off',
+				'eval' => 'required,trim',
 				'default' => "key.wrap = <dt>|</dt>\nvalue.wrap = <dd>|</dd>",
 			),
 			'defaultExtras' => 'nowrap:fixed-font:enable-tab',

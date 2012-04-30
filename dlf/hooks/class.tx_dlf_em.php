@@ -120,7 +120,7 @@ class tx_dlf_em {
 			't3lib_FlashMessage',
 			sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
 			$GLOBALS['LANG']->getLL('solr.notConnected'),
-			t3lib_FlashMessage::ERROR,
+			t3lib_FlashMessage::WARNING,
 			FALSE
 		);
 
@@ -218,7 +218,7 @@ class tx_dlf_em {
 							't3lib_FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-							t3lib_FlashMessage::WARNING,
+							t3lib_FlashMessage::ERROR,
 							FALSE
 						);
 
@@ -230,7 +230,7 @@ class tx_dlf_em {
 						't3lib_FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-						t3lib_FlashMessage::WARNING,
+						t3lib_FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -431,7 +431,7 @@ class tx_dlf_em {
 							't3lib_FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-							t3lib_FlashMessage::WARNING,
+							t3lib_FlashMessage::ERROR,
 							FALSE
 						);
 
@@ -443,7 +443,7 @@ class tx_dlf_em {
 						't3lib_FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-						t3lib_FlashMessage::WARNING,
+						t3lib_FlashMessage::ERROR,
 						FALSE
 					);
 

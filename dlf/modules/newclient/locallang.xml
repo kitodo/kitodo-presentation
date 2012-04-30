@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for module txdlfnewclient</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="title">New Client</label>
+			<label index="flash.wrongPageType">Page is no SysFolder!</label>
+			<label index="flash.wrongPageTypeMsg">The configuration records of Goobi.Presentation need to be stored in a SysFolder.</label>
+			<label index="flash.structureOkay">Structures found!</label>
+			<label index="flash.structureOkayMsg">There are configuration records for structural metadata. They can be edited in die list module.</label>
+			<label index="flash.structureNotOkay">No structures found!</label>
+			<label index="flash.structureNotOkayMsg">There are no configuration records for structural metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;</label>
+			<label index="flash.structureAdded">Basic configuration added!</label>
+			<label index="flash.structureAddedMsg">Basic configuration records for structural metadata were added. The records should be checked in the list module!</label>
+			<label index="flash.structureNotAdded">No configuration added!</label>
+			<label index="flash.structureNotAddedMsg">While adding the configuration records an error occured. The records should be checked in the list module!</label>
+			<label index="flash.metadataOkay">Metadata found!</label>
+			<label index="flash.metadataOkayMsg">There are configuration records for bibliographic metadata. They can be edited in die list module.</label>
+			<label index="flash.metadataNotOkay">No metadata found!</label>
+			<label index="flash.metadataNotOkayMsg">There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;</label>
+			<label index="flash.metadataAdded">Basic configuration added!</label>
+			<label index="flash.metadataAddedMsg">Basic configuration records for bibliographic metadata were added. The records should be checked in the list module!</label>
+			<label index="flash.metadataNotAdded">No configuration added!</label>
+			<label index="flash.metadataNotAddedMsg">While adding the configuration records an error occured. The records should be checked in the list module!</label>
+			<label index="flash.usergroupOkay">Usergroup has access!</label>
+			<label index="flash.usergroupOkayMsg">The usergroup "_cli_dlf" has access to this SysFolder.</label>
+			<label index="flash.usergroupNotOkay">Usergroup has no access!</label>
+			<label index="flash.usergroupNotOkayMsg">The usergroup "_cli_dlf" has no access to this SysFolder. Access can be granted automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Grant access!&lt;/a&gt;</label>
+			<label index="flash.usergroupMissing">Usergroup not found!</label>
+			<label index="flash.usergroupMissingMsg">The usergroup "_cli_dlf" does not exist. The usergroup has to be added in the Extension Manager!</label>
+			<label index="flash.usergroupAdded">Access granted!</label>
+			<label index="flash.usergroupAddedMsg">Access to this SysFolder was granted for usergroup "_cli_dlf".</label>
+			<label index="flash.solrcoreOkay">Solr core found!</label>
+			<label index="flash.solrcoreOkayMsg">There are configuration records for Solr cores. They can be edited in the list module.</label>
+			<label index="flash.solrcoreDeprecated">Deprecated configuration found!</label>
+			<label index="flash.solrcoreDeprecatedMsg">A common Solr core was found in the root-page. This is deprecated since Goobi.Presentation 1.1. Solr cores should be stored in the client's SysFolder instead. Move a Solr core to this SysFolder (manually) or create a new one automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;</label>
+			<label index="flash.solrcoreMissing">No Solr core found!</label>
+			<label index="flash.solrcoreMissingMsg">There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;</label>
+			<label index="flash.solrcoreAdded">Solr core created!</label>
+			<label index="flash.solrcoreAddedMsg">A new Solr core was created. It can be edited in the list module.</label>
+			<label index="flash.solrcoreNotAdded">No Solr core created!</label>
+			<label index="flash.solrcoreNotAddedMsg">While creating a new Solr core an error occured. The record should be checked in the list module!</label>
+			<label index="solrcore">Solr Core</label>
+			<label index="additional">Additional</label>
+			<label index="address">Address</label>
+			<label index="annotation">Annotation</label>
+			<label index="article">Article</label>
+			<label index="binding">Binding</label>
+			<label index="bookplate">Bookplate</label>
+			<label index="chapter">Chapter</label>
+			<label index="collation">Collation</label>
+			<label index="colophon">Colophon</label>
+			<label index="contained_work">Contained Work</label>
+			<label index="contents">Table of Contents</label>
+			<label index="corrigenda">Corrigenda</label>
+			<label index="cover">Cover</label>
+			<label index="dedication">Dedication</label>
+			<label index="edge">Edge</label>
+			<label index="endsheet">Endsheet</label>
+			<label index="engraved_titlepage">Engraved Titlepage</label>
+			<label index="entry">Entry</label>
+			<label index="fascicle">Fascicle</label>
+			<label index="fragment">Fragment</label>
+			<label index="illustration">Illustration</label>
+			<label index="imprint">Imprint</label>
+			<label index="index">Index</label>
+			<label index="initial_decoration">Initial Decoration</label>
+			<label index="issue">Issue</label>
+			<label index="manuscript">Manuscript</label>
+			<label index="map">Map</label>
+			<label index="monograph">Monograph</label>
+			<label index="multivolume_work">Multivolume Work</label>
+			<label index="musical_notation">Musical Notation</label>
+			<label index="ornament">Ornament</label>
+			<label index="paste_down">Paste Down</label>
+			<label index="periodical">Periodical</label>
+			<label index="preface">Preface</label>
+			<label index="printers_mark">Printers Mark</label>
+			<label index="privileges">Privileges</label>
+			<label index="provenance">Provenance</label>
+			<label index="scheme">Scheme</label>
+			<label index="section">Section</label>
+			<label index="spine">Spine</label>
+			<label index="stamp">Stamp</label>
+			<label index="table">Table</label>
+			<label index="text">Text</label>
+			<label index="title_page">Titlepage</label>
+			<label index="verse">Verse</label>
+			<label index="volume">Volume</label>
+			<label index="prod_id">Goobi Process Number</label>
+			<label index="record_id">OAI Identifier</label>
+			<label index="opac_id">OPAC Identifier</label>
+			<label index="union_id">Union Catalog ID</label>
+			<label index="urn">URN</label>
+			<label index="purl">PURL</label>
+			<label index="type">Type</label>
+			<label index="title">Title</label>
+			<label index="author">Author</label>
+			<label index="year">Year of Publication</label>
+			<label index="place">Place of Publication</label>
+			<label index="volume">Volume</label>
+			<label index="collection">Collection(s)</label>
+			<label index="owner">Owner</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="title">Neuer Mandant</label>
+			<label index="flash.wrongPageType">Seite ist kein SysOrdner!</label>
+			<label index="flash.wrongPageTypeMsg">Die Konfigurationsdatensätze von Goobi.Presentation müssen in SysOrdnern abgelegt werden.</label>
+			<label index="flash.structureOkay">Strukturdaten gefunden!</label>
+			<label index="flash.structureOkayMsg">Es ist eine Konfiguration für Strukturdaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.</label>
+			<label index="flash.structureNotOkay">Keine Strukturdaten gefunden!</label>
+			<label index="flash.structureNotOkayMsg">Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Grundkonfiguration jetzt anlegen!&lt;/a&gt;</label>
+			<label index="flash.structureAdded">Grundkonfiguration angelegt!</label>
+			<label index="flash.structureAddedMsg">Es wurde eine Grundkonfiguration für Strukturdaten angelegt. Die Datensätze sollten über das Listenmodul kontrolliert und ggf. angepasst werden!</label>
+			<label index="flash.structureNotAdded">Keine Grundkonfiguration angelegt!</label>
+			<label index="flash.structureNotAddedMsg">Beim Anlegen der Grundkonfiguration für Strukturdaten ist ein Fehler aufgetreten. Die Konfiguration wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!</label>
+			<label index="flash.metadataOkay">Metadaten gefunden!</label>
+			<label index="flash.metadataOkayMsg">Es ist eine Konfiguration für Metadaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.</label>
+			<label index="flash.metadataNotOkay">Keine Metadaten gefunden!</label>
+			<label index="flash.metadataNotOkayMsg">Es wurde keine Konfiguration für Metadaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Grundkonfiguration jetzt anlegen!&lt;/a&gt;</label>
+			<label index="flash.metadataAdded">Grundkonfiguration angelegt!</label>
+			<label index="flash.metadataAddedMsg">Es wurde eine Grundkonfiguration für Metadaten angelegt. Die Datensätze sollten über das Listenmodul kontrolliert und ggf. angepasst werden!</label>
+			<label index="flash.metadataNotAdded">Keine Grundkonfiguration angelegt!</label>
+			<label index="flash.metadataNotAddedMsg">Beim Anlegen der Grundkonfiguration für Metadaten ist ein Fehler aufgetreten. Die Konfiguration wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!</label>
+			<label index="flash.usergroupOkay">Benutzergruppe hat Zugriffsrechte!</label>
+			<label index="flash.usergroupOkayMsg">Die Benutzergruppe "_cli_dlf" hat die nötigen Zugriffsrechte für diesen SysOrdner.</label>
+			<label index="flash.usergroupNotOkay">Benutzergruppe hat keine Zugriffsrechte!</label>
+			<label index="flash.usergroupNotOkayMsg">Der Benutzergruppe "_cli_dlf" fehlen die nötigen Zugriffsrechte für diesen SysOrdner. Die Rechte können automatisch erteilt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Zugriffsrechte jetzt erteilen!&lt;/a&gt;</label>
+			<label index="flash.usergroupMissing">Benutzergruppe nicht gefunden!</label>
+			<label index="flash.usergroupMissingMsg">Die Benutzergruppe "_cli_dlf" wurde nicht gefunden. Die Benutzergruppe muss über den Extension Manager angelegt werden!</label>
+			<label index="flash.usergroupAdded">Zugriffsrechte erteilt!</label>
+			<label index="flash.usergroupAddedMsg">Der Benutzergruppe "_cli_dlf" wurden die nötigen Zugriffsrechte für diesen SysOrdner erteilt.</label>
+			<label index="flash.solrcoreOkay">Solr Kern gefunden!</label>
+			<label index="flash.solrcoreOkayMsg">Es wurde die Konfiguration für einen Solr Kern gefunden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.</label>
+			<label index="flash.solrcoreDeprecated">Veraltete Konfiguration gefunden!</label>
+			<label index="flash.solrcoreDeprecatedMsg">Es wurde ein allgemeiner Solr Kern in der Root-Page gefunden. Das entspricht dem Verhalten von Goobi.Presentation 1.0. Seit Version 1.1 sollten Solr Kerne im SysOrdner des jeweiligen Mandanten konfiguriert werden. Es sollte entweder einer der Solr Kerne aus der Root-Page in diesen SysOrdner verschoben werden (manuell) oder ein neuer Solr Kern angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Neuen Solr Kern jetzt anlegen!&lt;/a&gt;</label>
+			<label index="flash.solrcoreMissing">Kein Solr Kern gefunden!</label>
+			<label index="flash.solrcoreMissingMsg">Es wurde kein Solr Kern gefunden. Ohne Solr Kern kann das Plugin zur Recherche in den Meta- und Strukturdaten nicht verwendet werden. Ein Solr Kern kann automatisch angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Solr Kern jetzt anlegen!&lt;/a&gt;</label>
+			<label index="flash.solrcoreAdded">Solr Kern angelegt!</label>
+			<label index="flash.solrcoreAddedMsg">Es wurde ein Solr Kern angelegt. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.</label>
+			<label index="flash.solrcoreNotAdded">Kein Solr Kern angelegt!</label>
+			<label index="flash.solrcoreNotAddedMsg">Beim Anlegen eines Solr Kerns ist ein Fehler aufgetreten. Der Solr Kern wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!</label>
+			<label index="solrcore">Solr Kern</label>
+			<label index="additional">Beilage</label>
+			<label index="address">Anrede</label>
+			<label index="annotation">Annotation</label>
+			<label index="article">Artikel</label>
+			<label index="binding">Einband</label>
+			<label index="bookplate">Exlibris</label>
+			<label index="chapter">Kapitel</label>
+			<label index="collation">Bogensignatur</label>
+			<label index="colophon">Kolophon</label>
+			<label index="contained_work">Enthaltenes Werk</label>
+			<label index="contents">Inhaltsverzeichnis</label>
+			<label index="corrigenda">Errata</label>
+			<label index="cover">Deckel</label>
+			<label index="dedication">Widmung</label>
+			<label index="edge">Schnitt</label>
+			<label index="endsheet">Vorsatz</label>
+			<label index="engraved_titlepage">Kupfertitel</label>
+			<label index="entry">Eintrag</label>
+			<label index="fascicle">Faszikel</label>
+			<label index="fragment">Fragment</label>
+			<label index="illustration">Illustration</label>
+			<label index="imprint">Impressum</label>
+			<label index="index">Register</label>
+			<label index="initial_decoration">Initialschmuck</label>
+			<label index="issue">Heft</label>
+			<label index="manuscript">Handschrift</label>
+			<label index="map">Karte</label>
+			<label index="monograph">Monographie</label>
+			<label index="multivolume_work">Mehrbändiges Werk</label>
+			<label index="musical_notation">Musiknotation</label>
+			<label index="ornament">Buchschmuck</label>
+			<label index="paste_down">Spiegel</label>
+			<label index="periodical">Peridica</label>
+			<label index="preface">Vorwort</label>
+			<label index="printers_mark">Druckermarke</label>
+			<label index="privileges">Privilegien</label>
+			<label index="provenance">Besitznachweis</label>
+			<label index="scheme">Schema</label>
+			<label index="section">Abschnitt</label>
+			<label index="spine">Rücken</label>
+			<label index="stamp">Stempel</label>
+			<label index="table">Tabelle</label>
+			<label index="text">Text</label>
+			<label index="title_page">Titelseite</label>
+			<label index="verse">Vers</label>
+			<label index="volume">Band</label>
+			<label index="prod_id">Goobi-Vorgangsnummer</label>
+			<label index="record_id">OAI-Identifier</label>
+			<label index="opac_id">OPAC-Identifier</label>
+			<label index="union_id">Verbund-Identifier</label>
+			<label index="urn">URN</label>
+			<label index="purl">PURL</label>
+			<label index="type">Strukturtyp</label>
+			<label index="title">Titel</label>
+			<label index="author">Autor</label>
+			<label index="year">Erscheinungsjahr</label>
+			<label index="place">Erscheinungsort</label>
+			<label index="volume">Band</label>
+			<label index="collection">Sammlung(en)</label>
+			<label index="owner">Besitzer</label>
+		</languageKey>
+	</data>
+</T3locallang>
