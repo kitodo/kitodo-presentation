@@ -339,6 +339,11 @@ if (TYPO3_MODE == 'BE')	{
 
 	t3lib_extMgm::addLLrefForTCAdescr('_MOD_txdlfmodules_txdlfindexing','EXT:dlf/modules/indexing/locallang_mod.xml');
 
+	// Module "newclient".
+	t3lib_extMgm::addModule('txdlfmodules', 'txdlfnewclient', '', t3lib_extMgm::extPath($_EXTKEY).'modules/newclient/');
+
+	t3lib_extMgm::addLLrefForTCAdescr('_MOD_txdlfmodules_txdlfnewclient','EXT:dlf/modules/newclient/locallang_mod.xml');
+
 }
 
 ?>

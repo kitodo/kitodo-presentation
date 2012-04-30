@@ -78,7 +78,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 			//$this->loadDocument();
 
 			// TODO: Just a quick and dirty hack so far!
-			$ppn = substr($this->cObj->data['record_id'], -9);
+			$ppn = str_replace('oai:de:slub-dresden:db:id-', '', $this->cObj->data['record_id']);
 			$content = $this->cObj->substituteMarkerArray($this->template, array ('###LINK###' => '<a href="http://digital.slub-dresden.de/fileadmin/data/'.$ppn.'/'.$ppn.'_tif/jpegs/'.$ppn.'.pdf" target="_blank" title="PDF Download">PDF Download</a>'));
 
 		//}

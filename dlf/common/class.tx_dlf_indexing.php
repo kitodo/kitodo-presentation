@@ -396,7 +396,7 @@ class tx_dlf_indexing {
 
 		// Get the metadata indexing options.
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.stored AS stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.boost AS boost',
+			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.stored AS stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.boost AS boost',
 			'tx_dlf_metadata',
 			'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 			'',
@@ -512,7 +512,7 @@ class tx_dlf_indexing {
 
 			foreach ($metadata as $index_name => $data) {
 
-				if (strpos($index_name, '_sorting') === FALSE && !empty($data)) {
+				if (!empty($data) && substr($index_name, -8) !== '_sorting') {
 
 					$suffix = (in_array($index_name, self::$tokenized) ? 't' : 'u');
 

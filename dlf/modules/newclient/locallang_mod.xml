@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for module txdlfnewclient</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">New Client</label>
+			<label index="mlang_labels_tabdescr">This module allows you to add a new client with some basic configuration.</label>
+			<label index="mlang_labels_tablabel">New Client</label>
+			<label index="csh.description">This module allows you to add a new client with some basic configuration.</label>
+			<label index="csh.alttitle">New Client</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="mlang_tabs_tab">Neuer Mandant</label>
+			<label index="mlang_labels_tabdescr">Dieses Modul erlaubt Ihnen das Hinzufügen eines neuen Mandanten mit einer Grundkonfiguration.</label>
+			<label index="mlang_labels_tablabel">Neuer Mandant</label>
+			<label index="csh.description">Dieses Modul erlaubt Ihnen das Hinzufügen eines neuen Mandanten mit einer Grundkonfiguration.</label>
+			<label index="csh.alttitle">Neuer Mandant</label>
+		</languageKey>
+	</data>
+</T3locallang>

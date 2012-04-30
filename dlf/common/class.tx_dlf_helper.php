@@ -479,6 +479,10 @@ class tx_dlf_helper {
 	 *
 	 * @access	public
 	 *
+	 * @param	array		$data: Data map
+	 * @param	array		$cmd: Command map
+	 * @param	boolean		$reverseOrder: Should the command map be processed first?
+	 *
 	 * @return	array		Array of substituted "NEW..." identifiers and their actual UIDs.
 	 */
 	public static function processDB(array $data = array (), array $cmd = array (), $reverseOrder = FALSE) {
