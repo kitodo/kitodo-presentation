@@ -1,20 +1,23 @@
 $(
 	function(){
-		$('.typeahead').typeahead({
-	    	source: function (typeahead, query) {
-	        	return $.post(
-		        	'/', { eID: "tx_dlf_suggest", q: query },
-		        	function (data) {
-			            var strings = new Array();
-					
-						$('arr[name="suggestion"] str', data).each(function(i) {
-							strings.push($(this).text());
+	    // jQuery autocomplete integration
+	    $(".autocomplete").autocomplete({ 
+        	source: function( request, response ) { 
+            	return $.post( 
+                	'/', { eID: "tx_dlf_suggest", q:  escape(request.term) }, 
+                	function( xmlData ) { 
+						var result = new Array();
+	
+						$('arr[name="suggestion"] str', xmlData).each(function(i) {
+							if ($(this).text().indexOf(request.term) == 0) {
+								result.push($(this).text());
+							}
 						});
-
-			            return typeahead.process(strings);
-					},
+	
+						return response(result);
+                	},
 					'xml');
-	    	}
-	    });
+            }
+        });
 	}
 );

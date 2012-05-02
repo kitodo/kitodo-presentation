@@ -40,25 +40,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
 
 	public function addSuggestSupport() {
-		/* bootstrap is licenced under APLv2 */
-		// Add bootstrap JavaScript libraries.
-		$bootstrapLibs = array(
-			"search_suggest" => "search_suggest.js", 
-			"bootstrap_typeahead" => "bootstrap_typeahead-fork.js", 
-			"bootstrap_dropdown" => "bootstrap_dropdown.js");
+		$libs = array(
+			"search_suggest" => "search_suggest.js"
+		);
 
-		foreach ($bootstrapLibs as $lib_key => $lib_file) {
+		foreach ($libs as $lib_key => $lib_file) {
 			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$lib_key] .= '	<script type="text/javascript" src="'
 				.t3lib_extMgm::siteRelPath($this->extKey)
 				.'plugins/search/'.$lib_file
 				.'"></script>';	
 		}
-		
-		// Add bootstrap CSS stylesheet.
-		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$lib_key] .= '	<link rel="stylesheet" type="text/css" href="'
-			.t3lib_extMgm::siteRelPath($this->extKey)
-			.'plugins/search/bootstrap_dropdown-typeahead.css'
-			.'""/>';
 	}
 	
 	/**
