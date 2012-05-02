@@ -39,7 +39,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
 
-	public function addSuggestSupport() {
+	/**
+	 * Adds the JS files necessary for search sugestions to the 
+	 * page header.
+	 *
+	 * @access	public
+	 *
+	 * @return	void
+	 */
+	private function addSuggestSupport() {
 		$libs = array(
 			"search_suggest" => "search_suggest.js"
 		);
