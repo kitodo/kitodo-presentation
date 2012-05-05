@@ -115,6 +115,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'pid' => intval($this->id),
 				'label' => $GLOBALS['LANG']->getLL($index_name),
 				'index_name' => $index_name,
+				'encoded' => $values['encoded'],
 				'xpath' => $values['xpath'],
 				'xpath_sorting' => $values['xpath_sorting'],
 				'default_value' => $values['default_value'],
