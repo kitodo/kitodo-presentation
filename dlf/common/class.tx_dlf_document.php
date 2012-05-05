@@ -636,30 +636,23 @@ class tx_dlf_document {
 
 			$_domXPath = new DOMXPath($_domNode->ownerDocument);
 
+			$this->registerNamespaces($_domXPath);
+
 			// OK, now make the XPath queries.
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
 				// Set metadata field's value(s).
-				if ($resArray['xpath'] && ($_values = $_domXPath->evaluate($resArray['xpath'], $_domNode))) {
+				if ($resArray['xpath'] && ($_values = $_domXPath->query($resArray['xpath'], $_domNode))) {
 
-					// Check if the XPath query returned a node list or typed result.
-					if ($_values instanceof DOMNodeList) {
+					if ($_values->length > 0) {
 
-						if ($_values->length > 0) {
+						$_metadata[$resArray['index_name']] = array ();
 
-							$_metadata[$resArray['index_name']] = array ();
+						foreach ($_values as $_value) {
 
-							foreach ($_values as $_value) {
-
-								$_metadata[$resArray['index_name']][] = trim((string) $_value->nodeValue);
-
-							}
+							$_metadata[$resArray['index_name']][] = trim((string) $_value->nodeValue);
 
 						}
-
-					} else {
-
-						$_metadata[$resArray['index_name']][0] = trim((string) $_values);
 
 					}
 
@@ -675,20 +668,11 @@ class tx_dlf_document {
 				// Set sorting value if applicable.
 				if (!empty($_metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
 
-					if ($resArray['xpath_sorting'] && ($_values = $_domXPath->evaluate($resArray['xpath_sorting'], $_domNode))) {
+					if ($resArray['xpath_sorting'] && ($_values = $_domXPath->query($resArray['xpath_sorting'], $_domNode))) {
 
-						// Check if the XPath query returned a node list or typed result.
-						if ($_values instanceof DOMNodeList) {
+						if ($_values->length > 0) {
 
-							if ($_values->length > 0) {
-
-								$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values[0]->nodeValue);
-
-							}
-
-						} else {
-
-							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values);
+							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values[0]->nodeValue);
 
 						}
 
@@ -987,33 +971,50 @@ class tx_dlf_document {
 	 *
 	 * @access	public
 	 *
-	 * @param	SimpleXMLElement		&$obj: SimpleXMLElement object
+	 * @param	SimpleXMLElement|DOMXPath		&$obj: SimpleXMLElement or DOMXPath object
 	 *
 	 * @return	void
 	 */
-	public function registerNamespaces(SimpleXMLElement &$obj) {
+	public function registerNamespaces(&$obj) {
+
+		$this->loadFormats();
+
+		// Do we have a SimpleXMLElement or DOMXPath object?
+		if ($obj instanceof SimpleXMLElement) {
+
+			$_method = 'registerXPathNamespace';
+
+		} elseif ($obj instanceof DOMXPath) {
+
+			$_method = 'registerNamespace';
+
+		} else {
+
+			trigger_error('No SimpleXMLElement or DOMXPath object given', E_USER_WARNING);
+
+			return;
+
+		}
 
 		// Register mandatory METS' and XLINK's namespaces.
-		$obj->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
+		$obj->$_method('mets', 'http://www.loc.gov/METS/');
 
 		// This one can become a problem, because MODS uses its own custom XLINK schema.
 		// @see http://comments.gmane.org/gmane.comp.text.mods/1126
-		$obj->registerXPathNamespace('xlink', 'http://www.w3.org/1999/xlink');
-
-		$this->loadFormats();
+		$obj->$_method('xlink', 'http://www.w3.org/1999/xlink');
 
 		// Register metadata format's namespaces.
 		foreach ($this->formats as $enc => $conf) {
 
 			if ($enc != 'OTHER') {
 
-				$obj->registerXPathNamespace(strtolower($enc), $conf['namespaceURI']);
+				$obj->$_method(strtolower($enc), $conf['namespaceURI']);
 
 			} else {
 
 				foreach ($conf as $otherEnc => $otherConf) {
 
-					$obj->registerXPathNamespace(strtolower($otherEnc), $otherConf['namespaceURI']);
+					$obj->$_method(strtolower($otherEnc), $otherConf['namespaceURI']);
 
 				}
 
