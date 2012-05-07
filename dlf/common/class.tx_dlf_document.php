@@ -672,7 +672,7 @@ class tx_dlf_document {
 
 						if ($_values->length > 0) {
 
-							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values[0]->nodeValue);
+							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values->item(0)->nodeValue);
 
 						}
 
