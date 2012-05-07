@@ -266,6 +266,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		$toplevel = array ();
 
+		$subparts = array ();
+
 		// Process results.
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 

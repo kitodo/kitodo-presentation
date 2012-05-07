@@ -290,11 +290,11 @@ class tx_dlf_helper {
 
 		if (preg_match('/^[a-z]{3}$/', $_code)) {
 
-			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml', FALSE, TRUE);
+			$_file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml';
 
 		} elseif (preg_match('/^[a-z]{2}$/', $_code)) {
 
-			$iso639 = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml', FALSE, TRUE);
+			$_file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml';
 
 		} else {
 
@@ -302,9 +302,37 @@ class tx_dlf_helper {
 
 		}
 
-		if (!empty($iso639['default'][$_code])) {
+		if (TYPO3_MODE === 'FE') {
 
-			return $GLOBALS['LANG']->getLLL($_code, $iso639, FALSE);
+			$iso639 = $GLOBALS['TSFE']->readLLfile($_file);
+
+			if (!empty($iso639['default'][$_code])) {
+
+				$lang = $GLOBALS['TSFE']->getLLL($_code, $iso639);
+
+			}
+
+		} elseif (TYPO3_MODE === 'BE') {
+
+			$iso639 = $GLOBALS['LANG']->includeLLFile($_file, FALSE, TRUE);
+
+			if (!empty($iso639['default'][$_code])) {
+
+				$lang = $GLOBALS['LANG']->getLLL($_code, $iso639, FALSE);
+
+			}
+
+		} else {
+
+			trigger_error('Unexpected TYPO3_MODE', E_USER_WARNING);
+
+			return $code;
+
+		}
+
+		if (!empty($lang)) {
+
+			return $lang;
 
 		} else {
 
