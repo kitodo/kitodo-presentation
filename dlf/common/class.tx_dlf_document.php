@@ -517,10 +517,16 @@ class tx_dlf_document {
 	 */
 	public function getMetadata($id, $mPid = 0) {
 
-		// Set metadata definitions' PID.
-		$mPid = ($mPid ? intval($mPid) : ($this->mPid ? $this->mPid : $this->pid));
+		// Make sure $mPid is a non-negative integer.
+		$mPid = max(intval($mPid), 0);
 
-		if (!$mPid) {
+		// If $mPid is not given, try to get it elsewhere.
+		if (!$mPid && ($this->mPid || $this->pid)) {
+
+			// Retain current PID.
+			$mPid = ($this->mPid ? $this->mPid : $this->pid);
+
+		} elseif (!$mPid) {
 
 			trigger_error('Invalid PID ('.$mPid.') for metadata definitions', E_USER_WARNING);
 
@@ -1064,8 +1070,8 @@ class tx_dlf_document {
 
 		}
 
-		// Load table of contents.
-		$this->_getTableOfContents();
+		// Set PID for metadata definitions.
+		$this->mPid = $pid;
 
 		// Set location if inserting new document.
 		$location = '';
@@ -1082,9 +1088,6 @@ class tx_dlf_document {
 			$this->uid = uniqid('NEW');
 
 		}
-
-		// Set PID for metadata definitions.
-		$this->mPid = $pid;
 
 		// Get metadata array.
 		$metadata = $this->getTitledata($pid);
@@ -1257,6 +1260,9 @@ class tx_dlf_document {
 			t3lib_FlashMessageQueue::addMessage($_message);
 
 		}
+
+		// Load table of contents.
+		$this->_getTableOfContents();
 
 		// Get UID of superior document.
 		$partof = 0;
