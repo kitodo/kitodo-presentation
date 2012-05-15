@@ -78,13 +78,24 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
+			// Set last query if applicable.
+			$lastQuery = '';
+
+			$_list = t3lib_div::makeInstance('tx_dlf_list');
+
+			if (!empty($_list->metadata['options']['source']) && $_list->metadata['options']['source'] == 'search') {
+
+				$lastQuery = $_list->metadata['options']['select'];
+
+			}
+
 			// Fill markers.
 			$markerArray = array (
 				'###ACTION_URL###' => $this->pi_getPageLink($GLOBALS['TSFE']->id),
 				'###LABEL_QUERY###' => $this->pi_getLL('label.query'),
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
-				'###QUERY###' => '',
+				'###QUERY###' => htmlspecialchars($lastQuery),
 			);
 
 			// Display search form.
@@ -103,8 +114,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			// Set metadata for search.
 			$_metadata = array (
-				'label' => sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query']),
-				'description' => sprintf($this->pi_getLL('hits', ''), $numHits),
+				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
+				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $numHits)).'</p>',
 				'options' => array (
 					'source' => 'search',
 					'select' => $this->piVars['query'],

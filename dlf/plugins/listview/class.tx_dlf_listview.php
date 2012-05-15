@@ -440,7 +440,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
-		$markerArray['###LISTTITLE###'] = htmlspecialchars($this->list->metadata['label']);
+		$markerArray['###LISTTITLE###'] = $this->list->metadata['label'];
 
 		$markerArray['###LISTDESCRIPTION###'] = $this->list->metadata['description'];
 

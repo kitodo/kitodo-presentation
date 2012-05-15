@@ -274,7 +274,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			if (empty($_metadata)) {
 
 				$_metadata = array (
-					'label' => $resArray['collLabel'],
+					'label' => htmlspecialchars($resArray['collLabel']),
 					'description' => $this->pi_RTEcssText($resArray['collDesc']),
 					'options' => array (
 						'source' => 'collection',

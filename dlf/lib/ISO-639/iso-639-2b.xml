@@ -53,7 +53,7 @@
 			<label index="bas">Basa</label>
 			<label index="bat">Baltic languages</label>
 			<label index="bej">Beja, Bedawiyet</label>
-			<label index="bel">Belarusian</label>
+			<label index="bel">Byelorussian</label>
 			<label index="bem">Bemba</label>
 			<label index="ben">Bengali</label>
 			<label index="ber">Berber languages</label>
@@ -121,7 +121,7 @@
 			<label index="dsb">Lower Sorbian</label>
 			<label index="dua">Duala</label>
 			<label index="dum">Middle Dutch (ca.1050-1350)</label>
-			<label index="dut">Dutch, Flemish</label>
+			<label index="dut">Dutch</label>
 			<label index="dyu">Dyula</label>
 			<label index="dzo">Dzongkha</label>
 			<label index="efi">Efik</label>
@@ -204,11 +204,12 @@
 			<label index="ind">Indonesian</label>
 			<label index="ine">Indo-European languages</label>
 			<label index="inh">Ingush</label>
-			<label index="ipk">Inupiaq</label>
+			<label index="ipk">Inupiak</label>
 			<label index="ira">Iranian languages</label>
 			<label index="iro">Iroquoian languages</label>
 			<label index="ita">Italian</label>
 			<label index="jav">Javanese</label>
+			<label index="jaw">Javanese</label>
 			<label index="jbo">Lojban</label>
 			<label index="jpn">Japanese</label>
 			<label index="jpr">Judeo-Persian</label>
@@ -227,7 +228,7 @@
 			<label index="kbd">Kabardian</label>
 			<label index="kha">Khasi</label>
 			<label index="khi">Khoisan languages</label>
-			<label index="khm">Central Khmer</label>
+			<label index="khm">Khmer</label>
 			<label index="kho">Khotanese, Sakan</label>
 			<label index="kik">Kikuyu, Gikuyu</label>
 			<label index="kin">Kinyarwanda</label>
@@ -294,6 +295,7 @@
 			<label index="mni">Manipuri</label>
 			<label index="mno">Manobo languages</label>
 			<label index="moh">Mohawk</label>
+			<label index="mol">Moldavian</label>
 			<label index="mon">Mongolian</label>
 			<label index="mos">Mossi</label>
 			<label index="mul">Multiple languages</label>
@@ -356,7 +358,7 @@
 			<label index="por">Portuguese</label>
 			<label index="pra">Prakrit languages</label>
 			<label index="pro">Old Provençal (to 1500)</label>
-			<label index="pus">Pushto, Pashto</label>
+			<label index="pus">Pushto</label>
 			<label index="que">Quechua</label>
 			<label index="raj">Rajasthani</label>
 			<label index="rap">Rapanui</label>
@@ -364,7 +366,7 @@
 			<label index="roa">Romance languages</label>
 			<label index="roh">Romansh</label>
 			<label index="rom">Romany</label>
-			<label index="rum">Romanian, Moldavian, Moldovan</label>
+			<label index="rum">Romanian, Moldavian</label>
 			<label index="run">Rundi</label>
 			<label index="rup">Aromanian, Arumanian, Macedo-Romanian</label>
 			<label index="rus">Russian</label>
@@ -385,7 +387,7 @@
 			<label index="sgn">Sign Languages</label>
 			<label index="shn">Shan</label>
 			<label index="sid">Sidamo</label>
-			<label index="sin">Sinhala, Sinhalese</label>
+			<label index="sin">Sinhalese</label>
 			<label index="sio">Siouan languages</label>
 			<label index="sit">Sino-Tibetan languages</label>
 			<label index="sla">Slavic languages</label>
@@ -484,7 +486,7 @@
 			<label index="zap">Zapotec</label>
 			<label index="zbl">Blissymbolics</label>
 			<label index="zen">Zenaga</label>
-			<label index="zha">Zhuang, Chuang</label>
+			<label index="zha">Zhuang</label>
 			<label index="znd">Zande languages</label>
 			<label index="zul">Zulu</label>
 			<label index="zun">Zuni</label>
@@ -780,6 +782,7 @@
 			<label index="mni">Meithei-Sprache</label>
 			<label index="mno">Manobo-Sprachen</label>
 			<label index="moh">Mohawk-Sprache</label>
+			<label index="mol">Moldavisch</label>
 			<label index="mon">Mongolisch</label>
 			<label index="mos">Mossi-Sprache</label>
 			<label index="mul">Mehrere Sprachen</label>
