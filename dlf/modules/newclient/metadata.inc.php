@@ -196,7 +196,7 @@ $metadata = array (
 	),
 	'title' => array (
 		'encoded' => 1,
-		'xpath' => 'concat(./mods:titleInfo/mods:nonSort, " ", ./mods:titleInfo/mods:title)',
+		'xpath' => 'concat(./mods:titleInfo/mods:nonSort," ",./mods:titleInfo/mods:title)',
 		'xpath_sorting' => './mods:titleInfo/mods:title',
 		'default_value' => '',
 		'wrap' => "key.wrap = <dt class=\"tx-dlf-metadata-title\">|</dt>\nvalue.wrap = <dd class=\"tx-dlf-metadata-title\">|</dd>",

@@ -648,9 +648,9 @@ class tx_dlf_document {
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
 				// Set metadata field's value(s).
-				if ($resArray['xpath'] && ($_values = $_domXPath->query($resArray['xpath'], $_domNode))) {
+				if ($resArray['xpath'] && ($_values = $_domXPath->evaluate($resArray['xpath'], $_domNode))) {
 
-					if ($_values->length > 0) {
+					if ($_values instanceof DOMNodeList && $_values->length > 0) {
 
 						$_metadata[$resArray['index_name']] = array ();
 
@@ -659,6 +659,10 @@ class tx_dlf_document {
 							$_metadata[$resArray['index_name']][] = trim((string) $_value->nodeValue);
 
 						}
+
+					} elseif (!($_values instanceof DOMNodeList)) {
+
+						$_metadata[$resArray['index_name']] = array (trim((string) $_values));
 
 					}
 
@@ -674,15 +678,21 @@ class tx_dlf_document {
 				// Set sorting value if applicable.
 				if (!empty($_metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
 
-					if ($resArray['xpath_sorting'] && ($_values = $_domXPath->query($resArray['xpath_sorting'], $_domNode))) {
+					if ($resArray['xpath_sorting'] && ($_values = $_domXPath->evaluate($resArray['xpath_sorting'], $_domNode))) {
 
-						if ($_values->length > 0) {
+						if ($_values instanceof DOMNodeList && $_values->length > 0) {
 
 							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values->item(0)->nodeValue);
 
+						} elseif (!($_values instanceof DOMNodeList)) {
+
+							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values);
+
 						}
 
-					} else {
+					}
+
+					if (empty($_metadata[$resArray['index_name'].'_sorting'][0])) {
 
 						$_metadata[$resArray['index_name'].'_sorting'][0] = $_metadata[$resArray['index_name']][0];
 
