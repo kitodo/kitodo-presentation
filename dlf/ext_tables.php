@@ -203,6 +203,15 @@ t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_collecti
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_collection', 'FILE:EXT:'.$_EXTKEY.'/plugins/collection/flexform.xml');
 
+// Plugin "facets".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_facets'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_facets'] = 'pi_flexform';
+
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_facets', $_EXTKEY.'_facets'), 'list_type');
+
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_facets', 'FILE:EXT:'.$_EXTKEY.'/plugins/facets/flexform.xml');
+
 // Plugin "feeds".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_feeds'] = 'layout,select_key,pages,recursive';
 

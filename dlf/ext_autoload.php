@@ -42,6 +42,8 @@ return array (
 	'tx_dlf_modIndexing' => $extensionPath.'modules/indexing/index.php',
 	'tx_dlf_modNewclient' => $extensionPath.'modules/newclient/index.php',
 	'tx_dlf_collection' => $extensionPath.'plugins/collection/class.tx_dlf_collection.php',
+	'tx_dlf_facets' => $extensionPath.'plugins/facets/class.tx_dlf_facets.php',
+	'tx_dlf_facet_helper' => $extensionPath.'plugins/facets/class.tx_dlf_facet_helper.php',
 	'tx_dlf_feeds' => $extensionPath.'plugins/feeds/class.tx_dlf_feeds.php',
 	'tx_dlf_listview' => $extensionPath.'plugins/listview/class.tx_dlf_listview.php',
 	'tx_dlf_metadata' => $extensionPath.'plugins/metadata/class.tx_dlf_metadata.php',

@@ -93,6 +93,50 @@ class tx_dlf_tceforms {
 	}
 
 	/**
+	 * Helper to get flexform's items array for plugin "tx_dlf_facets"
+	 *
+	 * @access	public
+	 *
+	 * @param	array		&$params: An array with parameters
+	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 *
+	 * @return	void
+	 */
+	public function itemsProcFunc_facetsList(&$params, &$pObj) {
+
+		if ($params['row']['pi_flexform']) {
+
+			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+
+			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+
+			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
+			// i.e. instead of "18" it reads "pages_18|Title"
+			if (!t3lib_div::testInt($pages)) {
+
+				$_parts = explode('|', $pages);
+
+				$pages = array_pop(explode('_', $_parts[0]));
+
+			}
+
+			if ($pages > 0) {
+					
+				$params['items'] = array();
+
+				foreach (tx_dlf_facet_helper::getFacets($pages) as $facet_field => $facet_name) {
+
+					$params['items'][] = array($facet_name, $facet_field);	
+
+				}
+
+			}
+
+		}
+
+	}
+	
+	/**
 	 * Helper to get flexform's items array for plugin "tx_dlf_oai"
 	 *
 	 * @access	public

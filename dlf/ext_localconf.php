@@ -27,6 +27,8 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 // Register plugins.
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/collection/class.tx_dlf_collection.php', '_collection', 'list_type', TRUE);
 
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/facets/class.tx_dlf_facets.php', '_facets', 'list_type', TRUE);
+
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/feeds/class.tx_dlf_feeds.php', '_feeds', 'list_type', FALSE);
 
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/listview/class.tx_dlf_listview.php', '_listview', 'list_type', FALSE);
