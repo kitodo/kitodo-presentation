@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sDEF>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:dlf/plugins/facets/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<pages>
+						<TCEforms>
+							<onChange>reload</onChange>
+							<exclude>1</exclude>
+							<label>LLL:EXT:lang/locallang_general.xml:LGL.startingpoint</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>1</minitems>
+							</config>
+						</TCEforms>
+					</pages>
+					<facets>
+						<TCEforms>
+							<displayCond>FIELD:pages:REQ:true</displayCond>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/facets/locallang.xml:tt_content.pi_flexform.facets</label>
+							<config>
+								<type>select</type>
+								<items type="array"></items>
+								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_facetsList</itemsProcFunc>
+								<size>5</size>
+								<autoSizeMax>15</autoSizeMax>
+								<maxitems>1024</maxitems>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</facets>
+					<!--
+					<contentType>
+						<TCEforms>
+							<label>Content Type</label>
+							<config>
+								<type>radio</type>
+								<items type="array">
+									<numIndex index="0" type="array">
+										<numIndex index="0">Dokumente</numIndex>
+										<numIndex index="1"></numIndex>
+									</numIndex>
+					   				<numIndex index="1" type="array">
+					   					<numIndex index="0">Kollektionen</numIndex>
+					   					<numIndex index="1">1</numIndex>
+					   				</numIndex>
+								</items>
+								<minitems>0</minitems>
+								<maxitems>1</maxitems>
+								<size>1</size>
+							</config>
+						</TCEforms>
+					</contentType>
+					-->
+					<targetPid>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/facets/locallang.xml:tt_content.pi_flexform.targetPid</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>1</minitems>
+							</config>
+						</TCEforms>
+					</targetPid>
+					<templateFile>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/facets/locallang.xml:tt_content.pi_flexform.templateFile</label>
+							<config>
+								<type>group</type>
+								<internal_type>file_reference</internal_type>
+								<allowed>tmpl,tpl,html,htm,txt</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+								<disable_controls>upload</disable_controls>
+							</config>
+						</TCEforms>
+					</templateFile>
+				</el>
+			</ROOT>
+		</sDEF>
+	</sheets>
+</T3DataStructure>
