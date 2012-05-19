@@ -94,8 +94,19 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		} elseif (($solr = tx_dlf_solr::solrConnect($this->conf['solrcore'])) !== NULL) {
 
+			// Extract facet queries.
+			$facetParams = array();
+			
+			if (!empty($this->piVars['fq'])) {
+				
+				$facetParams['facet'] = 'true';
+
+				$facetParams['fq'] = $this->piVars['fq'];
+
+			}
+
 			// Perform search.
-			$query = $solr->search($this->piVars['query'], 0, $this->conf['limit'], array ());
+			$query = $solr->search($this->piVars['query'], 0, $this->conf['limit'], $facetParams);
 
 			$numHits = count($query->response->docs);
 
@@ -108,6 +119,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'options' => array (
 					'source' => 'search',
 					'select' => $this->piVars['query'],
+					'filter.query' => $this->piVars['fq'],
 					'order' => 'relevance'
 				)
 			);
