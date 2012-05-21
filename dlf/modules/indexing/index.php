@@ -240,7 +240,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 					if (!empty($this->data['id']) && !empty($this->data['core'])) {
 
 						// Save document to database and index.
-						$doc = tx_dlf_document::getInstance($this->data['id'], 0, TRUE);
+						$doc = tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
 
 						if (!$doc->ready || !$doc->save($this->id, $this->data['core'])) {
 
