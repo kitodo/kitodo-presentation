@@ -67,7 +67,7 @@ class tx_dlf_cli extends t3lib_cli {
 				$this->cli_validateArgs();
 
 				// Get the document...
-				$doc = tx_dlf_document::getInstance($this->cli_args['-doc'][0], 0, TRUE);
+				$doc = tx_dlf_document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
 
 				if ($doc->ready) {
 
