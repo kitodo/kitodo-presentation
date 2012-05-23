@@ -138,6 +138,20 @@ $metadata = array (
 		'is_facet' => 1,
 		'is_listed' => 0,
 	),
+	'language' => array (
+		'encoded' => 1,
+		'xpath' => './mods:language/mods:languageTerm',
+		'xpath_sorting' => '',
+		'default_value' => '',
+		'wrap' => '',
+		'tokenized' => 0,
+		'stored' => 0,
+		'indexed' => 1,
+		'boost' => 1.00,
+		'is_sortable' => 0,
+		'is_facet' => 1,
+		'is_listed' => 0,
+	),
 	'year' => array (
 		'encoded' => 1,
 		'xpath' => '',
@@ -196,7 +210,7 @@ $metadata = array (
 	),
 	'title' => array (
 		'encoded' => 1,
-		'xpath' => 'concat(./mods:titleInfo/mods:nonSort, " ", ./mods:titleInfo/mods:title)',
+		'xpath' => 'concat(./mods:titleInfo/mods:nonSort," ",./mods:titleInfo/mods:title)',
 		'xpath_sorting' => './mods:titleInfo/mods:title',
 		'default_value' => '',
 		'wrap' => "key.wrap = <dt class=\"tx-dlf-metadata-title\">|</dt>\nvalue.wrap = <dd class=\"tx-dlf-metadata-title\">|</dd>",
@@ -221,7 +235,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
-	),
+	)
 );
 
 ?>
