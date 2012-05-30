@@ -48,7 +48,7 @@
 							<config>
 								<type>input</type>
 								<eval>required,num,int</eval>
-								<default>500</default>
+								<default>50000</default>
 							</config>
 						</TCEforms>
 					</limit>
