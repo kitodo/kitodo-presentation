@@ -42,6 +42,7 @@ $TCA['tx_dlf_documents'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfdocuments.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
+		'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',
@@ -67,6 +68,7 @@ $TCA['tx_dlf_structures'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfstructures.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name,oai_name',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',
@@ -92,6 +94,7 @@ $TCA['tx_dlf_metadata'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfmetadata.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name,encoding,xpath,xpath_sorting,default',
 		'requestUpdate' => 'is_sortable',
 	),
 	'feInterface' => array (
@@ -112,6 +115,7 @@ $TCA['tx_dlf_formats'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfformats.png',
 		'rootLevel'	=> 1,
 		'dividers2tabs' => 2,
+		'searchFields' => 'type,class',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',
@@ -132,6 +136,7 @@ $TCA['tx_dlf_solrcores'] = array (
 		'rootLevel'	=> -1,
 		'adminOnly' => 1,
 		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',
@@ -160,6 +165,7 @@ $TCA['tx_dlf_collections'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfcollections.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => 'label,description,documents',
@@ -182,6 +188,7 @@ $TCA['tx_dlf_libraries'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlflibraries.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
+		'searchFields' => 'label,website,contact',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',
