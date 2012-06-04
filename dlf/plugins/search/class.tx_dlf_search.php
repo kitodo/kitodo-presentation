@@ -29,7 +29,7 @@
 /**
  * Plugin 'DLF: Search' for the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>, Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -40,26 +40,102 @@ class tx_dlf_search extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
 
 	/**
-	 * Adds the JS files necessary for search sugestions to the 
+	 * Adds the HTML content for two hidden input fields, namely 'encrypted' and 'hashed', containing 
+	 * the index_name if the passed solrCore number, to the passed marker arrays value
+	 * '###ADDITIONAL_INPUTS###'. This is necessary to savely render search suggestions.
+	 *
+	 * @access	protected
+	 *
+	 * @return	array
+	 */
+	protected function addEncryptedSolrCore($markerArray, $solrCore) {
+	
+		// Extract internal dlf core name.
+		$table = 'tx_dlf_solrcores';
+		
+		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$table.'.index_name AS index_name',
+				$table,
+				$table.'.uid='.$solrCore.tx_dlf_helper::whereClause($table),
+				'',
+				'',
+				'1'
+		);
+		
+		$dlfCoreName = '';
+		
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result) > 0) {
+		
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+		
+			$dlfCoreName = $resArray['index_name'];
+		
+		}
+		
+		if (empty($dlfCoreName)) {
+			
+			trigger_error('Failed to query for internal solr core name of core number '.$solrCore, E_USER_NOTICE);
+			
+			return;
+			
+		}
+
+		$encryptedCore = tx_dlf_search_suggest::encrypt($dlfCoreName);
+
+		if (empty($encryptedCore)) {
+			
+			$markerArray['###ADDITIONAL_INPUTS###'] = '';
+
+		} else {
+			
+			$markerArray['###ADDITIONAL_INPUTS###'] = '<input type="hidden" name="encrypted" value="'.$encryptedCore['value'].'"/>'
+				.'<input type="hidden" name="hashed" value="'.$encryptedCore['hash'].'"/>';
+			
+		}
+	
+		return $markerArray;
+
+	}
+
+	/**
+	 * Adds the JS files necessary for search sugestions to the
 	 * page header.
 	 *
-	 * @access	public
+	 * @access	protected
 	 *
 	 * @return	void
 	 */
-	private function addSuggestSupport() {
+	protected function addSuggestSupport() {
+		// ensure jquery is loaded
+		if (t3lib_extMgm::isLoaded('t3jquery')) {
+			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+		}
+	
+		// if t3jquery is loaded and the custom Library had been created
+		if (T3JQUERY === true) {
+			tx_t3jquery::addJqJS();
+		} else {
+			/*
+			 * suggestions will not work; we don't indicate an no error
+			* because this is caused by insufficient configuration and
+			* this feature does not harm the rest of the framework's
+			* functionality
+			*/
+			return;
+		}
+	
 		$libs = array(
-			"search_suggest" => "search_suggest.js"
+				"search_suggest" => "search_suggest.js"
 		);
-
+	
 		foreach ($libs as $lib_key => $lib_file) {
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$lib_key] .= '	<script type="text/javascript" src="'
-				.t3lib_extMgm::siteRelPath($this->extKey)
-				.'plugins/search/'.$lib_file
-				.'"></script>';	
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$lib_key] = '	<script type="text/javascript" src="'
+			.t3lib_extMgm::siteRelPath($this->extKey)
+			.'plugins/search/'.$lib_file
+			.'"></script>';
 		}
 	}
-	
+
 	/**
 	 * The main method of the PlugIn
 	 *
@@ -79,13 +155,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		// Quit without doing anything if required variables are not set.
 		if (empty($this->conf['solrcore'])) {
-
+		
 			trigger_error('Incomplete configuration for plugin '.get_class($this), E_USER_NOTICE);
 
 			return $content;
 
 		}
-
+		
 		if (empty($this->piVars['query'])) {
 			
 			// Add suggest JavaScript file.
@@ -110,7 +186,10 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => '',
 			);
-
+			
+			// Encrypt solr core name and add as hidden input field to marker array to enable for search suggestions.
+			$markerArray = $this->addEncryptedSolrCore($markerArray, $this->conf['solrcore']);
+			
 			// Display search form.
 			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 

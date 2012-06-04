@@ -29,7 +29,7 @@
 /**
  * Solr class 'tx_dlf_solr' for the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>, Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -45,6 +45,35 @@ class tx_dlf_solr {
 	 */
 	public static $extKey = 'dlf';
 
+	/**
+	 * Returns the request url for Solr-based search suggestions.
+	 *
+	 * @access	public
+	 *
+	 * @return	string		The request url for Solr-based search suggestions.
+	 */
+	public static function getSolrUrl($core) {
+		// Extract extension configuration.
+		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][tx_dlf_solr::$extKey]);
+		
+		// Derive Solr host name.
+		$host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
+		
+		// Prepend username and password to hostname.
+		if ($conf['solrUser'] && $conf['solrPass']) {
+			$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
+		}
+		
+		// Set port if not set.
+		$port = t3lib_div::intInRange($conf['solrPort'], 1, 65535, 8180);
+
+		// Append core name to path.
+		$path = trim($conf['solrPath'], '/').'/'.$core;
+		
+		// Return entire request url.
+		return 'http://'.$host.':'.$port.'/'.$path;
+	}
+	
 	/**
 	 * Get SolrPhpClient service object and establish connection to Solr server
 	 * @see EXT:dlf/lib/SolrPhpClient/Apache/Solr/Service.php
