@@ -2,9 +2,15 @@ $(
 	function(){
 	    // jQuery autocomplete integration
 	    $(".autocomplete").autocomplete({ 
-        	source: function( request, response ) { 
-            	return $.post( 
-                	'/', { eID: "tx_dlf_suggest", q:  escape(request.term) }, 
+        	source: function( request, response ) {
+        		return $.post( 
+                	'/', 
+                	{ 
+                		eID: "tx_dlf_suggest", 
+                		q:  escape(request.term),
+                		encrypted: $("input[name='encrypted']").val(),
+                		hashed: $("input[name='hashed']").val()
+                	}, 
                 	function( xmlData ) { 
 						var result = new Array();
 	
