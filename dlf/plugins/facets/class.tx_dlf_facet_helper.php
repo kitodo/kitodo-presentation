@@ -55,7 +55,7 @@ class tx_dlf_facet_helper {
 		return self::$facets[$pid];
 
 	}
-	
+
 	/**
 	 * Load indexing configuration for facets.
 	 *
@@ -76,16 +76,70 @@ class tx_dlf_facet_helper {
 			'',
 			''
 		);
-	
+
 		while ($_indexing = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
 			if ($_indexing['is_facet']) {
 
-				self::$facets[$pid][$_indexing['index_name']] = tx_dlf_helper::translate($_indexing['index_name'], 'tx_dlf_metadata', $pid);
+				self::$facets[$pid][$_indexing['index_name'].'_faceting'] = tx_dlf_helper::translate($_indexing['index_name'], 'tx_dlf_metadata', $pid);
 
 			}
 
 		}
+
+	}
+
+	protected static function endsWith($haystack, $needle) {
+
+		$length = strlen($needle);
+
+		if ($length == 0) {
+
+			return true;
+
+		}
+
+		$start  = $length * -1;
+
+		return (substr($haystack, $start) === $needle);
+
+	}
+
+	public static function translateFacetField($facetField, $pid) {
+
+		return tx_dlf_helper::translate(preg_replace('{_faceting$}', '', $facetField), 'tx_dlf_metadata', $pid);
+
+	}
+
+	public static function translateFacetValue($facetField, $value, $pid) {
+		/*
+		 * following value translations are kept from class tx_dlf_metadata.
+		* TODO: discuss central utlility function to render index values
+		*/
+		$result = $value;
+
+		// Translate name of holding library.
+		if ($index_name == 'owner' && !empty($value)) {
+
+			$result = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $pid));
+
+			// Translate document type.
+		} elseif ($index_name == 'type' && !empty($value)) {
+
+			$result = $this->pi_getLL($value, tx_dlf_helper::translate($value, 'tx_dlf_structures', $pid), FALSE);
+
+			// Translate ISO 639 language code.
+		} elseif ($index_name == 'language' && !empty($value)) {
+
+			$result = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
+
+		} elseif (!empty($value)) {
+
+			$result = htmlspecialchars($value);
+
+		}
+
+		return $result;
 
 	}
 
