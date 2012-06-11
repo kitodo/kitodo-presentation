@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,16 +28,66 @@
 
 /**
  * Plugin 'DLF: Facets' for the 'dlf' extension.
- *
- * @author	Henrik Lochmann <dev@mentalmotive.com>
- * @copyright	Copyright (c) 2012, Zeutschel GmbH
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- */
+*
+* @author	Henrik Lochmann <dev@mentalmotive.com>
+* @copyright	Copyright (c) 2012, Zeutschel GmbH
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+*/
 class tx_dlf_facets extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/collection/class.tx_dlf_facets.php';
+
+	protected function getEntries($result, $facets, $lastSearch) {
+
+		$menuArray = array ();
+
+		// Process results.
+		$hasOneValue = false;
+
+		foreach ($result->facet_counts->facet_fields as $facetField => $facetValues) {
+
+			$valueContent = '';
+
+			$hasOneValue = false;
+
+			$entryArray = array();
+
+			$entryArray['title'] = $facets[$facetField];
+
+			$entryArray['doNotLinkIt'] = 1;
+
+			$entryArray['ITEM_STATE'] = 'NO';
+
+			foreach ($facetValues as $value_name => $value_count) {
+
+				if ($value_count > 0) {
+
+					$hasOneValue = true;
+
+					$entryArray['_SUB_MENU'][] = $this->renderMenuEntry($facetField, $value_name, $value_count, $lastSearch);
+
+				}
+
+			}
+
+			if (!$hasOneValue) {
+
+				$entryArray['_SUB_MENU'][] = array(
+						'title' => 'keine Einträge',
+						'doNotLinkIt' => 1
+				);
+
+			}
+
+			$menuArray[] = $entryArray;
+
+		}
+
+		return $menuArray;
+
+	}
 
 	protected function getLastQuery() {
 		// Set last query if applicable.
@@ -45,17 +95,17 @@ class tx_dlf_facets extends tx_dlf_plugin {
 
 		$_list = t3lib_div::makeInstance('tx_dlf_list');
 
-		if (!empty($_list->metadata['options']['source']) && $_list->metadata['options']['source'] == 'search') {
-				
+		if ($_list->metadata['options']['source'] !== 'collection') {
+
 			$lastQuery['query'] = $_list->metadata['options']['select'];
-			
-			$lastQuery['fq'] = $_list->metadata['options']['filter.query'];
-			
+
 		}
+
+		$lastQuery['fq'] = $_list->metadata['options']['filter.query'];
 
 		return $lastQuery;
 	}
-	
+
 	/**
 	 * The main method of the PlugIn
 	 *
@@ -71,7 +121,16 @@ class tx_dlf_facets extends tx_dlf_plugin {
 		$this->init($conf);
 
 		$this->setCache(FALSE);
-		
+
+		// Check for typoscript configuration to prevent fatal error.
+		if (empty($this->conf['menuConf.'])) {
+
+			trigger_error('No typoscript configuration for facet list available', E_USER_NOTICE);
+
+			return $content;
+
+		}
+
 		// Quit without doing anything if required configuration variables are not set.
 		if (empty($this->conf['pages']) || empty($this->conf['facets'])) {
 
@@ -79,15 +138,6 @@ class tx_dlf_facets extends tx_dlf_plugin {
 
 			return $content;
 
-		}
-		
-		// extract search query
-		$lastSearch = $this->getLastQuery();
-
-		if (empty($lastSearch['query'])) {
-			
-			$lastSearch['query'] = '*';
-			
 		}
 
 		// Load template file.
@@ -97,120 +147,144 @@ class tx_dlf_facets extends tx_dlf_plugin {
 
 		} else {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/collection/template.tmpl'), '###TEMPLATE###');
+			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/facets/template.tmpl'), '###TEMPLATE###');
 
 		}
 
-		if (($solr = tx_dlf_solr::solrConnect($this->conf['solrcore'])) !== NULL) {
-			
-			// get facets to show from plugin configuration
-			$facetsToShow = array();
-			
-			foreach (explode(',', $this->conf['facets']) as $facet) {
-				
-				$facetsToShow[$facet.'_faceting'] = $facet;
-			
-			}	
+		// Perform search if requested.
+		if (!empty($this->piVars['fq'])) {
 
-			// create facet query
-			$facetParams = array(
-				'facet' => 'true',
-				'fq' => $lastSearch['fq'],
-				'facet.field' => array()
-			);
-			
-			foreach ($facetsToShow as $facet_field => $original_field) {
+			t3lib_div::devLog('[main]   facets searching...', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
-				$facetParams['facet.field'][] = $facet_field;
+			$search = t3lib_div::makeInstance('tx_dlf_solr_search', $this->conf['solrcore'], $this->conf['pages']);
 
-			}
-			
-			// Perform search.
-			$result = $solr->search($lastSearch['query'], 0, $this->conf['limit'], $facetParams);
+			$search->filterQuery = $this->piVars['fq'];
 
-			// Process results.
-			$hasOneValue = false;
-			
-			$content .= '<div class="facets">';
-			
-			// render reset link
-			// $content .= $this->pi_linkTP_keepPIvars('reset', array('query' => $lastSearch['query'], 'fq' => NULL)).'</br>';
-			
-			foreach ($result->facet_counts->facet_fields as $key => $facet) {
-					
-				$content .= '<big>'.tx_dlf_helper::translate($facetsToShow[$key], 'tx_dlf_metadata', $this->conf['pages']).'</big><ul class="unstyled">';
-				
-				$hasOneValue = false;
-				
-				foreach ($facet as $value_name => $value_count) {
+			$search->limit = 10000;
 
-					if ($value_count > 0) {
-						
-						$hasOneValue = true;
-					
-						$content .= $this->render($facetsToShow[$key], $value_name, $value_count, $lastSearch);
-							
-					}
+			$search->source = 'facets';
 
-				}
-				
-				if (!$hasOneValue) {
-					
-					$content .= '<li>'.'keine Einträge'.'</li>';
+			$search->order = 'relevance';
 
-				}
+			$list = t3lib_div::makeInstance('tx_dlf_list');
 
-				$content .= '</ul>';
+			if ($list->metadata['options']['source'] != 'search') {
+
+				$search->restoreHeader();
 
 			}
-			
-			$content .= '</div>';
-			
+
+			$search->restoreQueryString();
+
+			$list = tx_dlf_solr::search($search);
+
+			// Clean output buffer.
+			t3lib_div::cleanOutputBuffers();
+
+			// Send headers.
+			header('Location: '.t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->conf['targetPid'])));
+
+			// Flush output buffer and end script processing.
+			ob_end_flush();
+
+			exit;
+
 		}
-		
+
+		t3lib_div::devLog('[main]   rendering facets', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+
+		// Render facets if no search is requested.
+		$_TSconfig = array ();
+
+		$_TSconfig['special'] = 'userfunction';
+
+		$_TSconfig['special.']['userFunc'] = 'tx_dlf_facets->makeMenuArray';
+
+		$_TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['menuConf.'], $_TSconfig);
+
+		$markerArray['###FACET_MENU###'] = $this->cObj->HMENU($_TSconfig);
+
+		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+
 		return $this->pi_wrapInBaseClass($content);
 
 	}
 
-	protected function render($index_name, $value, $valueCount, $lastSearch) {
+	/**
+	 * This builds a menu array for HMENU
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$content: The PlugIn content
+	 * @param	array		$conf: The PlugIn configuration
+	 *
+	 * @return	array		HMENU array
+	 */
+	public function makeMenuArray($content, $conf) {
 
-		$renderedValue = $value;
+		$this->init($conf);
 
-		/*
-		 * following value translations are kept from class tx_dlf_metadata.
-		 * TODO: discuss central utlility function to render index values
-		 */
+		// extract search query
+		$lastSearch = $this->getLastQuery();
 
-		// Translate name of holding library.
-		if ($index_name == 'owner' && !empty($value)) {
+		if (empty($lastSearch['query'])) {
 
-			$renderedValue = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
-
-		// Translate document type.
-		} elseif ($index_name == 'type' && !empty($value)) {
-
-			$renderedValue = $this->pi_getLL($value, tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
-
-		// Translate ISO 639 language code.
-		} elseif ($index_name == 'language' && !empty($value)) {
-
-			$renderedValue = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
-
-		} elseif (!empty($value)) {
-
-			$renderedValue = htmlspecialchars($value);
+			$lastSearch['query'] = '*';
 
 		}
-		
+
+		t3lib_div::devLog('[makeMenuArray]   lastSearchFQ='.tx_dlf_helper::array_toString($lastSearch['fq']).', lastSearchQuery='.$lastSearch['query'], 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+
+		if (($solr = tx_dlf_solr::solrConnect($this->conf['solrcore'])) !== NULL) {
+
+			// get facets to show from plugin configuration
+			$facetsToShow = array();
+
+			foreach (explode(',', $this->conf['facets']) as $facet ) {
+
+				$facetsToShow[$facet] = tx_dlf_facet_helper::translateFacetField($facet, $this->conf['pages']);
+
+			}
+
+			// create facet query
+			$facetParams = array(
+					'facet' => 'true',
+					'fq' => $lastSearch['fq'],
+					'facet.field' => array()
+			);
+
+			foreach ($facetsToShow as $facetField => $facetName) {
+
+				$facetParams['facet.field'][] = $facetField;
+
+			}
+
+			// 			t3lib_div::devLog('facetParams='.tx_dlf_helper::array_toString($facetParams).'  [makeMenuArray]', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+
+			// Perform search.
+			$result = $solr->search($lastSearch['query'], 0, $this->conf['limit'], $facetParams);
+
+			return $this->getEntries($result, $facetsToShow, $lastSearch);
+
+		}
+
+	}
+
+
+
+	protected function render($facetField, $value, $valueCount, $lastSearch) {
+
+		$renderedValue = tx_dlf_facet_helper::translateFacetValue($facetField, $value, $this->conf['pages']);
+
 		// shorten rendered value to max length (probably a candidate for configuration)
 		if (strlen($renderedValue) > 30) {
-			
+
 			$pos = strpos($renderedValue, ' ', 30);
-			
+
 			$renderedValue = substr($renderedValue, 0, $pos).'...';
-			
+
 		}
-		 
+
 
 		// append value count
 		$renderedValue .= '&nbsp;('.$valueCount.')';
@@ -218,52 +292,60 @@ class tx_dlf_facets extends tx_dlf_plugin {
 		$result = '';
 
 		$selectedIndex = -1;
-		
+
 		$i = 0;
 
-		// check if given facet is already selected
-	 	foreach ($lastSearch['fq'] as $fqPart) {
+		// Wrap value.
+		$value = '"'.$value.'"';
 
-			$facetSelection = explode(':', $fqPart);
+		if (!empty($lastSearch['fq'])) {
 
-			if (count($facetSelection) == 2) {
+			// check if given facet is already selected
+			foreach ($lastSearch['fq'] as $fqPart) {
 
-				if ($index_name == $facetSelection[0] && $value == $facetSelection[1]) {
+				$facetSelection = explode(':', $fqPart);
 
-					$selectedIndex = $i;
+				if (count($facetSelection) == 2) {
 
-					break;
+					if ($facetField == $facetSelection[0] && $value == $facetSelection[1]) {
+
+						$selectedIndex = $i;
+
+						break;
+
+					}
 
 				}
 
-			}
+				$i++;
 
-			$i++;
+			}
 
 		}
 
 		$result = '';
-		
+
 		// the given value is selected, prepare deselected filter query
 		if ($selectedIndex > -1) {
 
-			$result = '<li class="active">';//.$renderedValue.'</li>';
+			$result = '<li class="active">';
 
 			if (!is_array($lastSearch['fq'])) {
 
 				$lastSearch['fq'] = NULL;
 
 			} else {
-					
+
 				unset($lastSearch['fq'][$selectedIndex]);
 
 				$lastSearch['fq'] = array_values($lastSearch['fq']);
-				 
+
 			}
 
+		}
 		// the given value is NOT selected, prepare selection filter query
-		} else {
-				
+		else {
+
 			$result = '<li>';
 
 			if (empty($lastSearch['fq'])) {
@@ -275,43 +357,186 @@ class tx_dlf_facets extends tx_dlf_plugin {
 				$lastSearch['fq'] = array( $lastSearch['fq'] );
 
 			}
-			
-			$lastSearch['fq'][] = ($index_name.':'.$value);
-		
+
+			$lastSearch['fq'][] = ($facetField.':'.$value);
+
 		}
-		
+
+		// Escape value.
+		// $lastSearch['fq'] = htmlspecialchars($value);
+
 		$result .= '<a href="'
-			.$this->pi_linkTP_keepPIvars_url(array('query' => $lastSearch['query'], 'fq' => $lastSearch['fq'])).'">'
-			.$renderedValue
-			.'</a></li>';	
-	
+		.$this->pi_linkTP_keepPIvars_url(array('query' => $lastSearch['query'], 'fq' => $lastSearch['fq'])).'">'
+		.$renderedValue
+		.'</a></li>';
+
 		return $result;
 
 	}
 
-	public static function printArray($array) {
-		$result = "";
-		
-		if (is_array($array)) {
-			if (count($array) == 0) {
-				$result .= "array is empty";
-			} else {
-				$result .= "<div class='values'>";
-	
-				foreach ($array as $key => $value) {
-					$result .= '<span class="key">' . $key . "</span>";
-					$result .= '<span class="value">' . self::printArray($value) . "</span>";
+	protected function renderMenuEntry($facetField, $value, $valueCount, $lastSearch) {
+
+		$entryArray = array();
+
+		$renderedValue = tx_dlf_facet_helper::translateFacetValue($facetField, $value, $this->conf['pages']);
+
+		$entryArray['doNotLinkIt'] = 0;
+
+		$entryArray['ITEM_STATE'] = 'NO';
+
+		// append value count
+		$renderedValue .= '&nbsp;('.$valueCount.')';
+
+		$selectedIndex = -1;
+
+		$i = 0;
+
+		// Wrap value.
+		$value = '"'.$value.'"';
+
+		if (count($lastSearch['fq']) > 0) {
+
+			// check if given facet is already selected
+			foreach ($lastSearch['fq'] as $fqPart) {
+
+				$facetSelection = explode(':', $fqPart, 2);
+
+				// t3lib_div::devLog('[renderMenuEntry]   fqPart'.tx_dlf_helper::array_toString($facetSelection), 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+
+				if (count($facetSelection) == 2) {
+
+					if ($facetField == $facetSelection[0] && $value == $facetSelection[1]) {
+
+						$selectedIndex = $i;
+
+						break;
+
+					}
+
 				}
-	
-				$result .= "</div>";	
+
+				$i++;
+
 			}
-		// } else if (empty($array)) {
-			// $result .= "no value";
-		} else {
-			$result .= (string) ($array);
+
 		}
-		
-		return $result;
+
+		// the given value is selected, prepare deselected filter query
+		if ($selectedIndex > -1) {
+
+			if (!is_array($lastSearch['fq'])) {
+
+				$lastSearch['fq'] = NULL;
+
+			} else {
+
+				unset($lastSearch['fq'][$selectedIndex]);
+
+				$lastSearch['fq'] = array_values($lastSearch['fq']);
+
+			}
+
+			$entryArray['ITEM_STATE'] = 'ACT';
+
+		}
+		// the given value is NOT selected, prepare selection filter query
+		else {
+
+			if (empty($lastSearch['fq'])) {
+
+				$lastSearch['fq'] = array();
+
+			} else if (!is_array($lastSearch['fq'])) {
+
+				$lastSearch['fq'] = array( $lastSearch['fq'] );
+
+			}
+
+			$lastSearch['fq'][] = ($facetField.':'.$value);
+
+		}
+
+		$entryArray['title'] = $renderedValue;
+
+		$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array('query' => $lastSearch['query'], 'fq' => $lastSearch['fq']));
+
+		return $entryArray;
+
+	}
+
+	/**
+	 * Create the facet list.
+	 *
+	 * @access	protected
+	 *
+	 * @param	result		The search result, contraining faceting data.
+	 *
+	 * @return	string		The list of collections ready to output
+	 */
+	protected function showFacetList($result, $facets, $lastSearch) {
+
+		// Process results.
+		$hasOneValue = false;
+
+		$markerArray = array();
+
+		$content = '';
+		// $content .= '<div class="facets">';
+		$facetSubpart = $this->cObj->getSubpart($this->template, '###FACET###');
+
+		foreach ($result->facet_counts->facet_fields as $facetField => $facetValues) {
+
+			$valueContent = '';
+
+			// $content .= '<big>'.$facets[$facetField].'</big><ul class="unstyled">';
+
+			// 			$markerArray = array();
+			// 			$markerArray['###TITLE###'] = $facets[$facetField];
+
+			$hasOneValue = false;
+
+			$facetValueSubpart = $this->cObj->getSubpart($this->template, '###FACET_VALUE###');
+
+			foreach ($facetValues as $value_name => $value_count) {
+
+				if ($value_count > 0) {
+
+					$hasOneValue = true;
+
+					// 					$content .= $this->render($facetField, $value_name, $value_count, $lastSearch);
+
+					$valueContent .= $this->cObj->substituteMarkerArray($facetValueSubpart, array( '###NAME###' => $this->render($facetField, $value_name, $value_count, $lastSearch)));
+
+				}
+
+			}
+
+			if (!$hasOneValue) {
+
+				// $content .= '<li>'.'keine Einträge'.'</li>';
+				$valueContent .= $this->cObj->substituteMarkerArray($facetValueSubpart, array( '###NAME###' => 'keine Einträge'));
+
+			}
+
+			// $content .= '</ul>';
+
+			// $facetContent = $this->cObj->substituteSubpart($this->template, '###FACET###', $facetContent, FALSE);
+
+			$facetContent = $this->cObj->substituteMarkerArray($facetSubpart, array( '###TITLE###' => $facets[$facetField]));
+
+			$content .= $this->cObj->substituteSubpart($facetContent, '###FACET_VALUE###', $valueContent, FALSE);
+
+			//$content .= $this->cObj->substituteMarkerArray($facetSubpart, $markerArray);
+
+		}
+
+		// $content .= '</div>';
+
+		// var_dump($content);
+
+		//return $this->cObj->substituteSubpart($this->template, '###FACET###', $content, TRUE);
+		return $this->cObj->substituteSubpart($this->template, '###FACET###', $content, FALSE);
+
 	}
 }
 
