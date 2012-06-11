@@ -45,6 +45,10 @@ class tx_dlf_helper {
 	 */
 	public static $extKey = 'dlf';
 
+	private static $LANG = FALSE;
+
+	private static $LANGLoaded = FALSE;
+
 	/**
 	 * Searches the array recursively for a given value and returns the corresponding key if successful
 	 * @see http://php.net/array_search
@@ -72,6 +76,33 @@ class tx_dlf_helper {
 		}
 
 		return FALSE;
+
+	}
+
+
+	public static function array_toString( $glue, $separator, $array ) {
+
+		if (! is_array($array)) {
+
+			return $array;
+
+		}
+
+		$string = array();
+
+		foreach ($array as $key => $val) {
+
+			if (is_array($val)) {
+
+				$val = implode( ',', $val );
+
+			}
+
+			$string[] = "{$key}{$glue}{$val}";
+
+		}
+
+		return implode($separator, $string);
 
 	}
 
@@ -316,6 +347,14 @@ class tx_dlf_helper {
 
 	}
 
+	public static function getLL($key, $htmlSpecialChars = FALSE) {
+
+		self::loadLL();
+
+		return $GLOBALS['LANG']->getLLL($key, self::$LANG, $htmlSpecialChars);
+
+	}
+
 	/**
 	 * Get the URN of an object
 	 * @see	http://www.persistent-identifier.de/?link=316
@@ -431,6 +470,18 @@ class tx_dlf_helper {
 	public static function isTranslatable($index_name, $table, $pid = 0) {
 
 		return self::translate($index_name, $table, $pid, TRUE);
+
+	}
+
+	protected static function loadLL() {
+
+		if (!self::$LANGLoaded) {
+
+			self::$LANG = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'locallang.xml', FALSE, TRUE);
+
+			self::$LANGLoaded = TRUE;
+
+		}
 
 	}
 
