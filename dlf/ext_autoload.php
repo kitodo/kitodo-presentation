@@ -35,6 +35,7 @@ return array (
 	'tx_dlf_module' => $extensionPath.'common/class.tx_dlf_module.php',
 	'tx_dlf_plugin' => $extensionPath.'common/class.tx_dlf_plugin.php',
 	'tx_dlf_solr' => $extensionPath.'common/class.tx_dlf_solr.php',
+	'tx_dlf_solr_search' => $extensionPath.'common/class.tx_dlf_solr_search.php',
 	'tx_dlf_em' => $extensionPath.'hooks/class.tx_dlf_em.php',
 	'tx_dlf_hacks' => $extensionPath.'hooks/class.tx_dlf_hacks.php',
 	'tx_dlf_tceforms' => $extensionPath.'hooks/class.tx_dlf_tceforms.php',
