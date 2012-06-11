@@ -1,0 +1,24 @@
+# facets menu conf
+plugin.tx_dlf_facets.menuConf {
+	expAll = 0
+	1 = TMENU
+	1 {
+		noBlur = 1
+		wrap = <ul>|</ul>
+		NO = 1
+		NO {
+			stdWrap.wrap = <h2>|</h2>
+			stdWrap.crop = 55 | &nbsp;... | 1
+			wrapItemAndSub = <li>|</li>
+			doNotLinkIt.field = doNotLinkIt
+	    }
+		ACT < .NO
+		ACT.wrapItemAndSub = <li class="active">|</li>
+	}
+
+	2 < .1
+	2 {
+		NO.stdWrap.wrap >
+		ACT.stdWrap.wrap >
+	}
+}
