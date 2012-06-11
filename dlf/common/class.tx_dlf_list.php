@@ -386,6 +386,18 @@ class tx_dlf_list implements t3lib_Singleton {
 
 	}
 
+	public function __toString() {
+
+		$result = get_class($this).' { ';
+
+		$result .= tx_dlf_helper::array_toString($this->metadata);
+
+		$result .= ' }';
+
+		return $result;
+
+	}
+
 	/**
 	 * This magic method is executed after the object is deserialized
 	 * @see __sleep()
