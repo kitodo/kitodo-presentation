@@ -477,7 +477,7 @@ class tx_dlf_helper {
 
 		if (!self::$LANGLoaded) {
 
-			self::$LANG = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'locallang.xml', FALSE, TRUE);
+			self::$LANG = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'common/locallang.xml', FALSE, TRUE);
 
 			self::$LANGLoaded = TRUE;
 
