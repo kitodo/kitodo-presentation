@@ -155,7 +155,6 @@ class tx_dlf_solr {
 
 	}
 
-// 	public static function search($core, $pid, $queryString, $filterQuery, $limit = 10000, $source, $order = '', $label = '', $description = '') {
 	/**
 	 *
 	 *
