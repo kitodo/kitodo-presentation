@@ -80,9 +80,9 @@ class tx_dlf_helper {
 	}
 
 
-	public static function array_toString( $glue, $separator, $array ) {
+	public static function array_toString($array, $glue = '=', $separator = ', ') {
 
-		if (! is_array($array)) {
+		if (!is_array($array)) {
 
 			return $array;
 
