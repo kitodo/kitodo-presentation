@@ -510,6 +510,25 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('volume', $metadata['volume'][0], self::$fieldboost['volume']);
 
+			// Extract and set thumbnail.
+			$fileGrp = "THUMBS";
+
+			$thumbnailLocation = 'not found';
+
+			$firstPageThumbnailNodes = $doc->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@TYPE="page"][1]/mets:fptr[substring(@FILEID, string-length(@FILEID) - '.(strlen($fileGrp) - 1).') = "'.$fileGrp.'"]/@FILEID');
+
+			if (count($firstPageThumbnailNodes) > 0) {
+
+				$firstPageThumbnailFileId = (string) $firstPageThumbnailNodes[0];
+
+				$thumbnailLocation = $doc->getFileLocation($firstPageThumbnailFileId);
+
+			}
+
+			t3lib_div::devLog('[process]   thumb='.$thumbnailLocation, 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+
+ 			$solrDoc->setField('thumbnail_usi', $thumbnailLocation);
+
 			foreach ($metadata as $index_name => $data) {
 
 				if (!empty($data) && substr($index_name, -8) !== '_sorting') {
