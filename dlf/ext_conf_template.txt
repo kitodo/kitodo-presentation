@@ -10,6 +10,9 @@ useragent = Goobi.Presentation
 # cat=Basic; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrps
 fileGrps = DEFAULT,MIN,MAX,THUMBS
 
+# cat=Basic; type=string; label=Thumbnail METS fileGrps 
+thumbFileGrps = DEFAULT,MIN,MAX,THUMBS
+
 # cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.caching
 caching = 0
 
