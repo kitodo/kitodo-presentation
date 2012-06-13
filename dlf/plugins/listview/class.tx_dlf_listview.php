@@ -232,6 +232,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
+		// Add thumbnail.
+		$imgConfig = array(
+			"file" => $this->list->elements[$number]['thumbnail']
+		);
+
+// 		$markerArray['###THUMBNAIL###'] = $this->cObj->IMAGE($imgConfig);
+		$markerArray['###THUMBNAIL###'] = '<img src="'.$this->list->elements[$number]['thumbnail'].'"/>';
+
 		if (!empty($this->list->elements[$number]['subparts'])) {
 
 			$subpart = $this->getSubEntries($number, $template);
