@@ -351,7 +351,7 @@ class tx_dlf_helper {
 
 		self::loadLL();
 
-		return $GLOBALS['LANG']->getLLL($key, self::$LANG, $htmlSpecialChars);
+		return $GLOBALS['TSFE']->getLLL($key, self::$LANG);
 
 	}
 
@@ -477,7 +477,8 @@ class tx_dlf_helper {
 
 		if (!self::$LANGLoaded) {
 
-			self::$LANG = $GLOBALS['LANG']->includeLLFile(t3lib_extMgm::extPath(self::$extKey).'common/locallang.xml', FALSE, TRUE);
+			// Initialize l18n file with frontend language.
+			self::$LANG = $GLOBALS['TSFE']->readLLfile(t3lib_extMgm::extPath(self::$extKey, 'common/locallang.xml'));
 
 			self::$LANGLoaded = TRUE;
 
