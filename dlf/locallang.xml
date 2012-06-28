@@ -21,7 +21,7 @@
 			<label index="tx_dlf_documents.year">Year of Publication</label>
 			<label index="tx_dlf_documents.year_sorting">Year of Publication (Sorting)</label>
 			<label index="tx_dlf_documents.place">Place of Publication</label>
-			<label index="tx_dlf_documents.place_sorting">Place of Publication</label>
+			<label index="tx_dlf_documents.place_sorting">Place of Publication (Sorting)</label>
 			<label index="tx_dlf_documents.structure">Typ of Document</label>
 			<label index="tx_dlf_documents.partof">Part of ...</label>
 			<label index="tx_dlf_documents.partof.none">none</label>
@@ -124,7 +124,7 @@
 			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (default is "Goobi.Presentation")</label>
 			<label index="config.fileGrps">Additional METS fileGrps: comma-separated list of @USE attribute values (default is "DEFAULT,MIN,MAX,THUMBS")</label>
-			<label index="config.thumbFileGrps">Thumbnails METS fileGrps: priority-based, comma-separated list of @USE attribute values</label>
+			<label index="config.thumbFileGrp">Thumbnails METS fileGrp: selects the fileGrp with by this @USE attribute value for thumbnail extraction</label>
 			<label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
 			<label index="config.solrConnect">Solr Connection</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
@@ -282,7 +282,7 @@
 			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (Standard ist "Goobi.Presentation")</label>
 			<label index="config.fileGrps">Zusätzliche METS fileGrps: Komma-getrennte Liste von @USE Attributwerten (Standard ist "DEFAULT,MIN,MAX,THUMBS")</label>
-			<label index="config.thumbFileGrps">Vorschau METS fileGrps: prioritäts-basierte, Komma-getrennte Liste von @USE Attributwerten</label>
+			<label index="config.thumbFileGrp">Vorschau METS fileGrp: wählt die fileGrp mit diesem @USE Attributwert für die Thumbnail-Extraktion aus</label>
 			<label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
