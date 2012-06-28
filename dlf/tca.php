@@ -314,6 +314,12 @@ $TCA['tx_dlf_documents'] = array (
 				'default' => 0,
 			),
 		),
+		'thumbnail' => array (
+				'exclude' => 1,
+				'config' => array (
+						'type' => 'passthrough',
+				),
+		),
 	),
 	'types' => array (
 		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author;;2, year;;3, place;;4, structure;;5;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
@@ -411,6 +417,26 @@ $TCA['tx_dlf_structures'] = array (
 				'eval' => 'trim',
 			),
 		),
+		'thumbnail' => array (
+				'exclude' => 1,
+				'label' => 'Show Thumbnail',
+				'config' => array (
+						'type' => 'check',
+						'default' => 0,
+				),
+		),
+		'thumbnail_source' => array (
+				'exclude' => 1,
+				'label' => 'Thumbnail Source',
+				'config' => array (
+						'type' => 'select',
+						'items' => array (
+							array ('[This Element]', 0),
+						),
+						'foreign_table' => 'tx_dlf_structures',
+						'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.toplevel=0',
+				),
+		),
 		'status' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.status',
@@ -427,10 +453,11 @@ $TCA['tx_dlf_structures'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label;;1, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label;;1, thumbnail;;2, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1),
+		'2' => array ('showitem' => 'thumbnail_source'),
 	),
 );
 
