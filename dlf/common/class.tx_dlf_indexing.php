@@ -500,6 +500,13 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('type', $logicalUnit['type'], self::$fieldboost['type']);
 
+			// Index thumbnails for toplevel elements.
+			if (in_array($logicalUnit['type'], self::$toplevel)) {
+
+				$solrDoc->setField('thumbnail_usi', $doc->getThumbnail($doc->pid));
+
+			}
+
 			$solrDoc->setField('title', $metadata['title'][0], self::$fieldboost['title']);
 
 			$solrDoc->setField('author', $metadata['author'], self::$fieldboost['author']);
@@ -509,25 +516,6 @@ class tx_dlf_indexing {
 			$solrDoc->setField('place', $metadata['place'], self::$fieldboost['place']);
 
 			$solrDoc->setField('volume', $metadata['volume'][0], self::$fieldboost['volume']);
-
-			// Extract and set thumbnail.
-			$fileGrp = "THUMBS";
-
-			$thumbnailLocation = 'not found';
-
-			$firstPageThumbnailNodes = $doc->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@TYPE="page"][1]/mets:fptr[substring(@FILEID, string-length(@FILEID) - '.(strlen($fileGrp) - 1).') = "'.$fileGrp.'"]/@FILEID');
-
-			if (count($firstPageThumbnailNodes) > 0) {
-
-				$firstPageThumbnailFileId = (string) $firstPageThumbnailNodes[0];
-
-				$thumbnailLocation = $doc->getFileLocation($firstPageThumbnailFileId);
-
-			}
-
-			t3lib_div::devLog('[process]   thumb='.$thumbnailLocation, 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
-
- 			$solrDoc->setField('thumbnail_usi', $thumbnailLocation);
 
 			foreach ($metadata as $index_name => $data) {
 
