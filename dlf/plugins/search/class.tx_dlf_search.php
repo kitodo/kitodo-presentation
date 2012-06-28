@@ -176,7 +176,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					// Get information for toplevel document.
 					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type',
+						'tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type,tx_dlf_documents.thumbnail AS thumbnail',
 						'tx_dlf_documents',
 						'tx_dlf_documents.uid='.intval($_check).tx_dlf_helper::whereClause('tx_dlf_documents'),
 						'',
@@ -198,7 +198,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 							'year' => array ($resArray['year']),
 							'place' => array ($resArray['place']),
 							'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages'])),
-							'subparts' => $toplevel[$_check]['subparts']
+							'subparts' => $toplevel[$_check]['subparts'],
+							'thumbnail' => $resArray['thumbnail']
 						);
 
 					} else {
