@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Henrik Lochmann <dev@mentalmotive.com>
+*  (c) 2012, Zeutschel GmbH
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -41,6 +41,22 @@ class tx_dlf_facet_helper {
 	 * @access protected
 	 */
 	protected static $facets = array ();
+
+	protected static function endsWith($haystack, $needle) {
+
+		$length = strlen($needle);
+
+		if ($length == 0) {
+
+			return true;
+
+		}
+
+		$start  = $length * -1;
+
+		return (substr($haystack, $start) === $needle);
+
+	}
 
 	public static function getFacets($pid) {
 
@@ -86,22 +102,6 @@ class tx_dlf_facet_helper {
 			}
 
 		}
-
-	}
-
-	protected static function endsWith($haystack, $needle) {
-
-		$length = strlen($needle);
-
-		if ($length == 0) {
-
-			return true;
-
-		}
-
-		$start  = $length * -1;
-
-		return (substr($haystack, $start) === $needle);
 
 	}
 
