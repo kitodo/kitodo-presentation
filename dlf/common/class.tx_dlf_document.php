@@ -29,7 +29,7 @@
 /**
  * Document class 'tx_dlf_document' for the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>, Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
