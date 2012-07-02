@@ -24,7 +24,6 @@
 			<label index="tx_dlf_documents.place_sorting">Place of Publication</label>
 			<label index="tx_dlf_documents.structure">Typ of Document</label>
 			<label index="tx_dlf_documents.partof">Part of ...</label>
-			<label index="tx_dlf_documents.partof.none">none</label>
 			<label index="tx_dlf_documents.volume">Number of Volume</label>
 			<label index="tx_dlf_documents.volume_sorting">Number of Volume (Sorting)</label>
 			<label index="tx_dlf_documents.collections">Collections</label>
@@ -181,7 +180,6 @@
 			<label index="tx_dlf_documents.place_sorting">Erscheinungsort (Sortierung)</label>
 			<label index="tx_dlf_documents.structure">Dokumententyp</label>
 			<label index="tx_dlf_documents.partof">Übergeordnete Einheit</label>
-			<label index="tx_dlf_documents.partof.none">keine</label>
 			<label index="tx_dlf_documents.volume">Bandnummer</label>
 			<label index="tx_dlf_documents.volume_sorting">Bandnummer (Sortierung)</label>
 			<label index="tx_dlf_documents.collections">Sammlungen</label>
