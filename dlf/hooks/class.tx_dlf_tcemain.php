@@ -259,12 +259,12 @@ class tx_dlf_tcemain {
 				// After database operations for table "tx_dlf_documents".
 				case 'tx_dlf_documents':
 
-					// Delete/re-index document in Solr according to "hidden" status in database.
+					// Delete/reindex document in Solr according to "hidden" status in database.
 					if (isset($fieldArray['hidden'])) {
 
 						// Get Solr core.
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-							'tx_dlf_solrcores.index_name AS index_name',
+							'tx_dlf_solrcores.uid',
 							'tx_dlf_solrcores,tx_dlf_documents',
 							'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
 							'',
@@ -276,30 +276,30 @@ class tx_dlf_tcemain {
 
 							list ($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
-							// Establish Solr connection.
-							if ($solr = tx_dlf_solr::solrConnect($core)) {
+							if ($fieldArray['hidden']) {
 
-								if ($fieldArray['hidden']) {
+								// Establish Solr connection.
+								if ($solr = tx_dlf_solr::solrConnect($core)) {
 
 									// Delete Solr document.
 									$solr->deleteByQuery('uid:'.$id);
 
 									$solr->commit();
 
+								}
+
+							} else {
+
+								// Reindex document.
+								$doc = tx_dlf_document::getInstance($id);
+
+								if ($doc->ready) {
+
+									$doc->save($doc->pid, $core);
+
 								} else {
 
-									// Reindex document.
-									$doc = tx_dlf_document::getInstance($id);
-
-									if ($doc->ready) {
-
-										$doc->save($doc->pid, $core);
-
-									} else {
-
-										trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
-
-									}
+									trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
 
 								}
 
@@ -336,7 +336,7 @@ class tx_dlf_tcemain {
 
 			// Get Solr core.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_solrcores.index_name AS index_name',
+				'tx_dlf_solrcores.uid',
 				'tx_dlf_solrcores,tx_dlf_documents',
 				'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
 				'',
@@ -348,13 +348,13 @@ class tx_dlf_tcemain {
 
 				list ($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
-				// Establish Solr connection.
-				if ($solr = tx_dlf_solr::solrConnect($core)) {
+				switch ($command) {
 
-					switch ($command) {
+					case 'move':
+					case 'delete':
 
-						case 'move':
-						case 'delete':
+						// Establish Solr connection.
+						if ($solr = tx_dlf_solr::solrConnect($core)) {
 
 							// Delete Solr document.
 							$solr->deleteByQuery('uid:'.$id);
@@ -367,24 +367,24 @@ class tx_dlf_tcemain {
 
 							}
 
-						case 'undelete':
+						}
 
-							// Reindex document.
-							$doc = tx_dlf_document::getInstance($id);
+					case 'undelete':
 
-							if ($doc->ready) {
+						// Reindex document.
+						$doc = tx_dlf_document::getInstance($id);
 
-								$doc->save($doc->pid, $core);
+						if ($doc->ready) {
 
-							} else {
+							$doc->save($doc->pid, $core);
 
-								trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
+						} else {
 
-							}
+							trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
 
-							break;
+						}
 
-					}
+						break;
 
 				}
 

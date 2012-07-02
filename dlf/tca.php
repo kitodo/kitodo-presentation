@@ -227,24 +227,20 @@ $TCA['tx_dlf_documents'] = array (
 			),
 		),
 		'partof' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof',
 			'config' => array (
-				'type' => 'passthrough',
+				'type' => 'group',
+				'internal_type' => 'db',
+				'allowed' => 'tx_dlf_documents',
+				'prepend_tname' => 0,
+				'size' => 1,
+				'selectedListStyle' => 'width:400px;',
+				'minitems' => 0,
+				'maxitems' => 1,
+				'disable_controls' => 'browser,delete',
+				'default' => 0,
+				'readOnly' => 1,
 			),
-// This results in really long loading times because a list of all available documents is rendered.
-// 			'exclude' => 1,
-// 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof',
-// 			'config' => array (
-// 				'type' => 'select',
-// 				'items' => array (
-// 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof.none', 0),
-// 				),
-// 				'foreign_table' => 'tx_dlf_documents',
-// 				'foreign_table_where' => 'AND tx_dlf_documents.pid=###CURRENT_PID### ORDER BY tx_dlf_documents.title_sorting',
-// 				'size' => 1,
-// 				'minitems' => 1,
-// 				'maxitems' => 1,
-// 				'default' => 0,
-// 			),
 		),
 		'volume' => array (
 			'exclude' => 1,
@@ -714,7 +710,7 @@ $TCA['tx_dlf_solrcores'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,trim,unique',
+				'eval' => 'required,trim,uniqueInPid',
 			),
 		),
 		'index_name' => array (
