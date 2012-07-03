@@ -28,8 +28,8 @@ $TCA['tx_dlf_documents'] = array (
 	'ctrl' => $TCA['tx_dlf_documents']['ctrl'],
 	'interface' => array (
 		'showRecordFieldList' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
-		'maxDBListItems' => 50,
-		'maxSingleDBListItems' => 250,
+		'maxDBListItems' => 25,
+		'maxSingleDBListItems' => 50,
 	),
 	'feInterface' => $TCA['tx_dlf_documents']['feInterface'],
 	'columns' => array (
