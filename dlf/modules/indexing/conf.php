@@ -28,7 +28,7 @@ $MCONF['access'] = 'user,group';
 
 $MCONF['script'] = '_DISPATCH';
 
-$MLANG['default']['tabs_images']['tab'] = '../../res/icon_txdlfindexing.png';
+$MLANG['default']['tabs_images']['tab'] = '../../res/icons/txdlfindexing.png';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:dlf/modules/indexing/locallang_mod.xml';
 

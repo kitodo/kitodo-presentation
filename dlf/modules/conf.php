@@ -28,7 +28,7 @@ $MCONF['access'] = 'user,group';
 
 $MCONF['script'] = '_DISPATCH';
 
-$MCONF['defaultMod'] = 'txdlfdocuments';
+$MCONF['defaultMod'] = 'txdlfindexing';
 
 // Check path to typo3/ directory (depending on local/global installation of extension)
 // TODO: This is quite ugly and should be changed to something nicer!
@@ -42,7 +42,7 @@ if (file_exists(dirname(__FILE__).'/../../../../'.TYPO3_mainDir.'alt_db_navframe
 
 }
 
-$MLANG['default']['tabs_images']['tab'] = '../res/icon_txdlfmodules.png';
+$MLANG['default']['tabs_images']['tab'] = '../res/icons/txdlfmodules.png';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:dlf/modules/locallang_mod.xml';
 

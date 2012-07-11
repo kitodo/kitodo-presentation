@@ -39,7 +39,7 @@ $TCA['tx_dlf_documents'] = array (
 			'fe_group' => 'fe_group',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfdocuments.png',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfdocuments.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
 		'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
@@ -65,7 +65,7 @@ $TCA['tx_dlf_structures'] = array (
 			'disabled' => 'hidden',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfstructures.png',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfstructures.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
 		'searchFields' => 'label,index_name,oai_name',
@@ -91,7 +91,7 @@ $TCA['tx_dlf_metadata'] = array (
 			'disabled' => 'hidden',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfmetadata.png',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfmetadata.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
 		'searchFields' => 'label,index_name,encoding,xpath,xpath_sorting,default',
@@ -112,7 +112,7 @@ $TCA['tx_dlf_formats'] = array (
 		'default_sortby' => 'ORDER BY type',
 		'delete' => 'deleted',
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfformats.png',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfformats.png',
 		'rootLevel'	=> 1,
 		'dividers2tabs' => 2,
 		'searchFields' => 'type,class',
@@ -132,7 +132,7 @@ $TCA['tx_dlf_solrcores'] = array (
 		'default_sortby' => 'ORDER BY label',
 		'delete' => 'deleted',
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfsolrcores.png',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfsolrcores.png',
 		'rootLevel'	=> -1,
 		'adminOnly' => 1,
 		'dividers2tabs' => 2,
@@ -162,7 +162,7 @@ $TCA['tx_dlf_collections'] = array (
 			'fe_group' => 'fe_group',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlfcollections.png',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfcollections.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
 		'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
@@ -185,7 +185,7 @@ $TCA['tx_dlf_libraries'] = array (
 		'default_sortby' => 'ORDER BY label',
 		'delete' => 'deleted',
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_txdlflibraries.png',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlflibraries.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
 		'searchFields' => 'label,website,contact',
@@ -195,11 +195,11 @@ $TCA['tx_dlf_libraries'] = array (
 	)
 );
 
-// Register plugins.
-t3lib_div::loadTCA('tt_content');
-
 // Register static typoscript.
 t3lib_extMgm::addStaticFile($_EXTKEY, 'typoscript/', 'DLF (Base Configuration)');
+
+// Register plugins.
+t3lib_div::loadTCA('tt_content');
 
 // Plugin "collection".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collection'] = 'layout,select_key,pages,recursive';
