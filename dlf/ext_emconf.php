@@ -28,7 +28,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'category' => 'fe',
 	'author' => 'Sebastian Meyer',
 	'author_email' => 'sebastian.meyer@slub-dresden.de',
-	'author_company' => '<br /><a href="http://www.slub-dresden.de/en/" target="_blank">Saxon State and University Library Dresden &lt;www.slub-dresden.de&gt;</a><br /><a href="https://launchpad.net/goobi" target="_blank">The Goobi Community</a>',
+	'author_company' => '<br /><a href="http://www.slub-dresden.de/en/" target="_blank">Saxon State and University Library Dresden</a><br /><a href="https://launchpad.net/goobi" target="_blank">The Goobi Community</a>',
 	'shy' => '',
 	'priority' => '',
 	'module' => '',
@@ -43,7 +43,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'php' => '5.3.0-',
-			'typo3' => '4.3.0-',
+			'typo3' => '4.5.0-',
 		),
 		'conflicts' => array(
 		),
