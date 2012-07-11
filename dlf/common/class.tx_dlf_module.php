@@ -109,7 +109,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$GLOBALS['BE_USER']->modAccess($GLOBALS['MCONF'], 1);
 
-		$GLOBALS['LANG']->includeLLFile('EXT:dlf/modules/'.$this->modPath.'locallang.xml');
+		$GLOBALS['LANG']->includeLLFile('EXT:'.$this->extKey.'/modules/'.$this->modPath.'locallang.xml');
 
 		$this->setMOD_MENU();
 
@@ -121,13 +121,13 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$this->doc = t3lib_div::makeInstance('template');
 
-		$this->doc->setModuleTemplate('EXT:dlf/modules/'.$this->modPath.'template.tmpl');
+		$this->doc->setModuleTemplate('EXT:'.$this->extKey.'/modules/'.$this->modPath.'template.tmpl');
 
 		$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath($this->extKey) . 'res/backend.css');
 
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 
-		$this->doc->bodyTagAdditions = 'class="ext-dlf-modules"';
+		$this->doc->bodyTagAdditions = 'class="ext-'.$this->extKey.'-modules"';
 
 		$this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
 
