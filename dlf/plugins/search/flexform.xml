@@ -13,6 +13,7 @@
 				<el>
 					<pages>
 						<TCEforms>
+							<onChange>reload</onChange>
 							<exclude>1</exclude>
 							<label>LLL:EXT:lang/locallang_general.xml:LGL.startingpoint</label>
 							<onChange>reload</onChange>
@@ -28,8 +29,8 @@
 					</pages>
 					<solrcore>
 						<TCEforms>
-							<exclude>1</exclude>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
+							<exclude>1</exclude>
 							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.solrcore</label>
 							<config>
 								<type>select</type>

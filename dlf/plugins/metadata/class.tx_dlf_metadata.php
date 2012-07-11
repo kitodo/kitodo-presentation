@@ -239,14 +239,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 					foreach ($_metadata[$_index_name] as $_value) {
 
-						// Link title to pageview.
 						if ($_index_name == 'title') {
-
-							if ($_metadata['_id']) {
-
-								$details = $this->doc->getLogicalStructure($_metadata['_id']);
-
-							}
 
 							// Get title of parent document if needed.
 							if (empty($_value) && $this->conf['getTitle'] && $this->doc->parentid) {
@@ -257,27 +250,37 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 							if (!empty($_value)) {
 
-								$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
+								$_value = htmlspecialchars($_value);
+
+								// Link title to pageview.
+								if ($this->conf['linkTitle'] && $_metadata['_id']) {
+
+									$details = $this->doc->getLogicalStructure($_metadata['_id']);
+
+									$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
+
+								}
 
 							}
 
-						// Translate name of holding library.
 						} elseif ($_index_name == 'owner' && !empty($_value)) {
 
+							// Translate name of holding library.
 							$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
 
-						// Translate document type.
 						} elseif ($_index_name == 'type' && !empty($_value)) {
 
-							$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+							// Translate document type.
+							$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']));
 
-						// Translate ISO 639 language code.
 						} elseif ($_index_name == 'language' && !empty($_value)) {
 
+							// Translate ISO 639 language code.
 							$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
 
 						} elseif (!empty($_value)) {
 
+							// Sanitize value for output.
 							$_value = htmlspecialchars($_value);
 
 						}
