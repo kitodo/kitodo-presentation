@@ -551,7 +551,7 @@ $TCA['tx_dlf_metadata'] = array (
 				'cols' => 48,
 				'rows' => 20,
 				'wrap' => 'off',
-				'eval' => 'required,trim',
+				'eval' => 'trim',
 				'default' => "key.wrap = <dt>|</dt>\nvalue.wrap = <dd>|</dd>",
 			),
 			'defaultExtras' => 'nowrap:fixed-font:enable-tab',
