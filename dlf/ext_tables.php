@@ -199,7 +199,7 @@ $TCA['tx_dlf_libraries'] = array (
 t3lib_div::loadTCA('tt_content');
 
 // Register static typoscript.
-t3lib_extMgm::addStaticFile($_EXTKEY,'typoscript/', 'DLF (Base Configuration)');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'typoscript/', 'DLF (Base Configuration)');
 
 // Plugin "collection".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collection'] = 'layout,select_key,pages,recursive';
