@@ -122,7 +122,8 @@
 			<label index="config.cliUserGroup">CLI user/group</label>
 			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (default is "Goobi.Presentation")</label>
-			<label index="config.fileGrps">Additional METS fileGrps: comma-separated list of @USE attribute values (default is "DEFAULT,MIN,MAX,THUMBS")</label>
+			<label index="config.fileGrps">METS fileGrps: comma-separated list of @USE attribute values in ascending order (default is "MIN,DEFAULT,MAX")</label>
+			<label index="config.fileGrpThumbs">Thumbnail fileGrp: @USE attribute value (default is "THUMBS")</label>
 			<label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
 			<label index="config.solrConnect">Solr Connection</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
@@ -278,7 +279,8 @@
 			<label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
 			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (Standard ist "Goobi.Presentation")</label>
-			<label index="config.fileGrps">Zusätzliche METS fileGrps: Komma-getrennte Liste von @USE Attributwerten (Standard ist "DEFAULT,MIN,MAX,THUMBS")</label>
+			<label index="config.fileGrps">METS fileGrps: Komma-getrennte Liste von @USE Attributwerten in aufsteigender Reihenfolge (Standard ist "MIN,DEFAULT,MAX")</label>
+			<label index="config.fileGrpThumbs">Vorschau fileGrp: @USE Attributwert der Vorschaubilder (Standard ist "THUMBS")</label>
 			<label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
