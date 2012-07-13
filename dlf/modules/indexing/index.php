@@ -103,6 +103,8 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 		$form .= '<select id="tx-dlf-modIndexing-core" name="'.$this->prefixId.'[core]">';
 
+		$form .= '<option value="0">---</option>';
+
 		while ($_core = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_cores)) {
 
 			$form .= '<option value="'.$_core['uid'].'">'.htmlspecialchars($_core['label']).'</option>';
@@ -144,6 +146,8 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		$form .= '<input type="text" id="tx-dlf-modIndexing-id" name="'.$this->prefixId.'[id]" value="" /><br />';
 
 		$form .= '<select id="tx-dlf-modIndexing-core" name="'.$this->prefixId.'[core]">';
+
+		$form .= '<option value="0">---</option>';
 
 		while ($_core = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_cores)) {
 
@@ -237,7 +241,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 				case 'indexFile':
 
-					if (!empty($this->data['id']) && !empty($this->data['core'])) {
+					if (!empty($this->data['id']) && isset($this->data['core'])) {
 
 						// Save document to database and index.
 						$doc = tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
@@ -262,7 +266,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 				case 'reindexDocs':
 
-					if (!empty($this->data['core'])) {
+					if (isset($this->data['core'])) {
 
 						if (!empty($this->data['collection'])) {
 
@@ -325,7 +329,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 					$this->list = t3lib_div::makeInstance('tx_dlf_list');
 
 					// Continue index looping.
-					if ($this->list->count && !empty($this->data['core'])) {
+					if ($this->list->count && isset($this->data['core'])) {
 
 						$this->indexLoop();
 

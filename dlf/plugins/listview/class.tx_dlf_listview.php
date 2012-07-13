@@ -199,7 +199,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Translate document type.
 					} elseif ($_index_name == 'type' && !empty($_value)) {
 
-						$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+						$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']));
 
 					// Translate ISO 639 language code.
 					} elseif ($_index_name == 'language' && !empty($_value)) {
