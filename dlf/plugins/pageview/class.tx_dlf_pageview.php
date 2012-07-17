@@ -148,9 +148,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		// Quit without doing anything if required variables are not set.
 		if ($this->doc === NULL || $this->doc->numPages < 1) {
 
+			// Quit without doing anything if required variables are not set.
 			return $content;
 
 		} else {

@@ -135,7 +135,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	protected function loadDocument() {
 
 		// Check for required variable.
-		if (!empty($this->piVars['id'])) {
+		if (!empty($this->piVars['id']) && !empty($this->conf['pages'])) {
 
 			// Should we exclude documents from other pages than $this->conf['pages']?
 			$pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
@@ -145,9 +145,15 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			if (!$this->doc->ready) {
 
+				// Destroy the incomplete object.
 				trigger_error('Failed to load document with UID '.$this->piVars['id'], E_USER_ERROR);
 
 				$this->doc = NULL;
+
+			} else {
+
+				// Set configuration PID.
+				$this->doc->cPid = $this->conf['pages'];
 
 			}
 
@@ -184,7 +190,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		} else {
 
-			trigger_error('No UID given for document', E_USER_ERROR);
+			trigger_error('No UID or PID given for document', E_USER_ERROR);
 
 		}
 

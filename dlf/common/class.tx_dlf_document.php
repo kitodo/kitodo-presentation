@@ -47,6 +47,14 @@ class tx_dlf_document {
 	protected $asXML = '';
 
 	/**
+	 * This holds the PID for the configuration
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $cPid = 0;
+
+	/**
 	 * This holds the XML file's dmdSec parts with their IDs as array key
 	 *
 	 * @var	array
@@ -151,14 +159,6 @@ class tx_dlf_document {
 	protected $mets;
 
 	/**
-	 * This holds the PID for the metadata definitions
-	 *
-	 * @var	integer
-	 * @access protected
-	 */
-	protected $mPid = 0;
-
-	/**
 	 * The holds the total number of pages
 	 *
 	 * @var integer
@@ -230,14 +230,6 @@ class tx_dlf_document {
 	 * @access protected
 	 */
 	protected static $registry = array ();
-
-	/**
-	 * This holds the PID for the structure definitions
-	 *
-	 * @var	integer
-	 * @access protected
-	 */
-	protected $sPid = 0;
 
 	/**
 	 * This holds the logical structure
@@ -520,32 +512,32 @@ class tx_dlf_document {
 	 * @access	public
 	 *
 	 * @param	string		$id: The @ID attribute of the logical structure node
-	 * @param	integer		$mPid: The PID for the metadata definitions
-	 * 						(defaults to $this->mPid or $this->pid)
+	 * @param	integer		$cPid: The PID for the metadata definitions
+	 * 						(defaults to $this->cPid or $this->pid)
 	 *
 	 * @return	array		The logical structure node's parsed metadata array
 	 */
-	public function getMetadata($id, $mPid = 0) {
+	public function getMetadata($id, $cPid = 0) {
 
-		// Make sure $mPid is a non-negative integer.
-		$mPid = max(intval($mPid), 0);
+		// Make sure $cPid is a non-negative integer.
+		$cPid = max(intval($cPid), 0);
 
-		// If $mPid is not given, try to get it elsewhere.
-		if (!$mPid && ($this->mPid || $this->pid)) {
+		// If $cPid is not given, try to get it elsewhere.
+		if (!$cPid && ($this->cPid || $this->pid)) {
 
 			// Retain current PID.
-			$mPid = ($this->mPid ? $this->mPid : $this->pid);
+			$cPid = ($this->cPid ? $this->cPid : $this->pid);
 
-		} elseif (!$mPid) {
+		} elseif (!$cPid) {
 
-			trigger_error('Invalid PID ('.$mPid.') for metadata definitions', E_USER_WARNING);
+			trigger_error('Invalid PID ('.$cPid.') for metadata definitions', E_USER_WARNING);
 
 			return array ();
 
 		}
 
 		// Get metadata from parsed metadata array if available.
-		if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $mPid) {
+		if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
 
 			return $this->metadataArray[$id];
 
@@ -641,7 +633,7 @@ class tx_dlf_document {
 			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value',
 				'tx_dlf_metadata,tx_dlf_formats',
-				'tx_dlf_metadata.pid='.$mPid.' AND ((tx_dlf_metadata.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$_dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.encoded=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata').tx_dlf_helper::whereClause('tx_dlf_formats'),
+				'tx_dlf_metadata.pid='.$cPid.' AND ((tx_dlf_metadata.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$_dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.encoded=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata').tx_dlf_helper::whereClause('tx_dlf_formats'),
 				'',
 				'',
 				''
@@ -793,13 +785,13 @@ class tx_dlf_document {
 	 *
 	 * @access	public
 	 *
-	 * @param	integer		$mPid: The PID for the metadata definitions
+	 * @param	integer		$cPid: The PID for the metadata definitions
 	 *
 	 * @return	array		The logical structure node's parsed metadata array
 	 */
-	public function getTitledata($mPid = 0) {
+	public function getTitledata($cPid = 0) {
 
-		$titledata = $this->getMetadata($this->getToplevelId(), $mPid);
+		$titledata = $this->getMetadata($this->getToplevelId(), $cPid);
 
 		// Set record identifier for METS file.
 		array_unshift($titledata['record_id'], $this->recordid);
@@ -1091,7 +1083,7 @@ class tx_dlf_document {
 		}
 
 		// Set PID for metadata definitions.
-		$this->mPid = $pid;
+		$this->cPid = $pid;
 
 		// Set location if inserting new document.
 		$location = '';
@@ -1391,6 +1383,19 @@ class tx_dlf_document {
 	}
 
 	/**
+	 * This returns $this->cPid via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	integer		The PID of the metadata definitions
+	 */
+	protected function _getCPid() {
+
+		return $this->cPid;
+
+	}
+
+	/**
 	 * This builds an array of the document's dmdSecs
 	 *
 	 * @access	protected
@@ -1471,9 +1476,9 @@ class tx_dlf_document {
 	protected function _getMetadataArray() {
 
 		// Set metadata definitions' PID.
-		$mPid = ($this->mPid ? $this->mPid : $this->pid);
+		$cPid = ($this->cPid ? $this->cPid : $this->pid);
 
-		if (!$mPid) {
+		if (!$cPid) {
 
 			trigger_error('No PID for metadata definitions found', E_USER_ERROR);
 
@@ -1481,21 +1486,21 @@ class tx_dlf_document {
 
 		}
 
-		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $mPid) {
+		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $cPid) {
 
 			// Get all logical structure nodes with metadata
 			if (($_ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
 
 				foreach ($_ids as $_id) {
 
-					$this->metadataArray[(string) $_id] = $this->getMetadata((string) $_id, $mPid);
+					$this->metadataArray[(string) $_id] = $this->getMetadata((string) $_id, $cPid);
 
 				}
 
 			}
 
 			// Set current PID for metadata definitions.
-			$this->metadataArray[0] = $mPid;
+			$this->metadataArray[0] = $cPid;
 
 			$this->metadataArrayLoaded = TRUE;
 
@@ -1515,19 +1520,6 @@ class tx_dlf_document {
 	protected function _getMets() {
 
 		return $this->mets;
-
-	}
-
-	/**
-	 * This returns $this->mPid via __get()
-	 *
-	 * @access	protected
-	 *
-	 * @return	integer		The PID of the metadata definitions
-	 */
-	protected function _getMPid() {
-
-		return $this->mPid;
 
 	}
 
@@ -1729,19 +1721,6 @@ class tx_dlf_document {
 	}
 
 	/**
-	 * This returns $this->sPid via __get()
-	 *
-	 * @access	protected
-	 *
-	 * @return	integer		The PID of the structure definitions
-	 */
-	protected function _getSPid() {
-
-		return $this->sPid;
-
-	}
-
-	/**
 	 * This builds an array of the document's logical structure
 	 *
 	 * @access	protected
@@ -1793,7 +1772,7 @@ class tx_dlf_document {
 	}
 
 	/**
-	 * This sets $this->mPid via __set()
+	 * This sets $this->cPid via __set()
 	 *
 	 * @access	protected
 	 *
@@ -1801,24 +1780,9 @@ class tx_dlf_document {
 	 *
 	 * @return	void
 	 */
-	protected function _setMPid($value) {
+	protected function _setCPid($value) {
 
-		$this->mPid = max(intval($value), 0);
-
-	}
-
-	/**
-	 * This sets $this->sPid via __set()
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$value: The new PID for the structure definitions
-	 *
-	 * @return	void
-	 */
-	protected function _setSPid($value) {
-
-		$this->sPid = max(intval($value), 0);
+		$this->cPid = max(intval($value), 0);
 
 	}
 

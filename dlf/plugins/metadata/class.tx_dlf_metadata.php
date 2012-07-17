@@ -56,9 +56,9 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		// Quit without doing anything if required variables are not set.
 		if ($this->doc === NULL) {
 
+			// Quit without doing anything if required variables are not set.
 			return $content;
 
 		}
