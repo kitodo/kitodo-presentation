@@ -77,7 +77,27 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	 */
 	protected function init(array $conf) {
 
-		// Read general TS configuration
+		// Read FlexForm configuration.
+		$flexFormConf = array ();
+
+		$this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
+
+		if (!empty($flexFormConf)) {
+
+			$conf = t3lib_div::array_merge_recursive_overrule($flexFormConf, $conf);
+
+		}
+
+		// Read plugin TS configuration.
+		$pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][get_class($this).'.'];
+
+		if (is_array($pluginConf)) {
+
+			$conf = t3lib_div::array_merge_recursive_overrule($pluginConf, $conf);
+
+		}
+
+		// Read general TS configuration.
 		$generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
 
 		if (is_array($generalConf)) {
@@ -86,7 +106,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		}
 
-		// Read extension configuration
+		// Read extension configuration.
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 
 		if (is_array($extConf)) {
@@ -95,23 +115,12 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		}
 
-		// Read TYPO3_CONF_VARS configuration
+		// Read TYPO3_CONF_VARS configuration.
 		$varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
 
 		if (is_array($varsConf)) {
 
 			$conf = t3lib_div::array_merge_recursive_overrule($varsConf, $conf);
-
-		}
-
-		// Read FlexForm configuration
-		$flexFormConf = array ();
-
-		$this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
-
-		if (!empty($flexFormConf)) {
-
-			$conf = t3lib_div::array_merge_recursive_overrule($conf, $flexFormConf);
 
 		}
 
