@@ -183,6 +183,14 @@ class tx_dlf_document {
 	protected $physicalPages = array ();
 
 	/**
+	 * This holds the physical pages' metadata
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $physicalPagesInfo = array ();
+
+	/**
 	 * Are the physical pages loaded?
 	 * @see $physicalPages
 	 *
@@ -453,13 +461,15 @@ class tx_dlf_document {
 				// Yes. Get first physical page related to this structure element.
 				if (($_smLink = $this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.(string) $_struct['ID'].'"]'))) {
 
-					$_details['points'] = tx_dlf_helper::array_search_recursive($_smLink[0]->attributes('http://www.w3.org/1999/xlink')->to, $this->physicalPages);
+					$_id = (string) $_smLink[0]->attributes('http://www.w3.org/1999/xlink')->to;
+
+					$_details['points'] = array_search($_id, $this->physicalPages, TRUE);
 
 					// Check if smLink points to the "physSequence" element (in which case it should point to the first image).
 					$_details['points'] = max(intval($_details['points']), 1);
 
 					// Get page number of the first page related to this structure element.
-					$_details['pagination'] = $this->physicalPages[$_details['points']]['label'];
+					$_details['pagination'] = $this->physicalPagesInfo[$_id]['label'];
 
 				} else {
 
@@ -1592,13 +1602,13 @@ class tx_dlf_document {
 				// Get the physical sequence's metadata.
 				$_physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
 
-				$_physSeq[0]['id'] = (string) $_physNode[0]['ID'];
+				$_physSeq[0] = (string) $_physNode[0]['ID'];
 
-				$_physSeq[0]['dmdId'] = (isset($_physNode[0]['DMDID']) ? (string) $_physNode[0]['DMDID'] : '');
+				$this->physicalPagesInfo[$_physSeq[0]]['dmdId'] = (isset($_physNode[0]['DMDID']) ? (string) $_physNode[0]['DMDID'] : '');
 
-				$_physSeq[0]['label'] = (isset($_physNode[0]['ORDERLABEL']) ? (string) $_physNode[0]['ORDERLABEL'] : '');
+				$this->physicalPagesInfo[$_physSeq[0]]['label'] = (isset($_physNode[0]['ORDERLABEL']) ? (string) $_physNode[0]['ORDERLABEL'] : '');
 
-				$_physSeq[0]['type'] = (string) $_physNode[0]['TYPE'];
+				$this->physicalPagesInfo[$_physSeq[0]]['type'] = (string) $_physNode[0]['TYPE'];
 
 				// Get the file representations from fileSec node.
 				foreach ($_physNode[0]->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
@@ -1606,7 +1616,7 @@ class tx_dlf_document {
 					// Check if file has valid @USE attribute.
 					if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
 
-						$_physSeq[0]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+						$this->physicalPagesInfo[$_physSeq[0]]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
 
 					}
 
@@ -1615,13 +1625,13 @@ class tx_dlf_document {
 				// Build the physical pages' array from the physical structMap node.
 				foreach ($_pageNodes as $_pageNode) {
 
-					$_pages[(int) $_pageNode['ORDER']]['id'] = (string) $_pageNode['ID'];
+					$_pages[(int) $_pageNode['ORDER']] = (string) $_pageNode['ID'];
 
-					$_pages[(int) $_pageNode['ORDER']]['dmdId'] = (isset($_pageNode['DMDID']) ? (string) $_pageNode['DMDID'] : '');
+					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['dmdId'] = (isset($_pageNode['DMDID']) ? (string) $_pageNode['DMDID'] : '');
 
-					$_pages[(int) $_pageNode['ORDER']]['label'] = (isset($_pageNode['ORDERLABEL']) ? (string) $_pageNode['ORDERLABEL'] : '');
+					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['label'] = (isset($_pageNode['ORDERLABEL']) ? (string) $_pageNode['ORDERLABEL'] : '');
 
-					$_pages[(int) $_pageNode['ORDER']]['type'] = (string) $_pageNode['TYPE'];
+					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['type'] = (string) $_pageNode['TYPE'];
 
 					// Get the file representations from fileSec node.
 					foreach ($_pageNode->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
@@ -1629,7 +1639,7 @@ class tx_dlf_document {
 						// Check if file has valid @USE attribute.
 						if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
 
-							$_pages[(int) $_pageNode['ORDER']]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+							$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
 
 						}
 
@@ -1655,6 +1665,27 @@ class tx_dlf_document {
 		}
 
 		return $this->physicalPages;
+
+	}
+
+	/**
+	 * This gives an array of the document's physical pages metadata
+	 *
+	 * @access	protected
+	 *
+	 * @return	array		Array of pages' type, label and file representations ordered by @ID attribute
+	 */
+	protected function _getPhysicalPagesInfo() {
+
+		// Is there no physical pages array yet?
+		if (!$this->physicalPagesLoaded) {
+
+			// Build physical pages array.
+			$this->_getPhysicalPages();
+
+		}
+
+		return $this->physicalPagesInfo;
 
 	}
 
@@ -1857,7 +1888,7 @@ class tx_dlf_document {
 
 			}
 
-			if ($this->recordid) {
+			if (!empty($this->recordid)) {
 
 				$whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordid, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
 

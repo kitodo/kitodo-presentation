@@ -70,7 +70,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			// Get current structure's @ID.
 			$_ids = array ();
 
-			if (!empty($this->doc->physicalPages[$this->piVars['page']]) && ($_structs = $this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']]['id'].'"]'))) {
+			if (!empty($this->doc->physicalPages[$this->piVars['page']]) && ($_structs = $this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']].'"]'))) {
 
 				foreach ($_structs as $_smLink) {
 
@@ -235,7 +235,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 					$fieldwrap = $this->parseTS($_wrap);
 
-					$field = $this->cObj->stdWrap(htmlspecialchars($this->pi_getLL($_index_name, tx_dlf_helper::translate($_index_name, 'tx_dlf_metadata', $this->conf['pages']), FALSE)), $fieldwrap['key.']);
+					$field = $this->cObj->stdWrap(htmlspecialchars(tx_dlf_helper::translate($_index_name, 'tx_dlf_metadata', $this->conf['pages'])), $fieldwrap['key.']);
 
 					foreach ($_metadata[$_index_name] as $_value) {
 

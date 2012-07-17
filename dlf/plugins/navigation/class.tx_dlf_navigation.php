@@ -134,7 +134,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		for ($i = 1; $i <= $this->doc->numPages; $i++) {
 
-			$markerArray['###PAGESELECT###'] .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalPages[$i]['label'] ? ' - '.htmlspecialchars($this->doc->physicalPages[$i]['label']) : '').'</option>';
+			$markerArray['###PAGESELECT###'] .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label'] ? ' - '.htmlspecialchars($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label']) : '').'</option>';
 
 		}
 
@@ -211,15 +211,23 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 			$conf['useCacheHash'] = 1;
 
-			$conf['parameter'] = $GLOBALS['TSFE']->id.' - '.($class != '' ? $class : '-').' '.$label;
+			$conf['parameter'] = $GLOBALS['TSFE']->id;
 
 			$conf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE);
+
+			$conf['title'] = $label;
+
+			if (!empty($class)) {
+
+				$conf['ATagParams'] = 'class="'.$class.'"';
+
+			}
 
 			return $this->cObj->typoLink($label, $conf);
 
 		} else {
 
-			if ($class != '') {
+			if (!empty($class)) {
 
 				$class = ' class="'.$class.'"';
 

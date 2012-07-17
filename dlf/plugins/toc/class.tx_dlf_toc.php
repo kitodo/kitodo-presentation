@@ -66,7 +66,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray['volume'] = $entry['volume'];
 
-		$entryArray['type'] = $this->pi_getLL($entry['type'], tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']), FALSE);
+		$entryArray['type'] = tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
 
 		$entryArray['pagination'] = $entry['pagination'];
 
@@ -241,7 +241,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			// Get all logical units the current page is a part of.
 			if (!empty($this->piVars['page']) && $this->doc->physicalPages) {
 
-				foreach ($this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']]['id'].'"]') as $_logId) {
+				foreach ($this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']].'"]') as $_logId) {
 
 					$this->activeEntries[] = (string) $_logId->attributes('http://www.w3.org/1999/xlink')->from;
 

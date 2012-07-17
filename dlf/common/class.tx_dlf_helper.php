@@ -56,6 +56,8 @@ class tx_dlf_helper {
 	 * @param	boolean		$strict: Check needle's type, too?
 	 *
 	 * @return	mixed		Returns the needle's key if found and FALSE otherwise
+	 *
+	 * @deprecated because of its inefficiency
 	 */
 	public static function array_search_recursive($needle, $haystack, $strict = FALSE) {
 

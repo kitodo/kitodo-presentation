@@ -350,11 +350,11 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	protected function loadConfig() {
 
 		$this->labels = array (
-			'title' => $this->pi_getLL('title', tx_dlf_helper::translate('title', 'tx_dlf_metadata', $this->conf['pages']), TRUE),
-			'author' => $this->pi_getLL('author', tx_dlf_helper::translate('author', 'tx_dlf_metadata', $this->conf['pages']), TRUE),
-			'year' => $this->pi_getLL('year', tx_dlf_helper::translate('year', 'tx_dlf_metadata', $this->conf['pages']), TRUE),
-			'place' => $this->pi_getLL('place', tx_dlf_helper::translate('place', 'tx_dlf_metadata', $this->conf['pages']), TRUE),
-			'type' => $this->pi_getLL('type', tx_dlf_helper::translate('type', 'tx_dlf_metadata', $this->conf['pages']), TRUE)
+			'title' => tx_dlf_helper::translate('title', 'tx_dlf_metadata', $this->conf['pages']),
+			'author' => tx_dlf_helper::translate('author', 'tx_dlf_metadata', $this->conf['pages']),
+			'year' => tx_dlf_helper::translate('year', 'tx_dlf_metadata', $this->conf['pages']),
+			'place' => tx_dlf_helper::translate('place', 'tx_dlf_metadata', $this->conf['pages']),
+			'type' => tx_dlf_helper::translate('type', 'tx_dlf_metadata', $this->conf['pages'])
 		);
 
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
