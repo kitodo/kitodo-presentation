@@ -232,6 +232,23 @@ class tx_dlf_document {
 	protected static $registry = array ();
 
 	/**
+	 * This holds the smLinks between logical and physical structMap
+	 *
+	 * @var array
+	 * @access protected
+	 */
+	protected $smLinks = array ('l2p' => array (), 'p2l' => array ());
+
+	/**
+	 * Are the smLinks loaded?
+	 * @see $smLinks
+	 *
+	 * @var boolean
+	 * @access protected
+	 */
+	protected $smLinksLoaded = FALSE;
+
+	/**
 	 * This holds the logical structure
 	 *
 	 * @var	array
@@ -247,6 +264,14 @@ class tx_dlf_document {
 	 * @access protected
 	 */
 	protected $tableOfContentsLoaded = FALSE;
+
+	/**
+	 * This holds the toplevel structure's @ID
+	 *
+	 * @var	string
+	 * @access protected
+	 */
+	protected $toplevelId = '';
 
 	/**
 	 * This holds the UID or the URL of the document
@@ -387,6 +412,98 @@ class tx_dlf_document {
 	/**
 	 * This gets details about a logical structure element
 	 *
+	 * @access	protected
+	 *
+	 * @param	SimpleXMLElement		$structure: The logical structure node
+	 * @param	boolean		$recursive: Whether to include the child elements
+	 *
+	 * @return	array		Array of the element's id, label, type and physical page indexes/mptr link
+	 */
+	protected function getLogicalStructureInfo(SimpleXMLElement $structure, $recursive = FALSE) {
+
+		// Get attributes.
+		foreach ($structure->attributes() as $attribute => $value) {
+
+			$attributes[$attribute] = (string) $value;
+
+		}
+
+		// Extract identity information.
+		$details = array ();
+
+		$details['id'] = $attributes['ID'];
+
+		$details['dmdId'] = (isset($attributes['DMDID']) ?  $attributes['DMDID'] : '');
+
+		$details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
+
+		$details['volume'] = '';
+
+		if (empty($details['label']) && $details['id'] == $this->_getToplevelId()) {
+
+			$metadata = $this->getMetadata($details['id']);
+
+			if (!empty($metadata['volume'][0])) {
+
+				$details['volume'] = $metadata['volume'][0];
+
+			}
+
+		}
+
+		$details['pagination'] = '';
+
+		$details['type'] = $attributes['TYPE'];
+
+		// Get the physical page or external file this structure element is pointing at.
+		$details['points'] = '';
+
+		// Is there a mptr node?
+		if (!empty($structure->children('http://www.loc.gov/METS/')->mptr)) {
+
+			// Yes. Get the file reference.
+			$details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+
+		// Are there any physical pages and is this logical unit linked to at least one of them?
+		} elseif ($this->_getPhysicalPages() && array_key_exists($details['id'], $this->smLinks['l2p'])) {
+
+			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
+
+			// Get page number of the first page related to this structure element.
+			$details['pagination'] = $this->physicalPagesInfo[$id]['label'];
+
+		// Is this the toplevel structure?
+		} elseif ($details['id'] == $this->_getToplevelId()) {
+
+			// Yes. Point to itself.
+			$details['points'] = 1;
+
+		}
+
+		// Keep for later usage.
+		$this->logicalUnits[$details['id']] = $details;
+
+		// Walk the structure recursively? And are there any children of the current element?
+		if ($recursive && !empty($structure->children('http://www.loc.gov/METS/')->div)) {
+
+			$details['children'] = array ();
+
+			foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
+
+				// Repeat for all children.
+				$details['children'][] = $this->getLogicalStructureInfo($child, $recursive);
+
+			}
+
+		}
+
+		return $details;
+
+	}
+
+	/**
+	 * This gets details about a logical structure element
+	 *
 	 * @access	public
 	 *
 	 * @param	string		$id: The @ID attribute of the logical structure node
@@ -394,111 +511,47 @@ class tx_dlf_document {
 	 *
 	 * @return	array		Array of the element's id, label, type and physical page indexes/mptr link
 	 */
-	public function getLogicalStructure($id, $recursive = FALSE) {
+	public function getLogicalStructure($id = '', $recursive = FALSE) {
 
 		// Is the requested logical unit already loaded?
-		if (!$recursive && !empty($this->logicalUnits[$id])) {
+		if (!$recursive && !empty($id) && !empty($this->logicalUnits[$id])) {
 
 			// Yes. Return it.
 			return $this->logicalUnits[$id];
 
-		} elseif (($_div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]'))) {
+		} elseif (!empty($id)) {
 
-			// Load physical pages.
-			$this->_getPhysicalPages();
+			// Get specified logical unit.
+			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
 
-			$_struct = $_div[0];
+		} elseif ($recursive) {
 
-			$this->registerNamespaces($_struct);
+			// Get all logical units at top level.
+			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
 
-			// Extract identity information.
-			$_details = array ();
+		}
 
-			$_details['id'] = (string) $_struct['ID'];
+		if (!empty($div)) {
 
-			$_details['dmdId'] = (isset($_struct['DMDID']) ? (string) $_struct['DMDID'] : '');
+			// Load smLinks.
+			$this->_getSmLinks();
 
-			$_details['label'] = (isset($_struct['LABEL']) ? (string) $_struct['LABEL'] : '');
+			foreach ($div as $structure) {
 
-			$_details['volume'] = '';
-
-			if (empty($_details['label'])) {
-
-				$_metadata = $this->getMetadata($id);
-
-				if (!empty($_metadata['volume'][0])) {
-
-					$_details['volume'] = $_metadata['volume'][0];
-
-				}
+				// Get logical unit's details.
+				$this->tableOfContents[] = $this->getLogicalStructureInfo($structure, $recursive);
 
 			}
 
-			$_details['pagination'] = '';
+		}
 
-			$_details['type'] = (string) $_struct['TYPE'];
+		if (!empty($this->logicalUnits[$id])) {
 
-			// Get the physical page or external file this structure element is pointing at.
-			$_details['points'] = '';
-
-			// Is there a mptr node?
-			if (($_mptr = $_struct->xpath('./mets:mptr[@LOCTYPE="URL"]'))) {
-
-				// Yes. Get the file reference.
-				$_details['points'] = (string) $_mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-
-			// Are there any physical pages?
-			} elseif ($this->physicalPages) {
-
-				// Yes. Get first physical page related to this structure element.
-				if (($_smLink = $this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.(string) $_struct['ID'].'"]'))) {
-
-					$_id = (string) $_smLink[0]->attributes('http://www.w3.org/1999/xlink')->to;
-
-					$_details['points'] = array_search($_id, $this->physicalPages, TRUE);
-
-					// Check if smLink points to the "physSequence" element (in which case it should point to the first image).
-					$_details['points'] = max(intval($_details['points']), 1);
-
-					// Get page number of the first page related to this structure element.
-					$_details['pagination'] = $this->physicalPagesInfo[$_id]['label'];
-
-				} else {
-
-					trigger_error('No physical element related to logical element with @ID '.(string) $_struct['ID'], E_USER_WARNING);
-
-				}
-
-			// Is this the toplevel structure?
-			} elseif ($_details['id'] == $this->getToplevelId()) {
-
-				// Yes. Point to itself.
-				$_details['points'] = 1;
-
-			}
-
-			// Keep for later usage.
-			$this->logicalUnits[$id] = $_details;
-
-			// Walk the structure recursively? And are there any children of the current element?
-			if ($recursive && ($_children = $_struct->xpath('./mets:div/@ID'))) {
-
-				$_details['children'] = array ();
-
-				foreach ($_children as $_child) {
-
-					// Repeat for all children.
-					$_details['children'][] = $this->getLogicalStructure((string) $_child, TRUE);
-
-				}
-
-			}
-
-			return $_details;
+			return $this->logicalUnits[$id];
 
 		} else {
 
-			trigger_error('There is no logical structure node with @ID '.$id, E_USER_WARNING);
+//			trigger_error('There is no logical structure node with @ID '.$id, E_USER_WARNING);
 
 			return array ();
 
@@ -791,51 +844,12 @@ class tx_dlf_document {
 	 */
 	public function getTitledata($cPid = 0) {
 
-		$titledata = $this->getMetadata($this->getToplevelId(), $cPid);
+		$titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
 
 		// Set record identifier for METS file.
 		array_unshift($titledata['record_id'], $this->recordid);
 
 		return $titledata;
-
-	}
-
-	/**
-	 * This returns the ID of the toplevel logical structure node
-	 *
-	 * @access	public
-	 *
-	 * @return	string		The logical structure node's ID
-	 */
-	public function getToplevelId() {
-
-		$id = '';
-
-		// Get all logical structure nodes with metadata.
-		if (($_divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
-
-			foreach ($_divs as $_div) {
-
-				$_id = (string) $_div['ID'];
-
-				// Are there physical structure nodes for this logical structure?
-				if ($this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.$_id.'"]')) {
-
-					// Yes. That's what we're looking for.
-					return $_id;
-
-				} elseif (!$id) {
-
-					// No. Remember this anyway, but keep looking for a better one.
-					$id = $_id;
-
-				}
-
-			}
-
-		}
-
-		return $id;
 
 	}
 
@@ -1721,6 +1735,81 @@ class tx_dlf_document {
 	}
 
 	/**
+	 * This returns the smLinks between logical and physical structMap
+	 *
+	 * @access	protected
+	 *
+	 * @return	array		The links between logical and physical nodes
+	 */
+	protected function _getSmLinks() {
+
+		if (!$this->smLinksLoaded) {
+
+			$smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
+
+			foreach ($smLinks as $smLink) {
+
+				$this->smLinks['l2p'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
+
+				$this->smLinks['p2l'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->to][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->from;
+
+			}
+
+			$this->smLinksLoaded = TRUE;
+
+		}
+
+		return $this->smLinks;
+
+	}
+
+	/**
+	 * This returns the ID of the toplevel logical structure node
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		The logical structure node's ID
+	 */
+	protected function _getToplevelId() {
+
+		if (empty($this->toplevelId)) {
+
+			// Get all logical structure nodes with metadata.
+			if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
+
+				// Load smLinks.
+				$this->_getSmLinks();
+
+				foreach ($divs as $div) {
+
+					$id = (string) $div['ID'];
+
+					// Are there physical structure nodes for this logical structure?
+					if (array_key_exists($id, $this->smLinks['l2p'])) {
+
+						// Yes. That's what we're looking for.
+						$this->toplevelId = $id;
+
+						break;
+
+					} elseif (empty($this->toplevelId)) {
+
+						// No. Remember this anyway, but keep looking for a better one.
+						$this->toplevelId = $id;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $this->toplevelId;
+
+	}
+
+	/**
 	 * This builds an array of the document's logical structure
 	 *
 	 * @access	protected
@@ -1732,23 +1821,8 @@ class tx_dlf_document {
 		// Is there no logical structure array yet?
 		if (!$this->tableOfContentsLoaded) {
 
-			// Does the document have a structMap node of type "LOGICAL"?
-			$_ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div/@ID');
-
-			if ($_ids) {
-
-				// Yes. So build the logical structure array from the logical structMap node.
-				foreach ($_ids as $_id) {
-
-					$this->tableOfContents[] = $this->getLogicalStructure((string) $_id, TRUE);
-
-				}
-
-			} else {
-
-				trigger_error('No logical structure found in document', E_USER_WARNING);
-
-			}
+			// Get all logical structures.
+			$this->getLogicalStructure('', TRUE);
 
 			$this->tableOfContentsLoaded = TRUE;
 

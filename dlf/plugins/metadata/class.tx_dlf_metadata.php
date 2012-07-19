@@ -70,13 +70,13 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			// Get current structure's @ID.
 			$_ids = array ();
 
-			if (!empty($this->doc->physicalPages[$this->piVars['page']]) && ($_structs = $this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']].'"]'))) {
+			if (!empty($this->doc->physicalPages[$this->piVars['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]])) {
 
-				foreach ($_structs as $_smLink) {
+				foreach ($this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]] as $_logId) {
 
-					$_count = count($this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$_smLink->attributes('http://www.w3.org/1999/xlink')->from.'"]/ancestor::*'));
+					$_count = count($this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$_logId.'"]/ancestor::*'));
 
-					$_ids[$_count][] = (string) $_smLink->attributes('http://www.w3.org/1999/xlink')->from;
+					$_ids[$_count][] = $_logId;
 
 				}
 
