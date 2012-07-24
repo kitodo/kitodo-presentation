@@ -235,7 +235,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		// Add thumbnail.
 		if (!empty($this->list->elements[$number]['thumbnail'])) {
 
-			$markerArray['###THUMBNAIL###'] = '<img src="'.$this->list->elements[$number]['thumbnail'].'"/>';
+			$markerArray['###THUMBNAIL###'] = '<img title="" alt="" src="'.$this->list->elements[$number]['thumbnail'].'"/>';
 
 		} else {
 
