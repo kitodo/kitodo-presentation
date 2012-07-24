@@ -39,6 +39,8 @@
 			<label index="tx_dlf_structures.label">Display Label</label>
 			<label index="tx_dlf_structures.index_name">Index Name</label>
 			<label index="tx_dlf_structures.oai_name">OAI Mapping</label>
+			<label index="tx_dlf_structures.thumbnail">Show Thumbnail</label>
+			<label index="tx_dlf_structures.thumbnail_source">Thumbnail Source</label>
 			<label index="tx_dlf_structures.status">Status</label>
 			<label index="tx_dlf_structures.status.default">default</label>
 			<label index="tx_dlf_structures.tab1">General</label>
@@ -197,6 +199,8 @@
 			<label index="tx_dlf_structures.label">Anzeigeform</label>
 			<label index="tx_dlf_structures.index_name">Index-Bezeichnung</label>
 			<label index="tx_dlf_structures.oai_name">OAI-Mapping</label>
+			<label index="tx_dlf_structures.thumbnail">Vorschau zeigen</label>
+			<label index="tx_dlf_structures.thumbnail_source">Vorschau-Quelle</label>
 			<label index="tx_dlf_structures.status">Status</label>
 			<label index="tx_dlf_structures.status.default">Standard</label>
 			<label index="tx_dlf_structures.tab1">Allgemein</label>
