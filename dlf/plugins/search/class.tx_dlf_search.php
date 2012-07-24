@@ -143,7 +143,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 						'place' => (is_array($doc->place) ? $doc->place : array ($doc->place)),
 						'type' => (is_array($doc->type) ? $doc->type : array ($doc->type)),
 						'subparts' => (!empty($toplevel[$doc->uid]['subparts']) ? $toplevel[$doc->uid]['subparts'] : array ()),
-						'thumbnail' => $doc->thumbnail_usi
+						'thumbnail' => $doc->thumbnail
 					);
 
 				} else {
