@@ -503,7 +503,7 @@ class tx_dlf_indexing {
 			// Index thumbnails for toplevel elements.
 			if (in_array($logicalUnit['type'], self::$toplevel)) {
 
-				$solrDoc->setField('thumbnail_usi', $doc->getThumbnail($doc->pid));
+				$solrDoc->setField('thumbnail', $doc->getThumbnail($doc->pid));
 
 			}
 
