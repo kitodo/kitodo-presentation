@@ -249,6 +249,23 @@ class tx_dlf_document {
 	protected $tableOfContentsLoaded = FALSE;
 
 	/**
+	 * This holds the document's thumbnail.
+	 *
+	 * @var	string
+	 * @access protected
+	 */
+	protected $thumbnail = NULL;
+
+	/**
+	 * Is the thumbnail loaded?
+	 * @see $thumbnail
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $thumbnailLoaded = FALSE;
+
+	/**
 	 * This holds the UID or the URL of the document
 	 *
 	 * @var	mixed
@@ -809,127 +826,132 @@ class tx_dlf_document {
 	 */
 	public function getThumbnail($pid = -1) {
 
-		if ($pid === -1) {
+		if (!$this->thumbnailLoaded) {
 
-			$pid = $this->pid;
+			if ($pid === -1) {
 
-		}
+				$pid = $this->pid;
 
-		$logicalUnitId = $this->getToplevelId();
+			}
 
-		$metadata = $this->getMetadata($logicalUnitId, $pid);
+			$logicalUnitId = $this->getToplevelId();
 
-		$structureType = $metadata['type'][0];
+			$metadata = $this->getMetadata($logicalUnitId, $pid);
 
-		// Check if for this structure/document type thumbnails shall be rendered.
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_structures.thumbnail AS thumbnail, tx_dlf_structures.thumbnail_source AS thumbnail_source',
-				'tx_dlf_structures',
-				'tx_dlf_structures.pid='.intval($pid).' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($structureType, 'tx_dlf_structures').tx_dlf_helper::whereClause('tx_dlf_structures'),
-				'',
-				'',
-				'1'
-		);
+			$structureType = $metadata['type'][0];
 
-		$resArray = array();
-
-		if (!($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))) {
-
-			t3lib_div::devLog('[tx_dlf_document.getThumbnail]   could not get thumbnail settings from DB', 'dlf', t3lib_div::SYSLOG_SEVERITY_ERROR);
-
-			return FALSE;
-
-		}
-
-		if ($resArray['thumbnail'] != '1') {
-
-			t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no thumbnail generation for '.$logicalUnitId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
-
-			return FALSE;
-
-		}
-
-		// Check desired thumbnail source.
-		if (!empty($resArray['thumbnail_source'])) {
-
+			// Check if for this structure/document type thumbnails shall be rendered.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_structures.index_name AS index_name',
+					'tx_dlf_structures.thumbnail AS thumbnail, tx_dlf_structures.thumbnail_source AS thumbnail_source',
 					'tx_dlf_structures',
-					'tx_dlf_structures.uid='.intval($resArray['thumbnail_source']).tx_dlf_helper::whereClause('tx_dlf_structures'),
+					'tx_dlf_structures.pid='.intval($pid).' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($structureType, 'tx_dlf_structures').tx_dlf_helper::whereClause('tx_dlf_structures'),
 					'',
 					'',
 					'1'
 			);
 
+			$resArray = array();
+
 			if (!($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))) {
 
-				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   could not get thumbnail source index name from DB', 'dlf', t3lib_div::SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   could not get thumbnail settings from DB', 'dlf', t3lib_div::SYSLOG_SEVERITY_ERROR);
 
 				return FALSE;
 
 			}
 
-			// Check if this document has a sub element of the desired type.
-			$nodes = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div/mets:div[@TYPE="'.$resArray['index_name'].'"]/@ID');
+			if ($resArray['thumbnail'] != '1') {
 
-			if (is_array($nodes) && count($nodes) > 0) {
+				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no thumbnail generation for '.$logicalUnitId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
 
-				$subId = (string) $nodes[0];
-
-				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   thumb source element changed: oldId='.$logicalUnitId.', newId='.$subId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
-
-				$logicalUnitId = $subId;
-
-			} else {
-
-				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no sub element found, taking toplevel element as thumb source', 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+				return FALSE;
 
 			}
 
-		}
+			// Check desired thumbnail source.
+			if (!empty($resArray['thumbnail_source'])) {
 
-		// Extract and set thumbnail, if desired.
-		t3lib_div::devLog('[tx_dlf_document.getThumbnail]   thumbnails desired for '.$logicalUnitId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'tx_dlf_structures.index_name AS index_name',
+						'tx_dlf_structures',
+						'tx_dlf_structures.uid='.intval($resArray['thumbnail_source']).tx_dlf_helper::whereClause('tx_dlf_structures'),
+						'',
+						'',
+						'1'
+				);
 
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+				if (!($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))) {
 
-		$fileGrp = $extConf['thumbFileGrp'];
+					t3lib_div::devLog('[tx_dlf_document.getThumbnail]   could not get thumbnail source index name from DB', 'dlf', t3lib_div::SYSLOG_SEVERITY_ERROR);
 
-		$thumbnailLocation = 'not found';
+					return FALSE;
 
-		$firstPageNode = $this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.$logicalUnitId.'"][1]/@xlink:to');
+				}
 
-		if (is_array($firstPageNode) && count($firstPageNode) > 0) {
+				// Check if this document has a sub element of the desired type.
+				$nodes = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$resArray['index_name'].'"]/@ID');
 
-			$firstPageId = $firstPageNode[0];
+				if (is_array($nodes) && count($nodes) > 0) {
 
-			t3lib_div::devLog('[tx_dlf_document.getThumbnail]   first page='.$firstPageId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+					$subId = (string) $nodes[0];
 
-			$thumbnailNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@ID="'.$firstPageId.'"]/mets:fptr[substring(@FILEID, string-length(@FILEID) - '.(strlen($fileGrp) - 1).') = "'.$fileGrp.'"]/@FILEID');
+					t3lib_div::devLog('[tx_dlf_document.getThumbnail]   thumb source element changed: oldId='.$logicalUnitId.', newId='.$subId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
 
-			if (is_array($firstPageNode) && count($thumbnailNode) > 0) {
+					$logicalUnitId = $subId;
 
-				$thumbnailFileId = (string) $thumbnailNode[0];
+				} else {
 
-				$thumbnailLocation = $this->getFileLocation($thumbnailFileId);
+					t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no sub element found, taking toplevel element as thumb source', 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
 
-				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   thumbnail found, logicalUnit='.$logicalUnitId.', page='.$firstPageId.', thumb='.$thumbnailFileId.', thumb_url='.$thumbnailLocation, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
-
-				return $thumbnailLocation;
-
-			} else {
-
-				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no thumbnail found on first page (fileGrp='.$fileGrp.')', 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+				}
 
 			}
 
-		} else  {
+			// Extract and set thumbnail, if desired.
+			t3lib_div::devLog('[tx_dlf_document.getThumbnail]   thumbnails desired for '.$logicalUnitId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
 
-			t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no first page found', 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+
+			$fileGrp = $extConf['thumbFileGrp'];
+
+			$this->thumbnail = 'not found';
+
+			$firstPageNode = $this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.$logicalUnitId.'"][1]/@xlink:to');
+
+			if (is_array($firstPageNode) && count($firstPageNode) > 0) {
+
+				$firstPageId = $firstPageNode[0];
+
+				// den rest via physical pages
+				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   first page='.$firstPageId, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+
+				$thumbnailNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@ID="'.$firstPageId.'"]/mets:fptr[substring(@FILEID, string-length(@FILEID) - '.(strlen($fileGrp) - 1).') = "'.$fileGrp.'"]/@FILEID');
+
+				if (is_array($firstPageNode) && count($thumbnailNode) > 0) {
+
+					$thumbnailFileId = (string) $thumbnailNode[0];
+
+					$this->thumbnail = $this->getFileLocation($thumbnailFileId);
+
+					t3lib_div::devLog('[tx_dlf_document.getThumbnail]   thumbnail found, logicalUnit='.$logicalUnitId.', page='.$firstPageId.', thumb='.$thumbnailFileId.', thumb_url='.$this->thumbnail, 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+
+				} else {
+
+					t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no thumbnail found on first page (fileGrp='.$fileGrp.')', 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+
+				}
+
+			} else  {
+
+				t3lib_div::devLog('[tx_dlf_document.getThumbnail]   no first page found', 'dlf', t3lib_div::SYSLOG_SEVERITY_NOTICE);
+
+			}
+
+			$this->thumbnailLoaded = TRUE;
 
 		}
 
-		return FALSE;
+		return $this->thumbnail;
 
 	}
 
