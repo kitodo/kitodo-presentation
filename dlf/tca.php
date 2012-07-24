@@ -419,7 +419,7 @@ $TCA['tx_dlf_structures'] = array (
 		),
 		'thumbnail' => array (
 				'exclude' => 1,
-				'label' => 'Show Thumbnail',
+				'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail',
 				'config' => array (
 						'type' => 'check',
 						'default' => 0,
@@ -427,15 +427,18 @@ $TCA['tx_dlf_structures'] = array (
 		),
 		'thumbnail_source' => array (
 				'exclude' => 1,
-				'label' => 'Thumbnail Source',
+				'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail_source',
 				'config' => array (
 						'type' => 'select',
 						'items' => array (
 							array ('[This Element]', 0),
 						),
 						'foreign_table' => 'tx_dlf_structures',
-						'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.toplevel=0',
+						'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.toplevel=0 AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY tx_dlf_structures.label ',
 				),
+				'minitems' => 0,
+				'maxitems' => 1,
+				'default' => 0,
 		),
 		'status' => array (
 			'exclude' => 1,
