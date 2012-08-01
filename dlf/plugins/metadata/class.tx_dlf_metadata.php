@@ -285,9 +285,11 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 						}
 
+						$_value = $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+
 						if (!empty($_value)) {
 
-							$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+							$field .= $_value;
 
 							$hasValue = TRUE;
 
