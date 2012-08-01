@@ -798,10 +798,11 @@ class tx_dlf_helper {
 	 * @access	public
 	 *
 	 * @param	string		$table: Table name as defined in TCA
+	 * @param	boolean		$showHidden: Ignore the hidden flag?
 	 *
 	 * @return	string		Additional WHERE clause
 	 */
-	public static function whereClause($table) {
+	public static function whereClause($table, $showHidden = FALSE) {
 
 		if (TYPO3_MODE === 'FE') {
 
@@ -812,10 +813,19 @@ class tx_dlf_helper {
 
 			}
 
+			// Should we ignore the record's hidden flag?
+			$ignoreHide = -1;
+
+			if ($showHidden) {
+
+				$ignoreHide = 1;
+
+			}
+
 			// $GLOBALS['TSFE']->sys_page is not always available in frontend.
 			if (is_object($GLOBALS['TSFE']->sys_page)) {
 
-				return $GLOBALS['TSFE']->sys_page->enableFields($table);
+				return $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
 
 			} else {
 
@@ -823,7 +833,7 @@ class tx_dlf_helper {
 
 				$GLOBALS['TSFE']->includeTCA();
 
-				return $t3lib_pageSelect->enableFields($table);
+				return $t3lib_pageSelect->enableFields($table, $ignoreHide);
 
 			}
 
