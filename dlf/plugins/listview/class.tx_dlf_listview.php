@@ -162,71 +162,71 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		foreach ($this->metadata as $_index_name => $_wrap) {
 
-			$hasValue = FALSE;
+			$value = '';
 
-			if (is_array($this->list->elements[$number][$_index_name]) && !empty($this->labels[$_index_name])) {
+			$fieldwrap = $this->parseTS($_wrap);
 
-				$fieldwrap = $this->parseTS($_wrap);
+			do {
+
+				$_value = array_shift($this->list->elements[$number][$_index_name]);
+
+				// Link title to pageview.
+				if ($_index_name == 'title') {
+
+					// Get title of parent document if needed.
+					if (empty($_value) && $this->conf['getTitle']) {
+
+						$_value = '['.tx_dlf_document::getTitle($this->list->elements[$number]['uid'], TRUE).']';
+
+					}
+
+					// Set fake title if still not present.
+					if (empty($_value)) {
+
+						$_value = $this->pi_getLL('noTitle');
+
+					}
+
+					$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $this->list->elements[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+
+				// Translate name of holding library.
+				} elseif ($_index_name == 'owner' && !empty($_value)) {
+
+					$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
+
+				// Translate document type.
+				} elseif ($_index_name == 'type' && !empty($_value)) {
+
+					$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']));
+
+				// Translate ISO 639 language code.
+				} elseif ($_index_name == 'language' && !empty($_value)) {
+
+					$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
+
+				} elseif (!empty($_value)) {
+
+					$_value = htmlspecialchars($_value);
+
+				}
+
+				$_value = $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+
+				if (!empty($_value)) {
+
+					$value .= $_value;
+
+				}
+
+			} while (count($this->list->elements[$number][$_index_name]));
+
+			if (!empty($value)) {
 
 				$field = $this->cObj->stdWrap(htmlspecialchars($this->labels[$_index_name]), $fieldwrap['key.']);
 
-				foreach ($this->list->elements[$number][$_index_name] as $_value) {
+				$field .= $value;
 
-					// Link title to pageview.
-					if ($_index_name == 'title') {
-
-						// Get title of parent document if needed.
-						if (empty($_value) && $this->conf['getTitle']) {
-
-							$_value = '['.tx_dlf_document::getTitle($this->list->elements[$number]['uid'], TRUE).']';
-
-						}
-
-						// Set fake title if still not present.
-						if (empty($_value)) {
-
-							$_value = $this->pi_getLL('noTitle');
-
-						}
-
-						$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $this->list->elements[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
-
-					// Translate name of holding library.
-					} elseif ($_index_name == 'owner' && !empty($_value)) {
-
-						$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
-
-					// Translate document type.
-					} elseif ($_index_name == 'type' && !empty($_value)) {
-
-						$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']));
-
-					// Translate ISO 639 language code.
-					} elseif ($_index_name == 'language' && !empty($_value)) {
-
-						$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
-
-					} elseif (!empty($_value)) {
-
-						$_value = htmlspecialchars($_value);
-
-					}
-
-					if (!empty($_value)) {
-
-						$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
-
-						$hasValue = TRUE;
-
-					}
-
-				}
-
-				if ($hasValue) {
-
-					$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
-
-				}
+				$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
 
 			}
 
