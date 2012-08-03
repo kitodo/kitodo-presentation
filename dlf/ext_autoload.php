@@ -49,6 +49,7 @@ return array (
 	'tx_dlf_oai' => $extensionPath.'plugins/oai/class.tx_dlf_oai.php',
 	'tx_dlf_pageview' => $extensionPath.'plugins/pageview/class.tx_dlf_pageview.php',
 	'tx_dlf_search' => $extensionPath.'plugins/search/class.tx_dlf_search.php',
+	'tx_dlf_search_suggest' => $extensionPath.'plugins/search/class.tx_dlf_search_suggest.php',
 	'tx_dlf_statistics' => $extensionPath.'plugins/statistics/class.tx_dlf_statistics.php',
 	'tx_dlf_toc' => $extensionPath.'plugins/toc/class.tx_dlf_toc.php',
 	'tx_dlf_toolbox' => $extensionPath.'plugins/toolbox/class.tx_dlf_toolbox.php',

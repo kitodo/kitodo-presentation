@@ -30,6 +30,7 @@
  * Plugin 'DLF: Search' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -38,6 +39,74 @@
 class tx_dlf_search extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
+
+	/**
+	 * Adds the JS files necessary for autocompletion
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		TRUE on success or FALSE on error
+	 */
+	protected function addAutocompleteJS() {
+
+		// Ensure extension "t3jquery" is available.
+		if (t3lib_extMgm::isLoaded('t3jquery')) {
+
+			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+
+		}
+
+		// Is "t3jquery" loaded and the custom library created?
+		if (T3JQUERY === TRUE) {
+
+			tx_t3jquery::addJqJS();
+
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '	<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
+
+			return TRUE;
+
+		} else {
+
+			// No autocompletion available!
+			return FALSE;
+
+		}
+
+	}
+
+	/**
+	 * Adds the encrypted Solr core name to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @param	integer		$core: UID of the core
+	 *
+	 * @return	string		HTML input fields with encrypted core name and hash
+	 */
+	protected function addEncryptedCoreName($core) {
+
+		// Get core name.
+		$name = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+
+		// Encrypt core name.
+		if (!empty($name)) {
+
+			$name = tx_dlf_helper::encrypt($name);
+
+		}
+
+		// Add encrypted fields to search form.
+		if (is_array($name)) {
+
+			return '<input type="hidden" name="'.$this->prefixId.'"[encrypted]" value="'.$name['encrypted'].'" /><input type="hidden" name="'.$this->prefixId.'[hashed]" value="'.$name['hash'].'" />';
+
+		} else {
+
+			return '';
+
+		}
+
+	}
 
 	/**
 	 * The main method of the PlugIn
@@ -66,6 +135,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 		}
 
 		if (empty($this->piVars['query'])) {
+
+			// Add javascript for autocompletion if available.
+			$autocomplete = $this->addAutocompleteJS();
 
 			// Load template file.
 			if (!empty($this->conf['templateFile'])) {
@@ -96,7 +168,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => htmlspecialchars($lastQuery),
+				'###ADDITIONAL_INPUTS###' => '',
 			);
+
+			// Encrypt Solr core name and add as hidden input field to the search form.
+			if ($autocomplete) {
+
+				$markerArray['###ADDITIONAL_INPUTS###'] = $this->addEncryptedCoreName($this->conf['solrcore']);
+
+			}
 
 			// Display search form.
 			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);

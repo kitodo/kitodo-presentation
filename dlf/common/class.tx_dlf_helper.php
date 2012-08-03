@@ -46,6 +46,24 @@ class tx_dlf_helper {
 	public static $extKey = 'dlf';
 
 	/**
+	 * The encryption key
+	 * @see encrypt() / decrypt()
+	 *
+	 * @var string
+	 * @access private
+	 */
+	private static $ENCRYPTION_KEY = 'b8b311560d3e6f8dea0aa445995b1b2b';
+
+	/**
+	 * The initialization vector for encryption
+	 * @see encrypt() / decrypt()
+	 *
+	 * @var string
+	 * @access private
+	 */
+	private static $ENCRYPTION_IV = '381416de30a5c970f8f486aa6d5cc932';
+
+	/**
 	 * Searches the array recursively for a given value and returns the corresponding key if successful
 	 * @see http://php.net/array_search
 	 *
@@ -196,6 +214,87 @@ class tx_dlf_helper {
 	}
 
 	/**
+	 * Decrypt encrypted value with given control hash
+	 * @see http://yavkata.co.uk/weblog/php/securing-html-hidden-input-fields-using-encryption-and-hashing/
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$encrypted: The encrypted value to decrypt
+	 * @param	string		$hash: The control hash for decrypting
+	 *
+	 * @return	mixed		The decrypted value or NULL on error
+	 */
+	public static function decrypt($encrypted, $hash) {
+
+		$decrypted = NULL;
+
+		// Check for PHP extension "mcrypt".
+		if (!extension_loaded('mcrypt')) {
+
+			trigger_error('PHP extension "mcrypt" not available', E_USER_WARNING);
+
+			return NULL;
+
+		}
+
+		if (empty($encrypted) || empty($hash)) {
+
+			return NULL;
+
+		}
+
+		$iv = substr(self::$ENCRYPTION_IV, 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
+
+		$decrypted = mcrypt_decrypt(MCRYPT_BLOWFISH, self::$ENCRYPTION_KEY, base64_decode($encrypted), MCRYPT_MODE_CFB, $iv);
+
+		$salt = substr($hash, 0, 10);
+
+		$hashed = $salt.substr(sha1($salt.$decrypted), -10);
+
+		if ($hashed !== $hash) {
+
+			return NULL;
+
+		}
+
+		return $decrypted;
+
+	}
+
+	/**
+	 * Encrypt the given string
+	 * @see http://yavkata.co.uk/weblog/php/securing-html-hidden-input-fields-using-encryption-and-hashing/
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$string: The string to encrypt
+	 *
+	 * @return	array		Array with encrypted string and control hash
+	 */
+	public static function encrypt($string) {
+
+		// Check for PHP extension "mcrypt".
+		if (!extension_loaded('mcrypt')) {
+
+			trigger_error('PHP extension "mcrypt" not available', E_USER_WARNING);
+
+			return NULL;
+
+		}
+
+		$iv = substr(self::$ENCRYPTION_IV, 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
+
+		$encrypted = base64_encode(mcrypt_encrypt(MCRYPT_BLOWFISH, self::$ENCRYPTION_KEY, $string, MCRYPT_MODE_CFB, $iv));
+
+		$salt = substr(md5(uniqid(rand(), TRUE)), 0, 10);
+
+		$hash = $salt.substr(sha1($salt.$string), -10);
+
+		return array ('encrypted' => $encrypted, 'hash' => $hash);
+
+	}
+
+	/**
 	 * Get a backend user object (even in frontend mode)
 	 *
 	 * @access	public
@@ -236,28 +335,36 @@ class tx_dlf_helper {
 	 *
 	 * @param	integer		$uid: The UID of the record
 	 * @param	string		$table: Get the "index_name" from this table
-	 * @param	string		$pid: Get the "index_name" from this page
+	 * @param	integer		$pid: Get the "index_name" from this page
 	 *
 	 * @return	string		"index_name" for the given UID
 	 */
-	public static function getIndexName($uid, $table, $pid) {
+	public static function getIndexName($uid, $table, $pid = -1) {
 
 		$uid = max(intval($uid), 0);
 
-		$pid = max(intval($pid), 0);
+		if (!$uid || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'))) {
 
-		if (!$uid || !$pid || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'))) {
-
-			trigger_error('At least one argument is not valid: UID='.$uid.' PID='.$pid.' TABLE='.$table, E_USER_WARNING);
+			trigger_error('At least one argument is not valid: UID='.$uid.' or TABLE='.$table, E_USER_WARNING);
 
 			return '';
+
+		}
+
+		$where = '';
+
+		if ($pid !== -1) {
+
+			$pid = max(intval($pid), 0);
+
+			$where = ' AND '.$table.'.pid='.$pid;
 
 		}
 
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			$table.'.index_name AS index_name',
 			$table,
-			$table.'.uid='.$uid.' AND '.$table.'.pid='.$pid.self::whereClause($table),
+			$table.'.uid='.$uid.$where.self::whereClause($table),
 			'',
 			'',
 			'1'
