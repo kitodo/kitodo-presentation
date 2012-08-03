@@ -48,14 +48,6 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	protected $list;
 
 	/**
-	 * Array of labels for the metadata
-	 *
-	 * @var	array
-	 * @access	protected
-	 */
-	protected $labels = array ();
-
-	/**
 	 * Array of sorted metadata
 	 *
 	 * @var	array
@@ -160,15 +152,15 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$subpart = '';
 
-		foreach ($this->metadata as $_index_name => $_wrap) {
+		foreach ($this->metadata as $_index_name => $_metaConf) {
 
 			$value = '';
 
-			$fieldwrap = $this->parseTS($_wrap);
+			$fieldwrap = $this->parseTS($_metaConf['wrap']);
 
 			do {
 
-				$_value = array_shift($this->list->elements[$number][$_index_name]);
+				$_value = array_shift($this->list->elements[$number]['metadata'][$_index_name]);
 
 				// Link title to pageview.
 				if ($_index_name == 'title') {
@@ -218,11 +210,11 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				}
 
-			} while (count($this->list->elements[$number][$_index_name]));
+			} while (count($this->list->elements[$number]['metadata'][$_index_name]));
 
 			if (!empty($value)) {
 
-				$field = $this->cObj->stdWrap(htmlspecialchars($this->labels[$_index_name]), $fieldwrap['key.']);
+				$field = $this->cObj->stdWrap(htmlspecialchars($_metaConf['label']), $fieldwrap['key.']);
 
 				$field .= $value;
 
@@ -260,73 +252,73 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			$markerArray['###SUBMETADATA###'] = '';
 
-			foreach ($this->metadata as $_index_name => $_wrap) {
+			foreach ($this->metadata as $_index_name => $_metaConf) {
 
-				$hasValue = FALSE;
+				$value = '';
 
-				if (is_array($subpart[$_index_name]) && !empty($this->labels[$_index_name])) {
+				$fieldwrap = $this->parseTS($_metaConf['wrap']);
 
-					$fieldwrap = $this->parseTS($_wrap);
+				do {
 
-					$field = $this->cObj->stdWrap(htmlspecialchars($this->labels[$_index_name]), $fieldwrap['key.']);
+					$_value = array_shift($subpart['metadata'][$_index_name]);
 
-					foreach ($subpart[$_index_name] as $_value) {
+					// Link title to pageview.
+					if ($_index_name == 'title') {
 
-						// Link title to pageview.
-						if ($_index_name == 'title') {
+						// Get title of parent document if needed.
+						if (empty($_value) && $this->conf['getTitle']) {
 
-							// Get title of parent document if needed.
-							if (empty($_value) && $this->conf['getTitle']) {
-
-								$_value = '['.tx_dlf_document::getTitle($subpart['uid'], TRUE).']';
-
-							}
-
-							// Set fake title if still not present.
-							if (empty($_value)) {
-
-								$_value = $this->pi_getLL('noTitle');
-
-							}
-
-							$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
-
-						// Translate name of holding library.
-						} elseif ($_index_name == 'owner' && !empty($_value)) {
-
-							$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
-
-						// Translate document type.
-						} elseif ($_index_name == 'type' && !empty($_value)) {
-
-							$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
-
-						// Translate ISO 639 language code.
-						} elseif ($_index_name == 'language' && !empty($_value)) {
-
-							$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
-
-						} elseif (!empty($_value)) {
-
-							$_value = htmlspecialchars($_value);
+							$_value = '['.tx_dlf_document::getTitle($subpart['uid'], TRUE).']';
 
 						}
 
-						if (!empty($_value)) {
+						// Set fake title if still not present.
+						if (empty($_value)) {
 
-							$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
-
-							$hasValue = TRUE;
+							$_value = $this->pi_getLL('noTitle');
 
 						}
 
+						$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+
+					// Translate name of holding library.
+					} elseif ($_index_name == 'owner' && !empty($_value)) {
+
+						$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
+
+					// Translate document type.
+					} elseif ($_index_name == 'type' && !empty($_value)) {
+
+						$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+
+					// Translate ISO 639 language code.
+					} elseif ($_index_name == 'language' && !empty($_value)) {
+
+						$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
+
+					} elseif (!empty($_value)) {
+
+						$_value = htmlspecialchars($_value);
+
 					}
 
-					if ($hasValue) {
+					$_value = $this->cObj->stdWrap($_value, $fieldwrap['value.']);
 
-						$markerArray['###SUBMETADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+					if (!empty($_value)) {
+
+						$value .= $_value;
 
 					}
+
+				} while (count($subpart['metadata'][$_index_name]));
+
+				if (!empty($value)) {
+
+					$field = $this->cObj->stdWrap(htmlspecialchars($_metaConf['label']), $fieldwrap['key.']);
+
+					$field .= $value;
+
+					$markerArray['###SUBMETADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
 
 				}
 
@@ -349,18 +341,10 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	 */
 	protected function loadConfig() {
 
-		$this->labels = array (
-			'title' => tx_dlf_helper::translate('title', 'tx_dlf_metadata', $this->conf['pages']),
-			'author' => tx_dlf_helper::translate('author', 'tx_dlf_metadata', $this->conf['pages']),
-			'year' => tx_dlf_helper::translate('year', 'tx_dlf_metadata', $this->conf['pages']),
-			'place' => tx_dlf_helper::translate('place', 'tx_dlf_metadata', $this->conf['pages']),
-			'type' => tx_dlf_helper::translate('type', 'tx_dlf_metadata', $this->conf['pages'])
-		);
-
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.wrap AS wrap',
 			'tx_dlf_metadata',
-			'tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 			'',
 			'tx_dlf_metadata.sorting ASC',
 			''
@@ -368,11 +352,10 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
-			if (in_array($resArray['index_name'], array_keys($this->labels))) {
-
-				$this->metadata[$resArray['index_name']] = $resArray['wrap'];
-
-			}
+			$this->metadata[$resArray['index_name']] = array (
+				'wrap' => $resArray['wrap'],
+				'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+			);
 
 		}
 

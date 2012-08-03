@@ -1151,6 +1151,8 @@ class tx_dlf_document {
 
 		}
 
+		$metadata['type'][0] = $structure;
+
 		// Get UIDs for collections.
 		$collections = array ();
 
@@ -1234,6 +1236,8 @@ class tx_dlf_document {
 
 		}
 
+		$metadata['collection'] = $collections;
+
 		// Get UID for owner.
 		$owner = 0;
 
@@ -1286,6 +1290,8 @@ class tx_dlf_document {
 			t3lib_FlashMessageQueue::addMessage($_message);
 
 		}
+
+		$metadata['owner'][0] = $owner;
 
 		// Load table of contents.
 		$this->_getTableOfContents();
@@ -1351,12 +1357,12 @@ class tx_dlf_document {
 			'place' => $metadata['place'][0],
 			'place_sorting' => $metadata['place_sorting'][0],
 			'metadata' => json_encode($listed),
-			'structure' => $structure,
+			'structure' => $metadata['type'][0],
 			'partof' => $partof,
 			'volume' => $metadata['volume'][0],
 			'volume_sorting' => $metadata['volume_sorting'][0],
-			'collections' => $collections,
-			'owner' => $owner,
+			'collections' => $metadata['collection'],
+			'owner' => $metadata['owner'][0],
 			'solrcore' => $core,
 			'status' => 0,
 		);

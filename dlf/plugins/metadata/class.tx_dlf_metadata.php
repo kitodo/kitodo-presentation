@@ -194,7 +194,10 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 			if ($this->conf['showFull'] || $resArray['is_listed']) {
 
-				$metaList[$resArray['index_name']] = $resArray['wrap'];
+				$metaList[$resArray['index_name']] = array (
+					'wrap' => $resArray['wrap'],
+					'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+				);
 
 			}
 
@@ -227,11 +230,11 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			}
 
 			// Process each metadate.
-			foreach ($metaList as $_index_name => $_wrap) {
+			foreach ($metaList as $_index_name => $_metaConf) {
 
 				$value = '';
 
-				$fieldwrap = $this->parseTS($_wrap);
+				$fieldwrap = $this->parseTS($_metaConf['wrap']);
 
 				do {
 
@@ -295,7 +298,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 				if (!empty($value)) {
 
-					$field = $this->cObj->stdWrap(htmlspecialchars(tx_dlf_helper::translate($_index_name, 'tx_dlf_metadata', $this->conf['pages'])), $fieldwrap['key.']);
+					$field = $this->cObj->stdWrap(htmlspecialchars($_metaConf['label']), $fieldwrap['key.']);
 
 					$field .= $value;
 

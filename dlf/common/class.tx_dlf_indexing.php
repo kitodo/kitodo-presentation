@@ -438,7 +438,7 @@ class tx_dlf_indexing {
 
 			if ($_indexing['boost'] > 0.0) {
 
-				self::$fieldboost[$_indexing['index_name']] = $_indexing['boost'];
+				self::$fieldboost[$_indexing['index_name']] = floatval($_indexing['boost']);
 
 			} else {
 

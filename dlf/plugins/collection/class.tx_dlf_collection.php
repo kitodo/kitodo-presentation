@@ -254,7 +254,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		// Get all documents in collection.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type,tx_dlf_documents.partof AS partof',
+			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -285,18 +285,42 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 			}
 
+			// Prepare document's metadata.
+			$metadata = json_decode($resArray['metadata']);
+
+			if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
+
+				$metadata['type'][0] = array (tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->conf['pages']));
+
+			}
+
+			if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
+
+				$metadata['owner'][0] = array (tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->conf['pages']));
+
+			}
+
+			if (!empty($metadata['collection']) && is_array($metadata['collection'])) {
+
+				foreach ($metadata['collection'] as $i => $collection) {
+
+					if (t3lib_div::testInt($collection)) {
+
+						$metadata['collection'][$i] = array (tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->conf['pages']));
+
+					}
+
+				}
+
+			}
+
 			// Split toplevel documents from volumes.
 			if ($resArray['partof'] == 0) {
 
 				$toplevel[$resArray['uid']] = array (
 					'uid' => $resArray['uid'],
 					'page' => 1,
-					'title' => array ($resArray['title']),
-					'volume' => array ($resArray['volume']),
-					'author' => array ($resArray['author']),
-					'year' => array ($resArray['year']),
-					'place' => array ($resArray['place']),
-					'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages'])),
+					'metadata' => $metadata,
 					'subparts' => array ()
 				);
 
@@ -305,12 +329,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				$subparts[$resArray['partof']][$resArray['volume_sorting']] = array (
 					'uid' => $resArray['uid'],
 					'page' => 1,
-					'title' => array ($resArray['title']),
-					'volume' => array ($resArray['volume']),
-					'author' => array ($resArray['author']),
-					'year' => array ($resArray['year']),
-					'place' => array ($resArray['place']),
-					'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages']))
+					'metadata' => $metadata
 				);
 
 			}

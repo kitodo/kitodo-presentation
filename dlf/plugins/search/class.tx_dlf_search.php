@@ -207,8 +207,43 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$check = array ();
 
+			// Get metadata configuration.
+			if ($numHits) {
+
+				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed',
+					'tx_dlf_metadata',
+					'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+					'',
+					'tx_dlf_metadata.sorting ASC',
+					''
+				);
+
+				$metadata = array ();
+
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+
+					$metadata[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
+
+				}
+
+			}
+
 			// Process results.
 			foreach ($query->response->docs as $doc) {
+
+				// Prepate document's metadata.
+				$docMeta = array ();
+
+				foreach ($metadata as $index_name => $solr_name) {
+
+					if (!empty($doc->$solr_name)) {
+
+						$docMeta[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name : array ($doc->$solr_name));
+
+					}
+
+				}
 
 				// Split toplevel documents from subparts.
 				if ($doc->toplevel == 1) {
@@ -216,12 +251,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$toplevel[$doc->uid] = array (
 						'uid' => $doc->uid,
 						'page' => $doc->page,
-						'title' => (is_array($doc->title) ? $doc->title : array ($doc->title)),
-						'volume' => (is_array($doc->volume) ? $doc->volume : array ($doc->volume)),
-						'author' => (is_array($doc->author) ? $doc->author : array ($doc->author)),
-						'year' => (is_array($doc->year) ? $doc->year : array ($doc->year)),
-						'place' => (is_array($doc->place) ? $doc->place : array ($doc->place)),
-						'type' => (is_array($doc->type) ? $doc->type : array ($doc->type)),
+						'metadata' => $docMeta,
 						'subparts' => (!empty($toplevel[$doc->uid]['subparts']) ? $toplevel[$doc->uid]['subparts'] : array ())
 					);
 
@@ -230,12 +260,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$toplevel[$doc->uid]['subparts'][] = array (
 						'uid' => $doc->uid,
 						'page' => $doc->page,
-						'title' => (is_array($doc->title) ? $doc->title : array ($doc->title)),
-						'volume' => (is_array($doc->volume) ? $doc->volume : array ($doc->volume)),
-						'author' => (is_array($doc->author) ? $doc->author : array ($doc->author)),
-						'year' => (is_array($doc->year) ? $doc->year : array ($doc->year)),
-						'place' => (is_array($doc->place) ? $doc->place : array ($doc->place)),
-						'type' => (is_array($doc->type) ? $doc->type : array ($doc->type))
+						'metadata' => $docMeta
 					);
 
 					if (!in_array($doc->uid, $check)) {
@@ -255,7 +280,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					// Get information for toplevel document.
 					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type',
+						'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata',
 						'tx_dlf_documents',
 						'tx_dlf_documents.uid='.intval($_check).tx_dlf_helper::whereClause('tx_dlf_documents'),
 						'',
@@ -268,15 +293,39 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 						$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
+						// Prepare document's metadata.
+						$metadata = json_decode($resArray['metadata']);
+
+						if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
+
+							$metadata['type'][0] = array (tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->conf['pages']));
+
+						}
+
+						if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
+
+							$metadata['owner'][0] = array (tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->conf['pages']));
+
+						}
+
+						if (!empty($metadata['collection']) && is_array($metadata['collection'])) {
+
+							foreach ($metadata['collection'] as $i => $collection) {
+
+								if (t3lib_div::testInt($collection)) {
+
+									$metadata['collection'][$i] = array (tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->conf['pages']));
+
+								}
+
+							}
+
+						}
+
 						$toplevel[$_check] = array (
 							'uid' => $resArray['uid'],
 							'page' => 1,
-							'title' => array ($resArray['title']),
-							'volume' => array ($resArray['volume']),
-							'author' => array ($resArray['author']),
-							'year' => array ($resArray['year']),
-							'place' => array ($resArray['place']),
-							'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages'])),
+							'metadata' => $metadata,
 							'subparts' => $toplevel[$_check]['subparts']
 						);
 
