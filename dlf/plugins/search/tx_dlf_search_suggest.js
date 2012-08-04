@@ -1,6 +1,6 @@
 $(
 	function(){
-			// jQuery autocomplete integration
+		// jQuery autocomplete integration
 		$(".autocomplete").autocomplete({
 			source: function(request, response) {
 				return $.post(

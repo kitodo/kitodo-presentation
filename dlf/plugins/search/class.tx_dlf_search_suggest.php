@@ -33,7 +33,7 @@ require_once (PATH_tslib.'class.tslib_pibase.php');
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_search_suggest extends tx_dlf_plugin {
+class tx_dlf_search_suggest extends tslib_pibase {
 
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search_suggest.php';
 
@@ -49,15 +49,15 @@ class tx_dlf_search_suggest extends tx_dlf_plugin {
 	 */
 	public function main($content = '', $conf = array ()) {
 
-		if (!empty($this->piVars['encrypted']) && !empty($this->piVars['hashed'])) {
+		if (!empty(t3lib_div::_GP('encrypted')) && !empty(t3lib_div::_GP('hashed'))) {
 
-			$core = tx_dlf_helper::decrypt($this->piVars['encrypted'], $this->piVars['hashed']);
+			$core = tx_dlf_helper::decrypt(t3lib_div::_GP('encrypted'), t3lib_div::_GP('hashed'));
 
 		}
 
 		if (!empty($core)) {
 
-			$url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.t3lib_div::_POST('q');
+			$url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.t3lib_div::_GP('q');
 
 			if ($stream = fopen($url, 'r')) {
 
