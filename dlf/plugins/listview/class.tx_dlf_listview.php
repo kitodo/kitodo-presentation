@@ -387,7 +387,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		// Load the list.
 		$this->list = t3lib_div::makeInstance('tx_dlf_list');
 
-		t3lib_div::devLog('[main]   list='.$this->list, 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+		// t3lib_div::devLog('[tx_dlf_listview.main]   list='.$this->list, 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {

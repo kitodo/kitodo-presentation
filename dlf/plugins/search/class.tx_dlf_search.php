@@ -68,7 +68,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Perform search if requested.
 		if (!empty($this->piVars['query'])) {
 
-			t3lib_div::devLog('[main]   searching...', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+			t3lib_div::devLog('[tx_dlf_search.main]   searching...', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
 			$search = t3lib_div::makeInstance('tx_dlf_solr_search', $this->conf['solrcore'], $this->conf['pages'], $this->piVars['query']);
 
@@ -78,7 +78,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$search->order = 'relevance';
 
-			// TODO: we need a flag for respecting the FQ value (search in facet space)
+			// TODO: we need a flag for respecting the FQ value (facilitates search in facet space)
 		    // $search->restoreFilterQuery();
 
 			$list = tx_dlf_solr::search($search);
@@ -96,7 +96,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		}
 
-		t3lib_div::devLog('[main]   rendering search form', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+		t3lib_div::devLog('[tx_dlf_search.main]   rendering search form', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
 		// Render search form if no search is requested.
 		// Load template file.
