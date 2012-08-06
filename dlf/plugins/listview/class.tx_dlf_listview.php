@@ -56,6 +56,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	protected $metadata = array ();
 
 	/**
+	 * Array of sortable metadata
+	 *
+	 * @var	array
+	 * @access	protected
+	 */
+	protected $sortables = array ();
+
+	/**
 	 * Renders the page browser
 	 *
 	 * @access	protected
@@ -235,6 +243,54 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	}
 
 	/**
+	 * Renders sorting dialog
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		The rendered sorting dialog ready for output
+	 */
+	protected function getSortingForm() {
+
+		// Return nothing if there are no sortable metadata fields.
+		if (!count($this->sortables)) {
+
+			return '';
+
+		}
+
+		// Set class prefix.
+		$prefix = str_replace('_', '-', get_class($this));
+
+		// Build HTML form.
+		$sorting = '<form action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" class="'.$prefix.'-sorting" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+
+		foreach ($this->piVars as $piVar => $value) {
+
+			if ($piVar != 'order' && !empty($value)) {
+
+				$sorting .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
+
+			}
+
+		}
+
+		$_uniqId = uniqid($prefix.'-');
+
+		$sorting .= '<label for="'.$_uniqId.'">'.$this->pi_getLL('orderBy', '', TRUE).'</label><select id="'.$_uniqId.'" name="'.$this->prefixId.'[order]" onchange="javascript:this.form.submit();"><option value=""></option>';
+
+		foreach ($this->sortables as $index_name => $label) {
+
+			$sorting .= '<option value="'.$index_name.'"'.($this->piVars['order'] == $index_name ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
+
+		}
+
+		$sorting .= '</select></div></form>';
+
+		return $sorting;
+
+	}
+
+	/**
 	 * Renders all sub-entries of one entry
 	 *
 	 * @access	protected
@@ -342,9 +398,9 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	protected function loadConfig() {
 
 		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.wrap AS wrap',
+			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.wrap AS wrap,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
 			'tx_dlf_metadata',
-			'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 			'',
 			'tx_dlf_metadata.sorting ASC',
 			''
@@ -352,10 +408,20 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
-			$this->metadata[$resArray['index_name']] = array (
-				'wrap' => $resArray['wrap'],
-				'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
-			);
+			if ($resArray['is_listed']) {
+
+				$this->metadata[$resArray['index_name']] = array (
+					'wrap' => $resArray['wrap'],
+					'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+				);
+
+			}
+
+			if ($resArray['is_sortable']) {
+
+				$this->sortables[$resArray['index_name']] = tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages']);
+
+			}
 
 		}
 
@@ -380,6 +446,30 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		// Load the list.
 		$this->list = t3lib_div::makeInstance('tx_dlf_list');
+
+		// Sort the list if applicable.
+		if (!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order']) {
+
+			// Order list by given field.
+			$this->list->sort($this->piVars['order'], TRUE);
+
+			// Update list's metadata.
+			$_metadata = $this->list->metadata;
+
+			$_metadata['options']['order'] = $this->piVars['order'];
+
+			$this->list->metadata = $_metadata;
+
+			// Save updated list.
+			$this->list->save();
+
+			// Reset pointer.
+			$this->piVars['pointer'] = 0;
+
+			// Unset plugin variable.
+			unset ($this->piVars['order']);
+
+		}
 
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
@@ -438,6 +528,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		}
 
 		$markerArray['###PAGEBROWSER###'] = $this->getPageBrowser();
+
+		$markerArray['###SORTING###'] = $this->getSortingForm();
 
 		$content = $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE), $markerArray);
 

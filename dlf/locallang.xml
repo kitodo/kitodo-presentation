@@ -17,11 +17,8 @@
 			<label index="tx_dlf_documents.title">Title</label>
 			<label index="tx_dlf_documents.title_sorting">Title (Sorting)</label>
 			<label index="tx_dlf_documents.author">Author</label>
-			<label index="tx_dlf_documents.author_sorting">Author (Sorting)</label>
 			<label index="tx_dlf_documents.year">Year of Publication</label>
-			<label index="tx_dlf_documents.year_sorting">Year of Publication (Sorting)</label>
 			<label index="tx_dlf_documents.place">Place of Publication</label>
-			<label index="tx_dlf_documents.place_sorting">Place of Publication</label>
 			<label index="tx_dlf_documents.structure">Typ of Document</label>
 			<label index="tx_dlf_documents.partof">Part of ...</label>
 			<label index="tx_dlf_documents.volume">Number of Volume</label>
@@ -174,11 +171,8 @@
 			<label index="tx_dlf_documents.title">Titel</label>
 			<label index="tx_dlf_documents.title_sorting">Titel (Sortierung)</label>
 			<label index="tx_dlf_documents.author">Autor</label>
-			<label index="tx_dlf_documents.author_sorting">Autor (Sortierung)</label>
 			<label index="tx_dlf_documents.year">Erscheinungsjahr</label>
-			<label index="tx_dlf_documents.year_sorting">Erscheinungsjahr (Sortierung)</label>
 			<label index="tx_dlf_documents.place">Erscheinungsort</label>
-			<label index="tx_dlf_documents.place_sorting">Erscheinungsort (Sortierung)</label>
 			<label index="tx_dlf_documents.structure">Dokumententyp</label>
 			<label index="tx_dlf_documents.partof">Übergeordnete Einheit</label>
 			<label index="tx_dlf_documents.volume">Bandnummer</label>

@@ -159,29 +159,9 @@ $TCA['tx_dlf_documents'] = array (
 				'eval' => 'trim',
 			),
 		),
-		'author_sorting' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.author_sorting',
-			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-				'eval' => 'trim',
-			),
-		),
 		'year' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.year',
-			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-				'eval' => 'trim',
-			),
-		),
-		'year_sorting' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.year_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -199,17 +179,12 @@ $TCA['tx_dlf_documents'] = array (
 				'eval' => 'trim',
 			),
 		),
-		'place_sorting' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.place_sorting',
+		'metadata' => array (
 			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-				'eval' => 'trim',
+				'type' => 'passthrough',
 			),
 		),
-		'metadata' => array (
+		'metadata_sorting' => array (
 			'config' => array (
 				'type' => 'passthrough',
 			),
@@ -312,14 +287,11 @@ $TCA['tx_dlf_documents'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author;;2, year;;3, place;;4, structure;;5;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author, year, place, structure;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'title_sorting', 'canNotCollapse' => 1),
-		'2' => array ('showitem' => 'author_sorting', 'canNotCollapse' => 1),
-		'3' => array ('showitem' => 'year_sorting', 'canNotCollapse' => 1),
-		'4' => array ('showitem' => 'place_sorting', 'canNotCollapse' => 1),
-		'5' => array ('showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
+		'2' => array ('showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
 	),
 );
 

@@ -254,7 +254,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		// Get all documents in collection.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
+			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -290,13 +290,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 			if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
 
-				$metadata['type'][0] = array (tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->conf['pages']));
+				$metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->conf['pages']);
 
 			}
 
 			if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
 
-				$metadata['owner'][0] = array (tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->conf['pages']));
+				$metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->conf['pages']);
 
 			}
 
@@ -306,11 +306,32 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 					if (t3lib_div::testInt($collection)) {
 
-						$metadata['collection'][$i] = array (tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->conf['pages']));
+						$metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->conf['pages']);
 
 					}
 
 				}
+
+			}
+
+			// Prepare document's metadata for sorting.
+			$sorting = json_decode($resArray['metadata_sorting']);
+
+			if (!empty($sorting['type']) && t3lib_div::testInt($sorting['type'])) {
+
+				$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+
+			}
+
+			if (!empty($sorting['owner']) && t3lib_div::testInt($sorting['owner'])) {
+
+				$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+
+			}
+
+			if (!empty($sorting['collection']) && t3lib_div::testInt($sorting['collection'])) {
+
+				$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
 			}
 
@@ -321,6 +342,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 					'uid' => $resArray['uid'],
 					'page' => 1,
 					'metadata' => $metadata,
+					'sorting' => $sorting,
 					'subparts' => array ()
 				);
 
@@ -329,7 +351,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				$subparts[$resArray['partof']][$resArray['volume_sorting']] = array (
 					'uid' => $resArray['uid'],
 					'page' => 1,
-					'metadata' => $metadata
+					'metadata' => $metadata,
+					'sorting' => $sorting
 				);
 
 			}

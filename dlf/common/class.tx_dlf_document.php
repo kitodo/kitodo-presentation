@@ -601,11 +601,8 @@ class tx_dlf_document {
 			'title' => array (),
 			'title_sorting' => array (),
 			'author' => array (),
-			'author_sorting' => array (),
 			'place' => array (),
-			'place_sorting' => array (),
 			'year' => array (),
-			'year_sorting' => array (),
 			'prod_id' => array (),
 			'record_id' => array (),
 			'opac_id' => array (),
@@ -1317,13 +1314,15 @@ class tx_dlf_document {
 
 		}
 
-		// Get metadata for lists.
+		// Get metadata for lists and sorting.
 		$listed = array ();
 
+		$sortable = array ();
+
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_metadata.index_name AS index_name',
+			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
 			'tx_dlf_metadata',
-			'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 			'',
 			'',
 			''
@@ -1333,7 +1332,17 @@ class tx_dlf_document {
 
 			if (!empty($metadata[$resArray['index_name']])) {
 
-				$listed[$resArray['index_name']] = $metadata[$resArray['index_name']];
+				if ($resArray['is_listed']) {
+
+					$listed[$resArray['index_name']] = $metadata[$resArray['index_name']];
+
+				}
+
+				if ($resArray['is_sortable']) {
+
+					$sortable[$resArray['index_name']] = $metadata[$resArray['index_name']][0];
+
+				}
 
 			}
 
@@ -1350,13 +1359,11 @@ class tx_dlf_document {
 			'purl' => $metadata['purl'][0],
 			'title' => $metadata['title'][0],
 			'title_sorting' => $metadata['title_sorting'][0],
-			'author' => $metadata['author'][0],
-			'author_sorting' => $metadata['author_sorting'][0],
-			'year' => $metadata['year'][0],
-			'year_sorting' => $metadata['year_sorting'][0],
-			'place' => $metadata['place'][0],
-			'place_sorting' => $metadata['place_sorting'][0],
+			'author' => implode('; ', $metadata['author']),
+			'year' => implode('; ', $metadata['year']),
+			'place' => implode('; ', $metadata['place']),
 			'metadata' => json_encode($listed),
+			'metadata_sorting' => json_encode($sortable),
 			'structure' => $metadata['type'][0],
 			'partof' => $partof,
 			'volume' => $metadata['volume'][0],
