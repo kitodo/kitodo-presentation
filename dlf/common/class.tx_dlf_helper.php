@@ -555,23 +555,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Check if given internal "index_name" is translatable
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$index_name: The internal "index_name" to translate
-	 * @param	string		$table: Get the translation from this table
-	 * @param	string		$pid: Get the translation from this page
-	 *
-	 * @return	boolean		Is $index_name translatable?
-	 */
-	public static function isTranslatable($index_name, $table, $pid = 0) {
-
-		return self::translate($index_name, $table, $pid, TRUE);
-
-	}
-
-	/**
 	 * Load value from user's session.
 	 *
 	 * @access	public
@@ -789,11 +772,10 @@ class tx_dlf_helper {
 	 * @param	string		$index_name: The internal "index_name" to translate
 	 * @param	string		$table: Get the translation from this table
 	 * @param	string		$pid: Get the translation from this page
-	 * @param	boolean		$checkOnly: Don't translate, only check for translation
 	 *
 	 * @return	mixed		Translated label or boolean value if $checkOnly is set
 	 */
-	public static function translate($index_name, $table, $pid, $checkOnly = FALSE) {
+	public static function translate($index_name, $table, $pid) {
 
 		static $labels = array ();
 
@@ -873,27 +855,11 @@ class tx_dlf_helper {
 
 		if (!empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
 
-			if ($checkOnly) {
-
-				return TRUE;
-
-			} else {
-
-				return $labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name];
-
-			}
+			return $labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name];
 
 		} else {
 
-			if ($checkOnly) {
-
-				return FALSE;
-
-			} else {
-
-				return $index_name;
-
-			}
+			return $index_name;
 
 		}
 
