@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
 *
-*  (c) 2012
+*  (c) 2012, Zeutschel GmbH
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,33 +28,73 @@
 
 /**
  * Document class 'tx_dlf_solr_search' for the 'dlf' extension.
-*
-* @author
-* @copyright	Copyright (c) 2012
-* @package	TYPO3
-* @subpackage	tx_dlf
-* @access	public
-*/
+ *
+ * @author	Henrik Lochmann <dev@mentalmotive.com>
+ * @copyright	Copyright (c) 2012, Zeutschel GmbH
+ * @package	TYPO3
+ * @subpackage	tx_dlf
+ * @access	public
+ */
 class tx_dlf_solr_search {
 
+	/**
+	 * @var integer
+	 */
 	protected $core;
-
-	protected $pid;
-
-	protected $queryString;
-
+	
+	/**
+	 * @var string
+	 */
+	protected $description;
+	
+	/**
+	 * @var array
+	 */
+	protected $facetFields;
+	
+	/**
+	 * @var string the filter query
+	 */
 	protected $filterQuery;
 
-	protected $limit;
-
-	protected $source;
-
-	protected $order;
-
+	/**
+	 * @var string
+	 */
 	protected $label;
-
-	protected $description;
-
+	
+	/**
+	 * @var integer
+	 */
+	protected $limit;
+	
+	/**
+	 * @var string
+	 */
+	protected $order;
+	
+	/**
+	 * @var integer
+	 */
+	protected $pid;
+	
+	/**
+	 * @var string
+	 */
+	protected $queryString;
+	
+	/**
+	 * @var string
+	 */
+	protected $source;
+	
+	/**
+	 * Returns the passed $list parameter unchaned, if it is not NULL. Otherwise, 
+	 * the tx_dlf_list instance stored in the current user session is returned.
+	 * 
+	 * @param tx_dlf_list $list the tx_dlf_list instance to ensure 
+	 * 
+	 * @return tx_dlf_list the session list or the passed parameter if it is not NULL. 
+	 */
 	protected static function ensureList($list) {
 
 		if ($list == NULL) {
@@ -162,6 +202,12 @@ class tx_dlf_solr_search {
 
 	}
 
+	/**
+	 * Returns the query string of the search instance or '*'
+	 * if query string and filter query are empty. 
+	 * 
+	 * @return string the query string of the search instance 
+	 */
 	protected function getQueryString() {
 
 		// An empty query string leads to *-query, while the filter query is non-empty.
@@ -175,6 +221,12 @@ class tx_dlf_solr_search {
 
 	}
 
+	/**
+	 * Loads the $label and $description fields with corresponding values
+	 * of the user session list.
+	 * 
+	 * @param void
+	 */
 	public function restoreHeader($list = NULL) {
 
 		$list = self::ensureList($list);
@@ -185,6 +237,12 @@ class tx_dlf_solr_search {
 
 	}
 
+	/**
+	 * Loads the $filterQuery field with corresponding value
+	 * of the user session list.
+	 *
+	 * @param void
+	 */
 	public function restoreFilterQuery($list = NULL) {
 
 		$list = self::ensureList($list);
@@ -197,11 +255,20 @@ class tx_dlf_solr_search {
 
 	}
 
+	
+	/**
+	 * Loads the $queryString field with corresponding value
+	 * of the user session list.
+	 *
+	 * @param void
+	 */
 	public function restoreQueryString($list = NULL) {
 
 		$list = self::ensureList($list);
 
-		if (!empty($list->metadata['options']) && $list->metadata['options']['source'] === 'search') {
+		if (!empty($list->metadata['options']) 
+				// only search and facets plugins perform searches, yet
+				&& (($list->metadata['options']['source'] === 'search') || ($list->metadata['options']['source'] === 'facets'))) {
 
 			$this->queryString = $list->metadata['options']['select'];
 

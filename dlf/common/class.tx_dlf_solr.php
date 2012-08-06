@@ -156,17 +156,17 @@ class tx_dlf_solr {
 	}
 
 	/**
-	 *
+	 * Processes a search request against the configured Solr instance.
 	 *
 	 * @access	public
 	 *
-	 * @param	tx_dlf_solr_search		$search: Search info
+	 * @param	tx_dlf_solr_search $search the search settings
 	 *
-	 * @return	integer		First unused core number found
+	 * @return	tx_dlf_list	a list instance that contains search results
 	 */
 	public static function search($searchStruct) {
 
-		t3lib_div::devLog('[search]   search='.$searchStruct, 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+		t3lib_div::devLog('[tx_dlf_solr.search]   search='.$searchStruct, 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
 		$solr = self::solrConnect($searchStruct->core);
 
@@ -176,21 +176,33 @@ class tx_dlf_solr {
 
 		}
 
-		// Extract facet queries.
-		$facetParams = array();
+		// Extract filter query.
+		$searchParameters = array();
 
-		if (count($searchStruct->filterQuery) > 0) {
+		if (!empty($searchStruct->filterQuery)) {
 
-			$facetParams['facet'] = 'true';
-
-			$facetParams['fq'] = $searchStruct->filterQuery;
-
-			t3lib_div::devLog('[search]   using facetParams='.tx_dlf_helper::array_toString($facetParams), 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
-
+			$searchParameters['fq'] = $searchStruct->filterQuery;
+			
 		}
+		
+		
+		if (count($searchStruct->facetFields) > 0) {
+			
+			$searchParameters['facet'] = 'true';
+			
+			$searchParameters['facet.field'] = $searchStruct->facetFields;
+			
+		}
+		
+		if (count($searchParameters) > 0) {
 
+			t3lib_div::devLog('[tx_dlf_solr.search]   searchParameters='.tx_dlf_helper::array_toString($searchParameters), 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+			
+		}
+		
+		
 		// Perform search.
-		$query = $solr->search($searchStruct->queryString, 0, $searchStruct->limit, $facetParams);
+		$query = $solr->search($searchStruct->queryString, 0, $searchStruct->limit, $searchParameters);
 
 		$_list = array ();
 
@@ -309,7 +321,14 @@ class tx_dlf_solr {
 						'hitCount' => $hitCount
 				)
 		);
+		
+		// Add facet result if requested in search.
+		if ($searchParameters['facet'] === 'true') {
 
+			$_metadata['result']['facet.fields'] = serialize($query->facet_counts->facet_fields);
+			
+		}
+		
 		$list->metadata = $_metadata;
 
 		$list->save();
