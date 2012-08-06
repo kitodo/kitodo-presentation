@@ -111,6 +111,46 @@ class tx_dlf_list implements t3lib_Singleton {
 	}
 
 	/**
+	 * This moves the element at the given position up or down
+	 *
+	 * @access	public
+	 *
+	 * @param	integer		$position: Numeric position for moving
+	 * @param	integer		$steps: Amount of steps to move up or down
+	 *
+	 * @return	void
+	 */
+	public function move($position, $steps) {
+
+		$position = intval($position);
+
+		// Check if list position is valid.
+		if ($position < 0 || $position >= $this->count) {
+
+			trigger_error('Invalid list position '.$position, E_USER_WARNING);
+
+			return;
+
+		}
+
+		$steps = intval($steps);
+
+		// Check if moving given amount of steps is possible.
+		if (($position + $steps) < 0 || ($position + $steps) >= $this->count) {
+
+			trigger_error('Element at position '.$position.' can not be moved '.$steps.' steps', E_USER_WARNING);
+
+			return;
+
+		}
+
+		$element = $this->remove($position);
+
+		$this->add(array ($element), $position + $steps);
+
+	}
+
+	/**
 	 * This moves the element at the given position up
 	 *
 	 * @access	public
@@ -121,26 +161,14 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function moveUp($position) {
 
-		$position = intval($position);
-
-		if ($position < 1 || $position >= $this->count) {
-
-			trigger_error('No valid list position for moving up', E_USER_WARNING);
-
-			return;
-
-		}
-
-		$element = $this->remove($position);
-
-		$this->add(array ($element), $position - 1);
+		$this->move($position, -1);
 
 	}
 
 	/**
 	 * This moves the element at the given position down
 	 *
-	 * @access public
+	 * @access	public
 	 *
 	 * @param	integer		$position: Numeric position for moving
 	 *
@@ -148,19 +176,7 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function moveDown($position) {
 
-		$position = intval($position);
-
-		if ($position < 0 || $position >= ($this->count - 1)) {
-
-			trigger_error('No valid list position for moving down', E_USER_WARNING);
-
-			return;
-
-		}
-
-		$element = $this->remove($position);
-
-		$this->add(array ($element), $position + 1);
+		$this->move($position, 1);
 
 	}
 
@@ -202,6 +218,60 @@ class tx_dlf_list implements t3lib_Singleton {
 		} else {
 
 			tx_dlf_helper::saveToSession(array ($this->elements, $this->metadata), get_class($this));
+
+		}
+
+	}
+
+	/**
+	 * This sorts the current list by the given field
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$by: Sort the list by this field
+	 * @param	boolean		$asc: Sort ascending?
+	 *
+	 * @return	void
+	 */
+	public function sort($by, $asc = TRUE) {
+
+		$newOrder = array ();
+
+		$nonSortable = array ();
+
+		foreach ($this->elements as $num => $element) {
+
+			// Is this element sortable?
+			if (!empty($element['sorting'][$by])) {
+
+				$newOrder[$element['sorting'][$by].str_pad($num, 6, '0', STR_PAD_LEFT)] = $element;
+
+			} else {
+
+				$nonSortable[] = $element;
+
+			}
+
+		}
+
+		// Reorder elements.
+		if ($asc) {
+
+			ksort($newOrder, SORT_LOCALE_STRING);
+
+		} else {
+
+			krsort($newOrder, SORT_LOCALE_STRING);
+
+		}
+
+		// Add non sortable elements to the end of the list.
+		$newOrder = array_merge(array_values($newOrder), $nonSortable);
+
+		// Check if something is missing.
+		if ($this->count == count($newOrder)) {
+
+			$this->elements = $newOrder;
 
 		}
 
