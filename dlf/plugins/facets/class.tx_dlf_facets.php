@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
 *
-*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2012, Zeutschel GmbH
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,26 +28,34 @@
 
 /**
  * Plugin 'DLF: Facets' for the 'dlf' extension.
-*
-* @author	Henrik Lochmann <dev@mentalmotive.com>
-* @copyright	Copyright (c) 2012, Zeutschel GmbH
-* @package	TYPO3
-* @subpackage	tx_dlf
-* @access	public
-*/
+ *
+ * @author	Henrik Lochmann <dev@mentalmotive.com>
+ * @copyright	Copyright (c) 2012, Zeutschel GmbH
+ * @package	TYPO3
+ * @subpackage	tx_dlf
+ * @access	public
+ */
 class tx_dlf_facets extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/collection/class.tx_dlf_facets.php';
 
-	protected function getEntries($result, $facets, $lastSearch) {
+	/**
+	 * Creates and returns an HMENU array based on a Solr search result.
+	 * 
+	 * @param array $lastSearch last search's properties
+	 * @param array $facets facets to be shown, keys are facet index names, values are human-readable facet names
+	 * 
+	 * @return array HMENU array
+	 */
+	protected function getEntries($lastSearch, $facets) {
 
 		$menuArray = array ();
 
 		// Process results.
 		$hasOneValue = false;
 
-		foreach ($result->facet_counts->facet_fields as $facetField => $facetValues) {
-
+		foreach ($lastSearch['facet.fields'] as $facetField => $facetValues) {
+			
 			$valueContent = '';
 
 			$hasOneValue = false;
@@ -89,32 +97,15 @@ class tx_dlf_facets extends tx_dlf_plugin {
 
 	}
 
-	protected function getLastQuery() {
-		// Set last query if applicable.
-		$lastQuery = array();
-
-		$_list = t3lib_div::makeInstance('tx_dlf_list');
-
-		if ($_list->metadata['options']['source'] !== 'collection') {
-
-			$lastQuery['query'] = $_list->metadata['options']['select'];
-
-		}
-
-		$lastQuery['fq'] = $_list->metadata['options']['filter.query'];
-
-		return $lastQuery;
-	}
-
 	/**
-	 * The main method of the PlugIn
+	 * The main method of the plugin.
 	 *
 	 * @access	public
 	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
+	 * @param string $content the plugin content
+	 * @param array $conf the plugin configuration
 	 *
-	 * @return	string		The content that is displayed on the website
+	 * @return string the content that is displayed on the website
 	 */
 	public function main($content, $conf) {
 
@@ -151,15 +142,35 @@ class tx_dlf_facets extends tx_dlf_plugin {
 
 		}
 
+		// Get facets to show from plugin configuration
+		$facetsToShow = array();
+			
+		foreach (explode(',', $this->conf['facets']) as $facet ) {
+				
+			$facetsToShow[$facet] = tx_dlf_facet_helper::translateFacetField($facet, $this->conf['pages']);
+				
+		}
+		
 		// Perform search if requested.
 		if (!empty($this->piVars['fq'])) {
 
-			t3lib_div::devLog('[main]   facets searching...', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+			t3lib_div::devLog('[tx_dlf_facets.main]   searching...', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
 			$search = t3lib_div::makeInstance('tx_dlf_solr_search', $this->conf['solrcore'], $this->conf['pages']);
 
 			$search->filterQuery = $this->piVars['fq'];
 
+			// extract facet fields
+			$facetFields = array();
+			
+			foreach ($facetsToShow as $facetField => $facetName) {
+			
+				$facetFields[] = $facetField;
+			
+			}
+			
+			$search->facetFields = $facetFields;
+			
 			$search->limit = 10000;
 
 			$search->source = 'facets';
@@ -168,14 +179,17 @@ class tx_dlf_facets extends tx_dlf_plugin {
 
 			$list = t3lib_div::makeInstance('tx_dlf_list');
 
+			// Restore header data, when facetted is used with list generating plugins other than the search plugin.
 			if ($list->metadata['options']['source'] != 'search') {
 
 				$search->restoreHeader();
 
 			}
 
+			// Respect the last queries search string in the following search. 
 			$search->restoreQueryString();
 
+			// Perform search.
 			$list = tx_dlf_solr::search($search);
 
 			// Clean output buffer.
@@ -191,7 +205,7 @@ class tx_dlf_facets extends tx_dlf_plugin {
 
 		}
 
-		t3lib_div::devLog('[main]   rendering facets', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+		t3lib_div::devLog('[tx_dlf_facets.main]   rendering facets', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
 		// Render facets if no search is requested.
 		$_TSconfig = array ();
@@ -199,77 +213,111 @@ class tx_dlf_facets extends tx_dlf_plugin {
 		$_TSconfig['special'] = 'userfunction';
 
 		$_TSconfig['special.']['userFunc'] = 'tx_dlf_facets->makeMenuArray';
+		
+		$_TSconfig['special.']['facetsToShow'] = $facetsToShow;
 
 		$_TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['menuConf.'], $_TSconfig);
 
 		$markerArray['###FACET_MENU###'] = $this->cObj->HMENU($_TSconfig);
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
-
+		
 		return $this->pi_wrapInBaseClass($content);
 
 	}
 
 	/**
-	 * This builds a menu array for HMENU
+	 * This builds a menu array for HMENU.
 	 *
-	 * @access	public
+	 * @access public
 	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
+	 * @param string $content the plugin content
+	 * @param array $conf the plugin configuration
 	 *
-	 * @return	array		HMENU array
+	 * @return array HMENU array
 	 */
 	public function makeMenuArray($content, $conf) {
 
 		$this->init($conf);
 
-		// extract search query
-		$lastSearch = $this->getLastQuery();
-
-		if (empty($lastSearch['query'])) {
-
+		// Extract last search's details.
+		$list = t3lib_div::makeInstance('tx_dlf_list');
+		
+		$lastSearch = array();
+		
+		if ($list->metadata['options']['source'] !== 'collection') {
+		
+			$lastSearch['query'] = $list->metadata['options']['select'];
+		
+		} else {
+				
+			// Ensure that rendered facet-links contain a query string.
 			$lastSearch['query'] = '*';
-
+				
 		}
+		
+		$lastSearch['fq'] = $list->metadata['options']['filter.query'];
+		
+		$lastSearch['facet.fields'] = unserialize($list->metadata['result']['facet.fields']);
+		
+		/* 
+		 * No facet fields in search result (although they've been configured) means that 
+		 * the previous search wasn't performed by this plugin instance. Thus, we need to 
+		 * perform the last search again including facet field requests to get facet data.
+		 * 
+		 * If there is a better solution to this, don't hesitate to discuss. An option
+		 * would be a hook-based search but, however, the corresponding hook would have
+		 * to be configured by the plugin instance that actually displays facets. This,
+		 * in turn, remains in the TSFE rendering cycle.
+		 */
+		if (empty($lastSearch['facet.fields'])) {
+			
+			t3lib_div::devLog('[tx_dlf_facets.makeMenuArray]   no facet fields in last search found: performing 2nd search', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
-		t3lib_div::devLog('[makeMenuArray]   lastSearchFQ='.tx_dlf_helper::array_toString($lastSearch['fq']).', lastSearchQuery='.$lastSearch['query'], 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
-
-		if (($solr = tx_dlf_solr::solrConnect($this->conf['solrcore'])) !== NULL) {
-
-			// get facets to show from plugin configuration
-			$facetsToShow = array();
-
-			foreach (explode(',', $this->conf['facets']) as $facet ) {
-
-				$facetsToShow[$facet] = tx_dlf_facet_helper::translateFacetField($facet, $this->conf['pages']);
-
+			$solr = tx_dlf_solr::solrConnect($this->conf['solrcore']);
+			
+			if ($solr === NULL) {
+				
+				trigger_error('Could not connect to solr instance.', E_USER_NOTICE);
+				
+				return array();
+				
 			}
-
+		
 			// create facet query
 			$facetParams = array(
 					'facet' => 'true',
 					'fq' => $lastSearch['fq'],
 					'facet.field' => array()
 			);
-
-			foreach ($facetsToShow as $facetField => $facetName) {
-
+		
+			foreach ($this->conf['facetsToShow'] as $facetField => $facetName) {
+		
 				$facetParams['facet.field'][] = $facetField;
-
+		
 			}
-
-			// 			t3lib_div::devLog('facetParams='.tx_dlf_helper::array_toString($facetParams).'  [makeMenuArray]', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
-
+		
 			// Perform search.
 			$result = $solr->search($lastSearch['query'], 0, $this->conf['limit'], $facetParams);
 
-			return $this->getEntries($result, $facetsToShow, $lastSearch);
-
+			$lastSearch['facet.fields'] = $result->facet_counts->facet_fields;
+						
 		}
-
+		
+		return $this->getEntries($lastSearch, $this->conf['facetsToShow']);
+		
 	}
 
+	/**
+	 * Creates an array for a HMENU entry of a facet value. 
+	 * 
+	 * @param string $facetField the facet index name
+	 * @param string $value facet field's value
+	 * @param integer $valueCount number of hits of the passed facet field's value
+	 * @param array $lastSearch
+	 * 
+	 * @return multitype:number string 
+	 */
 	protected function renderMenuEntry($facetField, $value, $valueCount, $lastSearch) {
 
 		$entryArray = array();
@@ -296,8 +344,6 @@ class tx_dlf_facets extends tx_dlf_plugin {
 			foreach ($lastSearch['fq'] as $fqPart) {
 
 				$facetSelection = explode(':', $fqPart, 2);
-
-				// t3lib_div::devLog('[renderMenuEntry]   fqPart'.tx_dlf_helper::array_toString($facetSelection), 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
 
 				if (count($facetSelection) == 2) {
 
@@ -359,6 +405,7 @@ class tx_dlf_facets extends tx_dlf_plugin {
 		return $entryArray;
 
 	}
+	
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/facets/class.tx_dlf_facets.php'])	{

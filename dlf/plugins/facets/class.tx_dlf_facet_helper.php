@@ -23,7 +23,7 @@
 ***************************************************************/
 
 /**
- * Indexing class 'tx_dlf_facet_helper' for the 'dlf' extension.
+ * Helper class 'tx_dlf_facet_helper' for the 'dlf' extension.
  *
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2012, Zeutschel GmbH
@@ -34,7 +34,7 @@
 class tx_dlf_facet_helper {
 
 	/**
-	 * Array of facets
+	 * Array of facets keyed by the configuration page's UID 
 	 * @see loadIndexConf()
 	 *
 	 * @var array
@@ -42,6 +42,14 @@ class tx_dlf_facet_helper {
 	 */
 	protected static $facets = array ();
 
+	/**
+	 * Returns true, if the first parameter ends with the second parameter; false otherwise.
+	 * 
+	 * @param string $haystack
+	 * @param string $needle
+	 * 
+	 * @return boolean true, if the first parameter ends with the second parameter; false otherwise. 
+	 */
 	protected static function endsWith($haystack, $needle) {
 
 		$length = strlen($needle);
@@ -58,6 +66,14 @@ class tx_dlf_facet_helper {
 
 	}
 
+	/**
+	 * Returns facet metadata index names for the passed
+	 * configuration page.
+	 * 
+	 * @param integer $pid  the configuration page's UID
+	 * 
+	 * @return array of facet index names
+	 */
 	public static function getFacets($pid) {
 
 		if (!array_key_exists($pid, self::$facets)) {
@@ -73,13 +89,15 @@ class tx_dlf_facet_helper {
 	}
 
 	/**
-	 * Load indexing configuration for facets.
+	 * Load indexing configuration for facets into the static 
+	 * $facets array. All metadata index names are adequately
+	 * boxed with the succeeding '_faceting' string.
 	 *
-	 * @access	protected
+	 * @access protected
 	 *
-	 * @param	integer		$pid: The configuration page's UID
+	 * @param integer $pid  the configuration page's UID
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	protected static function loadFacets($pid) {
 
@@ -105,41 +123,66 @@ class tx_dlf_facet_helper {
 
 	}
 
+	/**
+	 * Translates the passed facet index name into its 
+	 * human-readable translation.
+	 * 
+	 * @param string $facetField the facet index name 
+	 * @param integer $pid the configuration page's UID
+	 * 
+	 * @return string human-readable translation of passed facet field
+	 */
 	public static function translateFacetField($facetField, $pid) {
 
 		return tx_dlf_helper::translate(preg_replace('{_faceting$}', '', $facetField), 'tx_dlf_metadata', $pid);
 
 	}
 
+	/**
+	 * Translates the passed facet field's value into its 
+	 * human-readable translation.
+	 * 
+	 * @param string $facetField the facet index name
+	 * @param string $value facet field's value
+	 * @param integer $pid the configuration page's UID
+	 * 
+	 * @return string human-readable translation of passed facet field's value
+	 */
 	public static function translateFacetValue($facetField, $value, $pid) {
-		/*
-		 * following value translations are kept from class tx_dlf_metadata.
-		* TODO: discuss central utlility function to render index values
-		*/
+		
+		if (empty($facetField) || empty($value)) {
+			
+			return '';
+			
+		}
+		
 		$result = $value;
-
+		
+		$index_name = preg_replace('{_faceting$}', '', $facetField);
+		
+		/*
+		 * the following shares code with class tx_dlf_metadata.
+		 * TODO: discuss central utlility function to render index *values*
+		 */
+		
 		// Translate name of holding library.
-		if ($index_name == 'owner' && !empty($value)) {
+		if ($index_name == 'owner') {
 
-			$result = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $pid));
+			$result = tx_dlf_helper::translate($value, 'tx_dlf_libraries', $pid);
 
 			// Translate document type.
-		} elseif ($index_name == 'type' && !empty($value)) {
+		} elseif ($index_name == 'type') {
 
-			$result = $this->pi_getLL($value, tx_dlf_helper::translate($value, 'tx_dlf_structures', $pid), FALSE);
+			$result = tx_dlf_helper::translate($value, 'tx_dlf_structures', $pid);
 
 			// Translate ISO 639 language code.
-		} elseif ($index_name == 'language' && !empty($value)) {
+		} elseif ($index_name == 'language') {
 
-			$result = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
-
-		} elseif (!empty($value)) {
-
-			$result = htmlspecialchars($value);
+			$result = tx_dlf_helper::getLanguageName($value);
 
 		}
-
-		return $result;
+		
+		return htmlspecialchars($result);
 
 	}
 
