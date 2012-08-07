@@ -286,7 +286,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			}
 
 			// Prepare document's metadata.
-			$metadata = json_decode($resArray['metadata'], TRUE);
+			$metadata = unserialize($resArray['metadata']);
 
 			if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
 
@@ -315,7 +315,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			}
 
 			// Prepare document's metadata for sorting.
-			$sorting = json_decode($resArray['metadata_sorting'], TRUE);
+			$sorting = unserialize($resArray['metadata_sorting']);
 
 			if (!empty($sorting['type']) && t3lib_div::testInt($sorting['type'])) {
 
