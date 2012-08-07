@@ -282,7 +282,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		foreach ($this->sortables as $index_name => $label) {
 
-			$sorting .= '<option value="'.$index_name.'"'.($this->piVars['order'] == $index_name ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
+			$sorting .= '<option value="'.$index_name.'"'.(($this->piVars['order'] == $index_name) ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
 
 		}
 
@@ -467,9 +467,6 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			// Reset pointer.
 			$this->piVars['pointer'] = 0;
-
-			// Unset plugin variable.
-			unset ($this->piVars['order']);
 
 		}
 
