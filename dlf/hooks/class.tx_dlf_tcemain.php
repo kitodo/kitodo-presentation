@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,13 +28,13 @@
 
 /**
  * Hooks and helper for the 't3lib_TCEmain' library.
- *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- */
+*
+* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+*/
 class tx_dlf_tcemain {
 
 	/**
@@ -92,7 +92,7 @@ class tx_dlf_tcemain {
 
 					break;
 
-				// Field post-processing for tables "tx_dlf_collections", "tx_dlf_libraries", "tx_dlf_metadata" and "tx_dlf_structures".
+					// Field post-processing for tables "tx_dlf_collections", "tx_dlf_libraries", "tx_dlf_metadata" and "tx_dlf_structures".
 				case 'tx_dlf_collections':
 				case 'tx_dlf_libraries':
 				case 'tx_dlf_metadata':
@@ -114,17 +114,17 @@ class tx_dlf_tcemain {
 
 					break;
 
-				// Field post-processing for table "tx_dlf_solrcores".
+					// Field post-processing for table "tx_dlf_solrcores".
 				case 'tx_dlf_solrcores':
 
 					// Get number of existing cores.
 					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'*',
-						'tx_dlf_solrcores',
-						'',
-						'',
-						'',
-						''
+					'*',
+					'tx_dlf_solrcores',
+					'',
+					'',
+					'',
+					''
 					);
 
 					// Get first unused core number.
@@ -155,10 +155,10 @@ class tx_dlf_tcemain {
 					$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=.&dataDir=dlfCore'.$coreNumber;
 
 					$context = stream_context_create(array (
-						'http' => array (
-							'method' => 'GET',
-							'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-						)
+							'http' => array (
+									'method' => 'GET',
+									'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
+							)
 					));
 
 					$response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
@@ -206,12 +206,12 @@ class tx_dlf_tcemain {
 
 							// Get current index name.
 							$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								$table.'.index_name AS index_name',
-								$table,
-								$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
-								'',
-								'',
-								'1'
+									$table.'.index_name AS index_name',
+									$table,
+									$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+									'',
+									'',
+									'1'
 							);
 
 							if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -264,12 +264,12 @@ class tx_dlf_tcemain {
 
 						// Get Solr core.
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-							'tx_dlf_solrcores.uid',
-							'tx_dlf_solrcores,tx_dlf_documents',
-							'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-							'',
-							'',
-							'1'
+								'tx_dlf_solrcores.uid',
+								'tx_dlf_solrcores,tx_dlf_documents',
+								'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+								'',
+								'',
+								'1'
 						);
 
 						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -336,12 +336,12 @@ class tx_dlf_tcemain {
 
 			// Get Solr core.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_solrcores.uid',
-				'tx_dlf_solrcores,tx_dlf_documents',
-				'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-				'',
-				'',
-				'1'
+					'tx_dlf_solrcores.uid',
+					'tx_dlf_solrcores,tx_dlf_documents',
+					'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+					'',
+					'',
+					'1'
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -24,18 +24,18 @@
 // TODO: Clean up and reduce code duplication. Consider switching to Solarium.
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
- */
+*/
 
 /**
  * Solr class 'tx_dlf_solr' for the 'dlf' extension.
- *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author	Henrik Lochmann <dev@mentalmotive.com>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- */
+*
+* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+* @author	Henrik Lochmann <dev@mentalmotive.com>
+* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+*/
 class tx_dlf_solr {
 
 	/**
@@ -185,13 +185,14 @@ class tx_dlf_solr {
 	 *
 	 * @access	protected
 	 */
-	protected function __construct() {}
+	protected function __construct() {
+	}
 
 }
 
 /* No xclasses for static classes!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php']);
+ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php'])	{
+include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php']);
 }
 */
 

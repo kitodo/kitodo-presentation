@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,14 +28,14 @@
 
 /**
  * Base class 'tx_dlf_plugin' for the 'dlf' extension.
- *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- * @abstract
- */
+*
+* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+* @abstract
+*/
 abstract class tx_dlf_plugin extends tslib_pibase {
 
 	public $extKey = 'dlf';
@@ -170,12 +170,12 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			// Get UID of document with given record identifier.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_documents.uid',
-				'tx_dlf_documents',
-				'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
-				'',
-				'',
-				'1'
+					'tx_dlf_documents.uid',
+					'tx_dlf_documents',
+					'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
+					'',
+					'',
+					'1'
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
@@ -304,8 +304,8 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 }
 
 /* No xclasses for abstract classes!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php']);
+ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php'])	{
+include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php']);
 }
 */
 

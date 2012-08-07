@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,13 +28,13 @@
 
 /**
  * Hooks and helper for the 't3lib_TCEforms' library.
- *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- */
+*
+* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+*/
 class tx_dlf_tceforms {
 
 	/**
@@ -68,12 +68,12 @@ class tx_dlf_tceforms {
 			if ($pages > 0) {
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'label,uid',
-					'tx_dlf_collections',
-					'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_collections'),
-					'',
-					'label',
-					''
+						'label,uid',
+						'tx_dlf_collections',
+						'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_collections'),
+						'',
+						'label',
+						''
 				);
 
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -123,12 +123,12 @@ class tx_dlf_tceforms {
 			if ($pages > 0) {
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'label,uid',
-					'tx_dlf_libraries',
-					'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_libraries'),
-					'',
-					'label',
-					''
+						'label,uid',
+						'tx_dlf_libraries',
+						'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_libraries'),
+						'',
+						'label',
+						''
 				);
 
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -178,12 +178,12 @@ class tx_dlf_tceforms {
 			if ($pages > 0) {
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'label,uid',
-					'tx_dlf_solrcores',
-					'pid IN ('.intval($pages).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-					'',
-					'label',
-					''
+						'label,uid',
+						'tx_dlf_solrcores',
+						'pid IN ('.intval($pages).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+						'',
+						'label',
+						''
 				);
 
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
