@@ -186,12 +186,12 @@ p.intro {
 <xsl:template name="quicklinks">
 		<ul class="quicklinks">
 			<li><a href="?verb=Identify">Identify</a> | </li>
-			<li><a href="?verb=ListIdentifiers&amp;metadataPrefix=oai_dc">ListIdentifiers (OAI_DC)</a></li>
-			<li><a href="?verb=ListIdentifiers&amp;metadataPrefix=mets">ListIdentifiers (METS)</a></li>
+			<li><a href="?verb=ListIdentifiers&amp;metadataPrefix=oai_dc">ListIdentifiers (OAI_DC)</a> | </li>
+			<li><a href="?verb=ListIdentifiers&amp;metadataPrefix=mets">ListIdentifiers (METS)</a> | </li>
 			<li><a href="?verb=ListMetadataFormats">ListMetadataFormats</a> | </li>
 			<li><a href="?verb=ListRecords&amp;metadataPrefix=oai_dc">ListRecords (OAI_DC)</a> | </li>
 			<li><a href="?verb=ListRecords&amp;metadataPrefix=mets">ListRecords (METS)</a> | </li>
-			<li><a href="?verb=ListSets">ListSets</a> | </li>
+			<li><a href="?verb=ListSets">ListSets</a></li>
 		</ul>
 </xsl:template>
 
