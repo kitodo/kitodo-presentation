@@ -238,7 +238,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 				do {
 
-					$_value = array_shift($_metadata[$_index_name]);
+					$_value = @array_shift($_metadata[$_index_name]);
 
 					if ($_index_name == 'title') {
 

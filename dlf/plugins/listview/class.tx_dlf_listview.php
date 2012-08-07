@@ -160,6 +160,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$subpart = '';
 
+		$element = $this->list->elements[$number];
+
 		foreach ($this->metadata as $_index_name => $_metaConf) {
 
 			$value = '';
@@ -168,7 +170,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			do {
 
-				$_value = array_shift($this->list->elements[$number]['metadata'][$_index_name]);
+				$_value = @array_shift($element['metadata'][$_index_name]);
 
 				// Link title to pageview.
 				if ($_index_name == 'title') {
@@ -176,7 +178,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Get title of parent document if needed.
 					if (empty($_value) && $this->conf['getTitle']) {
 
-						$_value = '['.tx_dlf_document::getTitle($this->list->elements[$number]['uid'], TRUE).']';
+						$_value = '['.tx_dlf_document::getTitle($element['uid'], TRUE).']';
 
 					}
 
@@ -187,7 +189,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 					}
 
-					$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $this->list->elements[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+					$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $element['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
 				// Translate name of holding library.
 				} elseif ($_index_name == 'owner' && !empty($_value)) {
@@ -218,7 +220,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				}
 
-			} while (count($this->list->elements[$number]['metadata'][$_index_name]));
+			} while (count($element['metadata'][$_index_name]));
 
 			if (!empty($value)) {
 
@@ -232,7 +234,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
-		if (!empty($this->list->elements[$number]['subparts'])) {
+		if (!empty($element['subparts'])) {
 
 			$subpart = $this->getSubEntries($number, $template);
 
@@ -316,7 +318,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				do {
 
-					$_value = array_shift($subpart['metadata'][$_index_name]);
+					$_value = @array_shift($subpart['metadata'][$_index_name]);
 
 					// Link title to pageview.
 					if ($_index_name == 'title') {
@@ -497,6 +499,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
+		// Load metadata configuration.
 		$this->loadConfig();
 
 		for ($i = $this->piVars['pointer'] * $this->conf['limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i < $j; $i++) {
