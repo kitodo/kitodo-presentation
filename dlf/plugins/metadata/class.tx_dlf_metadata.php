@@ -130,7 +130,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 			$_data = $this->doc->getTitleData($this->conf['pages']);
 
-			$_data['_id'] = '';
+			$_data['_id'] = $this->doc->toplevelId;
 
 			$metadata[] = $_data;
 

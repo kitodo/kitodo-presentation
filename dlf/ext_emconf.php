@@ -23,36 +23,36 @@
 ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
-		'title' => 'Goobi.Presentation',
-		'description' => 'Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Goobi Digitization Suite.',
-		'category' => 'fe',
-		'author' => 'Sebastian Meyer',
-		'author_email' => 'sebastian.meyer@slub-dresden.de',
-		'author_company' => '<br /><a href="http://www.slub-dresden.de/en/" target="_blank">Saxon State and University Library Dresden</a><br /><a href="https://launchpad.net/goobi" target="_blank">The Goobi Community</a>',
-		'shy' => '',
-		'priority' => '',
-		'module' => '',
-		'state' => 'stable',
-		'internal' => '',
-		'uploadfolder' => TRUE,
-		'createDirs' => '',
-		'modify_tables' => '',
-		'clearCacheOnLoad' => FALSE,
-		'lockType' => '',
-		'version' => '1.1.2',
-		'constraints' => array(
-				'depends' => array(
-						'php' => '5.3.0-',
-						'typo3' => '4.5.0-',
-				),
-				'conflicts' => array(
-				),
-				'suggests' => array(
-						'realurl' => '',
-						't3jquery' => '',
-				),
+	'title' => 'Goobi.Presentation',
+	'description' => 'Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Goobi Digitization Suite.',
+	'category' => 'fe',
+	'author' => 'Sebastian Meyer',
+	'author_email' => 'sebastian.meyer@slub-dresden.de',
+	'author_company' => '<br /><a href="http://www.slub-dresden.de/en/" target="_blank">Saxon State and University Library Dresden</a><br /><a href="https://launchpad.net/goobi" target="_blank">The Goobi Community</a>',
+	'shy' => '',
+	'priority' => '',
+	'module' => '',
+	'state' => 'stable',
+	'internal' => '',
+	'uploadfolder' => TRUE,
+	'createDirs' => '',
+	'modify_tables' => '',
+	'clearCacheOnLoad' => FALSE,
+	'lockType' => '',
+	'version' => '1.1.2',
+	'constraints' => array(
+		'depends' => array(
+			'php' => '5.3.0-',
+			'typo3' => '4.5.0-',
 		),
-		'_md5_values_when_last_written' => '',
+		'conflicts' => array(
+		),
+		'suggests' => array(
+			'realurl' => '',
+			't3jquery' => '',
+		),
+	),
+	'_md5_values_when_last_written' => '',
 );
 
 ?>
