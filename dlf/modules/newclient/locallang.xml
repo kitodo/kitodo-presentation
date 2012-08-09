@@ -44,6 +44,7 @@
 			<label index="flash.solrcoreNotAdded">No Solr core created!</label>
 			<label index="flash.solrcoreNotAddedMsg">While creating a new Solr core an error occured. The record should be checked in the list module!</label>
 			<label index="solrcore">Solr Core</label>
+			<!-- structural data -->
 			<label index="additional">Additional</label>
 			<label index="address">Address</label>
 			<label index="annotation">Annotation</label>
@@ -90,6 +91,7 @@
 			<label index="title_page">Titlepage</label>
 			<label index="verse">Verse</label>
 			<label index="volume">Volume</label>
+			<!-- metadata -->
 			<label index="prod_id">Goobi Process Number</label>
 			<label index="record_id">OAI Identifier</label>
 			<label index="opac_id">OPAC Identifier</label>
@@ -145,6 +147,7 @@
 			<label index="flash.solrcoreNotAdded">Kein Solr Kern angelegt!</label>
 			<label index="flash.solrcoreNotAddedMsg">Beim Anlegen eines Solr Kerns ist ein Fehler aufgetreten. Der Solr Kern wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!</label>
 			<label index="solrcore">Solr Kern</label>
+			<!-- Strukturdaten -->
 			<label index="additional">Beilage</label>
 			<label index="address">Anrede</label>
 			<label index="annotation">Annotation</label>
@@ -191,6 +194,7 @@
 			<label index="title_page">Titelseite</label>
 			<label index="verse">Vers</label>
 			<label index="volume">Band</label>
+			<!-- Metadaten -->
 			<label index="prod_id">Goobi-Vorgangsnummer</label>
 			<label index="record_id">OAI-Identifier</label>
 			<label index="opac_id">OPAC-Identifier</label>

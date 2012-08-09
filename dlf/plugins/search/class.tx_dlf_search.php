@@ -30,6 +30,7 @@
  * Plugin 'DLF: Search' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -38,6 +39,74 @@
 class tx_dlf_search extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
+
+	/**
+	 * Adds the JS files necessary for autocompletion
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		TRUE on success or FALSE on error
+	 */
+	protected function addAutocompleteJS() {
+
+		// Ensure extension "t3jquery" is available.
+		if (t3lib_extMgm::isLoaded('t3jquery')) {
+
+			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+
+		}
+
+		// Is "t3jquery" loaded and the custom library created?
+		if (T3JQUERY === TRUE) {
+
+			tx_t3jquery::addJqJS();
+
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
+
+			return TRUE;
+
+		} else {
+
+			// No autocompletion available!
+			return FALSE;
+
+		}
+
+	}
+
+	/**
+	 * Adds the encrypted Solr core name to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @param	integer		$core: UID of the core
+	 *
+	 * @return	string		HTML input fields with encrypted core name and hash
+	 */
+	protected function addEncryptedCoreName($core) {
+
+		// Get core name.
+		$name = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+
+		// Encrypt core name.
+		if (!empty($name)) {
+
+			$name = tx_dlf_helper::encrypt($name);
+
+		}
+
+		// Add encrypted fields to search form.
+		if (is_array($name)) {
+
+			return '<input type="hidden" name="'.$this->prefixId.'[encrypted]" value="'.$name['encrypted'].'" /><input type="hidden" name="'.$this->prefixId.'[hashed]" value="'.$name['hash'].'" />';
+
+		} else {
+
+			return '';
+
+		}
+
+	}
 
 	/**
 	 * The main method of the PlugIn
@@ -66,6 +135,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 		}
 
 		if (empty($this->piVars['query'])) {
+
+			// Add javascript for autocompletion if available.
+			$autocomplete = $this->addAutocompleteJS();
 
 			// Load template file.
 			if (!empty($this->conf['templateFile'])) {
@@ -96,7 +168,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => htmlspecialchars($lastQuery),
+				'###ADDITIONAL_INPUTS###' => '',
 			);
+
+			// Encrypt Solr core name and add as hidden input field to the search form.
+			if ($autocomplete) {
+
+				$markerArray['###ADDITIONAL_INPUTS###'] = $this->addEncryptedCoreName($this->conf['solrcore']);
+
+			}
 
 			// Display search form.
 			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
@@ -127,21 +207,76 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$check = array ();
 
+			// Get metadata configuration.
+			if ($numHits) {
+
+				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
+					'tx_dlf_metadata',
+					'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+					'',
+					'tx_dlf_metadata.sorting ASC',
+					''
+				);
+
+				$metadata = array ();
+
+				$sorting = array ();
+
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+
+					if ($resArray['is_listed']) {
+
+						$metadata[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
+
+					}
+
+					if ($resArray['is_sortable']) {
+
+						$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
+
+					}
+
+				}
+
+			}
+
 			// Process results.
 			foreach ($query->response->docs as $doc) {
 
+				// Prepate document's metadata.
+				$docMeta = array ();
+
+				foreach ($metadata as $index_name => $solr_name) {
+
+					if (!empty($doc->$solr_name)) {
+
+						$docMeta[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name : array ($doc->$solr_name));
+
+					}
+
+				}
+
+				// Prepate document's metadata for sorting.
+				$docSorting = array ();
+
+				foreach ($sorting as $index_name => $solr_name) {
+
+					if (!empty($doc->$solr_name)) {
+
+						$docSorting[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name[0] : $doc->$solr_name);
+
+					}
+
+				}
 				// Split toplevel documents from subparts.
 				if ($doc->toplevel == 1) {
 
 					$toplevel[$doc->uid] = array (
 						'uid' => $doc->uid,
 						'page' => $doc->page,
-						'title' => (is_array($doc->title) ? $doc->title : array ($doc->title)),
-						'volume' => (is_array($doc->volume) ? $doc->volume : array ($doc->volume)),
-						'author' => (is_array($doc->author) ? $doc->author : array ($doc->author)),
-						'year' => (is_array($doc->year) ? $doc->year : array ($doc->year)),
-						'place' => (is_array($doc->place) ? $doc->place : array ($doc->place)),
-						'type' => (is_array($doc->type) ? $doc->type : array ($doc->type)),
+						'metadata' => $docMeta,
+						'sorting' => $docSorting,
 						'subparts' => (!empty($toplevel[$doc->uid]['subparts']) ? $toplevel[$doc->uid]['subparts'] : array ())
 					);
 
@@ -150,12 +285,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$toplevel[$doc->uid]['subparts'][] = array (
 						'uid' => $doc->uid,
 						'page' => $doc->page,
-						'title' => (is_array($doc->title) ? $doc->title : array ($doc->title)),
-						'volume' => (is_array($doc->volume) ? $doc->volume : array ($doc->volume)),
-						'author' => (is_array($doc->author) ? $doc->author : array ($doc->author)),
-						'year' => (is_array($doc->year) ? $doc->year : array ($doc->year)),
-						'place' => (is_array($doc->place) ? $doc->place : array ($doc->place)),
-						'type' => (is_array($doc->type) ? $doc->type : array ($doc->type))
+						'metadata' => $docMeta,
+						'sorting' => $docSorting
 					);
 
 					if (!in_array($doc->uid, $check)) {
@@ -175,7 +306,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					// Get information for toplevel document.
 					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.place AS place,tx_dlf_documents.year AS year,tx_dlf_documents.structure AS type',
+						'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting',
 						'tx_dlf_documents',
 						'tx_dlf_documents.uid='.intval($_check).tx_dlf_helper::whereClause('tx_dlf_documents'),
 						'',
@@ -188,15 +319,61 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 						$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
+						// Prepare document's metadata.
+						$metadata = unserialize($resArray['metadata']);
+
+						if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
+
+							$metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->conf['pages']);
+
+						}
+
+						if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
+
+							$metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->conf['pages']);
+
+						}
+
+						if (!empty($metadata['collection']) && is_array($metadata['collection'])) {
+
+							foreach ($metadata['collection'] as $i => $collection) {
+
+								if (t3lib_div::testInt($collection)) {
+
+									$metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->conf['pages']);
+
+								}
+
+							}
+
+						}
+
+						// Prepare document's metadata for sorting.
+						$sorting = unserialize($resArray['metadata_sorting']);
+
+						if (!empty($sorting['type']) && t3lib_div::testInt($sorting['type'])) {
+
+							$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+
+						}
+
+						if (!empty($sorting['owner']) && t3lib_div::testInt($sorting['owner'])) {
+
+							$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+
+						}
+
+						if (!empty($sorting['collection']) && t3lib_div::testInt($sorting['collection'])) {
+
+							$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
+
+						}
+
 						$toplevel[$_check] = array (
 							'uid' => $resArray['uid'],
 							'page' => 1,
-							'title' => array ($resArray['title']),
-							'volume' => array ($resArray['volume']),
-							'author' => array ($resArray['author']),
-							'year' => array ($resArray['year']),
-							'place' => array ($resArray['place']),
-							'type' => array (tx_dlf_helper::getIndexName($resArray['type'], 'tx_dlf_structures', $this->conf['pages'])),
+							'metadata' => $metadata,
+							'sorting' => $sorting,
 							'subparts' => $toplevel[$_check]['subparts']
 						);
 

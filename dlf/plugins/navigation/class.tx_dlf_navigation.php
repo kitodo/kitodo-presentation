@@ -56,9 +56,9 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		// Quit without doing anything if required variables are not set.
 		if ($this->doc === NULL || $this->doc->numPages < 1) {
 
+			// Quit without doing anything if required variables are not set.
 			return $content;
 
 		} else {
@@ -122,7 +122,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		foreach ($this->piVars as $piVar => $value) {
 
-			if ($piVar != 'page') {
+			if ($piVar != 'page' && !empty($value)) {
 
 				$markerArray['###PAGESELECT###'] .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
 
@@ -134,7 +134,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		for ($i = 1; $i <= $this->doc->numPages; $i++) {
 
-			$markerArray['###PAGESELECT###'] .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalPages[$i]['label'] ? ' - '.htmlspecialchars($this->doc->physicalPages[$i]['label']) : '').'</option>';
+			$markerArray['###PAGESELECT###'] .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label'] ? ' - '.htmlspecialchars($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label']) : '').'</option>';
 
 		}
 
@@ -211,15 +211,23 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 			$conf['useCacheHash'] = 1;
 
-			$conf['parameter'] = $GLOBALS['TSFE']->id.' - '.($class != '' ? $class : '-').' '.$label;
+			$conf['parameter'] = $GLOBALS['TSFE']->id;
 
 			$conf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE);
+
+			$conf['title'] = $label;
+
+			if (!empty($class)) {
+
+				$conf['ATagParams'] = 'class="'.$class.'"';
+
+			}
 
 			return $this->cObj->typoLink($label, $conf);
 
 		} else {
 
-			if ($class != '') {
+			if (!empty($class)) {
 
 				$class = ' class="'.$class.'"';
 

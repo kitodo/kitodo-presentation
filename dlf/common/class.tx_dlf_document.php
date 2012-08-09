@@ -47,6 +47,14 @@ class tx_dlf_document {
 	protected $asXML = '';
 
 	/**
+	 * This holds the PID for the configuration
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $cPid = 0;
+
+	/**
 	 * This holds the XML file's dmdSec parts with their IDs as array key
 	 *
 	 * @var	array
@@ -151,14 +159,6 @@ class tx_dlf_document {
 	protected $mets;
 
 	/**
-	 * This holds the PID for the metadata definitions
-	 *
-	 * @var	integer
-	 * @access protected
-	 */
-	protected $mPid = 0;
-
-	/**
 	 * The holds the total number of pages
 	 *
 	 * @var integer
@@ -181,6 +181,14 @@ class tx_dlf_document {
 	 * @access protected
 	 */
 	protected $physicalPages = array ();
+
+	/**
+	 * This holds the physical pages' metadata
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $physicalPagesInfo = array ();
 
 	/**
 	 * Are the physical pages loaded?
@@ -224,12 +232,21 @@ class tx_dlf_document {
 	protected static $registry = array ();
 
 	/**
-	 * This holds the PID for the structure definitions
+	 * This holds the smLinks between logical and physical structMap
 	 *
-	 * @var	integer
+	 * @var array
 	 * @access protected
 	 */
-	protected $sPid = 0;
+	protected $smLinks = array ('l2p' => array (), 'p2l' => array ());
+
+	/**
+	 * Are the smLinks loaded?
+	 * @see $smLinks
+	 *
+	 * @var boolean
+	 * @access protected
+	 */
+	protected $smLinksLoaded = FALSE;
 
 	/**
 	 * This holds the logical structure
@@ -247,6 +264,14 @@ class tx_dlf_document {
 	 * @access protected
 	 */
 	protected $tableOfContentsLoaded = FALSE;
+
+	/**
+	 * This holds the toplevel structure's @ID
+	 *
+	 * @var	string
+	 * @access protected
+	 */
+	protected $toplevelId = '';
 
 	/**
 	 * This holds the UID or the URL of the document
@@ -387,6 +412,98 @@ class tx_dlf_document {
 	/**
 	 * This gets details about a logical structure element
 	 *
+	 * @access	protected
+	 *
+	 * @param	SimpleXMLElement		$structure: The logical structure node
+	 * @param	boolean		$recursive: Whether to include the child elements
+	 *
+	 * @return	array		Array of the element's id, label, type and physical page indexes/mptr link
+	 */
+	protected function getLogicalStructureInfo(SimpleXMLElement $structure, $recursive = FALSE) {
+
+		// Get attributes.
+		foreach ($structure->attributes() as $attribute => $value) {
+
+			$attributes[$attribute] = (string) $value;
+
+		}
+
+		// Extract identity information.
+		$details = array ();
+
+		$details['id'] = $attributes['ID'];
+
+		$details['dmdId'] = (isset($attributes['DMDID']) ?  $attributes['DMDID'] : '');
+
+		$details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
+
+		$details['volume'] = '';
+
+		if (empty($details['label']) && $details['id'] == $this->_getToplevelId()) {
+
+			$metadata = $this->getMetadata($details['id']);
+
+			if (!empty($metadata['volume'][0])) {
+
+				$details['volume'] = $metadata['volume'][0];
+
+			}
+
+		}
+
+		$details['pagination'] = '';
+
+		$details['type'] = $attributes['TYPE'];
+
+		// Get the physical page or external file this structure element is pointing at.
+		$details['points'] = '';
+
+		// Is there a mptr node?
+		if (!empty($structure->children('http://www.loc.gov/METS/')->mptr)) {
+
+			// Yes. Get the file reference.
+			$details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+
+		// Are there any physical pages and is this logical unit linked to at least one of them?
+		} elseif ($this->_getPhysicalPages() && array_key_exists($details['id'], $this->smLinks['l2p'])) {
+
+			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
+
+			// Get page number of the first page related to this structure element.
+			$details['pagination'] = $this->physicalPagesInfo[$id]['label'];
+
+		// Is this the toplevel structure?
+		} elseif ($details['id'] == $this->_getToplevelId()) {
+
+			// Yes. Point to itself.
+			$details['points'] = 1;
+
+		}
+
+		// Keep for later usage.
+		$this->logicalUnits[$details['id']] = $details;
+
+		// Walk the structure recursively? And are there any children of the current element?
+		if ($recursive && !empty($structure->children('http://www.loc.gov/METS/')->div)) {
+
+			$details['children'] = array ();
+
+			foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
+
+				// Repeat for all children.
+				$details['children'][] = $this->getLogicalStructureInfo($child, $recursive);
+
+			}
+
+		}
+
+		return $details;
+
+	}
+
+	/**
+	 * This gets details about a logical structure element
+	 *
 	 * @access	public
 	 *
 	 * @param	string		$id: The @ID attribute of the logical structure node
@@ -394,109 +511,47 @@ class tx_dlf_document {
 	 *
 	 * @return	array		Array of the element's id, label, type and physical page indexes/mptr link
 	 */
-	public function getLogicalStructure($id, $recursive = FALSE) {
+	public function getLogicalStructure($id = '', $recursive = FALSE) {
 
 		// Is the requested logical unit already loaded?
-		if (!$recursive && !empty($this->logicalUnits[$id])) {
+		if (!$recursive && !empty($id) && !empty($this->logicalUnits[$id])) {
 
 			// Yes. Return it.
 			return $this->logicalUnits[$id];
 
-		} elseif (($_div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]'))) {
+		} elseif (!empty($id)) {
 
-			// Load physical pages.
-			$this->_getPhysicalPages();
+			// Get specified logical unit.
+			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
 
-			$_struct = $_div[0];
+		} elseif ($recursive) {
 
-			$this->registerNamespaces($_struct);
+			// Get all logical units at top level.
+			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
 
-			// Extract identity information.
-			$_details = array ();
+		}
 
-			$_details['id'] = (string) $_struct['ID'];
+		if (!empty($div)) {
 
-			$_details['dmdId'] = (isset($_struct['DMDID']) ? (string) $_struct['DMDID'] : '');
+			// Load smLinks.
+			$this->_getSmLinks();
 
-			$_details['label'] = (isset($_struct['LABEL']) ? (string) $_struct['LABEL'] : '');
+			foreach ($div as $structure) {
 
-			$_details['volume'] = '';
-
-			if (empty($_details['label'])) {
-
-				$_metadata = $this->getMetadata($id);
-
-				if (!empty($_metadata['volume'][0])) {
-
-					$_details['volume'] = $_metadata['volume'][0];
-
-				}
+				// Get logical unit's details.
+				$this->tableOfContents[] = $this->getLogicalStructureInfo($structure, $recursive);
 
 			}
 
-			$_details['pagination'] = '';
+		}
 
-			$_details['type'] = (string) $_struct['TYPE'];
+		if (!empty($this->logicalUnits[$id])) {
 
-			// Get the physical page or external file this structure element is pointing at.
-			$_details['points'] = '';
-
-			// Is there a mptr node?
-			if (($_mptr = $_struct->xpath('./mets:mptr[@LOCTYPE="URL"]'))) {
-
-				// Yes. Get the file reference.
-				$_details['points'] = (string) $_mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-
-			// Are there any physical pages?
-			} elseif ($this->physicalPages) {
-
-				// Yes. Get first physical page related to this structure element.
-				if (($_smLink = $this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.(string) $_struct['ID'].'"]'))) {
-
-					$_details['points'] = tx_dlf_helper::array_search_recursive($_smLink[0]->attributes('http://www.w3.org/1999/xlink')->to, $this->physicalPages);
-
-					// Check if smLink points to the "physSequence" element (in which case it should point to the first image).
-					$_details['points'] = max(intval($_details['points']), 1);
-
-					// Get page number of the first page related to this structure element.
-					$_details['pagination'] = $this->physicalPages[$_details['points']]['label'];
-
-				} else {
-
-					trigger_error('No physical element related to logical element with @ID '.(string) $_struct['ID'], E_USER_WARNING);
-
-				}
-
-			// Is this the toplevel structure?
-			} elseif ($_details['id'] == $this->getToplevelId()) {
-
-				// Yes. Point to itself.
-				$_details['points'] = 1;
-
-			}
-
-			// Keep for later usage.
-			$this->logicalUnits[$id] = $_details;
-
-			// Walk the structure recursively? And are there any children of the current element?
-			if ($recursive && ($_children = $_struct->xpath('./mets:div/@ID'))) {
-
-				$_details['children'] = array ();
-
-				foreach ($_children as $_child) {
-
-					// Repeat for all children.
-					$_details['children'][] = $this->getLogicalStructure((string) $_child, TRUE);
-
-				}
-
-			}
-
-			return $_details;
+			return $this->logicalUnits[$id];
 
 		} else {
 
-			trigger_error('There is no logical structure node with @ID '.$id, E_USER_WARNING);
+//			trigger_error('There is no logical structure node with @ID '.$id, E_USER_WARNING);
 
 			return array ();
 
@@ -510,32 +565,32 @@ class tx_dlf_document {
 	 * @access	public
 	 *
 	 * @param	string		$id: The @ID attribute of the logical structure node
-	 * @param	integer		$mPid: The PID for the metadata definitions
-	 * 						(defaults to $this->mPid or $this->pid)
+	 * @param	integer		$cPid: The PID for the metadata definitions
+	 * 						(defaults to $this->cPid or $this->pid)
 	 *
 	 * @return	array		The logical structure node's parsed metadata array
 	 */
-	public function getMetadata($id, $mPid = 0) {
+	public function getMetadata($id, $cPid = 0) {
 
-		// Make sure $mPid is a non-negative integer.
-		$mPid = max(intval($mPid), 0);
+		// Make sure $cPid is a non-negative integer.
+		$cPid = max(intval($cPid), 0);
 
-		// If $mPid is not given, try to get it elsewhere.
-		if (!$mPid && ($this->mPid || $this->pid)) {
+		// If $cPid is not given, try to get it elsewhere.
+		if (!$cPid && ($this->cPid || $this->pid)) {
 
 			// Retain current PID.
-			$mPid = ($this->mPid ? $this->mPid : $this->pid);
+			$cPid = ($this->cPid ? $this->cPid : $this->pid);
 
-		} elseif (!$mPid) {
+		} elseif (!$cPid) {
 
-			trigger_error('Invalid PID ('.$mPid.') for metadata definitions', E_USER_WARNING);
+			trigger_error('Invalid PID ('.$cPid.') for metadata definitions', E_USER_WARNING);
 
 			return array ();
 
 		}
 
 		// Get metadata from parsed metadata array if available.
-		if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $mPid) {
+		if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
 
 			return $this->metadataArray[$id];
 
@@ -546,11 +601,8 @@ class tx_dlf_document {
 			'title' => array (),
 			'title_sorting' => array (),
 			'author' => array (),
-			'author_sorting' => array (),
 			'place' => array (),
-			'place_sorting' => array (),
 			'year' => array (),
-			'year_sorting' => array (),
 			'prod_id' => array (),
 			'record_id' => array (),
 			'opac_id' => array (),
@@ -631,7 +683,7 @@ class tx_dlf_document {
 			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value',
 				'tx_dlf_metadata,tx_dlf_formats',
-				'tx_dlf_metadata.pid='.$mPid.' AND ((tx_dlf_metadata.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$_dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.encoded=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata').tx_dlf_helper::whereClause('tx_dlf_formats'),
+				'tx_dlf_metadata.pid='.$cPid.' AND ((tx_dlf_metadata.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$_dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.encoded=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata', TRUE).tx_dlf_helper::whereClause('tx_dlf_formats'),
 				'',
 				'',
 				''
@@ -783,57 +835,18 @@ class tx_dlf_document {
 	 *
 	 * @access	public
 	 *
-	 * @param	integer		$mPid: The PID for the metadata definitions
+	 * @param	integer		$cPid: The PID for the metadata definitions
 	 *
 	 * @return	array		The logical structure node's parsed metadata array
 	 */
-	public function getTitledata($mPid = 0) {
+	public function getTitledata($cPid = 0) {
 
-		$titledata = $this->getMetadata($this->getToplevelId(), $mPid);
+		$titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
 
 		// Set record identifier for METS file.
 		array_unshift($titledata['record_id'], $this->recordid);
 
 		return $titledata;
-
-	}
-
-	/**
-	 * This returns the ID of the toplevel logical structure node
-	 *
-	 * @access	public
-	 *
-	 * @return	string		The logical structure node's ID
-	 */
-	public function getToplevelId() {
-
-		$id = '';
-
-		// Get all logical structure nodes with metadata.
-		if (($_divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
-
-			foreach ($_divs as $_div) {
-
-				$_id = (string) $_div['ID'];
-
-				// Are there physical structure nodes for this logical structure?
-				if ($this->mets->xpath('./mets:structLink/mets:smLink[@xlink:from="'.$_id.'"]')) {
-
-					// Yes. That's what we're looking for.
-					return $_id;
-
-				} elseif (!$id) {
-
-					// No. Remember this anyway, but keep looking for a better one.
-					$id = $_id;
-
-				}
-
-			}
-
-		}
-
-		return $id;
 
 	}
 
@@ -1081,7 +1094,7 @@ class tx_dlf_document {
 		}
 
 		// Set PID for metadata definitions.
-		$this->mPid = $pid;
+		$this->cPid = $pid;
 
 		// Set location if inserting new document.
 		$location = '';
@@ -1134,6 +1147,8 @@ class tx_dlf_document {
 			return FALSE;
 
 		}
+
+		$metadata['type'][0] = $structure;
 
 		// Get UIDs for collections.
 		$collections = array ();
@@ -1218,6 +1233,8 @@ class tx_dlf_document {
 
 		}
 
+		$metadata['collection'] = $collections;
+
 		// Get UID for owner.
 		$owner = 0;
 
@@ -1271,6 +1288,8 @@ class tx_dlf_document {
 
 		}
 
+		$metadata['owner'][0] = $owner;
+
 		// Load table of contents.
 		$this->_getTableOfContents();
 
@@ -1295,13 +1314,15 @@ class tx_dlf_document {
 
 		}
 
-		// Get metadata for lists.
+		// Get metadata for lists and sorting.
 		$listed = array ();
 
+		$sortable = array ();
+
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_metadata.index_name AS index_name',
+			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
 			'tx_dlf_metadata',
-			'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 			'',
 			'',
 			''
@@ -1311,7 +1332,17 @@ class tx_dlf_document {
 
 			if (!empty($metadata[$resArray['index_name']])) {
 
-				$listed[$resArray['index_name']] = $metadata[$resArray['index_name']];
+				if ($resArray['is_listed']) {
+
+					$listed[$resArray['index_name']] = $metadata[$resArray['index_name']];
+
+				}
+
+				if ($resArray['is_sortable']) {
+
+					$sortable[$resArray['index_name']] = $metadata[$resArray['index_name']][0];
+
+				}
 
 			}
 
@@ -1328,19 +1359,17 @@ class tx_dlf_document {
 			'purl' => $metadata['purl'][0],
 			'title' => $metadata['title'][0],
 			'title_sorting' => $metadata['title_sorting'][0],
-			'author' => $metadata['author'][0],
-			'author_sorting' => $metadata['author_sorting'][0],
-			'year' => $metadata['year'][0],
-			'year_sorting' => $metadata['year_sorting'][0],
-			'place' => $metadata['place'][0],
-			'place_sorting' => $metadata['place_sorting'][0],
-			'metadata' => json_encode($listed),
-			'structure' => $structure,
+			'author' => implode('; ', $metadata['author']),
+			'year' => implode('; ', $metadata['year']),
+			'place' => implode('; ', $metadata['place']),
+			'metadata' => serialize($listed),
+			'metadata_sorting' => serialize($sortable),
+			'structure' => $metadata['type'][0],
 			'partof' => $partof,
 			'volume' => $metadata['volume'][0],
 			'volume_sorting' => $metadata['volume_sorting'][0],
-			'collections' => $collections,
-			'owner' => $owner,
+			'collections' => $metadata['collection'],
+			'owner' => $metadata['owner'][0],
 			'solrcore' => $core,
 			'status' => 0,
 		);
@@ -1377,6 +1406,19 @@ class tx_dlf_document {
 		}
 
 		return TRUE;
+
+	}
+
+	/**
+	 * This returns $this->cPid via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	integer		The PID of the metadata definitions
+	 */
+	protected function _getCPid() {
+
+		return $this->cPid;
 
 	}
 
@@ -1461,9 +1503,9 @@ class tx_dlf_document {
 	protected function _getMetadataArray() {
 
 		// Set metadata definitions' PID.
-		$mPid = ($this->mPid ? $this->mPid : $this->pid);
+		$cPid = ($this->cPid ? $this->cPid : $this->pid);
 
-		if (!$mPid) {
+		if (!$cPid) {
 
 			trigger_error('No PID for metadata definitions found', E_USER_ERROR);
 
@@ -1471,21 +1513,21 @@ class tx_dlf_document {
 
 		}
 
-		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $mPid) {
+		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $cPid) {
 
 			// Get all logical structure nodes with metadata
 			if (($_ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
 
 				foreach ($_ids as $_id) {
 
-					$this->metadataArray[(string) $_id] = $this->getMetadata((string) $_id, $mPid);
+					$this->metadataArray[(string) $_id] = $this->getMetadata((string) $_id, $cPid);
 
 				}
 
 			}
 
 			// Set current PID for metadata definitions.
-			$this->metadataArray[0] = $mPid;
+			$this->metadataArray[0] = $cPid;
 
 			$this->metadataArrayLoaded = TRUE;
 
@@ -1505,19 +1547,6 @@ class tx_dlf_document {
 	protected function _getMets() {
 
 		return $this->mets;
-
-	}
-
-	/**
-	 * This returns $this->mPid via __get()
-	 *
-	 * @access	protected
-	 *
-	 * @return	integer		The PID of the metadata definitions
-	 */
-	protected function _getMPid() {
-
-		return $this->mPid;
 
 	}
 
@@ -1592,13 +1621,13 @@ class tx_dlf_document {
 				// Get the physical sequence's metadata.
 				$_physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
 
-				$_physSeq[0]['id'] = (string) $_physNode[0]['ID'];
+				$_physSeq[0] = (string) $_physNode[0]['ID'];
 
-				$_physSeq[0]['dmdId'] = (isset($_physNode[0]['DMDID']) ? (string) $_physNode[0]['DMDID'] : '');
+				$this->physicalPagesInfo[$_physSeq[0]]['dmdId'] = (isset($_physNode[0]['DMDID']) ? (string) $_physNode[0]['DMDID'] : '');
 
-				$_physSeq[0]['label'] = (isset($_physNode[0]['ORDERLABEL']) ? (string) $_physNode[0]['ORDERLABEL'] : '');
+				$this->physicalPagesInfo[$_physSeq[0]]['label'] = (isset($_physNode[0]['ORDERLABEL']) ? (string) $_physNode[0]['ORDERLABEL'] : '');
 
-				$_physSeq[0]['type'] = (string) $_physNode[0]['TYPE'];
+				$this->physicalPagesInfo[$_physSeq[0]]['type'] = (string) $_physNode[0]['TYPE'];
 
 				// Get the file representations from fileSec node.
 				foreach ($_physNode[0]->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
@@ -1606,7 +1635,7 @@ class tx_dlf_document {
 					// Check if file has valid @USE attribute.
 					if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
 
-						$_physSeq[0]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+						$this->physicalPagesInfo[$_physSeq[0]]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
 
 					}
 
@@ -1615,13 +1644,13 @@ class tx_dlf_document {
 				// Build the physical pages' array from the physical structMap node.
 				foreach ($_pageNodes as $_pageNode) {
 
-					$_pages[(int) $_pageNode['ORDER']]['id'] = (string) $_pageNode['ID'];
+					$_pages[(int) $_pageNode['ORDER']] = (string) $_pageNode['ID'];
 
-					$_pages[(int) $_pageNode['ORDER']]['dmdId'] = (isset($_pageNode['DMDID']) ? (string) $_pageNode['DMDID'] : '');
+					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['dmdId'] = (isset($_pageNode['DMDID']) ? (string) $_pageNode['DMDID'] : '');
 
-					$_pages[(int) $_pageNode['ORDER']]['label'] = (isset($_pageNode['ORDERLABEL']) ? (string) $_pageNode['ORDERLABEL'] : '');
+					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['label'] = (isset($_pageNode['ORDERLABEL']) ? (string) $_pageNode['ORDERLABEL'] : '');
 
-					$_pages[(int) $_pageNode['ORDER']]['type'] = (string) $_pageNode['TYPE'];
+					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['type'] = (string) $_pageNode['TYPE'];
 
 					// Get the file representations from fileSec node.
 					foreach ($_pageNode->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
@@ -1629,7 +1658,7 @@ class tx_dlf_document {
 						// Check if file has valid @USE attribute.
 						if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
 
-							$_pages[(int) $_pageNode['ORDER']]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+							$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
 
 						}
 
@@ -1655,6 +1684,27 @@ class tx_dlf_document {
 		}
 
 		return $this->physicalPages;
+
+	}
+
+	/**
+	 * This gives an array of the document's physical pages metadata
+	 *
+	 * @access	protected
+	 *
+	 * @return	array		Array of pages' type, label and file representations ordered by @ID attribute
+	 */
+	protected function _getPhysicalPagesInfo() {
+
+		// Is there no physical pages array yet?
+		if (!$this->physicalPagesLoaded) {
+
+			// Build physical pages array.
+			$this->_getPhysicalPages();
+
+		}
+
+		return $this->physicalPagesInfo;
 
 	}
 
@@ -1698,15 +1748,77 @@ class tx_dlf_document {
 	}
 
 	/**
-	 * This returns $this->sPid via __get()
+	 * This returns the smLinks between logical and physical structMap
 	 *
 	 * @access	protected
 	 *
-	 * @return	integer		The PID of the structure definitions
+	 * @return	array		The links between logical and physical nodes
 	 */
-	protected function _getSPid() {
+	protected function _getSmLinks() {
 
-		return $this->sPid;
+		if (!$this->smLinksLoaded) {
+
+			$smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
+
+			foreach ($smLinks as $smLink) {
+
+				$this->smLinks['l2p'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
+
+				$this->smLinks['p2l'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->to][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->from;
+
+			}
+
+			$this->smLinksLoaded = TRUE;
+
+		}
+
+		return $this->smLinks;
+
+	}
+
+	/**
+	 * This returns the ID of the toplevel logical structure node
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		The logical structure node's ID
+	 */
+	protected function _getToplevelId() {
+
+		if (empty($this->toplevelId)) {
+
+			// Get all logical structure nodes with metadata.
+			if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
+
+				// Load smLinks.
+				$this->_getSmLinks();
+
+				foreach ($divs as $div) {
+
+					$id = (string) $div['ID'];
+
+					// Are there physical structure nodes for this logical structure?
+					if (array_key_exists($id, $this->smLinks['l2p'])) {
+
+						// Yes. That's what we're looking for.
+						$this->toplevelId = $id;
+
+						break;
+
+					} elseif (empty($this->toplevelId)) {
+
+						// No. Remember this anyway, but keep looking for a better one.
+						$this->toplevelId = $id;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $this->toplevelId;
 
 	}
 
@@ -1722,23 +1834,8 @@ class tx_dlf_document {
 		// Is there no logical structure array yet?
 		if (!$this->tableOfContentsLoaded) {
 
-			// Does the document have a structMap node of type "LOGICAL"?
-			$_ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div/@ID');
-
-			if ($_ids) {
-
-				// Yes. So build the logical structure array from the logical structMap node.
-				foreach ($_ids as $_id) {
-
-					$this->tableOfContents[] = $this->getLogicalStructure((string) $_id, TRUE);
-
-				}
-
-			} else {
-
-				trigger_error('No logical structure found in document', E_USER_WARNING);
-
-			}
+			// Get all logical structures.
+			$this->getLogicalStructure('', TRUE);
 
 			$this->tableOfContentsLoaded = TRUE;
 
@@ -1762,7 +1859,7 @@ class tx_dlf_document {
 	}
 
 	/**
-	 * This sets $this->mPid via __set()
+	 * This sets $this->cPid via __set()
 	 *
 	 * @access	protected
 	 *
@@ -1770,24 +1867,9 @@ class tx_dlf_document {
 	 *
 	 * @return	void
 	 */
-	protected function _setMPid($value) {
+	protected function _setCPid($value) {
 
-		$this->mPid = max(intval($value), 0);
-
-	}
-
-	/**
-	 * This sets $this->sPid via __set()
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$value: The new PID for the structure definitions
-	 *
-	 * @return	void
-	 */
-	protected function _setSPid($value) {
-
-		$this->sPid = max(intval($value), 0);
+		$this->cPid = max(intval($value), 0);
 
 	}
 
@@ -1857,7 +1939,7 @@ class tx_dlf_document {
 
 			}
 
-			if ($this->recordid) {
+			if (!empty($this->recordid)) {
 
 				$whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordid, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
 

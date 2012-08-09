@@ -13,6 +13,7 @@
 				<el>
 					<pages>
 						<TCEforms>
+							<onChange>reload</onChange>
 							<exclude>1</exclude>
 							<label>LLL:EXT:lang/locallang_general.xml:LGL.startingpoint</label>
 							<onChange>reload</onChange>

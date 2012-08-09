@@ -66,7 +66,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray['volume'] = $entry['volume'];
 
-		$entryArray['type'] = $this->pi_getLL($entry['type'], tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']), FALSE);
+		$entryArray['type'] = tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
 
 		$entryArray['pagination'] = $entry['pagination'];
 
@@ -85,15 +85,9 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		} elseif (!empty($entry['points']) && is_string($entry['points'])) {
 
-			$_doc = tx_dlf_document::getInstance($entry['points'], ($this->conf['excludeOther'] ? $this->conf['pages'] : 0));
+			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => $entry['points'], 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
 
-			if ($_doc !== NULL) {
-
-				$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => ($_doc->pid ? $_doc->uid : $entry['points']), 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
-
-				$entryArray['doNotLinkIt'] = 0;
-
-			}
+			$entryArray['doNotLinkIt'] = 0;
 
 		} elseif (!empty($entry['targetUid'])) {
 
@@ -117,8 +111,8 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			// 1. "expAll" is set for menu
 			// 2. Current menu node is in rootline
 			// 3. Current menu node points to another file
-			// 4. There are no physical pages in the current METS file
-			if (!empty($this->conf['menuConf.']['expAll']) || $entryArray['ITEM_STATE'] == 'CUR' || is_string($entry['points']) || !$this->doc->physicalPages) {
+			// 4. Current menu node has no corresponding images
+			if (!empty($this->conf['menuConf.']['expAll']) || $entryArray['ITEM_STATE'] == 'CUR' || is_string($entry['points']) || empty($this->doc->smLinks['l2p'][$entry['id']])) {
 
 				$entryArray['_SUB_MENU'] = array ();
 
@@ -169,19 +163,6 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		}
 
-		// Check for required variable.
-		if (!empty($this->piVars['id'])) {
-
-			// Set default values for page if not set.
-			$this->piVars['page'] = (!empty($this->piVars['page']) ? max(intval($this->piVars['page']), 1) : 1);
-
-		} else {
-
-			// Quit without doing anything.
-			return $content;
-
-		}
-
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
 
@@ -226,9 +207,12 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		// Quit without doing anything if required variables are not set.
+		// Set default values for page if not set.
+		$this->piVars['page'] = (!empty($this->piVars['page']) ? max(intval($this->piVars['page']), 1) : 1);
+
 		if ($this->doc === NULL) {
 
+			// Quit without doing anything if required variables are not set.
 			return array ();
 
 		}
@@ -241,11 +225,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			// Get all logical units the current page is a part of.
 			if (!empty($this->piVars['page']) && $this->doc->physicalPages) {
 
-				foreach ($this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']]['id'].'"]') as $_logId) {
-
-					$this->activeEntries[] = (string) $_logId->attributes('http://www.w3.org/1999/xlink')->from;
-
-				}
+				$this->activeEntries = $this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]];
 
 			}
 

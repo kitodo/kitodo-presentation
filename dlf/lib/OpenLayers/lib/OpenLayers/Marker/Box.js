@@ -80,7 +80,7 @@ OpenLayers.Marker.Box = OpenLayers.Class(OpenLayers.Marker, {
     * sz - {<OpenLayers.Size>} 
     * 
     * Returns: 
-    * {DOMElement} A new DOM Image with this marker´s icon set at the 
+    * {DOMElement} A new DOM Image with this markerï¿½s icon set at the 
     *         location passed-in
     */
     draw: function(px, sz) {

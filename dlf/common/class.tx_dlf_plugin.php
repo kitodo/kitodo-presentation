@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,14 +28,14 @@
 
 /**
  * Base class 'tx_dlf_plugin' for the 'dlf' extension.
- *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- * @abstract
- */
+*
+* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+* @abstract
+*/
 abstract class tx_dlf_plugin extends tslib_pibase {
 
 	public $extKey = 'dlf';
@@ -77,7 +77,27 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	 */
 	protected function init(array $conf) {
 
-		// Read general TS configuration
+		// Read FlexForm configuration.
+		$flexFormConf = array ();
+
+		$this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
+
+		if (!empty($flexFormConf)) {
+
+			$conf = t3lib_div::array_merge_recursive_overrule($flexFormConf, $conf);
+
+		}
+
+		// Read plugin TS configuration.
+		$pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][get_class($this).'.'];
+
+		if (is_array($pluginConf)) {
+
+			$conf = t3lib_div::array_merge_recursive_overrule($pluginConf, $conf);
+
+		}
+
+		// Read general TS configuration.
 		$generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
 
 		if (is_array($generalConf)) {
@@ -86,7 +106,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		}
 
-		// Read extension configuration
+		// Read extension configuration.
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 
 		if (is_array($extConf)) {
@@ -95,23 +115,12 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		}
 
-		// Read TYPO3_CONF_VARS configuration
+		// Read TYPO3_CONF_VARS configuration.
 		$varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
 
 		if (is_array($varsConf)) {
 
 			$conf = t3lib_div::array_merge_recursive_overrule($varsConf, $conf);
-
-		}
-
-		// Read FlexForm configuration
-		$flexFormConf = array ();
-
-		$this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
-
-		if (!empty($flexFormConf)) {
-
-			$conf = t3lib_div::array_merge_recursive_overrule($conf, $flexFormConf);
 
 		}
 
@@ -135,7 +144,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	protected function loadDocument() {
 
 		// Check for required variable.
-		if (!empty($this->piVars['id'])) {
+		if (!empty($this->piVars['id']) && !empty($this->conf['pages'])) {
 
 			// Should we exclude documents from other pages than $this->conf['pages']?
 			$pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
@@ -145,9 +154,15 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			if (!$this->doc->ready) {
 
+				// Destroy the incomplete object.
 				trigger_error('Failed to load document with UID '.$this->piVars['id'], E_USER_ERROR);
 
 				$this->doc = NULL;
+
+			} else {
+
+				// Set configuration PID.
+				$this->doc->cPid = $this->conf['pages'];
 
 			}
 
@@ -155,12 +170,12 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			// Get UID of document with given record identifier.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_documents.uid',
-				'tx_dlf_documents',
-				'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
-				'',
-				'',
-				'1'
+					'tx_dlf_documents.uid',
+					'tx_dlf_documents',
+					'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
+					'',
+					'',
+					'1'
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
@@ -184,7 +199,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		} else {
 
-			trigger_error('No UID given for document', E_USER_ERROR);
+			trigger_error('No UID or PID given for document', E_USER_ERROR);
 
 		}
 
@@ -289,8 +304,8 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 }
 
 /* No xclasses for abstract classes!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php']);
+ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php'])	{
+include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php']);
 }
 */
 

@@ -11,6 +11,20 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
+					<pages>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:lang/locallang_general.xml:LGL.startingpoint</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>1</minitems>
+							</config>
+						</TCEforms>
+					</pages>
 					<pageStep>
 						<TCEforms>
 							<exclude>1</exclude>

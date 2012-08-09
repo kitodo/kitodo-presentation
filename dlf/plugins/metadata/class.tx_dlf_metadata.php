@@ -56,9 +56,9 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		// Quit without doing anything if required variables are not set.
 		if ($this->doc === NULL) {
 
+			// Quit without doing anything if required variables are not set.
 			return $content;
 
 		}
@@ -70,13 +70,13 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			// Get current structure's @ID.
 			$_ids = array ();
 
-			if (!empty($this->doc->physicalPages[$this->piVars['page']]) && ($_structs = $this->doc->mets->xpath('./mets:structLink/mets:smLink[@xlink:to="'.$this->doc->physicalPages[$this->piVars['page']]['id'].'"]'))) {
+			if (!empty($this->doc->physicalPages[$this->piVars['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]])) {
 
-				foreach ($_structs as $_smLink) {
+				foreach ($this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]] as $_logId) {
 
-					$_count = count($this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$_smLink->attributes('http://www.w3.org/1999/xlink')->from.'"]/ancestor::*'));
+					$_count = count($this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$_logId.'"]/ancestor::*'));
 
-					$_ids[$_count][] = (string) $_smLink->attributes('http://www.w3.org/1999/xlink')->from;
+					$_ids[$_count][] = $_logId;
 
 				}
 
@@ -144,6 +144,8 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		}
 
+		ksort($metadata);
+
 		$content .= $this->printMetadata($metadata);
 
 		return $this->pi_wrapInBaseClass($content);
@@ -176,8 +178,6 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		$subpart['block'] = $this->cObj->getSubpart($this->template, '###BLOCK###');
 
-		ksort($metadata);
-
 		// Get list of metadata to show.
 		$metaList = array ();
 
@@ -192,9 +192,12 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
-			if ($this->conf['showFull'] || (!$this->conf['showFull'] && $resArray['is_listed'])) {
+			if ($this->conf['showFull'] || $resArray['is_listed']) {
 
-				$metaList[$resArray['index_name']] = $resArray['wrap'];
+				$metaList[$resArray['index_name']] = array (
+					'wrap' => $resArray['wrap'],
+					'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+				);
 
 			}
 
@@ -227,76 +230,79 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			}
 
 			// Process each metadate.
-			foreach ($metaList as $_index_name => $_wrap) {
+			foreach ($metaList as $_index_name => $_metaConf) {
 
-				$hasValue = FALSE;
+				$value = '';
 
-				if (is_array($_metadata[$_index_name]) && tx_dlf_helper::isTranslatable($_index_name, 'tx_dlf_metadata', $this->conf['pages'])) {
+				$fieldwrap = $this->parseTS($_metaConf['wrap']);
 
-					$fieldwrap = $this->parseTS($_wrap);
+				do {
 
-					$field = $this->cObj->stdWrap(htmlspecialchars($this->pi_getLL($_index_name, tx_dlf_helper::translate($_index_name, 'tx_dlf_metadata', $this->conf['pages']), FALSE)), $fieldwrap['key.']);
+					$_value = @array_shift($_metadata[$_index_name]);
 
-					foreach ($_metadata[$_index_name] as $_value) {
+					if ($_index_name == 'title') {
 
-						// Link title to pageview.
-						if ($_index_name == 'title') {
+						// Get title of parent document if needed.
+						if (empty($_value) && $this->conf['getTitle'] && $this->doc->parentid) {
 
-							if ($_metadata['_id']) {
-
-								$details = $this->doc->getLogicalStructure($_metadata['_id']);
-
-							}
-
-							// Get title of parent document if needed.
-							if (empty($_value) && $this->conf['getTitle'] && $this->doc->parentid) {
-
-								$_value = '['.tx_dlf_document::getTitle($this->doc->parentid, TRUE).']';
-
-							}
-
-							if (!empty($_value)) {
-
-								$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
-
-							}
-
-						// Translate name of holding library.
-						} elseif ($_index_name == 'owner' && !empty($_value)) {
-
-							$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
-
-						// Translate document type.
-						} elseif ($_index_name == 'type' && !empty($_value)) {
-
-							$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
-
-						// Translate ISO 639 language code.
-						} elseif ($_index_name == 'language' && !empty($_value)) {
-
-							$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
-
-						} elseif (!empty($_value)) {
-
-							$_value = htmlspecialchars($_value);
+							$_value = '['.tx_dlf_document::getTitle($this->doc->parentid, TRUE).']';
 
 						}
 
 						if (!empty($_value)) {
 
-							$field .= $this->cObj->stdWrap($_value, $fieldwrap['value.']);
+							$_value = htmlspecialchars($_value);
 
-							$hasValue = TRUE;
+							// Link title to pageview.
+							if ($this->conf['linkTitle'] && $_metadata['_id']) {
+
+								$details = $this->doc->getLogicalStructure($_metadata['_id']);
+
+								$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
+
+							}
 
 						}
 
+					} elseif ($_index_name == 'owner' && !empty($_value)) {
+
+						// Translate name of holding library.
+						$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
+
+					} elseif ($_index_name == 'type' && !empty($_value)) {
+
+						// Translate document type.
+						$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']));
+
+					} elseif ($_index_name == 'language' && !empty($_value)) {
+
+						// Translate ISO 639 language code.
+						$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
+
+					} elseif (!empty($_value)) {
+
+						// Sanitize value for output.
+						$_value = htmlspecialchars($_value);
+
 					}
 
-					if ($hasValue) {
+					$_value = $this->cObj->stdWrap($_value, $fieldwrap['value.']);
 
-						$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+					if (!empty($_value)) {
+
+						$value .= $_value;
 
 					}
+
+				} while (count($_metadata[$_index_name]));
+
+				if (!empty($value)) {
+
+					$field = $this->cObj->stdWrap(htmlspecialchars($_metaConf['label']), $fieldwrap['key.']);
+
+					$field .= $value;
+
+					$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
 
 				}
 

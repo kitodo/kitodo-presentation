@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2012 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -67,7 +67,7 @@ class tx_dlf_cli extends t3lib_cli {
 				$this->cli_validateArgs();
 
 				// Get the document...
-				$doc = tx_dlf_document::getInstance($this->cli_args['-doc'][0], 0, TRUE);
+				$doc = tx_dlf_document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
 
 				if ($doc->ready) {
 
@@ -106,13 +106,13 @@ class tx_dlf_cli extends t3lib_cli {
 
 		// Set basic information about the script.
 		$this->cli_help = array (
-			'name' => 'Command Line Interface for Goobi.Presentation',
-			'synopsis' => '###OPTIONS###',
-			'description' => 'Currently the only task available is "index".'.LF.'Try "/PATH/TO/TYPO3/cli_dispatch.phpsh dlf index" to view more options.',
-			'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
-			'options' => '',
-			'license' => 'GNU GPL - free software!',
-			'author' => 'Sebastian Meyer <sebastian.meyer@slub-dresden.de>',
+				'name' => 'Command Line Interface for Goobi.Presentation',
+				'synopsis' => '###OPTIONS###',
+				'description' => 'Currently the only task available is "index".'.LF.'Try "/PATH/TO/TYPO3/cli_dispatch.phpsh dlf index" to view more options.',
+				'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
+				'options' => '',
+				'license' => 'GNU GPL - free software!',
+				'author' => 'Sebastian Meyer <sebastian.meyer@slub-dresden.de>',
 		);
 
 		// Run parent constructor.

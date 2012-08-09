@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,14 +28,14 @@
 
 /**
  * Base class 'tx_dlf_module' for the 'dlf' extension.
- *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- * @abstract
- */
+*
+* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+* @abstract
+*/
 abstract class tx_dlf_module extends t3lib_SCbase {
 
 	public $extKey = 'dlf';
@@ -109,7 +109,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$GLOBALS['BE_USER']->modAccess($GLOBALS['MCONF'], 1);
 
-		$GLOBALS['LANG']->includeLLFile('EXT:dlf/modules/'.$this->modPath.'locallang.xml');
+		$GLOBALS['LANG']->includeLLFile('EXT:'.$this->extKey.'/modules/'.$this->modPath.'locallang.xml');
 
 		$this->setMOD_MENU();
 
@@ -121,13 +121,13 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$this->doc = t3lib_div::makeInstance('template');
 
-		$this->doc->setModuleTemplate('EXT:dlf/modules/'.$this->modPath.'template.tmpl');
+		$this->doc->setModuleTemplate('EXT:'.$this->extKey.'/modules/'.$this->modPath.'template.tmpl');
 
 		$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath($this->extKey) . 'res/backend.css');
 
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 
-		$this->doc->bodyTagAdditions = 'class="ext-dlf-modules"';
+		$this->doc->bodyTagAdditions = 'class="ext-'.$this->extKey.'-modules"';
 
 		$this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
 
@@ -147,13 +147,13 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 		// Set $this->MOD_MENU array here or leave empty.
 
 		/* Example code:
-		$this->MOD_MENU = array (
-			'function' => array (
-				'1' => $GLOBALS['LANG']->getLL('function1'),
-				'2' => $GLOBALS['LANG']->getLL('function2'),
-				'3' => $GLOBALS['LANG']->getLL('function3'),
-			)
-		); */
+		 $this->MOD_MENU = array (
+		 		'function' => array (
+		 				'1' => $GLOBALS['LANG']->getLL('function1'),
+		 				'2' => $GLOBALS['LANG']->getLL('function2'),
+		 				'3' => $GLOBALS['LANG']->getLL('function3'),
+		 		)
+		 ); */
 
 	}
 
@@ -179,19 +179,19 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		// Add Javascript for function menu.
 		$this->doc->JScode .= '
-			<script type="text/javascript">
-				script_ended = 0;
-				function jumpToUrl(URL)	{
-					document.location = URL;
-				}
-			</script>
-		';
+		<script type="text/javascript">
+		script_ended = 0;
+		function jumpToUrl(URL)	{
+		document.location = URL;
+	}
+	</script>
+	';
 
 		// Add Javascript for convenient module switch.
 		$this->doc->postCode .= '
-			<script type="text/javascript">
-				script_ended = 1;
-			</script>
+		<script type="text/javascript">
+		script_ended = 1;
+		</script>
 		';
 
 		// Render output.
@@ -233,8 +233,8 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 }
 
 /* No xclasses for abstract classes!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php']);
+ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php'])	{
+include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php']);
 }
 */
 

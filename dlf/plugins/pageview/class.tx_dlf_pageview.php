@@ -100,9 +100,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			$_fileGrp = strtolower($_fileGrp);
 
-			if (!empty($this->doc->physicalPages[$page]['files'][$_fileGrp])) {
+			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$_fileGrp])) {
 
-				$_fileGrpUrl = $this->doc->getFileLocation($this->doc->physicalPages[$page]['files'][$_fileGrp]);
+				$_fileGrpUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$_fileGrp]);
 
 				// Check file's existence.
 				$_headers = @get_headers($_fileGrpUrl);
@@ -148,9 +148,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		// Quit without doing anything if required variables are not set.
 		if ($this->doc === NULL || $this->doc->numPages < 1) {
 
+			// Quit without doing anything if required variables are not set.
 			return $content;
 
 		} else {

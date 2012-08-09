@@ -28,8 +28,8 @@ $TCA['tx_dlf_documents'] = array (
 	'ctrl' => $TCA['tx_dlf_documents']['ctrl'],
 	'interface' => array (
 		'showRecordFieldList' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
-		'maxDBListItems' => 50,
-		'maxSingleDBListItems' => 250,
+		'maxDBListItems' => 25,
+		'maxSingleDBListItems' => 50,
 	),
 	'feInterface' => $TCA['tx_dlf_documents']['feInterface'],
 	'columns' => array (
@@ -159,29 +159,9 @@ $TCA['tx_dlf_documents'] = array (
 				'eval' => 'trim',
 			),
 		),
-		'author_sorting' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.author_sorting',
-			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-				'eval' => 'trim',
-			),
-		),
 		'year' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.year',
-			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-				'eval' => 'trim',
-			),
-		),
-		'year_sorting' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.year_sorting',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
@@ -199,17 +179,12 @@ $TCA['tx_dlf_documents'] = array (
 				'eval' => 'trim',
 			),
 		),
-		'place_sorting' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.place_sorting',
+		'metadata' => array (
 			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-				'eval' => 'trim',
+				'type' => 'passthrough',
 			),
 		),
-		'metadata' => array (
+		'metadata_sorting' => array (
 			'config' => array (
 				'type' => 'passthrough',
 			),
@@ -227,24 +202,20 @@ $TCA['tx_dlf_documents'] = array (
 			),
 		),
 		'partof' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof',
 			'config' => array (
-				'type' => 'passthrough',
+				'type' => 'group',
+				'internal_type' => 'db',
+				'allowed' => 'tx_dlf_documents',
+				'prepend_tname' => 0,
+				'size' => 1,
+				'selectedListStyle' => 'width:400px;',
+				'minitems' => 0,
+				'maxitems' => 1,
+				'disable_controls' => 'browser,delete',
+				'default' => 0,
+				'readOnly' => 1,
 			),
-// This results in really long loading times because a list of all available documents is rendered.
-// 			'exclude' => 1,
-// 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof',
-// 			'config' => array (
-// 				'type' => 'select',
-// 				'items' => array (
-// 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof.none', 0),
-// 				),
-// 				'foreign_table' => 'tx_dlf_documents',
-// 				'foreign_table_where' => 'AND tx_dlf_documents.pid=###CURRENT_PID### ORDER BY tx_dlf_documents.title_sorting',
-// 				'size' => 1,
-// 				'minitems' => 1,
-// 				'maxitems' => 1,
-// 				'default' => 0,
-// 			),
 		),
 		'volume' => array (
 			'exclude' => 1,
@@ -316,14 +287,11 @@ $TCA['tx_dlf_documents'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author;;2, year;;3, place;;4, structure;;5;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author, year, place, structure;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'title_sorting', 'canNotCollapse' => 1),
-		'2' => array ('showitem' => 'author_sorting', 'canNotCollapse' => 1),
-		'3' => array ('showitem' => 'year_sorting', 'canNotCollapse' => 1),
-		'4' => array ('showitem' => 'place_sorting', 'canNotCollapse' => 1),
-		'5' => array ('showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
+		'2' => array ('showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
 	),
 );
 
@@ -555,8 +523,8 @@ $TCA['tx_dlf_metadata'] = array (
 				'cols' => 48,
 				'rows' => 20,
 				'wrap' => 'off',
-				'eval' => 'required,trim',
-				'default' => "key.wrap = <dt>|</dt>\nvalue.wrap = <dd>|</dd>",
+				'eval' => 'trim',
+				'default' => "key.wrap = <dt>|</dt>\nvalue.required = 1\nvalue.wrap = <dd>|</dd>",
 			),
 			'defaultExtras' => 'nowrap:fixed-font:enable-tab',
 		),
@@ -619,6 +587,14 @@ $TCA['tx_dlf_metadata'] = array (
 				'default' => 0,
 			),
 		),
+		'autocomplete' => array (
+			'exlude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.autocomplete',
+			'config' => array (
+				'type' => 'check',
+				'default' => 0,
+			),
+		),
 		'status' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.status',
@@ -638,7 +614,7 @@ $TCA['tx_dlf_metadata'] = array (
 		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, encoded;;;;2-2-2, xpath, xpath_sorting, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
-		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed', 'canNotCollapse' => 1),
+		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed, autocomplete', 'canNotCollapse' => 1),
 	),
 );
 
@@ -714,7 +690,7 @@ $TCA['tx_dlf_solrcores'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,trim,unique',
+				'eval' => 'required,trim,uniqueInPid',
 			),
 		),
 		'index_name' => array (

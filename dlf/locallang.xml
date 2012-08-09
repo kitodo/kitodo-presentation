@@ -17,14 +17,10 @@
 			<label index="tx_dlf_documents.title">Title</label>
 			<label index="tx_dlf_documents.title_sorting">Title (Sorting)</label>
 			<label index="tx_dlf_documents.author">Author</label>
-			<label index="tx_dlf_documents.author_sorting">Author (Sorting)</label>
 			<label index="tx_dlf_documents.year">Year of Publication</label>
-			<label index="tx_dlf_documents.year_sorting">Year of Publication (Sorting)</label>
 			<label index="tx_dlf_documents.place">Place of Publication</label>
-			<label index="tx_dlf_documents.place_sorting">Place of Publication</label>
 			<label index="tx_dlf_documents.structure">Typ of Document</label>
 			<label index="tx_dlf_documents.partof">Part of ...</label>
-			<label index="tx_dlf_documents.partof.none">none</label>
 			<label index="tx_dlf_documents.volume">Number of Volume</label>
 			<label index="tx_dlf_documents.volume_sorting">Number of Volume (Sorting)</label>
 			<label index="tx_dlf_documents.collections">Collections</label>
@@ -60,6 +56,7 @@
 			<label index="tx_dlf_metadata.is_sortable">Prepare for sorting?</label>
 			<label index="tx_dlf_metadata.is_facet">Prepare for faceting?</label>
 			<label index="tx_dlf_metadata.is_listed">Show in titledata?</label>
+			<label index="tx_dlf_metadata.autocomplete">Use for search suggestion?</label>
 			<label index="tx_dlf_metadata.status">Status</label>
 			<label index="tx_dlf_metadata.status.default">default</label>
 			<label index="tx_dlf_metadata.tab1">General</label>
@@ -123,7 +120,8 @@
 			<label index="config.cliUserGroup">CLI user/group</label>
 			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (default is "Goobi.Presentation")</label>
-			<label index="config.fileGrps">Additional METS fileGrps: comma-separated list of @USE attribute values (default is "DEFAULT,MIN,MAX,THUMBS")</label>
+			<label index="config.fileGrps">METS fileGrps: comma-separated list of @USE attribute values in ascending order (default is "MIN,DEFAULT,MAX")</label>
+			<label index="config.fileGrpThumbs">Thumbnail fileGrp: @USE attribute value (default is "THUMBS")</label>
 			<label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
 			<label index="config.solrConnect">Solr Connection</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
@@ -174,14 +172,10 @@
 			<label index="tx_dlf_documents.title">Titel</label>
 			<label index="tx_dlf_documents.title_sorting">Titel (Sortierung)</label>
 			<label index="tx_dlf_documents.author">Autor</label>
-			<label index="tx_dlf_documents.author_sorting">Autor (Sortierung)</label>
 			<label index="tx_dlf_documents.year">Erscheinungsjahr</label>
-			<label index="tx_dlf_documents.year_sorting">Erscheinungsjahr (Sortierung)</label>
 			<label index="tx_dlf_documents.place">Erscheinungsort</label>
-			<label index="tx_dlf_documents.place_sorting">Erscheinungsort (Sortierung)</label>
 			<label index="tx_dlf_documents.structure">Dokumententyp</label>
 			<label index="tx_dlf_documents.partof">Übergeordnete Einheit</label>
-			<label index="tx_dlf_documents.partof.none">keine</label>
 			<label index="tx_dlf_documents.volume">Bandnummer</label>
 			<label index="tx_dlf_documents.volume_sorting">Bandnummer (Sortierung)</label>
 			<label index="tx_dlf_documents.collections">Sammlungen</label>
@@ -217,6 +211,7 @@
 			<label index="tx_dlf_metadata.is_sortable">Sortierbar machen?</label>
 			<label index="tx_dlf_metadata.is_facet">Facettierbar machen?</label>
 			<label index="tx_dlf_metadata.is_listed">In Titeldaten anzeigen?</label>
+			<label index="tx_dlf_metadata.autocomplete">Für Suchvorschläge verwenden?</label>
 			<label index="tx_dlf_metadata.status">Status</label>
 			<label index="tx_dlf_metadata.status.default">Standard</label>
 			<label index="tx_dlf_metadata.tab1">Allgemein</label>
@@ -280,7 +275,8 @@
 			<label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
 			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (Standard ist "Goobi.Presentation")</label>
-			<label index="config.fileGrps">Zusätzliche METS fileGrps: Komma-getrennte Liste von @USE Attributwerten (Standard ist "DEFAULT,MIN,MAX,THUMBS")</label>
+			<label index="config.fileGrps">METS fileGrps: Komma-getrennte Liste von @USE Attributwerten in aufsteigender Reihenfolge (Standard ist "MIN,DEFAULT,MAX")</label>
+			<label index="config.fileGrpThumbs">Vorschau fileGrp: @USE Attributwert der Vorschaubilder (Standard ist "THUMBS")</label>
 			<label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>

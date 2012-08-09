@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -21,20 +21,21 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
+// TODO: Clean up and reduce code duplication. Consider switching to Solarium.
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
- */
+*/
 
 /**
  * Solr class 'tx_dlf_solr' for the 'dlf' extension.
- *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- */
+*
+* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+* @author	Henrik Lochmann <dev@mentalmotive.com>
+* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+* @package	TYPO3
+* @subpackage	tx_dlf
+* @access	public
+*/
 class tx_dlf_solr {
 
 	/**
@@ -44,6 +45,41 @@ class tx_dlf_solr {
 	 * @access public
 	 */
 	public static $extKey = 'dlf';
+
+	/**
+	 * Returns the request URL for a specific Solr core
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$core: Name of the core to load
+	 *
+	 * @return	string		The request URL for a specific Solr core
+	 */
+	public static function getSolrUrl($core = '') {
+
+		// Extract extension configuration.
+		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+		// Derive Solr host name.
+		$host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
+
+		// Prepend username and password to hostname.
+		if ($conf['solrUser'] && $conf['solrPass']) {
+
+			$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
+
+		}
+
+		// Set port if not set.
+		$port = t3lib_div::intInRange($conf['solrPort'], 1, 65535, 8180);
+
+		// Append core name to path.
+		$path = trim($conf['solrPath'], '/').'/'.$core;
+
+		// Return entire request URL.
+		return 'http://'.$host.':'.$port.'/'.$path;
+
+	}
 
 	/**
 	 * Get SolrPhpClient service object and establish connection to Solr server
@@ -82,20 +118,9 @@ class tx_dlf_solr {
 		// Get core name if UID is given.
 		if (t3lib_div::testInt($core)) {
 
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_solrcores.index_name AS index_name',
-				'tx_dlf_solrcores',
-				'tx_dlf_solrcores.uid='.intval($core).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-				'',
-				'',
-				'1'
-			);
+			$core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
 
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-				list ($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-
-			} else {
+			if (empty($core)) {
 
 				trigger_error('Could not find Solr core with UID '.$core, E_USER_NOTICE);
 
@@ -160,13 +185,14 @@ class tx_dlf_solr {
 	 *
 	 * @access	protected
 	 */
-	protected function __construct() {}
+	protected function __construct() {
+	}
 
 }
 
 /* No xclasses for static classes!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php']);
+ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php'])	{
+include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php']);
 }
 */
 

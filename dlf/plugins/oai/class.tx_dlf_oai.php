@@ -524,7 +524,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		header('Date: '.date('r', $GLOBALS['EXEC_TIME']));
 
-		header('Expires: '.date('r', $GLOBALS['EXEC_TIME']));
+		header('Expires: '.date('r', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
 		echo $content;
 
@@ -722,6 +722,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$resumptionToken->setAttribute('cursor', $resultSet->metadata['offset']);
 
 		$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+
+		$resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
 		$resume->appendChild($resumptionToken);
 
@@ -923,13 +925,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'protocolVersion', '2.0'));
 
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'adminEmail', htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES, 'UTF-8')));
-
 			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'earliestDatestamp', $datestamp));
 
 			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'deletedRecord', 'transient'));
 
 			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'granularity', 'YYYY-MM-DDThh:mm:ssZ'));
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'adminEmail', htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES, 'UTF-8')));
 
 			return $Identify;
 
@@ -1214,6 +1216,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					$resumptionToken->setAttribute('cursor', '0');
 
 					$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+
+					$resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
 					$ListIdentifiers->appendChild($resumptionToken);
 
@@ -1613,6 +1617,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					$resumptionToken->setAttribute('cursor', '0');
 
 					$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+
+					$resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
 					$ListRecords->appendChild($resumptionToken);
 
