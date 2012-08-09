@@ -1,7 +1,7 @@
 $(
-	function(){
+	function() {
 		// jQuery autocomplete integration
-		$(".autocomplete").autocomplete({
+		$(".tx-dlf-search-query").autocomplete({
 			source: function(request, response) {
 				return $.post(
 					'/',
@@ -21,7 +21,9 @@ $(
 						return response(result);
 					},
 					'xml');
-			}
+			},
+			minLength: 3,
+			appendTo: ".tx-dlf-search-form"
 		});
 	}
 );

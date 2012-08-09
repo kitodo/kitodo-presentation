@@ -587,6 +587,14 @@ $TCA['tx_dlf_metadata'] = array (
 				'default' => 0,
 			),
 		),
+		'autocomplete' => array (
+			'exlude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.autocomplete',
+			'config' => array (
+				'type' => 'check',
+				'default' => 0,
+			),
+		),
 		'status' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.status',
@@ -606,7 +614,7 @@ $TCA['tx_dlf_metadata'] = array (
 		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, encoded;;;;2-2-2, xpath, xpath_sorting, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
-		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed', 'canNotCollapse' => 1),
+		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed, autocomplete', 'canNotCollapse' => 1),
 	),
 );
 

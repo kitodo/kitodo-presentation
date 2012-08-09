@@ -91,6 +91,7 @@ CREATE TABLE tx_dlf_metadata (
     is_sortable tinyint(4) DEFAULT '0' NOT NULL,
     is_facet tinyint(4) DEFAULT '0' NOT NULL,
     is_listed tinyint(4) DEFAULT '0' NOT NULL,
+    autocomplete tinyint(4) DEFAULT '0' NOT NULL,
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),

@@ -49,7 +49,7 @@ class tx_dlf_search_suggest extends tslib_pibase {
 	 */
 	public function main($content = '', $conf = array ()) {
 
-		if (!empty(t3lib_div::_GP('encrypted')) && !empty(t3lib_div::_GP('hashed'))) {
+		if (t3lib_div::_GP('encrypted') != '' && t3lib_div::_GP('hashed') != '') {
 
 			$core = tx_dlf_helper::decrypt(t3lib_div::_GP('encrypted'), t3lib_div::_GP('hashed'));
 

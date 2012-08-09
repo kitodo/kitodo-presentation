@@ -49,7 +49,7 @@ $EM_CONF[$_EXTKEY] = array(
 				),
 				'suggests' => array(
 						'realurl' => '',
-						't3jquery' => '2.1.2-',
+						't3jquery' => '',
 				),
 		),
 		'_md5_values_when_last_written' => '',

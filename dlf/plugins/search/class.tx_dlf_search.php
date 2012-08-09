@@ -61,7 +61,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			tx_t3jquery::addJqJS();
 
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '	<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
 
 			return TRUE;
 
@@ -98,7 +98,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Add encrypted fields to search form.
 		if (is_array($name)) {
 
-			return '<input type="hidden" name="'.$this->prefixId.'"[encrypted]" value="'.$name['encrypted'].'" /><input type="hidden" name="'.$this->prefixId.'[hashed]" value="'.$name['hash'].'" />';
+			return '<input type="hidden" name="'.$this->prefixId.'[encrypted]" value="'.$name['encrypted'].'" /><input type="hidden" name="'.$this->prefixId.'[hashed]" value="'.$name['hash'].'" />';
 
 		} else {
 
