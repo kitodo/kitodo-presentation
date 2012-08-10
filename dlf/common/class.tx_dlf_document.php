@@ -412,6 +412,60 @@ class tx_dlf_document {
 	/**
 	 * This gets details about a logical structure element
 	 *
+	 * @access	public
+	 *
+	 * @param	string		$id: The @ID attribute of the logical structure node
+	 * @param	boolean		$recursive: Whether to include the child elements
+	 *
+	 * @return	array		Array of the element's id, label, type and physical page indexes/mptr link
+	 */
+	public function getLogicalStructure($id, $recursive = FALSE) {
+
+		$details = array ();
+
+		// Is the requested logical unit already loaded?
+		if (!$recursive && !empty($this->logicalUnits[$id])) {
+
+			// Yes. Return it.
+			return $this->logicalUnits[$id];
+
+		} elseif (!empty($id)) {
+
+			// Get specified logical unit.
+			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
+
+		} else {
+
+			// Get all logical units at top level.
+			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
+
+		}
+
+		if (!empty($div)) {
+
+			if (!$recursive) {
+
+				$details = $this->getLogicalStructureInfo($div[0]);
+
+			} else {
+
+				foreach ($div as $_div) {
+
+					$this->tableOfContents[] = $this->getLogicalStructureInfo($_div, $recursive);
+
+				}
+
+			}
+
+		}
+
+		return $details;
+
+	}
+
+	/**
+	 * This gets details about a logical structure element
+	 *
 	 * @access	protected
 	 *
 	 * @param	SimpleXMLElement		$structure: The logical structure node
@@ -459,13 +513,16 @@ class tx_dlf_document {
 		$details['points'] = '';
 
 		// Is there a mptr node?
-		if (!empty($structure->children('http://www.loc.gov/METS/')->mptr)) {
+		if (count($structure->children('http://www.loc.gov/METS/')->mptr)) {
 
 			// Yes. Get the file reference.
 			$details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
 		// Are there any physical pages and is this logical unit linked to at least one of them?
 		} elseif ($this->_getPhysicalPages() && array_key_exists($details['id'], $this->smLinks['l2p'])) {
+
+			// Load smLinks.
+			$this->_getSmLinks();
 
 			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
 
@@ -484,7 +541,7 @@ class tx_dlf_document {
 		$this->logicalUnits[$details['id']] = $details;
 
 		// Walk the structure recursively? And are there any children of the current element?
-		if ($recursive && !empty($structure->children('http://www.loc.gov/METS/')->div)) {
+		if ($recursive && count($structure->children('http://www.loc.gov/METS/')->div)) {
 
 			$details['children'] = array ();
 
@@ -498,64 +555,6 @@ class tx_dlf_document {
 		}
 
 		return $details;
-
-	}
-
-	/**
-	 * This gets details about a logical structure element
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$id: The @ID attribute of the logical structure node
-	 * @param	boolean		$recursive: Whether to include the child elements
-	 *
-	 * @return	array		Array of the element's id, label, type and physical page indexes/mptr link
-	 */
-	public function getLogicalStructure($id = '', $recursive = FALSE) {
-
-		// Is the requested logical unit already loaded?
-		if (!$recursive && !empty($id) && !empty($this->logicalUnits[$id])) {
-
-			// Yes. Return it.
-			return $this->logicalUnits[$id];
-
-		} elseif (!empty($id)) {
-
-			// Get specified logical unit.
-			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
-
-		} elseif ($recursive) {
-
-			// Get all logical units at top level.
-			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
-
-		}
-
-		if (!empty($div)) {
-
-			// Load smLinks.
-			$this->_getSmLinks();
-
-			foreach ($div as $structure) {
-
-				// Get logical unit's details.
-				$this->tableOfContents[] = $this->getLogicalStructureInfo($structure, $recursive);
-
-			}
-
-		}
-
-		if (!empty($this->logicalUnits[$id])) {
-
-			return $this->logicalUnits[$id];
-
-		} else {
-
-//			trigger_error('There is no logical structure node with @ID '.$id, E_USER_WARNING);
-
-			return array ();
-
-		}
 
 	}
 
