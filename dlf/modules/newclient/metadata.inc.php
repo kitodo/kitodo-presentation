@@ -39,6 +39,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'record_id' => array (
 		'encoded' => 1,
@@ -53,6 +54,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'union_id' => array (
 		'encoded' => 1,
@@ -67,6 +69,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'opac_id' => array (
 		'encoded' => 1,
@@ -81,13 +84,14 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'urn' => array (
 		'encoded' => 1,
 		'xpath' => './mods:identifier[@type="urn"]',
 		'xpath_sorting' => '',
 		'default_value' => '',
-		'wrap' => "key.wrap = <dt>|</dt>\nvalue.setContentToCurrent = 1\nvalue.required = 1\nvalue.typolink.parameter.current = 1\nvalue.typolink.parameter.prepend = TEXT\nvalue.typolink.parameter.prepend.value = http://nbn-resolving.de/\nvalue.wrap = <dd>|</dd>",
+		'wrap' => "key.wrap = <dt>|</dt>\nvalue.required = 1\nvalue.setContentToCurrent = 1\nvalue.typolink.parameter.current = 1\nvalue.typolink.parameter.prepend = TEXT\nvalue.typolink.parameter.prepend.value = http://nbn-resolving.de/\nvalue.wrap = <dd>|</dd>",
 		'tokenized' => 0,
 		'stored' => 0,
 		'indexed' => 1,
@@ -95,13 +99,14 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'purl' => array (
 		'encoded' => 1,
 		'xpath' => './mods:identifier[@type="purl"]',
 		'xpath_sorting' => '',
 		'default_value' => '',
-		'wrap' => "key.wrap = <dt>|</dt>\nvalue.setContentToCurrent = 1\nvalue.required = 1\nvalue.typolink.parameter.current = 1\nvalue.wrap = <dd>|</dd>",
+		'wrap' => "key.wrap = <dt>|</dt>\nvalue.required = 1\nvalue.setContentToCurrent = 1\nvalue.typolink.parameter.current = 1\nvalue.wrap = <dd>|</dd>",
 		'tokenized' => 0,
 		'stored' => 0,
 		'indexed' => 0,
@@ -109,6 +114,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'owner' => array (
 		'encoded' => 1,
@@ -123,6 +129,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 1,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'collection' => array (
 		'encoded' => 1,
@@ -137,6 +144,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 1,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'language' => array (
 		'encoded' => 1,
@@ -151,6 +159,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 1,
 		'is_listed' => 0,
+		'autocomplete' => 0,
 	),
 	'year' => array (
 		'encoded' => 1,
@@ -165,6 +174,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
+		'autocomplete' => 0,
 	),
 	'place' => array (
 		'encoded' => 1,
@@ -179,6 +189,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
+		'autocomplete' => 0,
 	),
 	'author' => array (
 		'encoded' => 1,
@@ -193,6 +204,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
+		'autocomplete' => 1,
 	),
 	'volume' => array (
 		'encoded' => 1,
@@ -207,6 +219,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 0,
 		'is_listed' => 1,
+		'autocomplete' => 0,
 	),
 	'title' => array (
 		'encoded' => 1,
@@ -221,13 +234,14 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 0,
 		'is_listed' => 1,
+		'autocomplete' => 1,
 	),
 	'type' => array (
 		'encoded' => 0,
 		'xpath' => '',
 		'xpath_sorting' => '',
 		'default_value' => '',
-		'wrap' => "key.wrap = <dt class=\"tx-dlf-metadata-type\">|</dt>\nvalue.required = 1\nvalue.wrap = <dd class=\"tx-dlf-metadata-type\">|</dd>",
+		'wrap' => '',
 		'tokenized' => 0,
 		'stored' => 1,
 		'indexed' => 0,
@@ -235,6 +249,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
+		'autocomplete' => 0,
 	)
 );
 
