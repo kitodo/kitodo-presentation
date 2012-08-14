@@ -828,7 +828,7 @@ class tx_dlf_helper {
 				}
 
 				// Get labels from database.
-				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'*',
 					$table,
 					'pid='.$pid.$additionalWhere.self::whereClause($table),
@@ -837,9 +837,9 @@ class tx_dlf_helper {
 					''
 				);
 
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result) > 0) {
+				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-					while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+					while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 						// Overlay localized labels if available.
 						if ($GLOBALS['TSFE']->sys_language_content > 0) {

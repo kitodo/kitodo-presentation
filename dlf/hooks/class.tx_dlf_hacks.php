@@ -55,23 +55,23 @@ class tx_dlf_hacks {
 
 			$xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-			if (($_divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
+			if (($divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
 
-				$_smLinks = $xml->xpath('//mets:structLink/mets:smLink');
+				$smLinks = $xml->xpath('//mets:structLink/mets:smLink');
 
-				if ($_smLinks) {
+				if ($smLinks) {
 
-					foreach ($_smLinks as $_smLink) {
+					foreach ($smLinks as $smLink) {
 
-						$_links[(string) $_smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $_smLink->attributes('http://www.w3.org/1999/xlink')->to;
+						$links[(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
 
 					}
 
-					foreach ($_divs as $_div) {
+					foreach ($divs as $div) {
 
-						if (!empty($_links[(string) $_div['ID']])) {
+						if (!empty($links[(string) $div['ID']])) {
 
-							$_id = (string) $_div['DMDID'];
+							$id = (string) $div['DMDID'];
 
 							break;
 
@@ -81,17 +81,17 @@ class tx_dlf_hacks {
 
 				}
 
-				if (empty($_id)) {
+				if (empty($id)) {
 
-					$_id = (string) $_divs[0]['DMDID'];
+					$id = (string) $divs[0]['DMDID'];
 
 				}
 
-				$_recordId = $xml->xpath('//mets:dmdSec[@ID="'.$_id.'"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
+				$recordIds = $xml->xpath('//mets:dmdSec[@ID="'.$id.'"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
 
-				if (!empty($_recordId[0])) {
+				if (!empty($recordIds[0])) {
 
-					return (string) $_recordId[0];
+					return (string) $recordIds[0];
 
 				}
 

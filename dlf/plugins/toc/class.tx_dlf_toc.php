@@ -116,16 +116,16 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 				$entryArray['_SUB_MENU'] = array ();
 
-				foreach ($entry['children'] as $_child) {
+				foreach ($entry['children'] as $child) {
 
 					// Set "ITEM_STATE" to "ACT" if this entry points to current page and has sub-entries pointing to the same page.
-					if (in_array($_child['id'], $this->activeEntries)) {
+					if (in_array($child['id'], $this->activeEntries)) {
 
 						$entryArray['ITEM_STATE'] = 'ACT';
 
 					}
 
-					$entryArray['_SUB_MENU'][] = $this->getMenuEntry($_child, TRUE);
+					$entryArray['_SUB_MENU'][] = $this->getMenuEntry($child, TRUE);
 
 				}
 
@@ -234,18 +234,18 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			}
 
 			// Go through table of contents and create all menu entries.
-			foreach ($this->doc->tableOfContents as $_entry) {
+			foreach ($this->doc->tableOfContents as $entry) {
 
-				$menuArray[] = $this->getMenuEntry($_entry, TRUE);
+				$menuArray[] = $this->getMenuEntry($entry, TRUE);
 
 			}
 
 		} else {
 
 			// Go through table of contents and create top-level menu entries.
-			foreach ($this->doc->tableOfContents as $_entry) {
+			foreach ($this->doc->tableOfContents as $entry) {
 
-				$menuArray[] = $this->getMenuEntry($_entry, FALSE);
+				$menuArray[] = $this->getMenuEntry($entry, FALSE);
 
 			}
 
@@ -276,7 +276,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-					$_entry = array (
+					$entry = array (
 						'label' => $resArray['title'],
 						'type' => $resArray['type'],
 						'volume' => $resArray['volume'],
@@ -284,7 +284,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 						'targetUid' => $resArray['uid']
 					);
 
-					$menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($_entry, FALSE);
+					$menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($entry, FALSE);
 
 				}
 

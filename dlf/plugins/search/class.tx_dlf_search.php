@@ -207,7 +207,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$toplevel = array ();
 
-			$check = array ();
+			$checks = array ();
 
 			// Get metadata configuration.
 			if ($numHits) {
@@ -293,7 +293,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					if (!in_array($doc->uid, $check)) {
 
-						$check[] = $doc->uid;
+						$checks[] = $doc->uid;
 
 					}
 
@@ -302,15 +302,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 			}
 
 			// Check if the toplevel documents have metadata.
-			foreach ($check as $_check) {
+			foreach ($checks as $check) {
 
-				if (empty($toplevel[$_check]['uid'])) {
+				if (empty($toplevel[$check]['uid'])) {
 
 					// Get information for toplevel document.
 					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting',
 						'tx_dlf_documents',
-						'tx_dlf_documents.uid='.intval($_check).tx_dlf_helper::whereClause('tx_dlf_documents'),
+						'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
 						'',
 						'',
 						'1'
@@ -371,18 +371,18 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 						}
 
-						$toplevel[$_check] = array (
+						$toplevel[$check] = array (
 							'uid' => $resArray['uid'],
 							'page' => 1,
 							'metadata' => $metadata,
 							'sorting' => $sorting,
-							'subparts' => $toplevel[$_check]['subparts']
+							'subparts' => $toplevel[$check]['subparts']
 						);
 
 					} else {
 
 						// Clear entry if there is no (accessible) toplevel document.
-						unset ($toplevel[$_check]);
+						unset ($toplevel[$check]);
 
 					}
 

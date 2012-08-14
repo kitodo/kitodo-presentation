@@ -643,9 +643,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			} else {
 
 				// Add sets.
-				foreach (explode(' ', $resArray['collections']) as $_spec) {
+				foreach (explode(' ', $resArray['collections']) as $spec) {
 
-					$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+					$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 				}
 
@@ -832,9 +832,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				} else {
 
-					foreach (explode(' ', $resArray['collections']) as $_spec) {
+					foreach (explode(' ', $resArray['collections']) as $spec) {
 
-						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
 
@@ -1195,9 +1195,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				} else {
 
 					// Add sets.
-					foreach (explode(' ', $resArray['collections']) as $_spec) {
+					foreach (explode(' ', $resArray['collections']) as $spec) {
 
-						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
 
@@ -1224,7 +1224,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_dlf_tokens',
 					array (
 						'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -1234,7 +1234,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					)
 				);
 
-				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
+				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 
 					$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
 
@@ -1571,9 +1571,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				} else {
 
 					// Add sets.
-					foreach (explode(' ', $resArray['collections']) as $_spec) {
+					foreach (explode(' ', $resArray['collections']) as $spec) {
 
-						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
 
@@ -1629,7 +1629,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_dlf_tokens',
 					array (
 						'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -1639,7 +1639,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					)
 				);
 
-				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
+				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 
 					$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
 
@@ -1702,7 +1702,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		}
 
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_collections.oai_name AS oai_name,tx_dlf_collections.label AS label',
 			'tx_dlf_collections',
 			'tx_dlf_collections.sys_language_uid IN (-1,0) AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
@@ -1711,7 +1711,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			''
 		);
 
-		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 			return $this->error('noSetHierarchy');
 
@@ -1720,7 +1720,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		// Add set list node.
 		$ListSets = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListSets');
 
-		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 			// Add set node.
 			$set = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'set');

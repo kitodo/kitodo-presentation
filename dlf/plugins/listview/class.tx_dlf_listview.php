@@ -347,7 +347,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Translate document type.
 					} elseif ($index_name == 'type' && !empty($value)) {
 
-						$value = $this->pi_getLL($value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+						$value = $this->pi_getLL($value, tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
 					// Translate ISO 639 language code.
 					} elseif ($index_name == 'language' && !empty($value)) {
@@ -399,7 +399,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	 */
 	protected function loadConfig() {
 
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.wrap AS wrap,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
 			'tx_dlf_metadata',
 			'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
@@ -408,7 +408,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 			''
 		);
 
-		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 			if ($resArray['is_listed']) {
 
