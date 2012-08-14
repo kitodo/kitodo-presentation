@@ -79,7 +79,7 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 
 		if (t3lib_div::testInt($this->piVars['id'])) {
 
-			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
 				'tx_dlf_documents',
 				'tx_dlf_documents.uid='.intval($this->piVars['id']).tx_dlf_helper::whereClause('tx_dlf_documents'),
@@ -88,15 +88,15 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 				'1'
 			);
 
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result) > 0) {
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-				$data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+				$data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 			}
 
 		} else {
 
-			// TODO: "data"-Array bei externen METS-Dateien selbst bauen.
+			// TODO: Build data array "by hand" for external METS files.
 
 		}
 
@@ -105,18 +105,18 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 
 		if (!empty($data)) {
 
-			$_tools = explode(',', $this->conf['tools']);
+			$tools = explode(',', $this->conf['tools']);
 
 			// Add the tools to the toolbox.
-			foreach ($_tools as $_tool) {
+			foreach ($tools as $tool) {
 
-				$_tool = trim($_tool);
+				$tool = trim($tool);
 
 				$cObj = t3lib_div::makeInstance('tslib_cObj');
 
 				$cObj->data = $data;
 
-				$content .= $this->cObj->substituteMarkerArray($subpart, array ('###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$_tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$_tool.'.'])));
+				$content .= $this->cObj->substituteMarkerArray($subpart, array ('###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])));
 
 			}
 

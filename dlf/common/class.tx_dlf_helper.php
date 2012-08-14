@@ -231,15 +231,25 @@ class tx_dlf_helper {
 		// Check for PHP extension "mcrypt".
 		if (!extension_loaded('mcrypt')) {
 
-			trigger_error('PHP extension "mcrypt" not available', E_USER_WARNING);
+			if (TYPO3_DLOG) {
 
-			return NULL;
+				t3lib_div::devLog('[tx_dlf_helper->decrypt('.$encrypted.', '.$hash.')] PHP extension "mcrypt" not available', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return;
 
 		}
 
 		if (empty($encrypted) || empty($hash)) {
 
-			return NULL;
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->decrypt('.$encrypted.', '.$hash.')] Invalid parameters given for decryption', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+			return;
 
 		}
 
@@ -253,7 +263,13 @@ class tx_dlf_helper {
 
 		if ($hashed !== $hash) {
 
-			return NULL;
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->decrypt('.$encrypted.', '.$hash.')] Invalid hash "'.$hash.'" given for decryption', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return;
 
 		}
 
@@ -276,9 +292,13 @@ class tx_dlf_helper {
 		// Check for PHP extension "mcrypt".
 		if (!extension_loaded('mcrypt')) {
 
-			trigger_error('PHP extension "mcrypt" not available', E_USER_WARNING);
+			if (TYPO3_DLOG) {
 
-			return NULL;
+				t3lib_div::devLog('[tx_dlf_helper->encrypt('.$string.')] PHP extension "mcrypt" not available', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return;
 
 		}
 
@@ -316,11 +336,16 @@ class tx_dlf_helper {
 
 		} elseif (TYPO3_MODE === 'BE') {
 
+			// Return current backend user.
 			return $GLOBALS['BE_USER'];
 
 		} else {
 
-			trigger_error('Unexpected TYPO3_MODE', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getBeUser()] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return;
 
@@ -341,11 +366,21 @@ class tx_dlf_helper {
 	 */
 	public static function getIndexName($uid, $table, $pid = -1) {
 
+		// Save parameters for logging purposes.
+		$_uid = $uid;
+
+		$_pid = $pid;
+
+		// Sanitize input.
 		$uid = max(intval($uid), 0);
 
 		if (!$uid || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'))) {
 
-			trigger_error('At least one argument is not valid: UID='.$uid.' or TABLE='.$table, E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getIndexName('.$_uid.', '.$table.', '.$_pid.')] Invalid UID "'.$uid.'" or table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return '';
 
@@ -353,6 +388,7 @@ class tx_dlf_helper {
 
 		$where = '';
 
+		// Should we check for a specific PID, too?
 		if ($pid !== -1) {
 
 			$pid = max(intval($pid), 0);
@@ -361,7 +397,8 @@ class tx_dlf_helper {
 
 		}
 
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		// Get index_name from database.
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			$table.'.index_name AS index_name',
 			$table,
 			$table.'.uid='.$uid.$where.self::whereClause($table),
@@ -370,17 +407,23 @@ class tx_dlf_helper {
 			'1'
 		);
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result) > 0) {
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 			return $resArray['index_name'];
 
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getIndexName('.$_uid.', '.$table.', '.$_pid.')] No "index_name" with UID "'.$uid.'" and PID "'.$pid.'" found in table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return '';
+
 		}
-
-		trigger_error('No "index_name" with UID '.$uid.' found for PID '.$pid.' in TABLE '.$table, E_USER_WARNING);
-
-		return '';
 
 	}
 
@@ -395,45 +438,52 @@ class tx_dlf_helper {
 	 */
 	public static function getLanguageName($code) {
 
-		$_code = strtolower(trim($code));
+		// Analyze code and set appropriate ISO table.
+		$isoCode = strtolower(trim($code));
 
-		if (preg_match('/^[a-z]{3}$/', $_code)) {
+		if (preg_match('/^[a-z]{3}$/', $isoCode)) {
 
-			$_file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml';
+			$file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml';
 
-		} elseif (preg_match('/^[a-z]{2}$/', $_code)) {
+		} elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
 
-			$_file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml';
+			$file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml';
 
 		} else {
 
+			// No ISO code, return unchanged.
 			return $code;
 
 		}
 
+		// Load ISO table and get localized full name of language.
 		if (TYPO3_MODE === 'FE') {
 
-			$iso639 = $GLOBALS['TSFE']->readLLfile($_file);
+			$iso639 = $GLOBALS['TSFE']->readLLfile($file);
 
-			if (!empty($iso639['default'][$_code])) {
+			if (!empty($iso639['default'][$isoCode])) {
 
-				$lang = $GLOBALS['TSFE']->getLLL($_code, $iso639);
+				$lang = $GLOBALS['TSFE']->getLLL($isoCode, $iso639);
 
 			}
 
 		} elseif (TYPO3_MODE === 'BE') {
 
-			$iso639 = $GLOBALS['LANG']->includeLLFile($_file, FALSE, TRUE);
+			$iso639 = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
 
-			if (!empty($iso639['default'][$_code])) {
+			if (!empty($iso639['default'][$isoCode])) {
 
-				$lang = $GLOBALS['LANG']->getLLL($_code, $iso639, FALSE);
+				$lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639, FALSE);
 
 			}
 
 		} else {
 
-			trigger_error('Unexpected TYPO3_MODE', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getLanguageName('.$code.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return $code;
 
@@ -445,7 +495,11 @@ class tx_dlf_helper {
 
 		} else {
 
-			trigger_error('Language code "'.$code.'" not found', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getLanguageName('.$code.')] Language code "'.$code.'" not found in ISO-639 table', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+
+			}
 
 			return $code;
 
@@ -466,7 +520,7 @@ class tx_dlf_helper {
 	 */
 	public static function getURN($base, $id) {
 
-		$concordance = array(
+		$concordance = array (
 			'0' => 1,
 			'1' => 2,
 			'2' => 3,
@@ -511,7 +565,11 @@ class tx_dlf_helper {
 
 		if (preg_match('/[^a-z0-9:-]/', $urn)) {
 
-			trigger_error('Invalid chars in URN', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getURN('.$base.', '.$id.')] Invalid chars in given parameters', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return '';
 
@@ -559,23 +617,31 @@ class tx_dlf_helper {
 	 *
 	 * @access	public
 	 *
-	 * @param	string		$key: Session key for retrieval
+	 * @param	string		$key: Session data key for retrieval
 	 *
 	 * @return	mixed		Session value for given key or NULL on failure
 	 */
 	public static function loadFromSession($key) {
+
+		// Save parameter for logging purposes.
+		$_key = $key;
 
 		// Cast to string for security reasons.
 		$key = (string) $key;
 
 		if (!$key) {
 
-			trigger_error('No session key given', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->loadFromSession('.$_key.')] Invalid key "'.$key.'" for session data retrieval', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return;
 
 		}
 
+		// Get the session data.
 		if (TYPO3_MODE === 'FE') {
 
 			return $GLOBALS['TSFE']->fe_user->getKey('ses', $key);
@@ -586,7 +652,11 @@ class tx_dlf_helper {
 
 		} else {
 
-			trigger_error('Unexpected TYPO3_MODE', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->loadFromSession('.$_key.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return;
 
@@ -647,23 +717,31 @@ class tx_dlf_helper {
 	 * @access	public
 	 *
 	 * @param	string		$value: Value to save
-	 * @param	string		$key: Session key for retrieval
+	 * @param	string		$key: Session data key for saving
 	 *
 	 * @return	boolean		TRUE on success, FALSE on failure
 	 */
 	public static function saveToSession($value, $key) {
+
+		// Save parameter for logging purposes.
+		$_key = $key;
 
 		// Cast to string for security reasons.
 		$key = (string) $key;
 
 		if (!$key) {
 
-			trigger_error('No session key given', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->saveToSession('.$value.', '.$_key.')] Invalid key "'.$key.'" for session data saving', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return FALSE;
 
 		}
 
+		// Save value in session data.
 		if (TYPO3_MODE === 'FE') {
 
 			$GLOBALS['TSFE']->fe_user->setKey('ses', $key, $value);
@@ -680,87 +758,15 @@ class tx_dlf_helper {
 
 		} else {
 
-			trigger_error('Unexpected TYPO3_MODE', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->saveToSession('.$value.', '.$_key.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return FALSE;
 
 		}
-
-	}
-
-	/**
-	 * This validates a METS file against its schemas
-	 * TODO: nicht funktionstüchtig!
-	 *
-	 * @access	public
-	 *
-	 * @param	SimpleXMLElement		$xml:
-	 *
-	 * @return	void
-	 */
-	public static function schemaValidate(SimpleXMLElement $xml) {
-
-		$_libxmlErrors = libxml_use_internal_errors(TRUE);
-
-		// Get schema locations.
-		$xml->registerXPathNamespace('xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-
-		$_schemaLocations = $xml->xpath('//*[@xsi:schemaLocation]');
-
-		foreach ($_schemaLocations as $_schemaLocation) {
-
-			$_schemas = explode(' ', (string) $_schemaLocation->attributes('http://www.w3.org/2001/XMLSchema-instance')->schemaLocation);
-
-			for ($i = 1, $j = count($_schemas); $i <= $j; $i++) {
-
-				if ($_schemas[$i] == 'http://www.loc.gov/METS/') {
-
-					$schema['mets'] = $_schemas[$i + 1];
-
-				} elseif ($_schemas[$i] == 'http://www.loc.gov/mods/v3') {
-
-					$schema['mods'] = $_schemas[$i + 1];
-
-				}
-
-			}
-
-		}
-		// TODO: Error-Handling (keine Schemas gefunden)
-
-		// Validate METS part against schema.
-		$dom = new DOMDocument('1.0', 'UTF-8');
-
-		$dom->appendChild($dom->importNode(dom_import_simplexml($this->mets), TRUE));
-
-		$dom->schemaValidate($schema['mets']);
-
-		// TODO: Error-Handling (invalider METS-Part)
-		// libxml_get_last_error() || libxml_get_errors() || libxml_clear_errors()
-
-		// Validate dmdSec parts against schema.
-		foreach ($this->dmdSec as $dmdSec) {
-
-			switch ($dmdSec['type']) {
-
-				case 'MODS':
-
-					$dom = new DOMDocument('1.0', 'UTF-8');
-
-					$dom->appendChild($dom->importNode(dom_import_simplexml($dmdSec['xml']), TRUE));
-
-					$dom->schemaValidate($schema['mods']);
-
-					// TODO: Error-Handling (invalider MODS-Part)
-					// libxml_get_last_error() || libxml_get_errors() || libxml_clear_errors()
-
-					break;
-
-			}
-
-		}
-
-		libxml_use_internal_errors($_libxmlErrors);
 
 	}
 
@@ -777,13 +783,24 @@ class tx_dlf_helper {
 	 */
 	public static function translate($index_name, $table, $pid) {
 
+		// Save parameters for logging purposes.
+		$_index_name = $index_name;
+
+		$_pid = $pid;
+
+		// Load labels into static variable for future use.
 		static $labels = array ();
 
+		// Sanitize input.
 		$pid = max(intval($pid), 0);
 
 		if (!$pid) {
 
-			trigger_error('No PID given for translations', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->translate('.$_index_name.', '.$table.', '.$_pid.')] Invalid PID "'.$pid.'" for translation', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return $index_name;
 
@@ -841,13 +858,21 @@ class tx_dlf_helper {
 
 				} else {
 
-					trigger_error('There are no entries with PID '.$pid.' in table '.$table.' or you are not allowed to access them', E_USER_ERROR);
+					if (TYPO3_DLOG) {
+
+						t3lib_div::devLog('[tx_dlf_helper->translate('.$_index_name.', '.$table.', '.$_pid.')] No translation with PID "'.$pid.'" available in table "'.$table.'" or translation not accessible', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+
+					}
 
 				}
 
 			} else {
 
-				trigger_error('The table '.$table.' is not allowed for translation', E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_helper->translate('.$_index_name.', '.$table.', '.$_pid.')] No translations available for table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+				}
 
 			}
 
@@ -916,7 +941,11 @@ class tx_dlf_helper {
 
 		} else {
 
-			trigger_error('Unexpected TYPO3_MODE', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->whereClause('.$table.', ['.($showHidden ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return ' AND 1=-1';
 

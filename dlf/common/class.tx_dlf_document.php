@@ -35,7 +35,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_document {
+final class tx_dlf_document {
 
 	/**
 	 * This holds the whole XML file as string for serialization purposes
@@ -87,15 +87,23 @@ class tx_dlf_document {
 	 * @access protected
 	 */
 	protected $formats = array (
-		'OTHER' => array (
-			'DVRIGHTS' => array (
-				'rootElement' => 'rights',
-				'namespaceURI' => 'http://dfg-viewer.de/',
-			),
-			'DVLINKS' => array (
-				'rootElement' => 'links',
-				'namespaceURI' => 'http://dfg-viewer.de/',
-			)
+		'METS' => array (
+			'rootElement' => 'mets',
+			'namespaceURI' => 'http://www.loc.gov/METS/',
+		),
+		// This one can become a problem, because MODS uses its own custom XLINK schema.
+		// @see http://comments.gmane.org/gmane.comp.text.mods/1126
+		'XLINK' => array (
+			'rootElement' => 'xlink',
+			'namespaceURI' => 'http://www.w3.org/1999/xlink',
+		),
+		'DVRIGHTS' => array (
+			'rootElement' => 'rights',
+			'namespaceURI' => 'http://dfg-viewer.de/',
+		),
+		'DVLINKS' => array (
+			'rootElement' => 'links',
+			'namespaceURI' => 'http://dfg-viewer.de/',
 		)
 	);
 
@@ -300,13 +308,17 @@ class tx_dlf_document {
 	 */
 	public function getFileLocation($id) {
 
-		if (($_location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/mets:FLocat[@LOCTYPE="URL"]'))) {
+		if (($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/mets:FLocat[@LOCTYPE="URL"]'))) {
 
-			return (string) $_location[0]->attributes('http://www.w3.org/1999/xlink')->href;
+			return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
 		} else {
 
-			trigger_error('There is no file node with @ID '.$id, E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return '';
 
@@ -325,9 +337,9 @@ class tx_dlf_document {
 
 		if (!$this->hookObjectsLoaded && is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/common/class.tx_dlf_document.php']['hookClass'])) {
 
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/common/class.tx_dlf_document.php']['hookClass'] as $_classRef) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/common/class.tx_dlf_document.php']['hookClass'] as $classRef) {
 
-				$this->hookObjects[] = t3lib_div::getUserObj($_classRef);
+				$this->hookObjects[] = t3lib_div::getUserObj($classRef);
 
 			}
 
@@ -393,10 +405,10 @@ class tx_dlf_document {
 			self::$registry[$instance->uid] = $instance;
 
 			// Load extension configuration
-			$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
 
 			// Save document to session if caching is enabled.
-			if (!empty($_extConf['caching'])) {
+			if (!empty($extConf['caching'])) {
 
 				tx_dlf_helper::saveToSession(self::$registry, get_class($instance));
 
@@ -432,26 +444,28 @@ class tx_dlf_document {
 		} elseif (!empty($id)) {
 
 			// Get specified logical unit.
-			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
+			$divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
 
 		} else {
 
 			// Get all logical units at top level.
-			$div = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
+			$divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
 
 		}
 
-		if (!empty($div)) {
+		if (!empty($divs)) {
 
 			if (!$recursive) {
 
-				$details = $this->getLogicalStructureInfo($div[0]);
+				// Get the details for the first xpath hit.
+				$details = $this->getLogicalStructureInfo($divs[0]);
 
 			} else {
 
-				foreach ($div as $_div) {
+				// Walk the logical structure recursively and fill the whole table of contents.
+				foreach ($divs as $div) {
 
-					$this->tableOfContents[] = $this->getLogicalStructureInfo($_div, $recursive);
+					$this->tableOfContents[] = $this->getLogicalStructureInfo($div, TRUE);
 
 				}
 
@@ -493,6 +507,7 @@ class tx_dlf_document {
 
 		$details['volume'] = '';
 
+		// Set volume information only if no label is set and this is the toplevel structure element.
 		if (empty($details['label']) && $details['id'] == $this->_getToplevelId()) {
 
 			$metadata = $this->getMetadata($details['id']);
@@ -509,6 +524,9 @@ class tx_dlf_document {
 
 		$details['type'] = $attributes['TYPE'];
 
+		// Load smLinks.
+		$this->_getSmLinks();
+
 		// Get the physical page or external file this structure element is pointing at.
 		$details['points'] = '';
 
@@ -521,15 +539,12 @@ class tx_dlf_document {
 		// Are there any physical pages and is this logical unit linked to at least one of them?
 		} elseif ($this->_getPhysicalPages() && array_key_exists($details['id'], $this->smLinks['l2p'])) {
 
-			// Load smLinks.
-			$this->_getSmLinks();
-
 			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
 
 			// Get page number of the first page related to this structure element.
 			$details['pagination'] = $this->physicalPagesInfo[$id]['label'];
 
-		// Is this the toplevel structure?
+		// Is this the toplevel structure element?
 		} elseif ($details['id'] == $this->_getToplevelId()) {
 
 			// Yes. Point to itself.
@@ -548,7 +563,7 @@ class tx_dlf_document {
 			foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
 
 				// Repeat for all children.
-				$details['children'][] = $this->getLogicalStructureInfo($child, $recursive);
+				$details['children'][] = $this->getLogicalStructureInfo($child, TRUE);
 
 			}
 
@@ -571,6 +586,9 @@ class tx_dlf_document {
 	 */
 	public function getMetadata($id, $cPid = 0) {
 
+		// Save parameter for logging purposes.
+		$_cPid = $cPid;
+
 		// Make sure $cPid is a non-negative integer.
 		$cPid = max(intval($cPid), 0);
 
@@ -582,7 +600,11 @@ class tx_dlf_document {
 
 		} elseif (!$cPid) {
 
-			trigger_error('Invalid PID ('.$cPid.') for metadata definitions', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return array ();
 
@@ -596,7 +618,7 @@ class tx_dlf_document {
 		}
 
 		// Initialize metadata array with empty values.
-		$_metadata = array (
+		$metadata = array (
 			'title' => array (),
 			'title_sorting' => array (),
 			'author' => array (),
@@ -618,17 +640,17 @@ class tx_dlf_document {
 		// Get the logical structure node's DMDID.
 		if (!empty($this->logicalUnits[$id])) {
 
-			$_dmdId = $this->logicalUnits[$id]['dmdId'];
+			$dmdId = $this->logicalUnits[$id]['dmdId'];
 
 		} else {
 
-			$_dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@DMDID');
+			$dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@DMDID');
 
-			$_dmdId = (string) $_dmdId[0];
+			$dmdId = (string) $dmdId[0];
 
 		}
 
-		if (!empty($_dmdId)) {
+		if (!empty($dmdId)) {
 
 			// Load available metadata formats and dmdSecs.
 			$this->loadFormats();
@@ -636,30 +658,34 @@ class tx_dlf_document {
 			$this->_getDmdSec();
 
 			// Is this metadata format supported?
-			if (!empty($this->formats[$this->dmdSec[$_dmdId]['type']]['class'])) {
+			if (!empty($this->formats[$this->dmdSec[$dmdId]['type']]['class'])) {
 
-				$_class = $this->formats[$this->dmdSec[$_dmdId]['type']]['class'];
-
-			} elseif (!empty($this->formats['OTHER'][$this->dmdSec[$_dmdId]['type']]['class'])) {
-
-				$_class = $this->formats['OTHER'][$this->dmdSec[$_dmdId]['type']]['class'];
+				$class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
 
 			} else {
 
-				trigger_error('Unsupported metadata format or dmdSec with @ID '.$_dmdId.' not found', E_USER_WARNING);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+				}
 
 				return array ();
 
 			}
 
 			// Get the metadata from class.
-			if (class_exists($_class) && ($obj = t3lib_div::makeInstance($_class)) instanceof tx_dlf_format) {
+			if (class_exists($class) && ($obj = t3lib_div::makeInstance($class)) instanceof tx_dlf_format) {
 
-				$obj->extractMetadata($this->dmdSec[$_dmdId]['xml'], $_metadata);
+				$obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
 
 			} else {
 
-				trigger_error('Invalid class/method '.$_class.'->extractMetadata()', E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 				return array ();
 
@@ -668,18 +694,18 @@ class tx_dlf_document {
 			// Get the structure's type.
 			if (!empty($this->logicalUnits[$id])) {
 
-				$_metadata['type'] = array ($this->logicalUnits[$id]['type']);
+				$metadata['type'] = array ($this->logicalUnits[$id]['type']);
 
 			} else {
 
-				$_struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@TYPE');
+				$struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@TYPE');
 
-				$_metadata['type'] = array ((string) $_struct[0]);
+				$metadata['type'] = array ((string) $struct[0]);
 
 			}
 
 			// Get the additional metadata from database.
-			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value',
 				'tx_dlf_metadata,tx_dlf_formats',
 				'tx_dlf_metadata.pid='.$cPid.' AND ((tx_dlf_metadata.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$_dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.encoded=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata', TRUE).tx_dlf_helper::whereClause('tx_dlf_formats'),
@@ -689,63 +715,63 @@ class tx_dlf_document {
 			);
 
 			// We need a DOMDocument here, because SimpleXML doesn't support XPath functions properly.
-			$_domNode = dom_import_simplexml($this->dmdSec[$_dmdId]['xml']);
+			$domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
 
-			$_domXPath = new DOMXPath($_domNode->ownerDocument);
+			$domXPath = new DOMXPath($domNode->ownerDocument);
 
-			$this->registerNamespaces($_domXPath);
+			$this->registerNamespaces($domXPath);
 
 			// OK, now make the XPath queries.
-			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 				// Set metadata field's value(s).
-				if ($resArray['xpath'] && ($_values = $_domXPath->evaluate($resArray['xpath'], $_domNode))) {
+				if ($resArray['xpath'] && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))) {
 
-					if ($_values instanceof DOMNodeList && $_values->length > 0) {
+					if ($values instanceof DOMNodeList && $values->length > 0) {
 
-						$_metadata[$resArray['index_name']] = array ();
+						$metadata[$resArray['index_name']] = array ();
 
-						foreach ($_values as $_value) {
+						foreach ($values as $value) {
 
-							$_metadata[$resArray['index_name']][] = trim((string) $_value->nodeValue);
+							$metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
 
 						}
 
-					} elseif (!($_values instanceof DOMNodeList)) {
+					} elseif (!($values instanceof DOMNodeList)) {
 
-						$_metadata[$resArray['index_name']] = array (trim((string) $_values));
+						$metadata[$resArray['index_name']] = array (trim((string) $values));
 
 					}
 
 				}
 
 				// Set default value if applicable.
-				if (empty($_metadata[$resArray['index_name']][0]) && $resArray['default_value']) {
+				if (empty($metadata[$resArray['index_name']][0]) && $resArray['default_value']) {
 
-					$_metadata[$resArray['index_name']] = array ($resArray['default_value']);
+					$metadata[$resArray['index_name']] = array ($resArray['default_value']);
 
 				}
 
 				// Set sorting value if applicable.
-				if (!empty($_metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
+				if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
 
-					if ($resArray['xpath_sorting'] && ($_values = $_domXPath->evaluate($resArray['xpath_sorting'], $_domNode))) {
+					if ($resArray['xpath_sorting'] && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))) {
 
-						if ($_values instanceof DOMNodeList && $_values->length > 0) {
+						if ($values instanceof DOMNodeList && $values->length > 0) {
 
-							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values->item(0)->nodeValue);
+							$metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values->item(0)->nodeValue);
 
-						} elseif (!($_values instanceof DOMNodeList)) {
+						} elseif (!($values instanceof DOMNodeList)) {
 
-							$_metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $_values);
+							$metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values);
 
 						}
 
 					}
 
-					if (empty($_metadata[$resArray['index_name'].'_sorting'][0])) {
+					if (empty($metadata[$resArray['index_name'].'_sorting'][0])) {
 
-						$_metadata[$resArray['index_name'].'_sorting'][0] = $_metadata[$resArray['index_name']][0];
+						$metadata[$resArray['index_name'].'_sorting'][0] = $metadata[$resArray['index_name']][0];
 
 					}
 
@@ -754,11 +780,11 @@ class tx_dlf_document {
 			}
 
 			// Set title to empty string if not present.
-			if (empty($_metadata['title'][0])) {
+			if (empty($metadata['title'][0])) {
 
-				$_metadata['title'][0] = '';
+				$metadata['title'][0] = '';
 
-				$_metadata['title_sorting'][0] = '';
+				$metadata['title_sorting'][0] = '';
 
 			}
 
@@ -769,7 +795,7 @@ class tx_dlf_document {
 
 		}
 
-		return $_metadata;
+		return $metadata;
 
 	}
 
@@ -784,6 +810,9 @@ class tx_dlf_document {
 	 * @return	string		The title of the document itself or a parent document
 	 */
 	public static function getTitle($uid, $recursive = FALSE) {
+
+		// Save parameter for logging purposes.
+		$_uid = $uid;
 
 		$title = '';
 
@@ -815,13 +844,21 @@ class tx_dlf_document {
 
 			} else {
 
-				trigger_error('No document with UID '.$uid.' found', E_USER_WARNING);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+				}
 
 			}
 
 		} else {
 
-			trigger_error('No UID given for document', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 		}
 
@@ -864,11 +901,11 @@ class tx_dlf_document {
 		// Get METS node from XML file.
 		$this->registerNamespaces($this->xml);
 
-		$_mets = $this->xml->xpath('//mets:mets');
+		$mets = $this->xml->xpath('//mets:mets');
 
-		if ($_mets) {
+		if ($mets) {
 
-			$this->mets = $_mets[0];
+			$this->mets = $mets[0];
 
 			// Register namespaces.
 			$this->registerNamespaces($this->mets);
@@ -878,7 +915,11 @@ class tx_dlf_document {
 
 		} else {
 
-			trigger_error('No valid METS part found in document with UID '.$this->uid, E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->init()] No METS part found in document with UID "'.$this->uid.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 		}
 
@@ -903,39 +944,48 @@ class tx_dlf_document {
 			|| version_compare(phpversion(), '5.3.3', '<')) {
 
 			// Load extension configuration
-			$_extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
 
 			// Set user-agent to identify self when fetching XML data.
 			if (!empty($_extConf['useragent'])) {
 
-				@ini_set('user_agent', $_extConf['useragent']);
+				@ini_set('user_agent', $extConf['useragent']);
 
 			}
 
-			// Load XML from file...
-			$_libxmlErrors = libxml_use_internal_errors(TRUE);
+			// Turn off libxml's error logging.
+			$libxmlErrors = libxml_use_internal_errors(TRUE);
 
-			$_xml = @simplexml_load_file($location);
+			// Load XML from file.
+			$xml = @simplexml_load_file($location);
 
-			libxml_use_internal_errors($_libxmlErrors);
+			// Reset libxml's error logging.
+			libxml_use_internal_errors($libxmlErrors);
 
-			// ...and set some basic properties.
-			if ($_xml !== FALSE) {
+			// Set some basic properties.
+			if ($xml !== FALSE) {
 
-				$this->xml = $_xml;
+				$this->xml = $xml;
 
 				return TRUE;
 
 			} else {
 
-				trigger_error('Could not load XML file from '.$location, E_USER_ERROR);
-				// TODO: libxml_get_errors() || libxml_get_last_error() || libxml_clear_errors()
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Could not load XML file from "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 			}
 
 		} else {
 
-			trigger_error('File location "'.$location.'" is not a valid URL', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Invalid file location "'.$location.'" for document loading', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 		}
 
@@ -955,8 +1005,8 @@ class tx_dlf_document {
 		if (!$this->formatsLoaded) {
 
 			// Get available data formats from database.
-			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_formats.type AS type,tx_dlf_formats.other_type AS other_type,tx_dlf_formats.root AS root,tx_dlf_formats.namespace AS namespace,tx_dlf_formats.class AS class',
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_formats.type AS type,tx_dlf_formats.root AS root,tx_dlf_formats.namespace AS namespace,tx_dlf_formats.class AS class',
 				'tx_dlf_formats',
 				'tx_dlf_formats.pid=0'.tx_dlf_helper::whereClause('tx_dlf_formats'),
 				'',
@@ -964,27 +1014,14 @@ class tx_dlf_document {
 				''
 			);
 
-			while ($_resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
-
-				if (!$_resArray['other_type']) {
+			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 					// Update format registry.
-					$this->formats[$_resArray['type']] = array (
-						'rootElement' => $_resArray['root'],
-						'namespaceURI' => $_resArray['namespace'],
-						'class' => $_resArray['class']
+					$this->formats[$resArray['type']] = array (
+						'rootElement' => $resArray['root'],
+						'namespaceURI' => $resArray['namespace'],
+						'class' => $resArray['class']
 					);
-
-				} else {
-
-					// Update format registry.
-					$this->formats['OTHER'][$_resArray['type']] = array (
-						'rootElement' => $_resArray['root'],
-						'namespaceURI' => $_resArray['namespace'],
-						'class' => $_resArray['class']
-					);
-
-				}
 
 			}
 
@@ -1010,43 +1047,28 @@ class tx_dlf_document {
 		// Do we have a SimpleXMLElement or DOMXPath object?
 		if ($obj instanceof SimpleXMLElement) {
 
-			$_method = 'registerXPathNamespace';
+			$method = 'registerXPathNamespace';
 
 		} elseif ($obj instanceof DOMXPath) {
 
-			$_method = 'registerNamespace';
+			$method = 'registerNamespace';
 
 		} else {
 
-			trigger_error('No SimpleXMLElement or DOMXPath object given', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return;
 
 		}
 
-		// Register mandatory METS' and XLINK's namespaces.
-		$obj->$_method('mets', 'http://www.loc.gov/METS/');
-
-		// This one can become a problem, because MODS uses its own custom XLINK schema.
-		// @see http://comments.gmane.org/gmane.comp.text.mods/1126
-		$obj->$_method('xlink', 'http://www.w3.org/1999/xlink');
-
 		// Register metadata format's namespaces.
 		foreach ($this->formats as $enc => $conf) {
 
-			if ($enc != 'OTHER') {
-
-				$obj->$_method(strtolower($enc), $conf['namespaceURI']);
-
-			} else {
-
-				foreach ($conf as $otherEnc => $otherConf) {
-
-					$obj->$_method(strtolower($otherEnc), $otherConf['namespaceURI']);
-
-				}
-
-			}
+			$obj->$method(strtolower($enc), $conf['namespaceURI']);
 
 		}
 
@@ -1064,9 +1086,18 @@ class tx_dlf_document {
 	 */
 	public function save($pid = 0, $core = 0) {
 
+		// Save parameters for logging purposes.
+		$_pid = $pid;
+
+		$_core = $core;
+
 		if (TYPO3_MODE !== 'BE') {
 
-			trigger_error('Saving documents is only allowed in the backend!', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return FALSE;
 
@@ -1086,7 +1117,11 @@ class tx_dlf_document {
 
 		} elseif (!$pid) {
 
-			trigger_error('Invalid PID ('.$pid.') given to save document', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return FALSE;
 
@@ -1117,7 +1152,11 @@ class tx_dlf_document {
 		// Check for record identifier.
 		if (empty($metadata['record_id'][0])) {
 
-			trigger_error('No record identifier found to avoid duplication', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return FALSE;
 
@@ -1141,7 +1180,11 @@ class tx_dlf_document {
 
 		} else {
 
-			trigger_error('Could not identify structure type', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return FALSE;
 
@@ -1165,23 +1208,23 @@ class tx_dlf_document {
 
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-			$_collUid[$resArray['index_name']] = $resArray['uid'];
+			$collUid[$resArray['index_name']] = $resArray['uid'];
 
 		}
 
 		foreach ($metadata['collection'] as $collection) {
 
-			if (!empty($_collUid[$collection])) {
+			if (!empty($collUid[$collection])) {
 
 				// Add existing collection's UID.
-				$collections[] = $_collUid[$collection];
+				$collections[] = $collUid[$collection];
 
 			} else {
 
 				// Insert new collection.
-				$_collNewUid = uniqid('NEW');
+				$collNewUid = uniqid('NEW');
 
-				$_collData['tx_dlf_collections'][$_collNewUid] = array (
+				$collData['tx_dlf_collections'][$collNewUid] = array (
 					'pid' => $pid,
 					'label' => $collection,
 					'index_name' => $collection,
@@ -1192,23 +1235,23 @@ class tx_dlf_document {
 					'status' => 0,
 				);
 
-				$_substUid = tx_dlf_helper::processDB($_collData);
+				$substUid = tx_dlf_helper::processDB($collData);
 
 				// Prevent double insertion.
-				unset ($_collData);
+				unset ($collData);
 
 				// Add new collection's UID.
-				$collections[] = $_substUid[$_collNewUid];
+				$collections[] = $substUid[$collNewUid];
 
-				$_message = t3lib_div::makeInstance(
+				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newCollection'), $collection, $_substUid[$_collNewUid])),
+					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
 					$GLOBALS['LANG']->getLL('flash.attention', TRUE),
 					t3lib_FlashMessage::INFO,
 					TRUE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($_message);
+				t3lib_FlashMessageQueue::addMessage($message);
 
 			}
 
@@ -1253,9 +1296,9 @@ class tx_dlf_document {
 		} else {
 
 			// Insert new library.
-			$_libNewUid = uniqid('NEW');
+			$libNewUid = uniqid('NEW');
 
-			$_libData['tx_dlf_libraries'][$_libNewUid] = array (
+			$libData['tx_dlf_libraries'][$libNewUid] = array (
 				'pid' => $pid,
 				'label' => $metadata['owner'][0],
 				'index_name' => $metadata['owner'][0],
@@ -1270,20 +1313,20 @@ class tx_dlf_document {
 				'union_base' => '',
 			);
 
-			$_substUid = tx_dlf_helper::processDB($_libData);
+			$substUid = tx_dlf_helper::processDB($libData);
 
 			// Add new library's UID.
-			$owner = $_substUid[$_libNewUid];
+			$owner = $substUid[$libNewUid];
 
-			$_message = t3lib_div::makeInstance(
+			$message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newLibrary'), $metadata['owner'][0], $_substUid[$_libNewUid])),
+				htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newLibrary'), $metadata['owner'][0], $substUid[$libNewUid])),
 				$GLOBALS['LANG']->getLL('flash.attention', TRUE),
 				t3lib_FlashMessage::INFO,
 				TRUE
 			);
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			t3lib_FlashMessageQueue::addMessage($message);
 
 		}
 
@@ -1400,7 +1443,11 @@ class tx_dlf_document {
 
 		} else {
 
-			trigger_error('Invalid UID for Solr core ('.$core.') given to index document', E_USER_NOTICE);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+
+			}
 
 		}
 
@@ -1436,49 +1483,39 @@ class tx_dlf_document {
 			$this->loadFormats();
 
 			// Get dmdSec nodes from METS.
-			$_dmdIds = $this->mets->xpath('./mets:dmdSec/@ID');
+			$dmdIds = $this->mets->xpath('./mets:dmdSec/@ID');
 
-			foreach ($_dmdIds as $_dmdId) {
+			foreach ($dmdIds as $dmdId) {
 
-				$_type = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $_dmdId.'"]/mets:mdWrap/@MDTYPE');
+				if ($type = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
 
-				if ($_type && !empty($this->formats[(string) $_type[0]]) && $_type[0] != 'OTHER') {
+					if (!empty($this->formats[(string) $type[0]])) {
 
-					$_type = (string) $_type[0];
+						$type = (string) $type[0];
 
-					$_xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $_dmdId.'"]/mets:mdWrap[@MDTYPE="'.$_type.'"]/mets:xmlData/'.strtolower($_type).':'.$this->formats[$_type]['rootElement']);
-
-					if ($_xml) {
-
-						$this->dmdSec[(string) $_dmdId]['type'] = $_type;
-
-						$this->dmdSec[(string) $_dmdId]['xml'] = $_xml[0];
-
-						$this->registerNamespaces($this->dmdSec[(string) $_dmdId]['xml']);
+						$xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="'.$_type.'"]/mets:xmlData/'.strtolower($type).':'.$this->formats[$type]['rootElement']);
 
 					}
 
-				} elseif ($_type && $_type[0] == 'OTHER') {
+				} elseif ($type = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
 
-					$_otherType = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $_dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE');
+					if (!empty($this->formats[(string) $type[0]])) {
 
-					if ($_otherType && !empty($this->formats['OTHER'][(string) $_otherType[0]])) {
+						$type = (string) $type[0];
 
-						$_otherType = (string) $_otherType[0];
-
-						$_xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $_dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="'.$_otherType.'"]/mets:xmlData/'.strtolower($_otherType).':'.$this->formats['OTHER'][$_otherType]['rootElement']);
-
-						if ($_xml) {
-
-							$this->dmdSec[(string) $_dmdId]['type'] = $_otherType;
-
-							$this->dmdSec[(string) $_dmdId]['xml'] = $_xml[0];
-
-							$this->registerNamespaces($this->dmdSec[(string) $_dmdId]['xml']);
-
-						}
+						$xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="'.$type.'"]/mets:xmlData/'.strtolower($type).':'.$this->formats[$type]['rootElement']);
 
 					}
+
+				}
+
+				if ($xml) {
+
+					$this->dmdSec[(string) $dmdId]['type'] = $type;
+
+					$this->dmdSec[(string) $dmdId]['xml'] = $xml[0];
+
+					$this->registerNamespaces($this->dmdSec[(string) $dmdId]['xml']);
 
 				}
 
@@ -1506,7 +1543,11 @@ class tx_dlf_document {
 
 		if (!$cPid) {
 
-			trigger_error('No PID for metadata definitions found', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return array ();
 
@@ -1515,11 +1556,11 @@ class tx_dlf_document {
 		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $cPid) {
 
 			// Get all logical structure nodes with metadata
-			if (($_ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
+			if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
 
-				foreach ($_ids as $_id) {
+				foreach ($ids as $id) {
 
-					$this->metadataArray[(string) $_id] = $this->getMetadata((string) $_id, $cPid);
+					$this->metadataArray[(string) $id] = $this->getMetadata((string) $id, $cPid);
 
 				}
 
@@ -1590,26 +1631,26 @@ class tx_dlf_document {
 		if (!$this->physicalPagesLoaded) {
 
 			// Does the document have a structMap node of type "PHYSICAL"?
-			$_pageNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@TYPE="page"]');
+			$pageNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@TYPE="page"]');
 
-			if ($_pageNodes) {
+			if ($pageNodes) {
 
 				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 
-				$_useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
+				$useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
 
 				// Yes. Get concordance of @FILEID and @USE attributes.
-				$_fileUse = array ();
+				$fileUse = array ();
 
-				$_fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
+				$fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
 
-				foreach ($_fileGrps as $_fileGrp) {
+				foreach ($fileGrps as $fileGrp) {
 
-					if (in_array((string) $_fileGrp['USE'], $_useGrps)) {
+					if (in_array((string) $fileGrp['USE'], $useGrps)) {
 
-						foreach ($_fileGrp->children('http://www.loc.gov/METS/')->file as $_file) {
+						foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
 
-							$_fileUse[(string) $_file->attributes()->ID] = (string) $_fileGrp['USE'];
+							$fileUse[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
 
 						}
 
@@ -1618,46 +1659,46 @@ class tx_dlf_document {
 				}
 
 				// Get the physical sequence's metadata.
-				$_physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
+				$physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
 
-				$_physSeq[0] = (string) $_physNode[0]['ID'];
+				$physSeq[0] = (string) $physNode[0]['ID'];
 
-				$this->physicalPagesInfo[$_physSeq[0]]['dmdId'] = (isset($_physNode[0]['DMDID']) ? (string) $_physNode[0]['DMDID'] : '');
+				$this->physicalPagesInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
 
-				$this->physicalPagesInfo[$_physSeq[0]]['label'] = (isset($_physNode[0]['ORDERLABEL']) ? (string) $_physNode[0]['ORDERLABEL'] : '');
+				$this->physicalPagesInfo[$physSeq[0]]['label'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
 
-				$this->physicalPagesInfo[$_physSeq[0]]['type'] = (string) $_physNode[0]['TYPE'];
+				$this->physicalPagesInfo[$physSeq[0]]['type'] = (string) $physNode[0]['TYPE'];
 
 				// Get the file representations from fileSec node.
-				foreach ($_physNode[0]->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
+				foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
 
 					// Check if file has valid @USE attribute.
-					if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
+					if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
 
-						$this->physicalPagesInfo[$_physSeq[0]]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+						$this->physicalPagesInfo[$physSeq[0]]['files'][strtolower($fileUse[(string) $fptr->attributes()->FILEID])] = (string) $fptr->attributes()->FILEID;
 
 					}
 
 				}
 
 				// Build the physical pages' array from the physical structMap node.
-				foreach ($_pageNodes as $_pageNode) {
+				foreach ($pageNodes as $pageNode) {
 
-					$_pages[(int) $_pageNode['ORDER']] = (string) $_pageNode['ID'];
+					$pages[(int) $pageNode['ORDER']] = (string) $pageNode['ID'];
 
-					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['dmdId'] = (isset($_pageNode['DMDID']) ? (string) $_pageNode['DMDID'] : '');
+					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['dmdId'] = (isset($pageNode['DMDID']) ? (string) $pageNode['DMDID'] : '');
 
-					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['label'] = (isset($_pageNode['ORDERLABEL']) ? (string) $_pageNode['ORDERLABEL'] : '');
+					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['label'] = (isset($pageNode['ORDERLABEL']) ? (string) $pageNode['ORDERLABEL'] : '');
 
-					$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['type'] = (string) $_pageNode['TYPE'];
+					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['type'] = (string) $pageNode['TYPE'];
 
 					// Get the file representations from fileSec node.
-					foreach ($_pageNode->children('http://www.loc.gov/METS/')->fptr as $_fptr) {
+					foreach ($pageNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
 
 						// Check if file has valid @USE attribute.
-						if (!empty($_fileUse[(string) $_fptr->attributes()->FILEID])) {
+						if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
 
-							$this->physicalPagesInfo[$_pages[(int) $_pageNode['ORDER']]]['files'][strtolower($_fileUse[(string) $_fptr->attributes()->FILEID])] = (string) $_fptr->attributes()->FILEID;
+							$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['files'][strtolower($fileUse[(string) $fptr->attributes()->FILEID])] = (string) $fptr->attributes()->FILEID;
 
 						}
 
@@ -1666,13 +1707,13 @@ class tx_dlf_document {
 				}
 
 				// Sort array by keys (= @ORDER).
-				if (ksort($_pages)) {
+				if (ksort($pages)) {
 
 					// Set total number of pages.
-					$this->numPages = count($_pages);
+					$this->numPages = count($pages);
 
 					// Merge and re-index the array to get nice numeric indexes.
-					$this->physicalPages = array_merge($_physSeq, $_pages);
+					$this->physicalPages = array_merge($physSeq, $pages);
 
 				}
 
@@ -1904,22 +1945,25 @@ class tx_dlf_document {
 			// Cast to string for safety reasons.
 			$location = (string) $uid;
 
-			// Get record identifier to check with database.
-			$_libxmlErrors = libxml_use_internal_errors(TRUE);
+			// Turn off libxml's error logging.
+			$libxmlErrors = libxml_use_internal_errors(TRUE);
 
+			// Load XML file.
 			$xml = @simplexml_load_file($location);
 
-			libxml_use_internal_errors($_libxmlErrors);
+			// Reset libxml's error logging.
+			libxml_use_internal_errors($libxmlErrors);
 
 			if ($xml !== FALSE) {
 
 				$xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
 
-				$_objId = $xml->xpath('//mets:mets');
+				// Check for @OBJID in order to use it as record identifier.
+				$objId = $xml->xpath('//mets:mets');
 
-				if (!empty($_objId[0]['OBJID'])) {
+				if (!empty($objId[0]['OBJID'])) {
 
-					$this->recordid = (string) $_objId[0]['OBJID'];
+					$this->recordid = (string) $objId[0]['OBJID'];
 
 				}
 
@@ -1954,12 +1998,12 @@ class tx_dlf_document {
 		// Check for PID if needed.
 		if ($pid) {
 
-			$whereClause .= ' AND tx_dlf_documents.pid='.$pid;
+			$whereClause .= ' AND tx_dlf_documents.pid='.intval($pid);
 
 		}
 
 		// Get document PID and location from database.
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_documents.uid AS uid,tx_dlf_documents.pid AS pid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.partof AS partof,tx_dlf_documents.location AS location',
 			'tx_dlf_documents',
 			$whereClause,
@@ -1968,9 +2012,9 @@ class tx_dlf_document {
 			'1'
 		);
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result) > 0) {
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-			list ($this->uid, $this->pid, $this->recordid, $this->parentid, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($_result);
+			list ($this->uid, $this->pid, $this->recordid, $this->parentid, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 			// Load XML file...
 			if ($this->load($location)) {
@@ -1994,7 +2038,11 @@ class tx_dlf_document {
 
 		} else {
 
-			trigger_error('There is no record with UID '.$uid.' or you are not allowed to access it', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 		}
 
@@ -2011,17 +2059,21 @@ class tx_dlf_document {
 	 */
 	public function __get($var) {
 
-		$_method = '_get'.ucfirst($var);
+		$method = '_get'.ucfirst($var);
 
-		if (!property_exists($this, $var) || !method_exists($this, $_method)) {
+		if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-			trigger_error('There is no get function for property '.$var, E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return;
 
 		} else {
 
-			return $this->$_method();
+			return $this->$method();
 
 		}
 
@@ -2039,15 +2091,19 @@ class tx_dlf_document {
 	 */
 	public function __set($var, $value) {
 
-		$_method = '_set'.ucfirst($var);
+		$method = '_set'.ucfirst($var);
 
-		if (!property_exists($this, $var) || !method_exists($this, $_method)) {
+		if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-			trigger_error('There is no set function for property '.$var, E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 		} else {
 
-			$this->$_method($value);
+			$this->$method($value);
 
 		}
 
@@ -2079,13 +2135,13 @@ class tx_dlf_document {
 	 */
 	public function __toString() {
 
-		$_xml = new DOMDocument('1.0', 'utf-8');
+		$xml = new DOMDocument('1.0', 'utf-8');
 
-		$_xml->appendChild($_xml->importNode(dom_import_simplexml($this->mets), TRUE));
+		$xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), TRUE));
 
-		$_xml->formatOutput = TRUE;
+		$xml->formatOutput = TRUE;
 
-		return $_xml->saveXML();
+		return $xml->saveXML();
 
 	}
 
@@ -2099,26 +2155,31 @@ class tx_dlf_document {
 	 */
 	public function __wakeup() {
 
-		$_libxmlErrors = libxml_use_internal_errors(TRUE);
+		// Turn off libxml's error logging.
+		$libxmlErrors = libxml_use_internal_errors(TRUE);
 
-		// Reload XML from string...
-		$_xml = @simplexml_load_string($this->asXML);
+		// Reload XML from string.
+		$xml = @simplexml_load_string($this->asXML);
 
-		libxml_use_internal_errors($_libxmlErrors);
+		// Reset libxml's error logging.
+		libxml_use_internal_errors($libxmlErrors);
 
-		if ($_xml !== FALSE) {
+		if ($xml !== FALSE) {
 
 			$this->asXML = '';
 
-			$this->xml = $_xml;
+			$this->xml = $xml;
 
-			// ...and rebuild the unserializable properties.
+			// Rebuild the unserializable properties.
 			$this->init();
 
 		} else {
 
-			trigger_error('Could not reload XML from session', E_USER_ERROR);
-			// TODO: libxml_get_errors() || libxml_get_last_error() || libxml_clear_errors()
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->__wakeup()] Could not load XML after deserialization', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 		}
 

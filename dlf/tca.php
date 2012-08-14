@@ -634,13 +634,6 @@ $TCA['tx_dlf_formats'] = array (
 				'eval' => 'required,nospace,alphanum_x,unique',
 			),
 		),
-		'other_type' => array (
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.other_type',
-			'config' => array (
-				'type' => 'check',
-				'default' => 0,
-			),
-		),
 		'root' => array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.root',
 			'config' => array (
@@ -670,7 +663,7 @@ $TCA['tx_dlf_formats'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, other, root;;;;2-2-2, namespace, class;;;;3-3-3'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),

@@ -64,7 +64,6 @@
 			<label index="tx_dlf_metadata.tab3">Access</label>
 			<label index="tx_dlf_formats">Data Formats</label>
 			<label index="tx_dlf_formats.type">METS Name</label>
-			<label index="tx_dlf_formats.other_type">Is it @MDTYPE="OTHER" in METS?</label>
 			<label index="tx_dlf_formats.root">Root Element</label>
 			<label index="tx_dlf_formats.namespace">Namespace URI</label>
 			<label index="tx_dlf_formats.class">Class Name</label>
@@ -219,7 +218,6 @@
 			<label index="tx_dlf_metadata.tab3">Zugriff</label>
 			<label index="tx_dlf_formats">Datenformate</label>
 			<label index="tx_dlf_formats.type">Bezeichnung in METS</label>
-			<label index="tx_dlf_formats.other_type">@MDTYPE="OTHER" in METS?</label>
 			<label index="tx_dlf_formats.root">Root-Element</label>
 			<label index="tx_dlf_formats.namespace">Namensraum URI</label>
 			<label index="tx_dlf_formats.class">Klassenname</label>

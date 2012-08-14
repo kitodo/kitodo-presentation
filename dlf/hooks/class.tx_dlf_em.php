@@ -84,10 +84,10 @@ class tx_dlf_em {
 		$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores';
 
 		$context = stream_context_create(array (
-				'http' => array (
-						'method' => 'GET',
-						'user_agent' => (!empty($conf['useragent']) ? $conf['useragent'] : ini_get('user_agent'))
-				)
+			'http' => array (
+				'method' => 'GET',
+				'user_agent' => (!empty($conf['useragent']) ? $conf['useragent'] : ini_get('user_agent'))
+			)
 		));
 
 		// Try to connect to Solr server.
@@ -101,11 +101,11 @@ class tx_dlf_em {
 			if (is_array($status)) {
 
 				$message = t3lib_div::makeInstance(
-						't3lib_FlashMessage',
-						sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
-						$GLOBALS['LANG']->getLL('solr.connected'),
-						($status[0] == 0 ? t3lib_FlashMessage::OK : t3lib_FlashMessage::WARNING),
-						FALSE
+					't3lib_FlashMessage',
+					sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
+					$GLOBALS['LANG']->getLL('solr.connected'),
+					($status[0] == 0 ? t3lib_FlashMessage::OK : t3lib_FlashMessage::WARNING),
+					FALSE
 				);
 
 				$this->content .= $message->render();
@@ -117,11 +117,11 @@ class tx_dlf_em {
 		}
 
 		$message = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
-				sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
-				$GLOBALS['LANG']->getLL('solr.notConnected'),
-				t3lib_FlashMessage::WARNING,
-				FALSE
+			't3lib_FlashMessage',
+			sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
+			$GLOBALS['LANG']->getLL('solr.notConnected'),
+			t3lib_FlashMessage::WARNING,
+			FALSE
 		);
 
 		$this->content .= $message->render();
@@ -147,9 +147,9 @@ class tx_dlf_em {
 
 		// Check if user "_cli_dlf" exists, is no admin and is not disabled.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,admin,usergroup',
-				'be_users',
-				'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').t3lib_BEfunc::deleteClause('be_users')
+			'uid,admin,usergroup',
+			'be_users',
+			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').t3lib_BEfunc::deleteClause('be_users')
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -160,25 +160,25 @@ class tx_dlf_em {
 			$resArray['usergroup'] = explode(',', $resArray['usergroup']);
 
 			// Check if user is not disabled.
-			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'1',
-					'be_users',
-					'uid='.intval($resArray['uid']).t3lib_BEfunc::BEenableFields('be_users')
+			$result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'1',
+				'be_users',
+				'uid='.intval($resArray['uid']).t3lib_BEfunc::BEenableFields('be_users')
 			);
 
 			// Check if user is configured properly.
 			if (count(array_diff(array ($groupUid), $resArray['usergroup'])) == 0
 					&& !$resArray['admin']
-					&& $GLOBALS['TYPO3_DB']->sql_num_rows($_result) > 0) {
+					&& $GLOBALS['TYPO3_DB']->sql_num_rows($result2) > 0) {
 
 				$usrUid = $resArray['uid'];
 
 				$message = t3lib_div::makeInstance(
-						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('cliUserGroup.usrOkayMsg'),
-						$GLOBALS['LANG']->getLL('cliUserGroup.usrOkay'),
-						t3lib_FlashMessage::OK,
-						FALSE
+					't3lib_FlashMessage',
+					$GLOBALS['LANG']->getLL('cliUserGroup.usrOkayMsg'),
+					$GLOBALS['LANG']->getLL('cliUserGroup.usrOkay'),
+					t3lib_FlashMessage::OK,
+					FALSE
 				);
 
 			} else {
@@ -186,15 +186,15 @@ class tx_dlf_em {
 				if (!$checkOnly && $groupUid) {
 
 					// Keep exisiting values and add the new ones.
-					$_usergroup = array_unique(array_merge(array ($groupUid), $resArray['usergroup']));
+					$usergroup = array_unique(array_merge(array ($groupUid), $resArray['usergroup']));
 
 					// Try to configure user.
 					$data['be_users'][$resArray['uid']] = array (
-							'admin' => 0,
-							'usergroup' => implode(',', $_usergroup),
-							$GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['disabled'] => 0,
-							$GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['starttime'] => 0,
-							$GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['endtime'] => 0
+						'admin' => 0,
+						'usergroup' => implode(',', $usergroup),
+						$GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['disabled'] => 0,
+						$GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['starttime'] => 0,
+						$GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['endtime'] => 0
 					);
 
 					tx_dlf_helper::processDB($data);
@@ -205,21 +205,21 @@ class tx_dlf_em {
 						$usrUid = $resArray['uid'];
 
 						$message = t3lib_div::makeInstance(
-								't3lib_FlashMessage',
-								$GLOBALS['LANG']->getLL('cliUserGroup.usrConfiguredMsg'),
-								$GLOBALS['LANG']->getLL('cliUserGroup.usrConfigured'),
-								t3lib_FlashMessage::INFO,
-								FALSE
+							't3lib_FlashMessage',
+							$GLOBALS['LANG']->getLL('cliUserGroup.usrConfiguredMsg'),
+							$GLOBALS['LANG']->getLL('cliUserGroup.usrConfigured'),
+							t3lib_FlashMessage::INFO,
+							FALSE
 						);
 
 					} else {
 
 						$message = t3lib_div::makeInstance(
-								't3lib_FlashMessage',
-								$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
-								$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-								t3lib_FlashMessage::ERROR,
-								FALSE
+							't3lib_FlashMessage',
+							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
+							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
+							t3lib_FlashMessage::ERROR,
+							FALSE
 						);
 
 					}
@@ -227,11 +227,11 @@ class tx_dlf_em {
 				} else {
 
 					$message = t3lib_div::makeInstance(
-							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
-							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-							t3lib_FlashMessage::ERROR,
-							FALSE
+						't3lib_FlashMessage',
+						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
+						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
+						t3lib_FlashMessage::ERROR,
+						FALSE
 					);
 
 				}
@@ -243,39 +243,39 @@ class tx_dlf_em {
 			if (!$checkOnly && $groupUid) {
 
 				// Try to create user.
-				$_tempUid = uniqid('NEW');
+				$tempUid = uniqid('NEW');
 
-				$data['be_users'][$_tempUid] = array (
-						'pid' => 0,
-						'username' => '_cli_dlf',
-						'password' => md5($_tempUid),
-						'realName' => $GLOBALS['LANG']->getLL('cliUserGroup.usrRealName'),
-						'usergroup' => intval($groupUid)
+				$data['be_users'][$tempUid] = array (
+					'pid' => 0,
+					'username' => '_cli_dlf',
+					'password' => md5($tempUid),
+					'realName' => $GLOBALS['LANG']->getLL('cliUserGroup.usrRealName'),
+					'usergroup' => intval($groupUid)
 				);
 
-				$_substUid = tx_dlf_helper::processDB($data);
+				$substUid = tx_dlf_helper::processDB($data);
 
 				// Check if creation was successful.
-				if (!empty($_substUid[$_tempUid])) {
+				if (!empty($substUid[$tempUid])) {
 
-					$usrUid = $_substUid[$_tempUid];
+					$usrUid = $substUid[$tempUid];
 
 					$message = t3lib_div::makeInstance(
-							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('cliUserGroup.usrCreatedMsg'),
-							$GLOBALS['LANG']->getLL('cliUserGroup.usrCreated'),
-							t3lib_FlashMessage::INFO,
-							FALSE
+						't3lib_FlashMessage',
+						$GLOBALS['LANG']->getLL('cliUserGroup.usrCreatedMsg'),
+						$GLOBALS['LANG']->getLL('cliUserGroup.usrCreated'),
+						t3lib_FlashMessage::INFO,
+						FALSE
 					);
 
 				} else {
 
 					$message = t3lib_div::makeInstance(
-							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
-							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-							t3lib_FlashMessage::ERROR,
-							FALSE
+						't3lib_FlashMessage',
+						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
+						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
+						t3lib_FlashMessage::ERROR,
+						FALSE
 					);
 
 				}
@@ -283,11 +283,11 @@ class tx_dlf_em {
 			} else {
 
 				$message = t3lib_div::makeInstance(
-						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
-						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-						t3lib_FlashMessage::ERROR,
-						FALSE
+					't3lib_FlashMessage',
+					$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
+					$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
+					t3lib_FlashMessage::ERROR,
+					FALSE
 				);
 
 			}
@@ -319,21 +319,21 @@ class tx_dlf_em {
 		if (empty($settings)) {
 
 			$settings = array (
-					'non_exclude_fields' => array (),
-					'tables_select' => array (
-							'tx_dlf_documents',
-							'tx_dlf_collections',
-							'tx_dlf_libraries',
-							'tx_dlf_structures',
-							'tx_dlf_metadata',
-							'tx_dlf_formats',
-							'tx_dlf_solrcores'
-					),
-					'tables_modify' => array (
-							'tx_dlf_documents',
-							'tx_dlf_collections',
-							'tx_dlf_libraries'
-					)
+				'non_exclude_fields' => array (),
+				'tables_select' => array (
+					'tx_dlf_documents',
+					'tx_dlf_collections',
+					'tx_dlf_libraries',
+					'tx_dlf_structures',
+					'tx_dlf_metadata',
+					'tx_dlf_formats',
+					'tx_dlf_solrcores'
+				),
+				'tables_modify' => array (
+					'tx_dlf_documents',
+					'tx_dlf_collections',
+					'tx_dlf_libraries'
+				)
 			);
 
 			// Set allowed exclude fields.
@@ -357,9 +357,9 @@ class tx_dlf_em {
 
 		// Check if group "_cli_dlf" exists and is not disabled.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,non_exclude_fields,tables_select,tables_modify,inc_access_lists,'.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
-				'be_groups',
-				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').t3lib_BEfunc::deleteClause('be_groups')
+			'uid,non_exclude_fields,tables_select,tables_modify,inc_access_lists,'.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
+			'be_groups',
+			'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').t3lib_BEfunc::deleteClause('be_groups')
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -383,11 +383,11 @@ class tx_dlf_em {
 				$grpUid = $resArray['uid'];
 
 				$message = t3lib_div::makeInstance(
-						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('cliUserGroup.grpOkayMsg'),
-						$GLOBALS['LANG']->getLL('cliUserGroup.grpOkay'),
-						t3lib_FlashMessage::OK,
-						FALSE
+					't3lib_FlashMessage',
+					$GLOBALS['LANG']->getLL('cliUserGroup.grpOkayMsg'),
+					$GLOBALS['LANG']->getLL('cliUserGroup.grpOkay'),
+					t3lib_FlashMessage::OK,
+					FALSE
 				);
 
 			} else {
@@ -395,19 +395,19 @@ class tx_dlf_em {
 				if (!$checkOnly) {
 
 					// Keep exisiting values and add the new ones.
-					$_non_exclude_fields = array_unique(array_merge($settings['non_exclude_fields'], $resArray['non_exclude_fields']));
+					$non_exclude_fields = array_unique(array_merge($settings['non_exclude_fields'], $resArray['non_exclude_fields']));
 
-					$_tables_select = array_unique(array_merge($settings['tables_select'], $resArray['tables_select']));
+					$tables_select = array_unique(array_merge($settings['tables_select'], $resArray['tables_select']));
 
-					$_tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
+					$tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
 
 					// Try to configure usergroup.
 					$data['be_groups'][$resArray['uid']] = array (
-							'non_exclude_fields' => implode(',', $_non_exclude_fields),
-							'tables_select' => implode(',', $_tables_select),
-							'tables_modify' => implode(',', $_tables_modify),
-							'inc_access_lists' => 1,
-							$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
+						'non_exclude_fields' => implode(',', $non_exclude_fields),
+						'tables_select' => implode(',', $tables_select),
+						'tables_modify' => implode(',', $tables_modify),
+						'inc_access_lists' => 1,
+						$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
 					);
 
 					tx_dlf_helper::processDB($data);
@@ -418,21 +418,21 @@ class tx_dlf_em {
 						$grpUid = $resArray['uid'];
 
 						$message = t3lib_div::makeInstance(
-								't3lib_FlashMessage',
-								$GLOBALS['LANG']->getLL('cliUserGroup.grpConfiguredMsg'),
-								$GLOBALS['LANG']->getLL('cliUserGroup.grpConfigured'),
-								t3lib_FlashMessage::INFO,
-								FALSE
+							't3lib_FlashMessage',
+							$GLOBALS['LANG']->getLL('cliUserGroup.grpConfiguredMsg'),
+							$GLOBALS['LANG']->getLL('cliUserGroup.grpConfigured'),
+							t3lib_FlashMessage::INFO,
+							FALSE
 						);
 
 					} else {
 
 						$message = t3lib_div::makeInstance(
-								't3lib_FlashMessage',
-								$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
-								$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-								t3lib_FlashMessage::ERROR,
-								FALSE
+							't3lib_FlashMessage',
+							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
+							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
+							t3lib_FlashMessage::ERROR,
+							FALSE
 						);
 
 					}
@@ -440,11 +440,11 @@ class tx_dlf_em {
 				} else {
 
 					$message = t3lib_div::makeInstance(
-							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
-							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-							t3lib_FlashMessage::ERROR,
-							FALSE
+						't3lib_FlashMessage',
+						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
+						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
+						t3lib_FlashMessage::ERROR,
+						FALSE
 					);
 
 				}
@@ -456,41 +456,41 @@ class tx_dlf_em {
 			if (!$checkOnly) {
 
 				// Try to create usergroup.
-				$_tempUid = uniqid('NEW');
+				$tempUid = uniqid('NEW');
 
-				$data['be_groups'][$_tempUid] = array (
-						'pid' => 0,
-						'title' => '_cli_dlf',
-						'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
-						'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
-						'tables_select' => implode(',', $settings['tables_select']),
-						'tables_modify' => implode(',', $settings['tables_modify']),
-						'inc_access_lists' => 1
+				$data['be_groups'][$tempUid] = array (
+					'pid' => 0,
+					'title' => '_cli_dlf',
+					'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
+					'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
+					'tables_select' => implode(',', $settings['tables_select']),
+					'tables_modify' => implode(',', $settings['tables_modify']),
+					'inc_access_lists' => 1
 				);
 
-				$_substUid = tx_dlf_helper::processDB($data);
+				$substUid = tx_dlf_helper::processDB($data);
 
 				// Check if creation was successful.
-				if (!empty($_substUid[$_tempUid])) {
+				if (!empty($substUid[$tempUid])) {
 
-					$grpUid = $_substUid[$_tempUid];
+					$grpUid = $substUid[$tempUid];
 
 					$message = t3lib_div::makeInstance(
-							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('cliUserGroup.grpCreatedMsg'),
-							$GLOBALS['LANG']->getLL('cliUserGroup.grpCreated'),
-							t3lib_FlashMessage::INFO,
-							FALSE
+						't3lib_FlashMessage',
+						$GLOBALS['LANG']->getLL('cliUserGroup.grpCreatedMsg'),
+						$GLOBALS['LANG']->getLL('cliUserGroup.grpCreated'),
+						t3lib_FlashMessage::INFO,
+						FALSE
 					);
 
 				} else {
 
 					$message = t3lib_div::makeInstance(
-							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
-							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-							t3lib_FlashMessage::ERROR,
-							FALSE
+						't3lib_FlashMessage',
+						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
+						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
+						t3lib_FlashMessage::ERROR,
+						FALSE
 					);
 
 				}
@@ -498,11 +498,11 @@ class tx_dlf_em {
 			} else {
 
 				$message = t3lib_div::makeInstance(
-						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
-						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-						t3lib_FlashMessage::ERROR,
-						FALSE
+					't3lib_FlashMessage',
+					$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
+					$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
+					t3lib_FlashMessage::ERROR,
+					FALSE
 				);
 
 			}
@@ -549,21 +549,21 @@ class tx_dlf_em {
 		if (is_executable(PATH_typo3.'cli_dispatch.phpsh')) {
 
 			$message = t3lib_div::makeInstance(
-					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('cliUserGroup.cliOkayMsg'),
-					$GLOBALS['LANG']->getLL('cliUserGroup.cliOkay'),
-					t3lib_FlashMessage::OK,
-					FALSE
+				't3lib_FlashMessage',
+				$GLOBALS['LANG']->getLL('cliUserGroup.cliOkayMsg'),
+				$GLOBALS['LANG']->getLL('cliUserGroup.cliOkay'),
+				t3lib_FlashMessage::OK,
+				FALSE
 			);
 
 		} else {
 
 			$message = t3lib_div::makeInstance(
-					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkayMsg'),
-					$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkay'),
-					t3lib_FlashMessage::ERROR,
-					FALSE
+				't3lib_FlashMessage',
+				$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkayMsg'),
+				$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkay'),
+				t3lib_FlashMessage::ERROR,
+				FALSE
 			);
 
 		}

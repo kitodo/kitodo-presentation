@@ -157,7 +157,11 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		// Check for typoscript configuration to prevent fatal error.
 		if (empty($this->conf['menuConf.'])) {
 
-			trigger_error('No typoscript configuration for table of contents available', E_USER_NOTICE);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_toc->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+
+			}
 
 			return $content;
 
@@ -174,15 +178,15 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		}
 
-		$_TSconfig = array ();
+		$TSconfig = array ();
 
-		$_TSconfig['special'] = 'userfunction';
+		$TSconfig['special'] = 'userfunction';
 
-		$_TSconfig['special.']['userFunc'] = 'tx_dlf_toc->makeMenuArray';
+		$TSconfig['special.']['userFunc'] = 'tx_dlf_toc->makeMenuArray';
 
-		$_TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['menuConf.'], $_TSconfig);
+		$TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['menuConf.'], $TSconfig);
 
-		$markerArray['###TOCMENU###'] = $this->cObj->HMENU($_TSconfig);
+		$markerArray['###TOCMENU###'] = $this->cObj->HMENU($TSconfig);
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 

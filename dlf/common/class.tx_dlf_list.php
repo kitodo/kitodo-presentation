@@ -92,11 +92,18 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function remove($position) {
 
+		// Save parameter for logging purposes.
+		$_position = $position;
+
 		$position = intval($position);
 
 		if ($position < 0 || $position >= $this->count) {
 
-			trigger_error('No valid list position for removal', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return;
 
@@ -122,12 +129,21 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function move($position, $steps) {
 
+		// Save parameters for logging purposes.
+		$_position = $position;
+
+		$_steps = $steps;
+
 		$position = intval($position);
 
 		// Check if list position is valid.
 		if ($position < 0 || $position >= $this->count) {
 
-			trigger_error('Invalid list position '.$position, E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return;
 
@@ -138,7 +154,11 @@ class tx_dlf_list implements t3lib_Singleton {
 		// Check if moving given amount of steps is possible.
 		if (($position + $steps) < 0 || ($position + $steps) >= $this->count) {
 
-			trigger_error('Element at position '.$position.' can not be moved '.$steps.' steps', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return;
 
@@ -273,6 +293,14 @@ class tx_dlf_list implements t3lib_Singleton {
 
 			$this->elements = $newOrder;
 
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
 		}
 
 	}
@@ -400,17 +428,21 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function __get($var) {
 
-		$_method = '_get'.ucfirst($var);
+		$method = '_get'.ucfirst($var);
 
-		if (!property_exists($this, $var) || !method_exists($this, $_method)) {
+		if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-			trigger_error('There is no get function for property '.$var, E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 			return;
 
 		} else {
 
-			return $this->$_method();
+			return $this->$method();
 
 		}
 
@@ -428,15 +460,19 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function __set($var, $value) {
 
-		$_method = '_set'.ucfirst($var);
+		$method = '_set'.ucfirst($var);
 
-		if (!property_exists($this, $var) || !method_exists($this, $_method)) {
+		if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-			trigger_error('There is no set function for property '.$var, E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 		} else {
 
-			$this->$_method($value);
+			$this->$method($value);
 
 		}
 

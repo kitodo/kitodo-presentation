@@ -128,7 +128,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Quit without doing anything if required variables are not set.
 		if (empty($this->conf['solrcore'])) {
 
-			trigger_error('Incomplete configuration for plugin '.get_class($this), E_USER_NOTICE);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_search->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+
+			}
 
 			return $content;
 
@@ -153,11 +157,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Set last query if applicable.
 			$lastQuery = '';
 
-			$_list = t3lib_div::makeInstance('tx_dlf_list');
+			$list = t3lib_div::makeInstance('tx_dlf_list');
 
-			if (!empty($_list->metadata['options']['source']) && $_list->metadata['options']['source'] == 'search') {
+			if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'search') {
 
-				$lastQuery = $_list->metadata['options']['select'];
+				$lastQuery = $list->metadata['options']['select'];
 
 			}
 
@@ -190,10 +194,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$numHits = count($query->response->docs);
 
-			$_list = array ();
-
 			// Set metadata for search.
-			$_metadata = array (
+			$listMetadata = array (
 				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
 				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $numHits)).'</p>',
 				'options' => array (
@@ -210,7 +212,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Get metadata configuration.
 			if ($numHits) {
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
 					'tx_dlf_metadata',
 					'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
@@ -223,7 +225,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				$sorting = array ();
 
-				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 					if ($resArray['is_listed']) {
 
@@ -395,7 +397,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$list->add(array_values($toplevel));
 
-			$list->metadata = $_metadata;
+			$list->metadata = $listMetadata;
 
 			$list->save();
 

@@ -56,7 +56,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 		// Quit without doing anything if required configuration variables are not set.
 		if (empty($this->conf['pages'])) {
 
-			trigger_error('Incomplete configuration for plugin '.get_class($this), E_USER_NOTICE);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_collection->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+
+			}
 
 			return $content;
 
@@ -201,9 +205,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				// Add feed link if applicable.
 				if (!empty($this->conf['targetFeed'])) {
 
-					$_img = '<img src="'.t3lib_extMgm::siteRelPath($this->extKey).'res/icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
+					$img = '<img src="'.t3lib_extMgm::siteRelPath($this->extKey).'res/icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
 
-					$markerArray[$resArray['uid']]['###FEED###'] = $this->pi_linkTP($_img, array ($this->prefixId => array ('collection' => $resArray['uid'])), FALSE, $this->conf['targetFeed']);
+					$markerArray[$resArray['uid']]['###FEED###'] = $this->pi_linkTP($img, array ($this->prefixId => array ('collection' => $resArray['uid'])), FALSE, $this->conf['targetFeed']);
 
 				} else {
 
@@ -215,21 +219,21 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				$markerArray[$resArray['uid']]['###DESCRIPTION###'] = $this->pi_RTEcssText($resArray['description']);
 
 				// Build statistic's output.
-				$_labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
+				$labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
 
-				$markerArray[$resArray['uid']]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$_labelTitles);
+				$markerArray[$resArray['uid']]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$labelTitles);
 
-				$_labelVolumes = $this->pi_getLL(($volumes[$resArray['uid']] > 1 ? 'volumes' : 'volume'), '', FALSE);
+				$labelVolumes = $this->pi_getLL(($volumes[$resArray['uid']] > 1 ? 'volumes' : 'volume'), '', FALSE);
 
-				$markerArray[$resArray['uid']]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$_labelVolumes);
+				$markerArray[$resArray['uid']]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$labelVolumes);
 
 			}
 
 			$entry = $this->cObj->getSubpart($this->template, '###ENTRY###');
 
-			foreach ($markerArray as $_markerArray) {
+			foreach ($markerArray as $marker) {
 
-				$content .= $this->cObj->substituteMarkerArray($entry, $_markerArray);
+				$content .= $this->cObj->substituteMarkerArray($entry, $marker);
 
 			}
 
@@ -271,9 +275,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 		// Process results.
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-			if (empty($_metadata)) {
+			if (empty($listMetadata)) {
 
-				$_metadata = array (
+				$listMetadata = array (
 					'label' => htmlspecialchars($resArray['collLabel']),
 					'description' => $this->pi_RTEcssText($resArray['collDesc']),
 					'options' => array (
@@ -379,7 +383,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		$list->add(array_values($toplevel));
 
-		$list->metadata = $_metadata;
+		$list->metadata = $listMetadata;
 
 		$list->save();
 

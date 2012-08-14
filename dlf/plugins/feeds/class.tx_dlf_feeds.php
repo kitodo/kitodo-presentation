@@ -77,7 +77,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 		}
 
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_libraries.label AS label',
 			'tx_dlf_libraries',
 			'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).tx_dlf_helper::whereClause('tx_dlf_libraries'),
@@ -86,11 +86,11 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 			'1'
 		);
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-			$_resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-			$channel->appendChild($rss->createElement('copyright', htmlspecialchars($_resArray['label'], ENT_NOQUOTES, 'UTF-8')));
+			$channel->appendChild($rss->createElement('copyright', htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
 
 		}
 

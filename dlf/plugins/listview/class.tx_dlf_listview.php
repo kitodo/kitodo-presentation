@@ -162,71 +162,71 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$element = $this->list->elements[$number];
 
-		foreach ($this->metadata as $_index_name => $_metaConf) {
+		foreach ($this->metadata as $index_name => $metaConf) {
 
-			$value = '';
+			$parsedValue = '';
 
-			$fieldwrap = $this->parseTS($_metaConf['wrap']);
+			$fieldwrap = $this->parseTS($metaConf['wrap']);
 
 			do {
 
-				$_value = @array_shift($element['metadata'][$_index_name]);
+				$value = @array_shift($element['metadata'][$index_name]);
 
 				// Link title to pageview.
-				if ($_index_name == 'title') {
+				if ($index_name == 'title') {
 
 					// Get title of parent document if needed.
-					if (empty($_value) && $this->conf['getTitle']) {
+					if (empty($value) && $this->conf['getTitle']) {
 
-						$_value = '['.tx_dlf_document::getTitle($element['uid'], TRUE).']';
+						$value = '['.tx_dlf_document::getTitle($element['uid'], TRUE).']';
 
 					}
 
 					// Set fake title if still not present.
-					if (empty($_value)) {
+					if (empty($value)) {
 
-						$_value = $this->pi_getLL('noTitle');
+						$value = $this->pi_getLL('noTitle');
 
 					}
 
-					$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $element['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+					$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $element['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
 				// Translate name of holding library.
-				} elseif ($_index_name == 'owner' && !empty($_value)) {
+				} elseif ($index_name == 'owner' && !empty($value)) {
 
-					$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
+					$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
 
 				// Translate document type.
-				} elseif ($_index_name == 'type' && !empty($_value)) {
+				} elseif ($index_name == 'type' && !empty($value)) {
 
-					$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']));
+					$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
 
 				// Translate ISO 639 language code.
-				} elseif ($_index_name == 'language' && !empty($_value)) {
+				} elseif ($index_name == 'language' && !empty($value)) {
 
-					$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
+					$value = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
 
-				} elseif (!empty($_value)) {
+				} elseif (!empty($value)) {
 
-					$_value = htmlspecialchars($_value);
-
-				}
-
-				$_value = $this->cObj->stdWrap($_value, $fieldwrap['value.']);
-
-				if (!empty($_value)) {
-
-					$value .= $_value;
+					$value = htmlspecialchars($value);
 
 				}
 
-			} while (count($element['metadata'][$_index_name]));
+				$value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
 
-			if (!empty($value)) {
+				if (!empty($value)) {
 
-				$field = $this->cObj->stdWrap(htmlspecialchars($_metaConf['label']), $fieldwrap['key.']);
+					$parsedValue .= $value;
 
-				$field .= $value;
+				}
+
+			} while (count($element['metadata'][$index_name]));
+
+			if (!empty($parsedValue)) {
+
+				$field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
+
+				$field .= $parsedValue;
 
 				$markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
 
@@ -276,9 +276,9 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
-		$_uniqId = uniqid($prefix.'-');
+		$uniqId = uniqid($prefix.'-');
 
-		$sorting .= '<label for="'.$_uniqId.'">'.$this->pi_getLL('orderBy', '', TRUE).'</label><select id="'.$_uniqId.'" name="'.$this->prefixId.'[order]" onchange="javascript:this.form.submit();"><option value=""></option>';
+		$sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('orderBy', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[order]" onchange="javascript:this.form.submit();"><option value=""></option>';
 
 		foreach ($this->sortables as $index_name => $label) {
 
@@ -310,71 +310,71 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			$markerArray['###SUBMETADATA###'] = '';
 
-			foreach ($this->metadata as $_index_name => $_metaConf) {
+			foreach ($this->metadata as $index_name => $metaConf) {
 
-				$value = '';
+				$parsedValue = '';
 
-				$fieldwrap = $this->parseTS($_metaConf['wrap']);
+				$fieldwrap = $this->parseTS($metaConf['wrap']);
 
 				do {
 
-					$_value = @array_shift($subpart['metadata'][$_index_name]);
+					$value = @array_shift($subpart['metadata'][$index_name]);
 
 					// Link title to pageview.
-					if ($_index_name == 'title') {
+					if ($index_name == 'title') {
 
 						// Get title of parent document if needed.
-						if (empty($_value) && $this->conf['getTitle']) {
+						if (empty($value) && $this->conf['getTitle']) {
 
-							$_value = '['.tx_dlf_document::getTitle($subpart['uid'], TRUE).']';
+							$value = '['.tx_dlf_document::getTitle($subpart['uid'], TRUE).']';
 
 						}
 
 						// Set fake title if still not present.
-						if (empty($_value)) {
+						if (empty($value)) {
 
-							$_value = $this->pi_getLL('noTitle');
+							$value = $this->pi_getLL('noTitle');
 
 						}
 
-						$_value = $this->pi_linkTP(htmlspecialchars($_value), array ($this->prefixId => array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+						$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
 					// Translate name of holding library.
-					} elseif ($_index_name == 'owner' && !empty($_value)) {
+					} elseif ($index_name == 'owner' && !empty($value)) {
 
-						$_value = htmlspecialchars(tx_dlf_helper::translate($_value, 'tx_dlf_libraries', $this->conf['pages']));
+						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
 
 					// Translate document type.
-					} elseif ($_index_name == 'type' && !empty($_value)) {
+					} elseif ($index_name == 'type' && !empty($value)) {
 
-						$_value = $this->pi_getLL($_value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+						$value = $this->pi_getLL($value, tx_dlf_helper::translate($_value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
 
 					// Translate ISO 639 language code.
-					} elseif ($_index_name == 'language' && !empty($_value)) {
+					} elseif ($index_name == 'language' && !empty($value)) {
 
-						$_value = htmlspecialchars(tx_dlf_helper::getLanguageName($_value));
+						$value = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
 
-					} elseif (!empty($_value)) {
+					} elseif (!empty($value)) {
 
-						$_value = htmlspecialchars($_value);
-
-					}
-
-					$_value = $this->cObj->stdWrap($_value, $fieldwrap['value.']);
-
-					if (!empty($_value)) {
-
-						$value .= $_value;
+						$value = htmlspecialchars($value);
 
 					}
 
-				} while (count($subpart['metadata'][$_index_name]));
+					$value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
 
-				if (!empty($value)) {
+					if (!empty($value)) {
 
-					$field = $this->cObj->stdWrap(htmlspecialchars($_metaConf['label']), $fieldwrap['key.']);
+						$parsedValue .= $value;
 
-					$field .= $value;
+					}
+
+				} while (count($subpart['metadata'][$index_name]));
+
+				if (!empty($parsedValue)) {
+
+					$field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
+
+					$field .= $parsedValue;
 
 					$markerArray['###SUBMETADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
 
@@ -456,11 +456,11 @@ class tx_dlf_listview extends tx_dlf_plugin {
 			$this->list->sort($this->piVars['order'], TRUE);
 
 			// Update list's metadata.
-			$_metadata = $this->list->metadata;
+			$listMetadata = $this->list->metadata;
 
-			$_metadata['options']['order'] = $this->piVars['order'];
+			$listMetadata['options']['order'] = $this->piVars['order'];
 
-			$this->list->metadata = $_metadata;
+			$this->list->metadata = $listMetadata;
 
 			// Save updated list.
 			$this->list->save();

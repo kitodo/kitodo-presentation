@@ -54,11 +54,11 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Add localization file for OpenLayers.
 		if ($GLOBALS['TSFE']->lang) {
 
-			$_langFile = t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js';
+			$langFile = t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js';
 
-			if (file_exists($_langFile)) {
+			if (file_exists($langFile)) {
 
-				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_olJS_lang'] = '	<script type="text/javascript" src="'.$_langFile.'"></script>';
+				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_olJS_lang'] = '	<script type="text/javascript" src="'.$langFile.'"></script>';
 
 			}
 
@@ -82,6 +82,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	 */
 	protected function getImageData($page = 0) {
 
+		// Save parameter for logging purposes.
+		$_page = $page;
+
 		// Cast to integer for security reasons.
 		$page = intval($page);
 
@@ -94,32 +97,36 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$imageData = array ();
 
-		$_fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
+		$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
 
-		foreach ($_fileGrps as $_fileGrp) {
+		foreach ($fileGrps as $fileGrp) {
 
-			$_fileGrp = strtolower($_fileGrp);
+			$fileGrp = strtolower($fileGrp);
 
-			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$_fileGrp])) {
+			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
 
-				$_fileGrpUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$_fileGrp]);
+				$fileGrpUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
 				// Check file's existence.
-				$_headers = @get_headers($_fileGrpUrl);
+				$headers = @get_headers($fileGrpUrl);
 
-				if (is_array($_headers) && preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/', $_headers[0])) {
+				if (is_array($headers) && preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/', $headers[0])) {
 
-					$_fileGrpSize = getimagesize($_fileGrpUrl);
+					$fileGrpSize = getimagesize($fileGrpUrl);
 
 					$imageData[] = array (
-						'width' => $_fileGrpSize[0],
-						'height' => $_fileGrpSize[1],
-						'url' => $_fileGrpUrl
+						'width' => $fileGrpSize[0],
+						'height' => $fileGrpSize[1],
+						'url' => $fileGrpUrl
 					);
 
 				} else {
 
-					trigger_error('File "'.$_fileGrpUrl.'" not found', E_USER_WARNING);
+					if (TYPO3_DLOG) {
+
+						t3lib_div::devLog('[tx_dlf_pageview->getImageData('.$_page.')] File not found: "'.$fileGrpUrl.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+					}
 
 				}
 
@@ -231,13 +238,13 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		}
 
 		$viewer .= '
-	<script type="text/javascript">
+		<script type="text/javascript">
 		/* <![CDATA[ */
 		dlfViewer = new Viewer();
-		'.implode("\n		", $addImages).'
+		'.implode("\n", $addImages).'
 		dlfViewer.run();
 		/* ]]> */
-	</script>';
+		</script>';
 
 		return $viewer;
 

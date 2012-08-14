@@ -9,7 +9,6 @@ CREATE TABLE tx_dlf_formats (
     cruser_id int(11) DEFAULT '0' NOT NULL,
     deleted tinyint(4) DEFAULT '0' NOT NULL,
     type tinytext NOT NULL,
-    other_type tinyint(4) DEFAULT '0' NOT NULL,
     root tinytext NOT NULL,
     namespace text NOT NULL,
     class text NOT NULL,
@@ -18,4 +17,4 @@ CREATE TABLE tx_dlf_formats (
     KEY parent (pid)
 );
 
-INSERT INTO tx_dlf_formats VALUES ('1', '0', '0', '0', '0', '0', 'MODS', '0', 'mods', 'http://www.loc.gov/mods/v3', 'tx_dlf_mods');
+INSERT INTO tx_dlf_formats VALUES ('1', '0', '0', '0', '0', '0', 'MODS', 'mods', 'http://www.loc.gov/mods/v3', 'tx_dlf_mods');

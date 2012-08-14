@@ -59,34 +59,10 @@ class tx_dlf_tcemain {
 				// Field post-processing for table "tx_dlf_documents".
 				case 'tx_dlf_documents':
 
-					// Set sorting fields if empty.
+					// Set sorting field if empty.
 					if (empty($fieldArray['title_sorting']) && !empty($fieldArray['title'])) {
 
 						$fieldArray['title_sorting'] = $fieldArray['title'];
-
-					}
-
-					if (empty($fieldArray['author_sorting']) && !empty($fieldArray['author'])) {
-
-						$fieldArray['author_sorting'] = $fieldArray['author'];
-
-					}
-
-					if (empty($fieldArray['year_sorting']) && !empty($fieldArray['year'])) {
-
-						$fieldArray['year_sorting'] = str_ireplace('x', '5', preg_replace('/[^\d.x]/i', '', (string) $fieldArray['year']));
-
-						if (strpos($fieldArray['year_sorting'], '.') || strlen($fieldArray['year_sorting']) < 3) {
-
-							$fieldArray['year_sorting'] = ((intval(trim($fieldArray['year_sorting'], '.')) - 1) * 100) + 50;
-
-						}
-
-					}
-
-					if (empty($fieldArray['place_sorting']) && !empty($fieldArray['place'])) {
-
-						$fieldArray['place_sorting'] = preg_replace('/[[:punct:]]/', '', (string) $fieldArray['place']);
 
 					}
 
@@ -119,12 +95,12 @@ class tx_dlf_tcemain {
 
 					// Get number of existing cores.
 					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'*',
-					'tx_dlf_solrcores',
-					'',
-					'',
-					'',
-					''
+						'*',
+						'tx_dlf_solrcores',
+						'',
+						'',
+						'',
+						''
 					);
 
 					// Get first unused core number.
@@ -155,10 +131,10 @@ class tx_dlf_tcemain {
 					$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=.&dataDir=dlfCore'.$coreNumber;
 
 					$context = stream_context_create(array (
-							'http' => array (
-									'method' => 'GET',
-									'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-							)
+						'http' => array (
+							'method' => 'GET',
+							'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
+						)
 					));
 
 					$response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
@@ -178,7 +154,11 @@ class tx_dlf_tcemain {
 
 					}
 
-					trigger_error('Could not create new Solr core "dlfCore'.$coreNumber.'"', E_USER_WARNING);
+					if (TYPO3_DLOG) {
+
+						t3lib_div::devLog('[tx_dlf_tcemain->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
+
+					}
 
 					$fieldArray = NULL;
 
@@ -206,12 +186,12 @@ class tx_dlf_tcemain {
 
 							// Get current index name.
 							$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-									$table.'.index_name AS index_name',
-									$table,
-									$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
-									'',
-									'',
-									'1'
+								$table.'.index_name AS index_name',
+								$table,
+								$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+								'',
+								'',
+								'1'
 							);
 
 							if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -225,7 +205,11 @@ class tx_dlf_tcemain {
 
 						}
 
-						trigger_error('Prevented change of "index_name" for UID '.intval($id).' in table "'.htmlspecialchars($table).'"', E_USER_NOTICE);
+						if (TYPO3_DLOG) {
+
+							t3lib_div::devLog('[tx_dlf_tcemain->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_NOTICE, $fieldArray);
+
+						}
 
 					}
 
@@ -252,7 +236,7 @@ class tx_dlf_tcemain {
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, $pObj) {
 
-		if ($status == "update") {
+		if ($status == 'update') {
 
 			switch ($table) {
 
@@ -264,12 +248,12 @@ class tx_dlf_tcemain {
 
 						// Get Solr core.
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'tx_dlf_solrcores.uid',
-								'tx_dlf_solrcores,tx_dlf_documents',
-								'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-								'',
-								'',
-								'1'
+							'tx_dlf_solrcores.uid',
+							'tx_dlf_solrcores,tx_dlf_documents',
+							'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+							'',
+							'',
+							'1'
 						);
 
 						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -299,7 +283,11 @@ class tx_dlf_tcemain {
 
 								} else {
 
-									trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
+									if (TYPO3_DLOG) {
+
+										t3lib_div::devLog('[tx_dlf_tcemain->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
+
+									}
 
 								}
 
@@ -336,12 +324,12 @@ class tx_dlf_tcemain {
 
 			// Get Solr core.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_solrcores.uid',
-					'tx_dlf_solrcores,tx_dlf_documents',
-					'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-					'',
-					'',
-					'1'
+				'tx_dlf_solrcores.uid',
+				'tx_dlf_solrcores,tx_dlf_documents',
+				'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+				'',
+				'',
+				'1'
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -380,7 +368,11 @@ class tx_dlf_tcemain {
 
 						} else {
 
-							trigger_error('Failed to reindex document with UID '.$id, E_USER_WARNING);
+							if (TYPO3_DLOG) {
+
+								t3lib_div::devLog('[tx_dlf_tcemain->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+							}
 
 						}
 

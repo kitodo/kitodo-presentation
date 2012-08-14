@@ -147,13 +147,13 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 		// Set $this->MOD_MENU array here or leave empty.
 
 		/* Example code:
-		 $this->MOD_MENU = array (
-		 		'function' => array (
-		 				'1' => $GLOBALS['LANG']->getLL('function1'),
-		 				'2' => $GLOBALS['LANG']->getLL('function2'),
-		 				'3' => $GLOBALS['LANG']->getLL('function3'),
-		 		)
-		 ); */
+		$this->MOD_MENU = array (
+			'function' => array (
+				'1' => $GLOBALS['LANG']->getLL('function1'),
+				'2' => $GLOBALS['LANG']->getLL('function2'),
+				'3' => $GLOBALS['LANG']->getLL('function3'),
+			)
+		); */
 
 	}
 
@@ -182,17 +182,15 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 		<script type="text/javascript">
 		script_ended = 0;
 		function jumpToUrl(URL)	{
-		document.location = URL;
-	}
-	</script>
-	';
+			document.location = URL;
+		}
+		</script>';
 
 		// Add Javascript for convenient module switch.
 		$this->doc->postCode .= '
 		<script type="text/javascript">
 		script_ended = 1;
-		</script>
-		';
+		</script>';
 
 		// Render output.
 		$this->content .= $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
@@ -233,7 +231,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 }
 
 /* No xclasses for abstract classes!
- if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php'])	{
 include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php']);
 }
 */

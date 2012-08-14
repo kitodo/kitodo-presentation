@@ -109,7 +109,6 @@ CREATE TABLE tx_dlf_formats (
     cruser_id int(11) DEFAULT '0' NOT NULL,
     deleted tinyint(4) DEFAULT '0' NOT NULL,
     type tinytext NOT NULL,
-    other_type tinyint(4) DEFAULT '0' NOT NULL,
     root tinytext NOT NULL,
     namespace text NOT NULL,
     class text NOT NULL,
