@@ -36,6 +36,8 @@ $TCA['tx_dlf_documents'] = array (
 		'delete'	=> 'deleted',
 		'enablecolumns' => array (
 			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',

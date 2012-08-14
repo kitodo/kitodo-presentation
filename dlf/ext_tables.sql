@@ -9,6 +9,8 @@ CREATE TABLE tx_dlf_documents (
     cruser_id int(11) DEFAULT '0' NOT NULL,
     deleted tinyint(4) DEFAULT '0' NOT NULL,
     hidden tinyint(4) DEFAULT '0' NOT NULL,
+    starttime int(11) DEFAULT '0' NOT NULL,
+    endtime int(11) DEFAULT '0' NOT NULL,
     fe_group varchar(100) DEFAULT '' NOT NULL,
     prod_id tinytext NOT NULL,
     location text NOT NULL,
