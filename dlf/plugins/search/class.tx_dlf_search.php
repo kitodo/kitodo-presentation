@@ -243,6 +243,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
+			// Keep track of relevance.
+			$i = 0;
+
 			// Process results.
 			foreach ($query->response->docs as $doc) {
 
@@ -271,6 +274,10 @@ class tx_dlf_search extends tx_dlf_plugin {
 					}
 
 				}
+
+				// Add relevance to sorting values.
+				$docSorting['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
+
 				// Split toplevel documents from subparts.
 				if ($doc->toplevel == 1) {
 
@@ -298,6 +305,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 					}
 
 				}
+
+				$i++;
 
 			}
 

@@ -278,11 +278,18 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$uniqId = uniqid($prefix.'-');
 
-		$sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('orderBy', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[order]" onchange="javascript:this.form.submit();"><option value=""></option>';
+		$sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('orderBy', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[order]" onchange="javascript:this.form.submit();">';
+
+		// Add relevance sorting if this is a search result list.
+		if ($this->list->metadata['options']['source'] == 'search') {
+
+			$sorting .= '<option value="relevance"'.(($this->list->metadata['options']['order'] == 'relevance') ? ' selected="selected"' : '').'>'.$this->pi_getLL('relevance', '', TRUE).'</option>';
+
+		}
 
 		foreach ($this->sortables as $index_name => $label) {
 
-			$sorting .= '<option value="'.$index_name.'"'.(($this->piVars['order'] == $index_name) ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
+			$sorting .= '<option value="'.$index_name.'"'.(($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
 
 		}
 
