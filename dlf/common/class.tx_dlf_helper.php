@@ -325,14 +325,37 @@ class tx_dlf_helper {
 
 		if (TYPO3_MODE === 'FE') {
 
-			// TODO: Anpassen! (aus typo3/init.php übernommen)
-			$userObj = t3lib_div::makeInstance('t3lib_beUserAuth');
+			// Check for existing backend login.
+			if ($GLOBALS['TSFE']->beUserLogin > 0 && isset($GLOBALS['BE_USER'])) {
 
-			$userObj->start();
+				return $GLOBALS['BE_USER'];
 
-			$userObj->backendCheckLogin();
+			} elseif (!isset($_COOKIE['be_typo_user'])) {
 
-			return $userObj;
+				// Initialize backend session with CLI user's rights.
+				$userObj = t3lib_div::makeInstance('t3lib_beUserAuth');
+
+				$userObj->dontSetCookie = TRUE;
+
+				$userObj->start();
+
+				$userObj->setBeUserByName('_cli_dlf');
+
+				$userObj->backendCheckLogin();
+
+				return $userObj;
+
+			} else {
+
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_helper->getBeUser()] Could not determine current user\'s login status', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
+
+				return;
+
+			}
 
 		} elseif (TYPO3_MODE === 'BE') {
 
