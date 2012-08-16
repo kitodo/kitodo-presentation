@@ -194,17 +194,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$numHits = count($query->response->docs);
 
-			// Set metadata for search.
-			$listMetadata = array (
-				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
-				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $numHits)).'</p>',
-				'options' => array (
-					'source' => 'search',
-					'select' => $this->piVars['query'],
-					'order' => 'relevance'
-				)
-			);
-
 			$toplevel = array ();
 
 			$checks = array ();
@@ -406,7 +395,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$list->add(array_values($toplevel));
 
-			$list->metadata = $listMetadata;
+			// Set metadata for search.
+			$list->metadata = array (
+				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
+				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $numHits, count($toplevel))).'</p>',
+				'options' => array (
+					'source' => 'search',
+					'select' => $this->piVars['query'],
+					'order' => 'relevance'
+				)
+			);
 
 			$list->save();
 
