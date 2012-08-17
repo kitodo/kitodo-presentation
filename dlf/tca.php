@@ -389,7 +389,7 @@ $TCA['tx_dlf_structures'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,nospace,alphanum_x',
+				'eval' => 'required,nospace,alphanum_x,uniqueInPid',
 			),
 		),
 		'oai_name' => array (
@@ -488,7 +488,7 @@ $TCA['tx_dlf_metadata'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,nospace,alphanum_x',
+				'eval' => 'required,nospace,alphanum_x,uniqueInPid',
 			),
 		),
 		'encoded' => array (
@@ -706,7 +706,7 @@ $TCA['tx_dlf_solrcores'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,trim,uniqueInPid',
+				'eval' => 'required,trim',
 			),
 		),
 		'index_name' => array (
@@ -799,7 +799,7 @@ $TCA['tx_dlf_collections'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,trim,uniqueInPid',
+				'eval' => 'required,trim',
 			),
 		),
 		'index_name' => array (
@@ -959,7 +959,7 @@ $TCA['tx_dlf_libraries'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,trim,uniqueInPid',
+				'eval' => 'required,trim',
 			),
 		),
 		'index_name' => array (
