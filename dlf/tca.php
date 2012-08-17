@@ -41,6 +41,28 @@ $TCA['tx_dlf_documents'] = array (
 				'default' => 0,
 			),
 		),
+		'starttime' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.starttime',
+			'config' => array (
+				'type' => 'input',
+				'size' => '13',
+				'max' => '20',
+				'eval' => 'datetime',
+				'default' => '0',
+			),
+		),
+		'endtime' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.endtime',
+			'config' => array (
+				'type' => 'input',
+				'size' => '13',
+				'max' => '20',
+				'eval' => 'datetime',
+				'default' => '0',
+			),
+		),
 		'fe_group' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.fe_group',
@@ -287,11 +309,12 @@ $TCA['tx_dlf_documents'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author, year, place, structure;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author, year, place, structure;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;3;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'title_sorting', 'canNotCollapse' => 1),
 		'2' => array ('showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
+		'3' => array ('showitem' => 'starttime, endtime', 'canNotCollapse' => 1),
 	),
 );
 
@@ -634,13 +657,6 @@ $TCA['tx_dlf_formats'] = array (
 				'eval' => 'required,nospace,alphanum_x,unique',
 			),
 		),
-		'other_type' => array (
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.other_type',
-			'config' => array (
-				'type' => 'check',
-				'default' => 0,
-			),
-		),
 		'root' => array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.root',
 			'config' => array (
@@ -670,7 +686,7 @@ $TCA['tx_dlf_formats'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, other, root;;;;2-2-2, namespace, class;;;;3-3-3'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),

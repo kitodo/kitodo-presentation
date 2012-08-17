@@ -116,7 +116,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		}
 
 		// Build page selector.
-		$_uniqId = uniqid($prefix.'-');
+		$uniqId = uniqid($prefix.'-');
 
 		$markerArray['###PAGESELECT###'] = '<form action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" class="'.$prefix.'-pageselect" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
 
@@ -130,7 +130,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		}
 
-		$markerArray['###PAGESELECT###'] .= '<label for="'.$_uniqId.'">'.$this->pi_getLL('selectPage', '', TRUE).'</label><select id="'.$_uniqId.'" name="'.$this->prefixId.'[page]" onchange="javascript:this.form.submit();">';
+		$markerArray['###PAGESELECT###'] .= '<label for="'.$uniqId.'">'.$this->pi_getLL('selectPage', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[page]" onchange="javascript:this.form.submit();">';
 
 		for ($i = 1; $i <= $this->doc->numPages; $i++) {
 

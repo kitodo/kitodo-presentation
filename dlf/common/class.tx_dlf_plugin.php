@@ -155,7 +155,11 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 			if (!$this->doc->ready) {
 
 				// Destroy the incomplete object.
-				trigger_error('Failed to load document with UID '.$this->piVars['id'], E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 				$this->doc = NULL;
 
@@ -170,12 +174,12 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			// Get UID of document with given record identifier.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_documents.uid',
-					'tx_dlf_documents',
-					'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
-					'',
-					'',
-					'1'
+				'tx_dlf_documents.uid',
+				'tx_dlf_documents',
+				'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
+				'',
+				'',
+				'1'
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
@@ -193,13 +197,21 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			} else {
 
-				trigger_error('Failed to load document with record ID '.$this->piVars['recordId'], E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 			}
 
 		} else {
 
-			trigger_error('No UID or PID given for document', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_plugin->loadDocument()] Invalid UID "'.$this->piVars['id'].'" or PID "'.$this->conf['pages'].'" for document loading', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 		}
 
@@ -304,7 +316,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 }
 
 /* No xclasses for abstract classes!
- if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php'])	{
 include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php']);
 }
 */

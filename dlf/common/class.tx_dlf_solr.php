@@ -93,6 +93,9 @@ class tx_dlf_solr {
 	 */
 	public static function solrConnect($core = 0) {
 
+		// Save parameter for logging purposes.
+		$_core = $core;
+
 		// Load class.
 		if (!class_exists('Apache_Solr_Service')) {
 
@@ -122,7 +125,11 @@ class tx_dlf_solr {
 
 			if (empty($core)) {
 
-				trigger_error('Could not find Solr core with UID '.$core, E_USER_NOTICE);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_solr->solrConnect('.$_core.')] Invalid UID "'.$_core.'" for Apache Solr core', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 				return;
 
@@ -146,7 +153,11 @@ class tx_dlf_solr {
 
 		} else {
 
-			trigger_error('Could not connect to Solr server with core "'.$core.'"', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_solr->solrConnect('.$_core.')] Could not connect to Apache Solr server with core "'.$core.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return;
 
@@ -191,7 +202,7 @@ class tx_dlf_solr {
 }
 
 /* No xclasses for static classes!
- if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php'])	{
 include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php']);
 }
 */

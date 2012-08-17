@@ -89,15 +89,19 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	protected function deleteExpiredTokens() {
 
 		// Delete expired resumption tokens.
-		$_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
 			'tx_dlf_tokens',
 			'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.tstamp<'.intval($GLOBALS['EXEC_TIME'] - $this->conf['expired'])
 		);
 
-		if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) === -1) {
+		if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) === -1) {
 
 			// Deletion failed.
-			trigger_error('Could not delete expired resumption tokens', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 		}
 
@@ -133,7 +137,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	 */
 	protected function getUrlParams() {
 
-		$_allowedParams = array (
+		$allowedParams = array (
 			'verb',
 			'identifier',
 			'metadataPrefix',
@@ -147,11 +151,11 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$this->piVars = array ();
 
 		// Set only allowed parameters.
-		foreach ($_allowedParams as $_param) {
+		foreach ($allowedParams as $param) {
 
-			if (t3lib_div::_GP($_param)) {
+			if (t3lib_div::_GP($param)) {
 
-				$this->piVars[$_param] = t3lib_div::_GP($_param);
+				$this->piVars[$param] = t3lib_div::_GP($param);
 
 			}
 
@@ -223,7 +227,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		if (!empty($metadata['partof'])) {
 
-			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_documents.record_id',
 				'tx_dlf_documents',
 				'tx_dlf_documents.uid='.intval($metadata['partof']).tx_dlf_helper::whereClause('tx_dlf_documents'),
@@ -232,11 +236,11 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				'1'
 			);
 
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-				$_partof = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+				$partof = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-				$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:relation', htmlspecialchars($_partof['record_id'], ENT_NOQUOTES, 'UTF-8')));
+				$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:relation', htmlspecialchars($partof['record_id'], ENT_NOQUOTES, 'UTF-8')));
 
 			}
 
@@ -359,12 +363,21 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			} else {
 
-				trigger_error('No METS node found in file "'.$location.'"', E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
+
+				}
+
 			}
 
 		} else {
 
-			trigger_error('Could not load file "'.$location.'"', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
+
+			}
 
 		}
 
@@ -411,26 +424,26 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			// Resolve "EXT:" prefix in file path.
 			if (substr($this->conf['stylesheet'], 0, 4) == 'EXT:') {
 
-				list ($_extKey, $_filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
+				list ($extKey, $filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
 
-				if (t3lib_extMgm::isLoaded($_extKey)) {
+				if (t3lib_extMgm::isLoaded($extKey)) {
 
-					$this->conf['stylesheet'] = t3lib_extMgm::siteRelPath($_extKey).$_filePath;
+					$this->conf['stylesheet'] = t3lib_extMgm::siteRelPath($extKey).$filePath;
 
 				}
 
 			}
 
-			$_stylesheet = t3lib_div::locationHeaderUrl($this->conf['stylesheet']);
+			$stylesheet = t3lib_div::locationHeaderUrl($this->conf['stylesheet']);
 
 		} else {
 
 			// Use default stylesheet if no custom stylesheet is given.
-			$_stylesheet = t3lib_div::locationHeaderUrl(t3lib_extMgm::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
+			$stylesheet = t3lib_div::locationHeaderUrl(t3lib_extMgm::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
 
 		}
 
-		$this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.htmlspecialchars($_stylesheet, ENT_NOQUOTES, 'UTF-8').'"'));
+		$this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.htmlspecialchars($stylesheet, ENT_NOQUOTES, 'UTF-8').'"'));
 
 		// Create root element.
 		$root = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'OAI-PMH');
@@ -545,7 +558,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	protected function resume() {
 
 		// Get resumption token.
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_tokens.options AS options',
 			'tx_dlf_tokens',
 			'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.token='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['resumptionToken'], 'tx_dlf_tokens'),
@@ -554,16 +567,16 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			'1'
 		);
 
-		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 			// No resumption token found or resumption token expired.
 			return $this->error('badResumptionToken');
 
 		}
 
-		$_resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+		$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-		$resultSet = unserialize($_resArray['options']);
+		$resultSet = unserialize($resArray['options']);
 
 		$complete = FALSE;
 
@@ -630,9 +643,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			} else {
 
 				// Add sets.
-				foreach (explode(' ', $resArray['collections']) as $_spec) {
+				foreach (explode(' ', $resArray['collections']) as $spec) {
 
-					$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+					$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 				}
 
@@ -692,7 +705,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				'metadataPrefix' => $resultSet->metadata['metadataPrefix'],
 			);
 
-			$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+			$result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				'tx_dlf_tokens',
 				array (
 					'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -702,13 +715,17 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				)
 			);
 
-			if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
+			if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 
 				$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
 
 			} else {
 
-				trigger_error('Could not create resumption token', E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_oai->resume()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 			}
 
@@ -763,7 +780,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			}
 
-			$_result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
 				'tx_dlf_documents',
 				'tx_dlf_relations',
@@ -774,13 +791,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				'1'
 			);
 
-			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 				return $this->error('idDoesNotExist');
 
 			} else {
 
-				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 				// Check for required fields.
 				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
@@ -815,9 +832,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				} else {
 
-					foreach (explode(' ', $resArray['collections']) as $_spec) {
+					foreach (explode(' ', $resArray['collections']) as $spec) {
 
-						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
 
@@ -879,7 +896,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		// Get repository name and administrative contact.
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_libraries.oai_label AS oai_label,tx_dlf_libraries.contact AS contact',
 			'tx_dlf_libraries',
 			'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).tx_dlf_helper::whereClause('tx_dlf_libraries'),
@@ -888,12 +905,12 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			''
 		);
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 			// Get earliest datestamp.
-			$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_documents.tstamp AS tstamp',
 				'tx_dlf_documents',
 				'tx_dlf_documents.pid='.intval($this->conf['pages']),
@@ -902,17 +919,21 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				'1'
 			);
 
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-				list ($_timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($_result);
+				list ($timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
-				$datestamp = gmdate('Y-m-d\TH:i:s\Z', $_timestamp);
+				$datestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
 
 			} else {
 
 				$datestamp = '0000-00-00T00:00:00Z';
 
-				trigger_error('No records found with PID '.$this->conf['pages'], E_USER_WARNING);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "'.$this->conf['pages'].'"', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+
+				}
 
 			}
 
@@ -937,7 +958,11 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		} else {
 
-			trigger_error('OAI interface needs more configuration', E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			exit;
 
@@ -997,32 +1022,32 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			if (!empty($this->piVars['set'])) {
 
 				// Get set information.
-				$_additionalWhere = '';
+				$additionalWhere = '';
 
 				if (!$this->conf['show_userdefined']) {
 
-					$_additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
+					$additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
 
 				}
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_dlf_collections.uid AS uid',
 					'tx_dlf_collections',
-					'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'], 'tx_dlf_collections').$_additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
+					'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'], 'tx_dlf_collections').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
 					'',
 					'',
 					'1'
 				);
 
-				if (!$GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+				if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 					return $this->error('noSetHierarchy');
 
 				} else {
 
-					$_resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+					$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-					$where .= ' AND tx_dlf_collections.uid='.intval($_resArray['uid']);
+					$where .= ' AND tx_dlf_collections.uid='.intval($resArray['uid']);
 
 				}
 
@@ -1031,9 +1056,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			// Check "from" for valid value.
 			if (!empty($this->piVars['from'])) {
 
-				if (is_array($_from = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($_from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+				if (is_array($from = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
 
-					$_from = gmmktime($_from['tm_hour'], $_from['tm_min'], $_from['tm_sec'], $_from['tm_mon'] + 1, $_from['tm_mday'], $_from['tm_year'] + 1900);
+					$from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1, $from['tm_mday'], $from['tm_year'] + 1900);
 
 				} else {
 
@@ -1041,16 +1066,16 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				}
 
-				$where .= ' AND tx_dlf_documents.tstamp>='.intval($_from);
+				$where .= ' AND tx_dlf_documents.tstamp>='.intval($from);
 
 			}
 
 			// Check "until" for valid value.
 			if (!empty($this->piVars['until'])) {
 
-				if (is_array($_until = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($_until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+				if (is_array($until = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
 
-					$_until = gmmktime($_until['tm_hour'], $_until['tm_min'], $_until['tm_sec'], $_until['tm_mon'] + 1, $_until['tm_mday'], $_until['tm_year'] + 1900);
+					$until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1, $until['tm_mday'], $until['tm_year'] + 1900);
 
 				} else {
 
@@ -1058,13 +1083,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				}
 
-				if (!empty($_from) && $_from > $_until) {
+				if (!empty($from) && $from > $until) {
 
 					return $this->error('badArgument');
 
 				}
 
-				$where .= ' AND tx_dlf_documents.tstamp<='.intval($_until);
+				$where .= ' AND tx_dlf_documents.tstamp<='.intval($until);
 
 			}
 
@@ -1170,9 +1195,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				} else {
 
 					// Add sets.
-					foreach (explode(' ', $resArray['collections']) as $_spec) {
+					foreach (explode(' ', $resArray['collections']) as $spec) {
 
-						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
 
@@ -1199,7 +1224,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_dlf_tokens',
 					array (
 						'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -1209,7 +1234,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					)
 				);
 
-				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
+				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 
 					$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
 
@@ -1223,7 +1248,11 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				} else {
 
-					trigger_error('Could not create resumption token', E_USER_ERROR);
+					if (TYPO3_DLOG) {
+
+						t3lib_div::devLog('[tx_dlf_oai->verbListIdentifiers()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+					}
 
 				}
 
@@ -1369,32 +1398,32 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			if (!empty($this->piVars['set'])) {
 
 				// Get set information.
-				$_additionalWhere = '';
+				$additionalWhere = '';
 
 				if (!$this->conf['show_userdefined']) {
 
-					$_additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
+					$additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
 
 				}
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_dlf_collections.uid AS uid',
 					'tx_dlf_collections',
-					'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'], 'tx_dlf_collections').$_additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
+					'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'], 'tx_dlf_collections').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
 					'',
 					'',
 					'1'
 				);
 
-				if (!$GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+				if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 					return $this->error('noSetHierarchy');
 
 				} else {
 
-					$_resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+					$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-					$where .= ' AND tx_dlf_collections.uid='.intval($_resArray['uid']);
+					$where .= ' AND tx_dlf_collections.uid='.intval($resArray['uid']);
 
 				}
 
@@ -1403,9 +1432,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			// Check "from" for valid value.
 			if (!empty($this->piVars['from'])) {
 
-				if (is_array($_from = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($_from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+				if (is_array($from = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
 
-					$_from = gmmktime($_from['tm_hour'], $_from['tm_min'], $_from['tm_sec'], $_from['tm_mon'] + 1, $_from['tm_mday'], $_from['tm_year'] + 1900);
+					$from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1, $from['tm_mday'], $from['tm_year'] + 1900);
 
 				} else {
 
@@ -1413,16 +1442,16 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				}
 
-				$where .= ' AND tx_dlf_documents.tstamp>='.intval($_from);
+				$where .= ' AND tx_dlf_documents.tstamp>='.intval($from);
 
 			}
 
 			// Check "until" for valid value.
 			if (!empty($this->piVars['until'])) {
 
-				if (is_array($_until = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($_until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+				if (is_array($until = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
 
-					$_until = gmmktime($_until['tm_hour'], $_until['tm_min'], $_until['tm_sec'], $_until['tm_mon'] + 1, $_until['tm_mday'], $_until['tm_year'] + 1900);
+					$until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1, $until['tm_mday'], $until['tm_year'] + 1900);
 
 				} else {
 
@@ -1430,13 +1459,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				}
 
-				if (!empty($_from) && $_from > $_until) {
+				if (!empty($from) && $from > $until) {
 
 					return $this->error('badArgument');
 
 				}
 
-				$where .= ' AND tx_dlf_documents.tstamp<='.intval($_until);
+				$where .= ' AND tx_dlf_documents.tstamp<='.intval($until);
 
 			}
 
@@ -1542,9 +1571,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				} else {
 
 					// Add sets.
-					foreach (explode(' ', $resArray['collections']) as $_spec) {
+					foreach (explode(' ', $resArray['collections']) as $spec) {
 
-						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($_spec, ENT_NOQUOTES, 'UTF-8')));
+						$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
 
 					}
 
@@ -1600,7 +1629,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					'metadataPrefix' => $this->piVars['metadataPrefix'],
 				);
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_dlf_tokens',
 					array (
 						'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -1610,7 +1639,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 					)
 				);
 
-				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($_result) == 1) {
+				if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 
 					$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
 
@@ -1624,7 +1653,11 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				} else {
 
-					trigger_error('Could not create resumption token', E_USER_ERROR);
+					if (TYPO3_DLOG) {
+
+						t3lib_div::devLog('[tx_dlf_oai->verbListRecords()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+					}
 
 				}
 
@@ -1669,7 +1702,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		}
 
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_collections.oai_name AS oai_name,tx_dlf_collections.label AS label',
 			'tx_dlf_collections',
 			'tx_dlf_collections.sys_language_uid IN (-1,0) AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
@@ -1678,7 +1711,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			''
 		);
 
-		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($_result)) {
+		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 			return $this->error('noSetHierarchy');
 
@@ -1687,7 +1720,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		// Add set list node.
 		$ListSets = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListSets');
 
-		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 			// Add set node.
 			$set = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'set');

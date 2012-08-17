@@ -26,173 +26,174 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 // Register database tables.
 $TCA['tx_dlf_documents'] = array (
-		'ctrl' => array (
-				'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents',
-				'label'     => 'title',
-				'tstamp'    => 'tstamp',
-				'crdate'    => 'crdate',
-				'cruser_id' => 'cruser_id',
-				'default_sortby' => 'ORDER BY title_sorting',
-				'delete' => 'deleted',
-				'enablecolumns' => array (
-						'disabled' => 'hidden',
-						'fe_group' => 'fe_group',
-				),
-				'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-				'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfdocuments.png',
-				'rootLevel'	=> 0,
-				'dividers2tabs' => 2,
-				'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents',
+		'label'     => 'title',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY title_sorting',
+		'delete'	=> 'deleted',
+		'enablecolumns' => array (
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
+			'fe_group' => 'fe_group',
 		),
-		'feInterface' => array (
-				'fe_admin_fieldList' => '',
-		)
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfdocuments.png',
+		'rootLevel'	=> 0,
+		'dividers2tabs' => 2,
+		'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => '',
+	)
 );
 
 $TCA['tx_dlf_structures'] = array (
-		'ctrl' => array (
-				'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures',
-				'label'     => 'label',
-				'tstamp'    => 'tstamp',
-				'crdate'    => 'crdate',
-				'cruser_id' => 'cruser_id',
-				'languageField'            => 'sys_language_uid',
-				'transOrigPointerField'    => 'l18n_parent',
-				'transOrigDiffSourceField' => 'l18n_diffsource',
-				'default_sortby' => 'ORDER BY label',
-				'delete' => 'deleted',
-				'enablecolumns' => array (
-						'disabled' => 'hidden',
-				),
-				'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-				'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfstructures.png',
-				'rootLevel'	=> 0,
-				'dividers2tabs' => 2,
-				'searchFields' => 'label,index_name,oai_name',
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures',
+		'label'     => 'label',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY label',
+		'delete'	=> 'deleted',
+		'enablecolumns' => array (
+			'disabled' => 'hidden',
 		),
-		'feInterface' => array (
-				'fe_admin_fieldList' => '',
-		)
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfstructures.png',
+		'rootLevel'	=> 0,
+		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name,oai_name',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => '',
+	)
 );
 
 $TCA['tx_dlf_metadata'] = array (
-		'ctrl' => array (
-				'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata',
-				'label'     => 'label',
-				'tstamp'    => 'tstamp',
-				'crdate'    => 'crdate',
-				'cruser_id' => 'cruser_id',
-				'languageField'            => 'sys_language_uid',
-				'transOrigPointerField'    => 'l18n_parent',
-				'transOrigDiffSourceField' => 'l18n_diffsource',
-				'sortby' => 'sorting',
-				'delete' => 'deleted',
-				'enablecolumns' => array (
-						'disabled' => 'hidden',
-				),
-				'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-				'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfmetadata.png',
-				'rootLevel'	=> 0,
-				'dividers2tabs' => 2,
-				'searchFields' => 'label,index_name,encoding,xpath,xpath_sorting,default',
-				'requestUpdate' => 'is_sortable',
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata',
+		'label'     => 'label',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'sortby'	=> 'sorting',
+		'delete'	=> 'deleted',
+		'enablecolumns' => array (
+			'disabled' => 'hidden',
 		),
-		'feInterface' => array (
-				'fe_admin_fieldList' => '',
-		)
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfmetadata.png',
+		'rootLevel'	=> 0,
+		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name,encoding,xpath,xpath_sorting,default',
+		'requestUpdate' => 'is_sortable',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => '',
+	)
 );
 
 $TCA['tx_dlf_formats'] = array (
-		'ctrl' => array (
-				'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats',
-				'label'     => 'type',
-				'tstamp'    => 'tstamp',
-				'crdate'    => 'crdate',
-				'cruser_id' => 'cruser_id',
-				'default_sortby' => 'ORDER BY type',
-				'delete' => 'deleted',
-				'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-				'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfformats.png',
-				'rootLevel'	=> 1,
-				'dividers2tabs' => 2,
-				'searchFields' => 'type,class',
-		),
-		'feInterface' => array (
-				'fe_admin_fieldList' => '',
-		)
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats',
+		'label'     => 'type',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY type',
+		'delete'	=> 'deleted',
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfformats.png',
+		'rootLevel'	=> 1,
+		'dividers2tabs' => 2,
+		'searchFields' => 'type,class',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => '',
+	)
 );
 
 $TCA['tx_dlf_solrcores'] = array (
-		'ctrl' => array (
-				'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores',
-				'label'     => 'label',
-				'tstamp'    => 'tstamp',
-				'crdate'    => 'crdate',
-				'cruser_id' => 'cruser_id',
-				'default_sortby' => 'ORDER BY label',
-				'delete' => 'deleted',
-				'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-				'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfsolrcores.png',
-				'rootLevel'	=> -1,
-				'adminOnly' => 1,
-				'dividers2tabs' => 2,
-				'searchFields' => 'label,index_name',
-		),
-		'feInterface' => array (
-				'fe_admin_fieldList' => '',
-		)
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores',
+		'label'     => 'label',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY label',
+		'delete'	=> 'deleted',
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfsolrcores.png',
+		'rootLevel'	=> -1,
+		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => '',
+	)
 );
 
 $TCA['tx_dlf_collections'] = array (
-		'ctrl' => array (
-				'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections',
-				'label'     => 'label',
-				'tstamp'    => 'tstamp',
-				'crdate'    => 'crdate',
-				'cruser_id' => 'cruser_id',
-				'fe_cruser_id' => 'fe_cruser_id',
-				'fe_admin_lock' => 'fe_admin_lock',
-				'languageField'            => 'sys_language_uid',
-				'transOrigPointerField'    => 'l18n_parent',
-				'transOrigDiffSourceField' => 'l18n_diffsource',
-				'default_sortby' => 'ORDER BY label',
-				'delete' => 'deleted',
-				'enablecolumns' => array (
-						'disabled' => 'hidden',
-						'fe_group' => 'fe_group',
-				),
-				'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-				'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfcollections.png',
-				'rootLevel'	=> 0,
-				'dividers2tabs' => 2,
-				'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections',
+		'label'     => 'label',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'fe_cruser_id' => 'fe_cruser_id',
+		'fe_admin_lock' => 'fe_admin_lock',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY label',
+		'delete'	=> 'deleted',
+		'enablecolumns' => array (
+			'disabled' => 'hidden',
+			'fe_group' => 'fe_group',
 		),
-		'feInterface' => array (
-				'fe_admin_fieldList' => 'label,description,documents',
-		)
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfcollections.png',
+		'rootLevel'	=> 0,
+		'dividers2tabs' => 2,
+		'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => 'label,description,documents',
+	)
 );
 
 $TCA['tx_dlf_libraries'] = array (
-		'ctrl' => array (
-				'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries',
-				'label'     => 'label',
-				'tstamp'    => 'tstamp',
-				'crdate'    => 'crdate',
-				'cruser_id' => 'cruser_id',
-				'languageField'            => 'sys_language_uid',
-				'transOrigPointerField'    => 'l18n_parent',
-				'transOrigDiffSourceField' => 'l18n_diffsource',
-				'default_sortby' => 'ORDER BY label',
-				'delete' => 'deleted',
-				'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
-				'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlflibraries.png',
-				'rootLevel'	=> 0,
-				'dividers2tabs' => 2,
-				'searchFields' => 'label,website,contact',
-		),
-		'feInterface' => array (
-				'fe_admin_fieldList' => '',
-		)
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries',
+		'label'     => 'label',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l18n_parent',
+		'transOrigDiffSourceField' => 'l18n_diffsource',
+		'default_sortby' => 'ORDER BY label',
+		'delete'	=> 'deleted',
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlflibraries.png',
+		'rootLevel'	=> 0,
+		'dividers2tabs' => 2,
+		'searchFields' => 'label,website,contact',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => '',
+	)
 );
 
 // Register static typoscript.

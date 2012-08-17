@@ -127,6 +127,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'is_sortable' => $values['is_sortable'],
 				'is_facet' => $values['is_facet'],
 				'is_listed' => $values['is_listed'],
+				'autocomplete' => $value['autocomplete'],
 			);
 
 		}

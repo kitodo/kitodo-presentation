@@ -128,7 +128,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Quit without doing anything if required variables are not set.
 		if (empty($this->conf['solrcore'])) {
 
-			trigger_error('Incomplete configuration for plugin '.get_class($this), E_USER_NOTICE);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_search->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+
+			}
 
 			return $content;
 
@@ -153,11 +157,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Set last query if applicable.
 			$lastQuery = '';
 
-			$_list = t3lib_div::makeInstance('tx_dlf_list');
+			$list = t3lib_div::makeInstance('tx_dlf_list');
 
-			if (!empty($_list->metadata['options']['source']) && $_list->metadata['options']['source'] == 'search') {
+			if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'search') {
 
-				$lastQuery = $_list->metadata['options']['select'];
+				$lastQuery = $list->metadata['options']['select'];
 
 			}
 
@@ -190,27 +194,14 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$numHits = count($query->response->docs);
 
-			$_list = array ();
-
-			// Set metadata for search.
-			$_metadata = array (
-				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
-				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $numHits)).'</p>',
-				'options' => array (
-					'source' => 'search',
-					'select' => $this->piVars['query'],
-					'order' => 'relevance'
-				)
-			);
-
 			$toplevel = array ();
 
-			$check = array ();
+			$checks = array ();
 
 			// Get metadata configuration.
 			if ($numHits) {
 
-				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
 					'tx_dlf_metadata',
 					'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
@@ -223,7 +214,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				$sorting = array ();
 
-				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 					if ($resArray['is_listed']) {
 
@@ -240,6 +231,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 				}
 
 			}
+
+			// Keep track of relevance.
+			$i = 0;
 
 			// Process results.
 			foreach ($query->response->docs as $doc) {
@@ -269,6 +263,10 @@ class tx_dlf_search extends tx_dlf_plugin {
 					}
 
 				}
+
+				// Add relevance to sorting values.
+				$docSorting['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
+
 				// Split toplevel documents from subparts.
 				if ($doc->toplevel == 1) {
 
@@ -291,24 +289,26 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					if (!in_array($doc->uid, $check)) {
 
-						$check[] = $doc->uid;
+						$checks[] = $doc->uid;
 
 					}
 
 				}
 
+				$i++;
+
 			}
 
 			// Check if the toplevel documents have metadata.
-			foreach ($check as $_check) {
+			foreach ($checks as $check) {
 
-				if (empty($toplevel[$_check]['uid'])) {
+				if (empty($toplevel[$check]['uid'])) {
 
 					// Get information for toplevel document.
 					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting',
 						'tx_dlf_documents',
-						'tx_dlf_documents.uid='.intval($_check).tx_dlf_helper::whereClause('tx_dlf_documents'),
+						'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
 						'',
 						'',
 						'1'
@@ -369,18 +369,18 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 						}
 
-						$toplevel[$_check] = array (
+						$toplevel[$check] = array (
 							'uid' => $resArray['uid'],
 							'page' => 1,
 							'metadata' => $metadata,
 							'sorting' => $sorting,
-							'subparts' => $toplevel[$_check]['subparts']
+							'subparts' => $toplevel[$check]['subparts']
 						);
 
 					} else {
 
 						// Clear entry if there is no (accessible) toplevel document.
-						unset ($toplevel[$_check]);
+						unset ($toplevel[$check]);
 
 					}
 
@@ -395,7 +395,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$list->add(array_values($toplevel));
 
-			$list->metadata = $_metadata;
+			// Set metadata for search.
+			$list->metadata = array (
+				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
+				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $numHits, count($toplevel))).'</p>',
+				'options' => array (
+					'source' => 'search',
+					'select' => $this->piVars['query'],
+					'order' => 'relevance'
+				)
+			);
 
 			$list->save();
 

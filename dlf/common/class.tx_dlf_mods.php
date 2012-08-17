@@ -107,24 +107,12 @@ class tx_dlf_mods implements tx_dlf_format {
 
 					$metadata['author'][$i] = trim(implode(', ', $name));
 
-					if (!$metadata['author_sorting'][0]) {
-
-						$metadata['author_sorting'][0] = trim(implode(', ', $name));
-
-					}
-
 				}
 
 				// Check if there is a display form.
 				if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
 
 					$metadata['author'][$i] = (string) $displayForm[0];
-
-					if (!$metadata['author_sorting'][0]) {
-
-						$metadata['author_sorting'][0] = (string) $displayForm[0];
-
-					}
 
 				}
 

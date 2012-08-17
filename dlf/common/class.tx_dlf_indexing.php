@@ -38,15 +38,6 @@
 class tx_dlf_indexing {
 
 	/**
-	 * Array of autocompletable metadata
-	 * @see loadIndexConf()
-	 *
-	 * @var array
-	 * @access protected
-	 */
-	protected static $autocompleted = array ();
-
-	/**
 	 * The extension key
 	 *
 	 * @var string
@@ -55,31 +46,21 @@ class tx_dlf_indexing {
 	public static $extKey = 'dlf';
 
 	/**
-	 * Array of facets
+	 * Array of metadata fields' configuration
 	 * @see loadIndexConf()
 	 *
 	 * @var array
 	 * @access protected
 	 */
-	protected static $facets = array ();
-
-	/**
-	 * Array of fields' boost values
-	 * @see loadIndexConf()
-	 *
-	 * @var array
-	 * @access protected
-	 */
-	protected static $fieldboost = array ();
-
-	/**
-	 * Array of indexed metadata
-	 * @see loadIndexConf()
-	 *
-	 * @var array
-	 * @access protected
-	 */
-	protected static $indexed = array ();
+	protected static $fields = array (
+		'autocompleted' => array (),
+		'facets' => array (),
+		'sortables' => array (),
+		'indexed' => array (),
+		'stored' => array (),
+		'tokenized' => array (),
+		'fieldboost' => array ()
+	);
 
 	/**
 	 * List of already processed documents
@@ -96,33 +77,6 @@ class tx_dlf_indexing {
 	 * @access protected
 	 */
 	protected static $solr;
-
-	/**
-	 * Array of sortable metadata
-	 * @see loadIndexConf()
-	 *
-	 * @var array
-	 * @access protected
-	 */
-	protected static $sortables = array ();
-
-	/**
-	 * Array of stored metadata
-	 * @see loadIndexConf()
-	 *
-	 * @var array
-	 * @access protected
-	 */
-	protected static $stored = array ();
-
-	/**
-	 * Array of tokenized metadata
-	 * @see loadIndexConf()
-	 *
-	 * @var array
-	 * @access protected
-	 */
-	protected static $tokenized = array ();
 
 	/**
 	 * Array of toplevel structure elements
@@ -164,7 +118,11 @@ class tx_dlf_indexing {
 
 				} else {
 
-					trigger_error('Could not load multi-volume work with UID '.$doc->parentid, E_USER_ERROR);
+					if (TYPO3_DLOG) {
+
+						t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentid.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+					}
 
 					return 1;
 
@@ -195,7 +153,7 @@ class tx_dlf_indexing {
 				self::$solr->commit();
 
 				// Get document title from database.
-				$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_dlf_documents.title AS title',
 					'tx_dlf_documents',
 					'tx_dlf_documents.uid='.intval($doc->uid).tx_dlf_helper::whereClause('tx_dlf_documents'),
@@ -204,11 +162,11 @@ class tx_dlf_indexing {
 					'1'
 				);
 
-				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result);
+				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$_message = t3lib_div::makeInstance(
+					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
 						htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
 						$GLOBALS['LANG']->getLL('flash.done', TRUE),
@@ -216,7 +174,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($_message);
+					t3lib_FlashMessageQueue::addMessage($message);
 
 				}
 
@@ -226,7 +184,7 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$_message = t3lib_div::makeInstance(
+					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
 						$GLOBALS['LANG']->getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 						$GLOBALS['LANG']->getLL('flash.error', TRUE),
@@ -234,11 +192,15 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($_message);
+					t3lib_FlashMessageQueue::addMessage($message);
 
 				}
 
-				trigger_error('Apache Solr exception thrown: '.$e->getMessage(), E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 				return 1;
 
@@ -248,7 +210,7 @@ class tx_dlf_indexing {
 
 			if (!defined('TYPO3_cliMode')) {
 
-				$_message = t3lib_div::makeInstance(
+				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
 					$GLOBALS['LANG']->getLL('flash.solrNoConnection', TRUE),
 					$GLOBALS['LANG']->getLL('flash.warning', TRUE),
@@ -256,11 +218,15 @@ class tx_dlf_indexing {
 					TRUE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($_message);
+				t3lib_FlashMessageQueue::addMessage($message);
 
 			}
 
-			trigger_error('Could not connect to Apache Solr server', E_USER_WARNING);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return 1;
 
@@ -278,6 +244,9 @@ class tx_dlf_indexing {
 	 * @return	integer		0 on success or 1 on failure
 	 */
 	public static function delete($uid) {
+
+		// Save parameter for logging purposes.
+		$_uid = $uid;
 
 		// Sanitize input.
 		$uid = max(intval($uid), 0);
@@ -310,7 +279,7 @@ class tx_dlf_indexing {
 
 					if (!defined('TYPO3_cliMode')) {
 
-						$_message = t3lib_div::makeInstance(
+						$message = t3lib_div::makeInstance(
 							't3lib_FlashMessage',
 							$GLOBALS['LANG']->getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 							$GLOBALS['LANG']->getLL('flash.error', TRUE),
@@ -318,11 +287,15 @@ class tx_dlf_indexing {
 							TRUE
 						);
 
-						t3lib_FlashMessageQueue::addMessage($_message);
+						t3lib_FlashMessageQueue::addMessage($message);
 
 					}
 
-					trigger_error('Apache Solr exception thrown: '.$e->getMessage(), E_USER_ERROR);
+					if (TYPO3_DLOG) {
+
+						t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+					}
 
 					return 1;
 
@@ -332,7 +305,7 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$_message = t3lib_div::makeInstance(
+					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
 						$GLOBALS['LANG']->getLL('flash.solrNoConnection', TRUE),
 						$GLOBALS['LANG']->getLL('flash.error', TRUE),
@@ -340,11 +313,15 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($_message);
+					t3lib_FlashMessageQueue::addMessage($message);
 
 				}
 
-				trigger_error('Could not connect to Apache Solr server', E_USER_ERROR);
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Could not connect to Apache Solr server', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
 
 				return 1;
 
@@ -352,7 +329,7 @@ class tx_dlf_indexing {
 
 			if (!defined('TYPO3_cliMode')) {
 
-				$_message = t3lib_div::makeInstance(
+				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
 					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentDeleted'), $title, $uid)),
 					$GLOBALS['LANG']->getLL('flash.done', TRUE),
@@ -360,7 +337,7 @@ class tx_dlf_indexing {
 					TRUE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($_message);
+				t3lib_FlashMessageQueue::addMessage($message);
 
 			}
 
@@ -368,7 +345,11 @@ class tx_dlf_indexing {
 
 		} else {
 
-			trigger_error('Could not find document with UID '.$uid, E_USER_ERROR);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
 
 			return 1;
 
@@ -388,7 +369,7 @@ class tx_dlf_indexing {
 	protected static function loadIndexConf($pid) {
 
 		// Get the list of toplevel structures.
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_structures.index_name AS index_name',
 			'tx_dlf_structures',
 			'tx_dlf_structures.toplevel=1 AND tx_dlf_structures.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_structures'),
@@ -397,14 +378,14 @@ class tx_dlf_indexing {
 			''
 		);
 
-		while ($_toplevel = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+		while ($toplevel = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-			self::$toplevel[] = $_toplevel['index_name'];
+			self::$toplevel[] = $toplevel['index_name'];
 
 		}
 
 		// Get the metadata indexing options.
-		$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.stored AS stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.autocomplete AS autocomplete,tx_dlf_metadata.boost AS boost',
 			'tx_dlf_metadata',
 			'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
@@ -413,51 +394,51 @@ class tx_dlf_indexing {
 			''
 		);
 
-		while ($_indexing = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+		while ($indexing = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-			if ($_indexing['tokenized']) {
+			if ($indexing['tokenized']) {
 
-				self::$tokenized[] = $_indexing['index_name'];
-
-			}
-
-			if ($_indexing['stored'] || $_indexing['is_listed']) {
-
-				self::$stored[] = $_indexing['index_name'];
+				self::$fields['tokenized'][] = $indexing['index_name'];
 
 			}
 
-			if ($_indexing['indexed']) {
+			if ($indexing['stored'] || $indexing['is_listed']) {
 
-				self::$indexed[] = $_indexing['index_name'];
-
-			}
-
-			if ($_indexing['is_sortable']) {
-
-				self::$sortables[] = $_indexing['index_name'];
+				self::$fields['stored'][] = $indexing['index_name'];
 
 			}
 
-			if ($_indexing['is_facet']) {
+			if ($indexing['indexed']) {
 
-				self::$facets[] = $_indexing['index_name'];
-
-			}
-
-			if ($_indexing['autocomplete']) {
-
-				self::$autocompleted[] = $_indexing['index_name'];
+				self::$fields['indexed'][] = $indexing['index_name'];
 
 			}
 
-			if ($_indexing['boost'] > 0.0) {
+			if ($indexing['is_sortable']) {
 
-				self::$fieldboost[$_indexing['index_name']] = floatval($_indexing['boost']);
+				self::$fields['sortables'][] = $indexing['index_name'];
+
+			}
+
+			if ($indexing['is_facet']) {
+
+				self::$fields['facets'][] = $indexing['index_name'];
+
+			}
+
+			if ($indexing['autocomplete']) {
+
+				self::$fields['autocompleted'][] = $indexing['index_name'];
+
+			}
+
+			if ($indexing['boost'] > 0.0) {
+
+				self::$fields['fieldboost'][$indexing['index_name']] = floatval($indexing['boost']);
 
 			} else {
 
-				self::$fieldboost[$_indexing['index_name']] = FALSE;
+				self::$fields['fieldboost'][$indexing['index_name']] = FALSE;
 
 			}
 
@@ -513,39 +494,39 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('toplevel', in_array($logicalUnit['type'], self::$toplevel));
 
-			$solrDoc->setField('type', $logicalUnit['type'], self::$fieldboost['type']);
+			$solrDoc->setField('type', $logicalUnit['type'], self::$fields['fieldboost']['type']);
 
-			$solrDoc->setField('title', $metadata['title'][0], self::$fieldboost['title']);
+			$solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
 
-			$solrDoc->setField('volume', $metadata['volume'][0], self::$fieldboost['volume']);
+			$solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
 
 			foreach ($metadata as $index_name => $data) {
 
 				if (!empty($data) && substr($index_name, -8) !== '_sorting') {
 
-					$suffix = (in_array($index_name, self::$tokenized) ? 't' : 'u');
+					$suffix = (in_array($index_name, self::$fields['tokenized']) ? 't' : 'u');
 
-					$suffix .= (in_array($index_name, self::$stored) ? 's' : 'u');
+					$suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
 
-					$suffix .= (in_array($index_name, self::$indexed) ? 'i' : 'u');
+					$suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
 
-					$solrDoc->setField($index_name.'_'.$suffix, $data, self::$fieldboost[$index_name]);
+					$solrDoc->setField($index_name.'_'.$suffix, $data, self::$fields['fieldboost'][$index_name]);
 
-					if (in_array($index_name, self::$sortables)) {
+					if (in_array($index_name, self::$fields['sortables'])) {
 
 						// Add sortable fields to index.
 						$solrDoc->setField($index_name.'_sorting', $metadata[$index_name.'_sorting'][0]);
 
 					}
 
-					if (in_array($index_name, self::$facets)) {
+					if (in_array($index_name, self::$fields['facets'])) {
 
 						// Add facets to index.
 						$solrDoc->setField($index_name.'_faceting', $data);
 
 					}
 
-					if (in_array($index_name, self::$autocompleted)) {
+					if (in_array($index_name, self::$fields['autocompleted'])) {
 
 						// Add autocomplete values to index.
 						$solrDoc->setField($index_name.'_suggest', $data);
@@ -564,7 +545,7 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$_message = t3lib_div::makeInstance(
+					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
 						$GLOBALS['LANG']->getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 						$GLOBALS['LANG']->getLL('flash.error', TRUE),
@@ -572,7 +553,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($_message);
+					t3lib_FlashMessageQueue::addMessage($message);
 
 				}
 

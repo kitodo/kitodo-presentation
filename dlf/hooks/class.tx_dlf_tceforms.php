@@ -59,21 +59,21 @@ class tx_dlf_tceforms {
 			// i.e. instead of "18" it reads "pages_18|Title"
 			if (!t3lib_div::testInt($pages)) {
 
-				$_parts = explode('|', $pages);
+				$parts = explode('|', $pages);
 
-				$pages = array_pop(explode('_', $_parts[0]));
+				$pages = array_pop(explode('_', $parts[0]));
 
 			}
 
 			if ($pages > 0) {
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'label,uid',
-						'tx_dlf_collections',
-						'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_collections'),
-						'',
-						'label',
-						''
+					'label,uid',
+					'tx_dlf_collections',
+					'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_collections'),
+					'',
+					'label',
+					''
 				);
 
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -114,21 +114,21 @@ class tx_dlf_tceforms {
 			// i.e. instead of "18" it reads "pages_18|Title"
 			if (!t3lib_div::testInt($pages)) {
 
-				$_parts = explode('|', $pages);
+				$parts = explode('|', $pages);
 
-				$pages = array_pop(explode('_', $_parts[0]));
+				$pages = array_pop(explode('_', $parts[0]));
 
 			}
 
 			if ($pages > 0) {
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'label,uid',
-						'tx_dlf_libraries',
-						'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_libraries'),
-						'',
-						'label',
-						''
+					'label,uid',
+					'tx_dlf_libraries',
+					'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_libraries'),
+					'',
+					'label',
+					''
 				);
 
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -169,21 +169,21 @@ class tx_dlf_tceforms {
 			// i.e. instead of "18" it reads "pages_18|Title"
 			if (!t3lib_div::testInt($pages)) {
 
-				$_parts = explode('|', $pages);
+				$parts = explode('|', $pages);
 
-				$pages = array_pop(explode('_', $_parts[0]));
+				$pages = array_pop(explode('_', $parts[0]));
 
 			}
 
 			if ($pages > 0) {
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'label,uid',
-						'tx_dlf_solrcores',
-						'pid IN ('.intval($pages).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-						'',
-						'label',
-						''
+					'label,uid',
+					'tx_dlf_solrcores',
+					'pid IN ('.intval($pages).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+					'',
+					'label',
+					''
 				);
 
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {

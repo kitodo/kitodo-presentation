@@ -56,7 +56,11 @@ class tx_dlf_statistics extends tx_dlf_plugin {
 		// Quit without doing anything if required configuration variables are not set.
 		if (empty($this->conf['pages'])) {
 
-			trigger_error('Incomplete configuration for plugin '.get_class($this), E_USER_NOTICE);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_statistics->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+
+			}
 
 			return $content;
 

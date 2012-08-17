@@ -19,6 +19,7 @@
 			<label index="separator"> - </label>
 			<label index="skip">...</label>
 			<label index="orderBy">Order by: </label>
+			<label index="relevance">relevance</label>
 			<label index="noTitle">[no title]</label>
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -35,6 +36,7 @@
 			<label index="separator"> - </label>
 			<label index="skip">...</label>
 			<label index="orderBy">Sortieren nach: </label>
+			<label index="relevance">Relevanz</label>
 			<label index="noTitle">[kein Titel]</label>
 		</languageKey>
 	</data>
