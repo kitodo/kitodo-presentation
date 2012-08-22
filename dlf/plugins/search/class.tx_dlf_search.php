@@ -426,8 +426,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Process results.
 		foreach ($results->facet_counts->facet_fields as $field => $values) {
 
-			$hasValue = FALSE;
-
 			$entryArray = array ();
 
 			$entryArray['title'] = $this->conf['facets'][$field];
@@ -453,18 +451,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
 
 				}
-
-			}
-
-			if (!$hasValue) {
-
-				$entryArray['_SUB_MENU'][] = array (
-					'title' => $this->pi_getLL('noFacets', ''),
-					'count' => 0,
-					'_OVERRIDE_HREF' => '',
-					'doNotLinkIt' => 1,
-					'ITEM_STATE' => 'NO'
-				);
 
 			}
 

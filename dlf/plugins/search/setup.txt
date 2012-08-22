@@ -7,7 +7,6 @@ plugin.tx_dlf_search.facetsConf {
 		NO = 1
 		NO {
 			stdWrap {
-				wrap = <h2>|</h2>
 				crop = 55 | &nbsp;... | 1
 				append.fieldRequired = count
 				append = TEXT
@@ -15,14 +14,21 @@ plugin.tx_dlf_search.facetsConf {
 				append.wrap = &nbsp;(|)
 			}
 			doNotLinkIt.field = doNotLinkIt
-			wrapItemAndSub = <li>|</li>
+			wrapItemAndSub = <li class="tx-dlf-search-no">|</li>
 	    }
+	    IFSUB < .NO
+	    IFSUB.wrapItemAndSub = <li class="tx-dlf-search-no tx-dlf-search-ifsub">|</li>
 		ACT < .NO
 		ACT.wrapItemAndSub = <li class="tx-dlf-search-act">|</li>
+		ACTIFSUB < .NO
+		ACTIFSUB.wrapItemAndSub = <li class="tx-dlf-search-act" tx-dlf-search-ifsub>|</li>
 	}
 	2 < .1
 	2 {
-		NO.stdWrap.wrap >
-		ACT.stdWrap.wrap >
+		IFSUB >
+		ACT >
+		ACTIFSUB >
+		CUR < .NO
+		CUR.wrapItemAndSub = <li class="tx-dlf-search-cur">|</li>
 	}
 }
