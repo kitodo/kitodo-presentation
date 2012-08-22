@@ -681,7 +681,7 @@ $TCA['tx_dlf_formats'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 1024,
-				'eval' => 'required,nospace,alphanum_x,unique',
+				'eval' => 'nospace,alphanum_x,unique',
 			),
 		),
 	),

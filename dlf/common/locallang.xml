@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Common language labels for extension 'dlf'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="demo">demo</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="demo">demo</label>
+		</languageKey>
+	</data>
+</T3locallang>

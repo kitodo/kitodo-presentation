@@ -1,29 +1,37 @@
 plugin.tx_dlf_toc.menuConf {
 	expAll = 0
 	1 = TMENU
-	1.noBlur = 1
-	1.wrap = <ul>|</ul>
-	1.NO = 1
-	1.NO.stdWrap.crop = 55 | &nbsp;... | 1
-	1.NO.stdWrap.ifEmpty.field = type
-	1.NO.stdWrap.ifEmpty.append.fieldRequired = volume
-	1.NO.stdWrap.ifEmpty.append = TEXT
-	1.NO.stdWrap.ifEmpty.append.field = volume
-	1.NO.stdWrap.ifEmpty.append.wrap = &nbsp;|
-	1.NO.stdWrap.dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span>
-	1.NO.doNotLinkIt.field = doNotLinkIt
-	1.NO.ATagTitle.field = type
-	1.NO.wrapItemAndSub = <li class="tx-dlf-toc-no">|</li>
-	1.IFSUB < .1.NO
-	1.IFSUB.wrapItemAndSub = <li class="tx-dlf-toc-no tx-dlf-toc-ifsub">|</li>
-	1.CUR < .1.NO
-	1.CUR.wrapItemAndSub = <li class="tx-dlf-toc-cur">|</li>
-	1.CURIFSUB < .1.NO
-	1.CURIFSUB.wrapItemAndSub = <li class="tx-dlf-toc-cur tx-dlf-toc-ifsub">|</li>
-	1.ACT < .1.NO
-	1.ACT.wrapItemAndSub = <li class="tx-dlf-toc-act">|</li>
-	1.ACTIFSUB < .1.NO
-	1.ACTIFSUB.wrapItemAndSub = <li class="tx-dlf-toc-act tx-dlf-toc-ifsub">|</li>
+	1 {
+		noBlur = 1
+		wrap = <ul>|</ul>
+		NO = 1
+		NO {
+			stdWrap {
+				crop = 55 | &nbsp;... | 1
+				ifEmpty {
+					field = type
+					append.fieldRequired = volume
+					append = TEXT
+					append.field = volume
+					append.wrap = &nbsp;|
+				}
+				dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span>
+			}
+			doNotLinkIt.field = doNotLinkIt
+			ATagTitle.field = type
+			wrapItemAndSub = <li class="tx-dlf-toc-no">|</li>
+		}
+		IFSUB < .NO
+		IFSUB.wrapItemAndSub = <li class="tx-dlf-toc-no tx-dlf-toc-ifsub">|</li>
+		CUR < .NO
+		CUR.wrapItemAndSub = <li class="tx-dlf-toc-cur">|</li>
+		CURIFSUB < .NO
+		CURIFSUB.wrapItemAndSub = <li class="tx-dlf-toc-cur tx-dlf-toc-ifsub">|</li>
+		ACT < .NO
+		ACT.wrapItemAndSub = <li class="tx-dlf-toc-act">|</li>
+		ACTIFSUB < .NO
+		ACTIFSUB.wrapItemAndSub = <li class="tx-dlf-toc-act tx-dlf-toc-ifsub">|</li>
+	}
 	2 < .1
 	3 < .2
 	4 < .3

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
- *  Copyright notice
+*  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,14 +28,14 @@
 
 /**
  * Base class 'tx_dlf_module' for the 'dlf' extension.
-*
-* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
-* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
-* @package	TYPO3
-* @subpackage	tx_dlf
-* @access	public
-* @abstract
-*/
+ *
+ * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+ * @package	TYPO3
+ * @subpackage	tx_dlf
+ * @access	public
+ * @abstract
+ */
 abstract class tx_dlf_module extends t3lib_SCbase {
 
 	public $extKey = 'dlf';
@@ -232,7 +232,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 /* No xclasses for abstract classes!
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php'])	{
-include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php']);
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php']);
 }
 */
 

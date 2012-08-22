@@ -258,7 +258,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		// Get all documents in collection.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
+			'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -283,6 +283,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 					'options' => array (
 						'source' => 'collection',
 						'select' => $id,
+						'filter' => array ('collection_faceting:"'.$resArray['index_name'].'"'),
 						'order' => 'title'
 					)
 				);

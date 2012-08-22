@@ -263,12 +263,12 @@ class tx_dlf_tcemain {
 							if ($fieldArray['hidden']) {
 
 								// Establish Solr connection.
-								if ($solr = tx_dlf_solr::solrConnect($core)) {
+								if ($solr = tx_dlf_solr::getInstance($core)) {
 
 									// Delete Solr document.
-									$solr->deleteByQuery('uid:'.$id);
+									$solr->service->deleteByQuery('uid:'.$id);
 
-									$solr->commit();
+									$solr->service->commit();
 
 								}
 
@@ -345,9 +345,9 @@ class tx_dlf_tcemain {
 						if ($solr = tx_dlf_solr::solrConnect($core)) {
 
 							// Delete Solr document.
-							$solr->deleteByQuery('uid:'.$id);
+							$solr->service->deleteByQuery('uid:'.$id);
 
-							$solr->commit();
+							$solr->service->commit();
 
 							if ($command == 'delete') {
 

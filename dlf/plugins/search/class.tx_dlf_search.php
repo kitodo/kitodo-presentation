@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+ *  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -79,14 +79,12 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 *
 	 * @access	protected
 	 *
-	 * @param	integer		$core: UID of the core
-	 *
 	 * @return	string		HTML input fields with encrypted core name and hash
 	 */
-	protected function addEncryptedCoreName($core) {
+	protected function addEncryptedCoreName() {
 
 		// Get core name.
-		$name = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+		$name = tx_dlf_helper::getIndexName($this->conf['solrcore'], 'tx_dlf_solrcores');
 
 		// Encrypt core name.
 		if (!empty($name)) {
@@ -105,6 +103,129 @@ class tx_dlf_search extends tx_dlf_plugin {
 			return '';
 
 		}
+
+	}
+
+	/**
+	 * Adds the facets menu to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		HTML output of facets menu
+	 */
+	protected function addFacetsMenu() {
+
+		// Check for typoscript configuration to prevent fatal error.
+		if (empty($this->conf['facetsConf.'])) {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_search->addFacetsMenu()] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return '';
+
+		}
+
+		// Quit without doing anything if no facets are selected.
+		if (empty($this->conf['facets'])) {
+
+			return '';
+
+		}
+
+		// Get facets from plugin configuration.
+		$facets = array ();
+
+		foreach (t3lib_div::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
+
+			$facets[$facet] = tx_dlf_helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
+
+		}
+
+		// Render facets menu.
+		$TSconfig = array ();
+
+		$TSconfig['special'] = 'userfunction';
+
+		$TSconfig['special.']['userFunc'] = 'tx_dlf_search->makeFacetsMenuArray';
+
+		$TSconfig['special.']['facets'] = $facets;
+
+		$TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
+
+		return $this->cObj->HMENU($TSconfig);
+
+	}
+
+	/**
+	 * Creates an array for a HMENU entry of a facet value.
+	 *
+	 * @param	string		$field: The facet's index_name
+	 * @param	string		$value: The facet's value
+	 * @param	integer		$count: Number of hits for this facet
+	 * @param	array		$search: The parameters of the current search query
+	 * @param	string		&$state: The state of the parent item
+	 *
+	 * @return	array		The array for the facet's menu entry
+	 */
+	protected function getFacetsMenuEntry($field, $value, $count, $search, &$state) {
+
+		$entryArray = array();
+
+		// Translate value.
+		if ($field == 'owner_faceting') {
+
+			// Translate name of holding library.
+			$entryArray['title'] = tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']);
+
+		} elseif ($field == 'type_faceting') {
+
+			// Translate document type.
+			$entryArray['title'] = tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']);
+
+		} elseif ($field == 'language_faceting') {
+
+			// Translate ISO 639 language code.
+			$entryArray['title'] = tx_dlf_helper::getLanguageName($value);
+
+		} else {
+
+			$entryArray['title'] = $value;
+
+		}
+
+		$entryArray['count'] = $count;
+
+		$entryArray['doNotLinkIt'] = 0;
+
+		// Check if facet is already selected.
+		$index = array_search($field.':"'.$value.'"', $search['fq']);
+
+		if ($index !== FALSE) {
+
+			// Facet is selected, thus remove it from filter.
+			unset($search['fq'][$index]);
+
+			$search['fq'] = array_values($search['fq']);
+
+			$entryArray['ITEM_STATE'] = 'CUR';
+
+			$state = 'ACTIFSUB';
+
+		} else {
+
+			// Facet is not selected, thus add it to filter.
+			$search['fq'][] = $field.':"'.$value.'"';
+
+			$entryArray['ITEM_STATE'] = 'NO';
+
+		}
+
+		$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['fq']));
+
+		return $entryArray;
 
 	}
 
@@ -138,7 +259,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		}
 
-		if (empty($this->piVars['query'])) {
+		if (!isset($this->piVars['query'])) {
 
 			// Add javascript for autocompletion if available.
 			$autocomplete = $this->addAutocompleteJS();
@@ -172,241 +293,53 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => htmlspecialchars($lastQuery),
-				'###ADDITIONAL_INPUTS###' => '',
+				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
+				'###FACETS_MENU###' => $this->addFacetsMenu()
 			);
-
-			// Encrypt Solr core name and add as hidden input field to the search form.
-			if ($autocomplete) {
-
-				$markerArray['###ADDITIONAL_INPUTS###'] = $this->addEncryptedCoreName($this->conf['solrcore']);
-
-			}
 
 			// Display search form.
 			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
 			return $this->pi_wrapInBaseClass($content);
 
-		} elseif (($solr = tx_dlf_solr::solrConnect($this->conf['solrcore'])) !== NULL) {
+		} else {
+
+			// Instantiate search object.
+			$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+
+			if (!$solr->ready) {
+
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+
+				}
+
+				return $content;
+
+			}
+
+			// Set search parameters.
+			$solr->limit = $this->conf['limit'];
+
+			$solr->cPid = $this->conf['pages'];
+
+			if (!empty($this->piVars['fq'])) {
+
+				$solr->filter = $this->piVars['fq'];
+
+			}
 
 			// Perform search.
-			$query = $solr->search($this->piVars['query'], 0, $this->conf['limit'], array ());
+			$results = $solr->search($this->piVars['query']);
 
-			$numHits = count($query->response->docs);
-
-			$toplevel = array ();
-
-			$checks = array ();
-
-			// Get metadata configuration.
-			if ($numHits) {
-
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
-					'tx_dlf_metadata',
-					'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
-					'',
-					'tx_dlf_metadata.sorting ASC',
-					''
-				);
-
-				$metadata = array ();
-
-				$sorting = array ();
-
-				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-
-					if ($resArray['is_listed']) {
-
-						$metadata[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
-
-					}
-
-					if ($resArray['is_sortable']) {
-
-						$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
-
-					}
-
-				}
-
-			}
-
-			// Keep track of relevance.
-			$i = 0;
-
-			// Process results.
-			foreach ($query->response->docs as $doc) {
-
-				// Prepate document's metadata.
-				$docMeta = array ();
-
-				foreach ($metadata as $index_name => $solr_name) {
-
-					if (!empty($doc->$solr_name)) {
-
-						$docMeta[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name : array ($doc->$solr_name));
-
-					}
-
-				}
-
-				// Prepate document's metadata for sorting.
-				$docSorting = array ();
-
-				foreach ($sorting as $index_name => $solr_name) {
-
-					if (!empty($doc->$solr_name)) {
-
-						$docSorting[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name[0] : $doc->$solr_name);
-
-					}
-
-				}
-
-				// Add relevance to sorting values.
-				$docSorting['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
-
-				// Split toplevel documents from subparts.
-				if ($doc->toplevel == 1) {
-
-					$toplevel[$doc->uid] = array (
-						'uid' => $doc->uid,
-						'page' => $doc->page,
-						'metadata' => $docMeta,
-						'sorting' => $docSorting,
-						'subparts' => (!empty($toplevel[$doc->uid]['subparts']) ? $toplevel[$doc->uid]['subparts'] : array ())
-					);
-
-				} else {
-
-					$toplevel[$doc->uid]['subparts'][] = array (
-						'uid' => $doc->uid,
-						'page' => $doc->page,
-						'metadata' => $docMeta,
-						'sorting' => $docSorting
-					);
-
-					if (!in_array($doc->uid, $check)) {
-
-						$checks[] = $doc->uid;
-
-					}
-
-				}
-
-				$i++;
-
-			}
-
-			// Check if the toplevel documents have metadata.
-			foreach ($checks as $check) {
-
-				if (empty($toplevel[$check]['uid'])) {
-
-					// Get information for toplevel document.
-					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting',
-						'tx_dlf_documents',
-						'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
-						'',
-						'',
-						'1'
-					);
-
-					// Process results.
-					if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-						$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-						// Prepare document's metadata.
-						$metadata = unserialize($resArray['metadata']);
-
-						if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
-
-							$metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->conf['pages']);
-
-						}
-
-						if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
-
-							$metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->conf['pages']);
-
-						}
-
-						if (!empty($metadata['collection']) && is_array($metadata['collection'])) {
-
-							foreach ($metadata['collection'] as $i => $collection) {
-
-								if (t3lib_div::testInt($collection)) {
-
-									$metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->conf['pages']);
-
-								}
-
-							}
-
-						}
-
-						// Prepare document's metadata for sorting.
-						$sorting = unserialize($resArray['metadata_sorting']);
-
-						if (!empty($sorting['type']) && t3lib_div::testInt($sorting['type'])) {
-
-							$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
-
-						}
-
-						if (!empty($sorting['owner']) && t3lib_div::testInt($sorting['owner'])) {
-
-							$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
-
-						}
-
-						if (!empty($sorting['collection']) && t3lib_div::testInt($sorting['collection'])) {
-
-							$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
-
-						}
-
-						$toplevel[$check] = array (
-							'uid' => $resArray['uid'],
-							'page' => 1,
-							'metadata' => $metadata,
-							'sorting' => $sorting,
-							'subparts' => $toplevel[$check]['subparts']
-						);
-
-					} else {
-
-						// Clear entry if there is no (accessible) toplevel document.
-						unset ($toplevel[$check]);
-
-					}
-
-				}
-
-			}
-
-			// Save list of documents.
-			$list = t3lib_div::makeInstance('tx_dlf_list');
-
-			$list->reset();
-
-			$list->add(array_values($toplevel));
-
-			// Set metadata for search.
-			$list->metadata = array (
+			$results->metadata = array (
 				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
-				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $numHits, count($toplevel))).'</p>',
-				'options' => array (
-					'source' => 'search',
-					'select' => $this->piVars['query'],
-					'order' => 'relevance'
-				)
+				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numHits, $results->count)).'</p>',
+				'options' => $results->metadata['options']
 			);
 
-			$list->save();
+			$results->save();
 
 			// Clean output buffer.
 			t3lib_div::cleanOutputBuffers();
@@ -420,6 +353,127 @@ class tx_dlf_search extends tx_dlf_plugin {
 			exit;
 
 		}
+
+	}
+
+	/**
+	 * This builds a menu array for HMENU
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$content: The PlugIn content
+	 * @param	array		$conf: The PlugIn configuration
+	 *
+	 * @return	array		HMENU array
+	 */
+	public function makeFacetsMenuArray($content, $conf) {
+
+		$this->init($conf);
+
+		$menuArray = array ();
+
+		// Set default values for facet search.
+		$search = array (
+			'query' => '*',
+			'fq' => array ()
+		);
+
+		// Extract query and filter from last search.
+		$list = t3lib_div::makeInstance('tx_dlf_list');
+
+		if (!empty($list->metadata['options']['source'])) {
+
+			if ($list->metadata['options']['source'] == 'search') {
+
+				$search['query'] = $list->metadata['options']['select'];
+
+			}
+
+			$search['fq'] = $list->metadata['options']['filter'];
+
+		}
+
+		// Get applicable facets.
+		$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+
+		if (!$solr->ready) {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+
+			}
+
+			return array ();
+
+		}
+
+		$params = array (
+			'facet' => 'true',
+			'fq' => $search['fq'],
+			'facet.field' => array ()
+		);
+
+		foreach ($this->conf['facets'] as $field => $label) {
+
+			$params['facet.field'][] = $field.'_faceting';
+
+		}
+
+		// Perform search.
+		$results = $solr->service->search($search['query'], 0, $this->conf['limit'], $params);
+
+		// Process results.
+		foreach ($results->facet_counts->facet_fields as $field => $values) {
+
+			$hasValue = FALSE;
+
+			$entryArray = array ();
+
+			$entryArray['title'] = $this->conf['facets'][$field];
+
+			$entryArray['count'] = 0;
+
+			$entryArray['_OVERRIDE_HREF'] = '';
+
+			$entryArray['doNotLinkIt'] = 1;
+
+			$entryArray['ITEM_STATE'] = 'NO';
+
+			foreach ($values as $value => $count) {
+
+				if ($count > 0) {
+
+					$hasValue = TRUE;
+
+					$entryArray['count']++;
+
+					$entryArray['ITEM_STATE'] = 'IFSUB';
+
+					$entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
+
+				}
+
+			}
+
+			if (!$hasValue) {
+
+				$entryArray['_SUB_MENU'][] = array (
+					'title' => $this->pi_getLL('noFacets', ''),
+					'count' => 0,
+					'_OVERRIDE_HREF' => '',
+					'doNotLinkIt' => 1,
+					'ITEM_STATE' => 'NO'
+				);
+
+			}
+
+			$menuArray[] = $entryArray;
+
+		}
+
+		return $menuArray;
+
 
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
- *  Copyright notice
+*  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
@@ -28,13 +28,13 @@
 
 /**
  * Metadata format class 'tx_dlf_mods' for the 'dlf' extension.
-*
-* @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
-* @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
-* @package	TYPO3
-* @subpackage	tx_dlf
-* @access	public
-*/
+ *
+ * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
+ * @package	TYPO3
+ * @subpackage	tx_dlf
+ * @access	public
+ */
 class tx_dlf_mods implements tx_dlf_format {
 
 	/**

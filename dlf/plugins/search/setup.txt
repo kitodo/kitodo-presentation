@@ -1,0 +1,28 @@
+plugin.tx_dlf_search.facetsConf {
+	expAll = 0
+	1 = TMENU
+	1 {
+		noBlur = 1
+		wrap = <ul>|</ul>
+		NO = 1
+		NO {
+			stdWrap {
+				wrap = <h2>|</h2>
+				crop = 55 | &nbsp;... | 1
+				append.fieldRequired = count
+				append = TEXT
+				append.field = count
+				append.wrap = &nbsp;(|)
+			}
+			doNotLinkIt.field = doNotLinkIt
+			wrapItemAndSub = <li>|</li>
+	    }
+		ACT < .NO
+		ACT.wrapItemAndSub = <li class="tx-dlf-search-act">|</li>
+	}
+	2 < .1
+	2 {
+		NO.stdWrap.wrap >
+		ACT.stdWrap.wrap >
+	}
+}

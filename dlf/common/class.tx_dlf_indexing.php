@@ -150,7 +150,7 @@ class tx_dlf_indexing {
 
 				}
 
-				self::$solr->commit();
+				self::$solr->service->commit();
 
 				// Get document title from database.
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -271,9 +271,9 @@ class tx_dlf_indexing {
 				try {
 
 					// Delete Solr document.
-					self::$solr->deleteByQuery('uid:'.$uid);
+					self::$solr->service->deleteByQuery('uid:'.$uid);
 
-					self::$solr->commit();
+					self::$solr->service->commit();
 
 				} catch (Exception $e) {
 
@@ -539,7 +539,7 @@ class tx_dlf_indexing {
 
 			try {
 
-				self::$solr->addDocument($solrDoc);
+				self::$solr->service->addDocument($solrDoc);
 
 			} catch (Exception $e) {
 
@@ -602,7 +602,7 @@ class tx_dlf_indexing {
 		if (!self::$solr) {
 
 			// Connect to Solr server.
-			if (self::$solr = tx_dlf_solr::solrConnect($core)) {
+			if (self::$solr = tx_dlf_solr::getInstance($core)) {
 
 				// Load indexing configuration if needed.
 				if ($pid) {

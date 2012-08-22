@@ -9,6 +9,7 @@
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
+			<label index="tt_content.pi_flexform.facets">Show these facets</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
 			<label index="tt_content.pi_flexform.separator">Separator for metadata in TS array</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
@@ -16,11 +17,13 @@
 			<label index="label.submit">Search</label>
 			<label index="searchfor">Search for: "%s"</label>
 			<label index="hits">%d hits found in %d documents.</label>
+			<label index="noFacets">no facets</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
+			<label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
 			<label index="tt_content.pi_flexform.separator">Trennzeichen für Metadaten im TS-Array</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
@@ -28,6 +31,7 @@
 			<label index="label.submit">Suchen</label>
 			<label index="searchfor">Suche nach: "%s"</label>
 			<label index="hits">Die Suche ergab %d Treffer in %d Dokumenten.</label>
+			<label index="noFacets">keine Einträge</label>
 		</languageKey>
 	</data>
 </T3locallang>

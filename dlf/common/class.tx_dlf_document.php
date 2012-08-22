@@ -180,7 +180,7 @@ final class tx_dlf_document {
 	 * @var	integer
 	 * @access protected
 	 */
-	protected $parentid = 0;
+	protected $parentId = 0;
 
 	/**
 	 * This holds the physical pages
@@ -229,7 +229,7 @@ final class tx_dlf_document {
 	 * @var	string
 	 * @access protected
 	 */
-	protected $recordid;
+	protected $recordId;
 
 	/**
 	 * This holds the singleton object of each document with its UID as array key
@@ -658,32 +658,34 @@ final class tx_dlf_document {
 			$this->_getDmdSec();
 
 			// Is this metadata format supported?
-			if (!empty($this->formats[$this->dmdSec[$dmdId]['type']]['class'])) {
+			if (!empty($this->formats[$this->dmdSec[$dmdId]['type']])) {
 
-				$class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
+				if (!empty($this->formats[$this->dmdSec[$dmdId]['type']]['class'])) {
+
+					$class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
+
+					// Get the metadata from class.
+					if (class_exists($class) && ($obj = t3lib_div::makeInstance($class)) instanceof tx_dlf_format) {
+
+						$obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
+
+					} else {
+
+						if (TYPO3_DLOG) {
+
+							t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+						}
+
+					}
+
+				}
 
 			} else {
 
 				if (TYPO3_DLOG) {
 
 					t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-				}
-
-				return array ();
-
-			}
-
-			// Get the metadata from class.
-			if (class_exists($class) && ($obj = t3lib_div::makeInstance($class)) instanceof tx_dlf_format) {
-
-				$obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
-
-			} else {
-
-				if (TYPO3_DLOG) {
-
-					t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -880,7 +882,7 @@ final class tx_dlf_document {
 		$titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
 
 		// Set record identifier for METS file.
-		array_unshift($titledata['record_id'], $this->recordid);
+		array_unshift($titledata['record_id'], $this->recordId);
 
 		return $titledata;
 
@@ -1432,7 +1434,7 @@ final class tx_dlf_document {
 
 			$this->pid = $pid;
 
-			$this->parentid = $partof;
+			$this->parentId = $partof;
 
 		}
 
@@ -1606,15 +1608,15 @@ final class tx_dlf_document {
 	}
 
 	/**
-	 * This returns $this->parentid via __get()
+	 * This returns $this->parentId via __get()
 	 *
 	 * @access	protected
 	 *
 	 * @return	integer		The UID of the parent document or zero if not applicable
 	 */
-	protected function _getParentid() {
+	protected function _getParentId() {
 
-		return $this->parentid;
+		return $this->parentId;
 
 	}
 
@@ -1775,15 +1777,15 @@ final class tx_dlf_document {
 	}
 
 	/**
-	 * This returns $this->recordid via __get()
+	 * This returns $this->recordId via __get()
 	 *
 	 * @access	protected
 	 *
 	 * @return	mixed		The METS file's record identifier
 	 */
-	protected function _getRecordid() {
+	protected function _getRecordId() {
 
-		return $this->recordid;
+		return $this->recordId;
 
 	}
 
@@ -1963,7 +1965,7 @@ final class tx_dlf_document {
 
 				if (!empty($objId[0]['OBJID'])) {
 
-					$this->recordid = (string) $objId[0]['OBJID'];
+					$this->recordId = (string) $objId[0]['OBJID'];
 
 				}
 
@@ -1974,7 +1976,7 @@ final class tx_dlf_document {
 
 					if (method_exists($hookObj, 'construct_postProcessRecordId')) {
 
-						$this->recordid = $hookObj->construct_postProcessRecordId($xml, $this->recordid);
+						$this->recordId = $hookObj->construct_postProcessRecordId($xml, $this->recordId);
 
 					}
 
@@ -1982,9 +1984,9 @@ final class tx_dlf_document {
 
 			}
 
-			if (!empty($this->recordid)) {
+			if (!empty($this->recordId)) {
 
-				$whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordid, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
+				$whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordId, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
 
 			} else {
 
@@ -2014,7 +2016,7 @@ final class tx_dlf_document {
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-			list ($this->uid, $this->pid, $this->recordid, $this->parentid, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+			list ($this->uid, $this->pid, $this->recordId, $this->parentId, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 			// Load XML file...
 			if ($this->load($location)) {
@@ -2122,7 +2124,7 @@ final class tx_dlf_document {
 		// SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
 		$this->asXML = $this->xml->asXML();
 
-		return array ('uid', 'pid', 'parentid', 'asXML');
+		return array ('uid', 'pid', 'parentId', 'asXML');
 
 	}
 
@@ -2187,7 +2189,7 @@ final class tx_dlf_document {
 
 }
 
-/* No xclasses allowed for this class!
+/* No xclasses allowed for final classes!
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_document.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_document.php']);
 }

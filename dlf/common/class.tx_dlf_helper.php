@@ -46,22 +46,12 @@ class tx_dlf_helper {
 	public static $extKey = 'dlf';
 
 	/**
-	 * The encryption key
-	 * @see encrypt() / decrypt()
+	 * The locallang array for common use
 	 *
-	 * @var string
-	 * @access private
+	 * @var array
+	 * @access protected
 	 */
-	private static $ENCRYPTION_KEY = 'b8b311560d3e6f8dea0aa445995b1b2b';
-
-	/**
-	 * The initialization vector for encryption
-	 * @see encrypt() / decrypt()
-	 *
-	 * @var string
-	 * @access private
-	 */
-	private static $ENCRYPTION_IV = '381416de30a5c970f8f486aa6d5cc932';
+	protected static $locallang = array ();
 
 	/**
 	 * Searches the array recursively for a given value and returns the corresponding key if successful
@@ -253,9 +243,21 @@ class tx_dlf_helper {
 
 		}
 
-		$iv = substr(self::$ENCRYPTION_IV, 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
+		if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
 
-		$decrypted = mcrypt_decrypt(MCRYPT_BLOWFISH, self::$ENCRYPTION_KEY, base64_decode($encrypted), MCRYPT_MODE_CFB, $iv);
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->decrypt('.$encrypted.', '.$hash.')] No encryption key set in TYPO3 configuration', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+			return;
+
+		}
+
+		$iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
+
+		$decrypted = mcrypt_decrypt(MCRYPT_BLOWFISH, $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], base64_decode($encrypted), MCRYPT_MODE_CFB, $iv);
 
 		$salt = substr($hash, 0, 10);
 
@@ -302,9 +304,21 @@ class tx_dlf_helper {
 
 		}
 
-		$iv = substr(self::$ENCRYPTION_IV, 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
+		if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
 
-		$encrypted = base64_encode(mcrypt_encrypt(MCRYPT_BLOWFISH, self::$ENCRYPTION_KEY, $string, MCRYPT_MODE_CFB, $iv));
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->encrypt('.$string.')] No encryption key set in TYPO3 configuration', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+			return;
+
+		}
+
+		$iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
+
+		$encrypted = base64_encode(mcrypt_encrypt(MCRYPT_BLOWFISH, $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], $string, MCRYPT_MODE_CFB, $iv));
 
 		$salt = substr(md5(uniqid(rand(), TRUE)), 0, 10);
 
@@ -330,7 +344,7 @@ class tx_dlf_helper {
 
 				return $GLOBALS['BE_USER'];
 
-			} elseif (!isset($_COOKIE['be_typo_user'])) {
+			} elseif (!isset($_COOKIE['be_typo_user'])) { // TODO: Since TYPO3 4.6 the cookie name is configurable in $TYPO3_CONF_VARS['BE']['cookieName']
 
 				// Initialize backend session with CLI user's rights.
 				$userObj = t3lib_div::makeInstance('t3lib_beUserAuth');
@@ -527,6 +541,71 @@ class tx_dlf_helper {
 			return $code;
 
 		}
+
+	}
+
+	/**
+	 * Wrapper function for getting localizations in frontend and backend
+	 *
+	 * @param	string		$key: The locallang key to translate
+	 * @param	string		$default: Default return value if no translation is available
+	 * @param	boolean		$hsc: Should the result be htmlspecialchar()'ed?
+	 *
+	 * @return	string		The translated string or the given key on failure
+	 */
+	public static function getLL($key, $default = '', $hsc = FALSE) {
+
+		// Set initial output to default value.
+		$translated = (string) $default;
+
+		// Load common locallang file.
+		if (empty(self::$locallang)) {
+
+			$file = t3lib_extMgm::extPath(self::$extKey, 'common/locallang.xml');
+
+			if (TYPO3_MODE === 'FE') {
+
+				self::$locallang = $GLOBALS['TSFE']->readLLfile($file);
+
+			} elseif (TYPO3_MODE === 'BE') {
+
+				self::$locallang = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
+
+			} elseif (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getLL('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+		}
+
+		// Get translation.
+		if (!empty(self::$locallang['default'][$key])) {
+
+			if (TYPO3_MODE === 'FE') {
+
+				$translated = $GLOBALS['TSFE']->getLLL($key, self::$locallang);
+
+			} elseif (TYPO3_MODE === 'BE') {
+
+				$translated = $GLOBALS['LANG']->getLLL($key, self::$locallang, FALSE);
+
+			} elseif (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getLL('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+		}
+
+		// Escape HTML characters if applicable.
+		if ($hsc) {
+
+			$translated = htmlspecialchars($translated);
+
+		}
+
+		return $translated;
 
 	}
 

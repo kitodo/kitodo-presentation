@@ -197,7 +197,7 @@ $TCA['tx_dlf_libraries'] = array (
 );
 
 // Register static typoscript.
-t3lib_extMgm::addStaticFile($_EXTKEY, 'typoscript/', 'DLF (Base Configuration)');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'typoscript/', 'Basic Configuration');
 
 // Register plugins.
 t3lib_div::loadTCA('tt_content');
@@ -271,6 +271,8 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_search'] 
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_search'] = 'pi_flexform';
 
 t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_search', $_EXTKEY.'_search'), 'list_type');
+
+t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/search/', 'Search Facets');
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_search', 'FILE:EXT:'.$_EXTKEY.'/plugins/search/flexform.xml');
 
