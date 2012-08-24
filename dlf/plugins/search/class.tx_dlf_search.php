@@ -49,15 +49,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 */
 	protected function addAutocompleteJS() {
 
-		// Ensure extension "t3jquery" is available.
-		if (t3lib_extMgm::isLoaded('t3jquery')) {
-
-			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
-
-		}
-
-		// Is "t3jquery" loaded and the custom library created?
-		if (T3JQUERY === TRUE) {
+		// Ensure extension "t3jquery" is available and a custom library is created.
+		if (t3lib_extMgm::isLoaded('t3jquery') && T3JQUERY === TRUE) {
 
 			tx_t3jquery::addJqJS();
 
@@ -335,7 +328,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$results->metadata = array (
 				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
-				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numHits, $results->count)).'</p>',
+				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, $results->count)).'</p>',
 				'options' => $results->metadata['options']
 			);
 
