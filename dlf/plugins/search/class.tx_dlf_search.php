@@ -133,7 +133,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		foreach (t3lib_div::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
 
-			$facets[$facet] = tx_dlf_helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
+			$facets[$facet.'_faceting'] = tx_dlf_helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
 
 		}
 
@@ -145,6 +145,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$TSconfig['special.']['userFunc'] = 'tx_dlf_search->makeFacetsMenuArray';
 
 		$TSconfig['special.']['facets'] = $facets;
+
+		$TSconfig['special.']['limit'] = max(intval($this->conf['limitFacets']), 1);
 
 		$TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
 
@@ -171,21 +173,26 @@ class tx_dlf_search extends tx_dlf_plugin {
 		if ($field == 'owner_faceting') {
 
 			// Translate name of holding library.
-			$entryArray['title'] = tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']);
+			$entryArray['title'] = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
 
 		} elseif ($field == 'type_faceting') {
 
 			// Translate document type.
-			$entryArray['title'] = tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']);
+			$entryArray['title'] = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+
+		} elseif ($field == 'collection_faceting') {
+
+			// Translate document type.
+			$entryArray['title'] = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
 
 		} elseif ($field == 'language_faceting') {
 
 			// Translate ISO 639 language code.
-			$entryArray['title'] = tx_dlf_helper::getLanguageName($value);
+			$entryArray['title'] = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
 
 		} else {
 
-			$entryArray['title'] = $value;
+			$entryArray['title'] = htmlspecialchars($value);
 
 		}
 
@@ -194,14 +201,14 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$entryArray['doNotLinkIt'] = 0;
 
 		// Check if facet is already selected.
-		$index = array_search($field.':"'.$value.'"', $search['fq']);
+		$index = array_search($field.':"'.$value.'"', $search['params']['fq']);
 
 		if ($index !== FALSE) {
 
 			// Facet is selected, thus remove it from filter.
-			unset($search['fq'][$index]);
+			unset($search['params']['fq'][$index]);
 
-			$search['fq'] = array_values($search['fq']);
+			$search['params']['fq'] = array_values($search['params']['fq']);
 
 			$entryArray['ITEM_STATE'] = 'CUR';
 
@@ -210,13 +217,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 		} else {
 
 			// Facet is not selected, thus add it to filter.
-			$search['fq'][] = $field.':"'.$value.'"';
+			$search['params']['fq'][] = $field.':"'.$value.'"';
 
 			$entryArray['ITEM_STATE'] = 'NO';
 
 		}
 
-		$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['fq']));
+		$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
 
 		return $entryArray;
 
@@ -313,13 +320,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 			}
 
 			// Set search parameters.
-			$solr->limit = $this->conf['limit'];
+			$solr->limit = max(intval($this->conf['limit']), 1);
 
 			$solr->cPid = $this->conf['pages'];
 
 			if (!empty($this->piVars['fq'])) {
 
-				$solr->filter = $this->piVars['fq'];
+				$solr->params = array ('fq' => $this->piVars['fq']);
 
 			}
 
@@ -365,10 +372,10 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		$menuArray = array ();
 
-		// Set default values for facet search.
+		// Set default value for facet search.
 		$search = array (
 			'query' => '*',
-			'fq' => array ()
+			'params' => array ()
 		);
 
 		// Extract query and filter from last search.
@@ -382,7 +389,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
-			$search['fq'] = $list->metadata['options']['filter'];
+			$search['params'] = $list->metadata['options']['params'];
 
 		}
 
@@ -401,29 +408,28 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		}
 
-		$params = array (
-			'facet' => 'true',
-			'fq' => $search['fq'],
-			'facet.field' => array ()
-		);
+		// Set needed parameters for facet search.
+		if (empty($search['params']['fq'])) {
 
-		foreach ($this->conf['facets'] as $field => $label) {
-
-			$params['facet.field'][] = $field.'_faceting';
+			$search['params']['fq'] = array ();
 
 		}
 
+		$search['params']['facet'] = 'true';
+
+		$search['params']['facet.field'] = array_keys($this->conf['facets']);
+
 		// Perform search.
-		$results = $solr->service->search($search['query'], 0, $this->conf['limit'], $params);
+		$results = $solr->service->search($search['query'], 0, $this->conf['limit'], $search['params']);
 
 		// Process results.
 		foreach ($results->facet_counts->facet_fields as $field => $values) {
 
 			$entryArray = array ();
 
-			$entryArray['title'] = $this->conf['facets'][$field];
+			$entryArray['title'] = htmlspecialchars($this->conf['facets'][$field]);
 
-			$entryArray['count'] = 0;
+			$entryArray['count'] = count((array) $values);
 
 			$entryArray['_OVERRIDE_HREF'] = '';
 
@@ -431,17 +437,28 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$entryArray['ITEM_STATE'] = 'NO';
 
+			// Count number of facet values.
+			$i = 0;
+
 			foreach ($values as $value => $count) {
 
 				if ($count > 0) {
 
 					$hasValue = TRUE;
 
-					$entryArray['count']++;
-
 					$entryArray['ITEM_STATE'] = 'IFSUB';
 
 					$entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
+
+					if (++$i == $this->conf['limit']) {
+
+						break;
+
+					}
+
+				} else {
+
+					break;
 
 				}
 

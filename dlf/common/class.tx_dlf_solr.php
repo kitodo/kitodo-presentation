@@ -63,14 +63,6 @@ class tx_dlf_solr {
 	public static $extKey = 'dlf';
 
 	/**
-	 * This holds the filter query
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $filter = array ();
-
-	/**
 	 * This holds the max results
 	 *
 	 * @var	integer
@@ -85,6 +77,14 @@ class tx_dlf_solr {
 	 * @access protected
 	 */
 	protected $numberOfHits = 0;
+
+	/**
+	 * This holds the additional query parameters
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $params = array ();
 
 	/**
 	 * Is the search instantiated successfully?
@@ -259,16 +259,16 @@ class tx_dlf_solr {
 		}
 
 		// Perform search.
-		$query = $this->service->search($query, 0, $this->limit, $this->filter);
+		$results = $this->service->search($query, 0, $this->limit, $this->params);
 
-		$this->numberOfHits = count($query->response->docs);
+		$this->numberOfHits = count($results->response->docs);
 
 		$toplevel = array ();
 
 		$checks = array ();
 
 		// Get metadata configuration.
-		if ($numHits) {
+		if ($this->numberOfHits > 0) {
 
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
@@ -305,7 +305,7 @@ class tx_dlf_solr {
 		$i = 0;
 
 		// Process results.
-		foreach ($query->response->docs as $doc) {
+		foreach ($results->response->docs as $doc) {
 
 			// Prepate document's metadata.
 			$docMeta = array ();
@@ -471,7 +471,7 @@ class tx_dlf_solr {
 			'options' => array (
 				'source' => 'search',
 				'select' => $query,
-				'filter' => $this->filter,
+				'params' => $this->params,
 				'order' => 'relevance'
 			)
 		);
@@ -535,21 +535,6 @@ class tx_dlf_solr {
 	}
 
 	/**
-	 * This sets $this->filter via __set()
-	 *
-	 * @access	protected
-	 *
-	 * @param	array		$value: The filter query
-	 *
-	 * @return	void
-	 */
-	protected function _setFilter(array $value) {
-
-		$this->filter = $value;
-
-	}
-
-	/**
 	 * This sets $this->limit via __set()
 	 *
 	 * @access	protected
@@ -561,6 +546,21 @@ class tx_dlf_solr {
 	protected function _setLimit($value) {
 
 		$this->limit = max(intval($value), 0);
+
+	}
+
+	/**
+	 * This sets $this->params via __set()
+	 *
+	 * @access	protected
+	 *
+	 * @param	array		$value: The query parameters
+	 *
+	 * @return	void
+	 */
+	protected function _setParams(array $value) {
+
+		$this->params = $value;
 
 	}
 

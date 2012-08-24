@@ -371,7 +371,7 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function __construct(array $elements = array (), array $metadata = array ()) {
 
-		if (!$elements && !$metadata) {
+		if (empty($elements) && empty($metadata)) {
 
 			// Let's check the user's session.
 			$sessionData = tx_dlf_helper::loadFromSession(get_class($this));

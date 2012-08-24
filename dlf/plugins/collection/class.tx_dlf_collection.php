@@ -283,7 +283,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 					'options' => array (
 						'source' => 'collection',
 						'select' => $id,
-						'filter' => array ('collection_faceting:"'.$resArray['index_name'].'"'),
+						'params' => array ('fq' => array ('collection_faceting:"'.$resArray['index_name'].'"')),
 						'order' => 'title'
 					)
 				);
