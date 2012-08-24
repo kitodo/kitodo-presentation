@@ -257,7 +257,7 @@ class tx_dlf_helper {
 
 		$iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
 
-		$decrypted = mcrypt_decrypt(MCRYPT_BLOWFISH, $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], base64_decode($encrypted), MCRYPT_MODE_CFB, $iv);
+		$decrypted = mcrypt_decrypt(MCRYPT_BLOWFISH, substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), base64_decode($encrypted), MCRYPT_MODE_CFB, $iv);
 
 		$salt = substr($hash, 0, 10);
 
@@ -318,7 +318,7 @@ class tx_dlf_helper {
 
 		$iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
 
-		$encrypted = base64_encode(mcrypt_encrypt(MCRYPT_BLOWFISH, $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], $string, MCRYPT_MODE_CFB, $iv));
+		$encrypted = base64_encode(mcrypt_encrypt(MCRYPT_BLOWFISH, substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), $string, MCRYPT_MODE_CFB, $iv));
 
 		$salt = substr(md5(uniqid(rand(), TRUE)), 0, 10);
 
