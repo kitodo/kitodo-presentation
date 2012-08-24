@@ -6,13 +6,7 @@ plugin.tx_dlf_search.facetsConf {
 		wrap = <ul>|</ul>
 		NO = 1
 		NO {
-			stdWrap {
-				crop = 55 | &nbsp;... | 1
-				append.fieldRequired = count
-				append = TEXT
-				append.field = count
-				append.wrap = &nbsp;(|)
-			}
+			stdWrap.crop = 55 | &nbsp;... | 1
 			doNotLinkIt.field = doNotLinkIt
 			wrapItemAndSub = <li class="tx-dlf-search-no">|</li>
 	    }
@@ -25,6 +19,13 @@ plugin.tx_dlf_search.facetsConf {
 	}
 	2 < .1
 	2 {
+		NO.stdWrap {
+			crop = 55 | &nbsp;... | 1
+			append.fieldRequired = count
+			append = TEXT
+			append.field = count
+			append.wrap = &nbsp;(|)
+		}
 		IFSUB >
 		ACT >
 		ACTIFSUB >

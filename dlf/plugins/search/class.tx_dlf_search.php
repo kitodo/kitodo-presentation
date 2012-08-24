@@ -429,7 +429,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$entryArray['title'] = htmlspecialchars($this->conf['facets'][$field]);
 
-			$entryArray['count'] = count((array) $values);
+			$entryArray['count'] = 0;
 
 			$entryArray['_OVERRIDE_HREF'] = '';
 
@@ -445,6 +445,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 				if ($count > 0) {
 
 					$hasValue = TRUE;
+
+					$entryArray['count']++;
 
 					$entryArray['ITEM_STATE'] = 'IFSUB';
 
