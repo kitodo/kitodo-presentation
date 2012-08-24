@@ -49,8 +49,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 */
 	protected function addAutocompleteJS() {
 
-		// Ensure extension "t3jquery" is available and a custom library is created.
-		if (t3lib_extMgm::isLoaded('t3jquery') && T3JQUERY === TRUE) {
+		// Ensure extension "t3jquery" is available.
+		if (t3lib_extMgm::isLoaded('t3jquery')) {
+
+			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+
+		}
+
+		// Is "t3jquery" loaded?
+		if (T3JQUERY === TRUE) {
 
 			tx_t3jquery::addJqJS();
 
