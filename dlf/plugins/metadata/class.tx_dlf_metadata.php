@@ -247,9 +247,9 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 					if ($index_name == 'title') {
 
 						// Get title of parent document if needed.
-						if (empty($value) && $this->conf['getTitle'] && $this->doc->parentid) {
+						if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
 
-							$value = '['.tx_dlf_document::getTitle($this->doc->parentid, TRUE).']';
+							$value = '['.tx_dlf_document::getTitle($this->doc->parentId, TRUE).']';
 
 						}
 

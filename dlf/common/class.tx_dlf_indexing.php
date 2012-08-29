@@ -108,9 +108,9 @@ class tx_dlf_indexing {
 			$errors = 0;
 
 			// Handle multi-volume documents.
-			if ($doc->parentid) {
+			if ($doc->parentId) {
 
-				$parent = tx_dlf_document::getInstance($doc->parentid, 0, TRUE);
+				$parent = tx_dlf_document::getInstance($doc->parentId, 0, TRUE);
 
 				if ($parent->ready) {
 
@@ -120,7 +120,7 @@ class tx_dlf_indexing {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentid.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+						t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 					}
 
@@ -488,7 +488,7 @@ class tx_dlf_indexing {
 
 			}
 
-			$solrDoc->setField('partof', $doc->parentid);
+			$solrDoc->setField('partof', $doc->parentId);
 
 			$solrDoc->setField('sid', $logicalUnit['id']);
 
