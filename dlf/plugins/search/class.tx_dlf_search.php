@@ -455,7 +455,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					$entryArray['count']++;
 
-					$entryArray['ITEM_STATE'] = 'IFSUB';
+					if ($entryArray['ITEM_STATE'] == 'NO') {
+
+						$entryArray['ITEM_STATE'] = 'IFSUB';
+
+					}
 
 					$entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
 
