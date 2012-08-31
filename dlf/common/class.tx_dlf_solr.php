@@ -356,7 +356,7 @@ class tx_dlf_solr {
 					'sorting' => $docSorting
 				);
 
-				if (!in_array($doc->uid, $check)) {
+				if (!in_array($doc->uid, $checks)) {
 
 					$checks[] = $doc->uid;
 
