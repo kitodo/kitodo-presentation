@@ -9,6 +9,7 @@
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
+			<label index="tt_content.pi_flexform.docSearch">Allow in-document searching?</label>
 			<label index="tt_content.pi_flexform.facets">Show these facets</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximum facet values</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
@@ -23,6 +24,7 @@
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
+			<label index="tt_content.pi_flexform.docSearch">Erlaube Suche im Dokument?</label>
 			<label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximale Facettenwerte</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>

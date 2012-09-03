@@ -75,6 +75,33 @@ class tx_dlf_search extends tx_dlf_plugin {
 	}
 
 	/**
+	 * Adds the current document's UID and parent ID to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		HTML input fields with current document's UID and parent ID
+	 */
+	protected function addCurrentDocument() {
+
+		// Load current document.
+		if (!empty($this->piVars['id']) && t3lib_div::testInt($this->piVars['id'])) {
+
+			$this->loadDocument();
+
+			// Get document's UID or parent ID.
+			if ($this->doc->ready) {
+
+				return '<input type="hidden" name="'.$this->prefixId.'[id]" value="'.($this->doc->parentId > 0 ? $this->doc->parentId : $this->doc->uid).'" />';
+
+			}
+
+		}
+
+		return '';
+
+	}
+
+	/**
 	 * Adds the encrypted Solr core name to the search form
 	 *
 	 * @access	protected
@@ -189,7 +216,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		} elseif ($field == 'collection_faceting') {
 
-			// Translate document type.
+			// Translate name of collection.
 			$entryArray['title'] = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
 
 		} elseif ($field == 'language_faceting') {
@@ -269,7 +296,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		if (!isset($this->piVars['query'])) {
 
 			// Add javascript for autocompletion if available.
-			$autocomplete = $this->addAutocompleteJS();
+			$this->addAutocompleteJS();
 
 			// Load template file.
 			if (!empty($this->conf['templateFile'])) {
@@ -300,6 +327,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => htmlspecialchars($lastQuery),
+				'###FIELD_DOC###' => $this->addCurrentDocument(),
 				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
 				'###FACETS_MENU###' => $this->addFacetsMenu()
 			);
@@ -331,11 +359,24 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			$solr->cPid = $this->conf['pages'];
 
+			// Set query parameters.
+			$params = array ();
+
+			// Add filter query for faceting.
 			if (!empty($this->piVars['fq'])) {
 
-				$solr->params = array ('fq' => $this->piVars['fq']);
+				$params = array ('fq' => $this->piVars['fq']);
 
 			}
+
+			// Add filter query for in-document searching.
+			if ($this->conf['docSearch'] && !empty($this->piVars['id']) && t3lib_div::testInt($this->piVars['id'])) {
+
+				$params['fq'][] = 'uid:'.$this->piVars['id'].' OR partof:'.$this->piVars['id'];
+
+			}
+
+			$solr->params = $params;
 
 			// Perform search.
 			$results = $solr->search($this->piVars['query']);
