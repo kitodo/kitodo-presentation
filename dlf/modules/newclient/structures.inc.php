@@ -78,6 +78,14 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'cover_front' => array (
+		'toplevel' => 0,
+		'oai_name' => ''
+	),
+	'cover_back' => array (
+		'toplevel' => 0,
+		'oai_name' => ''
+	),
 	'dedication' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
