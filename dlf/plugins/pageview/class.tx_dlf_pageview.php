@@ -152,6 +152,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$this->init($conf);
 
+		// Disable caching for this plugin.
+		$this->setCache(FALSE);
+
 		// Load current document.
 		$this->loadDocument();
 
@@ -166,9 +169,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
 		}
-
-		// Disable caching for this plugin.
-		$this->setCache(FALSE);
 
 		$content .= $this->showViewer();
 
