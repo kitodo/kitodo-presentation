@@ -75,7 +75,30 @@ class tx_dlf_search extends tx_dlf_plugin {
 	}
 
 	/**
-	 * Adds the current document's UID and parent ID to the search form
+	 * Adds the current collection's UID to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		HTML input fields with current document's UID and parent ID
+	 */
+	protected function addCurrentCollection() {
+
+		// Load current collection.
+		$list = t3lib_div::makeInstance('tx_dlf_list');
+
+		if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'collection') {
+
+			// Get collection's UID.
+			return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$list->metadata['options']['select'].'" />';
+
+		}
+
+		return '';
+
+	}
+
+	/**
+	 * Adds the current document's UID or parent ID to the search form
 	 *
 	 * @access	protected
 	 *
@@ -328,6 +351,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => htmlspecialchars($lastQuery),
 				'###FIELD_DOC###' => $this->addCurrentDocument(),
+				'###FIELD_COLL###' => $this->addCurrentCollection(),
 				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
 				'###FACETS_MENU###' => $this->addFacetsMenu()
 			);
@@ -394,13 +418,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Add filter query for in-collection searching.
 			if ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all') {
 
-				$list = t3lib_div::makeInstance('tx_dlf_list');
+				if (!empty($this->piVars['collection']) && t3lib_div::testInt($this->piVars['collection'])) {
 
-				if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'collection') {
+					$index_name = tx_dlf_helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
-					$params['fq'][] = $list->metadata['options']['params']['fq'][0];
+					$params['fq'][] = 'collection_faceting:"'.$index_name.'"';
 
-					$label .= printf($this->pi_getLL('in', '', TRUE), $list->metadata['label']);
+					$label .= printf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
 
 				}
 

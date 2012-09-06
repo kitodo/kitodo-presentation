@@ -881,7 +881,7 @@ class tx_dlf_helper {
 	 * @param	string		$table: Get the translation from this table
 	 * @param	string		$pid: Get the translation from this page
 	 *
-	 * @return	mixed		Translated label or boolean value if $checkOnly is set
+	 * @return	string		Localized label for $index_name
 	 */
 	public static function translate($index_name, $table, $pid) {
 
