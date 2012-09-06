@@ -383,7 +383,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			if (!empty($this->piVars['query'])) {
 
-				$label .= htmlspecialchars(printf($this->pi_getLL('for', ''), $this->piVars['query']));
+				$label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), $this->piVars['query']));
 
 			}
 
@@ -409,7 +409,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					$params['fq'][] = 'uid:'.$this->piVars['id'].' OR partof:'.$this->piVars['id'];
 
-					$label .= htmlspecialchars(printf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
+					$label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
 
 				}
 
@@ -424,7 +424,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					$params['fq'][] = 'collection_faceting:"'.$index_name.'"';
 
-					$label .= printf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
+					$label .= sprintf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
 
 				}
 
