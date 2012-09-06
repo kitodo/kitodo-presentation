@@ -250,16 +250,16 @@ class tx_dlf_solr {
 	public function search($query = '*') {
 
 		// Sanitize query string.
-		$query = (string) $query;
+		$queryString = (string) $query;
 
-		if (empty($query)) {
+		if (empty($queryString)) {
 
-			$query = '*';
+			$queryString = '*';
 
 		}
 
 		// Perform search.
-		$results = $this->service->search($query, 0, $this->limit, $this->params);
+		$results = $this->service->search($queryString, 0, $this->limit, $this->params);
 
 		$this->numberOfHits = count($results->response->docs);
 

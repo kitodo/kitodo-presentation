@@ -354,6 +354,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
+			// Build label for result list.
+			$label = $this->pi_getLL('search', '', TRUE);
+
+			if (!empty($this->piVars['query'])) {
+
+				$label .= htmlspecialchars(printf($this->pi_getLL('for', ''), $this->piVars['query']));
+
+			}
+
 			// Set search parameters.
 			$solr->limit = max(intval($this->conf['limit']), 1);
 
@@ -370,9 +379,30 @@ class tx_dlf_search extends tx_dlf_plugin {
 			}
 
 			// Add filter query for in-document searching.
-			if ($this->conf['docSearch'] && !empty($this->piVars['id']) && t3lib_div::testInt($this->piVars['id'])) {
+			if ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all') {
 
-				$params['fq'][] = 'uid:'.$this->piVars['id'].' OR partof:'.$this->piVars['id'];
+				if (!empty($this->piVars['id']) && t3lib_div::testInt($this->piVars['id'])) {
+
+					$params['fq'][] = 'uid:'.$this->piVars['id'].' OR partof:'.$this->piVars['id'];
+
+					$label .= htmlspecialchars(printf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
+
+				}
+
+			}
+
+			// Add filter query for in-collection searching.
+			if ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all') {
+
+				$list = t3lib_div::makeInstance('tx_dlf_list');
+
+				if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'collection') {
+
+					$params['fq'][] = $list->metadata['options']['params']['fq'][0];
+
+					$label .= printf($this->pi_getLL('in', '', TRUE), $list->metadata['label']);
+
+				}
 
 			}
 
@@ -382,7 +412,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			$results = $solr->search($this->piVars['query']);
 
 			$results->metadata = array (
-				'label' => htmlspecialchars(sprintf($this->pi_getLL('searchfor', ''), $this->piVars['query'])),
+				'label' => $label,
 				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, $results->count)).'</p>',
 				'options' => $results->metadata['options']
 			);
