@@ -237,9 +237,10 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
+		// !!!ATTENTION PLEASE: THE ID WITHIN THE SCRIPT ELEMENT IS IMPORTANT ANDSHOULD STAY IN FUTURE RELEASES!!! 
 		$viewer .= '
-		<script type="text/javascript">
-		/* <![CDATA[ */
+		<script id="tx-dlf-initViewer" type="text/javascript">
+		///* <![CDATA[ */
 		dlfViewer = new Viewer();
 		'.implode("\n", $addImages).'
 		dlfViewer.run();
