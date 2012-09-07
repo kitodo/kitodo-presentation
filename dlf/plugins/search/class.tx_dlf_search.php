@@ -160,7 +160,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		return $this->cObj->HMENU($TSconfig);
 
 	}
-
+	
 	/**
 	 * Returns the extended search form and adds the JS files necessary for extended search.
 	 *
@@ -170,15 +170,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 */
 	protected function addExtendedSearch($template) {
 		
-		// Is "t3jquery" loaded?
-		if (T3JQUERY === FALSE) {
-		
-			// No extened search available!
+		if (!$this->ensureJquery()) {
+			
 			return '';
-		
+			
 		}
-		
-		tx_t3jquery::addJqJS();
 		
 		// Add JS for client side query construction.
 		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_extended'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_extended.js"></script>';
@@ -244,6 +240,43 @@ class tx_dlf_search extends tx_dlf_plugin {
 		
 		return $result;
 		
+	}
+	
+	/**
+	 * Tries to load t3jquery extension and returns success.
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		TRUE on success or FALSE on error
+	 */
+	private function ensureJquery() {
+	
+		if (T3JQUERY === TRUE) {
+			
+			return TRUE;
+			
+		}
+		
+		// Ensure extension "t3jquery" is available.
+		if (t3lib_extMgm::isLoaded('t3jquery')) {
+	
+			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+	
+		}
+	
+		// Is "t3jquery" loaded?
+		if (T3JQUERY === TRUE) {
+
+			tx_t3jquery::addJqJS();
+			
+			return TRUE;
+			
+		} else {
+			
+			return FALSE;
+			
+		}
+	
 	}
 	
 	/**
