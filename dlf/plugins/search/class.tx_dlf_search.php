@@ -161,8 +161,28 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 	}
 
+	/**
+	 * Returns the extended search form and adds the JS files necessary for extended search.
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		the extended search form HTML content or an empty string if extended search is not desired or not possible
+	 */
 	protected function addExtendedSearch($template) {
-	
+		
+		// Is "t3jquery" loaded?
+		if (T3JQUERY === FALSE) {
+		
+			// No extened search available!
+			return '';
+		
+		}
+		
+		tx_t3jquery::addJqJS();
+		
+		// Add JS for client side query construction.
+		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_extended'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_extended.js"></script>';
+
 		// Quit without doing anything if no fields for extended search are selected.
 		if (empty($this->conf['extSearchSlotCount']) || empty($this->conf['extSearchFields'])) {
 		
@@ -221,9 +241,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 			$result .= $this->cObj->substituteMarkerArray($template, $markerArray);
 				
 		}
-		
-		// Add JS for client side query construction.
-		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_extended'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_extended.js"></script>';
 		
 		return $result;
 		
