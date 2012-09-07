@@ -53,6 +53,9 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		$this->init($conf);
 
+		// Turn cache on.
+		$this->setCache(TRUE);
+
 		// Load current document.
 		$this->loadDocument();
 

@@ -53,6 +53,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		$this->init($conf);
 
+		// Turn cache on.
+		$this->setCache(TRUE);
+
 		// Quit without doing anything if required configuration variables are not set.
 		if (empty($this->conf['pages'])) {
 
