@@ -599,6 +599,13 @@ class tx_dlf_indexing {
 	 */
 	protected static function solrConnect($core, $pid = 0) {
 
+		// Load language file.
+		// TODO: Use tx_dlf_helper::getLL() instead!
+		$file = t3lib_extMgm::extPath(self::$extKey, 'modules/indexing/locallang.xml');
+
+		$GLOBALS['LANG']->includeLLFile($file, TRUE, TRUE);
+
+		// Get Solr instance.
 		if (!self::$solr) {
 
 			// Connect to Solr server.
