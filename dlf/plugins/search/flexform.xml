@@ -54,6 +54,38 @@
 							</config>
 						</TCEforms>
 					</limit>
+					<extSearchSlotCount>
+						<TCEforms>
+							<displayCond>FIELD:pages:REQ:true</displayCond>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.extSearch.slotCount</label>
+							<config>
+								<type>input</type>
+								<eval>num,int</eval>
+								<range>
+     								<lower>-1</lower>
+     								<upper>10</upper>
+   								</range>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</extSearchSlotCount>
+					<extSearchFields>
+						<TCEforms>
+							<displayCond>FIELD:pages:REQ:true</displayCond>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.extSearch.fields</label>
+							<config>
+								<type>select</type>
+								<items type="array"></items>
+								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_extendedSearchList</itemsProcFunc>
+								<size>5</size>
+								<autoSizeMax>15</autoSizeMax>
+								<maxitems>1024</maxitems>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</extSearchFields>
 					<facets>
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>

@@ -9,6 +9,11 @@
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
+			<label index="tt_content.pi_flexform.extSearch.slotCount">Number of search slots</label>
+			<label index="tt_content.pi_flexform.extSearch.fields">Show these fields in extended search</label>
+			<label index="tt_content.pi_flexform.extSearch.operator.AND">and</label>
+			<label index="tt_content.pi_flexform.extSearch.operator.OR">or</label>
+			<label index="tt_content.pi_flexform.extSearch.operator.NOT">not</label>
 			<label index="tt_content.pi_flexform.facets">Show these facets</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximum facet values</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
@@ -23,6 +28,11 @@
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
+			<label index="tt_content.pi_flexform.extSearch.slotCount">Anzahl an Suchfeldern</label>
+			<label index="tt_content.pi_flexform.extSearch.fields">Diese Felder in der erweiterten Suche anzeigen</label>
+			<label index="tt_content.pi_flexform.extSearch.operator.AND">und</label>
+			<label index="tt_content.pi_flexform.extSearch.operator.OR">oder</label>
+			<label index="tt_content.pi_flexform.extSearch.operator.NOT">nicht</label>
 			<label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximale Facettenwerte</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>

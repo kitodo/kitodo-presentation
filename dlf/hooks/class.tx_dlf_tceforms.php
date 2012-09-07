@@ -91,6 +91,51 @@ class tx_dlf_tceforms {
 		}
 
 	}
+	
+	public function itemsProcFunc_extendedSearchList(&$params, &$pObj) {
+		
+		if ($params['row']['pi_flexform']) {
+		
+			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+		
+			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+		
+			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
+			// i.e. instead of "18" it reads "pages_18|Title"
+			if (!t3lib_div::testInt($pages)) {
+		
+				$_parts = explode('|', $pages);
+		
+				$pages = array_pop(explode('_', $_parts[0]));
+		
+			}
+		
+			if ($pages > 0) {
+		
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'label,index_name',
+						'tx_dlf_metadata',
+						'indexed=1 AND pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+						'',
+						'sorting',
+						''
+				);
+		
+				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+		
+					while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+		
+						$params['items'][] = $resArray;
+		
+					}
+		
+				}
+		
+			}
+		
+		}
+		
+	}
 
 	/**
 	 * Helper to get flexform's items array for plugin "tx_dlf_search"
