@@ -358,6 +358,50 @@ class tx_dlf_indexing {
 	}
 
 	/**
+	 * Returns the dynamic index field title for the given index metadata.
+	 * 
+	 * @param string $index_name the "index_name" to request the index field title
+	 * 
+	 * @return string the index field title for the passed "index_name"
+	 */
+	public static function getIndexField($pid, $core = 0, $index_name) {
+		
+		if (empty($index_name)) {
+			
+			return $index_name;
+			
+		}
+		
+		if (!self::solrConnect($core, $pid)) {
+			
+			if (TYPO3_DLOG) {
+			
+				t3lib_div::devLog('[tx_dlf_indexing->getIndexField(] Could not connect to Apache Solr server', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				
+				return $index_name;
+			
+			}
+				
+		}
+		
+		
+		if (substr($index_name, -8) !== '_sorting') {
+		
+			$suffix = (in_array($index_name, self::$fields['tokenized']) ? 't' : 'u');
+		
+			$suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
+		
+			$suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
+		
+			$index_name .= '_'.$suffix;
+			
+		}
+		
+		return $index_name;
+
+	}
+	
+	/**
 	 * Load indexing configuration
 	 *
 	 * @access	protected
