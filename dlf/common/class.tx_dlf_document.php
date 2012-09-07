@@ -1395,6 +1395,8 @@ final class tx_dlf_document {
 		// Fill data array.
 		$data['tx_dlf_documents'][$this->uid] = array (
 			'pid' => $pid,
+			$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['starttime'] => 0,
+			$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['endtime'] => 0,
 			'prod_id' => $metadata['prod_id'][0],
 			'record_id' => $metadata['record_id'][0],
 			'opac_id' => $metadata['opac_id'][0],
@@ -1418,9 +1420,19 @@ final class tx_dlf_document {
 			'status' => 0,
 		);
 
+		// Set location.
 		if ($location) {
 
 			$data['tx_dlf_documents'][$this->uid]['location'] = $location;
+
+		}
+
+		// Unhide hidden documents.
+		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+
+		if (!empty($conf['unhideOnIndex'])) {
+
+			$data['tx_dlf_documents'][$this->uid][$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['disabled']] = 0;
 
 		}
 
