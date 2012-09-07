@@ -33,3 +33,12 @@ plugin.tx_dlf_search.facetsConf {
 		CUR.wrapItemAndSub = <li class="tx-dlf-search-cur">|</li>
 	}
 }
+
+plugin.tx_dlf_search.extendedSearch {
+	operator.first = <span class="span1" style="padding: 0 2px;">&nbsp;</span>
+	operator.select.parameters = class="span1"
+	#operator.option.parameters =
+	fieldSelector.select.parameters = class="span2"
+	#fieldSelector.option.parameters =
+	field.parameters = class="span5"
+}

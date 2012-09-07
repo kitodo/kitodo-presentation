@@ -161,6 +161,74 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 	}
 
+	protected function addExtendedSearch($template) {
+	
+		// Quit without doing anything if no fields for extended search are selected.
+		if (empty($this->conf['extSearchSlotCount']) || empty($this->conf['extSearchFields'])) {
+		
+			return '';
+		
+		}
+		
+		$searchFields = t3lib_div::trimExplode(',', $this->conf['extSearchFields'], TRUE);
+		
+		if (array_count_values($searchFields) == 0) {
+			
+			t3lib_div::devLog('[tx_dlf_search.addExtendedSearch]   empty array', 'dlf', t3lib_div::SYSLOG_SEVERITY_INFO);
+			
+			return '';
+			
+		}
+		
+		$operatorOptions = '';
+		
+		foreach (array("AND", "OR", "NOT") as $operator) {
+
+			$operatorOptions .= '<option value="'.$operator.'" '.$this->conf['extendedSearch.']['operator.']['option.']['parameters'].'>'.$this->pi_getLL('tt_content.pi_flexform.extSearch.operator.'.$operator).'</option>';
+			
+		}
+		
+		$fieldSelectorOptions = '';
+		
+		// create field selector options
+		foreach ($searchFields as $searchField) {
+				
+			$fieldSelectorOptions .= '<option value="'.tx_dlf_indexing::getIndexField($this->conf['pages'], $this->conf['solrcore'], $searchField).'"  '.$this->conf['extendedSearch.']['fieldSelector.']['option.']['parameters'].'>'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
+				
+		}
+				
+		// create content
+		$result = '';
+		
+		$markerArray = array();
+		
+		for ($i = 0; $i < $this->conf['extSearchSlotCount']; $i++) {
+				
+			if ($i == 0) {
+		
+				$markerArray['###EXT_SEARCH_OPERATOR###'] = $this->conf['extendedSearch.']['operator.']['first'];
+		
+			} else {
+		
+				$markerArray['###EXT_SEARCH_OPERATOR###'] = '<select name="tx_dlf[operator_'.$i.']" '.$this->conf['extendedSearch.']['operator.']['select.']['parameters'].'>'.$operatorOptions.'</select>';
+		
+			}
+				
+			$markerArray['###EXT_SEARCH_FIELD_SELECTOR###'] = '<select name="tx_dlf[fieldSelector_'.$i.']" '.$this->conf['extendedSearch.']['fieldSelector.']['select.']['parameters'].'>'.$fieldSelectorOptions.'</select>';
+				
+			$markerArray['###EXT_SEARCH_FIELD_INPUT###'] = '<input type="text" name="tx_dlf[field_'.$i.']" '.$this->conf['extendedSearch.']['field.']['parameters'].'>';
+				
+			$result .= $this->cObj->substituteMarkerArray($template, $markerArray);
+				
+		}
+		
+		// Add JS for client side query construction.
+		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_extended'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_extended.js"></script>';
+		
+		return $result;
+		
+	}
+	
 	/**
 	 * Creates an array for a HMENU entry of a facet value.
 	 *
@@ -305,7 +373,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			);
 
 			// Display search form.
-			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+			$content .= $this->cObj->substituteSubpart($this->cObj->substituteMarkerArray($this->template, $markerArray), '###EXT_SEARCH_ENTRY###', $this->addExtendedSearch($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###')));
 
 			return $this->pi_wrapInBaseClass($content);
 
