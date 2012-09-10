@@ -321,9 +321,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 				case 'indexLoop':
 
 					// Refresh user's session to prevent session timeout.
-					$_beuser = tx_dlf_helper::getBeUser();
-
-					$_beuser->fetchUserSession();
+					$GLOBALS['BE_USER']->fetchUserSession();
 
 					// Get document list from user's session.
 					$this->list = t3lib_div::makeInstance('tx_dlf_list');

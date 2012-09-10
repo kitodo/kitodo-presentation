@@ -337,44 +337,20 @@ class tx_dlf_helper {
 	 */
 	public static function getBeUser() {
 
-		if (TYPO3_MODE === 'FE') {
+		if (TYPO3_MODE === 'FE' || TYPO3_MODE === 'BE') {
 
-			// Check for existing backend login.
-			if ($GLOBALS['TSFE']->beUserLogin > 0 && isset($GLOBALS['BE_USER'])) {
+			// Initialize backend session with CLI user's rights.
+			$userObj = t3lib_div::makeInstance('t3lib_beUserAuth');
 
-				return $GLOBALS['BE_USER'];
+			$userObj->dontSetCookie = TRUE;
 
-			} elseif (!isset($_COOKIE['be_typo_user'])) { // TODO: Since TYPO3 4.6 the cookie name is configurable in $TYPO3_CONF_VARS['BE']['cookieName']
+			$userObj->start();
 
-				// Initialize backend session with CLI user's rights.
-				$userObj = t3lib_div::makeInstance('t3lib_beUserAuth');
+			$userObj->setBeUserByName('_cli_dlf');
 
-				$userObj->dontSetCookie = TRUE;
+			$userObj->backendCheckLogin();
 
-				$userObj->start();
-
-				$userObj->setBeUserByName('_cli_dlf');
-
-				$userObj->backendCheckLogin();
-
-				return $userObj;
-
-			} else {
-
-				if (TYPO3_DLOG) {
-
-					t3lib_div::devLog('[tx_dlf_helper->getBeUser()] Could not determine current user\'s login status', $this->extKey, SYSLOG_SEVERITY_ERROR);
-
-				}
-
-				return;
-
-			}
-
-		} elseif (TYPO3_MODE === 'BE') {
-
-			// Return current backend user.
-			return $GLOBALS['BE_USER'];
+			return $userObj;
 
 		} else {
 
@@ -785,8 +761,19 @@ class tx_dlf_helper {
 		// Set some configuration variables.
 		$tce->stripslashes_values = FALSE;
 
+		// Get backend user for processing.
+		if (TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->isAdmin()) {
+
+			$be_user = $GLOBALS['BE_USER'];
+
+		} else {
+
+			$be_user = self::getBeUser();
+
+		}
+
 		// Load data and command arrays.
-		$tce->start($data, $cmd, self::getBeUser());
+		$tce->start($data, $cmd, $be_user);
 
 		// Process command map first if default order is reversed.
 		if ($cmd && $reverseOrder) {

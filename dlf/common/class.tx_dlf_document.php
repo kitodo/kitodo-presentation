@@ -1164,6 +1164,34 @@ final class tx_dlf_document {
 
 		}
 
+		// Get UID for user "_cli_dlf".
+		$be_user = 0;
+
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'be_users.uid AS uid',
+			'be_users',
+			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').t3lib_BEfunc::BEenableFields('be_users').t3lib_BEfunc::deleteClause('be_users'),
+			'',
+			'',
+			'1'
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+			list ($be_user) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+			return FALSE;
+
+		}
+
 		// Get UID for structure type.
 		$structure = 0;
 
@@ -1200,7 +1228,7 @@ final class tx_dlf_document {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.uid AS uid',
 			'tx_dlf_collections',
-			'tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_collections.fe_cruser_id=0'.tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_collections.cruser_id='.intval($be_user).' AND tx_dlf_collections.fe_cruser_id=0'.tx_dlf_helper::whereClause('tx_dlf_collections'),
 			'',
 			'',
 			''
@@ -1265,7 +1293,7 @@ final class tx_dlf_document {
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
-			'AND tx_dlf_documents.pid='.intval($pid).' AND tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_documents.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->uid, 'tx_dlf_documents').' AND NOT tx_dlf_collections.fe_cruser_id=0',
+			'AND tx_dlf_documents.pid='.intval($pid).' AND tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_documents.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->uid, 'tx_dlf_documents').' AND NOT (tx_dlf_collections.cruser_id='.intval($be_user).' AND tx_dlf_collections.fe_cruser_id=0)',
 			'',
 			'',
 			''
