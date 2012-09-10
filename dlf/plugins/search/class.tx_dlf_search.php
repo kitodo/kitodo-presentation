@@ -45,12 +45,22 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 *
 	 * @access	protected
 	 *
-	 * @return	boolean		TRUE on success or FALSE on error
+	 * @return	void
 	 */
 	protected function addAutocompleteJS() {
 
+		// Check if there are any metadata to suggest.
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_dlf_metadata.*',
+			'tx_dlf_metadata',
+			'tx_dlf_metadata.autocomplete=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'',
+			'',
+			'1'
+		);
+
 		// Ensure extension "t3jquery" is available.
-		if (t3lib_extMgm::isLoaded('t3jquery')) {
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) && t3lib_extMgm::isLoaded('t3jquery')) {
 
 			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
 
@@ -62,13 +72,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 			tx_t3jquery::addJqJS();
 
 			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
-
-			return TRUE;
-
-		} else {
-
-			// No autocompletion available!
-			return FALSE;
 
 		}
 
