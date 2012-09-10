@@ -613,7 +613,7 @@ class tx_dlf_solr {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
 
 			}
 

@@ -197,7 +197,7 @@ class tx_dlf_em {
 						$GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['endtime'] => 0
 					);
 
-					tx_dlf_helper::processDB($data);
+					tx_dlf_helper::processDBasAdmin($data);
 
 					// Check if configuration was successful.
 					if ($this->checkCliUser(TRUE, $groupUid)) {
@@ -253,7 +253,7 @@ class tx_dlf_em {
 					'usergroup' => intval($groupUid)
 				);
 
-				$substUid = tx_dlf_helper::processDB($data);
+				$substUid = tx_dlf_helper::processDBasAdmin($data);
 
 				// Check if creation was successful.
 				if (!empty($substUid[$tempUid])) {
@@ -410,7 +410,7 @@ class tx_dlf_em {
 						$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
 					);
 
-					tx_dlf_helper::processDB($data);
+					tx_dlf_helper::processDBasAdmin($data);
 
 					// Check if configuration was successful.
 					if ($this->checkCliGroup(TRUE, $settings)) {
@@ -468,7 +468,7 @@ class tx_dlf_em {
 					'inc_access_lists' => 1
 				);
 
-				$substUid = tx_dlf_helper::processDB($data);
+				$substUid = tx_dlf_helper::processDBasAdmin($data);
 
 				// Check if creation was successful.
 				if (!empty($substUid[$tempUid])) {

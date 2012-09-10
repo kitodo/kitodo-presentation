@@ -466,7 +466,7 @@ class tx_dlf_list implements t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_list->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $value);
 
 			}
 

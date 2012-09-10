@@ -750,10 +750,11 @@ class tx_dlf_helper {
 	 * @param	array		$data: Data map
 	 * @param	array		$cmd: Command map
 	 * @param	boolean		$reverseOrder: Should the command map be processed first?
+	 * @param	boolean		$be_user: Use current backend user's rights for processing?
 	 *
 	 * @return	array		Array of substituted "NEW..." identifiers and their actual UIDs.
 	 */
-	public static function processDB(array $data = array (), array $cmd = array (), $reverseOrder = FALSE) {
+	public static function processDB(array $data = array (), array $cmd = array (), $reverseOrder = FALSE, $be_user = FALSE) {
 
 		// Instantiate TYPO3 core engine.
 		$tce = t3lib_div::makeInstance('t3lib_TCEmain');
@@ -762,18 +763,18 @@ class tx_dlf_helper {
 		$tce->stripslashes_values = FALSE;
 
 		// Get backend user for processing.
-		if (TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->isAdmin()) {
+		if ($be_user && isset($GLOBALS['BE_USER'])) {
 
-			$be_user = $GLOBALS['BE_USER'];
+			$user = $GLOBALS['BE_USER'];
 
 		} else {
 
-			$be_user = self::getBeUser();
+			$user = self::getBeUser();
 
 		}
 
 		// Load data and command arrays.
-		$tce->start($data, $cmd, $be_user);
+		$tce->start($data, $cmd, $user);
 
 		// Process command map first if default order is reversed.
 		if ($cmd && $reverseOrder) {
@@ -801,11 +802,42 @@ class tx_dlf_helper {
 	}
 
 	/**
+	 * Process a data and/or command map with TYPO3 core engine as admin.
+	 *
+	 * @access	public
+	 *
+	 * @param	array		$data: Data map
+	 * @param	array		$cmd: Command map
+	 * @param	boolean		$reverseOrder: Should the command map be processed first?
+	 *
+	 * @return	array		Array of substituted "NEW..." identifiers and their actual UIDs.
+	 */
+	public static function processDBasAdmin(array $data = array (), array $cmd = array (), $reverseOrder = FALSE) {
+
+		if (TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->isAdmin()) {
+
+			return self::processDB($data, $cmd, $reverseOrder, TRUE);
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->processDBasAdmin([data->data], [data->cmd], ['.($reverseOrder ? 'TRUE' : 'FALSE').'])] Current backend user has no admin privileges', $this->extKey, SYSLOG_SEVERITY_ERROR, array ('data' => $data, 'cmd' => $cmd));
+
+			}
+
+			return array ();
+
+		}
+
+	}
+
+	/**
 	 * Save given value to user's session.
 	 *
 	 * @access	public
 	 *
-	 * @param	string		$value: Value to save
+	 * @param	mixed		$value: Value to save
 	 * @param	string		$key: Session data key for saving
 	 *
 	 * @return	boolean		TRUE on success, FALSE on failure
@@ -822,7 +854,7 @@ class tx_dlf_helper {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_helper->saveToSession('.$value.', '.$_key.')] Invalid key "'.$key.'" for session data saving', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_helper->saveToSession([data], '.$_key.')] Invalid key "'.$key.'" for session data saving', $this->extKey, SYSLOG_SEVERITY_WARNING, $value);
 
 			}
 
@@ -849,7 +881,7 @@ class tx_dlf_helper {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_helper->saveToSession('.$value.', '.$_key.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_helper->saveToSession([data], '.$_key.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $data);
 
 			}
 

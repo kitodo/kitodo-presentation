@@ -74,7 +74,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				$data['be_groups'][$resArray['uid']]['db_mountpoints'] = $resArray['db_mountpoints'].','.$this->id;
 
-				tx_dlf_helper::processDB($data);
+				tx_dlf_helper::processDBasAdmin($data);
 
 				// Fine.
 				$_message = t3lib_div::makeInstance(
@@ -132,7 +132,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		$_ids = tx_dlf_helper::processDB($data);
+		$_ids = tx_dlf_helper::processDBasAdmin($data);
 
 		// Check for failed inserts.
 		if (count($_ids) == count($metadata)) {
@@ -179,7 +179,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			'index_name' => '',
 		);
 
-		$_ids = tx_dlf_helper::processDB($data);
+		$_ids = tx_dlf_helper::processDBasAdmin($data);
 
 		// Check for failed inserts.
 		if (count($_ids) == 1) {
@@ -235,7 +235,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		$_ids = tx_dlf_helper::processDB($data);
+		$_ids = tx_dlf_helper::processDBasAdmin($data);
 
 		// Check for failed inserts.
 		if (count($_ids) == count($structures)) {

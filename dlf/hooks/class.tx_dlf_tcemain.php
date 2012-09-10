@@ -68,10 +68,26 @@ class tx_dlf_tcemain {
 
 					break;
 
-					// Field post-processing for tables "tx_dlf_collections", "tx_dlf_libraries", "tx_dlf_metadata" and "tx_dlf_structures".
+					// Field post-processing for table "tx_dlf_metadata".
+				case 'tx_dlf_metadata':
+
+					// Store field in index if it should appear in lists.
+					if (!empty($fieldArray['is_listed'])) {
+
+						$fieldArray['stored'] = 1;
+
+					}
+
+					// Index field in index if it should be used for auto-completion.
+					if (!empty($fieldArray['autocomplete'])) {
+
+						$fieldArray['indexed'] = 1;
+
+					}
+
+					// Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
 				case 'tx_dlf_collections':
 				case 'tx_dlf_libraries':
-				case 'tx_dlf_metadata':
 				case 'tx_dlf_structures':
 
 					// Set label as index name if empty.
@@ -170,8 +186,70 @@ class tx_dlf_tcemain {
 
 			switch ($table) {
 
-				// Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
+					// Field post-processing for table "tx_dlf_metadata".
 				case 'tx_dlf_metadata':
+
+					// Store field in index if it should appear in lists.
+					if (!empty($fieldArray['is_listed'])) {
+
+						$fieldArray['stored'] = 1;
+
+					}
+
+					if (isset($fieldArray['stored']) && $fieldArray['stored'] == 0 && !isset($fieldArray['is_listed'])) {
+
+						// Get current configuration.
+						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+							$table.'.is_listed AS is_listed',
+							$table,
+							$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+							'',
+							'',
+							'1'
+						);
+
+						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+							$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+							// Reset index name to current.
+							$fieldArray['stored'] = $resArray['is_listed'];
+
+						}
+
+					}
+
+					// Index field in index if it should be used for auto-completion.
+					if (!empty($fieldArray['autocomplete'])) {
+
+						$fieldArray['indexed'] = 1;
+
+					}
+
+					if (isset($fieldArray['indexed']) && $fieldArray['indexed'] == 0 && !isset($fieldArray['autocomplete'])) {
+
+						// Get current configuration.
+						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+							$table.'.autocomplete AS autocomplete',
+							$table,
+							$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+							'',
+							'',
+							'1'
+						);
+
+						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+							$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+							// Reset index name to current.
+							$fieldArray['indexed'] = $resArray['autocomplete'];
+
+						}
+
+					}
+
+					// Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
 				case 'tx_dlf_structures':
 
 					// The index name should not be changed in production.

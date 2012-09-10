@@ -408,7 +408,7 @@ class tx_dlf_indexing {
 
 			}
 
-			if ($indexing['indexed']) {
+			if ($indexing['indexed'] || $indexing['autocomplete']) {
 
 				self::$fields['indexed'][] = $indexing['index_name'];
 
