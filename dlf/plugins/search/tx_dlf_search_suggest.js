@@ -1,7 +1,14 @@
+$("#tx-dlf-search-query").attr({
+	autocomplete: 'off',
+	role: 'textbox',
+	aria-autocomplete: 'list',
+	aria-haspopup: 'true'
+});
+
 $(
 	function() {
 		// jQuery autocomplete integration
-		$(".tx-dlf-search-query").autocomplete({
+		$("#tx-dlf-search-query").autocomplete({
 			source: function(request, response) {
 				return $.post(
 					'/',
@@ -23,7 +30,7 @@ $(
 					'xml');
 			},
 			minLength: 3,
-			appendTo: ".tx-dlf-search-form"
+			appendTo: "#tx-dlf-search-query"
 		});
 	}
 );
