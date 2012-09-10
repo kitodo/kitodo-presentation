@@ -10,6 +10,9 @@ useragent = Goobi.Presentation
 # cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.caching
 caching = 0
 
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.publishNewCollections
+publishNewCollections = 1
+
 # cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.unhideOnIndex
 unhideOnIndex = 0
 

@@ -1164,6 +1164,9 @@ final class tx_dlf_document {
 
 		}
 
+		// Load plugin configuration.
+		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+
 		// Get UID for user "_cli_dlf".
 		$be_user = 0;
 
@@ -1258,7 +1261,7 @@ final class tx_dlf_document {
 					'pid' => $pid,
 					'label' => $collection,
 					'index_name' => $collection,
-					'oai_name' => $collection,
+					'oai_name' => (!empty($conf['publishNewCollections']) ? $collection : ''),
 					'description' => '',
 					'documents' => 0,
 					'owner' => 0,
@@ -1456,8 +1459,6 @@ final class tx_dlf_document {
 		}
 
 		// Unhide hidden documents.
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-
 		if (!empty($conf['unhideOnIndex'])) {
 
 			$data['tx_dlf_documents'][$this->uid][$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['disabled']] = 0;
