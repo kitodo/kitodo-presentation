@@ -395,7 +395,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 		t3lib_div::cleanOutputBuffers();
 
 		// Send headers.
-		header('Location: '.t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->conf['targetPid'])));
+		header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
 
 		// Flush output buffer and end script processing.
 		ob_end_flush();

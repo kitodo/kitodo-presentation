@@ -168,7 +168,13 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 					$item->appendChild($rss->createElement('title', htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8')));
 
 					// Add link.
-					$item->appendChild($rss->createElement('link', htmlspecialchars(t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->conf['targetPid'], '', array ($this->prefixId => array ('id' => $resArray['uid'])))), ENT_NOQUOTES, 'UTF-8')));
+					$linkConf = array (
+						'parameter' => $this->conf['targetPid'],
+						'forceAbsoluteUrl' => 1,
+						'additionalParams' => array ($this->prefixId => array ('id' => $resArray['uid']))
+					);
+
+					$item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
 
 					// Add author if applicable.
 					if (!empty($resArray['author'])) {

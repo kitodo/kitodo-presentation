@@ -121,7 +121,13 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		// Build page selector.
 		$uniqId = uniqid($prefix.'-');
 
-		$markerArray['###PAGESELECT###'] = '<form action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" class="'.$prefix.'-pageselect" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+		// Configure @action URL for form.
+		$linkConf = array (
+			'parameter' => $GLOBALS['TSFE']->id,
+			'forceAbsoluteUrl' => 1
+		);
+
+		$markerArray['###PAGESELECT###'] = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" class="'.$prefix.'-pageselect" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
 
 		foreach ($this->piVars as $piVar => $value) {
 
