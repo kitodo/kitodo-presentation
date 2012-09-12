@@ -20,6 +20,9 @@
 			<label index="skip">...</label>
 			<label index="orderBy">Order by: </label>
 			<label index="relevance">relevance</label>
+			<label index="direction">Direction:</label>
+			<label index="direction.asc">ascending</label>
+			<label index="direction.desc">descending</label>
 			<label index="noTitle">[no title]</label>
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -37,6 +40,9 @@
 			<label index="skip">...</label>
 			<label index="orderBy">Sortieren nach: </label>
 			<label index="relevance">Relevanz</label>
+			<label index="direction">Richtung:</label>
+			<label index="direction.asc">aufsteigend</label>
+			<label index="direction.desc">absteigend</label>
 			<label index="noTitle">[kein Titel]</label>
 		</languageKey>
 	</data>

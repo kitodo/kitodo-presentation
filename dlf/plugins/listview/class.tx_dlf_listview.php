@@ -293,6 +293,17 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
+		$sorting .= '</select>';
+		
+		// sort direction
+		$uniqId = uniqid($prefix.'-');
+		
+		$sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('direction', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[direction]" onchange="javascript:this.form.submit();">';
+
+		$sorting .= '<option value="asc" '.(($this->list->metadata['options']['order_direction'] === 'asc') ? ' selected="selected"' : '').'>'.$this->pi_getLL('direction.asc', '', TRUE).'</option>';
+		
+		$sorting .= '<option value="desc" '.(($this->list->metadata['options']['order_direction'] === 'desc') ? ' selected="selected"' : '').'>'.$this->pi_getLL('direction.desc', '', TRUE).'</option>';
+		
 		$sorting .= '</select></div></form>';
 
 		return $sorting;
@@ -457,15 +468,18 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		$this->list = t3lib_div::makeInstance('tx_dlf_list');
 
 		// Sort the list if applicable.
-		if (!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order']) {
+		if ((!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order'])
+				|| (!empty($this->piVars['direction']) && $this->piVars['direction'] != $this->list->metadata['options']['order_direction'])) {
 
 			// Order list by given field.
-			$this->list->sort($this->piVars['order'], TRUE);
+			$this->list->sort($this->piVars['order'], $this->piVars['direction'] === 'asc' ? TRUE : FALSE);
 
 			// Update list's metadata.
 			$listMetadata = $this->list->metadata;
 
 			$listMetadata['options']['order'] = $this->piVars['order'];
+			
+			$listMetadata['options']['order_direction'] = $this->piVars['direction'];
 
 			$this->list->metadata = $listMetadata;
 
