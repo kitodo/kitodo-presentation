@@ -230,7 +230,9 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'toplevel' => $values['toplevel'],
 				'label' => $GLOBALS['LANG']->getLL($index_name),
 				'index_name' => $index_name,
-				'oai_name' => $values['oai_name']
+				'oai_name' => $values['oai_name'],
+				'thumbnail' => $values['toplevel'],
+				'thumbnail_strct' => 0
 			);
 
 		}

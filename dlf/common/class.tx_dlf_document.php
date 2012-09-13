@@ -30,6 +30,7 @@
  * Document class 'tx_dlf_document' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -274,6 +275,23 @@ final class tx_dlf_document {
 	protected $tableOfContentsLoaded = FALSE;
 
 	/**
+	 * This holds the document's thumbnail location.
+	 *
+	 * @var	string
+	 * @access protected
+	 */
+	protected $thumbnail = '';
+
+	/**
+	 * Is the document's thumbnail location loaded?
+	 * @see $thumbnail
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $thumbnailLoaded = FALSE;
+
+	/**
 	 * This holds the toplevel structure's @ID
 	 *
 	 * @var	string
@@ -496,6 +514,9 @@ final class tx_dlf_document {
 
 		}
 
+		// Load plugin configuration.
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+
 		// Extract identity information.
 		$details = array ();
 
@@ -524,6 +545,8 @@ final class tx_dlf_document {
 
 		$details['type'] = $attributes['TYPE'];
 
+		$details['thumbnailId'] = '';
+
 		// Load smLinks.
 		$this->_getSmLinks();
 
@@ -541,6 +564,8 @@ final class tx_dlf_document {
 
 			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
 
+			$details['thumbnailId'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][strtolower($extConf['fileGrpThumbs'])];
+
 			// Get page number of the first page related to this structure element.
 			$details['pagination'] = $this->physicalPagesInfo[$id]['label'];
 
@@ -549,6 +574,8 @@ final class tx_dlf_document {
 
 			// Yes. Point to itself.
 			$details['points'] = 1;
+
+			$details['thumbnailId'] = $this->physicalPagesInfo[$this->physicalPages[1]]['files'][strtolower($extConf['fileGrpThumbs'])];
 
 		}
 
@@ -1439,6 +1466,7 @@ final class tx_dlf_document {
 			'author' => implode('; ', $metadata['author']),
 			'year' => implode('; ', $metadata['year']),
 			'place' => implode('; ', $metadata['place']),
+			'thumbnail' => $this->_getThumbnail(),
 			'metadata' => serialize($listed),
 			'metadata_sorting' => serialize($sortable),
 			'structure' => $metadata['type'][0],
@@ -1860,6 +1888,108 @@ final class tx_dlf_document {
 	}
 
 	/**
+	 * This returns the document's thumbnail location
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		The document's thumbnail location
+	 */
+	protected function _getThumbnail() {
+
+		if (!$this->thumbnailLoaded) {
+
+			// Retain current PID.
+			$cPid = ($this->cPid ? $this->cPid : $this->pid);
+
+			if (!$cPid) {
+
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
+
+				$this->thumbnailLoaded = TRUE;
+
+				return $this->thumbnail;
+
+			}
+
+			// Load plugin configuration.
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+
+			$strctId = $this->_getToplevelId();
+
+			$metadata = $this->getTitledata($cPid);
+
+			// Check if for this document's structure type thumbnails should be rendered.
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_structures.thumbnail_strct AS thumbnail_strct',
+				'tx_dlf_structures',
+				'tx_dlf_structures.pid='.intval($cPid).' AND tx_dlf_structures.thumbnail=1 AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures').tx_dlf_helper::whereClause('tx_dlf_structures'),
+				'',
+				'',
+				'1'
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+
+				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+				// Check desired thumbnail structure if not the toplevel structure itself.
+				if (!empty($resArray['thumbnail_strct'])) {
+
+					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'tx_dlf_structures.index_name AS index_name',
+						'tx_dlf_structures',
+						'tx_dlf_structures.uid='.intval($resArray['thumbnail_strct']).tx_dlf_helper::whereClause('tx_dlf_structures'),
+						'',
+						'',
+						'1'
+					);
+
+					if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+
+						list ($strctType) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+						// Check if this document has a structure element of the desired type.
+						$strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$strctType.'"]/@ID');
+
+						if (!empty($strctIds)) {
+
+							$strctId = (string) $strctIds[0];
+
+						}
+
+					}
+
+				}
+
+				// Load smLinks.
+				$this->_getSmLinks();
+
+				// Get thumbnail location.
+				if ($this->_getPhysicalPages() && array_key_exists($strctId, $this->smLinks['l2p'])) {
+
+					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->smLinks['l2p'][$strctId][0]]['files'][strtolower($extConf['fileGrpThumbs'])]);
+
+				} else {
+
+					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->physicalPages[1]]['files'][strtolower($extConf['fileGrpThumbs'])]);
+
+				}
+
+			}
+
+			$this->thumbnailLoaded = TRUE;
+
+		}
+
+		return $this->thumbnail;
+
+	}
+
+	/**
 	 * This returns the ID of the toplevel logical structure node
 	 *
 	 * @access	protected
@@ -2047,7 +2177,7 @@ final class tx_dlf_document {
 
 		// Get document PID and location from database.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_documents.uid AS uid,tx_dlf_documents.pid AS pid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.partof AS partof,tx_dlf_documents.location AS location',
+			'tx_dlf_documents.uid AS uid,tx_dlf_documents.pid AS pid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.partof AS partof,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.location AS location',
 			'tx_dlf_documents',
 			$whereClause,
 			'',
@@ -2057,7 +2187,9 @@ final class tx_dlf_document {
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-			list ($this->uid, $this->pid, $this->recordId, $this->parentId, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+			list ($this->uid, $this->pid, $this->recordId, $this->parentId, $this->thumbnail, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+			$this->thumbnailLoaded = TRUE;
 
 			// Load XML file...
 			if ($this->load($location)) {
@@ -2165,7 +2297,7 @@ final class tx_dlf_document {
 		// SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
 		$this->asXML = $this->xml->asXML();
 
-		return array ('uid', 'pid', 'parentId', 'asXML');
+		return array ('uid', 'pid', 'recordId', 'parentId', 'asXML');
 
 	}
 

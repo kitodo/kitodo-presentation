@@ -17,7 +17,7 @@ publishNewCollections = 1
 unhideOnIndex = 0
 
 # cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrps
-fileGrps = MIN,DEFAULT,MAX
+fileGrps = THUMBS,MIN,DEFAULT,MAX
 
 # cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpThumbs
 fileGrpThumbs = THUMBS

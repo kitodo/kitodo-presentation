@@ -342,6 +342,7 @@ class tx_dlf_solr {
 				$toplevel[$doc->uid] = array (
 					'uid' => $doc->uid,
 					'page' => $doc->page,
+					'thumbnail' => $doc->thumbnail,
 					'metadata' => $docMeta,
 					'sorting' => $docSorting,
 					'subparts' => (!empty($toplevel[$doc->uid]['subparts']) ? $toplevel[$doc->uid]['subparts'] : array ())
@@ -352,6 +353,7 @@ class tx_dlf_solr {
 				$toplevel[$doc->uid]['subparts'][] = array (
 					'uid' => $doc->uid,
 					'page' => $doc->page,
+					'thumbnail' => $doc->thumbnail,
 					'metadata' => $docMeta,
 					'sorting' => $docSorting
 				);
@@ -375,7 +377,7 @@ class tx_dlf_solr {
 
 				// Get information for toplevel document.
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting',
+					'tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting',
 					'tx_dlf_documents',
 					'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
 					'',
@@ -441,6 +443,7 @@ class tx_dlf_solr {
 					$toplevel[$check] = array (
 						'uid' => $resArray['uid'],
 						'page' => 1,
+						'thumbnail' => $resArray['thumbnail'],
 						'metadata' => $metadata,
 						'sorting' => $sorting,
 						'subparts' => $toplevel[$check]['subparts']

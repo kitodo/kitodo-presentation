@@ -71,6 +71,7 @@ $TCA['tx_dlf_structures'] = array (
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
 		'searchFields' => 'label,index_name,oai_name',
+		'requestUpdate' => 'toplevel,thumbnail',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',
@@ -87,7 +88,7 @@ $TCA['tx_dlf_metadata'] = array (
 		'languageField' => 'sys_language_uid',
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
-		'sortby'	=> 'sorting',
+		'default_sortby' => 'sorting',
 		'delete'	=> 'deleted',
 		'enablecolumns' => array (
 			'disabled' => 'hidden',

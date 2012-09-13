@@ -29,7 +29,7 @@
 /**
  * Plugin 'DLF: List View' for the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>, Henrik Lochmann <dev@mentalmotive.com>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -158,9 +158,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$markerArray['###METADATA###'] = '';
 
+		$markerArray['###THUMBNAIL###'] = '';
+
 		$subpart = '';
 
-		$element = $this->list->elements[$number];
+		$imgAlt = '';
+
+		$metadata = $this->list->elements[$number]['metadata'];
 
 		foreach ($this->metadata as $index_name => $metaConf) {
 
@@ -170,7 +174,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			do {
 
-				$value = @array_shift($element['metadata'][$index_name]);
+				$value = @array_shift($metadata[$index_name]);
 
 				// Link title to pageview.
 				if ($index_name == 'title') {
@@ -178,7 +182,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Get title of parent document if needed.
 					if (empty($value) && $this->conf['getTitle']) {
 
-						$value = '['.tx_dlf_document::getTitle($element['uid'], TRUE).']';
+						$value = '['.tx_dlf_document::getTitle($this->list->elements[$number]['uid'], TRUE).']';
 
 					}
 
@@ -189,7 +193,9 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 					}
 
-					$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $element['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+					$imgAlt = htmlspecialchars($value);
+
+					$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $this->list->elements[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
 				// Translate name of holding library.
 				} elseif ($index_name == 'owner' && !empty($value)) {
@@ -220,7 +226,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				}
 
-			} while (count($element['metadata'][$index_name]));
+			} while (count($metadata[$index_name]));
 
 			if (!empty($parsedValue)) {
 
@@ -234,7 +240,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
-		if (!empty($element['subparts'])) {
+		// Add thumbnail.
+		if (!empty($this->list->elements[$number]['thumbnail'])) {
+
+			$markerArray['###THUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$this->list->elements[$number]['thumbnail'].'" />';
+
+		}
+
+		if (!empty($this->list->elements[$number]['subparts'])) {
 
 			$subpart = $this->getSubEntries($number, $template);
 
@@ -329,6 +342,10 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			$markerArray['###SUBMETADATA###'] = '';
 
+			$markerArray['###SUBTHUMBNAIL###'] = '';
+
+			$imgAlt = '';
+
 			foreach ($this->metadata as $index_name => $metaConf) {
 
 				$parsedValue = '';
@@ -355,6 +372,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 							$value = $this->pi_getLL('noTitle');
 
 						}
+
+						$imgAlt = htmlspecialchars($value);
 
 						$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
@@ -398,6 +417,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					$markerArray['###SUBMETADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
 
 				}
+
+			}
+
+			// Add thumbnail.
+			if (!empty($subpart['thumbnail'])) {
+
+				$markerArray['###SUBTHUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$subpart['thumbnail'].'" />';
 
 			}
 

@@ -38,6 +38,32 @@
 class tx_dlf_tceforms {
 
 	/**
+	 * Helper to display document's thumbnail for table "tx_dlf_documents"
+	 *
+	 * @access	public
+	 *
+	 * @param	array		&$params: An array with parameters
+	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 *
+	 * @return	string		HTML <img> tag for thumbnail
+	 */
+	public function displayThumbnail(&$params, &$pObj) {
+
+		$output = '<div style="padding:5px; background-color:#000000;"><input type="hidden" name="'.$param['itemFormElName'].'" value="'.$params['itemFormElValue'].'" />';
+
+		if (!empty($params['itemFormElValue'])) {
+
+			$output .= '<img alt="" src="'.$params['itemFormElValue'].'" />';
+
+		}
+
+		$output .= '</div>';
+
+		return $output;
+
+	}
+
+	/**
 	 * Helper to get flexform's items array for plugin "tx_dlf_collection"
 	 *
 	 * @access	public

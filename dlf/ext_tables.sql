@@ -24,6 +24,7 @@ CREATE TABLE tx_dlf_documents (
     author tinytext NOT NULL,
     year tinytext NOT NULL,
     place tinytext NOT NULL,
+    thumbnail text NOT NULL,
     metadata longtext NOT NULL,
     metadata_sorting longtext NOT NULL,
     structure int(11) DEFAULT '0' NOT NULL,
@@ -34,7 +35,7 @@ CREATE TABLE tx_dlf_documents (
     owner int(11) DEFAULT '0' NOT NULL,
     solrcore int(11) DEFAULT '0' NOT NULL,
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
-
+    
     PRIMARY KEY (uid),
     KEY parent (pid),
     INDEX partof (partof)
@@ -58,6 +59,8 @@ CREATE TABLE tx_dlf_structures (
     label tinytext NOT NULL,
     index_name tinytext NOT NULL,
     oai_name tinytext NOT NULL,
+    thumbnail tinyint(4) DEFAULT '0' NOT NULL,
+    thumbnail_strct int(11) DEFAULT '0' NOT NULL,
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
