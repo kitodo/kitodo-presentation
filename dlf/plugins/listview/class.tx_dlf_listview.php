@@ -276,8 +276,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		// Set class prefix.
 		$prefix = str_replace('_', '-', get_class($this));
 
+		// Configure @action URL for form.
+		$linkConf = array (
+			'parameter' => $GLOBALS['TSFE']->id,
+			'forceAbsoluteUrl' => 1
+		);
+
 		// Build HTML form.
-		$sorting = '<form action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" class="'.$prefix.'-sorting" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+		$sorting = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" class="'.$prefix.'-sorting" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
 
 		foreach ($this->piVars as $piVar => $value) {
 

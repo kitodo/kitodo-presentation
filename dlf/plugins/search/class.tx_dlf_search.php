@@ -346,9 +346,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
+			// Configure @action URL for form.
+			$linkConf = array (
+				'parameter' => $GLOBALS['TSFE']->id,
+				'forceAbsoluteUrl' => 1
+			);
+
 			// Fill markers.
 			$markerArray = array (
-				'###ACTION_URL###' => $this->pi_getPageLink($GLOBALS['TSFE']->id),
+				'###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
 				'###LABEL_QUERY###' => $this->pi_getLL('label.query'),
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
@@ -450,7 +456,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			t3lib_div::cleanOutputBuffers();
 
 			// Send headers.
-			header('Location: '.t3lib_div::locationHeaderUrl($this->pi_getPageLink($this->conf['targetPid'])));
+			header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
 
 			// Flush output buffer and end script processing.
 			ob_end_flush();

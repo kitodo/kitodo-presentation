@@ -501,7 +501,12 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		// Add request.
-		$request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request', htmlspecialchars(t3lib_div::locationHeaderUrl($this->pi_getPageLink($GLOBALS['TSFE']->id)), ENT_NOQUOTES, 'UTF-8'));
+		$linkConf = array (
+			'parameter' => $GLOBALS['TSFE']->id,
+			'forceAbsoluteUrl' => 1
+		);
+
+		$request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8'));
 
 		if (!$this->error) {
 
@@ -942,7 +947,12 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'repositoryName', htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES, 'UTF-8')));
 
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'baseURL', htmlspecialchars(t3lib_div::locationHeaderUrl($this->pi_getPageLink($GLOBALS['TSFE']->id)), ENT_NOQUOTES, 'UTF-8')));
+			$linkConf = array (
+				'parameter' => $GLOBALS['TSFE']->id,
+				'forceAbsoluteUrl' => 1
+			);
+
+			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'baseURL', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
 
 			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'protocolVersion', '2.0'));
 
