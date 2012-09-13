@@ -268,7 +268,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		foreach ($this->piVars as $piVar => $value) {
 
-			if ($piVar != 'order' && !empty($value)) {
+			if ($piVar != 'order' && $piVar != 'DATA' && !empty($value)) {
 
 				$sorting .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
 
@@ -276,6 +276,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
+		// Select sort field.
 		$uniqId = uniqid($prefix.'-');
 
 		$sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('orderBy', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[order]" onchange="javascript:this.form.submit();">';
@@ -292,6 +293,17 @@ class tx_dlf_listview extends tx_dlf_plugin {
 			$sorting .= '<option value="'.$index_name.'"'.(($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
 
 		}
+
+		$sorting .= '</select>';
+
+		// Select sort direction.
+		$uniqId = uniqid($prefix.'-');
+
+		$sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('direction', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[asc]" onchange="javascript:this.form.submit();">';
+
+		$sorting .= '<option value="1" '.($this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '').'>'.$this->pi_getLL('direction.asc', '', TRUE).'</option>';
+
+		$sorting .= '<option value="0" '.(!$this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '').'>'.$this->pi_getLL('direction.desc', '', TRUE).'</option>';
 
 		$sorting .= '</select></div></form>';
 
@@ -457,15 +469,18 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		$this->list = t3lib_div::makeInstance('tx_dlf_list');
 
 		// Sort the list if applicable.
-		if (!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order']) {
+		if ((!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order'])
+			|| (isset($this->piVars['asc']) && $this->piVars['asc'] != $this->list->metadata['options']['order.asc'])) {
 
 			// Order list by given field.
-			$this->list->sort($this->piVars['order'], TRUE);
+			$this->list->sort($this->piVars['order'], (boolean) $this->piVars['asc']);
 
 			// Update list's metadata.
 			$listMetadata = $this->list->metadata;
 
 			$listMetadata['options']['order'] = $this->piVars['order'];
+
+			$listMetadata['options']['order.asc'] = (boolean) $this->piVars['asc'];
 
 			$this->list->metadata = $listMetadata;
 

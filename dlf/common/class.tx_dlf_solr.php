@@ -472,7 +472,8 @@ class tx_dlf_solr {
 				'source' => 'search',
 				'select' => $query,
 				'params' => $this->params,
-				'order' => 'relevance'
+				'order' => 'relevance',
+				'order.asc' => TRUE,
 			)
 		);
 
