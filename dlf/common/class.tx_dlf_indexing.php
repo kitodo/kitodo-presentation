@@ -488,7 +488,15 @@ class tx_dlf_indexing {
 
 			}
 
-			$solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
+			if ($logicalUnit['id'] == $doc->toplevelId) {
+
+				$solrDoc->setField('thumbnail', $doc->thumbnail);
+
+			} else {
+
+				$solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
+
+			}
 
 			$solrDoc->setField('partof', $doc->parentId);
 

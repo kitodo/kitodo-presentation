@@ -1922,11 +1922,11 @@ final class tx_dlf_document {
 
 			$metadata = $this->getTitledata($cPid);
 
-			// Check if for this document's structure type thumbnails should be rendered.
+			// Get structure element to get thumbnail from.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_structures.thumbnail_strct AS thumbnail_strct',
+				'tx_dlf_structures.thumbnail AS thumbnail',
 				'tx_dlf_structures',
-				'tx_dlf_structures.pid='.intval($cPid).' AND tx_dlf_structures.thumbnail=1 AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures').tx_dlf_helper::whereClause('tx_dlf_structures'),
+				'tx_dlf_structures.pid='.intval($cPid).' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures').tx_dlf_helper::whereClause('tx_dlf_structures'),
 				'',
 				'',
 				'1'
@@ -1936,30 +1936,17 @@ final class tx_dlf_document {
 
 				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-				// Check desired thumbnail structure if not the toplevel structure itself.
-				if (!empty($resArray['thumbnail_strct'])) {
+				// Get desired thumbnail structure if not the toplevel structure itself.
+				if (!empty($resArray['thumbnail'])) {
 
-					$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_dlf_structures.index_name AS index_name',
-						'tx_dlf_structures',
-						'tx_dlf_structures.uid='.intval($resArray['thumbnail_strct']).tx_dlf_helper::whereClause('tx_dlf_structures'),
-						'',
-						'',
-						'1'
-					);
+					$strctType = tx_dlf_helper::getIndexName($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
 
-					if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+					// Check if this document has a structure element of the desired type.
+					$strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$strctType.'"]/@ID');
 
-						list ($strctType) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+					if (!empty($strctIds)) {
 
-						// Check if this document has a structure element of the desired type.
-						$strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$strctType.'"]/@ID');
-
-						if (!empty($strctIds)) {
-
-							$strctId = (string) $strctIds[0];
-
-						}
+						$strctId = (string) $strctIds[0];
 
 					}
 
@@ -1978,6 +1965,10 @@ final class tx_dlf_document {
 					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->physicalPages[1]]['files'][strtolower($extConf['fileGrpThumbs'])]);
 
 				}
+
+			} elseif (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 

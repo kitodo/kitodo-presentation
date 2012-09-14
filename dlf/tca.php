@@ -415,25 +415,17 @@ $TCA['tx_dlf_structures'] = array (
 			'displayCond' => 'FIELD:toplevel:REQ:true',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail',
 			'config' => array (
-				'type' => 'check',
-				'default' => 0,
-			),
-		),
-		'thumbnail_strct' => array (
-			'exclude' => 1,
-			'displayCond' => 'FIELD:thumbnail:REQ:true',
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail_strct',
-			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail_strct.self', 0),
+					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail.self', 0),
 				),
 				'foreign_table' => 'tx_dlf_structures',
-				'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.toplevel=0 AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY tx_dlf_structures.label ',
+				'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.toplevel=0 AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY tx_dlf_structures.label',
+				'size' => 1,
+				'minitems' => 0,
+				'maxitems' => 1,
+				'default' => 0,
 			),
-			'minitems' => 0,
-			'maxitems' => 1,
-			'default' => 0,
 		),
 		'status' => array (
 			'exclude' => 1,
@@ -451,11 +443,10 @@ $TCA['tx_dlf_structures'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label;;1, thumbnail;;2, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label;;1, thumbnail, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1),
-		'2' => array ('showitem' => 'thumbnail_source'),
 	),
 );
 

@@ -71,7 +71,7 @@ $TCA['tx_dlf_structures'] = array (
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
 		'searchFields' => 'label,index_name,oai_name',
-		'requestUpdate' => 'toplevel,thumbnail',
+		'requestUpdate' => 'toplevel',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',

@@ -231,8 +231,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'label' => $GLOBALS['LANG']->getLL($index_name),
 				'index_name' => $index_name,
 				'oai_name' => $values['oai_name'],
-				'thumbnail' => $values['toplevel'],
-				'thumbnail_strct' => 0
+				'thumbnail' => 0,
 			);
 
 		}
