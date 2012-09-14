@@ -59,17 +59,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 			'1'
 		);
 
-		// Ensure extension "t3jquery" is available.
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) && t3lib_extMgm::isLoaded('t3jquery')) {
-
-			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
-
-		}
-
-		// Is "t3jquery" loaded?
-		if (T3JQUERY === TRUE) {
-
-			tx_t3jquery::addJqJS();
+		// Add javascript to page header.
+		if ($this->loadJQuery()) {
 
 			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
 
@@ -215,6 +206,60 @@ class tx_dlf_search extends tx_dlf_plugin {
 	}
 
 	/**
+	 * Returns the extended search form and adds the JS files necessary for extended search.
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		The extended search form or an empty string
+	 */
+	protected function addExtendedSearch() {
+
+		$extendedSearch = '';
+
+		// Quit without doing anything if no fields for extended search are selected.
+		if (empty($this->conf['extendedSlotCount']) || empty($this->conf['extendedFields'])) {
+
+			return $extendedSearch;
+
+		}
+
+		// Get operator options.
+		$operatorOptions = '';
+
+		foreach (array ('AND', 'OR', 'NOT') as $operator) {
+
+			$operatorOptions .= '<option class="tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
+
+		}
+
+		// Get field selector options.
+		$fieldSelectorOptions = '';
+
+		$searchFields = t3lib_div::trimExplode(',', $this->conf['extendedFields'], TRUE);
+
+		foreach ($searchFields as $searchField) {
+
+			$fieldSelectorOptions .= '<option class="tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
+
+		}
+
+		for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
+
+			$markerArray = array (
+				'###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator-'.$i.'" name="tx_dlf[extOperator]['.$i.']">'.$operatorOptions.'</select>',
+				'###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field-'.$i.'" name="tx_dlf[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
+				'###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query-'.$i.'" type="text" name="tx_dlf[extQuery]['.$i.']" />'
+			);
+
+			$extendedSearch .= $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
+
+		}
+
+		return $extendedSearch;
+
+	}
+
+	/**
 	 * Creates an array for a HMENU entry of a facet value.
 	 *
 	 * @param	string		$field: The facet's index_name
@@ -290,6 +335,44 @@ class tx_dlf_search extends tx_dlf_plugin {
 	}
 
 	/**
+	 * Adds "t3jquery" extension's library to page header.
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		TRUE on success or FALSE on error
+	 */
+	protected function loadJQuery() {
+
+		// Was jQuery already loaded before?
+		if (T3JQUERY === TRUE) {
+
+			return TRUE;
+
+		}
+
+		// Ensure extension "t3jquery" is available.
+		if (t3lib_extMgm::isLoaded('t3jquery')) {
+
+			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+
+		}
+
+		// Is "t3jquery" loaded?
+		if (T3JQUERY === TRUE) {
+
+			tx_t3jquery::addJqJS();
+
+			return TRUE;
+
+		} else {
+
+			return FALSE;
+
+		}
+
+	}
+
+	/**
 	 * The main method of the PlugIn
 	 *
 	 * @access	public
@@ -319,7 +402,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		}
 
-		if (!isset($this->piVars['query'])) {
+		if (!isset($this->piVars['query']) && empty($this->piVars['extQuery'])) {
 
 			// Add javascript for autocompletion if available.
 			$this->addAutocompleteJS();
@@ -365,8 +448,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###FACETS_MENU###' => $this->addFacetsMenu()
 			);
 
+			// Get additional fields for extended search.
+			$extendedSearch = $this->addExtendedSearch();
+
 			// Display search form.
-			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+			$content .= $this->cObj->substituteSubpart($this->cObj->substituteMarkerArray($this->template, $markerArray), '###EXT_SEARCH_ENTRY###', $extendedSearch);
 
 			return $this->pi_wrapInBaseClass($content);
 
@@ -400,6 +486,38 @@ class tx_dlf_search extends tx_dlf_plugin {
 			$solr->limit = max(intval($this->conf['limit']), 1);
 
 			$solr->cPid = $this->conf['pages'];
+
+			// Set search query.
+			$query = $this->piVars['query'];
+
+			// Add extended search query.
+			if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
+
+				if (empty($query)) {
+
+					$query = '*';
+
+				}
+
+				$allowedOperators = array ('AND', 'OR', 'NOT');
+
+				$allowedFields = t3lib_div::trimExplode(',', $this->conf['extendedFields'], TRUE);
+
+				for ($i = 0; $i < count($this->piVars['extQuery']); $i++) {
+
+					if (!empty($this->piVars['extQuery'][$i])) {
+
+						if (in_array($this->piVars['extOperator'][$i], $allowedOperators) && in_array($this->piVars['extField'][$i], $allowedFields)) {
+
+							$query .= ' '.$this->piVars['extOperator'][$i].' '.tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':'.$this->piVars['extQuery'][$i];
+
+						}
+
+					}
+
+				}
+
+			}
 
 			// Set query parameters.
 			$params = array ();
@@ -442,7 +560,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			$solr->params = $params;
 
 			// Perform search.
-			$results = $solr->search($this->piVars['query']);
+			$results = $solr->search($query);
 
 			$results->metadata = array (
 				'label' => $label,

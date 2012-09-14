@@ -63,6 +63,15 @@ class tx_dlf_indexing {
 	);
 
 	/**
+	 * Is the index configuration loaded?
+	 * @see $fields
+	 *
+	 * @var boolean
+	 * @access protected
+	 */
+	protected static $fieldsLoaded = FALSE;
+
+	/**
 	 * List of already processed documents
 	 *
 	 * @var array
@@ -358,6 +367,52 @@ class tx_dlf_indexing {
 	}
 
 	/**
+	 * Returns the dynamic index field name for the given metadata field.
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$index_name: The metadata field's name in database
+	 * @param	integer		$pid: UID of the configuration page
+	 *
+	 * @return	string		The field's dynamic index name
+	 */
+	public static function getIndexFieldName($index_name, $pid = 0) {
+
+		// Save parameter for logging purposes.
+		$_pid = $pid;
+
+		// Sanitize input.
+		$pid = max(intval($pid), 0);
+
+		if (!$pid) {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_indexing->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+			return '';
+
+		}
+
+		// Load metadata configuration.
+		self::loadIndexConf($pid);
+
+		// Build field's suffix.
+		$suffix = (in_array($index_name, self::$fields['tokenized']) ? 't' : 'u');
+
+		$suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
+
+		$suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
+
+		$index_name .= '_'.$suffix;
+
+		return $index_name;
+
+	}
+
+	/**
 	 * Load indexing configuration
 	 *
 	 * @access	protected
@@ -368,79 +423,85 @@ class tx_dlf_indexing {
 	 */
 	protected static function loadIndexConf($pid) {
 
-		// Get the list of toplevel structures.
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_structures.index_name AS index_name',
-			'tx_dlf_structures',
-			'tx_dlf_structures.toplevel=1 AND tx_dlf_structures.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_structures'),
-			'',
-			'',
-			''
-		);
+		if (!self::$fieldsLoaded) {
 
-		while ($toplevel = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			// Get the list of toplevel structures.
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_structures.index_name AS index_name',
+				'tx_dlf_structures',
+				'tx_dlf_structures.toplevel=1 AND tx_dlf_structures.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_structures'),
+				'',
+				'',
+				''
+			);
 
-			self::$toplevel[] = $toplevel['index_name'];
+			while ($toplevel = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-		}
-
-		// Get the metadata indexing options.
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.stored AS stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.autocomplete AS autocomplete,tx_dlf_metadata.boost AS boost',
-			'tx_dlf_metadata',
-			'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
-			'',
-			'',
-			''
-		);
-
-		while ($indexing = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-
-			if ($indexing['tokenized']) {
-
-				self::$fields['tokenized'][] = $indexing['index_name'];
+				self::$toplevel[] = $toplevel['index_name'];
 
 			}
 
-			if ($indexing['stored'] || $indexing['is_listed']) {
+			// Get the metadata indexing options.
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.stored AS stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.autocomplete AS autocomplete,tx_dlf_metadata.boost AS boost',
+				'tx_dlf_metadata',
+				'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+				'',
+				'',
+				''
+			);
 
-				self::$fields['stored'][] = $indexing['index_name'];
+			while ($indexing = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+				if ($indexing['tokenized']) {
+
+					self::$fields['tokenized'][] = $indexing['index_name'];
+
+				}
+
+				if ($indexing['stored'] || $indexing['is_listed']) {
+
+					self::$fields['stored'][] = $indexing['index_name'];
+
+				}
+
+				if ($indexing['indexed'] || $indexing['autocomplete']) {
+
+					self::$fields['indexed'][] = $indexing['index_name'];
+
+				}
+
+				if ($indexing['is_sortable']) {
+
+					self::$fields['sortables'][] = $indexing['index_name'];
+
+				}
+
+				if ($indexing['is_facet']) {
+
+					self::$fields['facets'][] = $indexing['index_name'];
+
+				}
+
+				if ($indexing['autocomplete']) {
+
+					self::$fields['autocompleted'][] = $indexing['index_name'];
+
+				}
+
+				if ($indexing['boost'] > 0.0) {
+
+					self::$fields['fieldboost'][$indexing['index_name']] = floatval($indexing['boost']);
+
+				} else {
+
+					self::$fields['fieldboost'][$indexing['index_name']] = FALSE;
+
+				}
 
 			}
 
-			if ($indexing['indexed'] || $indexing['autocomplete']) {
-
-				self::$fields['indexed'][] = $indexing['index_name'];
-
-			}
-
-			if ($indexing['is_sortable']) {
-
-				self::$fields['sortables'][] = $indexing['index_name'];
-
-			}
-
-			if ($indexing['is_facet']) {
-
-				self::$fields['facets'][] = $indexing['index_name'];
-
-			}
-
-			if ($indexing['autocomplete']) {
-
-				self::$fields['autocompleted'][] = $indexing['index_name'];
-
-			}
-
-			if ($indexing['boost'] > 0.0) {
-
-				self::$fields['fieldboost'][$indexing['index_name']] = floatval($indexing['boost']);
-
-			} else {
-
-				self::$fields['fieldboost'][$indexing['index_name']] = FALSE;
-
-			}
+			self::$fieldsLoaded = TRUE;
 
 		}
 
@@ -514,13 +575,7 @@ class tx_dlf_indexing {
 
 				if (!empty($data) && substr($index_name, -8) !== '_sorting') {
 
-					$suffix = (in_array($index_name, self::$fields['tokenized']) ? 't' : 'u');
-
-					$suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
-
-					$suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
-
-					$solrDoc->setField($index_name.'_'.$suffix, $data, self::$fields['fieldboost'][$index_name]);
+					$solrDoc->setField(self::getIndexFieldName($index_name, $doc->pid), $data, self::$fields['fieldboost'][$index_name]);
 
 					if (in_array($index_name, self::$fields['sortables'])) {
 

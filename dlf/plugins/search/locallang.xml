@@ -9,6 +9,8 @@
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
+			<label index="tt_content.pi_flexform.extSearch.slotCount">Number of search slots</label>
+			<label index="tt_content.pi_flexform.extSearch.fields">Fields for extended search</label>
 			<label index="tt_content.pi_flexform.searchIn">Allow searching in current document or collection?</label>
 			<label index="tt_content.pi_flexform.searchIn.none">none</label>
 			<label index="tt_content.pi_flexform.searchIn.document">document only</label>
@@ -25,11 +27,16 @@
 			<label index="for"> for "%s"</label>
 			<label index="in"> in "%s"</label>
 			<label index="hits">%d hits found in %d documents.</label>
+			<label index="AND">and</label>
+			<label index="OR">or</label>
+			<label index="NOT">not</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
+			<label index="tt_content.pi_flexform.extSearch.slotCount">Anzahl Suchfelder</label>
+			<label index="tt_content.pi_flexform.extSearch.fields">Felder für erweiterte Suche</label>
 			<label index="tt_content.pi_flexform.searchIn">Erlaube Suche in aktuellem Dokument oder Kollektion?</label>
 			<label index="tt_content.pi_flexform.searchIn.none">nein</label>
 			<label index="tt_content.pi_flexform.searchIn.document">nur Dokument</label>
@@ -46,6 +53,9 @@
 			<label index="for"> nach "%s"</label>
 			<label index="in"> in "%s"</label>
 			<label index="hits">Die Suche ergab %d Treffer in %d Dokumenten.</label>
+			<label index="AND">und</label>
+			<label index="OR">oder</label>
+			<label index="NOT">nicht</label>
 		</languageKey>
 	</data>
 </T3locallang>
