@@ -97,8 +97,28 @@ $TCA['tx_dlf_metadata'] = array (
 		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfmetadata.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
-		'searchFields' => 'label,index_name,encoding,xpath,xpath_sorting,default',
-		'requestUpdate' => 'is_sortable',
+		'searchFields' => 'label,index_name',
+	),
+	'feInterface' => array (
+		'fe_admin_fieldList' => '',
+	)
+);
+
+$TCA['tx_dlf_metadataformat'] = array (
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat',
+		'label'     => 'encoded',
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY encoded',
+		'delete'	=> 'deleted',
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfmetadata.png',
+		'rootLevel'	=> 0,
+		'dividers2tabs' => 2,
+		'searchFields' => 'encoded',
+		'hideTable'	=> 1,
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',

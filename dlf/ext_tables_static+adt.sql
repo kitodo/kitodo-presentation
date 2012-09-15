@@ -17,4 +17,5 @@ CREATE TABLE tx_dlf_formats (
     KEY parent (pid)
 );
 
-INSERT INTO tx_dlf_formats VALUES ('1', '0', '0', '0', '0', '0', 'MODS', 'mods', 'http://www.loc.gov/mods/v3', 'tx_dlf_mods');
+INSERT INTO tx_dlf_formats VALUES ('1', '0', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '0', '0', 'MODS', 'mods', 'http://www.loc.gov/mods/v3', 'tx_dlf_mods');
+INSERT INTO tx_dlf_formats VALUES ('2', '0', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '0', '0', 'TEIHDR', 'teiHeader', 'http://www.tei-c.org/ns/1.0', 'tx_dlf_teihdr');

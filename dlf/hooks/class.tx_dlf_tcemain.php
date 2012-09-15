@@ -104,6 +104,13 @@ class tx_dlf_tcemain {
 
 					}
 
+					// Ensure that index names don't get mixed up with sorting values.
+					if (substr($fielArray['index_name'], -8) == '_sorting') {
+
+						$fieldArray['index_name'] .= '0';
+
+					}
+
 					break;
 
 					// Field post-processing for table "tx_dlf_solrcores".
@@ -210,10 +217,8 @@ class tx_dlf_tcemain {
 
 						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-							$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-							// Reset index name to current.
-							$fieldArray['stored'] = $resArray['is_listed'];
+							// Reset storing to current.
+							list ($fieldArray['stored']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 						}
 
@@ -240,10 +245,8 @@ class tx_dlf_tcemain {
 
 						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-							$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-							// Reset index name to current.
-							$fieldArray['indexed'] = $resArray['autocomplete'];
+							// Reset indexing to current.
+							list ($fieldArray['indexed']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 						}
 
@@ -274,10 +277,8 @@ class tx_dlf_tcemain {
 
 							if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-								$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
 								// Reset index name to current.
-								$fieldArray['index_name'] = $resArray['index_name'];
+								list ($fieldArray['index_name']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 							}
 

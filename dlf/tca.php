@@ -453,7 +453,7 @@ $TCA['tx_dlf_structures'] = array (
 $TCA['tx_dlf_metadata'] = array (
 	'ctrl' => $TCA['tx_dlf_metadata']['ctrl'],
 	'interface' => array (
-		'showRecordFieldList' => 'label,index_name,encoding,xpath,xpath_sorting,default,tokenized,stored,indexed,is_sortable,is_facet',
+		'showRecordFieldList' => 'label,index_name,is_sortable,is_facet,is_listed,autocomplete',
 	),
 	'feInterface' => $TCA['tx_dlf_metadata']['feInterface'],
 	'columns' => array (
@@ -516,41 +516,27 @@ $TCA['tx_dlf_metadata'] = array (
 				'eval' => 'required,nospace,alphanum_x,uniqueInPid',
 			),
 		),
-		'encoded' => array (
+		'format' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.encoded',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.format',
 			'config' => array (
-				'type' => 'select',
-				'items' => array (
-					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.encoded.none', 0),
+				'type' => 'inline',
+				'foreign_table' => 'tx_dlf_metadataformat',
+				'foreign_field' => 'parent_id',
+				'foreign_unique' => 'encoded',
+				'appearance' => array (
+					'expandSingle' => 1,
+					'levelLinksPosition' => 'bottom',
+					'enabledControls' => array (
+						'info' => 0,
+						'new' => 0,
+						'dragdrop' => 0,
+						'sort' => 0,
+						'hide' => 0,
+						'delete' => 1,
+						'localize' => 0,
+					),
 				),
-				'foreign_table' => 'tx_dlf_formats',
-				'foreign_table_where' => 'ORDER BY tx_dlf_formats.type',
-				'size' => 1,
-				'minitems' => 1,
-				'maxitems' => 1,
-				'default' => 0,
-			),
-		),
-		'xpath' => array (
-			'exclude' => 1,
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.xpath',
-			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 1024,
-				'eval' => 'trim',
-			),
-		),
-		'xpath_sorting' => array (
-			'exclude' => 1,
-			'displayCond' => 'FIELD:is_sortable:REQ:true',
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.xpath_sorting',
-			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 1024,
-				'eval' => 'trim',
 			),
 		),
 		'default_value' => array (
@@ -659,10 +645,63 @@ $TCA['tx_dlf_metadata'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, encoded;;;;2-2-2, xpath, xpath_sorting, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label;;1;;1-1-1, format;;;;2-2-2, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed, autocomplete', 'canNotCollapse' => 1),
+	),
+);
+
+$TCA['tx_dlf_metadataformat'] = array (
+	'ctrl' => $TCA['tx_dlf_metadataformat']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'parent_id,encoded,xpath,xpath_sorting',
+	),
+	'feInterface' => $TCA['tx_dlf_metadataformat']['feInterface'],
+	'columns' => array (
+		'parent_id' => array (
+			'config' => array (
+				'type' => 'passthrough',
+			),
+		),
+		'encoded' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.encoded',
+			'config' => array (
+				'type' => 'select',
+				'foreign_table' => 'tx_dlf_formats',
+				'foreign_table_where' => 'ORDER BY tx_dlf_formats.type',
+				'size' => 1,
+				'minitems' => 1,
+				'maxitems' => 1,
+			),
+		),
+		'xpath' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.xpath',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 1024,
+				'eval' => 'required,trim',
+			),
+		),
+		'xpath_sorting' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.xpath_sorting',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 1024,
+				'eval' => 'trim',
+			),
+		),
+	),
+	'types' => array (
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.tab1, encoded;;;;1-1-1, xpath;;;;2-2-2, xpath_sorting'),
+	),
+	'palettes' => array (
+		'1' => array ('showitem' => ''),
 	),
 );
 

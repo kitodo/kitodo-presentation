@@ -24,7 +24,6 @@
 
 // Define structure elements.
 // @see http://dfg-viewer.de/en/structural-data-set/
-// TODO: Should not be hard-coded!
 $structures = array (
 	'additional' => array (
 		'toplevel' => 0,

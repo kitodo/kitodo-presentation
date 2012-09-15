@@ -46,10 +46,7 @@
 			<label index="tx_dlf_metadata">Metadata</label>
 			<label index="tx_dlf_metadata.label">Display Label</label>
 			<label index="tx_dlf_metadata.index_name">Index Name</label>
-			<label index="tx_dlf_metadata.encoded">Encoding</label>
-			<label index="tx_dlf_metadata.encoded.none">none</label>
-			<label index="tx_dlf_metadata.xpath">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace)</label>
-			<label index="tx_dlf_metadata.xpath_sorting">XPath for sorting (optional)</label>
+			<label index="tx_dlf_metadata.format">Data Format</label>
 			<label index="tx_dlf_metadata.default_value">Default Value</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
 			<label index="tx_dlf_metadata.tokenized">Tokenize in Search Index?</label>
@@ -65,6 +62,11 @@
 			<label index="tx_dlf_metadata.tab1">General</label>
 			<label index="tx_dlf_metadata.tab2">Translation</label>
 			<label index="tx_dlf_metadata.tab3">Access</label>
+			<label index="tx_dlf_metadataformat">Metadata Format</label>
+			<label index="tx_dlf_metadataformat.encoded">Encoding</label>
+			<label index="tx_dlf_metadataformat.xpath">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace)</label>
+			<label index="tx_dlf_metadataformat.xpath_sorting">XPath for sorting (optional)</label>
+			<label index="tx_dlf_metadataformat.tab1">General</label>
 			<label index="tx_dlf_formats">Data Formats</label>
 			<label index="tx_dlf_formats.type">METS Name</label>
 			<label index="tx_dlf_formats.root">Root Element</label>
@@ -205,10 +207,7 @@
 			<label index="tx_dlf_metadata">Metadaten</label>
 			<label index="tx_dlf_metadata.label">Anzeigeform</label>
 			<label index="tx_dlf_metadata.index_name">Index-Bezeichnung</label>
-			<label index="tx_dlf_metadata.encoded">Datenformat</label>
-			<label index="tx_dlf_metadata.encoded.none">keines</label>
-			<label index="tx_dlf_metadata.xpath">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum)</label>
-			<label index="tx_dlf_metadata.xpath_sorting">XPath für Sortierfeld (optional)</label>
+			<label index="tx_dlf_metadata.format">Datenformat</label>
 			<label index="tx_dlf_metadata.default_value">Standardwert</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
 			<label index="tx_dlf_metadata.tokenized">Im Suchindex in Tokens zerlegen?</label>
@@ -224,6 +223,11 @@
 			<label index="tx_dlf_metadata.tab1">Allgemein</label>
 			<label index="tx_dlf_metadata.tab2">Übersetzung</label>
 			<label index="tx_dlf_metadata.tab3">Zugriff</label>
+			<label index="tx_dlf_metadataformat">Metadatenformat</label>
+			<label index="tx_dlf_metadataformat.encoded">Datenformat</label>
+			<label index="tx_dlf_metadataformat.xpath">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum)</label>
+			<label index="tx_dlf_metadataformat.xpath_sorting">XPath für Sortierfeld (optional)</label>
+			<label index="tx_dlf_metadataformat.tab1">Allgemein</label>
 			<label index="tx_dlf_formats">Datenformate</label>
 			<label index="tx_dlf_formats.type">Bezeichnung in METS</label>
 			<label index="tx_dlf_formats.root">Root-Element</label>

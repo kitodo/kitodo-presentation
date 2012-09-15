@@ -108,16 +108,30 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 		// Load table configuration array to get default field values.
 		t3lib_div::loadTCA('tx_dlf_metadata');
 
+		$i = 0;
+
 		// Build data array.
 		foreach ($metadata as $index_name => $values) {
+
+			$formatIds = array ();
+
+			foreach ($values['format'] as $format) {
+
+				$formatIds[] = uniqid('NEW');
+
+				$data['tx_dlf_metadataformat'][end($formatIds)] = $format;
+
+				$data['tx_dlf_metadataformat'][end($formatIds)]['pid'] = intval($this->id);
+
+				$i++;
+
+			}
 
 			$data['tx_dlf_metadata'][uniqid('NEW')] = array (
 				'pid' => intval($this->id),
 				'label' => $GLOBALS['LANG']->getLL($index_name),
 				'index_name' => $index_name,
-				'encoded' => $values['encoded'],
-				'xpath' => $values['xpath'],
-				'xpath_sorting' => $values['xpath_sorting'],
+				'format' => implode(',', $formatIds),
 				'default_value' => $values['default_value'],
 				'wrap' => (!empty($values['wrap']) ? $values['wrap'] : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']),
 				'tokenized' => $values['tokenized'],
@@ -130,12 +144,14 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'autocomplete' => $value['autocomplete'],
 			);
 
+			$i++;
+
 		}
 
 		$_ids = tx_dlf_helper::processDBasAdmin($data);
 
 		// Check for failed inserts.
-		if (count($_ids) == count($metadata)) {
+		if (count($_ids) == $i) {
 
 			// Fine.
 			$_message = t3lib_div::makeInstance(

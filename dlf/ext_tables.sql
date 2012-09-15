@@ -63,7 +63,8 @@ CREATE TABLE tx_dlf_structures (
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
+    KEY parent (pid),
+    INDEX index_name (index_name(32))
 );
 
 --
@@ -83,9 +84,7 @@ CREATE TABLE tx_dlf_metadata (
     sorting int(11) DEFAULT '0' NOT NULL,
     label tinytext NOT NULL,
     index_name tinytext NOT NULL,
-    encoded int(11) DEFAULT '0' NOT NULL,
-    xpath text NOT NULL,
-    xpath_sorting text NOT NULL,
+    format int(11) DEFAULT '0' NOT NULL,
     default_value text NOT NULL,
     wrap text NOT NULL,
     tokenized tinyint(4) DEFAULT '0' NOT NULL,
@@ -99,7 +98,28 @@ CREATE TABLE tx_dlf_metadata (
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
+    KEY parent (pid),
+    INDEX index_name (index_name(32))
+);
+
+--
+-- Table structure for table 'tx_dlf_metadataformat'
+--
+CREATE TABLE tx_dlf_metadataformat (
+    uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    tstamp int(11) DEFAULT '0' NOT NULL,
+    crdate int(11) DEFAULT '0' NOT NULL,
+    cruser_id int(11) DEFAULT '0' NOT NULL,
+    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    parent_id int(11) DEFAULT '0' NOT NULL,
+    encoded int(11) DEFAULT '0' NOT NULL,
+    xpath text NOT NULL,
+    xpath_sorting text NOT NULL,
+
+    PRIMARY KEY (uid),
+    KEY parent (pid),
+    INDEX parent_id (parent_id)
 );
 
 --
@@ -135,7 +155,8 @@ CREATE TABLE tx_dlf_solrcores (
     index_name tinytext NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
+    KEY parent (pid),
+    INDEX index_name (index_name(32))
 );
 
 --
@@ -164,7 +185,8 @@ CREATE TABLE tx_dlf_collections (
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
+    KEY parent (pid),
+    INDEX index_name (index_name(32))
 );
 
 --
@@ -193,7 +215,8 @@ CREATE TABLE tx_dlf_libraries (
     union_base tinytext NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
+    KEY parent (pid),
+    INDEX index_name (index_name(32))
 );
 
 --
