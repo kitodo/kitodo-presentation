@@ -326,6 +326,7 @@ class tx_dlf_em {
 					'tx_dlf_libraries',
 					'tx_dlf_structures',
 					'tx_dlf_metadata',
+					'tx_dlf_metadataformat',
 					'tx_dlf_formats',
 					'tx_dlf_solrcores'
 				),

@@ -198,7 +198,7 @@
 			<label index="tx_dlf_structures.index_name">Index-Bezeichnung</label>
 			<label index="tx_dlf_structures.oai_name">OAI-Mapping</label>
 			<label index="tx_dlf_structures.thumbnail">Zeige Vorschaubild von...</label>
-			<label idnex="tx_dlf_structures.thumbnail.self">selbst</label>
+			<label index="tx_dlf_structures.thumbnail.self">selbst</label>
 			<label index="tx_dlf_structures.status">Status</label>
 			<label index="tx_dlf_structures.status.default">Standard</label>
 			<label index="tx_dlf_structures.tab1">Allgemein</label>
