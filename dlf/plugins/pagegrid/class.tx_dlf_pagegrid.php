@@ -55,9 +55,12 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 		$thumbnailFile = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][strtolower($this->conf['fileGrpThumbs'])]);
 		 
-		$markerArray['###THUMBNAIL###'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('page' => $number), TRUE, FALSE, $this->conf['targetPid']).'"><img src="'.$thumbnailFile.'" /></a>';
+		$markerArray['###THUMBNAIL###'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array (
+				'page' => $number, 
+				'pointer' => NULL // reset pointer: page has priority on page change
+				), TRUE, FALSE, $this->conf['targetPid']).'"><img src="'.$thumbnailFile.'" /></a>';
 	
-		$markerArray['###PAGE###'] = sprintf($this->pi_getLL('page'), $number + 1);
+		$markerArray['###PAGE###'] = sprintf($this->pi_getLL('page'), $number);
 	
 		return $this->cObj->substituteMarkerArray($template, $markerArray);
 	
@@ -208,6 +211,12 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 			$this->piVars['pointer'] = max(intval($this->piVars['pointer']), 0);
 
+		} else if (!empty($this->piVars['page'])) {
+			
+			$page = max(intval($this->piVars['page']), 0);
+			
+			$this->piVars['pointer'] = intval(floor($page / $this->conf['limit']));
+
 		} else {
 
 			$this->piVars['pointer'] = 0;
@@ -215,7 +224,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		}
 
 		// Iterate through visible page set and display thumbnails.
-		for ($i = $this->piVars['pointer'] * $this->conf['limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i < $j; $i++) {
+		for ($i = max($this->piVars['pointer'] * $this->conf['limit'], 1); $i < ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i++) {
 			
 			$content .= $this->getEntry($i, $i == intval($this->piVars['page']) && !empty($actEntryTemplate) ?  $actEntryTemplate : $entryTemplate);
 
