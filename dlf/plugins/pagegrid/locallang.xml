@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin tx_dlf_pagegrid</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Options</label>
+			<label index="tt_content.pi_flexform.limit">Previews per page</label>
+			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
+			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="firstPage">&#171;</label>
+			<label index="prevPage">&#8592;</label>
+			<label index="nextPage">&#8594;</label>
+			<label index="lastPage">&#187;</label>
+			<label index="page">Page %d</label>
+			<label index="separator"> - </label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+			<label index="tt_content.pi_flexform.limit">Vorschaubilder pro Seite</label>
+			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
+			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="firstPage">&#171;</label>
+			<label index="prevPage">&#8592;</label>
+			<label index="nextPage">&#8594;</label>
+			<label index="lastPage">&#187;</label>
+			<label index="page">Seite %d</label>
+			<label index="separator"> - </label>
+		</languageKey>
+	</data>
+</T3locallang>
