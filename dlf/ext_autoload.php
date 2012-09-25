@@ -47,6 +47,7 @@ return array (
 	'tx_dlf_metadata' => $extensionPath.'plugins/metadata/class.tx_dlf_metadata.php',
 	'tx_dlf_navigation' => $extensionPath.'plugins/navigation/class.tx_dlf_navigation.php',
 	'tx_dlf_oai' => $extensionPath.'plugins/oai/class.tx_dlf_oai.php',
+	'tx_dlf_pagegrid' => $extensionPath.'plugins/pagegrid/class.tx_dlf_pagegrid.php',
 	'tx_dlf_pageview' => $extensionPath.'plugins/pageview/class.tx_dlf_pageview.php',
 	'tx_dlf_search' => $extensionPath.'plugins/search/class.tx_dlf_search.php',
 	'tx_dlf_search_suggest' => $extensionPath.'plugins/search/class.tx_dlf_search_suggest.php',
