@@ -1398,7 +1398,7 @@ final class tx_dlf_document {
 
 		if (!empty($this->tableOfContents[0]['points']) && !t3lib_div::testInt($this->tableOfContents[0]['points'])) {
 
-			$superior = tx_dlf_document::getInstance($this->tableOfContents[0]['points']);
+			$superior = tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
 
 			if ($superior->ready) {
 
