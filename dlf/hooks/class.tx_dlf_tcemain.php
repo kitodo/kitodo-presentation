@@ -421,7 +421,7 @@ class tx_dlf_tcemain {
 					case 'delete':
 
 						// Establish Solr connection.
-						if ($solr = tx_dlf_solr::solrConnect($core)) {
+						if ($solr = tx_dlf_solr::getInstance($core)) {
 
 							// Delete Solr document.
 							$solr->service->deleteByQuery('uid:'.$id);
