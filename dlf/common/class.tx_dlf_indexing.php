@@ -571,6 +571,8 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
 
+			$autocomplete = array ();
+
 			foreach ($metadata as $index_name => $data) {
 
 				if (!empty($data) && substr($index_name, -8) !== '_sorting') {
@@ -593,12 +595,18 @@ class tx_dlf_indexing {
 
 					if (in_array($index_name, self::$fields['autocompleted'])) {
 
-						// Add autocomplete values to index.
-						$solrDoc->setField($index_name.'_suggest', $data);
+						$autocomplete = array_merge($autocomplete, $data);
 
 					}
 
 				}
+
+			}
+
+			// Add autocomplete values to index.
+			if (!empty($autocomplete)) {
+
+				$solrDoc->setField('autocomplete', $autocomplete);
 
 			}
 
