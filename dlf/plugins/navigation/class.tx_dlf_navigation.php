@@ -88,33 +88,33 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		// Link to first page.
 		if ($this->piVars['page'] > 1) {
 
-			$markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', TRUE), $prefix.'-first', array ('page' => 1));
+			$markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', TRUE), array ('page' => 1));
 
 		} else {
 
-			$markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', TRUE), $prefix.'-first');
+			$markerArray['###FIRST###'] = '<span>'.$this->pi_getLL('firstPage', '', TRUE).'</span>';
 
 		}
 
 		// Link back X pages.
 		if ($this->piVars['page'] > $this->conf['pageStep']) {
 
-			$markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $this->conf['pageStep']), $prefix.'-back', array ('page' => $this->piVars['page'] - $this->conf['pageStep']));
+			$markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $this->conf['pageStep']), array ('page' => $this->piVars['page'] - $this->conf['pageStep']));
 
 		} else {
 
-			$markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $this->conf['pageStep']), $prefix.'-back');
+			$markerArray['###BACK###'] = '<span>'.sprintf($this->pi_getLL('backXPages', '', TRUE), $this->conf['pageStep']).'</span>';
 
 		}
 
 		// Link to previous page.
 		if ($this->piVars['page'] > 1) {
 
-			$markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', TRUE), $prefix.'-previous', array ('page' => $this->piVars['page'] - 1));
+			$markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', TRUE), array ('page' => $this->piVars['page'] - 1));
 
 		} else {
 
-			$markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', TRUE), $prefix.'-previous');
+			$markerArray['###PREVIOUS###'] = '<span>'.$this->pi_getLL('prevPage', '', TRUE).'</span>';
 
 		}
 
@@ -127,7 +127,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			'forceAbsoluteUrl' => 1
 		);
 
-		$markerArray['###PAGESELECT###'] = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" class="'.$prefix.'-pageselect" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+		$markerArray['###PAGESELECT###'] = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
 
 		foreach ($this->piVars as $piVar => $value) {
 
@@ -152,33 +152,33 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		// Link to next page.
 		if ($this->piVars['page'] < $this->doc->numPages) {
 
-			$markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', TRUE), $prefix.'-next', array ('page' => $this->piVars['page'] + 1));
+			$markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', TRUE), array ('page' => $this->piVars['page'] + 1));
 
 		} else {
 
-			$markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', TRUE), $prefix.'-next');
+			$markerArray['###NEXT###'] = '<span>'.$this->pi_getLL('nextPage', '', TRUE).'</span>';
 
 		}
 
 		// Link forward X pages.
 		if ($this->piVars['page'] <= ($this->doc->numPages - $this->conf['pageStep'])) {
 
-			$markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $this->conf['pageStep']), $prefix.'-forward', array ('page' => $this->piVars['page'] + $this->conf['pageStep']));
+			$markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $this->conf['pageStep']), array ('page' => $this->piVars['page'] + $this->conf['pageStep']));
 
 		} else {
 
-			$markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $this->conf['pageStep']), $prefix.'-forward');
+			$markerArray['###FORWARD###'] = '<span>'.sprintf($this->pi_getLL('forwardXPages', '', TRUE), $this->conf['pageStep']).'</span>';
 
 		}
 
 		// Link to last page.
 		if ($this->piVars['page'] < $this->doc->numPages) {
 
-			$markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', TRUE), $prefix.'-last', array ('page' => $this->doc->numPages));
+			$markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', TRUE), array ('page' => $this->doc->numPages));
 
 		} else {
 
-			$markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', TRUE), $prefix.'-last');
+			$markerArray['###LAST###'] = '<span>'.$this->pi_getLL('lastPage', '', TRUE).'</span>';
 
 		}
 
@@ -194,57 +194,35 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 	 * @access	protected
 	 *
 	 * @param	string		$label: The link's text
-	 * @param	string		$class: The link's class
 	 * @param	array		$overrulePIvars: The new set of plugin variables
-	 * 						If this is empty no link is generated.
 	 *
 	 * @return	string		Typolink ready to output
 	 */
-	protected function makeLink($label, $class = '', array $overrulePIvars = array ()) {
+	protected function makeLink($label, array $overrulePIvars = array ()) {
 
-		if ($overrulePIvars) {
+		// Merge plugin variables with new set of values.
+		if (is_array($this->piVars)) {
 
-			// Merge plugin variables with new set of values.
-			if (is_array($this->piVars)) {
+			$piVars = $this->piVars;
 
-				$piVars = $this->piVars;
+			unset($piVars['DATA']);
 
-				unset($piVars['DATA']);
-
-				$overrulePIvars = t3lib_div::array_merge_recursive_overrule($piVars, $overrulePIvars);
-
-			}
-
-			// Build typolink configuration array.
-			$conf = array ();
-
-			$conf['useCacheHash'] = 1;
-
-			$conf['parameter'] = $GLOBALS['TSFE']->id;
-
-			$conf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE);
-
-			$conf['title'] = $label;
-
-			if (!empty($class)) {
-
-				$conf['ATagParams'] = 'class="'.$class.'"';
-
-			}
-
-			return $this->cObj->typoLink($label, $conf);
-
-		} else {
-
-			if (!empty($class)) {
-
-				$class = ' class="'.$class.'"';
-
-			}
-
-			return '<span'.$class.'>'.$label.'</span>';
+			$overrulePIvars = t3lib_div::array_merge_recursive_overrule($piVars, $overrulePIvars);
 
 		}
+
+		// Build typolink configuration array.
+		$conf = array ();
+
+		$conf['useCacheHash'] = 1;
+
+		$conf['parameter'] = $GLOBALS['TSFE']->id;
+
+		$conf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE);
+
+		$conf['title'] = $label;
+
+		return $this->cObj->typoLink($label, $conf);
 
 	}
 
