@@ -277,6 +277,15 @@ t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_oai', $_
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_oai', 'FILE:EXT:'.$_EXTKEY.'/plugins/oai/flexform.xml');
 
+// Plugin "pagegrid".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pagegrid'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pagegrid'] = 'pi_flexform';
+
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_pagegrid', $_EXTKEY.'_pagegrid'), 'list_type');
+
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_pagegrid', 'FILE:EXT:'.$_EXTKEY.'/plugins/pagegrid/flexform.xml');
+
 // Plugin "pageview".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pageview'] = 'layout,select_key,pages,recursive';
 

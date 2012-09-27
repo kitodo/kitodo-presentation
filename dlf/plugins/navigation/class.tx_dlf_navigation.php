@@ -131,7 +131,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		foreach ($this->piVars as $piVar => $value) {
 
-			if ($piVar != 'page' && !empty($value)) {
+			if ($piVar != 'page' && $piVars != 'DATA' && !empty($value)) {
 
 				$markerArray['###PAGESELECT###'] .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
 
