@@ -937,9 +937,6 @@ final class tx_dlf_document {
 			// Register namespaces.
 			$this->registerNamespaces($this->mets);
 
-			// Instantiation successful.
-			$this->ready = TRUE;
-
 		} else {
 
 			if (TYPO3_DLOG) {
@@ -2107,40 +2104,43 @@ final class tx_dlf_document {
 			// Cast to string for safety reasons.
 			$location = (string) $uid;
 
-			// Turn off libxml's error logging.
-			$libxmlErrors = libxml_use_internal_errors(TRUE);
+			// Try to load METS file.
+			if ($this->load($location)) {
 
-			// Load XML file.
-			$xml = @simplexml_load_file($location);
+				// Initialize core METS object.
+				$this->init();
 
-			// Reset libxml's error logging.
-			libxml_use_internal_errors($libxmlErrors);
+				if ($this->mets !== NULL) {
 
-			if ($xml !== FALSE) {
+					// Check for METS object @ID.
+					if (!empty($this->mets['OBJID'])) {
 
-				$xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-
-				// Check for @OBJID in order to use it as record identifier.
-				$objId = $xml->xpath('//mets:mets');
-
-				if (!empty($objId[0]['OBJID'])) {
-
-					$this->recordId = (string) $objId[0]['OBJID'];
-
-				}
-
-				// Check for post-processing hooks.
-				$this->getHookObjects();
-
-				foreach($this->hookObjects as $hookObj) {
-
-					if (method_exists($hookObj, 'construct_postProcessRecordId')) {
-
-						$this->recordId = $hookObj->construct_postProcessRecordId($xml, $this->recordId);
+						$this->recordId = (string) $this->mets['OBJID'];
 
 					}
 
+					// Apply hooks.
+					foreach($this->hookObjects as $hookObj) {
+
+						if (method_exists($hookObj, 'construct_postProcessRecordId')) {
+
+							$this->recordId = $hookObj->construct_postProcessRecordId($this->xml, $this->recordId);
+
+						}
+
+					}
+
+				} else {
+
+					// No METS part found.
+					return;
+
 				}
+
+			} else {
+
+				// Loading failed.
+				return;
 
 			}
 
@@ -2180,25 +2180,29 @@ final class tx_dlf_document {
 
 			$this->thumbnailLoaded = TRUE;
 
-			// Load XML file...
-			if ($this->load($location)) {
+			// Load XML file if necessary...
+			if ($this->mets === NULL && $this->load($location)) {
 
 				// ...and set some basic properties.
 				$this->init();
 
 			}
 
-		} elseif (!empty($location)) {
+			// Do we have a METS object now?
+			if ($this->mets !== NULL) {
 
+				// Document ready!
+				$this->ready = TRUE;
+
+			}
+
+		} elseif ($this->mets !== NULL) {
+
+			// Set location as UID for documents not in database.
 			$this->uid = $location;
 
-			// Load XML file...
-			if ($this->load($location)) {
-
-				// ...and set some basic properties.
-				$this->init();
-
-			}
+			// Document ready!
+			$this->ready = TRUE;
 
 		} else {
 
