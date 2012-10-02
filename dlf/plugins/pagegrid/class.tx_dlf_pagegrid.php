@@ -118,7 +118,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		// Add link to previous page.
 		if ($this->piVars['pointer'] > 0) {
 
-			$output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;'), array ('pointer' => $this->piVars['pointer'] - 1), TRUE).$separator;
+			$output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;'), array ('pointer' => $this->piVars['pointer'] - 1, 'page' => NULL), TRUE).$separator;
 
 		} else {
 
@@ -135,7 +135,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 				if ($this->piVars['pointer'] != $i) {
 
-					$output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d'), $i + 1), array ('pointer' => $i), TRUE).$separator;
+					$output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d'), $i + 1), array ('pointer' => $i, 'page' => NULL), TRUE).$separator;
 
 				} else {
 
@@ -160,7 +160,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		// Add link to next page.
 		if ($this->piVars['pointer'] < $maxPages - 1) {
 
-			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;'), array ('pointer' => $this->piVars['pointer'] + 1), TRUE);
+			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;'), array ('pointer' => $this->piVars['pointer'] + 1, 'page' => NULL), TRUE);
 
 		} else {
 
@@ -230,15 +230,17 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		}
 
 		// Set some variable defaults.
-		if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= $this->doc->numPages) {
-
-			$this->piVars['pointer'] = max(intval($this->piVars['pointer']), 0);
-
-		} elseif (!empty($this->piVars['page'])) {
+		if (!empty($this->piVars['page'])) {
 
 			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			$this->piVars['pointer'] = intval(floor($this->piVars['page'] / $this->conf['limit']));
+
+		}
+
+		if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= $this->doc->numPages) {
+
+			$this->piVars['pointer'] = max(intval($this->piVars['pointer']), 0);
 
 		} else {
 
