@@ -40,6 +40,19 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/navigation/class.tx_dlf_navigation.php';
 
 	/**
+	 * Display the controls for the page view
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		Controls ready to output
+	 */
+	protected function getViewerControls() {
+
+		return '';
+
+	}
+
+	/**
 	 * The main method of the PlugIn
 	 *
 	 * @access	public
@@ -179,6 +192,17 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		} else {
 
 			$markerArray['###LAST###'] = '<span>'.$this->pi_getLL('lastPage', '', TRUE).'</span>';
+
+		}
+
+		// Add viewer controls if applicable.
+		if (!empty($this->conf['viewerControls'])) {
+
+			$markerArray['###VIEWERCONTROLS###'] = $this->getViewerControls();
+
+		} else {
+
+			$markerArray['###VIEWERCONTROLS###'] = '';
 
 		}
 

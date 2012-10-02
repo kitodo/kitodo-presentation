@@ -1061,10 +1061,11 @@ final class tx_dlf_document {
 	 * @access	public
 	 *
 	 * @param	SimpleXMLElement|DOMXPath		&$obj: SimpleXMLElement or DOMXPath object
+	 * @param	array		$namespaces: Array of more namespaces to register
 	 *
 	 * @return	void
 	 */
-	public function registerNamespaces(&$obj) {
+	public function registerNamespaces(&$obj, array $namespaces = array ()) {
 
 		$this->loadFormats();
 
@@ -1093,6 +1094,17 @@ final class tx_dlf_document {
 		foreach ($this->formats as $enc => $conf) {
 
 			$obj->$method(strtolower($enc), $conf['namespaceURI']);
+
+		}
+
+		// Register additional namespaces.
+		if (!empty($namespaces)) {
+
+			foreach ($namespaces as $ns => $uri) {
+
+				$obj->$method($ns, $uri);
+
+			}
 
 		}
 

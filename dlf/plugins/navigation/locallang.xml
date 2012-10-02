@@ -8,6 +8,7 @@
 		<languageKey index="default" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.pageStep">How many pages should be skipped by "fast-forward" and "rewind" buttons?</label>
+			<label index="tt_content.pi_flexform.viewerControls">Show controls for page viewer?</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
 			<label index="firstPage">First Page</label>
 			<label index="backXPages">Back %d Pages</label>
@@ -20,6 +21,7 @@
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.pageStep">Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?</label>
+			<label index="tt_content.pi_flexform.viewerControls">Bedienelemente für Seitenansicht anzeigen?</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
 			<label index="firstPage">Erste Seite</label>
 			<label index="backXPages">%d Seiten zurück</label>
