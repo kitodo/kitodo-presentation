@@ -95,14 +95,6 @@ final class tx_dlf_document {
 		'XLINK' => array (
 			'rootElement' => 'xlink',
 			'namespaceURI' => 'http://www.w3.org/1999/xlink',
-		),
-		'DVRIGHTS' => array (
-			'rootElement' => 'rights',
-			'namespaceURI' => 'http://dfg-viewer.de/',
-		),
-		'DVLINKS' => array (
-			'rootElement' => 'links',
-			'namespaceURI' => 'http://dfg-viewer.de/',
 		)
 	);
 
@@ -523,6 +515,8 @@ final class tx_dlf_document {
 		$details['dmdId'] = (isset($attributes['DMDID']) ?  $attributes['DMDID'] : '');
 
 		$details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
+
+		$details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
 
 		$details['volume'] = '';
 
@@ -1061,11 +1055,10 @@ final class tx_dlf_document {
 	 * @access	public
 	 *
 	 * @param	SimpleXMLElement|DOMXPath		&$obj: SimpleXMLElement or DOMXPath object
-	 * @param	array		$namespaces: Array of more namespaces to register
 	 *
 	 * @return	void
 	 */
-	public function registerNamespaces(&$obj, array $namespaces = array ()) {
+	public function registerNamespaces(&$obj) {
 
 		$this->loadFormats();
 
@@ -1094,17 +1087,6 @@ final class tx_dlf_document {
 		foreach ($this->formats as $enc => $conf) {
 
 			$obj->$method(strtolower($enc), $conf['namespaceURI']);
-
-		}
-
-		// Register additional namespaces.
-		if (!empty($namespaces)) {
-
-			foreach ($namespaces as $ns => $uri) {
-
-				$obj->$method($ns, $uri);
-
-			}
 
 		}
 
@@ -1747,6 +1729,8 @@ final class tx_dlf_document {
 
 				$this->physicalPagesInfo[$physSeq[0]]['type'] = (string) $physNode[0]['TYPE'];
 
+				$this->physicalPagesInfo[$physSeq[0]]['contentIds'] = (isset($physNode[0]['CONTENTIDS']) ? (string) $physNode[0]['CONTENTIDS'] : '');
+
 				// Get the file representations from fileSec node.
 				foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
 
@@ -1769,6 +1753,8 @@ final class tx_dlf_document {
 					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['label'] = (isset($pageNode['ORDERLABEL']) ? (string) $pageNode['ORDERLABEL'] : '');
 
 					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['type'] = (string) $pageNode['TYPE'];
+
+					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['contentIds'] = (isset($pageNode['CONTENTIDS']) ? (string) $pageNode['CONTENTIDS'] : '');
 
 					// Get the file representations from fileSec node.
 					foreach ($pageNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
