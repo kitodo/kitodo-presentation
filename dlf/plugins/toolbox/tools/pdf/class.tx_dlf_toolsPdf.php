@@ -70,18 +70,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 		}
 
-		// Get document's UID.
-		//$this->piVars['id'] = $this->cObj->stdWrap($this->conf['docId'], $this->conf['docId.']);
-
-		//if (!empty($this->piVars['id'])) {
-
-			//$this->loadDocument();
-
-			// TODO: Just a quick and dirty hack so far!
-			$ppn = str_replace('oai:de:slub-dresden:db:id-', '', $this->cObj->data['record_id']);
-			$content = $this->cObj->substituteMarkerArray($this->template, array ('###LINK###' => '<a href="http://digital.slub-dresden.de/fileadmin/data/'.$ppn.'/'.$ppn.'_tif/jpegs/'.$ppn.'.pdf" target="_blank" title="PDF Download">PDF Download</a>'));
-
-		//}
+		// TODO: Just a quick and dirty hack so far!
+		$ppn = preg_replace('/oai\:[\w\-\:]*id-/', '', $this->cObj->data['record_id']);
+		$content = $this->cObj->substituteMarkerArray($this->template, array ('###LINK###' => '<a href="http://digital.slub-dresden.de/fileadmin/data/'.$ppn.'/'.$ppn.'_tif/jpegs/'.$ppn.'.pdf" target="_blank" title="PDF Download">PDF Download</a>'));
 
 		return $this->pi_wrapInBaseClass($content);
 
