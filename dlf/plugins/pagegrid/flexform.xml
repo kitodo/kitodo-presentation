@@ -36,6 +36,20 @@
 							</config>
 						</TCEforms>
 					</limit>
+					<placeholder>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/pagegrid/locallang.xml:tt_content.pi_flexform.placeholder</label>
+							<config>
+								<type>group</type>
+								<internal_type>file_reference</internal_type>
+								<allowed>jpg,png,gif</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</placeholder>
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>

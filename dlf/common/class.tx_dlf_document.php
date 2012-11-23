@@ -316,7 +316,7 @@ final class tx_dlf_document {
 	 */
 	public function getFileLocation($id) {
 
-		if (($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/mets:FLocat[@LOCTYPE="URL"]'))) {
+		if (!empty($id) && ($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/mets:FLocat[@LOCTYPE="URL"]'))) {
 
 			return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
@@ -556,7 +556,7 @@ final class tx_dlf_document {
 
 			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
 
-			$details['thumbnailId'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][strtolower($extConf['fileGrpThumbs'])];
+			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][strtolower($extConf['fileGrpThumbs'])];
 
 			// Get page number of the first page related to this structure element.
 			$details['pagination'] = $this->physicalPagesInfo[$id]['label'];
@@ -567,7 +567,7 @@ final class tx_dlf_document {
 			// Yes. Point to itself.
 			$details['points'] = 1;
 
-			$details['thumbnailId'] = $this->physicalPagesInfo[$this->physicalPages[1]]['files'][strtolower($extConf['fileGrpThumbs'])];
+			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->physicalPages[1]]['files'][strtolower($extConf['fileGrpThumbs'])];
 
 		}
 
@@ -1699,6 +1699,12 @@ final class tx_dlf_document {
 
 				$useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
 
+				if (!empty($extConf['fileGrpThumbs'])) {
+
+					$useGrps[] = $extConf['fileGrpThumbs'];
+
+				}
+
 				// Yes. Get concordance of @FILEID and @USE attributes.
 				$fileUse = array ();
 
@@ -1908,8 +1914,22 @@ final class tx_dlf_document {
 
 			}
 
-			// Load plugin configuration.
+			// Load extension configuration.
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+
+			if (empty($extConf['fileGrpThumbs'])) {
+
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No fileGrp for thumbnails specified', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+				}
+
+				$this->thumbnailLoaded = TRUE;
+
+				return $this->thumbnail;
+
+			}
 
 			$strctId = $this->_getToplevelId();
 

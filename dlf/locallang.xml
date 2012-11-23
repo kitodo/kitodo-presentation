@@ -128,7 +128,7 @@
 			<label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
 			<label index="config.publishNewCollections">Publish new collections?: Should new collections automatically be published in the OAI interface? (default is "TRUE")</label>
 			<label index="config.unhideOnIndex">Unhide indexed documents?: Should hidden documents be unhidden when re-indexing them? (default is "FALSE")</label>
-			<label index="config.fileGrps">METS fileGrps: comma-separated list of all @USE attribute values (default is "THUMBS,MIN,DEFAULT,MAX")</label>
+			<label index="config.fileGrps">Page fileGrps: comma-separated list of @USE attribute values (default is "MIN,DEFAULT,MAX")</label>
 			<label index="config.fileGrpThumbs">Thumbnail fileGrp: @USE attribute value (default is "THUMBS")</label>
 			<label index="config.solrConnect">Solr Connection</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
@@ -290,7 +290,7 @@
 			<label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
 			<label index="config.publishNewCollections">Neue Kollektionen publizieren?: Sollen neue Kollektionen automatisch in der OAI-Schnittstelle veröffentlicht werden? (Standard ist "TRUE")</label>
 			<label index="config.unhideOnIndex">Indexierte Dokumente einblenden?: Sollen ausgeblendete Dokumente bei der erneuten Indexierung wieder eingeblendet werden? (Standard ist "FALSE")</label>
-			<label index="config.fileGrps">METS fileGrps: Komma-getrennte Liste aller @USE Attributwerte (Standard ist "THUMBS,MIN,DEFAULT,MAX")</label>
+			<label index="config.fileGrps">Seiten fileGrps: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten (Standard ist "MIN,DEFAULT,MAX")</label>
 			<label index="config.fileGrpThumbs">Vorschau fileGrp: @USE Attributwert der Vorschaubilder (Standard ist "THUMBS")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>

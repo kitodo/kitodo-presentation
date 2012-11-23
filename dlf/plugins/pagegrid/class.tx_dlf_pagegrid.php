@@ -68,8 +68,20 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		// Set pagination.
 		$markerArray['###PAGINATION###'] = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['label'];
 
-		// Get thumbnail and link it to page view.
-		$thumbnailFile = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][strtolower($this->conf['fileGrpThumbs'])]);
+		// Get thumbnail or placeholder.
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][strtolower($this->conf['fileGrpThumbs'])])) {
+
+			$thumbnailFile = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][strtolower($this->conf['fileGrpThumbs'])]);
+
+		} elseif (!empty($this->conf['placeholder'])) {
+
+			$thumbnailFile = $this->conf['placeholder'];
+
+		} else {
+
+			$thumbnailFile = t3lib_extMgm::siteRelPath($this->extKey).'plugins/pagegrid/placeholder.jpg';
+
+		}
 
 		$thumbnail = '<img alt="'.$markerArray['###PAGINATION###'].'" src="'.$thumbnailFile.'" />';
 
@@ -191,7 +203,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 		$this->loadDocument();
 
-		if ($this->doc === NULL || $this->doc->numPages < 1) {
+		if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpThumbs'])) {
 
 			// Quit without doing anything if required variables are not set.
 			return $content;

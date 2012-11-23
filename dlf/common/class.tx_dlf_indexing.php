@@ -553,7 +553,7 @@ class tx_dlf_indexing {
 
 				$solrDoc->setField('thumbnail', $doc->thumbnail);
 
-			} else {
+			} elseif (!empty($logicalUnit['thumbnailId'])) {
 
 				$solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
 
