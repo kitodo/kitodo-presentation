@@ -166,6 +166,9 @@
 			<label index="cliUserGroup.cliOkayMsg">The TYPO3 command line interface is available for the indexer to use.</label>
 			<label index="cliUserGroup.cliNotOkay">Command Line Interface not available!</label>
 			<label index="cliUserGroup.cliNotOkayMsg">The TYPO3 command line interface is not available for the indexer to use.</label>
+			<label index="update.metadataConfig">Updating metadata configuration...</label>
+			<label index="update.metadataConfigOkay">...successfully completed!</label>
+			<label index="update.metadataConfigNotOkay">...incomplete! Please check your configuration manually.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_documents">Dokumente</label>
@@ -328,6 +331,9 @@
 			<label index="cliUserGroup.cliOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst zur Verfügung.</label>
 			<label index="cliUserGroup.cliNotOkay">Kommandozeilen-Schnittstelle nicht verfügbar!</label>
 			<label index="cliUserGroup.cliNotOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst nicht zur Verfügung.</label>
+			<label index="update.metadataConfig">Aktualisierung der Metadatenkonfiguration...</label>
+			<label index="update.metadataConfigOkay">...erfolgreich beendet! Alle Datensätze wurden ins IRRE-Schema konvertiert.</label>
+			<label index="update.metadataConfigNotOkay">...abgebrochen! Die Überführung der Datensätze ins IRRE-Schema muss manuell erfolgen.</label>
 		</languageKey>
 	</data>
 </T3locallang>

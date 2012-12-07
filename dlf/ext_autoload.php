@@ -25,6 +25,7 @@
 $extensionPath = t3lib_extMgm::extPath('dlf');
 
 return array (
+	'ext_update' => $extensionPath.'class.ext_update.php',
 	'tx_dlf_cli' => $extensionPath.'cli/class.tx_dlf_cli.php',
 	'tx_dlf_document' => $extensionPath.'common/class.tx_dlf_document.php',
 	'tx_dlf_format' => $extensionPath.'common/class.tx_dlf_format.php',
