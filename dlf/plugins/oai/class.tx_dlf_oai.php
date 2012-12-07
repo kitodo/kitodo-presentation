@@ -1022,7 +1022,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				// Check for required fields.
 				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
 
-					$where .= ' AND NOT tx_dlf_documents.'.$required.'=""';
+					$where .= ' AND NOT tx_dlf_documents.'.$required.'=\'\'';
 
 				}
 
@@ -1398,7 +1398,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				// Check for required fields.
 				foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
 
-					$where .= ' AND NOT tx_dlf_documents.'.$required.'=""';
+					$where .= ' AND NOT tx_dlf_documents.'.$required.'=\'\'';
 
 				}
 
@@ -1715,7 +1715,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_collections.oai_name AS oai_name,tx_dlf_collections.label AS label',
 			'tx_dlf_collections',
-			'tx_dlf_collections.sys_language_uid IN (-1,0) AND NOT tx_dlf_collections.oai_name="" AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'tx_dlf_collections.sys_language_uid IN (-1,0) AND NOT tx_dlf_collections.oai_name=\'\' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
 			'tx_dlf_collections.oai_name',
 			'tx_dlf_collections.oai_name',
 			''
