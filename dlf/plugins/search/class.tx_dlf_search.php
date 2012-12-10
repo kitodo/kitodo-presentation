@@ -151,6 +151,60 @@ class tx_dlf_search extends tx_dlf_plugin {
 	}
 
 	/**
+	 * Returns the extended search form and adds the JS files necessary for extended search.
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		The extended search form or an empty string
+	 */
+	protected function addExtendedSearch() {
+
+		$extendedSearch = '';
+
+		// Quit without doing anything if no fields for extended search are selected.
+		if (empty($this->conf['extendedSlotCount']) || empty($this->conf['extendedFields'])) {
+
+			return $extendedSearch;
+
+		}
+
+		// Get operator options.
+		$operatorOptions = '';
+
+		foreach (array ('AND', 'OR', 'NOT') as $operator) {
+
+			$operatorOptions .= '<option class="tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
+
+		}
+
+		// Get field selector options.
+		$fieldSelectorOptions = '';
+
+		$searchFields = t3lib_div::trimExplode(',', $this->conf['extendedFields'], TRUE);
+
+		foreach ($searchFields as $searchField) {
+
+			$fieldSelectorOptions .= '<option class="tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
+
+		}
+
+		for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
+
+			$markerArray = array (
+				'###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator-'.$i.'" name="tx_dlf[extOperator]['.$i.']">'.$operatorOptions.'</select>',
+				'###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field-'.$i.'" name="tx_dlf[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
+				'###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query-'.$i.'" type="text" name="tx_dlf[extQuery]['.$i.']" />'
+			);
+
+			$extendedSearch .= $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
+
+		}
+
+		return $extendedSearch;
+
+	}
+
+	/**
 	 * Adds the facets menu to the search form
 	 *
 	 * @access	protected
@@ -202,60 +256,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
 
 		return $this->cObj->HMENU($TSconfig);
-
-	}
-
-	/**
-	 * Returns the extended search form and adds the JS files necessary for extended search.
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		The extended search form or an empty string
-	 */
-	protected function addExtendedSearch() {
-
-		$extendedSearch = '';
-
-		// Quit without doing anything if no fields for extended search are selected.
-		if (empty($this->conf['extendedSlotCount']) || empty($this->conf['extendedFields'])) {
-
-			return $extendedSearch;
-
-		}
-
-		// Get operator options.
-		$operatorOptions = '';
-
-		foreach (array ('AND', 'OR', 'NOT') as $operator) {
-
-			$operatorOptions .= '<option class="tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
-
-		}
-
-		// Get field selector options.
-		$fieldSelectorOptions = '';
-
-		$searchFields = t3lib_div::trimExplode(',', $this->conf['extendedFields'], TRUE);
-
-		foreach ($searchFields as $searchField) {
-
-			$fieldSelectorOptions .= '<option class="tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
-
-		}
-
-		for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
-
-			$markerArray = array (
-				'###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator-'.$i.'" name="tx_dlf[extOperator]['.$i.']">'.$operatorOptions.'</select>',
-				'###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field-'.$i.'" name="tx_dlf[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
-				'###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query-'.$i.'" type="text" name="tx_dlf[extQuery]['.$i.']" />'
-			);
-
-			$extendedSearch .= $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
-
-		}
-
-		return $extendedSearch;
 
 	}
 

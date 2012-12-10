@@ -247,16 +247,10 @@ class tx_dlf_solr {
 	 *
 	 * @return	tx_dlf_list		The result list
 	 */
-	public function search($query = '*') {
+	public function search($query = '') {
 
 		// Sanitize query string.
 		$queryString = (string) $query;
-
-		if (empty($queryString)) {
-
-			$queryString = '*';
-
-		}
 
 		// Perform search.
 		$results = $this->service->search($queryString, 0, $this->limit, $this->params);
