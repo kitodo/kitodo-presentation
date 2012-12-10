@@ -72,73 +72,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	}
 
 	/**
-	 * Gets the required information about an image
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$page: The page number (defaults to $this->piVars['page'])
-	 *
-	 * @return	string		The JSON encoded image data
-	 */
-	protected function getImageData($page = 0) {
-
-		// Save parameter for logging purposes.
-		$_page = $page;
-
-		// Cast to integer for security reasons.
-		$page = intval($page);
-
-		// Set default value if not set.
-		if (!$page && $this->piVars['page']) {
-
-			$page = $this->piVars['page'];
-
-		}
-
-		$imageData = array ();
-
-		$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
-
-		foreach ($fileGrps as $fileGrp) {
-
-			$fileGrp = strtolower($fileGrp);
-
-			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
-
-				$fileGrpUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
-
-				// Check file's existence.
-				$headers = @get_headers($fileGrpUrl);
-
-				if (is_array($headers) && preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/', $headers[0])) {
-
-					$fileGrpSize = getimagesize($fileGrpUrl);
-
-					$imageData[] = array (
-						'width' => $fileGrpSize[0],
-						'height' => $fileGrpSize[1],
-						'url' => $fileGrpUrl
-					);
-
-				} else {
-
-					if (TYPO3_DLOG) {
-
-						t3lib_div::devLog('[tx_dlf_pageview->getImageData('.$_page.')] File not found: "'.$fileGrpUrl.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-					}
-
-				}
-
-			}
-
-		}
-
-		return $imageData;
-
-	}
-
-	/**
 	 * The main method of the PlugIn
 	 *
 	 * @access	public
@@ -170,7 +103,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		$content .= $this->showViewer();
+		$content .= $this->initViewer();
 
 		return $this->pi_wrapInBaseClass($content);
 
@@ -183,66 +116,18 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	 *
 	 * @return	string		Viewer code ready for output
 	 */
-	protected function showViewer() {
+	protected function initViewer() {
 
 		$this->addJS();
 
-		// Set plugin variable defaults.
-//		$this->piVars['double'] = (!empty($this->piVars['double']) ? 1 : 0);
-
-//		$this->piVars['showOcrOverlay'] = (!empty($this->piVars['showOcrOverlay']) ? 1 : 0);
-
-		// Configure double-page layout.
-//		if ($this->piVars['double']) {
-//
-//			// Check if current page is the last one.
-//			if ($this->piVars['page'] = $this->doc->numPages) {
-//
-//				if ($this->doc->numPages > 1) {
-//
-//					$this->piVars['page'] = $this->piVars['page'] - 1;
-//
-//				} else {
-//
-//					// The document has just one page.
-//					$this->piVars['double'] = 0;
-//
-//				}
-//
-//			}
-//
-//		}
-
 		// Build HTML code.
 		$viewer = '<div id="tx-dlf-map"><div id="tx-dlf-lefttarget"></div><div id="tx-dlf-righttarget"></div></div>';
-
-		// Get values for viewer initialization.
-		$imageDataLeft = $this->getImageData();
-
-//		$imageDataRight = ($this->piVars['double'] ? $this->getImageData($this->piVars['page'] + 1) : array ());
-//
-//		$doublePageView = $this->piVars['double'];
-//
-//		$userName = (!empty($GLOBALS['TSFE']->fe_user->user['name']) ? $GLOBALS['TSFE']->fe_user->user['name'] : (!empty($GLOBALS['TSFE']->fe_user->user['username']) ? $GLOBALS['TSFE']->fe_user->user['username'] : ''));
-//
-//		$userId = (!empty($GLOBALS['TSFE']->fe_user->user['uid']) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
-//
-//		$options = array ('showOcrOverlay' => $this->piVars['showOcrOverlay']);
-
-		$addImages = array ();
-
-		foreach ($imageDataLeft as $imageData) {
-
-			$addImages[] = 'dlfViewer.addImage('.$imageData['width'].','.$imageData['height'].',"'.$imageData['url'].'");';
-
-		}
 
 		// !!!ATTENTION PLEASE: THE ID WITHIN THE SCRIPT ELEMENT IS IMPORTANT AND SHOULD STAY IN FUTURE RELEASES!!!
 		$viewer .= '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
 		///* <![CDATA[ */
 		dlfViewer = new Viewer();
-		'.implode("\n", $addImages).'
 		dlfViewer.run();
 		/* ]]> */
 		</script>';
