@@ -307,7 +307,7 @@ class tx_dlf_solr {
 		// Process results.
 		foreach ($results->response->docs as $doc) {
 
-			// Prepate document's metadata.
+			// Prepare document's metadata.
 			$docMeta = array ();
 
 			foreach ($metadata as $index_name => $solr_name) {
@@ -320,7 +320,7 @@ class tx_dlf_solr {
 
 			}
 
-			// Prepate document's metadata for sorting.
+			// Prepare document's metadata for sorting.
 			$docSorting = array ();
 
 			foreach ($sorting as $index_name => $solr_name) {
