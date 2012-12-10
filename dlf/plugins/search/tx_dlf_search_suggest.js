@@ -1,8 +1,8 @@
 $("#tx-dlf-search-query").attr({
 	autocomplete: 'off',
 	role: 'textbox',
-	aria-autocomplete: 'list',
-	aria-haspopup: 'true'
+	'aria-autocomplete': 'list',
+	'aria-haspopup': 'true'
 });
 
 $(
