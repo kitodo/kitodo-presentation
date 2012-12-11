@@ -194,13 +194,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				}
 
 				// Build typolink configuration array.
-				$conf = array ();
-
-				$conf['useCacheHash'] = 1;
-
-				$conf['parameter'] = $GLOBALS['TSFE']->id;
-
-				$conf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
+				$conf = array (
+					'useCacheHash' => 1,
+					'parameter' => $GLOBALS['TSFE']->id,
+					'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+				);
 
 				// Link collection's title to list view.
 				$markerArray[$resArray['uid']]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);

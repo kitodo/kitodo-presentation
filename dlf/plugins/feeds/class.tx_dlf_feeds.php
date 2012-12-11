@@ -171,7 +171,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 					$linkConf = array (
 						'parameter' => $this->conf['targetPid'],
 						'forceAbsoluteUrl' => 1,
-						'additionalParams' => array ($this->prefixId => array ('id' => $resArray['uid']))
+						'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, array ('id' => $resArray['uid']), '', TRUE, FALSE)
 					);
 
 					$item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
