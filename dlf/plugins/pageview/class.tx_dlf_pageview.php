@@ -40,36 +40,24 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/pageview/class.tx_dlf_pageview.php';
 
 	/**
-	 * Adds JavaScript for the viewer
+	 * Holds the current image's information
 	 *
-	 * @access	protected
-	 *
-	 * @return	void
+	 * @var	array
+	 * @access protected
 	 */
-	protected function addJS() {
+	protected $image = array (
+		'url' => '',
+		'width' => 0,
+		'height' => 0
+	);
 
-		// Add JavaScript files to header.
-		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_olJS'] = '	<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/dlfOL.js"></script>';
-
-		// Add localization file for OpenLayers.
-		if ($GLOBALS['TSFE']->lang) {
-
-			$langFile = t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js';
-
-			if (file_exists($langFile)) {
-
-				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_olJS_lang'] = '	<script type="text/javascript" src="'.$langFile.'"></script>';
-
-			}
-
-		}
-
-		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_olJS_viewer'] = '	<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/viewer.js"></script>';
-
-		// Set "onbeforeunload" handler on body tag.
-//		$GLOBALS['TSFE']->pSetup['bodyTagAdd'] = 'onbeforeunload="javascript:dlfViewer.saveData();"';
-
-	}
+	/**
+	 * Holds the language code for OpenLayers
+	 *
+	 * @var	string
+	 * @access protected
+	 */
+	protected $lang = 'en';
 
 	/**
 	 * The main method of the PlugIn
@@ -101,38 +89,125 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			// Set default values for page if not set.
 			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
+			// Get image link.
+			$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
+
+			$fileGrp = strtolower(array_pop($fileGrps));
+
+			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$fileGrp])) {
+
+				$this->image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$fileGrp]);
+
+				$imageSize = @getimagesize($this->image['url']);
+
+				$this->image['width'] = $imageSize[0];
+
+				$this->image['height'] = $imageSize[1];
+
+			} else {
+
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_pageview->main('.$_page.')] File not found: "'.$fileGrpUrl.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+				}
+
+			}
+
 		}
 
-		$content .= $this->initViewer();
+		// Load template file.
+		if (!empty($this->conf['templateFile'])) {
+
+			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
+
+		} else {
+
+			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/pageview/template.tmpl'), '###TEMPLATE###');
+
+		}
+
+		// Fill in the template markers.
+		$markerArray = array (
+			'###VIEWER_JS###' => $this->addViewerJS()
+		);
+
+		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
 		return $this->pi_wrapInBaseClass($content);
 
 	}
 
 	/**
-	 * Initializes the viewer
+	 * Adds OpenLayers javascript
 	 *
 	 * @access	protected
 	 *
-	 * @return	string		Viewer code ready for output
+	 * @return	string		OpenLayers script tags ready for output.
 	 */
-	protected function initViewer() {
+	protected function addOpenLayersJS() {
 
-		$this->addJS();
+		$output = array ();
 
-		// Build HTML code.
-		$viewer = '<div id="tx-dlf-map"><div id="tx-dlf-lefttarget"></div><div id="tx-dlf-righttarget"></div></div>';
+		// Get localization for OpenLayers.
+		if ($GLOBALS['TSFE']->lang) {
 
-		// !!!ATTENTION PLEASE: THE ID WITHIN THE SCRIPT ELEMENT IS IMPORTANT AND SHOULD STAY IN FUTURE RELEASES!!!
-		$viewer .= '
+			$langFile = t3lib_extMgm::extPath($this->extKey, 'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js');
+
+			if (file_exists($langFile)) {
+
+				$this->lang = strtolower($GLOBALS['TSFE']->lang);
+
+			}
+
+		}
+/*
+		// Add OpenLayers configuration.
+		$output[] = '
+		<script type="text/javascript">
+			window.OpenLayers = [
+			// Set all required Openlayers files here like this:
+			// "OpenLayers/Animation.js",
+			// "OpenLayers/BaseTypes/Bounds.js"
+			];
+		</script>';
+*/
+		// Add OpenLayers library.
+		$output[] = '
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
+
+		return implode("\n", $output);
+
+	}
+
+	/**
+	 * Adds Viewer javascript
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		Viewer script tags ready for output
+	 */
+	protected function addViewerJS() {
+
+		$output = array ();
+
+		// Add OpenLayers library.
+		$output[] = $this->addOpenLayersJS();
+
+		// Add viewer library.
+		$output[] = '
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
+
+		// Add viewer configuration.
+		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-		///* <![CDATA[ */
-		dlfViewer = new Viewer();
-		dlfViewer.run();
-		/* ]]> */
+			dlfViewer = new Viewer();
+			dlfViewer.setLang("'.$this->lang.'");
+			dlfViewer.setImage("'.$this->image['url'].'", '.$this->image['width'].', '.$this->image['height'].');
+			dlfViewer.init("'.$this->conf['elementId'].'");
 		</script>';
 
-		return $viewer;
+		return implode("\n", $output);
 
 	}
 
