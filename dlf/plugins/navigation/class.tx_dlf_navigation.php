@@ -40,15 +40,80 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/navigation/class.tx_dlf_navigation.php';
 
 	/**
-	 * Display the controls for the page view
+	 * Display a link to the list view
 	 *
 	 * @access	protected
 	 *
-	 * @return	string		Controls ready to output
+	 * @return	string		Link to the list view ready to output
 	 */
-	protected function getViewerControls() {
+	protected function getLinkToListview() {
+
+		if (!empty($this->conf['targetPid'])) {
+
+			// Load the list.
+			$list = t3lib_div::makeInstance('tx_dlf_list');
+
+			if ($list->count > 0) {
+
+				// Build typolink configuration array.
+				$conf = array (
+					'useCacheHash' => 1,
+					'parameter' => $this->conf['targetPid'],
+					'title' => $this->pi_getLL('linkToList', '', TRUE)
+				);
+
+				return $this->cObj->typoLink($this->pi_getLL('linkToList', '', TRUE), $conf);
+
+			}
+
+		}
 
 		return '';
+
+	}
+
+	/**
+	 * Display the page selector for the page view
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		Page selector ready to output
+	 */
+	protected function getPageSelector() {
+
+		// Configure @action URL for form.
+		$linkConf = array (
+			'parameter' => $GLOBALS['TSFE']->id,
+			'forceAbsoluteUrl' => 1
+		);
+
+		$output = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+
+		// Add plugin variables.
+		foreach ($this->piVars as $piVar => $value) {
+
+			if ($piVar != 'page' && $piVars != 'DATA' && !empty($value)) {
+
+				$output .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
+
+			}
+
+		}
+
+		// Add page selector.
+		$uniqId = uniqid(str_replace('_', '-', get_class($this)).'-');
+
+		$output .= '<label for="'.$uniqId.'">'.$this->pi_getLL('selectPage', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[page]" onchange="javascript:this.form.submit();">';
+
+		for ($i = 1; $i <= $this->doc->numPages; $i++) {
+
+			$output .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label'] ? ' - '.htmlspecialchars($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label']) : '').'</option>';
+
+		}
+
+		$output .= '</select></div></form>';
+
+		return $output;
 
 	}
 
@@ -95,9 +160,6 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		}
 
-		// Set class prefix.
-		$prefix = str_replace('_', '-', get_class($this));
-
 		// Link to first page.
 		if ($this->piVars['page'] > 1) {
 
@@ -130,37 +192,6 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			$markerArray['###PREVIOUS###'] = '<span>'.$this->pi_getLL('prevPage', '', TRUE).'</span>';
 
 		}
-
-		// Build page selector.
-		$uniqId = uniqid($prefix.'-');
-
-		// Configure @action URL for form.
-		$linkConf = array (
-			'parameter' => $GLOBALS['TSFE']->id,
-			'forceAbsoluteUrl' => 1
-		);
-
-		$markerArray['###PAGESELECT###'] = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
-
-		foreach ($this->piVars as $piVar => $value) {
-
-			if ($piVar != 'page' && $piVars != 'DATA' && !empty($value)) {
-
-				$markerArray['###PAGESELECT###'] .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
-
-			}
-
-		}
-
-		$markerArray['###PAGESELECT###'] .= '<label for="'.$uniqId.'">'.$this->pi_getLL('selectPage', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[page]" onchange="javascript:this.form.submit();">';
-
-		for ($i = 1; $i <= $this->doc->numPages; $i++) {
-
-			$markerArray['###PAGESELECT###'] .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label'] ? ' - '.htmlspecialchars($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label']) : '').'</option>';
-
-		}
-
-		$markerArray['###PAGESELECT###'] .= '</select></div></form>';
 
 		// Link to next page.
 		if ($this->piVars['page'] < $this->doc->numPages) {
@@ -195,16 +226,11 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		}
 
-		// Add viewer controls if applicable.
-		if (!empty($this->conf['viewerControls'])) {
+		// Add page selector.
+		$markerArray['###PAGESELECT###'] = $this->getPageSelector();
 
-			$markerArray['###VIEWERCONTROLS###'] = $this->getViewerControls();
-
-		} else {
-
-			$markerArray['###VIEWERCONTROLS###'] = '';
-
-		}
+		// Add link to listview if applicable.
+		$markerArray['###LINKLISTVIEW###'] = $this->getLinkToListview();
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
@@ -236,15 +262,12 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		}
 
 		// Build typolink configuration array.
-		$conf = array ();
-
-		$conf['useCacheHash'] = 1;
-
-		$conf['parameter'] = $GLOBALS['TSFE']->id;
-
-		$conf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE);
-
-		$conf['title'] = $label;
+		$conf = array (
+			'useCacheHash' => 1,
+			'parameter' => $GLOBALS['TSFE']->id,
+			'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE),
+			'title' => $label
+		);
 
 		return $this->cObj->typoLink($label, $conf);
 
