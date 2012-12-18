@@ -14,16 +14,14 @@ $(
 					"/",
 					{
 						eID: "tx_dlf_search_suggest",
-						q: escape(request.term),
+						q: escape(request.term.toLowerCase()),
 						encrypted: $("input[name='tx_dlf[encrypted]']").val(),
 						hashed: $("input[name='tx_dlf[hashed]']").val()
 					},
 					function(data) {
 						var result = new Array();
 						$("arr[name='suggestion'] str", data).each(function(i) {
-							if ($(this).text().indexOf(request.term) == 0) {
-								result.push($(this).text());
-							}
+							result.push($(this).text());
 						});
 						return response(result);
 					},
