@@ -20,8 +20,11 @@ $(
 					},
 					function(data) {
 						var result = new Array();
+						var option = "";
 						$("arr[name='suggestion'] str", data).each(function(i) {
-							result.push($(this).text());
+							option = $(this).text();
+							option = option.replace(/(\?|!|:)/g, "\\\$1");
+							result.push(option);
 						});
 						return response(result);
 					},
