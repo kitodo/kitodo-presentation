@@ -573,8 +573,17 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Clean output buffer.
 			t3lib_div::cleanOutputBuffers();
 
+			// Keep some plugin variables.
+			$linkConf['parameter'] = $this->conf['targetPid'];
+
+			if (!empty($this->piVars['order'])) {
+
+				$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+
+			}
+
 			// Send headers.
-			header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
+			header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
 
 			// Flush output buffer and end script processing.
 			ob_end_flush();
