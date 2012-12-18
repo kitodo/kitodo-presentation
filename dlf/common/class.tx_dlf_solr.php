@@ -21,7 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-// TODO: Clean up and reduce code duplication. Consider switching to Solarium.
+
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
@@ -109,6 +109,37 @@ class tx_dlf_solr {
 	 * @access protected
 	 */
 	protected $service;
+
+	/**
+	 * Escape all special characters in a query string
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$query: The query string
+	 *
+	 * @return	string		The escaped query string
+	 */
+	public static function escapeQuery($query) {
+
+		// Load class.
+		if (!class_exists('Apache_Solr_Service')) {
+
+			require_once(t3lib_div::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+
+		}
+
+		// Escape query phrase or term.
+		if (preg_match('/^".*"$/', $query)) {
+
+			return '"'.Apache_Solr_Service::escapePhrase(trim($query, '"')).'"';
+
+		} else {
+
+			return Apache_Solr_Service::escape($query);
+
+		}
+
+	}
 
 	/**
 	 * This is a singleton class, thus instances must be created by this method
@@ -249,11 +280,8 @@ class tx_dlf_solr {
 	 */
 	public function search($query = '') {
 
-		// Sanitize query string.
-		$queryString = (string) $query;
-
 		// Perform search.
-		$results = $this->service->search($queryString, 0, $this->limit, $this->params);
+		$results = $this->service->search((string) $query, 0, $this->limit, $this->params);
 
 		$this->numberOfHits = count($results->response->docs);
 

@@ -306,7 +306,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$entryArray['doNotLinkIt'] = 0;
 
 		// Check if facet is already selected.
-		$index = array_search($field.':"'.$value.'"', $search['params']['fq']);
+		$index = array_search($field.':"'.tx_dlf_solr::escapeQuery($value).'"', $search['params']['fq']);
 
 		if ($index !== FALSE) {
 
@@ -322,7 +322,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		} else {
 
 			// Facet is not selected, thus add it to filter.
-			$search['params']['fq'][] = $field.':"'.$value.'"';
+			$search['params']['fq'][] = $field.':"'.tx_dlf_solr::escapeQuery($value).'"';
 
 			$entryArray['ITEM_STATE'] = 'NO';
 
@@ -493,7 +493,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Add extended search query.
 			if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
 
-				if (empty($query)) {
+				if (!empty($query)) {
+
+					$query = tx_dlf_solr::escapeQuery($query);
+
+				} else {
 
 					$query = '*';
 
@@ -509,7 +513,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 						if (in_array($this->piVars['extOperator'][$i], $allowedOperators) && in_array($this->piVars['extField'][$i], $allowedFields)) {
 
-							$query .= ' '.$this->piVars['extOperator'][$i].' '.tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':'.$this->piVars['extQuery'][$i];
+							$query .= ' '.$this->piVars['extOperator'][$i].' '.tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':'.tx_dlf_solr::escapeQuery($this->piVars['extQuery'][$i]);
 
 						}
 
@@ -549,7 +553,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					$index_name = tx_dlf_helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
-					$params['fq'][] = 'collection_faceting:"'.$index_name.'"';
+					$params['fq'][] = 'collection_faceting:"'.tx_dlf_solr::escapeQuery($index_name).'"';
 
 					$label .= sprintf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
 
