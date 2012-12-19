@@ -49,7 +49,10 @@ class tx_dlf_tceforms {
 	 */
 	public function displayThumbnail(&$params, &$pObj) {
 
-		$output = '<div style="padding:5px; background-color:#000000;"><input type="hidden" name="'.$param['itemFormElName'].'" value="'.$params['itemFormElValue'].'" />';
+		$output = '<div style="padding:5px; background-color:#000000;">';
+
+		// Simulate TCA field type "passthrough".
+		$output .= '<input type="hidden" name="'.$params['itemFormElName'].'" value="'.$params['itemFormElValue'].'" />';
 
 		if (!empty($params['itemFormElValue'])) {
 

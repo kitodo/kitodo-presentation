@@ -182,17 +182,9 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		// Save document to database and index.
 		$doc = tx_dlf_document::getInstance($uid, 0, TRUE);
 
-		if (!$doc->ready || !$doc->save($doc->pid, $this->data['core'])) {
+		if ($doc->ready) {
 
-			$_message = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
-				htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentNotSaved'), $title, $uid)),
-				$GLOBALS['LANG']->getLL('flash.error', TRUE),
-				t3lib_FlashMessage::ERROR,
-				TRUE
-			);
-
-			t3lib_FlashMessageQueue::addMessage($_message);
+			$doc->save($doc->pid, $this->data['core']);
 
 		}
 
@@ -246,14 +238,18 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 						// Save document to database and index.
 						$doc = tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
 
-						if (!$doc->ready || !$doc->save($this->id, $this->data['core'])) {
+						if ($doc->ready) {
+
+							$doc->save($this->id, $this->data['core']);
+
+						} else {
 
 							$_message = t3lib_div::makeInstance(
 								't3lib_FlashMessage',
-								htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.fileNotSaved'), $this->data['id'])),
+								htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.FileNotLoaded'), $title, $uid)),
 								$GLOBALS['LANG']->getLL('flash.error', TRUE),
 								t3lib_FlashMessage::ERROR,
-								FALSE
+								TRUE
 							);
 
 							t3lib_FlashMessageQueue::addMessage($_message);

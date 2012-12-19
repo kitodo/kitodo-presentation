@@ -175,13 +175,27 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$message = t3lib_div::makeInstance(
-						't3lib_FlashMessage',
-						htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
-						$GLOBALS['LANG']->getLL('flash.done', TRUE),
-						t3lib_FlashMessage::OK,
-						TRUE
-					);
+					if (!$errors) {
+
+						$message = t3lib_div::makeInstance(
+							't3lib_FlashMessage',
+							htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
+							$GLOBALS['LANG']->getLL('flash.done', TRUE),
+							t3lib_FlashMessage::OK,
+							TRUE
+						);
+
+					} else {
+
+						$message = t3lib_div::makeInstance(
+							't3lib_FlashMessage',
+							htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
+							$GLOBALS['LANG']->getLL('flash.error', TRUE),
+							t3lib_FlashMessage::ERROR,
+							TRUE
+						);
+
+					}
 
 					t3lib_FlashMessageQueue::addMessage($message);
 

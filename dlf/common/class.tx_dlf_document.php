@@ -1292,15 +1292,19 @@ final class tx_dlf_document {
 				// Add new collection's UID.
 				$collections[] = $substUid[$collNewUid];
 
-				$message = t3lib_div::makeInstance(
-					't3lib_FlashMessage',
-					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
-					$GLOBALS['LANG']->getLL('flash.attention', TRUE),
-					t3lib_FlashMessage::INFO,
-					TRUE
-				);
+				if (!defined('TYPO3_cliMode')) {
 
-				t3lib_FlashMessageQueue::addMessage($message);
+					$message = t3lib_div::makeInstance(
+						't3lib_FlashMessage',
+						htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
+						$GLOBALS['LANG']->getLL('flash.attention', TRUE),
+						t3lib_FlashMessage::INFO,
+						TRUE
+					);
+
+					t3lib_FlashMessageQueue::addMessage($message);
+
+				}
 
 			}
 
@@ -1367,15 +1371,19 @@ final class tx_dlf_document {
 			// Add new library's UID.
 			$owner = $substUid[$libNewUid];
 
-			$message = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
-				htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newLibrary'), $metadata['owner'][0], $substUid[$libNewUid])),
-				$GLOBALS['LANG']->getLL('flash.attention', TRUE),
-				t3lib_FlashMessage::INFO,
-				TRUE
-			);
+			if (!defined('TYPO3_cliMode')) {
 
-			t3lib_FlashMessageQueue::addMessage($message);
+				$message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newLibrary'), $metadata['owner'][0], $owner)),
+					$GLOBALS['LANG']->getLL('flash.attention', TRUE),
+					t3lib_FlashMessage::INFO,
+					TRUE
+				);
+
+				t3lib_FlashMessageQueue::addMessage($message);
+
+			}
 
 		}
 
@@ -1455,7 +1463,7 @@ final class tx_dlf_document {
 			'author' => implode('; ', $metadata['author']),
 			'year' => implode('; ', $metadata['year']),
 			'place' => implode('; ', $metadata['place']),
-			'thumbnail' => $this->_getThumbnail(),
+			'thumbnail' => $this->_getThumbnail(TRUE),
 			'metadata' => serialize($listed),
 			'metadata_sorting' => serialize($sortable),
 			'structure' => $metadata['type'][0],
@@ -1493,6 +1501,20 @@ final class tx_dlf_document {
 			$this->pid = $pid;
 
 			$this->parentId = $partof;
+
+		}
+
+		if (!defined('TYPO3_cliMode')) {
+
+			$message = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
+				$GLOBALS['LANG']->getLL('flash.done', TRUE),
+				t3lib_FlashMessage::OK,
+				TRUE
+			);
+
+			t3lib_FlashMessageQueue::addMessage($message);
 
 		}
 
@@ -1891,11 +1913,13 @@ final class tx_dlf_document {
 	 *
 	 * @access	protected
 	 *
+	 * @param	boolean		$forceReload: Force reloading the thumbnail instead of returning the cached value
+	 *
 	 * @return	string		The document's thumbnail location
 	 */
-	protected function _getThumbnail() {
+	protected function _getThumbnail($forceReload = FALSE) {
 
-		if (!$this->thumbnailLoaded) {
+		if (!$this->thumbnailLoaded || $forceReload) {
 
 			// Retain current PID.
 			$cPid = ($this->cPid ? $this->cPid : $this->pid);
@@ -1969,7 +1993,7 @@ final class tx_dlf_document {
 				$this->_getSmLinks();
 
 				// Get thumbnail location.
-				if ($this->_getPhysicalPages() && array_key_exists($strctId, $this->smLinks['l2p'])) {
+				if ($this->_getPhysicalPages() && !empty($this->smLinks['l2p'][$strctId])) {
 
 					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->smLinks['l2p'][$strctId][0]]['files'][strtolower($extConf['fileGrpThumbs'])]);
 

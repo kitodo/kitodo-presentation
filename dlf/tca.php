@@ -320,8 +320,8 @@ $TCA['tx_dlf_documents'] = array (
 		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title;;1;;1-1-1, author, year, place, structure;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden;;3;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'),
 	),
 	'palettes' => array (
-		'1' => array ('showitem' => 'title_sorting', 'thumbnail', 'canNotCollapse' => 1),
-		'2' => array ('showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
+		'1' => array ('showitem' => 'title_sorting', 'canNotCollapse' => 1),
+		'2' => array ('showitem' => 'partof, thumbnail, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
 		'3' => array ('showitem' => 'starttime, endtime', 'canNotCollapse' => 1),
 	),
 );
