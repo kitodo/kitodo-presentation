@@ -64,6 +64,15 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 			// Quit without doing anything if required variables are not set.
 			return $content;
 
+		} else {
+
+			// Set default values if not set.
+			if (!isset($this->conf['rootline'])) {
+
+				$this->conf['rootline'] = 0;
+
+			}
+
 		}
 
 		$metadata = array ();
