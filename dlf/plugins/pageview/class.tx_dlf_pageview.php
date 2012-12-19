@@ -40,16 +40,12 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/pageview/class.tx_dlf_pageview.php';
 
 	/**
-	 * Holds the current image's information
+	 * Holds the current images' URLs
 	 *
 	 * @var	array
 	 * @access protected
 	 */
-	protected $image = array (
-		'url' => '',
-		'width' => 0,
-		'height' => 0
-	);
+	protected $images = array ();
 
 	/**
 	 * Holds the language code for OpenLayers
@@ -86,33 +82,10 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		} else {
 
-			// Set default values for page if not set.
+			// Set default values if not set.
 			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
-			// Get image link.
-			$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
-
-			$fileGrp = strtolower(array_pop($fileGrps));
-
-			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$fileGrp])) {
-
-				$this->image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$fileGrp]);
-
-				$imageSize = @getimagesize($this->image['url']);
-
-				$this->image['width'] = $imageSize[0];
-
-				$this->image['height'] = $imageSize[1];
-
-			} else {
-
-				if (TYPO3_DLOG) {
-
-					t3lib_div::devLog('[tx_dlf_pageview->main('.$_page.')] File not found: "'.$fileGrpUrl.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-				}
-
-			}
+			$this->piVars['double'] = t3lib_div::intInRange($this->piVars['double'], 0, 1, 0);
 
 		}
 
@@ -124,6 +97,15 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		} else {
 
 			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/pageview/template.tmpl'), '###TEMPLATE###');
+
+		}
+
+		// Get image data.
+		$this->images[0] = $this->getImageUrl($this->piVars['page']);
+
+		if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
+
+			$this->images[1] = $this->getImageUrl($this->piVars['page'] + 1);
 
 		}
 
@@ -161,17 +143,50 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			}
 
 		}
-/*
-		// Add OpenLayers configuration.
+
+		// Load required OpenLayers components.
+		$components = array (
+			// Map Feature.
+			'OpenLayers/BaseTypes.js',
+			'OpenLayers/BaseTypes/Class.js',
+			'OpenLayers/BaseTypes/Bounds.js',
+			'OpenLayers/BaseTypes/Element.js',
+			'OpenLayers/BaseTypes/LonLat.js',
+			'OpenLayers/BaseTypes/Pixel.js',
+			'OpenLayers/BaseTypes/Size.js',
+			'OpenLayers/Console.js',
+			'OpenLayers/Lang.js',
+			'OpenLayers/Util.js',
+			'OpenLayers/Lang/'.$this->lang.'.js',
+			'OpenLayers/Events.js',
+			'OpenLayers/Events/buttonclick.js',
+			'OpenLayers/Animation.js',
+			'OpenLayers/Tween.js',
+			'OpenLayers/Projection.js',
+			'OpenLayers/Map.js',
+			// Event handlers and controls.
+			'OpenLayers/Handler.js',
+			'OpenLayers/Handler/Click.js',
+			'OpenLayers/Handler/Drag.js',
+			'OpenLayers/Handler/Box.js',
+			'OpenLayers/Handler/MouseWheel.js',
+			'OpenLayers/Control.js',
+			'OpenLayers/Control/DragPan.js',
+			'OpenLayers/Control/ZoomBox.js',
+			'OpenLayers/Control/Navigation.js',
+			'OpenLayers/Control/Zoom.js',
+			// Image layer.
+			'OpenLayers/Tile.js',
+			'OpenLayers/Tile/Image.js',
+			'OpenLayers/Layer.js',
+			'OpenLayers/Layer/Image.js',
+		);
+
 		$output[] = '
 		<script type="text/javascript">
-			window.OpenLayers = [
-			// Set all required Openlayers files here like this:
-			// "OpenLayers/Animation.js",
-			// "OpenLayers/BaseTypes/Bounds.js"
-			];
+			window.OpenLayers = ["'.implode('", "', $components).'"];
 		</script>';
-*/
+
 		// Add OpenLayers library.
 		$output[] = '
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
@@ -201,13 +216,52 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Add viewer configuration.
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			dlfViewer = new Viewer();
-			dlfViewer.setLang("'.$this->lang.'");
-			dlfViewer.setImage("'.$this->image['url'].'", '.$this->image['width'].', '.$this->image['height'].');
-			dlfViewer.init("'.$this->conf['elementId'].'");
+			tx_dlf_viewer = new dlfViewer();
+			tx_dlf_viewer.setLang("'.$this->lang.'");
+			tx_dlf_viewer.addImage("'.$this->images[0].'");
+			'.(!empty($this->images[1]) ? 'tx_dlf_viewer.addImage("'.$this->images[1].'");' : '').'
+			tx_dlf_viewer.addControl("zoom");
+			tx_dlf_viewer.init("'.$this->conf['elementId'].'");
 		</script>';
 
 		return implode("\n", $output);
+
+	}
+
+	/**
+	 * Get image's URL
+	 *
+	 * @access	protected
+	 *
+	 * @param	integer		$page: Page number
+	 *
+	 * @return	string		URL of image file
+	 */
+	protected function getImageUrl($page) {
+
+		$imageUrl = '';
+
+		// Get @USE value of METS fileGrp.
+		$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
+
+		$fileGrp = strtolower(array_pop($fileGrps));
+
+		// Get image link and size.
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
+
+			$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+		}
+
+		return $imageUrl;
 
 	}
 
