@@ -57,7 +57,7 @@ class tx_dlf_search_suggest extends tslib_pibase {
 
 		if (!empty($core)) {
 
-			$url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.t3lib_div::_GP('q');
+			$url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.tx_dlf_solr::escapeQuery(t3lib_div::_GP('q'));
 
 			if ($stream = fopen($url, 'r')) {
 
