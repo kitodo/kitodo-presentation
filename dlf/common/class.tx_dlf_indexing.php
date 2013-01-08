@@ -144,6 +144,9 @@ class tx_dlf_indexing {
 				// Add document to list of processed documents.
 				self::$processedDocs[] = $doc->uid;
 
+				// Delete old Solr documents.
+				self::$solr->service->deleteByQuery('uid:'.$doc->uid);
+
 				// Index every logical unit as separate Solr document.
 				foreach ($doc->tableOfContents as $logicalUnit) {
 
