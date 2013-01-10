@@ -38,6 +38,14 @@
 class tx_dlf_em {
 
 	/**
+	 * This holds the current configuration
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $conf = array ();
+
+	/**
 	 * This holds the output ready to return
 	 *
 	 * @var	string
@@ -57,28 +65,22 @@ class tx_dlf_em {
 	 */
 	public function checkSolrConnection(&$params, &$pObj) {
 
-		// Load localization file.
-		$GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
-
-		// Get Solr credentials.
-		$conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) t3lib_div::_POST('data'));
-
 		// Prepend username and password to hostname.
-		if (!empty($conf['solrUser']) && !empty($conf['solrPass'])) {
+		if (!empty($this->conf['solrUser']) && !empty($this->conf['solrPass'])) {
 
-			$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
+			$host = $this->conf['solrUser'].':'.$this->conf['solrPass'].'@'.(!empty($this->conf['solrHost']) ? $this->conf['solrHost'] : 'localhost');
 
 		} else {
 
-			$host = (!empty($conf['solrHost']) ? $conf['solrHost'] : 'localhost');
+			$host = (!empty($this->conf['solrHost']) ? $this->conf['solrHost'] : 'localhost');
 
 		}
 
 		// Set port if not set.
-		$port = (!empty($conf['solrPort']) ? t3lib_div::intInRange($conf['solrPort'], 0, 65535, 8180) : 8180);
+		$port = (!empty($this->conf['solrPort']) ? t3lib_div::intInRange($this->conf['solrPort'], 0, 65535, 8180) : 8180);
 
 		// Trim path and append trailing slash.
-		$path = (!empty($conf['solrPath']) ? trim($conf['solrPath'], '/').'/' : '');
+		$path = (!empty($this->conf['solrPath']) ? trim($this->conf['solrPath'], '/').'/' : '');
 
 		// Build request URI.
 		$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores';
@@ -86,7 +88,7 @@ class tx_dlf_em {
 		$context = stream_context_create(array (
 			'http' => array (
 				'method' => 'GET',
-				'user_agent' => (!empty($conf['useragent']) ? $conf['useragent'] : ini_get('user_agent'))
+				'user_agent' => (!empty($this->conf['useragent']) ? $this->conf['useragent'] : ini_get('user_agent'))
 			)
 		));
 
@@ -528,20 +530,14 @@ class tx_dlf_em {
 	 */
 	public function checkCliUserGroup(&$params, &$pObj) {
 
-		// Load localization file.
-		$GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
-
-		// Get current configuration.
-		$conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) t3lib_div::_POST('data'));
-
 		// Check if usergroup "_cli_dlf" exists and is configured properly.
-		$groupUid = $this->checkCliGroup(empty($conf['makeCliUserGroup']));
+		$groupUid = $this->checkCliGroup(empty($this->conf['makeCliUserGroup']));
 
 		// Save output because it will be overwritten by the user check method.
 		$content = $this->content;
 
 		// Check if user "_cli_dlf" exists and is configured properly.
-		$userUid = $this->checkCliUser(empty($conf['makeCliUserGroup']), $groupUid);
+		$userUid = $this->checkCliUser(empty($this->conf['makeCliUserGroup']), $groupUid);
 
 		// Merge output from usergroup and user checks.
 		$this->content .= $content;
@@ -572,6 +568,127 @@ class tx_dlf_em {
 		$this->content .= $message->render();
 
 		return $this->content;
+
+	}
+
+	/**
+	 * Make sure the essential namespaces are defined.
+	 *
+	 * @access	public
+	 *
+	 * @param	array		&$params: An array with parameters
+	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 *
+	 * @return	string		Message informing the user of success or failure
+	 */
+	public function checkMetadataFormats(&$params, &$pObj) {
+
+		$nsDefined = array (
+			'MODS' => FALSE,
+			'TEIHDR' => FALSE
+		);
+
+		// Check if formats "MODS" and "TEIHDR" exist.
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'type',
+			'tx_dlf_formats',
+			'(type='.$GLOBALS['TYPO3_DB']->fullQuoteStr('MODS', 'tx_dlf_formats').' OR type='.$GLOBALS['TYPO3_DB']->fullQuoteStr('TEIHDR', 'tx_dlf_formats').')'.tx_dlf_helper::whereClause('tx_dlf_formats')
+		);
+
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+			$nsDefined[$resArray['type']] = TRUE;
+
+		}
+
+		// Build data array.
+		$data = array ();
+
+		// Add MODS namespace.
+		if (!$nsDefined['MODS']) {
+
+			$data['tx_dlf_formats'][uniqid('NEW')] = array (
+				'pid' => 0,
+				'type' => 'MODS',
+				'root' => 'mods',
+				'namespace' => 'http://www.loc.gov/mods/v3',
+				'class' => 'tx_dlf_mods'
+			);
+
+		}
+
+		// Add TEIHDR namespace.
+		if (!$nsDefined['TEIHDR']) {
+
+			$data['tx_dlf_formats'][uniqid('NEW')] = array (
+				'pid' => 0,
+				'type' => 'TEIHDR',
+				'root' => 'teiHeader',
+				'namespace' => 'http://www.tei-c.org/ns/1.0',
+				'class' => 'tx_dlf_teihdr'
+			);
+
+		}
+
+		if (!empty($data)) {
+
+			// Process changes.
+			$substUid = tx_dlf_helper::processDBasAdmin($data);
+
+			if (!empty($substUid)) {
+
+				$message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					$GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg'),
+					$GLOBALS['LANG']->getLL('metadataFormats.nsCreated'),
+					t3lib_FlashMessage::INFO,
+					FALSE
+				);
+
+			} else {
+
+				$message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					$GLOBALS['LANG']->getLL('metadataFormats.nsNotCreatedMsg'),
+					$GLOBALS['LANG']->getLL('metadataFormats.nsNotCreated'),
+					t3lib_FlashMessage::ERROR,
+					FALSE
+				);
+
+			}
+
+		} else {
+
+			$message = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$GLOBALS['LANG']->getLL('metadataFormats.nsOkayMsg'),
+				$GLOBALS['LANG']->getLL('metadataFormats.nsOkay'),
+				t3lib_FlashMessage::OK,
+				FALSE
+			);
+
+		}
+
+		$this->content .= $message->render();
+
+		return $this->content;
+
+	}
+
+	/**
+	 * This is the constructor.
+	 *
+	 * @access	public
+	 *
+	 * @return	void
+	 */
+	public function __construct() {
+
+		// Load localization file.
+		$GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
+
+		// Get current configuration.
+		$this->conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) t3lib_div::_POST('data'));
 
 	}
 

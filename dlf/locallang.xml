@@ -122,6 +122,7 @@
 			<label index="tt_content.dlf_statistics">DLF: Statistics</label>
 			<label index="tt_content.dlf_toc">DLF: Table of Contents</label>
 			<label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
+			<label index="config.metadataFormats">Default metadata namespaces</label>
 			<label index="config.cliUserGroup">CLI user/group</label>
 			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (default is "Goobi.Presentation")</label>
@@ -140,6 +141,12 @@
 			<label index="solr.status">The status code returned by Apache Solr is &lt;strong&gt;%s&lt;/strong&gt;.</label>
 			<label index="solr.notConnected">Connection failed!</label>
 			<label index="solr.error">Apache Solr was not reachable under &lt;strong&gt;%s&lt;/strong&gt;.</label>
+			<label index="metadataFormats.nsOkay">Default namespaces found!</label>
+			<label index="metadataFormats.nsOkayMsg">The namespace definitions for MODS and TEIHDR do exist.</label>
+			<label index="metadataFormats.nsCreated">Default namespaces created successfully!</label>
+			<label index="metadataFormats.nsCreatedMsg">The namespace definitions for MODS and/or TEIHDR were created properly.</label>
+			<label index="metadataFormats.nsNotCreated">Default namespaces not found!</label>
+			<label index="metadataFormats.nsNotCreatedMsg">The namespace definitions for MODS and/or TEIHDR do not exist and could not be created.</label>
 			<label index="cliUserGroup.usrRealName">Goobi.Presentation command line indexer</label>
 			<label index="cliUserGroup.usrOkay">User "_cli_dlf" found!</label>
 			<label index="cliUserGroup.usrOkayMsg">The backend user for the command line indexer exists and is configured properly.</label>
@@ -287,6 +294,7 @@
 			<label index="tt_content.dlf_statistics">DLF: Statistik</label>
 			<label index="tt_content.dlf_toc">DLF: Inhaltsverzeichnis</label>
 			<label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
+			<label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
 			<label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
 			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (Standard ist "Goobi.Presentation")</label>
@@ -305,6 +313,12 @@
 			<label index="solr.status">Apache Solr gibt den Statuscode &lt;strong&gt;%s&lt;/strong&gt; zurück.</label>
 			<label index="solr.notConnected">Verbindung fehlgeschlagen!</label>
 			<label index="solr.error">Apache Solr ist unter &lt;strong&gt;%s&lt;/strong&gt; nicht erreichbar.</label>
+			<label index="metadataFormats.nsOkay">Standard-Namensräume gefunden!</label>
+			<label index="metadataFormats.nsOkayMsg">Die Standard-Namensräume für MODS und TEIHDR sind definiert.</label>
+			<label index="metadataFormats.nsCreated">Standard-Namensräume erfolgreich angelegt!</label>
+			<label index="metadataFormats.nsCreatedMsg">Die Standard-Namensräume für MODS und/oder TEIHDR wurden erfolgreich definiert.</label>
+			<label index="metadataFormats.nsNotCreated">Standard-Namensräume nicht gefunden!</label>
+			<label index="metadataFormats.nsNotCreatedMsg">Die Standard-Namensräume für MODS und/oder TEIHDR konnten nicht definiert werden.</label>
 			<label index="cliUserGroup.usrRealName">Goobi.Presentation Kommandozeilen-Indexierungsdienst</label>
 			<label index="cliUserGroup.usrOkay">Nutzer "_cli_dlf" gefunden!</label>
 			<label index="cliUserGroup.usrOkayMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst ist korrekt konfiguriert und aktiviert.</label>

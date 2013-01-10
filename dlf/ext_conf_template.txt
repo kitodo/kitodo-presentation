@@ -1,3 +1,6 @@
+# cat=Basic; type=user[EXT:dlf/hooks/class.tx_dlf.em.php:tx_dlf_em->checkMetadataFormats]; label=LLL:EXT:dlf/locallang.xml:config.metadataFormats
+metadataFormats = 0
+
 # cat=Basic; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkCliUserGroup]; label=LLL:EXT:dlf/locallang.xml:config.cliUserGroup
 cliUserGroup = 0
 
