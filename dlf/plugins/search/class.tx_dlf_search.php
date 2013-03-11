@@ -497,10 +497,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					$query = tx_dlf_solr::escapeQuery($query);
 
-				} else {
-
-					$query = '*';
-
 				}
 
 				$allowedOperators = array ('AND', 'OR', 'NOT');
@@ -513,7 +509,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 						if (in_array($this->piVars['extOperator'][$i], $allowedOperators) && in_array($this->piVars['extField'][$i], $allowedFields)) {
 
-							$query .= ' '.$this->piVars['extOperator'][$i].' '.tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':('.tx_dlf_solr::escapeQuery($this->piVars['extQuery'][$i]).')';
+							if (!empty($query)) {
+
+								$query .= ' '.$this->piVars['extOperator'][$i].' ';
+
+							}
+
+							$query .= tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':('.tx_dlf_solr::escapeQuery($this->piVars['extQuery'][$i]).')';
 
 						}
 
