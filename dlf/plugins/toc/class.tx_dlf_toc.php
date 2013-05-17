@@ -107,7 +107,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		// Build sub-menu if available and called recursively.
 		if ($recursive == TRUE && !empty($entry['children'])) {
 
-			// Build sub-menu only if one of this conditions apply:
+			// Build sub-menu only if one of the following conditions apply:
 			// 1. "expAll" is set for menu
 			// 2. Current menu node is in rootline
 			// 3. Current menu node points to another file
