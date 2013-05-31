@@ -119,7 +119,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 				'tx_dlf_documents',
 				'tx_dlf_relations',
 				'tx_dlf_collections',
-				'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 				'tx_dlf_documents.uid',
 				'tx_dlf_documents.tstamp DESC',
 				intval($this->conf['limit'])

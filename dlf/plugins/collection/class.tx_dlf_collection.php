@@ -122,14 +122,22 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		}
 
-			// Should user-defined collections be shown?
+		// Should user-defined collections be shown?
 		if (empty($this->conf['show_userdefined'])) {
 
 			$additionalWhere .= ' AND tx_dlf_collections.fe_cruser_id=0';
 
 		} elseif ($this->conf['show_userdefined'] > 0) {
 
-			$additionalWhere .= ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+			if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
+
+				$additionalWhere .= ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
+
+			} else {
+
+				$additionalWhere .= ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+
+			}
 
 		}
 
@@ -139,7 +147,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
-			'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0'.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 			'tx_dlf_collections.uid',
 			$orderBy,
 			''
@@ -163,7 +171,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				'tx_dlf_documents',
 				'tx_dlf_relations',
 				'tx_dlf_collections',
-				'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').')'.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 				'tx_dlf_collections.uid',
 				'',
 				''
@@ -270,11 +278,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		// Get all documents in collection.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
+			'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_collections.fe_cruser_id AS userid,tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
-			'AND tx_dlf_collections.uid='.intval($id).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'AND tx_dlf_collections.uid='.intval($id).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 			'',
 			'tx_dlf_documents.title_sorting ASC',
 			''
@@ -297,6 +305,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 					'options' => array (
 						'source' => 'collection',
 						'select' => $id,
+						'userid' => $resArray['userid'],
 						'params' => array ('fq' => array ('collection_faceting:"'.$resArray['index_name'].'"')),
 						'order' => 'title',
 						'order.asc' => TRUE

@@ -272,7 +272,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 								'tx_dlf_documents',
 								'tx_dlf_relations',
 								'tx_dlf_collections',
-								'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+								'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
 								'tx_dlf_documents.uid',
 								'',
 								''

@@ -367,6 +367,69 @@ class tx_dlf_helper {
 	}
 
 	/**
+	 * Get the current frontend user object
+	 *
+	 * @access	public
+	 *
+	 * @return	tslib_feUserAuth		Instance of tslib_feUserAuth or NULL on failure
+	 */
+	public static function getFeUser() {
+		
+		if (TYPO3_MODE === 'FE') {
+			
+			// Check if a user is currently logged in.
+			if (!empty($GLOBALS['TSFE']->loginUser)) {
+				
+				return $GLOBALS['TSFE']->fe_user;
+				
+			} elseif (!empty(t3lib_div::_GP('eID'))) {
+				
+				return tslib_eidtools::initFeUser();
+				
+			}
+		
+		} else {
+		
+			if (TYPO3_DLOG) {
+		
+				t3lib_div::devLog('[tx_dlf_helper->getFeUser()] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::extKey, SYSLOG_SEVERITY_ERROR);
+		
+			}
+		
+		}
+		
+		return;
+		
+	}
+	
+	/**
+	 * Get the registered hook objects for a class
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$scriptRelPath: The path to the class file
+	 *
+	 * @return	array		Array of hook objects for the class
+	 */
+	public static function getHookObjects($scriptRelPath) {
+
+		$hookObjects = array ();
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][tx_dlf_helper::$extKey.'/'.$scriptRelPath]['hookClass'])) {
+
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][tx_dlf_helper::$extKey.'/'.$scriptRelPath]['hookClass'] as $classRef) {
+
+				$hookObjects[] = t3lib_div::getUserObj($classRef);
+
+			}
+
+		}
+
+		return $hookObjects;
+
+	}
+
+	/**
 	 * Get the "index_name" for an UID
 	 *
 	 * @access	public
@@ -737,6 +800,50 @@ class tx_dlf_helper {
 			}
 
 			return;
+
+		}
+
+	}
+
+	/**
+	 * Adds "t3jquery" extension's library to page header.
+	 *
+	 * @access	public
+	 *
+	 * @return	boolean		TRUE on success or FALSE on error
+	 */
+	public static function loadJQuery() {
+
+		// Was jQuery already loaded before?
+		if (T3JQUERY === TRUE) {
+
+			return TRUE;
+
+		}
+
+		// Ensure extension "t3jquery" is available.
+		if (t3lib_extMgm::isLoaded('t3jquery')) {
+
+			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+
+		}
+
+		// Is "t3jquery" loaded?
+		if (T3JQUERY === TRUE) {
+
+			tx_t3jquery::addJqJS();
+
+			return TRUE;
+
+		} else {
+			
+			if (TYPO3_DLOG) {
+			
+				t3lib_div::devLog('[tx_dlf_helper->loadJQuery()] JQuery not available', $this->extKey, SYSLOG_SEVERITY_ERROR);
+			
+			}
+
+			return FALSE;
 
 		}
 

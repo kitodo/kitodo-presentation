@@ -496,6 +496,7 @@ class tx_dlf_solr {
 			'options' => array (
 				'source' => 'search',
 				'select' => $query,
+				'userid' => 0,
 				'params' => $this->params,
 				'order' => 'relevance',
 				'order.asc' => TRUE,

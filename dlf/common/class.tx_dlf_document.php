@@ -108,23 +108,6 @@ final class tx_dlf_document {
 	protected $formatsLoaded = FALSE;
 
 	/**
-	 * This holds the hook objects for this class
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $hookObjects = array ();
-
-	/**
-	 * Is the hook objects array loaded?
-	 * @see $hookObjects
-	 *
-	 * @var	boolean
-	 * @access protected
-	 */
-	protected $hookObjectsLoaded = FALSE;
-
-	/**
 	 * This holds the logical units
 	 *
 	 * @var	array
@@ -329,29 +312,6 @@ final class tx_dlf_document {
 			}
 
 			return '';
-
-		}
-
-	}
-
-	/**
-	 * This gets the registered hook objects for this class.
-	 *
-	 * @access	protected
-	 *
-	 * @return	void
-	 */
-	protected function getHookObjects() {
-
-		if (!$this->hookObjectsLoaded && is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/common/class.tx_dlf_document.php']['hookClass'])) {
-
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/common/class.tx_dlf_document.php']['hookClass'] as $classRef) {
-
-				$this->hookObjects[] = t3lib_div::getUserObj($classRef);
-
-			}
-
-			$this->hookObjectsLoaded = TRUE;
 
 		}
 
@@ -916,9 +876,6 @@ final class tx_dlf_document {
 	 */
 	protected function init() {
 
-		// Get hook objects for this class.
-		$this->getHookObjects();
-
 		// Get METS node from XML file.
 		$this->registerNamespaces($this->xml);
 
@@ -1316,7 +1273,7 @@ final class tx_dlf_document {
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
-			'AND tx_dlf_documents.pid='.intval($pid).' AND tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_documents.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->uid, 'tx_dlf_documents').' AND NOT (tx_dlf_collections.cruser_id='.intval($be_user).' AND tx_dlf_collections.fe_cruser_id=0)',
+			'AND tx_dlf_documents.pid='.intval($pid).' AND tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_documents.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->uid, 'tx_dlf_documents').' AND NOT (tx_dlf_collections.cruser_id='.intval($be_user).' AND tx_dlf_collections.fe_cruser_id=0) AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations'),
 			'',
 			'',
 			''
@@ -2161,8 +2118,11 @@ final class tx_dlf_document {
 
 					}
 
+					// Get hook objects.
+					$hookObjects = tx_dlf_helper::getHookObjects('common/class.tx_dlf_document.php');
+
 					// Apply hooks.
-					foreach($this->hookObjects as $hookObj) {
+					foreach($hookObjects as $hookObj) {
 
 						if (method_exists($hookObj, 'construct_postProcessRecordId')) {
 
