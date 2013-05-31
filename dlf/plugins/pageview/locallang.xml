@@ -8,12 +8,24 @@
 		<languageKey index="default" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected page</label>
+			<label index="tt_content.pi_flexform.features">Map features</label>
+			<label index="tt_content.pi_flexform.features.overviewmap">Overview Image</label>
+			<label index="tt_content.pi_flexform.features.panpanel">Pan Panel</label>
+			<label index="tt_content.pi_flexform.features.zoompanel">Zoom Panel</label>
+			<label index="tt_content.pi_flexform.features.panzoom">Pan and Zoom Panel</label>
+			<label index="tt_content.pi_flexform.features.panzoombar">Pan Panel and Zoom Bar</label>
 			<label index="tt_content.pi_flexform.elementId">@ID value of the HTML element for the page view</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Seite anzeigen</label>
+			<label index="tt_content.pi_flexform.features">Bedienelemente</label>
+			<label index="tt_content.pi_flexform.features.overviewmap">Übersichtsbild</label>
+			<label index="tt_content.pi_flexform.features.panpanel">Pan-Knöpfe</label>
+			<label index="tt_content.pi_flexform.features.zoompanel">Zoom-Knöpfe</label>
+			<label index="tt_content.pi_flexform.features.panzoom">Pan- und Zoom-Knöpfe</label>
+			<label index="tt_content.pi_flexform.features.panzoombar">Pan-Knöpfe und Zoom-Leiste</label>
 			<label index="tt_content.pi_flexform.elementId">@ID-Wert des HTML-Elements für die Seitenansicht</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
 		</languageKey>

@@ -40,6 +40,45 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/pageview/class.tx_dlf_pageview.php';
 
 	/**
+	 * Holds the controls to add to the map
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $controls = array ();
+
+	/**
+	 * Holds the dependencies of the control features
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $controlDependency = array (
+		'OverviewMap' => array (
+			'OpenLayers/Control/OverviewMap.js'
+		),
+		'PanPanel' => array (
+			'OpenLayers/Control/Pan.js',
+			'OpenLayers/Control/Panel.js',
+			'OpenLayers/Control/PanPanel.js'
+		),
+		'PanZoom' => array (
+			'OpenLayers/Control/PanZoom.js'
+		),
+		'PanZoomBar' => array (
+			'OpenLayers/Control/PanZoom.js',
+			'OpenLayers/Control/PanZoomBar.js'
+		),
+		'ZoomPanel' => array (
+			'OpenLayers/Control/Panel.js',
+			'OpenLayers/Control/ZoomIn.js',
+			'OpenLayers/Control/ZoomOut.js',
+			'OpenLayers/Control/ZoomToMaxExtent.js',
+			'OpenLayers/Control/ZoomPanel.js'
+		)
+	);
+
+	/**
 	 * Holds the current images' URLs
 	 *
 	 * @var	array
@@ -54,6 +93,191 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	 * @access protected
 	 */
 	protected $lang = 'en';
+
+	/**
+	 * Adds OpenLayers javascript
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		OpenLayers script tags ready for output.
+	 */
+	protected function addOpenLayersJS() {
+
+		$output = array ();
+
+		// Get localization for OpenLayers.
+		if ($GLOBALS['TSFE']->lang) {
+
+			$langFile = t3lib_extMgm::extPath($this->extKey, 'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js');
+
+			if (file_exists($langFile)) {
+
+				$this->lang = strtolower($GLOBALS['TSFE']->lang);
+
+			}
+
+		}
+
+		// Load required OpenLayers components.
+		$components = array (
+			// Map feature.
+			'OpenLayers/BaseTypes.js',
+			'OpenLayers/BaseTypes/Class.js',
+			'OpenLayers/BaseTypes/Bounds.js',
+			'OpenLayers/BaseTypes/Element.js',
+			'OpenLayers/BaseTypes/LonLat.js',
+			'OpenLayers/BaseTypes/Pixel.js',
+			'OpenLayers/BaseTypes/Size.js',
+			'OpenLayers/Console.js',
+			'OpenLayers/Lang.js',
+			'OpenLayers/Util.js',
+			'OpenLayers/Lang/'.$this->lang.'.js',
+			'OpenLayers/Events.js',
+			'OpenLayers/Events/buttonclick.js',
+			'OpenLayers/Animation.js',
+			'OpenLayers/Tween.js',
+			'OpenLayers/Projection.js',
+			'OpenLayers/Map.js',
+			// Default event handlers and controls.
+			'OpenLayers/Handler.js',
+			'OpenLayers/Handler/Click.js',
+			'OpenLayers/Handler/Drag.js',
+			'OpenLayers/Handler/Box.js',
+			'OpenLayers/Handler/Keyboard.js',
+			'OpenLayers/Handler/MouseWheel.js',
+			'OpenLayers/Handler/Pinch.js',
+			'OpenLayers/Control.js',
+			'OpenLayers/Control/DragPan.js',
+			'OpenLayers/Control/PinchZoom.js',
+			'OpenLayers/Control/ZoomBox.js',
+			'OpenLayers/Control/Navigation.js',
+			'../../../plugins/pageview/OpenLayers_Control_Keyboard.js',
+			// Image layer.
+			'OpenLayers/Tile.js',
+			'OpenLayers/Tile/Image.js',
+			'OpenLayers/Layer.js',
+			'OpenLayers/Layer/Image.js',
+		);
+
+		// Add custom control features.
+		foreach ($this->controls as $control) {
+
+			$components = array_merge($components, array_diff($this->controlDependency[$control], $components));
+
+		}
+
+		$output[] = '
+		<script type="text/javascript">
+			window.OpenLayers = ["'.implode('", "', $components).'"];
+		</script>';
+
+		// Add OpenLayers library.
+		$output[] = '
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
+
+		return implode("\n", $output);
+
+	}
+
+	/**
+	 * Adds Viewer javascript
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		Viewer script tags ready for output
+	 */
+	protected function addViewerJS() {
+
+		$output = array ();
+
+		// Add OpenLayers library.
+		$output[] = $this->addOpenLayersJS();
+
+		// Add viewer library.
+		$output[] = '
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
+
+		// Add viewer configuration.
+		$output[] = '
+		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
+			tx_dlf_viewer = new dlfViewer();
+			tx_dlf_viewer.loadImage("'.$this->images[0].'", 0);
+			'.(!empty($this->images[1]) ? ' tx_dlf_viewer.loadImage("'.$this->images[1].'", 1);' : '').'
+			tx_dlf_viewer.setLang("'.$this->lang.'");
+			tx_dlf_viewer.setDiv("'.$this->conf['elementId'].'");
+			'.(!empty($this->controls) ? 'tx_dlf_viewer.addControl("'.implode('"); tx_dlf_viewer.addControl("', $this->controls).'");' : '').'
+		</script>';
+
+		return implode("\n", $output);
+
+	}
+
+	/**
+	 * Get image's URL
+	 *
+	 * @access	protected
+	 *
+	 * @param	integer		$page: Page number
+	 *
+	 * @return	string		URL of image file
+	 */
+	protected function getImageUrl($page) {
+
+		$imageUrl = '';
+
+		// Get @USE value of METS fileGrp.
+		$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
+
+		while ($fileGrp = @array_pop($fileGrps)) {
+
+			// Get image link.
+			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
+
+				$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+
+				break;
+				
+			} else {
+				
+				if (TYPO3_DLOG) {
+				
+					t3lib_div::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				
+				}
+				
+			}
+
+		}
+				
+		return $imageUrl;
+
+	}
+
+	/**
+	 * Get map controls
+	 *
+	 * @access	protected
+	 *
+	 * @return	array		Array of control keywords
+	 */
+	protected function getMapControls() {
+
+		$controls = explode(',', $this->conf['features']);
+
+		// Sanitize input.
+		foreach ($controls as $key => $control) {
+
+			if (empty($this->controlDependency[$control])) {
+
+				unset ($controls[$key]);
+
+			}
+
+		}
+
+		return $controls;
+
+	}
 
 	/**
 	 * The main method of the PlugIn
@@ -109,6 +333,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
+		// Get the controls for the map.
+		$this->controls = $this->getMapControls();
+
 		// Fill in the template markers.
 		$markerArray = array (
 			'###VIEWER_JS###' => $this->addViewerJS()
@@ -117,151 +344,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
 		return $this->pi_wrapInBaseClass($content);
-
-	}
-
-	/**
-	 * Adds OpenLayers javascript
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		OpenLayers script tags ready for output.
-	 */
-	protected function addOpenLayersJS() {
-
-		$output = array ();
-
-		// Get localization for OpenLayers.
-		if ($GLOBALS['TSFE']->lang) {
-
-			$langFile = t3lib_extMgm::extPath($this->extKey, 'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js');
-
-			if (file_exists($langFile)) {
-
-				$this->lang = strtolower($GLOBALS['TSFE']->lang);
-
-			}
-
-		}
-
-		// Load required OpenLayers components.
-		$components = array (
-			// Map Feature.
-			'OpenLayers/BaseTypes.js',
-			'OpenLayers/BaseTypes/Class.js',
-			'OpenLayers/BaseTypes/Bounds.js',
-			'OpenLayers/BaseTypes/Element.js',
-			'OpenLayers/BaseTypes/LonLat.js',
-			'OpenLayers/BaseTypes/Pixel.js',
-			'OpenLayers/BaseTypes/Size.js',
-			'OpenLayers/Console.js',
-			'OpenLayers/Lang.js',
-			'OpenLayers/Util.js',
-			'OpenLayers/Lang/'.$this->lang.'.js',
-			'OpenLayers/Events.js',
-			'OpenLayers/Events/buttonclick.js',
-			'OpenLayers/Animation.js',
-			'OpenLayers/Tween.js',
-			'OpenLayers/Projection.js',
-			'OpenLayers/Map.js',
-			// Event handlers and controls.
-			'OpenLayers/Handler.js',
-			'OpenLayers/Handler/Click.js',
-			'OpenLayers/Handler/Drag.js',
-			'OpenLayers/Handler/Box.js',
-			'OpenLayers/Handler/MouseWheel.js',
-			'OpenLayers/Control.js',
-			'OpenLayers/Control/DragPan.js',
-			'OpenLayers/Control/ZoomBox.js',
-			'OpenLayers/Control/Navigation.js',
-			'OpenLayers/Control/Zoom.js',
-			// Image layer.
-			'OpenLayers/Tile.js',
-			'OpenLayers/Tile/Image.js',
-			'OpenLayers/Layer.js',
-			'OpenLayers/Layer/Image.js',
-		);
-
-		$output[] = '
-		<script type="text/javascript">
-			window.OpenLayers = ["'.implode('", "', $components).'"];
-		</script>';
-
-		// Add OpenLayers library.
-		$output[] = '
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
-
-		return implode("\n", $output);
-
-	}
-
-	/**
-	 * Adds Viewer javascript
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		Viewer script tags ready for output
-	 */
-	protected function addViewerJS() {
-
-		$output = array ();
-
-		// Add OpenLayers library.
-		$output[] = $this->addOpenLayersJS();
-
-		// Add viewer library.
-		$output[] = '
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
-
-		// Add viewer configuration.
-		$output[] = '
-		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			tx_dlf_viewer = new dlfViewer();
-			tx_dlf_viewer.setLang("'.$this->lang.'");
-			tx_dlf_viewer.addImage("'.$this->images[0].'");
-			'.(!empty($this->images[1]) ? 'tx_dlf_viewer.addImage("'.$this->images[1].'");' : '').'
-			tx_dlf_viewer.addControl("zoom");
-			tx_dlf_viewer.init("'.$this->conf['elementId'].'");
-		</script>';
-
-		return implode("\n", $output);
-
-	}
-
-	/**
-	 * Get image's URL
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$page: Page number
-	 *
-	 * @return	string		URL of image file
-	 */
-	protected function getImageUrl($page) {
-
-		$imageUrl = '';
-
-		// Get @USE value of METS fileGrp.
-		$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
-
-		$fileGrp = strtolower(array_pop($fileGrps));
-
-		// Get image link and size.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
-
-			$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
-
-		} else {
-
-			if (TYPO3_DLOG) {
-
-				t3lib_div::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-			}
-
-		}
-
-		return $imageUrl;
 
 	}
 

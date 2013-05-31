@@ -556,7 +556,7 @@ final class tx_dlf_document {
 
 			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
 
-			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][strtolower($extConf['fileGrpThumbs'])];
+			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
 
 			// Get page number of the first page related to this structure element.
 			$details['pagination'] = $this->physicalPagesInfo[$id]['label'];
@@ -567,7 +567,7 @@ final class tx_dlf_document {
 			// Yes. Point to itself.
 			$details['points'] = 1;
 
-			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->physicalPages[1]]['files'][strtolower($extConf['fileGrpThumbs'])];
+			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']];
 
 		}
 
@@ -1765,7 +1765,7 @@ final class tx_dlf_document {
 					// Check if file has valid @USE attribute.
 					if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
 
-						$this->physicalPagesInfo[$physSeq[0]]['files'][strtolower($fileUse[(string) $fptr->attributes()->FILEID])] = (string) $fptr->attributes()->FILEID;
+						$this->physicalPagesInfo[$physSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
 
 					}
 
@@ -1790,7 +1790,7 @@ final class tx_dlf_document {
 						// Check if file has valid @USE attribute.
 						if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
 
-							$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['files'][strtolower($fileUse[(string) $fptr->attributes()->FILEID])] = (string) $fptr->attributes()->FILEID;
+							$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
 
 						}
 
@@ -1995,11 +1995,11 @@ final class tx_dlf_document {
 				// Get thumbnail location.
 				if ($this->_getPhysicalPages() && !empty($this->smLinks['l2p'][$strctId])) {
 
-					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->smLinks['l2p'][$strctId][0]]['files'][strtolower($extConf['fileGrpThumbs'])]);
+					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
 
 				} else {
 
-					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->physicalPages[1]]['files'][strtolower($extConf['fileGrpThumbs'])]);
+					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']]);
 
 				}
 

@@ -69,9 +69,9 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		$markerArray['###PAGINATION###'] = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['label'];
 
 		// Get thumbnail or placeholder.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][strtolower($this->conf['fileGrpThumbs'])])) {
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][$this->conf['fileGrpThumbs']])) {
 
-			$thumbnailFile = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][strtolower($this->conf['fileGrpThumbs'])]);
+			$thumbnailFile = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][$this->conf['fileGrpThumbs']]);
 
 		} elseif (!empty($this->conf['placeholder'])) {
 
