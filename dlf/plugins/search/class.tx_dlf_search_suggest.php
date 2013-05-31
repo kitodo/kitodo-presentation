@@ -22,12 +22,17 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * [CLASS/FUNCTION INDEX of SCRIPT]
+ */
+
 require_once (PATH_tslib.'class.tslib_pibase.php');
 
 /**
- * Autocompletion for the search plugin of the 'dlf' extension.
+ * Search suggestions for the plugin 'DLF: Search' of the 'dlf' extension.
  *
  * @author	Henrik Lochmann <dev@mentalmotive.com>
+ * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @copyright	Copyright (c) 2012, Zeutschel GmbH
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -73,6 +78,10 @@ class tx_dlf_search_suggest extends tslib_pibase {
 
 	}
 
+}
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/search/class.tx_dlf_search_suggest.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/search/class.tx_dlf_search_suggest.php']);
 }
 
 $cObj = t3lib_div::makeInstance('tx_dlf_search_suggest');

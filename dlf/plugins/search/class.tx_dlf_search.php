@@ -41,7 +41,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
 
 	/**
-	 * Adds the JS files necessary for autocompletion
+	 * Adds the JS files necessary for search suggestions
 	 *
 	 * @access	protected
 	 *
@@ -59,10 +59,23 @@ class tx_dlf_search extends tx_dlf_plugin {
 			'1'
 		);
 
-		// Add javascript to page header.
-		if ($this->loadJQuery()) {
+			
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
+			// Add javascript to page header.
+			if (tx_dlf_helper::loadJQuery()) {
+
+				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
+
+			}
+			
+		} else {
+			
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_search->addAutocompleteJS()] No metadata fields configured for search suggestions', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
 
 		}
 
@@ -335,44 +348,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 	}
 
 	/**
-	 * Adds "t3jquery" extension's library to page header.
-	 *
-	 * @access	protected
-	 *
-	 * @return	boolean		TRUE on success or FALSE on error
-	 */
-	protected function loadJQuery() {
-
-		// Was jQuery already loaded before?
-		if (T3JQUERY === TRUE) {
-
-			return TRUE;
-
-		}
-
-		// Ensure extension "t3jquery" is available.
-		if (t3lib_extMgm::isLoaded('t3jquery')) {
-
-			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
-
-		}
-
-		// Is "t3jquery" loaded?
-		if (T3JQUERY === TRUE) {
-
-			tx_t3jquery::addJqJS();
-
-			return TRUE;
-
-		} else {
-
-			return FALSE;
-
-		}
-
-	}
-
-	/**
 	 * The main method of the PlugIn
 	 *
 	 * @access	public
@@ -404,8 +379,12 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		if (!isset($this->piVars['query']) && empty($this->piVars['extQuery'])) {
 
-			// Add javascript for autocompletion if available.
-			$this->addAutocompleteJS();
+			// Add javascript for search suggestions if enabled and jQuery autocompletion is available.
+			if (!empty($this->conf['suggest'])) {
+			
+				$this->addAutocompleteJS();
+				
+			}
 
 			// Load template file.
 			if (!empty($this->conf['templateFile'])) {
