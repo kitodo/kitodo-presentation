@@ -30,6 +30,7 @@
  * Plugin 'DLF: Metadata' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Siegfried Schweizer <siegfried.schweizer@sbb.spk-berlin.de>
  * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -38,6 +39,14 @@
 class tx_dlf_metadata extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/metadata/class.tx_dlf_metadata.php';
+	
+	/**
+	 * This holds the hook objects
+	 *
+	 * @var array
+	 * @access protected
+	 */
+	protected $hookObjects = array ();
 
 	/**
 	 * The main method of the PlugIn
@@ -162,6 +171,20 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		ksort($metadata);
 
+		// Get hook objects.
+		$this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
+		
+		// Hook for getting a customized title bar (requested by SBB).
+		foreach ($this->hookObjects as $hookObj) {
+
+			if (method_exists($hookObj, 'main_customizeTitleBarGetCustomTemplate')) {
+
+				$hookObj->main_customizeTitleBarGetCustomTemplate($this, $metadata);
+
+			}
+					
+		}
+		
 		$content .= $this->printMetadata($metadata);
 
 		return $this->pi_wrapInBaseClass($content);
@@ -302,6 +325,17 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 					}
 
+					// Hook for getting a customized value (requested by SBB).
+					foreach ($this->hookObjects as $hookObj) {
+
+						if (method_exists($hookObj, 'printMetadata_customizeMetadata')) {
+
+							$hookObj->printMetadata_customizeMetadata($value);
+
+						}
+
+					}
+					
 					$value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
 
 					if (!empty($value)) {
