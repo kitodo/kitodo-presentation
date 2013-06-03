@@ -40,6 +40,14 @@ class tx_dlf_collection extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/collection/class.tx_dlf_collection.php';
 
 	/**
+	 * This holds the hook objects
+	 *
+	 * @var array
+	 * @access protected
+	 */
+	protected $hookObjects = array ();
+
+	/**
 	 * The main method of the PlugIn
 	 *
 	 * @access	public
@@ -79,6 +87,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/collection/template.tmpl'), '###TEMPLATE###');
 
 		}
+		
+		// Get hook objects.
+		$this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
 
 		if (!empty($this->piVars['collection'])) {
 
@@ -243,6 +254,17 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			foreach ($markerArray as $marker) {
 
 				$content .= $this->cObj->substituteMarkerArray($entry, $marker);
+
+			}
+
+			// Hook for getting custom collection hierarchies/subentries (requested by SBB).
+			foreach ($this->hookObjects as $hookObj) {
+
+				if (method_exists($hookObj, 'showCollectionList_getCustomCollectionList')) {
+
+					$hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['templateFile'], $content, $markerArray);
+
+				}
 
 			}
 
