@@ -2126,7 +2126,7 @@ final class tx_dlf_document {
 
 						if (method_exists($hookObj, 'construct_postProcessRecordId')) {
 
-							$this->recordId = $hookObj->construct_postProcessRecordId($this->xml, $this->recordId);
+							$hookObj->construct_postProcessRecordId($this->xml, $this->recordId);
 
 						}
 

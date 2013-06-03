@@ -419,7 +419,7 @@ class tx_dlf_helper {
 
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][tx_dlf_helper::$extKey.'/'.$scriptRelPath]['hookClass'] as $classRef) {
 
-				$hookObjects[] = t3lib_div::getUserObj($classRef);
+				$hookObjects[] = &t3lib_div::getUserObj($classRef);
 
 			}
 

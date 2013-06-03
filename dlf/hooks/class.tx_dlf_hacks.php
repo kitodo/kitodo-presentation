@@ -47,9 +47,9 @@ class tx_dlf_hacks {
 	 * @param	SimpleXMLElement		&$xml: The XML object
 	 * @param	mixed		$record_id: The record identifier
 	 *
-	 * @return	mixed		The record identifier
+	 * @return	void
 	 */
-	public function construct_postProcessRecordId(SimpleXMLElement &$xml, $record_id) {
+	public function construct_postProcessRecordId(SimpleXMLElement &$xml, &$record_id) {
 
 		if (!$record_id) {
 
@@ -91,15 +91,13 @@ class tx_dlf_hacks {
 
 				if (!empty($recordIds[0])) {
 
-					return (string) $recordIds[0];
+					$record_id = (string) $recordIds[0];
 
 				}
 
 			}
 
 		}
-
-		return $record_id;
 
 	}
 
