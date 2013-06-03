@@ -108,6 +108,14 @@ final class tx_dlf_document {
 	protected $formatsLoaded = FALSE;
 
 	/**
+	 * This holds the documents location
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $location = '';
+
+	/**
 	 * This holds the logical units
 	 *
 	 * @var	array
@@ -1109,15 +1117,6 @@ final class tx_dlf_document {
 		// Set PID for metadata definitions.
 		$this->cPid = $pid;
 
-		// Set location if inserting new document.
-		$location = '';
-
-		if (!t3lib_div::testInt($this->uid)) {
-
-			$location = $this->uid;
-
-		}
-
 		// Set UID placeholder if not updating existing record.
 		if ($pid != $this->pid) {
 
@@ -1414,6 +1413,7 @@ final class tx_dlf_document {
 			$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['starttime'] => 0,
 			$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['endtime'] => 0,
 			'prod_id' => $metadata['prod_id'][0],
+			'location' => $this->location,
 			'record_id' => $metadata['record_id'][0],
 			'opac_id' => $metadata['opac_id'][0],
 			'union_id' => $metadata['union_id'][0],
@@ -1436,13 +1436,6 @@ final class tx_dlf_document {
 			'solrcore' => $core,
 			'status' => 0,
 		);
-
-		// Set location.
-		if ($location) {
-
-			$data['tx_dlf_documents'][$this->uid]['location'] = $location;
-
-		}
 
 		// Unhide hidden documents.
 		if (!empty($conf['unhideOnIndex'])) {
@@ -2182,12 +2175,12 @@ final class tx_dlf_document {
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-			list ($this->uid, $this->pid, $this->recordId, $this->parentId, $this->thumbnail, $location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+			list ($this->uid, $this->pid, $this->recordId, $this->parentId, $this->thumbnail, $this->location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 			$this->thumbnailLoaded = TRUE;
 
 			// Load XML file if necessary...
-			if ($this->mets === NULL && $this->load($location)) {
+			if ($this->mets === NULL && $this->load($this->location)) {
 
 				// ...and set some basic properties.
 				$this->init();
@@ -2196,6 +2189,13 @@ final class tx_dlf_document {
 
 			// Do we have a METS object now?
 			if ($this->mets !== NULL) {
+				
+				// Set new location if necessary.
+				if (!empty($location)) {
+					
+					$this->location = $location;
+					
+				}
 
 				// Document ready!
 				$this->ready = TRUE;
@@ -2206,6 +2206,8 @@ final class tx_dlf_document {
 
 			// Set location as UID for documents not in database.
 			$this->uid = $location;
+			
+			$this->location = $location;
 
 			// Document ready!
 			$this->ready = TRUE;
