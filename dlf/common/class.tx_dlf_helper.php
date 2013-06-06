@@ -382,7 +382,7 @@ class tx_dlf_helper {
 				
 				return $GLOBALS['TSFE']->fe_user;
 				
-			} elseif (!empty(t3lib_div::_GP('eID'))) {
+			} elseif (t3lib_div::_GP('eID') !== NULL) {
 				
 				return tslib_eidtools::initFeUser();
 				
