@@ -214,12 +214,12 @@ final class tx_dlf_document {
 	protected $recordId;
 
 	/**
-	 * This holds the singleton object of each document with its UID as array key
+	 * This holds the singleton object of the document
 	 *
-	 * @var	array(tx_dlf_document)
+	 * @var tx_dlf_document
 	 * @access protected
 	 */
-	protected static $registry = array ();
+	protected static $registry;
 
 	/**
 	 * This holds the smLinks between logical and physical structMap
@@ -326,7 +326,7 @@ final class tx_dlf_document {
 	}
 
 	/**
-	 * This is a singleton class, thus instances must be created by this method
+	 * This is a singleton class, thus an instance must be created by this method
 	 *
 	 * @access	public
 	 *
@@ -334,20 +334,20 @@ final class tx_dlf_document {
 	 * @param	integer		$pid: If > 0, then only document with this PID gets loaded
 	 * @param	boolean		$forceReload: Force reloading the document instead of returning the cached instance
 	 *
-	 * @return	tx_dlf_document		Instance of this class
+	 * @return	&tx_dlf_document		Instance of this class
 	 */
-	public static function getInstance($uid, $pid = 0, $forceReload = FALSE) {
+	public static function &getInstance($uid, $pid = 0, $forceReload = FALSE) {
 
 		// Sanitize input.
 		$pid = max(intval($pid), 0);
 
-		if (!$forceReload && is_object(self::$registry[$uid]) && self::$registry[$uid] instanceof self) {
+		if (!$forceReload && is_object(self::$registry) && self::$registry instanceof self) {
 
 			// Check if instance has given PID.
-			if (($pid && self::$registry[$uid]->pid == $pid) || !$pid) {
+			if (($pid && self::$registry->pid == $pid) || !$pid) {
 
 				// Return singleton instance if available.
-				return self::$registry[$uid];
+				return self::$registry;
 
 			}
 
@@ -356,15 +356,15 @@ final class tx_dlf_document {
 			// Check the user's session...
 			$sessionData = tx_dlf_helper::loadFromSession(get_called_class());
 
-			if (is_object($sessionData[$uid]) && $sessionData[$uid] instanceof self) {
+			if (is_object($sessionData) && $sessionData instanceof self) {
 
 				// Check if instance has given PID.
-				if (($pid && $sessionData[$uid]->pid == $pid) || !$pid) {
+				if (($pid && $sessionData->pid == $pid) || !$pid) {
 
 					// ...and restore registry.
-					self::$registry[$uid] = $sessionData[$uid];
+					self::$registry =& $sessionData;
 
-					return self::$registry[$uid];
+					return self::$registry;
 
 				}
 
@@ -378,7 +378,7 @@ final class tx_dlf_document {
 		// ...and save it to registry.
 		if ($instance->ready) {
 
-			self::$registry[$instance->uid] = $instance;
+			self::$registry =& $instance;
 
 			// Load extension configuration
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
@@ -1357,7 +1357,7 @@ final class tx_dlf_document {
 
 		if (!empty($this->tableOfContents[0]['points']) && !t3lib_div::testInt($this->tableOfContents[0]['points'])) {
 
-			$superior = tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
+			$superior =& tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
 
 			if ($superior->ready) {
 

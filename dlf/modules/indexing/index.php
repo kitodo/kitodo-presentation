@@ -180,7 +180,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		$this->list->save();
 
 		// Save document to database and index.
-		$doc = tx_dlf_document::getInstance($uid, 0, TRUE);
+		$doc =& tx_dlf_document::getInstance($uid, 0, TRUE);
 
 		if ($doc->ready) {
 
@@ -236,7 +236,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 					if (!empty($this->data['id']) && isset($this->data['core'])) {
 
 						// Save document to database and index.
-						$doc = tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
+						$doc =& tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
 
 						if ($doc->ready) {
 

@@ -119,7 +119,7 @@ class tx_dlf_indexing {
 			// Handle multi-volume documents.
 			if ($doc->parentId) {
 
-				$parent = tx_dlf_document::getInstance($doc->parentId, 0, TRUE);
+				$parent =& tx_dlf_document::getInstance($doc->parentId, 0, TRUE);
 
 				if ($parent->ready) {
 
