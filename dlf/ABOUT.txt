@@ -1,5 +1,5 @@
-Goobi Digital Library Suite (Community Edition)
-===============================================
+Goobi Digital Library Suite
+===========================
 
 Goobi is an open source software suite intended to support mass digitization
 projects for cultural heritage institutions. Goobi is widely-used and

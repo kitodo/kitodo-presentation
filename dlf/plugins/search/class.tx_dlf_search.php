@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
- *  Copyright notice
+*  Copyright notice
 *
 *  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
