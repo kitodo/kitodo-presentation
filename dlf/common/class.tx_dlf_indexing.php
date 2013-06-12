@@ -40,7 +40,7 @@ class tx_dlf_indexing {
 	/**
 	 * The extension key
 	 *
-	 * @var string
+	 * @var	string
 	 * @access public
 	 */
 	public static $extKey = 'dlf';
@@ -49,7 +49,7 @@ class tx_dlf_indexing {
 	 * Array of metadata fields' configuration
 	 * @see loadIndexConf()
 	 *
-	 * @var array
+	 * @var	array
 	 * @access protected
 	 */
 	protected static $fields = array (
@@ -66,7 +66,7 @@ class tx_dlf_indexing {
 	 * Is the index configuration loaded?
 	 * @see $fields
 	 *
-	 * @var boolean
+	 * @var	boolean
 	 * @access protected
 	 */
 	protected static $fieldsLoaded = FALSE;
@@ -74,7 +74,7 @@ class tx_dlf_indexing {
 	/**
 	 * List of already processed documents
 	 *
-	 * @var array
+	 * @var	array
 	 * @access protected
 	 */
 	protected static $processedDocs = array ();
@@ -82,7 +82,7 @@ class tx_dlf_indexing {
 	/**
 	 * Instance of Apache_Solr_Service class
 	 *
-	 * @var Apache_Solr_Service
+	 * @var	Apache_Solr_Service
 	 * @access protected
 	 */
 	protected static $solr;
@@ -91,7 +91,7 @@ class tx_dlf_indexing {
 	 * Array of toplevel structure elements
 	 * @see loadIndexConf()
 	 *
-	 * @var array
+	 * @var	array
 	 * @access protected
 	 */
 	protected static $toplevel = array ();

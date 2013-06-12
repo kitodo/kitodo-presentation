@@ -41,7 +41,7 @@ class tx_dlf_solr {
 	/**
 	 * This holds the core name
 	 *
-	 * @var string
+	 * @var	string
 	 * @access protected
 	 */
 	protected $core = '';
@@ -57,7 +57,7 @@ class tx_dlf_solr {
 	/**
 	 * The extension key
 	 *
-	 * @var string
+	 * @var	string
 	 * @access public
 	 */
 	public static $extKey = 'dlf';
@@ -105,7 +105,7 @@ class tx_dlf_solr {
 	/**
 	 * This holds the Solr service object
 	 *
-	 * @var Apache_Solr_Service
+	 * @var	Apache_Solr_Service
 	 * @access protected
 	 */
 	protected $service;

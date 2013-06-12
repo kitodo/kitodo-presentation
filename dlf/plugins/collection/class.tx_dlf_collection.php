@@ -42,7 +42,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 	/**
 	 * This holds the hook objects
 	 *
-	 * @var array
+	 * @var	array
 	 * @access protected
 	 */
 	protected $hookObjects = array ();
@@ -87,7 +87,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/collection/template.tmpl'), '###TEMPLATE###');
 
 		}
-		
+
 		// Get hook objects.
 		$this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
 

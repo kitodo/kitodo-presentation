@@ -40,7 +40,7 @@ class tx_dlf_helper {
 	/**
 	 * The extension key
 	 *
-	 * @var string
+	 * @var	string
 	 * @access public
 	 */
 	public static $extKey = 'dlf';
@@ -48,7 +48,7 @@ class tx_dlf_helper {
 	/**
 	 * The locallang array for common use
 	 *
-	 * @var array
+	 * @var	array
 	 * @access protected
 	 */
 	protected static $locallang = array ();
@@ -374,34 +374,34 @@ class tx_dlf_helper {
 	 * @return	tslib_feUserAuth		Instance of tslib_feUserAuth or NULL on failure
 	 */
 	public static function getFeUser() {
-		
+
 		if (TYPO3_MODE === 'FE') {
-			
+
 			// Check if a user is currently logged in.
 			if (!empty($GLOBALS['TSFE']->loginUser)) {
-				
+
 				return $GLOBALS['TSFE']->fe_user;
-				
+
 			} elseif (t3lib_div::_GP('eID') !== NULL) {
-				
+
 				return tslib_eidtools::initFeUser();
-				
+
 			}
-		
+
 		} else {
-		
+
 			if (TYPO3_DLOG) {
-		
+
 				t3lib_div::devLog('[tx_dlf_helper->getFeUser()] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::extKey, SYSLOG_SEVERITY_ERROR);
-		
+
 			}
-		
+
 		}
-		
+
 		return;
-		
+
 	}
-	
+
 	/**
 	 * Get the registered hook objects for a class
 	 *
@@ -836,11 +836,11 @@ class tx_dlf_helper {
 			return TRUE;
 
 		} else {
-			
+
 			if (TYPO3_DLOG) {
-			
+
 				t3lib_div::devLog('[tx_dlf_helper->loadJQuery()] JQuery not available', $this->extKey, SYSLOG_SEVERITY_ERROR);
-			
+
 			}
 
 			return FALSE;

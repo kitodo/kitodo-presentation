@@ -75,7 +75,7 @@ final class tx_dlf_document {
 	/**
 	 * The extension key
 	 *
-	 * @var string
+	 * @var	string
 	 * @access public
 	 */
 	public $extKey = 'dlf';
@@ -110,7 +110,7 @@ final class tx_dlf_document {
 	/**
 	 * This holds the documents location
 	 *
-	 * @var string
+	 * @var	string
 	 * @access protected
 	 */
 	protected $location = '';
@@ -151,7 +151,7 @@ final class tx_dlf_document {
 	/**
 	 * The holds the total number of pages
 	 *
-	 * @var integer
+	 * @var	integer
 	 * @access protected
 	 */
 	protected $numPages = 0;
@@ -216,7 +216,7 @@ final class tx_dlf_document {
 	/**
 	 * This holds the singleton object of the document
 	 *
-	 * @var tx_dlf_document
+	 * @var	tx_dlf_document
 	 * @access protected
 	 */
 	protected static $registry;
@@ -224,7 +224,7 @@ final class tx_dlf_document {
 	/**
 	 * This holds the smLinks between logical and physical structMap
 	 *
-	 * @var array
+	 * @var	array
 	 * @access protected
 	 */
 	protected $smLinks = array ('l2p' => array (), 'p2l' => array ());
@@ -233,7 +233,7 @@ final class tx_dlf_document {
 	 * Are the smLinks loaded?
 	 * @see $smLinks
 	 *
-	 * @var boolean
+	 * @var	boolean
 	 * @access protected
 	 */
 	protected $smLinksLoaded = FALSE;
@@ -2189,12 +2189,12 @@ final class tx_dlf_document {
 
 			// Do we have a METS object now?
 			if ($this->mets !== NULL) {
-				
+
 				// Set new location if necessary.
 				if (!empty($location)) {
-					
+
 					$this->location = $location;
-					
+
 				}
 
 				// Document ready!
@@ -2206,7 +2206,7 @@ final class tx_dlf_document {
 
 			// Set location as UID for documents not in database.
 			$this->uid = $location;
-			
+
 			$this->location = $location;
 
 			// Document ready!

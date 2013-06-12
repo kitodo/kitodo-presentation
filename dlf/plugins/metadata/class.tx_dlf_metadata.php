@@ -39,11 +39,11 @@
 class tx_dlf_metadata extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/metadata/class.tx_dlf_metadata.php';
-	
+
 	/**
 	 * This holds the hook objects
 	 *
-	 * @var array
+	 * @var	array
 	 * @access protected
 	 */
 	protected $hookObjects = array ();
@@ -173,7 +173,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		// Get hook objects.
 		$this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
-		
+
 		// Hook for getting a customized title bar (requested by SBB).
 		foreach ($this->hookObjects as $hookObj) {
 
@@ -182,9 +182,9 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 				$hookObj->main_customizeTitleBarGetCustomTemplate($this, $metadata);
 
 			}
-					
+
 		}
-		
+
 		$content .= $this->printMetadata($metadata);
 
 		return $this->pi_wrapInBaseClass($content);
@@ -335,7 +335,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 						}
 
 					}
-					
+
 					$value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
 
 					if (!empty($value)) {
