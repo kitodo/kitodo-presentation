@@ -28,97 +28,171 @@
  */
 function dlfViewer() {
 
+	/**
+	 * This holds the element's @ID the OpenLayers map is rendered into
+	 *
+	 * var string
+	 */
 	this.div = "tx-dlf-map";
 
+	/**
+	 * This holds the OpenLayers map object
+	 *
+	 * var OpenLayers.Map
+	 */
 	this.map = null;
 
+	/**
+	 * This holds the images' information like URL, width and height
+	 *
+	 * var array
+	 */
 	this.images = [];
 
+	/**
+	 * This holds information about the loading state of the images
+	 *
+	 * var array
+	 */
+	this.imagesLoaded = [0, 0];
+
+	/**
+	 * This holds the controls for the OpenLayers map
+	 *
+	 * var array
+	 */
 	this.controls = [];
 
+	/**
+	 * This holds the offset for the second image
+	 *
+	 * var integer
+	 */
 	this.offset = 0;
 
 }
 
 /**
- * Register control to load for map
+ * Register controls to load for map
  *
- * @param	string		name: The keyword for the control
+ * @param	array		controls: Array of control keywords
  *
  * @return	void
  */
-dlfViewer.prototype.addControl = function(name) {
+dlfViewer.prototype.addControls = function(controls) {
 
-	var control = null;
+	for (var i in controls) {
 
-	switch(name) {
+		// Initialize control.
+		switch(controls[i]) {
 
-		case "OverviewMap":
+			case "OverviewMap":
 
-			control = new OpenLayers.Control.OverviewMap();
+				controls[i] = new OpenLayers.Control.OverviewMap();
 
-			break;
+				break;
 
-		case "PanPanel":
+			case "PanPanel":
 
-			control = new OpenLayers.Control.PanPanel();
+				controls[i] = new OpenLayers.Control.PanPanel();
 
-			break;
+				break;
 
-		case "PanZoom":
+			case "PanZoom":
 
-			control = new OpenLayers.Control.PanZoom();
+				controls[i] = new OpenLayers.Control.PanZoom();
 
-			break;
+				break;
 
-		case "PanZoomBar":
+			case "PanZoomBar":
 
-			control = new OpenLayers.Control.PanZoomBar();
+				controls[i] = new OpenLayers.Control.PanZoomBar();
 
-			break;
+				break;
 
-		case "ZoomPanel":
+			case "ZoomPanel":
 
-			control = new OpenLayers.Control.ZoomPanel();
+				controls[i] = new OpenLayers.Control.ZoomPanel();
 
-			break;
+				break;
 
-	}
+			default:
 
-	if (control !== null) {
+				controls[i] = null;
 
-		this.controls.push(control);
+		}
+
+		if (controls[i] !== null) {
+
+			// Register control.
+			this.controls.push(controls[i]);
+
+		}
 
 	}
 
 }
 
 /**
- * Register an image file to load into map
+ * Register image files to load into map
  *
- * @param	string		url: URL of the image file
- * @param	integer		width: The image's width
- * @param	integer		height: The image's height
+ * @param	array		urls: Array of URLs of the image files
  *
  * @return	void
  */
-dlfViewer.prototype.addImage = function(url, width, height) {
+dlfViewer.prototype.addImages = function(urls) {
 
-	for (var i in this.images) {
+	var img = [];
 
-		if (this.images[i].url == url) {
+	// Get total number of images.
+	this.imagesLoaded[1] = urls.length;
 
-			// Add image data.
-			this.images[i] = {
-				'url': url,
-				'width': width,
-				'height': height,
-				'ready': true
-			};
+	for (var i in urls) {
 
-			return;
+		// Prepare image loading.
+		this.images[i] = {
+			'src': urls[i],
+			'width': 0,
+			'height': 0
+		};
 
-		}
+		// Create new Image object.
+		img[i] = new Image();
+
+		// Register onload handler.
+		img[i].onload = function() {
+
+			for (var j in tx_dlf_viewer.images) {
+
+				if (tx_dlf_viewer.images[j].src == this.src) {
+
+					// Add additional image data.
+					tx_dlf_viewer.images[j] = {
+						'src': this.src,
+						'width': this.width,
+						'height': this.height
+					};
+
+					break;
+
+				}
+
+			}
+
+			// Count image as completely loaded.
+			tx_dlf_viewer.imagesLoaded[0]++;
+
+			// Initialize OpenLayers map if all images are completely loaded.
+			if (tx_dlf_viewer.imagesLoaded[0] == tx_dlf_viewer.imagesLoaded[1]) {
+
+				tx_dlf_viewer.init();
+
+			}
+
+		};
+
+		// Initialize image loading.
+		img[i].src = urls[i];
 
 	}
 
@@ -163,49 +237,45 @@ dlfViewer.prototype.init = function() {
 	// Create image layers.
 	for (var i in this.images) {
 
-		if (this.images[i].ready) {
+		layers.push(
+			new OpenLayers.Layer.Image(
+				i,
+				this.images[i].src,
+				new OpenLayers.Bounds(this.offset, 0, this.offset + this.images[i].width, this.images[i].height),
+				new OpenLayers.Size(this.images[i].width / 20, this.images[i].height / 20),
+				{
+					'displayInLayerSwitcher': false,
+					'isBaseLayer': false,
+					'maxExtent': new OpenLayers.Bounds(this.offset, 0, this.images.length * (this.offset + this.images[i].width), this.images[i].height),
+					'visibility': true
+				}
+			)
+		);
 
-			layers.push(
-				new OpenLayers.Layer.Image(
-					i,
-					this.images[i].url,
-					new OpenLayers.Bounds(this.offset, 0, this.offset + this.images[i].width, this.images[i].height),
-					new OpenLayers.Size(this.images[i].width / 20, this.images[i].height / 20),
-					{
-						'displayInLayerSwitcher': false,
-						'isBaseLayer': false,
-						'maxExtent': new OpenLayers.Bounds(this.offset, 0, this.images.length * (this.offset + this.images[i].width), this.images[i].height),
-						'visibility': true
-					}
-				)
-			);
+		// Set offset for right image in double-page mode.
+		if (this.offset == 0) {
 
-			// Set offset for right image in double-page mode.
-			if (this.offset == 0) {
+			this.offset = this.images[i].width;
 
-				this.offset = this.images[i].width;
+		}
 
-			}
+		// Calculate overall width and height.
+		width += this.images[i].width;
 
-			// Calculate overall width and height.
-			width += this.images[i].width;
+		if (this.images[i].height > height) {
 
-			if (this.images[i].height > height) {
-
-				height = this.images[i].height;
-
-			}
+			height = this.images[i].height;
 
 		}
 
 	}
 
-	// Add default controls.
+	// Add default controls to controls array.
 	this.controls.unshift(new OpenLayers.Control.Navigation());
 
 	this.controls.unshift(new OpenLayers.Control.Keyboard());
 
-	// Initialize OpenLayers.
+	// Initialize OpenLayers map.
 	this.map = new OpenLayers.Map({
 		'allOverlays': true,
 		'controls': this.controls,
@@ -236,35 +306,6 @@ dlfViewer.prototype.init = function() {
 		this.map.zoomToMaxExtent();
 
 	}
-
-}
-
-/**
- * Load an image file
- *
- * @param	string		url: URL of the image file
- * @param	integer		position: 0 for left image, 1 for right image
- *
- * @return	void
- */
-dlfViewer.prototype.loadImage = function(url, position) {
-
-	this.images[position] = {
-		'url': url,
-		'width': 0,
-		'height': 0,
-		'ready': false
-	};
-
-	var image = new Image();
-
-	image.onload = function () {
-
-		tx_dlf_viewer.addImage(this.src, this.width, this.height);
-
-	}
-
-	image.src = url;
 
 }
 
@@ -310,7 +351,12 @@ dlfViewer.prototype.setCookie = function(name, value) {
  */
 dlfViewer.prototype.setDiv = function(elementId) {
 
-	this.div = elementId;
+	// Check if element exists.
+	if ($("#"+elementId).length) {
+
+		this.div = elementId;
+
+	}
 
 }
 
@@ -327,16 +373,9 @@ dlfViewer.prototype.setLang = function(lang) {
 
 }
 
-// Initialize viewer when the page is completely loaded.
-window.onload = function() {
-
-	tx_dlf_viewer.init();
-
-}
-
-// Register "onunload" handler.
-window.onunload = function() {
+// Register page unload handler to save user settings.
+$(window).unload(function() {
 
 	tx_dlf_viewer.saveSettings();
 
-}
+});

@@ -190,6 +190,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$output = array ();
 
+		// Add jQuery library.
+		tx_dlf_helper::loadJQuery();
+
 		// Add OpenLayers library.
 		$output[] = $this->addOpenLayersJS();
 
@@ -201,11 +204,10 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
 			tx_dlf_viewer = new dlfViewer();
-			tx_dlf_viewer.loadImage("'.$this->images[0].'", 0);
-			'.(!empty($this->images[1]) ? ' tx_dlf_viewer.loadImage("'.$this->images[1].'", 1);' : '').'
-			tx_dlf_viewer.setLang("'.$this->lang.'");
 			tx_dlf_viewer.setDiv("'.$this->conf['elementId'].'");
-			'.(!empty($this->controls) ? 'tx_dlf_viewer.addControl("'.implode('"); tx_dlf_viewer.addControl("', $this->controls).'");' : '').'
+			tx_dlf_viewer.setLang("'.$this->lang.'");
+			tx_dlf_viewer.addControls(["'.implode('", "', $this->controls).'"]);
+			tx_dlf_viewer.addImages(["'.implode('", "', $this->images).'"]);
 		</script>';
 
 		return implode("\n", $output);
@@ -236,19 +238,19 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 				$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
 				break;
-				
+
 			} else {
-				
+
 				if (TYPO3_DLOG) {
-				
+
 					t3lib_div::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-				
+
 				}
-				
+
 			}
 
 		}
-				
+
 		return $imageUrl;
 
 	}
