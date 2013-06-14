@@ -297,7 +297,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 								$details = $this->doc->getLogicalStructure($metadata['_id']);
 
-								$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
+								$value = $this->pi_linkTP($value, array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
 
 							}
 
