@@ -11,11 +11,12 @@
 			<label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected collection(s)</label>
 			<label index="tt_content.pi_flexform.library">Providing library</label>
 			<label index="tt_content.pi_flexform.limit">Number of documents</label>
+			<label index="tt_content.pi_flexform.prependSuperiorTitle">Prepend title of superior work to title?</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
 			<label index="tt_content.pi_flexform.title">Feed's title</label>
 			<label index="tt_content.pi_flexform.description">Feed's description</label>
-			<label index="new">NEW: </label>
-			<label index="update">UPDATE: </label>
+			<label index="new">NEW:</label>
+			<label index="update">UPDATE:</label>
 			<label index="noTitle">[no title]</label>
 			<label index="volume">Volume</label>
 		</languageKey>
@@ -25,11 +26,12 @@
 			<label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Kollektion(en) berücksichtigen</label>
 			<label index="tt_content.pi_flexform.library">Mandant</label>
 			<label index="tt_content.pi_flexform.limit">Anzahl der Dokumente</label>
+			<label index="tt_content.pi_flexform.prependSuperiorTitle">Titel übergeordneter Werke anzeigen?</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
 			<label index="tt_content.pi_flexform.title">Titel des Feeds</label>
 			<label index="tt_content.pi_flexform.description">Beschreibung des Feeds</label>
-			<label index="new">NEU: </label>
-			<label index="update">UPDATE: </label>
+			<label index="new">NEU:</label>
+			<label index="update">UPDATE:</label>
 			<label index="noTitle">[kein Titel]</label>
 			<label index="volume">Band</label>
 		</languageKey>

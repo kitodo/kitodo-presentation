@@ -132,29 +132,26 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 					$item = $rss->createElement('item');
 
-					// Is this document new or updated?
-					if ($resArray['crdate'] == $resArray['tstamp']) {
+					$title = '';
 
-						$title = $this->pi_getLL('new');
-
-					} else {
-
-						$title = $this->pi_getLL('update');
-
-					}
-
-					// Get title information.
-					if (!empty($resArray['title'])) {
-
-						$title .= $resArray['title'];
-
-					} elseif (!empty($resArray['partof'])) {
+					// Get title of superior document.
+					if ((empty($resArray['title']) || !empty($this->conf['prependSuperiorTitle'])) && !empty($resArray['partof'])) {
 
 						$title .= '['.tx_dlf_document::getTitle($resArray['partof'], TRUE).']';
 
-					} else {
+					}
 
-						$title .= $this->pi_getLL('noTitle');
+					// Get title of document.
+					if (!empty($resArray['title'])) {
+
+						$title .= ' '.$resArray['title'];
+
+					}
+
+					// Set default title if empty.
+					if (empty($title)) {
+
+						$title = $this->pi_getLL('noTitle');
 
 					}
 
@@ -165,7 +162,18 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 					}
 
-					$item->appendChild($rss->createElement('title', htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8')));
+					// Is this document new or updated?
+					if ($resArray['crdate'] == $resArray['tstamp']) {
+
+						$title = $this->pi_getLL('new').' '.$title;
+
+					} else {
+
+						$title = $this->pi_getLL('update').' '.$title;
+
+					}
+
+					$item->appendChild($rss->createElement('title', htmlspecialchars(trim($title), ENT_NOQUOTES, 'UTF-8')));
 
 					// Add link.
 					$linkConf = array (
