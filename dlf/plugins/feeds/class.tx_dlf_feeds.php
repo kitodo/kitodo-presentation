@@ -165,15 +165,15 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 					// Is this document new or updated?
 					if ($resArray['crdate'] == $resArray['tstamp']) {
 
-						$title = $this->pi_getLL('new').' '.$title;
+						$title = $this->pi_getLL('new').' '.trim($title);
 
 					} else {
 
-						$title = $this->pi_getLL('update').' '.$title;
+						$title = $this->pi_getLL('update').' '.trim($title);
 
 					}
 
-					$item->appendChild($rss->createElement('title', htmlspecialchars(trim($title), ENT_NOQUOTES, 'UTF-8')));
+					$item->appendChild($rss->createElement('title', htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8')));
 
 					// Add link.
 					$linkConf = array (
