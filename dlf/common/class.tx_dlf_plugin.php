@@ -247,7 +247,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
 
-			$content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".get_class($this)."'	-->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n";
+			$content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n";
 
 		}
 
