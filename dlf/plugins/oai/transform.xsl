@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/***************************************************************
-*  Copyright notice
-*
-*  (c) 2006 University of Southampton, UK. SO17 1BJ.
-*  (c) 2012 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+  Copyright notice
+  
+  (c) 2006 University of Southampton, UK. SO17 1BJ.
+  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+  All rights reserved
+  
+  This script is part of the TYPO3 project. The TYPO3 project is
+  free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+  
+  The GNU General Public License can be found at
+  http://www.gnu.org/copyleft/gpl.html.
+  
+  This script is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  This copyright notice MUST APPEAR in all copies of the script!
 -->
 <!--
 
-	XSL Transform to convert OAI 2.0 responses into XHTML
+	XSL transformation to convert OAI 2.0 responses into XHTML
 
 	By Christopher Gutteridge, University of Southampton
-
-	v1.1
 
 	Edited by Sebastian Meyer, Saxon State and University Library Dresden
 

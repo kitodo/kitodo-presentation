@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -36,7 +36,6 @@ if (!defined('TYPO3_cliMode')) {
  * CLI script for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2012, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public

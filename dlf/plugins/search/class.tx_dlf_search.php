@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,7 +31,6 @@
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Henrik Lochmann <dev@mentalmotive.com>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
@@ -59,7 +58,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			'1'
 		);
 
-			
+
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 			// Add javascript to page header.
@@ -68,9 +67,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
 
 			}
-			
+
 		} else {
-			
+
 			if (TYPO3_DLOG) {
 
 				t3lib_div::devLog('[tx_dlf_search->addAutocompleteJS()] No metadata fields configured for search suggestions', $this->extKey, SYSLOG_SEVERITY_WARNING);
@@ -381,9 +380,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			// Add javascript for search suggestions if enabled and jQuery autocompletion is available.
 			if (!empty($this->conf['suggest'])) {
-			
+
 				$this->addAutocompleteJS();
-				
+
 			}
 
 			// Load template file.

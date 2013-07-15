@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Henrik Lochmann <dev@mentalmotive.com>
+*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -33,7 +33,6 @@ require_once (PATH_tslib.'class.tslib_pibase.php');
  *
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2012, Zeutschel GmbH
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public

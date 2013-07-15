@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,28 +30,29 @@
  * Document class 'tx_dlf_list' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @copyright	Copyright (c) 2011, Sebastian Meyer, SLUB Dresden
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_list implements t3lib_Singleton {
-
-	/**
-	 * This holds the documents in sorted order
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $elements = array ();
+class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 	/**
 	 * This holds the number of documents in the list
+	 * @see Countable
 	 *
 	 * @var	integer
 	 * @access protected
 	 */
 	protected $count = 0;
+
+	/**
+	 * This holds the list entries in sorted order
+	 * @see ArrayAccess
+	 *
+	 * @var	array()
+	 * @access protected
+	 */
+	protected $elements = array ();
 
 	/**
 	 * This holds the list's metadata
@@ -60,6 +61,15 @@ class tx_dlf_list implements t3lib_Singleton {
 	 * @access protected
 	 */
 	protected $metadata = array ();
+
+	/**
+	 * This holds the current list position
+	 * @see Iterator
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $position = 0;
 
 	/**
 	 * This adds an array of elements at the given position to the list
@@ -73,35 +83,54 @@ class tx_dlf_list implements t3lib_Singleton {
 	 */
 	public function add(array $elements, $position = -1) {
 
+		// Save parameters for logging purposes.
+		$_position = $position;
+
 		$position = t3lib_div::intInRange($position, 0, $this->count, $this->count);
 
-		array_splice($this->elements, $position, 0, $elements);
+		if (!empty($elements)) {
 
-		$this->count = count($this->elements);
+			array_splice($this->elements, $position, 0, $elements);
+
+			$this->count = count($this->elements);
+
+		}
 
 	}
 
 	/**
-	 * This removes the element at the given position from the list
+	 * This counts the elements
+	 * @see Countable::count()
 	 *
 	 * @access	public
 	 *
-	 * @param	integer		$position: Numeric position for removing
-	 *
-	 * @return	mixed		The removed element
+	 * @return	integer		The number of elements in the list
 	 */
-	public function remove($position) {
+	public function count() {
 
-		// Save parameter for logging purposes.
-		$_position = $position;
+		return $this->count;
 
-		$position = intval($position);
+	}
 
-		if ($position < 0 || $position >= $this->count) {
+	/**
+	 * This returns the current element
+	 * @see Iterator::current()
+	 *
+	 * @access	public
+	 *
+	 * @return	array		The current element
+	 */
+	public function current() {
+
+		if ($this->valid()) {
+
+			return $this->getRecord($this->elements[$this->position]);
+
+		} else {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_list->current()] Invalid position "'.$this->position.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
 
@@ -109,11 +138,53 @@ class tx_dlf_list implements t3lib_Singleton {
 
 		}
 
-		$removed = array_splice($this->elements, $position, 1);
+	}
 
-		$this->count = count($this->elements);
+	/**
+	 * This returns the full record of any list element
+	 *
+	 * @access	protected
+	 *
+	 * @param	array		$element: The list element
+	 *
+	 * @return	array		The element's full record
+	 */
+	protected function getRecord(array $element) {
 
-		return $removed[0];
+		$record = array ();
+
+		if (!empty($element['uid'])) {
+
+
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->getRecord([data])] No UID for list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_WARNING, $element);
+
+			}
+
+			// Return list element unchanged.
+			$record = $element;
+
+		}
+
+		return $record;
+
+	}
+
+	/**
+	 * This returns the current position
+	 * @see Iterator::key()
+	 *
+	 * @access	public
+	 *
+	 * @return	integer		The current position
+	 */
+	public function key() {
+
+		return $this->position;
 
 	}
 
@@ -201,6 +272,130 @@ class tx_dlf_list implements t3lib_Singleton {
 	}
 
 	/**
+	 * This increments the current list position
+	 * @see Iterator::next()
+	 *
+	 * @access	public
+	 *
+	 * @return	void
+	 */
+	public function next() {
+
+		$this->position++;
+
+	}
+
+	/**
+	 * This checks if an offset exists
+	 * @see ArrayAccess::offsetExists()
+	 *
+	 * @access	public
+	 *
+	 * @param	mixed		$offset: The offset to check
+	 *
+	 * @return	boolean		Does the given offset exist?
+	 */
+	public function offsetExists($offset) {
+
+		return isset($this->elements[$offset]);
+
+	}
+
+	/**
+	 * This returns the element at the given offset
+	 * @see ArrayAccess::offsetGet()
+	 *
+	 * @access	public
+	 *
+	 * @param	mixed		$offset: The offset to return
+	 *
+	 * @return	array		The element at the given offset
+	 */
+	public function offsetGet($offset) {
+
+		if ($this->offsetExists($offset)) {
+
+			return $this->getRecord($this->elements[$offset]);
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+
+			}
+
+			return;
+
+		}
+
+	}
+
+	/**
+	 * This sets the element at the given offset
+	 * @see ArrayAccess::offsetSet()
+	 *
+	 * @access	public
+	 *
+	 * @param	mixed		$offset: The offset to set (non-integer offsets will be appended)
+	 * @param	mixed		$value: The value to set
+	 *
+	 * @return	void
+	 */
+	public function offsetSet($offset, $value) {
+
+		if (t3lib_div::testInt($offset)) {
+
+			$this->elements[$offset] = $value;
+
+		} else {
+
+			$this->elements[] = $value;
+
+		}
+
+		// Re-number the elements.
+		$this->elements = array_values($this->elements);
+
+	}
+
+	/**
+	 * This removes the element at the given position from the list
+	 *
+	 * @access	public
+	 *
+	 * @param	integer		$position: Numeric position for removing
+	 *
+	 * @return	array		The removed element
+	 */
+	public function remove($position) {
+
+		// Save parameter for logging purposes.
+		$_position = $position;
+
+		$position = intval($position);
+
+		if ($position < 0 || $position >= $this->count) {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return;
+
+		}
+
+		$removed = array_splice($this->elements, $position, 1);
+
+		$this->count = count($this->elements);
+
+		return $this->getRecord($removed[0]);
+
+	}
+
+	/**
 	 * This clears the current list
 	 *
 	 * @access	public
@@ -214,6 +409,22 @@ class tx_dlf_list implements t3lib_Singleton {
 		$this->metadata = array ();
 
 		$this->count = 0;
+
+		$this->position = 0;
+
+	}
+
+	/**
+	 * This resets the list position
+	 * @see Iterator::rewind()
+	 *
+	 * @access	public
+	 *
+	 * @return	void
+	 */
+	public function rewind() {
+
+		$this->position = 0;
 
 	}
 
@@ -306,28 +517,37 @@ class tx_dlf_list implements t3lib_Singleton {
 	}
 
 	/**
-	 * This returns $this->count via __get()
+	 * This unsets the element at the given offset
+	 * @see ArrayAccess::offsetUnset()
 	 *
-	 * @access	protected
+	 * @access	public
 	 *
-	 * @return	integer		The number of elements in the list
+	 * @param	mixed		$offset: The offset to unset
+	 *
+	 * @return	void
 	 */
-	protected function _getCount() {
+	public function offsetUnset($offset) {
 
-		return $this->count;
+		unset ($this->elements[$offset]);
+
+		// Re-number the elements.
+		$this->elements = array_values($this->elements);
+
+		$this->count = count($this->elements);
 
 	}
 
 	/**
-	 * This returns $this->elements via __get()
+	 * This checks if the current list position is valid
+	 * @see Iterator::valid()
 	 *
-	 * @access	protected
+	 * @access	public
 	 *
-	 * @return	array		The documents in sorted order
+	 * @return	boolean		Is the current list position valid?
 	 */
-	protected function _getElements() {
+	public function valid() {
 
-		return $this->elements;
+		return isset($this->elements[$this->position]);
 
 	}
 
