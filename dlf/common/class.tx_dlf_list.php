@@ -27,7 +27,7 @@
  */
 
 /**
- * Document class 'tx_dlf_list' for the 'dlf' extension.
+ * List class 'tx_dlf_list' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
@@ -70,6 +70,30 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	 * @access protected
 	 */
 	protected $position = 0;
+
+	/**
+	 * This holds the full records of already processed list elements
+	 *
+	 * @var	array()
+	 * @access protected
+	 */
+	protected $records = array ();
+
+	/**
+	 * Instance of Apache_Solr_Service class
+	 *
+	 * @var	Apache_Solr_Service
+	 * @access protected
+	 */
+	protected $solr;
+
+	/**
+	 * This holds the Solr metadata configuration
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $solrConfig = array ();
 
 	/**
 	 * This adds an array of elements at the given position to the list
@@ -145,27 +169,152 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	 *
 	 * @access	protected
 	 *
-	 * @param	array		$element: The list element
+	 * @param	mixed		$element: The list element
 	 *
-	 * @return	array		The element's full record
+	 * @return	mixed		The element's full record
 	 */
-	protected function getRecord(array $element) {
+	protected function getRecord($element) {
 
 		$record = array ();
 
-		if (!empty($element['uid'])) {
+		if (is_array($element) && array_keys($element) == array ('u', 's', 'p')) {
 
+			// Return already processed record if possible.
+			if (!empty($this->records[$element['u']])) {
 
+				return $this->records[$element['u']];
+
+			}
+
+			$record = array (
+				'uid' => $element['u'],
+				'page' => 1,
+				'subparts' => $element['p']
+			);
+
+			// Check if it's a list of database records or Solr documents.
+			if (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'collection') {
+
+				// Get document's thumbnail and metadata from database.
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata',
+					'tx_dlf_documents',
+					'(tx_dlf_documents.uid='.intval($record['uid']).' OR tx_dlf_documents.partof='.intval($record['uid']).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+					'',
+					'',
+					''
+				);
+
+				// Process results.
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+					// Prepare document's metadata.
+					$metadata = unserialize($resArray['metadata']);
+
+					if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
+
+						$metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
+
+					}
+
+					if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
+
+						$metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
+
+					}
+
+					if (!empty($metadata['collection']) && is_array($metadata['collection'])) {
+
+						foreach ($metadata['collection'] as $i => $collection) {
+
+							if (t3lib_div::testInt($collection)) {
+
+								$metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
+
+							}
+
+						}
+
+					}
+
+					// Add metadata to list element.
+					if ($resArray['uid'] == $record['uid']) {
+
+						$record['thumbnail'] = $resArray['thumbnail'];
+
+						$record['metadata'] = $metadata;
+
+					} elseif (($key = array_search($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
+
+						$record['subparts'][$key] = array (
+							'uid' => $resArray['uid'],
+							'page' => 1,
+							'thumbnail' => $resArray['thumbnail'],
+							'metadata' => $metadata,
+						);
+
+					}
+
+				}
+
+			} elseif (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'search') {
+
+				if ($this->solrConnect()) {
+
+					// Get document's thumbnail and metadata from Solr index.
+					$result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']));
+
+					// Process results.
+					foreach ($result->response->docs as $resArray) {
+
+						// Prepare document's metadata.
+						$metadata = array ();
+
+						foreach ($this->solrConfig as $index_name => $solr_name) {
+
+							if (!empty($resArray->$solr_name)) {
+
+								$metadata[$index_name] = (is_array($resArray->$solr_name) ? $resArray->$solr_name : array ($resArray->$solr_name));
+
+							}
+
+						}
+
+						// Add metadata to list elements.
+						if ($resArray->toplevel == 1) {
+
+							$record['thumbnail'] = $resArray->thumbnail;
+
+							$record['metadata'] = $metadata;
+
+						} elseif (($key = array_search($resArray->id, $record['subparts'], TRUE)) !== FALSE) {
+
+							$record['subparts'][$key] = array (
+								'uid' => $resArray->uid,
+								'page' => $resArray->page,
+								'thumbnail' => $resArray->thumbnail,
+								'metadata' => $metadata
+							);
+
+						}
+
+					}
+
+				}
+
+			}
+
+			// Save record for later usage.
+			$this->records[$element['u']] = $record;
 
 		} else {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->getRecord([data])] No UID for list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_WARNING, $element);
+				t3lib_div::devLog('[tx_dlf_list->getRecord([data])] No UID of list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_NOTICE, $element);
 
 			}
 
-			// Return list element unchanged.
 			$record = $element;
 
 		}
@@ -406,6 +555,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 		$this->elements = array ();
 
+		$this->elementsRecords = array ();
+
 		$this->metadata = array ();
 
 		$this->count = 0;
@@ -455,6 +606,49 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	}
 
 	/**
+	 * Connects to Solr server.
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		TRUE on success or FALSE on failure
+	 */
+	protected function solrConnect() {
+
+		// Get Solr instance.
+		if (!$this->solr) {
+
+			// Connect to Solr server.
+			if ($this->solr = tx_dlf_solr::getInstance($this->metadata['options']['core'])) {
+
+				// Load index configuration.
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed',
+						'tx_dlf_metadata',
+						'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+						'',
+						'tx_dlf_metadata.sorting ASC',
+						''
+				);
+
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+					$this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
+
+				}
+
+			} else {
+
+				return FALSE;
+
+			}
+
+		}
+
+		return TRUE;
+
+	}
+
+	/**
 	 * This sorts the current list by the given field
 	 *
 	 * @access	public
@@ -473,9 +667,9 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 		foreach ($this->elements as $num => $element) {
 
 			// Is this element sortable?
-			if (!empty($element['sorting'][$by])) {
+			if (!empty($element['s'][$by])) {
 
-				$newOrder[$element['sorting'][$by].str_pad($num, 6, '0', STR_PAD_LEFT)] = $element;
+				$newOrder[$element['s'][$by].str_pad($num, 6, '0', STR_PAD_LEFT)] = $element;
 
 			} else {
 

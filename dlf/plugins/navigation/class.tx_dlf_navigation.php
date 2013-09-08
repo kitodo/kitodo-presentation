@@ -52,7 +52,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			// Load the list.
 			$list = t3lib_div::makeInstance('tx_dlf_list');
 
-			if ($list->count > 0) {
+			if (count($list) > 0) {
 
 				// Build typolink configuration array.
 				$conf = array (

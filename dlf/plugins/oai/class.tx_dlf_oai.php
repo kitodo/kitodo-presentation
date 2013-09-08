@@ -1145,7 +1145,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 				// Save only UIDs for resumption token.
-				$results[] = array ('uid' => $resArray['uid']);
+				$results[] = $resArray['uid'];
 
 			}
 
@@ -1163,7 +1163,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
 
-				$todo[] = $results[$i]['uid'];
+				$todo[] = $results[$i];
 
 				if (empty($results[$i + 1])) {
 
@@ -1521,7 +1521,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
 				// Save only UIDs for resumption token.
-				$results[] = array ('uid' => $resArray['uid']);
+				$results[] = $resArray['uid'];
 
 			}
 
@@ -1533,7 +1533,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			for ($i = 0, $j = intval($this->conf['limit']); $i < $j; $i++) {
 
-				$todo[] = $results[$i]['uid'];
+				$todo[] = $results[$i];
 
 				if (empty($results[$i + 1])) {
 

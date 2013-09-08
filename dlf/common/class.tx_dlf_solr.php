@@ -292,31 +292,19 @@ class tx_dlf_solr {
 		if ($this->numberOfHits > 0) {
 
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
+				'tx_dlf_metadata.index_name AS index_name',
 				'tx_dlf_metadata',
-				'(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->cPid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+				'tx_dlf_metadata.is_sortable=1 AND tx_dlf_metadata.pid='.intval($this->cPid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 				'',
-				'tx_dlf_metadata.sorting ASC',
+				'',
 				''
 			);
-
-			$metadata = array ();
 
 			$sorting = array ();
 
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-				if ($resArray['is_listed']) {
-
-					$metadata[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
-
-				}
-
-				if ($resArray['is_sortable']) {
-
-					$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
-
-				}
+				$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
 
 			}
 
@@ -328,56 +316,34 @@ class tx_dlf_solr {
 		// Process results.
 		foreach ($results->response->docs as $doc) {
 
-			// Prepare document's metadata.
-			$docMeta = array ();
-
-			foreach ($metadata as $index_name => $solr_name) {
-
-				if (!empty($doc->$solr_name)) {
-
-					$docMeta[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name : array ($doc->$solr_name));
-
-				}
-
-			}
-
-			// Prepare document's metadata for sorting.
-			$docSorting = array ();
-
-			foreach ($sorting as $index_name => $solr_name) {
-
-				if (!empty($doc->$solr_name)) {
-
-					$docSorting[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name[0] : $doc->$solr_name);
-
-				}
-
-			}
-
-			// Add relevance to sorting values.
-			$docSorting['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
-
 			// Split toplevel documents from subparts.
 			if ($doc->toplevel == 1) {
 
+				// Prepare document's metadata for sorting.
+				$docSorting = array ();
+
+				foreach ($sorting as $index_name => $solr_name) {
+
+					if (!empty($doc->$solr_name)) {
+
+						$docSorting[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name[0] : $doc->$solr_name);
+
+					}
+
+				}
+
+				// Add relevance to sorting values.
+				$docSorting['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
+
 				$toplevel[$doc->uid] = array (
-					'uid' => $doc->uid,
-					'page' => $doc->page,
-					'thumbnail' => $doc->thumbnail,
-					'metadata' => $docMeta,
-					'sorting' => $docSorting,
-					'subparts' => (!empty($toplevel[$doc->uid]['subparts']) ? $toplevel[$doc->uid]['subparts'] : array ())
+					'u' => $doc->uid,
+					's' => $docSorting,
+					'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : array ())
 				);
 
 			} else {
 
-				$toplevel[$doc->uid]['subparts'][] = array (
-					'uid' => $doc->uid,
-					'page' => $doc->page,
-					'thumbnail' => $doc->thumbnail,
-					'metadata' => $docMeta,
-					'sorting' => $docSorting
-				);
+				$toplevel[$doc->uid]['p'][] = $doc->id;
 
 				if (!in_array($doc->uid, $checks)) {
 
@@ -394,11 +360,11 @@ class tx_dlf_solr {
 		// Check if the toplevel documents have metadata.
 		foreach ($checks as $check) {
 
-			if (empty($toplevel[$check]['uid'])) {
+			if (empty($toplevel[$check]['u'])) {
 
 				// Get information for toplevel document.
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata,tx_dlf_documents.metadata_sorting AS metadata_sorting',
+					'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting',
 					'tx_dlf_documents',
 					'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
 					'',
@@ -410,35 +376,6 @@ class tx_dlf_solr {
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 					$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-					// Prepare document's metadata.
-					$metadata = unserialize($resArray['metadata']);
-
-					if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
-
-						$metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->cPid);
-
-					}
-
-					if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
-
-						$metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->cPid);
-
-					}
-
-					if (!empty($metadata['collection']) && is_array($metadata['collection'])) {
-
-						foreach ($metadata['collection'] as $i => $collection) {
-
-							if (t3lib_div::testInt($collection)) {
-
-								$metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->cPid);
-
-							}
-
-						}
-
-					}
 
 					// Prepare document's metadata for sorting.
 					$sorting = unserialize($resArray['metadata_sorting']);
@@ -462,12 +399,9 @@ class tx_dlf_solr {
 					}
 
 					$toplevel[$check] = array (
-						'uid' => $resArray['uid'],
-						'page' => 1,
-						'thumbnail' => $resArray['thumbnail'],
-						'metadata' => $metadata,
-						'sorting' => $sorting,
-						'subparts' => $toplevel[$check]['subparts']
+						'u' => $resArray['uid'],
+						's' => $sorting,
+						'p' => $toplevel[$check]['p']
 					);
 
 				} else {
@@ -497,6 +431,8 @@ class tx_dlf_solr {
 				'select' => $query,
 				'userid' => 0,
 				'params' => $this->params,
+				'core' => $this->core,
+				'pid' => $this->cPid,
 				'order' => 'relevance',
 				'order.asc' => TRUE,
 			)

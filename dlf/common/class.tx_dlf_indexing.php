@@ -719,7 +719,6 @@ class tx_dlf_indexing {
 
 	}
 
-
 	/**
 	 * This is a static class, thus no instances should be created
 	 *

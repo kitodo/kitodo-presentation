@@ -303,7 +303,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 						$this->list = t3lib_div::makeInstance('tx_dlf_list', $elements);
 
 						// Start index looping.
-						if ($this->list->count) {
+						if (count($this->list) > 0) {
 
 							$this->indexLoop();
 
@@ -322,7 +322,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 					$this->list = t3lib_div::makeInstance('tx_dlf_list');
 
 					// Continue index looping.
-					if ($this->list->count && isset($this->data['core'])) {
+					if (count($this->list) > 0 && isset($this->data['core'])) {
 
 						$this->indexLoop();
 

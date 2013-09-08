@@ -73,7 +73,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	protected function getPagebrowser() {
 
 		// Get overall number of pages.
-		$maxPages = intval(ceil($this->list->count / $this->conf['limit']));
+		$maxPages = intval(ceil(count($this->list) / $this->conf['limit']));
 
 		// Return empty pagebrowser if there is just one page.
 		if ($maxPages < 2) {
@@ -164,7 +164,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$imgAlt = '';
 
-		$metadata = $this->list->elements[$number]['metadata'];
+		$metadata = $this->list[$number]['metadata'];
 
 		foreach ($this->metadata as $index_name => $metaConf) {
 
@@ -182,7 +182,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Get title of parent document if needed.
 					if (empty($value) && $this->conf['getTitle']) {
 
-						$value = '['.tx_dlf_document::getTitle($this->list->elements[$number]['uid'], TRUE).']';
+						$value = '['.tx_dlf_document::getTitle($this->list[$number]['uid'], TRUE).']';
 
 					}
 
@@ -195,7 +195,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 					$imgAlt = htmlspecialchars($value);
 
-					$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $this->list->elements[$number]['uid'], 'page' => $this->list->elements[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+					$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $this->list[$number]['uid'], 'page' => $this->list[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
 
 				// Translate name of holding library.
 				} elseif ($index_name == 'owner' && !empty($value)) {
@@ -241,13 +241,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		}
 
 		// Add thumbnail.
-		if (!empty($this->list->elements[$number]['thumbnail'])) {
+		if (!empty($this->list[$number]['thumbnail'])) {
 
-			$markerArray['###THUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$this->list->elements[$number]['thumbnail'].'" />';
+			$markerArray['###THUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$this->list[$number]['thumbnail'].'" />';
 
 		}
 
-		if (!empty($this->list->elements[$number]['subparts'])) {
+		if (!empty($this->list[$number]['subparts'])) {
 
 			$subpart = $this->getSubEntries($number, $template);
 
@@ -344,7 +344,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$content = '';
 
-		foreach ($this->list->elements[$number]['subparts'] as $subpart) {
+		foreach ($this->list[$number]['subparts'] as $subpart) {
 
 			$markerArray['###SUBMETADATA###'] = '';
 
@@ -540,7 +540,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		$subpartArray['subentry'] = $this->cObj->getSubpart($this->template, '###SUBENTRY###');
 
 		// Set some variable defaults.
-		if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= $this->list->count) {
+		if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= count($this->list)) {
 
 			$this->piVars['pointer'] = max(intval($this->piVars['pointer']), 0);
 
@@ -555,7 +555,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		for ($i = $this->piVars['pointer'] * $this->conf['limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i < $j; $i++) {
 
-			if (empty($this->list->elements[$i])) {
+			if (empty($this->list[$i])) {
 
 				break;
 
@@ -573,7 +573,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		if ($i) {
 
-			$markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), ($this->piVars['pointer'] * $this->conf['limit']) + 1, $i, $this->list->count));
+			$markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), ($this->piVars['pointer'] * $this->conf['limit']) + 1, $i, count($this->list)));
 
 		} else {
 
