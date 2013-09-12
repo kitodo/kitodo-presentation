@@ -283,7 +283,13 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 						// Get title of parent document if needed.
 						if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
 
-							$value = '['.tx_dlf_document::getTitle($this->doc->parentId, TRUE).']';
+							$superiorTitle = tx_dlf_document::getTitle($this->doc->parentId, TRUE);
+
+							if (!empty($superiorTitle)) {
+
+								$value = '['.$superiorTitle.']';
+
+							}
 
 						}
 

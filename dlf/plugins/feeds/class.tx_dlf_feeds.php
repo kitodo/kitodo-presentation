@@ -136,7 +136,13 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 					// Get title of superior document.
 					if ((empty($resArray['title']) || !empty($this->conf['prependSuperiorTitle'])) && !empty($resArray['partof'])) {
 
-						$title .= '['.tx_dlf_document::getTitle($resArray['partof'], TRUE).']';
+						$superiorTitle = tx_dlf_document::getTitle($resArray['partof'], TRUE);
+
+						if (!empty($superiorTitle)) {
+
+							$title .= '['.$superiorTitle.']';
+
+						}
 
 					}
 

@@ -824,7 +824,7 @@ final class tx_dlf_document {
 				list ($title, $partof) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 				// Search parent documents recursively for a title?
-				if ($recursive && empty($title) && intval($partof)) {
+				if ($recursive && empty($title) && intval($partof) && $partof != $uid) {
 
 					$title = self::getTitle($partof, TRUE);
 

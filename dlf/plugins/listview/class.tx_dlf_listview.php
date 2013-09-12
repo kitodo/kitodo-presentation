@@ -182,7 +182,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Get title of parent document if needed.
 					if (empty($value) && $this->conf['getTitle']) {
 
-						$value = '['.tx_dlf_document::getTitle($this->list[$number]['uid'], TRUE).']';
+						$superiorTitle = tx_dlf_document::getTitle($this->list[$number]['uid'], TRUE);
+
+						if (!empty($superiorTitle)) {
+
+							$value = '['.$superiorTitle.']';
+
+						}
 
 					}
 
@@ -368,7 +374,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 						// Get title of parent document if needed.
 						if (empty($value) && $this->conf['getTitle']) {
 
-							$value = '['.tx_dlf_document::getTitle($subpart['uid'], TRUE).']';
+							$superiorTitle = tx_dlf_document::getTitle($subpart['uid'], TRUE);
+
+							if (!empty($superiorTitle)) {
+
+								$value = '['.$superiorTitle.']';
+
+							}
 
 						}
 
