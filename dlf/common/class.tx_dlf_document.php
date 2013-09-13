@@ -215,7 +215,7 @@ final class tx_dlf_document {
 	/**
 	 * This holds the singleton object of the document
 	 *
-	 * @var	tx_dlf_document
+	 * @var	array (tx_dlf_document)
 	 * @access protected
 	 */
 	protected static $registry;
@@ -340,30 +340,34 @@ final class tx_dlf_document {
 		// Sanitize input.
 		$pid = max(intval($pid), 0);
 
-		if (!$forceReload && is_object(self::$registry) && self::$registry instanceof self) {
+		if (!$forceReload) {
 
-			// Check if instance has given PID.
-			if (($pid && self::$registry->pid == $pid) || !$pid) {
-
-				// Return singleton instance if available.
-				return self::$registry;
-
-			}
-
-		} elseif (!$forceReload) {
-
-			// Check the user's session...
-			$sessionData = tx_dlf_helper::loadFromSession(get_called_class());
-
-			if (is_object($sessionData) && $sessionData instanceof self) {
+			if (is_object(self::$registry[$uid]) && self::$registry[$uid] instanceof self) {
 
 				// Check if instance has given PID.
-				if (($pid && $sessionData->pid == $pid) || !$pid) {
+				if (($pid && self::$registry[$uid]->pid == $pid) || !$pid) {
 
-					// ...and restore registry.
-					self::$registry =& $sessionData;
+					// Return singleton instance if available.
+					return self::$registry[$uid];
 
-					return self::$registry;
+				}
+
+			} else {
+
+				// Check the user's session...
+				$sessionData = tx_dlf_helper::loadFromSession(get_called_class());
+
+				if (is_object($sessionData[$uid]) && $sessionData[$uid] instanceof self) {
+
+					// Check if instance has given PID.
+					if (($pid && $sessionData[$uid]->pid == $pid) || !$pid) {
+
+						// ...and restore registry.
+						self::$registry[$uid] =& $sessionData[$uid];
+
+						return self::$registry[$uid];
+
+					}
 
 				}
 
@@ -377,12 +381,12 @@ final class tx_dlf_document {
 		// ...and save it to registry.
 		if ($instance->ready) {
 
-			self::$registry =& $instance;
+			self::$registry[$instance->uid] =& $instance;
 
 			// Load extension configuration
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
 
-			// Save document to session if caching is enabled.
+			// Save registry to session if caching is enabled.
 			if (!empty($extConf['caching'])) {
 
 				tx_dlf_helper::saveToSession(self::$registry, get_class($instance));
@@ -1862,6 +1866,29 @@ final class tx_dlf_document {
 	}
 
 	/**
+	 * This builds an array of the document's logical structure
+	 *
+	 * @access	protected
+	 *
+	 * @return	array		Array of structure nodes' id, label, type and physical page indexes/mptr link with original hierarchy preserved
+	 */
+	protected function _getTableOfContents() {
+
+		// Is there no logical structure array yet?
+		if (!$this->tableOfContentsLoaded) {
+
+			// Get all logical structures.
+			$this->getLogicalStructure('', TRUE);
+
+			$this->tableOfContentsLoaded = TRUE;
+
+		}
+
+		return $this->tableOfContents;
+
+	}
+
+	/**
 	 * This returns the document's thumbnail location
 	 *
 	 * @access	protected
@@ -2013,29 +2040,6 @@ final class tx_dlf_document {
 		}
 
 		return $this->toplevelId;
-
-	}
-
-	/**
-	 * This builds an array of the document's logical structure
-	 *
-	 * @access	protected
-	 *
-	 * @return	array		Array of structure nodes' id, label, type and physical page indexes/mptr link with original hierarchy preserved
-	 */
-	protected function _getTableOfContents() {
-
-		// Is there no logical structure array yet?
-		if (!$this->tableOfContentsLoaded) {
-
-			// Get all logical structures.
-			$this->getLogicalStructure('', TRUE);
-
-			$this->tableOfContentsLoaded = TRUE;
-
-		}
-
-		return $this->tableOfContents;
 
 	}
 
