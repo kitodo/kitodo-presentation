@@ -262,7 +262,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 				if ($this->solrConnect()) {
 
 					// Get document's thumbnail and metadata from Solr index.
-					$result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']));
+					$result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']), 0, $this->solr->limit);
 
 					// Process results.
 					foreach ($result->response->docs as $resArray) {
@@ -281,7 +281,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 						}
 
 						// Add metadata to list elements.
-						if ($resArray->toplevel == 1) {
+						if ($resArray->toplevel) {
 
 							$record['thumbnail'] = $resArray->thumbnail;
 
@@ -299,6 +299,17 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 						}
 
 					}
+
+				}
+
+			}
+
+			// Unset subparts without any metadata.
+			foreach ($record['subparts'] as $id => $subpart) {
+
+				if (!is_array($subpart)) {
+
+					unset ($record['subparts'][$id]);
 
 				}
 

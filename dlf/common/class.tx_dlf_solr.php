@@ -443,6 +443,19 @@ class tx_dlf_solr {
 	}
 
 	/**
+	 * This returns $this->limit via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	integer		The max number of results
+	 */
+	protected function _getLimit() {
+
+		return $this->limit;
+
+	}
+
+	/**
 	 * This returns $this->numberOfHits via __get()
 	 *
 	 * @access	protected
