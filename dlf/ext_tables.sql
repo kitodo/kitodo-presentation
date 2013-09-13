@@ -30,7 +30,7 @@ CREATE TABLE tx_dlf_documents (
     structure int(11) DEFAULT '0' NOT NULL,
     partof int(11) DEFAULT '0' NOT NULL,
     volume tinytext NOT NULL,
-    volume_sorting int(11) DEFAULT '0' NOT NULL,
+    volume_sorting tinytext NOT NULL,
     collections int(11) DEFAULT '0' NOT NULL,
     owner int(11) DEFAULT '0' NOT NULL,
     solrcore int(11) DEFAULT '0' NOT NULL,

@@ -264,7 +264,7 @@ $TCA['tx_dlf_documents'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'trim,int',
+				'eval' => 'trim',
 			),
 		),
 		'collections' => array (
