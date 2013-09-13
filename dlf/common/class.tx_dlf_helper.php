@@ -587,12 +587,12 @@ class tx_dlf_helper {
 	 * Wrapper function for getting localizations in frontend and backend
 	 *
 	 * @param	string		$key: The locallang key to translate
-	 * @param	string		$default: Default return value if no translation is available
 	 * @param	boolean		$hsc: Should the result be htmlspecialchar()'ed?
+	 * @param	string		$default: Default return value if no translation is available
 	 *
 	 * @return	string		The translated string or the given key on failure
 	 */
-	public static function getLL($key, $default = '', $hsc = FALSE) {
+	public static function getLL($key, $hsc = FALSE, $default = '') {
 
 		// Set initial output to default value.
 		$translated = (string) $default;

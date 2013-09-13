@@ -190,8 +190,8 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		// Give feedback about progress.
 		$_message = t3lib_div::makeInstance(
 			't3lib_FlashMessage',
-			htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentsToGo'), $this->list->count)),
-			$GLOBALS['LANG']->getLL('flash.running', TRUE),
+			htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentsToGo'), count($this->list))),
+			tx_dlf_helper::getLL('flash.running', TRUE),
 			t3lib_FlashMessage::INFO,
 			TRUE
 		);
@@ -245,8 +245,8 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 							$_message = t3lib_div::makeInstance(
 								't3lib_FlashMessage',
-								htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.FileNotLoaded'), $title, $uid)),
-								$GLOBALS['LANG']->getLL('flash.error', TRUE),
+								htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.FileNotLoaded'), $title, $uid)),
+								tx_dlf_helper::getLL('flash.error', TRUE),
 								t3lib_FlashMessage::ERROR,
 								TRUE
 							);
@@ -330,8 +330,8 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 						$_message = t3lib_div::makeInstance(
 							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('flash.seeLog', TRUE),
-							$GLOBALS['LANG']->getLL('flash.done', TRUE),
+							tx_dlf_helper::getLL('flash.seeLog', TRUE),
+							tx_dlf_helper::getLL('flash.done', TRUE),
 							t3lib_FlashMessage::OK,
 							TRUE
 						);

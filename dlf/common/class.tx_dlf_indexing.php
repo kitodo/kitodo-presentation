@@ -181,8 +181,8 @@ class tx_dlf_indexing {
 
 						$message = t3lib_div::makeInstance(
 							't3lib_FlashMessage',
-							htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
-							$GLOBALS['LANG']->getLL('flash.done', TRUE),
+							htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
+							tx_dlf_helper::getLL('flash.done', TRUE),
 							t3lib_FlashMessage::OK,
 							TRUE
 						);
@@ -191,8 +191,8 @@ class tx_dlf_indexing {
 
 						$message = t3lib_div::makeInstance(
 							't3lib_FlashMessage',
-							htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
-							$GLOBALS['LANG']->getLL('flash.error', TRUE),
+							htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
+							tx_dlf_helper::getLL('flash.error', TRUE),
 							t3lib_FlashMessage::ERROR,
 							TRUE
 						);
@@ -211,8 +211,8 @@ class tx_dlf_indexing {
 
 					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-						$GLOBALS['LANG']->getLL('flash.error', TRUE),
+						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+						tx_dlf_helper::getLL('flash.error', TRUE),
 						t3lib_FlashMessage::ERROR,
 						TRUE
 					);
@@ -237,8 +237,8 @@ class tx_dlf_indexing {
 
 				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('flash.solrNoConnection', TRUE),
-					$GLOBALS['LANG']->getLL('flash.warning', TRUE),
+					tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
+					tx_dlf_helper::getLL('flash.warning', TRUE),
 					t3lib_FlashMessage::WARNING,
 					TRUE
 				);
@@ -306,8 +306,8 @@ class tx_dlf_indexing {
 
 						$message = t3lib_div::makeInstance(
 							't3lib_FlashMessage',
-							$GLOBALS['LANG']->getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-							$GLOBALS['LANG']->getLL('flash.error', TRUE),
+							tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+							tx_dlf_helper::getLL('flash.error', TRUE),
 							t3lib_FlashMessage::ERROR,
 							TRUE
 						);
@@ -332,8 +332,8 @@ class tx_dlf_indexing {
 
 					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('flash.solrNoConnection', TRUE),
-						$GLOBALS['LANG']->getLL('flash.error', TRUE),
+						tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
+						tx_dlf_helper::getLL('flash.error', TRUE),
 						t3lib_FlashMessage::ERROR,
 						TRUE
 					);
@@ -356,8 +356,8 @@ class tx_dlf_indexing {
 
 				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentDeleted'), $title, $uid)),
-					$GLOBALS['LANG']->getLL('flash.done', TRUE),
+					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentDeleted'), $title, $uid)),
+					tx_dlf_helper::getLL('flash.done', TRUE),
 					t3lib_FlashMessage::OK,
 					TRUE
 				);
@@ -636,8 +636,8 @@ class tx_dlf_indexing {
 
 					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-						$GLOBALS['LANG']->getLL('flash.error', TRUE),
+						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+						tx_dlf_helper::getLL('flash.error', TRUE),
 						t3lib_FlashMessage::ERROR,
 						TRUE
 					);
@@ -687,12 +687,6 @@ class tx_dlf_indexing {
 	 * @return	boolean		TRUE on success or FALSE on failure
 	 */
 	protected static function solrConnect($core, $pid = 0) {
-
-		// Load language file.
-		// TODO: Use tx_dlf_helper::getLL() instead!
-		$file = t3lib_extMgm::extPath(self::$extKey, 'modules/indexing/locallang.xml');
-
-		$GLOBALS['LANG']->includeLLFile($file, TRUE, TRUE);
 
 		// Get Solr instance.
 		if (!self::$solr) {

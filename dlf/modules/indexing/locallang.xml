@@ -33,21 +33,6 @@
 			<label index="function.reindexDoc">Index document</label>
 			<label index="function.reindexDocs">Index collection</label>
 			<label index="form.submit">Start indexing</label>
-			<label index="flash.attention">Attention!</label>
-			<label index="flash.done">Done!</label>
-			<label index="flash.warning">Warning!</label>
-			<label index="flash.error">Error!</label>
-			<label index="flash.running">Please wait...</label>
-			<label index="flash.newCollection">New collection "%s" [%u] added to database.</label>
-			<label index="flash.newLibrary">New library "%s" [%u] added to database.</label>
-			<label index="flash.documentSaved">Document "%s" [%u] saved.</label>
-			<label index="flash.documentIndexed">Document "%s" [%u] indexed.</label>
-			<label index="flash.documentNotIndexed">Document "%s" [%u] could not be indexed.</label>
-			<label index="flash.documentsToGo">%u documents to go.</label>
-			<label index="flash.fileNotLoaded">File "%s" could not be loaded.</label>
-			<label index="flash.solrException">Apache Solr exception thrown:</label>
-			<label index="flash.solrNoConnection">Could not connect to Apache Solr server.</label>
-			<label index="flash.seeLog">See administration log for more details.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="title">Dokumentindexierung</label>
@@ -55,21 +40,6 @@
 			<label index="function.reindexDoc">Dokument indexieren</label>
 			<label index="function.reindexDocs">Sammlung indexieren</label>
 			<label index="form.submit">Indexierung starten</label>
-			<label index="flash.attention">Achtung!</label>
-			<label index="flash.done">Fertig!</label>
-			<label index="flash.warning">Warnung!</label>
-			<label index="flash.error">Fehler!</label>
-			<label index="flash.running">Indexierung läuft...</label>
-			<label index="flash.newCollection">Neue Sammlung "%s" [%u] zur Datenbank hinzugefügt.</label>
-			<label index="flash.newLibrary">Neue Bibliothek "%s" [%u] zur Datenbank hinzugefügt.</label>
-			<label index="flash.documentSaved">Dokument "%s" [%u] gespeichert.</label>
-			<label index="flash.documentIndexed">Dokument "%s" [%u] indexiert.</label>
-			<label index="flash.documentNotIndexed">Dokument "%s" [%u] konnte nicht indexiert werden.</label>
-			<label index="flash.documentsToGo">Verbleibende Dokumente zur Indexierung: %u</label>
-			<label index="flash.fileNotLoaded">Datei "%s" konnte nicht eingelesen werden.</label>
-			<label index="flash.solrException">Apache Solr meldet Ausnahmefehler:</label>
-			<label index="flash.solrNoConnection">Verbindung zu Apache Solr Server konnte nicht hergestellt werden.</label>
-			<label index="flash.seeLog">Alle Details des Indexierungslaufs stehen im Administrationsprotokoll.</label>
 		</languageKey>
 	</data>
 </T3locallang>

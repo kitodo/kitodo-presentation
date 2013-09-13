@@ -78,8 +78,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				// Fine.
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('flash.usergroupAddedMsg'),
-					$GLOBALS['LANG']->getLL('flash.usergroupAdded', TRUE),
+					tx_dlf_helper::getLL('flash.usergroupAddedMsg'),
+					tx_dlf_helper::getLL('flash.usergroupAdded', TRUE),
 					t3lib_FlashMessage::OK,
 					FALSE
 				);
@@ -155,8 +155,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			// Fine.
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				$GLOBALS['LANG']->getLL('flash.metadataAddedMsg'),
-				$GLOBALS['LANG']->getLL('flash.metadataAdded', TRUE),
+				tx_dlf_helper::getLL('flash.metadataAddedMsg'),
+				tx_dlf_helper::getLL('flash.metadataAdded', TRUE),
 				t3lib_FlashMessage::OK,
 				FALSE
 			);
@@ -166,8 +166,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			// Something went wrong.
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				$GLOBALS['LANG']->getLL('flash.metadataNotAddedMsg'),
-				$GLOBALS['LANG']->getLL('flash.metadataNotAdded', TRUE),
+				tx_dlf_helper::getLL('flash.metadataNotAddedMsg'),
+				tx_dlf_helper::getLL('flash.metadataNotAdded', TRUE),
 				t3lib_FlashMessage::ERROR,
 				FALSE
 			);
@@ -202,8 +202,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			// Fine.
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				$GLOBALS['LANG']->getLL('flash.solrcoreAddedMsg'),
-				$GLOBALS['LANG']->getLL('flash.solrcoreAdded', TRUE),
+				tx_dlf_helper::getLL('flash.solrcoreAddedMsg'),
+				tx_dlf_helper::getLL('flash.solrcoreAdded', TRUE),
 				t3lib_FlashMessage::OK,
 				FALSE
 			);
@@ -213,8 +213,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			// Something went wrong.
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				$GLOBALS['LANG']->getLL('flash.solrcoreNotAddedMsg'),
-				$GLOBALS['LANG']->getLL('flash.solrcoreNotAdded', TRUE),
+				tx_dlf_helper::getLL('flash.solrcoreNotAddedMsg'),
+				tx_dlf_helper::getLL('flash.solrcoreNotAdded', TRUE),
 				t3lib_FlashMessage::ERROR,
 				FALSE
 			);
@@ -259,8 +259,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			// Fine.
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				$GLOBALS['LANG']->getLL('flash.structureAddedMsg'),
-				$GLOBALS['LANG']->getLL('flash.structureAdded', TRUE),
+				tx_dlf_helper::getLL('flash.structureAddedMsg'),
+				tx_dlf_helper::getLL('flash.structureAdded', TRUE),
 				t3lib_FlashMessage::OK,
 				FALSE
 			);
@@ -270,8 +270,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			// Something went wrong.
 			$_message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				$GLOBALS['LANG']->getLL('flash.structureNotAddedMsg'),
-				$GLOBALS['LANG']->getLL('flash.structureNotAdded', TRUE),
+				tx_dlf_helper::getLL('flash.structureNotAddedMsg'),
+				tx_dlf_helper::getLL('flash.structureNotAdded', TRUE),
 				t3lib_FlashMessage::ERROR,
 				FALSE
 			);
@@ -301,8 +301,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('flash.wrongPageTypeMsg'),
-					$GLOBALS['LANG']->getLL('flash.wrongPageType', TRUE),
+					tx_dlf_helper::getLL('flash.wrongPageTypeMsg'),
+					tx_dlf_helper::getLL('flash.wrongPageType', TRUE),
 					t3lib_FlashMessage::ERROR,
 					FALSE
 				);
@@ -346,8 +346,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				// Fine.
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('flash.structureOkayMsg'),
-					$GLOBALS['LANG']->getLL('flash.structureOkay', TRUE),
+					tx_dlf_helper::getLL('flash.structureOkayMsg'),
+					tx_dlf_helper::getLL('flash.structureOkay', TRUE),
 					t3lib_FlashMessage::OK,
 					FALSE
 				);
@@ -359,8 +359,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					sprintf($GLOBALS['LANG']->getLL('flash.structureNotOkayMsg'), $_url),
-					$GLOBALS['LANG']->getLL('flash.structureNotOkay', TRUE),
+					sprintf(tx_dlf_helper::getLL('flash.structureNotOkayMsg'), $_url),
+					tx_dlf_helper::getLL('flash.structureNotOkay', TRUE),
 					t3lib_FlashMessage::ERROR,
 					FALSE
 				);
@@ -381,8 +381,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				// Fine.
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('flash.metadataOkayMsg'),
-					$GLOBALS['LANG']->getLL('flash.metadataOkay', TRUE),
+					tx_dlf_helper::getLL('flash.metadataOkayMsg'),
+					tx_dlf_helper::getLL('flash.metadataOkay', TRUE),
 					t3lib_FlashMessage::OK,
 					FALSE
 				);
@@ -394,8 +394,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					sprintf($GLOBALS['LANG']->getLL('flash.metadataNotOkayMsg'), $_url),
-					$GLOBALS['LANG']->getLL('flash.metadataNotOkay', TRUE),
+					sprintf(tx_dlf_helper::getLL('flash.metadataNotOkayMsg'), $_url),
+					tx_dlf_helper::getLL('flash.metadataNotOkay', TRUE),
 					t3lib_FlashMessage::ERROR,
 					FALSE
 				);
@@ -420,8 +420,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					// Fine.
 					$_message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('flash.usergroupOkayMsg'),
-						$GLOBALS['LANG']->getLL('flash.usergroupOkay', TRUE),
+						tx_dlf_helper::getLL('flash.usergroupOkayMsg'),
+						tx_dlf_helper::getLL('flash.usergroupOkay', TRUE),
 						t3lib_FlashMessage::OK,
 						FALSE
 					);
@@ -433,8 +433,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 					$_message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						sprintf($GLOBALS['LANG']->getLL('flash.usergroupNotOkayMsg'), $_url),
-						$GLOBALS['LANG']->getLL('flash.usergroupNotOkay', TRUE),
+						sprintf(tx_dlf_helper::getLL('flash.usergroupNotOkayMsg'), $_url),
+						tx_dlf_helper::getLL('flash.usergroupNotOkay', TRUE),
 						t3lib_FlashMessage::ERROR,
 						FALSE
 					);
@@ -446,8 +446,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				// Usergoup missing.
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					$GLOBALS['LANG']->getLL('flash.usergroupMissingMsg'),
-					$GLOBALS['LANG']->getLL('flash.usergroupMissing', TRUE),
+					tx_dlf_helper::getLL('flash.usergroupMissingMsg'),
+					tx_dlf_helper::getLL('flash.usergroupMissing', TRUE),
 					t3lib_FlashMessage::ERROR,
 					FALSE
 				);
@@ -472,8 +472,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					// Fine.
 					$_message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						$GLOBALS['LANG']->getLL('flash.solrcoreOkayMsg'),
-						$GLOBALS['LANG']->getLL('flash.solrcoreOkay', TRUE),
+						tx_dlf_helper::getLL('flash.solrcoreOkayMsg'),
+						tx_dlf_helper::getLL('flash.solrcoreOkay', TRUE),
 						t3lib_FlashMessage::OK,
 						FALSE
 					);
@@ -485,8 +485,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 					$_message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						sprintf($GLOBALS['LANG']->getLL('flash.solrcoreDeprecatedMsg'), $_url),
-						$GLOBALS['LANG']->getLL('flash.solrcoreDeprecatedOkay', TRUE),
+						sprintf(tx_dlf_helper::getLL('flash.solrcoreDeprecatedMsg'), $_url),
+						tx_dlf_helper::getLL('flash.solrcoreDeprecatedOkay', TRUE),
 						t3lib_FlashMessage::NOTICE,
 						FALSE
 					);
@@ -500,8 +500,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					sprintf($GLOBALS['LANG']->getLL('flash.solrcoreMissingMsg'), $_url),
-					$GLOBALS['LANG']->getLL('flash.solrcoreMissing', TRUE),
+					sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url),
+					tx_dlf_helper::getLL('flash.solrcoreMissing', TRUE),
 					t3lib_FlashMessage::WARNING,
 					FALSE
 				);

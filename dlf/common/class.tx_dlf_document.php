@@ -1255,8 +1255,8 @@ final class tx_dlf_document {
 
 					$message = t3lib_div::makeInstance(
 						't3lib_FlashMessage',
-						htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
-						$GLOBALS['LANG']->getLL('flash.attention', TRUE),
+						htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
+						tx_dlf_helper::getLL('flash.attention', TRUE),
 						t3lib_FlashMessage::INFO,
 						TRUE
 					);
@@ -1334,8 +1334,8 @@ final class tx_dlf_document {
 
 				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.newLibrary'), $metadata['owner'][0], $owner)),
-					$GLOBALS['LANG']->getLL('flash.attention', TRUE),
+					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newLibrary'), $metadata['owner'][0], $owner)),
+					tx_dlf_helper::getLL('flash.attention', TRUE),
 					t3lib_FlashMessage::INFO,
 					TRUE
 				);
@@ -1461,8 +1461,8 @@ final class tx_dlf_document {
 
 			$message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
-				$GLOBALS['LANG']->getLL('flash.done', TRUE),
+				htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
+				tx_dlf_helper::getLL('flash.done', TRUE),
 				t3lib_FlashMessage::OK,
 				TRUE
 			);
