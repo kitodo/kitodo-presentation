@@ -517,6 +517,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 		// Re-number the elements.
 		$this->elements = array_values($this->elements);
 
+		$this->count = count($this->elements);
+
 	}
 
 	/**
@@ -566,7 +568,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 		$this->elements = array ();
 
-		$this->elementsRecords = array ();
+		$this->records = array ();
 
 		$this->metadata = array ();
 
