@@ -332,9 +332,13 @@ class tx_dlf_solr {
 
 				}
 
-				// Add relevance to sorting values.
-				$docSorting['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
+				// Preserve relevance ranking.
+				if (!empty($toplevel[$doc->uid]['s']['relevance'])) {
 
+					$docSorting['relevance'] = $toplevel[$doc->uid]['s']['relevance'];
+				
+				}
+				
 				$toplevel[$doc->uid] = array (
 					'u' => $doc->uid,
 					's' => $docSorting,
@@ -351,6 +355,13 @@ class tx_dlf_solr {
 
 				}
 
+			}
+
+			// Add relevance to sorting values.
+			if (empty($toplevel[$doc->uid]['s']['relevance'])) {
+
+				$toplevel[$doc->uid]['s']['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
+				
 			}
 
 			$i++;
@@ -398,6 +409,13 @@ class tx_dlf_solr {
 
 					}
 
+					// Preserve relevance ranking.
+					if (!empty($toplevel[$check]['s']['relevance'])) {
+
+						$sorting['relevance'] = $toplevel[$check]['s']['relevance'];
+				
+					}
+				
 					$toplevel[$check] = array (
 						'u' => $resArray['uid'],
 						's' => $sorting,
