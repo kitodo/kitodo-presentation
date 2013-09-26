@@ -345,7 +345,7 @@ final class tx_dlf_document {
 			if (is_object(self::$registry[$uid]) && self::$registry[$uid] instanceof self) {
 
 				// Check if instance has given PID.
-				if (($pid && self::$registry[$uid]->pid == $pid) || !$pid) {
+				if (!$pid || !self::$registry[$uid]->pid || $pid == self::$registry[$uid]->pid) {
 
 					// Return singleton instance if available.
 					return self::$registry[$uid];
@@ -360,7 +360,7 @@ final class tx_dlf_document {
 				if (is_object($sessionData[$uid]) && $sessionData[$uid] instanceof self) {
 
 					// Check if instance has given PID.
-					if (($pid && $sessionData[$uid]->pid == $pid) || !$pid) {
+					if (!$pid || !$sessionData[$uid]->pid || $pid == $sessionData[$uid]->pid) {
 
 						// ...and restore registry.
 						self::$registry[$uid] =& $sessionData[$uid];
