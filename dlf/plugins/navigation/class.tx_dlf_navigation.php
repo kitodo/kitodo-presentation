@@ -242,11 +242,11 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 			if (!$this->piVars['double']) {
 
-				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', TRUE), array ('double' => 1), 'tx-dlf-navigation-doubleOn');
+				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', TRUE), array ('double' => 1), 'class="tx-dlf-navigation-doubleOn"');
 
 			} else {
 
-				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', TRUE), array ('double' => 0), 'tx-dlf-navigation-doubleOff');
+				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', TRUE), array ('double' => 0), 'class="tx-dlf-navigation-doubleOff"');
 
 			}
 
