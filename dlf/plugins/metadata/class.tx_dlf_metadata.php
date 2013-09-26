@@ -115,9 +115,13 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 						$data = $this->doc->getMetadata($sid, $this->conf['pages']);
 
-						$data['_id'] = $sid;
+						if (!empty($data)) {
 
-						$metadata[] = $data;
+							$data['_id'] = $sid;
+
+							$metadata[] = $data;
+
+						}
 
 					}
 
@@ -133,9 +137,13 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 						$data = $this->doc->getMetadata($sid, $this->conf['pages']);
 
-						$data['_id'] = $sid;
+						if (!empty($data)) {
 
-						$metadata[] = $data;
+							$data['_id'] = $sid;
+
+							$metadata[] = $data;
+
+						}
 
 					}
 
@@ -146,7 +154,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 		}
 
 		// Get titledata?
-		if (empty($metadata)) {
+		if (empty($metadata) || ($this->conf['rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
 
 			$data = $this->doc->getTitleData($this->conf['pages']);
 
