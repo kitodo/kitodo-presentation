@@ -530,7 +530,7 @@ final class tx_dlf_document {
 			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
 
 			// Get page number of the first page related to this structure element.
-			$details['pagination'] = $this->physicalPagesInfo[$id]['label'];
+			$details['pagination'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['label'];
 
 		// Is this the toplevel structure element?
 		} elseif ($details['id'] == $this->_getToplevelId()) {
