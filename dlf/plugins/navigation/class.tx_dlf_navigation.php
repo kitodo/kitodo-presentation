@@ -242,11 +242,11 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 			if (!$this->piVars['double']) {
 
-				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', TRUE), array ('double' => 1));
+				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', TRUE), array ('double' => 1), 'tx-dlf-navigation-doubleOn');
 
 			} else {
 
-				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', TRUE), array ('double' => 0));
+				$markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', TRUE), array ('double' => 0), 'tx-dlf-navigation-doubleOff');
 
 			}
 
@@ -287,10 +287,11 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 	 *
 	 * @param	string		$label: The link's text
 	 * @param	array		$overrulePIvars: The new set of plugin variables
+	 * @param	string		$aTagParams: Additional HTML attributes for link tag
 	 *
 	 * @return	string		Typolink ready to output
 	 */
-	protected function makeLink($label, array $overrulePIvars = array ()) {
+	protected function makeLink($label, array $overrulePIvars = array (), $aTagParams = '') {
 
 		// Merge plugin variables with new set of values.
 		if (is_array($this->piVars)) {
@@ -307,6 +308,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		$conf = array (
 			'useCacheHash' => 1,
 			'parameter' => $GLOBALS['TSFE']->id,
+			'ATagParams' => $aTagParams,
 			'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE),
 			'title' => $label
 		);
