@@ -160,7 +160,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 			$data['_id'] = $this->doc->toplevelId;
 
-			$metadata[] = $data;
+			array_unshift($metadata, $data);
 
 		}
 
