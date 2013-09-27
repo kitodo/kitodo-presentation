@@ -342,13 +342,15 @@ final class tx_dlf_document {
 
 		if (!$forceReload) {
 
-			if (is_object(self::$registry[$uid]) && self::$registry[$uid] instanceof self) {
+			$regObj = md5($uid);
+
+			if (is_object(self::$registry[$regObj]) && self::$registry[$regObj] instanceof self) {
 
 				// Check if instance has given PID.
-				if (!$pid || !self::$registry[$uid]->pid || $pid == self::$registry[$uid]->pid) {
+				if (!$pid || !self::$registry[$regObj]->pid || $pid == self::$registry[$regObj]->pid) {
 
 					// Return singleton instance if available.
-					return self::$registry[$uid];
+					return self::$registry[$regObj];
 
 				}
 
@@ -357,15 +359,15 @@ final class tx_dlf_document {
 				// Check the user's session...
 				$sessionData = tx_dlf_helper::loadFromSession(get_called_class());
 
-				if (is_object($sessionData[$uid]) && $sessionData[$uid] instanceof self) {
+				if (is_object($sessionData[$regObj]) && $sessionData[$regObj] instanceof self) {
 
 					// Check if instance has given PID.
-					if (!$pid || !$sessionData[$uid]->pid || $pid == $sessionData[$uid]->pid) {
+					if (!$pid || !$sessionData[$regObj]->pid || $pid == $sessionData[$regObj]->pid) {
 
 						// ...and restore registry.
-						self::$registry[$uid] =& $sessionData[$uid];
+						self::$registry[$regObj] = $sessionData[$regObj];
 
-						return self::$registry[$uid];
+						return self::$registry[$regObj];
 
 					}
 
@@ -381,7 +383,13 @@ final class tx_dlf_document {
 		// ...and save it to registry.
 		if ($instance->ready) {
 
-			self::$registry[$instance->uid] =& $instance;
+			self::$registry[md5($instance->uid)] = $instance;
+
+			if ($instance->uid != $instance->location) {
+
+				self::$registry[md5($instance->location)] = $instance;
+
+			}
 
 			// Load extension configuration
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
@@ -1565,6 +1573,19 @@ final class tx_dlf_document {
 		}
 
 		return $this->dmdSec;
+
+	}
+
+	/**
+	 * This returns $this->location via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		The location of the document
+	 */
+	protected function _getLocation() {
+
+		return $this->location;
 
 	}
 
