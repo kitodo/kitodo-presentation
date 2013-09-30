@@ -75,7 +75,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 		} elseif (!empty($this->conf['placeholder'])) {
 
-			$thumbnailFile = $this->conf['placeholder'];
+			$thumbnailFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['placeholder']);
 
 		} else {
 
