@@ -88,7 +88,9 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		// Get new plugin variables for typolink.
 		$piVars = $this->piVars;
 
-		unset($piVars['pointer'], $piVars['DATA']);
+		// Unset no longer needed plugin variables.
+		// unset($piVars['pagegrid']) is for DFG Viewer compatibility!
+		unset($piVars['pointer'], $piVars['DATA'], $piVars['pagegrid']);
 
 		$piVars['page'] = $number;
 
