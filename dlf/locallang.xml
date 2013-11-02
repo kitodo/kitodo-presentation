@@ -88,6 +88,7 @@
 			<label index="tx_dlf_metadataformat.encoded">Encoding</label>
 			<label index="tx_dlf_metadataformat.xpath">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace)</label>
 			<label index="tx_dlf_metadataformat.xpath_sorting">XPath for sorting (optional)</label>
+			<label index="tx_dlf_metadataformat.mandatory">Mandatory field?</label>
 			<label index="tx_dlf_metadataformat.tab1">General</label>
 			<label index="tx_dlf_formats">Data Formats</label>
 			<label index="tx_dlf_formats.type">METS Name</label>
@@ -144,6 +145,7 @@
 			<label index="tt_content.dlf_statistics">DLF: Statistics</label>
 			<label index="tt_content.dlf_toc">DLF: Table of Contents</label>
 			<label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
+			<label index="tt_content.dlf_validator">DLF: Validator</label>
 			<label index="config.metadataFormats">Default metadata namespaces</label>
 			<label index="config.cliUserGroup">CLI user/group</label>
 			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
@@ -153,6 +155,7 @@
 			<label index="config.unhideOnIndex">Unhide indexed documents?: Should hidden documents be unhidden when re-indexing them? (default is "FALSE")</label>
 			<label index="config.fileGrps">Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "MIN,DEFAULT,MAX")</label>
 			<label index="config.fileGrpThumbs">Thumbnail fileGrp: @USE attribute value (default is "THUMBS")</label>
+			<label index="config.fileGrpFulltext">Fulltext fileGrp: @USE attribute value (default is "FULLTEXT")</label>
 			<label index="config.solrConnect">Solr Connection</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
 			<label index="config.solrPort">Solr Server Port: (default is "8180")</label>
@@ -260,6 +263,7 @@
 			<label index="tx_dlf_metadataformat.encoded">Datenformat</label>
 			<label index="tx_dlf_metadataformat.xpath">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum)</label>
 			<label index="tx_dlf_metadataformat.xpath_sorting">XPath für Sortierfeld (optional)</label>
+			<label index="tx_dlf_metadataformat.mandatory">Pflichtfeld?</label>
 			<label index="tx_dlf_metadataformat.tab1">Allgemein</label>
 			<label index="tx_dlf_formats">Datenformate</label>
 			<label index="tx_dlf_formats.type">Bezeichnung in METS</label>
@@ -316,6 +320,7 @@
 			<label index="tt_content.dlf_statistics">DLF: Statistik</label>
 			<label index="tt_content.dlf_toc">DLF: Inhaltsverzeichnis</label>
 			<label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
+			<label index="tt_content.dlf_validator">DLF: Validator</label>
 			<label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
 			<label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
 			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
@@ -325,6 +330,7 @@
 			<label index="config.unhideOnIndex">Indexierte Dokumente einblenden?: Sollen ausgeblendete Dokumente bei der erneuten Indexierung wieder eingeblendet werden? (Standard ist "FALSE")</label>
 			<label index="config.fileGrps">Seiten fileGrps: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "MIN,DEFAULT,MAX")</label>
 			<label index="config.fileGrpThumbs">Vorschau fileGrp: @USE Attributwert der Vorschaubilder (Standard ist "THUMBS")</label>
+			<label index="config.fileGrpFulltext">Volltext fileGrp: @USE Attributwert der Volltexte (Standard ist "FULLTEXT")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
 			<label index="config.solrPort">Solr Server Port: (Standard ist "8180")</label>

@@ -1705,6 +1705,12 @@ final class tx_dlf_document {
 
 				}
 
+				if (!empty($extConf['fileGrpFulltext'])) {
+
+					$useGrps[] = $extConf['fileGrpFulltext'];
+
+				}
+
 				// Yes. Get concordance of @FILEID and @USE attributes.
 				$fileUse = array ();
 

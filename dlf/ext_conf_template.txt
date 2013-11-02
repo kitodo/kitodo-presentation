@@ -25,6 +25,9 @@ fileGrps = MIN,DEFAULT,MAX
 # cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpThumbs
 fileGrpThumbs = THUMBS
 
+# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpFulltext
+fileGrpFulltext = FULLTEXT
+
 # cat=Solr; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkSolrConnection]; label=LLL:EXT:dlf/locallang.xml:config.solrConnect
 solrConnect = 0
 
