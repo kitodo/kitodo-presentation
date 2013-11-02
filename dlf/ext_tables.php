@@ -335,6 +335,15 @@ t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_toolbox'
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_toolbox', 'FILE:EXT:'.$_EXTKEY.'/plugins/toolbox/flexform.xml');
 
+// Plugin "validator".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_validator'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_validator'] = 'pi_flexform';
+
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_validator', $_EXTKEY.'_validator'), 'list_type');
+
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_validator', 'FILE:EXT:'.$_EXTKEY.'/plugins/validator/flexform.xml');
+
 // Tool "toolsDfgviewer".
 t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/toolbox/tools/dfgviewer/', 'Tool: DFG Viewer');
 

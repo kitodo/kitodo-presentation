@@ -696,9 +696,17 @@ $TCA['tx_dlf_metadataformat'] = array (
 				'eval' => 'trim',
 			),
 		),
+		'mandatory' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.mandatory',
+			'config' => array (
+				'type' => 'check',
+				'default' => 0,
+			),
+		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.tab1, encoded;;;;1-1-1, xpath;;;;2-2-2, xpath_sorting'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.tab1, encoded;;;;1-1-1, xpath;;;;2-2-2, xpath_sorting, mandatory;;;;3-3-3'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),

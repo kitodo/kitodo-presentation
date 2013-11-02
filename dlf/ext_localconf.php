@@ -49,6 +49,8 @@ t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toc/class.tx_dlf_toc.php', '_toc', 
 
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/class.tx_dlf_toolbox.php', '_toolbox', 'list_type', FALSE);
 
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/validator/class.tx_dlf_validator.php', '_validator', 'list_type', FALSE);
+
 // Register tools for toolbox plugin.
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/dfgviewer/class.tx_dlf_toolsDfgviewer.php', '_toolsDfgviewer', '', FALSE);
 
