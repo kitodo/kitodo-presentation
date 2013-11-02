@@ -63,3 +63,17 @@ programs to everyone in the universe for free.
 The director of this library is (in the second part of the book) an intelligent
 simian named Patterson Tchung.
 (partly from http://www.omphalosbookreviews.com/index.php/reviews/info/453)
+
+1.2: Hari Seldon
+Hari Seldon, a mathematician and psychologist in Isaac Asimov's first science
+fiction novel of the "Foundation Trilogy", has developed psychohistory, a new
+field of science and psychology that equates all possibilities in large societies
+to mathematics, allowing for the prediction of future events. Using psychohistory
+he has discovered the declining nature of the 12,000-year-old Galactic Empire,
+which will collapse within 500 years and enter a 30,000-year dark age. However,
+he believes that creating a compendium of all human knowledge, the Encyclopedia
+Galactica, would not avert the inevitable fall of the Empire but would reduce the
+dark age to one millennium.
+Hari Seldon departs to a remote world with other Encyclopedists to start working
+on his foresightful plan to compile the Encyclopedia Galactica.
+(partly from http://en.wikipedia.org/wiki/Foundation_(novel))
