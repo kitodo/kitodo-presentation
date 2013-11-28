@@ -271,6 +271,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 				ksort($markerArray, SORT_NUMERIC);
 
+				// Don't cache the output.
+				$this->setCache(FALSE);
+
 			}
 
 			$entry = $this->cObj->getSubpart($this->template, '###ENTRY###');
