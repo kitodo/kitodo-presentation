@@ -90,6 +90,16 @@
 							</config>
 						</TCEforms>
 					</show_userdefined>
+					<randomize>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/collection/locallang.xml:tt_content.pi_flexform.randomize</label>
+							<config>
+								<type>check</type>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</randomize>
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>

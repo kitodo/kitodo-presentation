@@ -105,6 +105,8 @@
 			<label index="tx_dlf_collections.index_name">Index Name</label>
 			<label index="tx_dlf_collections.oai_name">OAI Mapping</label>
 			<label index="tx_dlf_collections.description">Description</label>
+			<label index="tx_dlf_collections.thumbnail">Thumbnail</label>
+			<label index="tx_dlf_collections.priority">Priority</label>
 			<label index="tx_dlf_collections.documents">Documents</label>
 			<label index="tx_dlf_collections.owner">Owner</label>
 			<label index="tx_dlf_collections.owner.none">none</label>
@@ -280,6 +282,8 @@
 			<label index="tx_dlf_collections.index_name">Index-Bezeichnung</label>
 			<label index="tx_dlf_collections.oai_name">OAI-Mapping</label>
 			<label index="tx_dlf_collections.description">Beschreibung</label>
+			<label index="tx_dlf_collections.thumbnail">Vorschaubild</label>
+			<label index="tx_dlf_collections.priority">Priorität</label>
 			<label index="tx_dlf_collections.documents">Dokumente</label>
 			<label index="tx_dlf_collections.owner">Besitzer</label>
 			<label index="tx_dlf_collections.owner.none">keiner</label>

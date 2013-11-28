@@ -906,6 +906,35 @@ $TCA['tx_dlf_collections'] = array (
 			),
 			'defaultExtras' => 'richtext[undo,redo,cut,copy,paste,link,image,line,acronym,chMode,blockstylelabel,formatblock,blockstyle,textstylelabel,textstyle,bold,italic,unorderedlist,orderedlist]:rte_transform[mode=ts_css]',
 		),
+		'thumbnail' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.thumbnail',
+			'config' => array (
+				'type' => 'group',
+				'internal_type' => 'file_reference',
+				'allowed' => 'jpg,png,gif',
+				'minitems' => 0,
+				'maxitems' => 1,
+			),
+		),
+		'priority' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.priority',
+			'config' => array (
+				'type' => 'select',
+				'items' => array (
+					array ('1', 1),
+					array ('2', 2),
+					array ('3', 3),
+					array ('4', 4),
+					array ('5', 5),
+				),
+				'size' => 1,
+				'minitems' => 1,
+				'maxitems' => 1,
+				'default' => 3,
+			),
+		),
 		'documents' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.documents',
@@ -978,11 +1007,12 @@ $TCA['tx_dlf_collections'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab1, label;;1;;1-1-1, description;;;;2-2-2, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id;;2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab1, label;;1;;1-1-1, description;;2;;2-2-2, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id;;3'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1),
-		'2' => array ('showitem' => 'fe_admin_lock', 'canNotCollapse' => 1),
+		'2' => array ('showitem' => 'thumbnail, priority', 'canNotCollapse' => 1),
+		'3' => array ('showitem' => 'fe_admin_lock', 'canNotCollapse' => 1),
 	),
 );
 

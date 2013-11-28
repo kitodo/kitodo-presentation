@@ -190,7 +190,7 @@ $TCA['tx_dlf_collections'] = array (
 		'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
 	),
 	'feInterface' => array (
-		'fe_admin_fieldList' => 'label,description,documents',
+		'fe_admin_fieldList' => 'label,description,thumbnail,documents',
 	)
 );
 

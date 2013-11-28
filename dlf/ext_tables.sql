@@ -181,6 +181,8 @@ CREATE TABLE tx_dlf_collections (
     index_name tinytext NOT NULL,
     oai_name tinytext NOT NULL,
     description text NOT NULL,
+    thumbnail text NOT NULL,
+    priority tinyint(4) DEFAULT '3' NOT NULL,
     documents int(11) DEFAULT '0' NOT NULL,
     owner int(11) DEFAULT '0' NOT NULL,
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,

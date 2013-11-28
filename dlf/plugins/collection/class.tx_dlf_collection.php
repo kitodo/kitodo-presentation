@@ -153,7 +153,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		// Get collections.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,tx_dlf_collections.description AS description,COUNT(tx_dlf_documents.uid) AS titles',
+			'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority,COUNT(tx_dlf_documents.uid) AS titles',
 			'tx_dlf_documents',
 			'tx_dlf_relations',
 			'tx_dlf_collections',
@@ -198,6 +198,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
 			// Process results.
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
+				// Generate random but unique array key taking priority into account.
+				do {
+
+					$_key = ($resArray['priority'] * 1000) + mt_rand(0, 1000);
+
+				} while (!empty($markerArray[$_key]));
+
 				// Merge plugin variables with new set of values.
 				$additionalParams = array ('collection' => $resArray['uid']);
 
@@ -219,32 +226,50 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				);
 
 				// Link collection's title to list view.
-				$markerArray[$resArray['uid']]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);
+				$markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);
 
 				// Add feed link if applicable.
 				if (!empty($this->conf['targetFeed'])) {
 
 					$img = '<img src="'.t3lib_extMgm::siteRelPath($this->extKey).'res/icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
 
-					$markerArray[$resArray['uid']]['###FEED###'] = $this->pi_linkTP($img, array ($this->prefixId => array ('collection' => $resArray['uid'])), FALSE, $this->conf['targetFeed']);
+					$markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, array ($this->prefixId => array ('collection' => $resArray['uid'])), FALSE, $this->conf['targetFeed']);
 
 				} else {
 
-					$markerArray[$resArray['uid']]['###FEED###'] = '';
+					$markerArray[$_key]['###FEED###'] = '';
+
+				}
+
+				// Add thumbnail.
+				if (!empty($resArray['thumbnail'])) {
+
+					$markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($resArray['label']).'" src="'.$resArray['thumbnail'].'" />';
+
+				} else {
+
+					$markerArray[$_key]['###THUMBNAIL###'] = '';
 
 				}
 
 				// Add description.
-				$markerArray[$resArray['uid']]['###DESCRIPTION###'] = $this->pi_RTEcssText($resArray['description']);
+				$markerArray[$_key]['###DESCRIPTION###'] = $this->pi_RTEcssText($resArray['description']);
 
 				// Build statistic's output.
 				$labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
 
-				$markerArray[$resArray['uid']]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$labelTitles);
+				$markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$labelTitles);
 
 				$labelVolumes = $this->pi_getLL(($volumes[$resArray['uid']] > 1 ? 'volumes' : 'volume'), '', FALSE);
 
-				$markerArray[$resArray['uid']]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$labelVolumes);
+				$markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$labelVolumes);
+
+			}
+
+			// Randomize sorting?
+			if (!empty($this->conf['randomize'])) {
+
+				ksort($markerArray, SORT_NUMERIC);
 
 			}
 
