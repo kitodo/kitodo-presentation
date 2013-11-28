@@ -814,13 +814,6 @@ class tx_dlf_helper {
 	 */
 	public static function loadJQuery() {
 
-		// Was jQuery already loaded before?
-		if (T3JQUERY === TRUE) {
-
-			return TRUE;
-
-		}
-
 		// Ensure extension "t3jquery" is available.
 		if (t3lib_extMgm::isLoaded('t3jquery')) {
 
