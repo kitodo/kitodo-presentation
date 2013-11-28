@@ -912,7 +912,8 @@ $TCA['tx_dlf_collections'] = array (
 			'config' => array (
 				'type' => 'group',
 				'internal_type' => 'file_reference',
-				'allowed' => 'jpg,png,gif',
+				'allowed' => 'gif,jpg,png',
+				'size' => 1,
 				'minitems' => 0,
 				'maxitems' => 1,
 			),
