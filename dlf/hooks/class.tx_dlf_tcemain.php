@@ -148,16 +148,16 @@ class tx_dlf_tcemain {
 					// Trim path and append trailing slash.
 					$path = (trim($conf['solrPath'], '/') ? trim($conf['solrPath'], '/').'/' : '');
 
-					// Build request.
-					// @see http://wiki.apache.org/solr/CoreAdmin
-					$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=.&dataDir=dlfCore'.$coreNumber;
-
 					$context = stream_context_create(array (
 						'http' => array (
 							'method' => 'GET',
 							'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
 						)
 					));
+
+					// Build request for adding new Solr core.
+					// @see http://wiki.apache.org/solr/CoreAdmin
+					$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=.&dataDir=dlfCore'.$coreNumber;
 
 					$response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
 
@@ -168,9 +168,26 @@ class tx_dlf_tcemain {
 
 						if ($status && $status[0] == 0) {
 
-							$fieldArray['index_name'] = 'dlfCore'.$coreNumber;
+							// Build request for adding new Solr core for fulltext coordinates.
+							// @see http://wiki.apache.org/solr/CoreAdmin
+							$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?action=CREATE&name=dlfCore'.$coreNumber.'_txtcoords&instanceDir=.&dataDir=dlfCore'.$coreNumber.'_txtcoords&schema=schema_txtcoords.xml';
+							
+							$response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
 
-							return;
+							// Process response.
+							if ($response) {
+
+								$status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
+
+								if ($status && $status[0] == 0) {
+							
+									$fieldArray['index_name'] = 'dlfCore'.$coreNumber;
+
+									return;
+									
+								}
+								
+							}
 
 						}
 
