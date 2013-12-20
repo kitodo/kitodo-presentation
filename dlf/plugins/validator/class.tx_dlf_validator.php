@@ -55,16 +55,6 @@ class tx_dlf_validator extends tx_dlf_plugin {
 		// Disable caching for this plugin.
 		$this->setCache(FALSE);
 
-		// Load current document.
-		$this->loadDocument();
-
-		if ($this->doc === NULL) {
-
-			// Quit without doing anything if required variables are not set.
-			return $content;
-
-		}
-
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
 
@@ -73,6 +63,29 @@ class tx_dlf_validator extends tx_dlf_plugin {
 		} else {
 
 			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/validator/template.tmpl'), '###TEMPLATE###');
+
+		}
+
+		// Load current document.
+		$this->loadDocument();
+
+		if ($this->doc === NULL) {
+
+			// Document could not be loaded.
+			// Check:
+			// - if document location is valid URL
+			// - if document location is reachable
+			// - if document is well-formed XML
+			// - if document has METS node
+
+		} else {
+
+			// Document loaded.
+			// Check:
+			// - if document is valid METS document
+			// - if document contains supported metadata schema
+			// - if document's metadata are valid
+			// - if document provides configured mandatory fields
 
 		}
 

@@ -590,9 +590,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		for ($i = $resultSet->metadata['offset'], $j = intval($resultSet->metadata['offset'] + $this->conf['limit']); $i < $j; $i++) {
 
-			$todo[] = $resultSet->elements[$i]['uid'];
+			$todo[] = $resultSet[$i];
 
-			if (empty($resultSet->elements[$i + 1])) {
+			if (empty($resultSet[$i + 1])) {
 
 				$complete = TRUE;
 
@@ -742,7 +742,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$resumptionToken->setAttribute('cursor', $resultSet->metadata['offset']);
 
-		$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+		$resumptionToken->setAttribute('completeListSize', count($resultSet));
 
 		$resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
@@ -1249,7 +1249,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 					$resumptionToken->setAttribute('cursor', '0');
 
-					$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+					$resumptionToken->setAttribute('completeListSize', count($resultSet));
 
 					$resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
@@ -1654,7 +1654,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 					$resumptionToken->setAttribute('cursor', '0');
 
-					$resumptionToken->setAttribute('completeListSize', $resultSet->count);
+					$resumptionToken->setAttribute('completeListSize', count($resultSet));
 
 					$resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
