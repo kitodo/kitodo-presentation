@@ -171,7 +171,7 @@ class tx_dlf_tcemain {
 							// Build request for adding new Solr core for fulltext coordinates.
 							// @see http://wiki.apache.org/solr/CoreAdmin
 							$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?action=CREATE&name=dlfCore'.$coreNumber.'_txtcoords&instanceDir=.&dataDir=dlfCore'.$coreNumber.'_txtcoords&schema=schema_txtcoords.xml';
-							
+
 							$response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
 
 							// Process response.
@@ -180,13 +180,13 @@ class tx_dlf_tcemain {
 								$status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
 
 								if ($status && $status[0] == 0) {
-							
+
 									$fieldArray['index_name'] = 'dlfCore'.$coreNumber;
 
 									return;
-									
+
 								}
-								
+
 							}
 
 						}
@@ -199,7 +199,8 @@ class tx_dlf_tcemain {
 
 					}
 
-					$fieldArray = NULL;
+					// Solr core could not be created, thus unset field array.
+					$fieldArray = array ();
 
 					break;
 
@@ -277,7 +278,7 @@ class tx_dlf_tcemain {
 						if (count($fieldArray) < 2) {
 
 							// Unset the whole field array.
-							$fieldArray = NULL;
+							$fieldArray = array ();
 
 						} else {
 
