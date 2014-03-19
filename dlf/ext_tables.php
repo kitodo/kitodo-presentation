@@ -344,12 +344,6 @@ t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_validato
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_validator', 'FILE:EXT:'.$_EXTKEY.'/plugins/validator/flexform.xml');
 
-// Tool "toolsDfgviewer".
-t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/toolbox/tools/dfgviewer/', 'Tool: DFG Viewer');
-
-// Tool "toolsPdf".
-t3lib_extMgm::addStaticFile($_EXTKEY, 'plugins/toolbox/tools/pdf/', 'Tool: PDF Download');
-
 // Register modules.
 if (TYPO3_MODE == 'BE')	{
 

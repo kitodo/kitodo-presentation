@@ -25,6 +25,9 @@ fileGrps = MIN,DEFAULT,MAX
 # cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpThumbs
 fileGrpThumbs = THUMBS
 
+# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpDownload
+fileGrpDownload = DOWNLOAD
+
 # cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpFulltext
 fileGrpFulltext = FULLTEXT
 

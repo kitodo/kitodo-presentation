@@ -242,7 +242,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					t3lib_div::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
