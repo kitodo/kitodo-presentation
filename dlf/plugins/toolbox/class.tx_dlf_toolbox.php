@@ -76,7 +76,7 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 		// Build data array.
 		$data = array ();
 
-		if (t3lib_div::testInt($this->piVars['id'])) {
+		if (tx_dlf_helper::testInt($this->piVars['id'])) {
 
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
