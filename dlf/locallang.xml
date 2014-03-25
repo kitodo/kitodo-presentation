@@ -133,7 +133,6 @@
 			<label index="tx_dlf_libraries.tab1">General</label>
 			<label index="tx_dlf_libraries.tab2">Translation</label>
 			<label index="tx_dlf_libraries.tab3">Catalogs</label>
-			<label index="tx_dlf_toolbox.toolsDfgviewer">Link to DFG Viewer</label>
 			<label index="tx_dlf_toolbox.toolsPdf">PDF Download</label>
 			<label index="tt_content.dlf_collection">DLF: Collection</label>
 			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
@@ -157,6 +156,7 @@
 			<label index="config.unhideOnIndex">Unhide indexed documents?: Should hidden documents be unhidden when re-indexing them? (default is "FALSE")</label>
 			<label index="config.fileGrps">Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "MIN,DEFAULT,MAX")</label>
 			<label index="config.fileGrpThumbs">Thumbnail fileGrp: @USE attribute value (default is "THUMBS")</label>
+			<label index="config.fileGrpDownload">Download fileGrp: @USE attribute value (default is "DOWNLOAD")</label>
 			<label index="config.fileGrpFulltext">Fulltext fileGrp: @USE attribute value (default is "FULLTEXT")</label>
 			<label index="config.solrConnect">Solr Connection</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
@@ -310,7 +310,6 @@
 			<label index="tx_dlf_libraries.tab1">Allgemein</label>
 			<label index="tx_dlf_libraries.tab2">Übersetzung</label>
 			<label index="tx_dlf_libraries.tab3">Kataloge</label>
-			<label index="tx_dlf_toolbox.toolsDfgviewer">Link zum DFG-Viewer</label>
 			<label index="tx_dlf_toolbox.toolsPdf">PDF-Download</label>
 			<label index="tt_content.dlf_collection">DLF: Kollektion</label>
 			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
@@ -334,6 +333,7 @@
 			<label index="config.unhideOnIndex">Indexierte Dokumente einblenden?: Sollen ausgeblendete Dokumente bei der erneuten Indexierung wieder eingeblendet werden? (Standard ist "FALSE")</label>
 			<label index="config.fileGrps">Seiten fileGrps: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "MIN,DEFAULT,MAX")</label>
 			<label index="config.fileGrpThumbs">Vorschau fileGrp: @USE Attributwert der Vorschaubilder (Standard ist "THUMBS")</label>
+			<label index="config.fileGrpDownload">Download fileGrp: @USE Attributwert der Downloads (Standard ist "DOWNLOAD")</label>
 			<label index="config.fileGrpFulltext">Volltext fileGrp: @USE Attributwert der Volltexte (Standard ist "FULLTEXT")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>

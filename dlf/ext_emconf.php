@@ -28,7 +28,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'category' => 'fe',
 	'author' => 'Sebastian Meyer',
 	'author_email' => 'sebastian.meyer@slub-dresden.de',
-	'author_company' => '<br /><a href="http://www.slub-dresden.de/en/" target="_blank">Saxon State and University Library Dresden</a><br /><a href="https://launchpad.net/goobi" target="_blank">The Goobi Community</a>',
+	'author_company' => '<br /><a href="http://www.goobi.org/" target="_blank">Goobi.org</a><br /><a href="https://github.com/goobi" target="_blank">Goobi on Github</a>',
 	'shy' => '',
 	'priority' => '',
 	'module' => '',

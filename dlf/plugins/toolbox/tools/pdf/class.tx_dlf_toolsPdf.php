@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2014 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -59,6 +59,23 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		// Turn cache off.
 		$this->setCache(FALSE);
 
+		// Load current document.
+		$this->loadDocument();
+
+		if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload'])) {
+
+			// Quit without doing anything if required variables are not set.
+			return $content;
+
+		} else {
+
+			// Set default values if not set.
+			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+
+			$this->piVars['double'] = t3lib_div::intInRange($this->piVars['double'], 0, 1, 0);
+
+		}
+
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
 
@@ -70,11 +87,116 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 		}
 
-		// TODO: Just a quick and dirty hack so far!
-		$ppn = preg_replace('/oai\:[\w\-\:]*id-/', '', $this->cObj->data['record_id']);
-		$content = $this->cObj->substituteMarkerArray($this->template, array ('###LINK###' => '<a href="http://digital.slub-dresden.de/fileadmin/data/'.$ppn.'/'.$ppn.'_tif/jpegs/'.$ppn.'.pdf" target="_blank" title="PDF Download">PDF Download</a>'));
+		// Get single page downloads.
+		$markerArray['###PAGE###'] = $this->getPageLink();
+
+		// Get work download.
+		$markerArray['###WORK###'] = $this->getWorkLink();
+
+		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
 		return $this->pi_wrapInBaseClass($content);
+
+	}
+
+	/**
+	 * Get page's download link
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		Link to downloadable page
+	 */
+	protected function getPageLink() {
+
+		$pageLink = array ();
+
+		// Get image link.
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpDownload']])) {
+
+			$pageLink[] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpDownload']]);
+
+			// Get second page, too, if double page view is activated.
+			if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
+
+				$pageLink[] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page'] + 1]]['files'][$this->conf['fileGrpDownload']]);
+
+			}
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_toolsPdf->getPageLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+		}
+
+		// Wrap URLs with HTML.
+		if (!empty($pageLink)) {
+
+			if (count($pageLink) > 1) {
+
+				$pageLink[0] = $this->pi_linkToPage($this->pi_getLL('leftPage', ''), $pageLink[0], '_blank', array ('title' => $this->pi_getLL('leftPage', '')));
+
+				$pageLink[1] = $this->pi_linkToPage($this->pi_getLL('rightPage', ''), $pageLink[1], '_blank', array ('title' => $this->pi_getLL('rightPage', '')));
+
+			} else {
+
+				$pageLink[0] = $this->pi_linkToPage($this->pi_getLL('singlePage', ''), $pageLink[0], '_blank', array ('title' => $this->pi_getLL('singlePage', '')));
+
+			}
+
+		}
+
+		return implode('', $pageLink);
+
+	}
+
+	/**
+	 * Get work's download link
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		Link to downloadable work
+	 */
+	protected function getWorkLink() {
+
+		$workLink = '';
+
+		// Get work link.
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[0]]['files'][$this->conf['fileGrpDownload']])) {
+
+			$workLink = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[0]]['files'][$this->conf['fileGrpDownload']]);
+
+		} else {
+
+			$details = $this->doc->getLogicalStructure($this->doc->toplevelId);
+
+			if (!empty($details['files'][$this->conf['fileGrpDownload']])) {
+
+				$workLink = $this->doc->getFileLocation($details['files'][$this->conf['fileGrpDownload']]);
+
+			}
+
+		}
+
+		// Wrap URLs with HTML.
+		if (!empty($workLink)) {
+
+			$workLink = $this->pi_linkToPage($this->pi_getLL('work', ''), $workLink, '_blank', array ('title' => $this->pi_getLL('work', '')));
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_toolsPdf->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+		}
+
+		return $workLink;
 
 	}
 

@@ -80,6 +80,24 @@ final class tx_dlf_document {
 	public $extKey = 'dlf';
 
 	/**
+	 * This holds the file ID -> USE concordance
+	 * @see _getFileGrps()
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $fileGrps = array ();
+
+	/**
+	 * Are the file groups loaded?
+	 * @see $fileGrps
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $fileGrpsLoaded = FALSE;
+
+	/**
 	 * This holds the configuration for all supported metadata encodings
 	 * @see loadFormats()
 	 *
@@ -547,6 +565,23 @@ final class tx_dlf_document {
 			$details['points'] = 1;
 
 			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']];
+
+		}
+
+		// Get the files this structure element is pointing at.
+		$details['files'] = array ();
+
+		$fileUse = $this->_getFileGrps();
+
+		// Get the file representations from fileSec node.
+		foreach ($structure->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+
+			// Check if file has valid @USE attribute.
+			if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
+
+				$details['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+
+			}
 
 		}
 
@@ -1577,6 +1612,66 @@ final class tx_dlf_document {
 	}
 
 	/**
+	 * This builds the file ID -> USE concordance
+	 *
+	 * @access	protected
+	 *
+	 * @return	array		Array of file use groups with file IDs
+	 */
+	protected function _getFileGrps() {
+
+		if (!$this->fileGrpsLoaded) {
+
+			// Get configured USE attributes.
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+
+			$useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
+
+			if (!empty($extConf['fileGrpThumbs'])) {
+
+				$useGrps[] = $extConf['fileGrpThumbs'];
+
+			}
+
+			if (!empty($extConf['fileGrpDownload'])) {
+
+				$useGrps[] = $extConf['fileGrpDownload'];
+
+			}
+
+			if (!empty($extConf['fileGrpFulltext'])) {
+
+				$useGrps[] = $extConf['fileGrpFulltext'];
+
+			}
+
+			// Get all file groups.
+			$fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
+
+			// Build concordance for configured USE attributes.
+			foreach ($fileGrps as $fileGrp) {
+
+				if (in_array((string) $fileGrp['USE'], $useGrps)) {
+
+					foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
+
+						$this->fileGrps[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
+
+					}
+
+				}
+
+			}
+
+			$this->fileGrpsLoaded = TRUE;
+
+		}
+
+		return $this->fileGrps;
+
+	}
+
+	/**
 	 * This returns $this->location via __get()
 	 *
 	 * @access	protected
@@ -1695,40 +1790,8 @@ final class tx_dlf_document {
 
 			if ($pageNodes) {
 
-				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-
-				$useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
-
-				if (!empty($extConf['fileGrpThumbs'])) {
-
-					$useGrps[] = $extConf['fileGrpThumbs'];
-
-				}
-
-				if (!empty($extConf['fileGrpFulltext'])) {
-
-					$useGrps[] = $extConf['fileGrpFulltext'];
-
-				}
-
-				// Yes. Get concordance of @FILEID and @USE attributes.
-				$fileUse = array ();
-
-				$fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
-
-				foreach ($fileGrps as $fileGrp) {
-
-					if (in_array((string) $fileGrp['USE'], $useGrps)) {
-
-						foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
-
-							$fileUse[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
-
-						}
-
-					}
-
-				}
+				// Get file groups.
+				$fileUse = $this->_getFileGrps();
 
 				// Get the physical sequence's metadata.
 				$physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
