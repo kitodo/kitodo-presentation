@@ -1028,7 +1028,7 @@ class tx_dlf_helper {
 		}
 
 		// Check if "index_name" is an UID.
-		if (t3lib_div::testInt($index_name)) {
+		if (tx_dlf_helper::testInt($index_name)) {
 
 			$index_name = self::getIndexName($index_name, $table, $pid);
 
