@@ -559,7 +559,7 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('pid', $doc->pid);
 
-			if (t3lib_div::testInt($logicalUnit['points'])) {
+			if (tx_dlf_helper::testInt($logicalUnit['points'])) {
 
 				$solrDoc->setField('page', $logicalUnit['points']);
 

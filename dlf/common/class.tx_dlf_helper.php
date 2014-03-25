@@ -1175,6 +1175,68 @@ class tx_dlf_helper {
 	}
 
 	/**
+	 * Forces the integer $theInt into the boundaries of $min and $max.
+	 * If the $theInt is 'FALSE' then the $zeroValue is applied.
+	 *
+	 * Inspired by tc_beuser
+	 *
+	 * @access	public
+	 *
+	 * @param integer $theInt Input value
+	 * @param integer $min Lower limit
+	 * @param integer $max Higher limit
+	 * @param integer $zeroValue Default value if input is FALSE.
+	 *
+	 * @return integer The input value forced into the boundaries of $min and $max
+	 * @deprecated removed in TYPO3 6.0.0 already
+	 */
+	public function intInRange($theInt, $min, $max = 2000000000, $zeroValue = 0) {
+
+		// TYPO3 > 6.0
+		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 6000000) {
+
+			return t3lib_utility_Math::forceIntegerInRange($theInt, $min, $max, $zeroValue);
+
+		}
+		// TYPO3 4.5 - 4.7
+		else {
+
+			return t3lib_div::intInRange($theInt, $min, $max, $zeroValue);
+
+		}
+	}
+
+	/**
+	 * Tests if the input can be interpreted as integer.
+	 *
+	 * @access	public
+	 *
+	 * @param integer $theInt Input value
+	 *
+	 * @return integer The input value forced into the boundaries of $min and $max
+	 * @deprecated removed in TYPO3 6.0.0 already
+	 */
+	public function testInt($theInt) {
+
+		$isVersion6 = FALSE;
+
+		// TYPO3 > 6.0
+		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 6000000) {
+
+			return t3lib_utility_Math::canBeInterpretedAsInteger($theInt);
+
+		}
+		// TYPO3 4.5 - 4.7
+		else {
+
+			return t3lib_div::testInt($theInt);
+
+		}
+
+	}
+
+
+	/**
 	 * This is a static class, thus no instances should be created
 	 *
 	 * @access	protected

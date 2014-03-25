@@ -70,9 +70,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		} else {
 
 			// Set default values if not set.
-			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+			$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
-			$this->piVars['double'] = t3lib_div::intInRange($this->piVars['double'], 0, 1, 0);
+			$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
 
 		}
 
