@@ -371,19 +371,19 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				// Prepare document's metadata for sorting.
 				$sorting = unserialize($resArray['metadata_sorting']);
 
-				if (!empty($sorting['type']) && t3lib_div::testInt($sorting['type'])) {
+				if (!empty($sorting['type']) && tx_dlf_helper::testInt($sorting['type'])) {
 
 					$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
 
 				}
 
-				if (!empty($sorting['owner']) && t3lib_div::testInt($sorting['owner'])) {
+				if (!empty($sorting['owner']) && tx_dlf_helper::testInt($sorting['owner'])) {
 
 					$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
 
 				}
 
-				if (!empty($sorting['collection']) && t3lib_div::testInt($sorting['collection'])) {
+				if (!empty($sorting['collection']) && tx_dlf_helper::testInt($sorting['collection'])) {
 
 					$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
