@@ -110,7 +110,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 		// Save parameters for logging purposes.
 		$_position = $position;
 
-		$position = t3lib_div::intInRange($position, 0, $this->count, $this->count);
+		$position = tx_dlf_helper::intInRange($position, 0, $this->count, $this->count);
 
 		if (!empty($elements)) {
 
@@ -211,13 +211,13 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 					// Prepare document's metadata.
 					$metadata = unserialize($resArray['metadata']);
 
-					if (!empty($metadata['type'][0]) && t3lib_div::testInt($metadata['type'][0])) {
+					if (!empty($metadata['type'][0]) && tx_dlf_helper::testInt($metadata['type'][0])) {
 
 						$metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
 
 					}
 
-					if (!empty($metadata['owner'][0]) && t3lib_div::testInt($metadata['owner'][0])) {
+					if (!empty($metadata['owner'][0]) && tx_dlf_helper::testInt($metadata['owner'][0])) {
 
 						$metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
 
@@ -227,7 +227,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 						foreach ($metadata['collection'] as $i => $collection) {
 
-							if (t3lib_div::testInt($collection)) {
+							if (tx_dlf_helper::testInt($collection)) {
 
 								$metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
 
@@ -504,7 +504,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	 */
 	public function offsetSet($offset, $value) {
 
-		if (t3lib_div::testInt($offset)) {
+		if (tx_dlf_helper::testInt($offset)) {
 
 			$this->elements[$offset] = $value;
 

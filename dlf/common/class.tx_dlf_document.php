@@ -1401,7 +1401,7 @@ final class tx_dlf_document {
 		// Get UID of superior document.
 		$partof = 0;
 
-		if (!empty($this->tableOfContents[0]['points']) && !t3lib_div::testInt($this->tableOfContents[0]['points'])) {
+		if (!empty($this->tableOfContents[0]['points']) && !tx_dlf_helper::testInt($this->tableOfContents[0]['points'])) {
 
 			$superior =& tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
 
@@ -2184,7 +2184,7 @@ final class tx_dlf_document {
 	protected function __construct($uid, $pid) {
 
 		// Prepare to check database for the requested document.
-		if (t3lib_div::testInt($uid)) {
+		if (tx_dlf_helper::testInt($uid)) {
 
 			$whereClause = 'tx_dlf_documents.uid='.intval($uid).tx_dlf_helper::whereClause('tx_dlf_documents');
 

@@ -85,7 +85,7 @@ class tx_dlf_tceforms {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
-			if (!t3lib_div::testInt($pages)) {
+			if (!tx_dlf_helper::testInt($pages)) {
 
 				$parts = explode('|', $pages);
 
@@ -140,7 +140,7 @@ class tx_dlf_tceforms {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
-			if (!t3lib_div::testInt($pages)) {
+			if (!tx_dlf_helper::testInt($pages)) {
 
 				$_parts = explode('|', $pages);
 
@@ -195,7 +195,7 @@ class tx_dlf_tceforms {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
-			if (!t3lib_div::testInt($pages)) {
+			if (!tx_dlf_helper::testInt($pages)) {
 
 				$_parts = explode('|', $pages);
 
@@ -250,7 +250,7 @@ class tx_dlf_tceforms {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
-			if (!t3lib_div::testInt($pages)) {
+			if (!tx_dlf_helper::testInt($pages)) {
 
 				$parts = explode('|', $pages);
 
@@ -305,7 +305,7 @@ class tx_dlf_tceforms {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
-			if (!t3lib_div::testInt($pages)) {
+			if (!tx_dlf_helper::testInt($pages)) {
 
 				$parts = explode('|', $pages);
 
