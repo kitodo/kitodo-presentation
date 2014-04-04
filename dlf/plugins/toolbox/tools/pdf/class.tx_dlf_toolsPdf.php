@@ -37,9 +37,6 @@
  */
 class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
-	// Changed to prevent overwriting the main extension's parameters.
-	public $prefixId = 'tx_dlf_toolsPdf';
-
 	public $scriptRelPath = 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php';
 
 	/**
@@ -55,6 +52,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 	public function main($content, $conf) {
 
 		$this->init($conf);
+
+		// Merge configuration with conf array of toolbox.
+		$this->conf = t3lib_div::array_merge_recursive_overrule($this->cObj->data, $this->conf);
 
 		// Turn cache off.
 		$this->setCache(FALSE);
@@ -137,13 +137,13 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 			if (count($pageLink) > 1) {
 
-				$pageLink[0] = $this->pi_linkToPage($this->pi_getLL('leftPage', ''), $pageLink[0], '_blank', array ('title' => $this->pi_getLL('leftPage', '')));
+				$pageLink[0] = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), array ('parameter' => $pageLink[0], 'title' => $this->pi_getLL('leftPage', '')));
 
-				$pageLink[1] = $this->pi_linkToPage($this->pi_getLL('rightPage', ''), $pageLink[1], '_blank', array ('title' => $this->pi_getLL('rightPage', '')));
+				$pageLink[1] = $this->cObj->typoLink($this->pi_getLL('rightPage', ''), array ('parameter' => $pageLink[1], 'title' => $this->pi_getLL('rightPage', '')));
 
 			} else {
 
-				$pageLink[0] = $this->pi_linkToPage($this->pi_getLL('singlePage', ''), $pageLink[0], '_blank', array ('title' => $this->pi_getLL('singlePage', '')));
+				$pageLink[0] = $this->cObj->typoLink($this->pi_getLL('singlePage', ''), array ('parameter' => $pageLink[0], 'title' => $this->pi_getLL('singlePage', '')));
 
 			}
 
@@ -184,7 +184,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		// Wrap URLs with HTML.
 		if (!empty($workLink)) {
 
-			$workLink = $this->pi_linkToPage($this->pi_getLL('work', ''), $workLink, '_blank', array ('title' => $this->pi_getLL('work', '')));
+			$workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), array ('parameter' => $workLink, 'title' => $this->pi_getLL('work', '')));
 
 		} else {
 
