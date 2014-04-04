@@ -210,13 +210,17 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		// Set default values for page if not set.
-		$this->piVars['page'] = (!empty($this->piVars['page']) ? max(intval($this->piVars['page']), 1) : 1);
-
 		if ($this->doc === NULL) {
 
 			// Quit without doing anything if required variables are not set.
 			return array ();
+
+		} else {
+
+			// Set default values for page if not set.
+			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+
+			$this->piVars['double'] = t3lib_div::intInRange($this->piVars['double'], 0, 1, 0);
 
 		}
 
@@ -229,6 +233,12 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			if (!empty($this->piVars['page']) && $this->doc->physicalPages) {
 
 				$this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[0]], (array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]]);
+
+				if (!empty($this->piVars['double']) && $this->piVars['page'] < $this->doc->numPages) {
+
+					$this->activeEntries = array_merge($this->activeEntries, (array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page'] + 1]]);
+
+				}
 
 			}
 
