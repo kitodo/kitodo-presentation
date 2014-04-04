@@ -228,7 +228,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			// Get all logical units the current page is a part of.
 			if (!empty($this->piVars['page']) && $this->doc->physicalPages) {
 
-				$this->activeEntries = array_merge($this->doc->smLinks['p2l'][$this->doc->physicalPages[0]], $this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]]);
+				$this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[0]], (array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]]);
 
 			}
 
