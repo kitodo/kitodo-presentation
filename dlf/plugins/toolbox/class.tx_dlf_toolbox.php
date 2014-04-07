@@ -74,7 +74,10 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 		}
 
 		// Build data array.
-		$data = $this->conf;
+		$data = array (
+			'conf' => $this->conf,
+			'piVars' => $this->piVars,
+		);
 
 		// Get template subpart for tools.
 		$subpart = $this->cObj->getSubpart($this->template, '###TOOLS###');
