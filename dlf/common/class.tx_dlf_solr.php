@@ -155,7 +155,7 @@ class tx_dlf_solr {
 		$_core = $core;
 
 		// Get core name if UID is given.
-		if (t3lib_div::testInt($core)) {
+		if (tx_dlf_helper::testInt($core)) {
 
 			$core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
 
@@ -232,7 +232,7 @@ class tx_dlf_solr {
 		}
 
 		// Set port if not set.
-		$port = t3lib_div::intInRange($conf['solrPort'], 1, 65535, 8180);
+		$port = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
 
 		// Append core name to path.
 		$path = trim($conf['solrPath'], '/').'/'.$core;
@@ -336,9 +336,9 @@ class tx_dlf_solr {
 				if (!empty($toplevel[$doc->uid]['s']['relevance'])) {
 
 					$docSorting['relevance'] = $toplevel[$doc->uid]['s']['relevance'];
-				
+
 				}
-				
+
 				$toplevel[$doc->uid] = array (
 					'u' => $doc->uid,
 					's' => $docSorting,
@@ -361,7 +361,7 @@ class tx_dlf_solr {
 			if (empty($toplevel[$doc->uid]['s']['relevance'])) {
 
 				$toplevel[$doc->uid]['s']['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
-				
+
 			}
 
 			$i++;
@@ -391,19 +391,19 @@ class tx_dlf_solr {
 					// Prepare document's metadata for sorting.
 					$sorting = unserialize($resArray['metadata_sorting']);
 
-					if (!empty($sorting['type']) && t3lib_div::testInt($sorting['type'])) {
+					if (!empty($sorting['type']) && tx_dlf_helper::testInt($sorting['type'])) {
 
 						$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->cPid);
 
 					}
 
-					if (!empty($sorting['owner']) && t3lib_div::testInt($sorting['owner'])) {
+					if (!empty($sorting['owner']) && tx_dlf_helper::testInt($sorting['owner'])) {
 
 						$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->cPid);
 
 					}
 
-					if (!empty($sorting['collection']) && t3lib_div::testInt($sorting['collection'])) {
+					if (!empty($sorting['collection']) && tx_dlf_helper::testInt($sorting['collection'])) {
 
 						$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->cPid);
 
@@ -413,9 +413,9 @@ class tx_dlf_solr {
 					if (!empty($toplevel[$check]['s']['relevance'])) {
 
 						$sorting['relevance'] = $toplevel[$check]['s']['relevance'];
-				
+
 					}
-				
+
 					$toplevel[$check] = array (
 						'u' => $resArray['uid'],
 						's' => $sorting,
@@ -649,7 +649,7 @@ class tx_dlf_solr {
 		}
 
 		// Set port if not set.
-		$port = t3lib_div::intInRange($conf['solrPort'], 1, 65535, 8180);
+		$port = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
 
 		// Append core name to path.
 		$path = trim($conf['solrPath'], '/').'/'.$core;

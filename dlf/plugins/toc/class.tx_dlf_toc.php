@@ -76,7 +76,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		$entryArray['ITEM_STATE'] = 'NO';
 
 		// Build menu links based on the $entry['points'] array.
-		if (!empty($entry['points']) && t3lib_div::testInt($entry['points'])) {
+		if (!empty($entry['points']) && tx_dlf_helper::testInt($entry['points'])) {
 
 			$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('page' => $entry['points']), TRUE, FALSE, $this->conf['targetPid']);
 
@@ -218,16 +218,16 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		} else {
 
 			// Set default values for page if not set.
-			$this->piVars['page'] = t3lib_div::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+			$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
-			$this->piVars['double'] = t3lib_div::intInRange($this->piVars['double'], 0, 1, 0);
+			$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
 
 		}
 
 		$menuArray = array ();
 
 		// Does the document have physical pages or is it an external file?
-		if ($this->doc->physicalPages || !t3lib_div::testInt($this->doc->uid)) {
+		if ($this->doc->physicalPages || !tx_dlf_helper::testInt($this->doc->uid)) {
 
 			// Get all logical units the current page is a part of.
 			if (!empty($this->piVars['page']) && $this->doc->physicalPages) {
