@@ -26,8 +26,6 @@
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
 
-require_once (PATH_tslib.'class.tslib_pibase.php');
-
 /**
  * Search suggestions for the plugin 'DLF: Search' of the 'dlf' extension.
  *
