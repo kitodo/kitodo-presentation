@@ -73,7 +73,7 @@ class tx_dlf_cli extends t3lib_cli {
 					// ...and save it to the database...
 					if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0]))) {
 
-						$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed'.LF, TRUE);
+						$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed.'.LF, TRUE);
 
 						exit (1);
 
@@ -111,7 +111,7 @@ class tx_dlf_cli extends t3lib_cli {
 			'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
 			'options' => '',
 			'license' => 'GNU GPL - free software!',
-			'author' => 'Sebastian Meyer <sebastian.meyer@slub-dresden.de>',
+			'author' => 'Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>',
 		);
 
 		// Run parent constructor.
