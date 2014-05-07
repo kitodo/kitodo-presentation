@@ -34,6 +34,7 @@
 			<label index="tt_content.pi_flexform.show_userdefined.all">both</label>
 			<label index="tt_content.pi_flexform.show_userdefined.none">no</label>
 			<label index="tt_content.pi_flexform.show_userdefined.exclusive">exclusively</label>
+			<label index="tt_content.pi_flexform.dont_show_single">Show single collection in overview?</label>
 			<label index="tt_content.pi_flexform.randomize">Randomize sorting?</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
 			<label index="tt_content.pi_flexform.targetFeed">Target page (with "DLF: Feeds" plugin)</label>
@@ -52,6 +53,7 @@
 			<label index="tt_content.pi_flexform.show_userdefined.all">beides</label>
 			<label index="tt_content.pi_flexform.show_userdefined.none">nein</label>
 			<label index="tt_content.pi_flexform.show_userdefined.exclusive">exklusiv</label>
+			<label index="tt_content.pi_flexform.dont_show_single">Einzelne Kollektion in Übersicht anzeigen?</label>
 			<label index="tt_content.pi_flexform.randomize">Zufällige Sortierung?</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
 			<label index="tt_content.pi_flexform.targetFeed">Zielseite (mit Plugin "DLF: Feeds")</label>

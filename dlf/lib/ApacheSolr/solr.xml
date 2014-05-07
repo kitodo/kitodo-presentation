@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<solr persistent="true">
+	<cores adminPath="/admin/cores" defaultCoreName="dlfCore0" shareSchema="true">
+		<core name="dlfCore0" instanceDir="." dataDir="dlfCore0" />
+		<core name="dlfCore0_txtcoords" instanceDir="." dataDir="dlfCore0_txtcoords" schema="schema_txtcoords.xml" />
+	</cores>
+</solr>

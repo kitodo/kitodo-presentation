@@ -120,7 +120,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 		// Handle collections set by configuration.
 		if ($this->conf['collections']) {
 
-			if (count(explode(',', $this->conf['collections'])) == 1) {
+			if (count(explode(',', $this->conf['collections'])) == 1 && empty($this->conf['dont_show_single'])) {
 
 				$this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
 
@@ -167,13 +167,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 		$content = '';
 
-		if ($count == 1) {
+		if ($count == 1 && empty($this->conf['dont_show_single'])) {
 
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 			$this->showSingleCollection(intval($resArray['uid']));
 
-		} elseif ($count > 1) {
+		} elseif ($count > 0) {
 
 			// Get number of volumes per collection.
 			$resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
