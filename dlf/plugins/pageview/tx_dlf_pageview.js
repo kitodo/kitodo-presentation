@@ -151,7 +151,7 @@ dlfViewer.prototype.addImages = function(urls) {
 
 		// Prepare image loading.
 		this.images[i] = {
-			'src': encodeURI(urls[i]),
+			'src': urls[i],
 			'width': 0,
 			'height': 0
 		};
