@@ -252,4 +252,3 @@ CREATE TABLE tx_dlf_relations (
     KEY uid_local (uid_local),
     KEY uid_foreign (uid_foreign)
 );
-

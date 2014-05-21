@@ -304,8 +304,9 @@ p.intro {
 	<xsl:apply-templates select="oai:metadataFormat" />
 </xsl:template>
 
-<!-- Set Details -->
-
+<!-- 
+	Set Details
+-->
 <xsl:template match="oai:set">
 	<h2>Set</h2>
 	<table class="values">
@@ -325,8 +326,9 @@ p.intro {
 	</td></tr>
 </xsl:template>
 
-<!-- Metadata Format Details -->
-
+<!--
+	Metadata Format Details
+-->
 <xsl:template match="oai:metadataFormat">
 	<h2>Metadata Format</h2>
 	<table class="values">
@@ -343,8 +345,9 @@ p.intro {
 			<xsl:text> </xsl:text><a class="link" href="?verb=GetRecord&amp;metadataPrefix={.}&amp;identifier={$identifier}"><xsl:value-of select='.' /></a>
 </xsl:template>
 
-<!-- Record Details -->
-
+<!--
+	Record Details
+-->
 <xsl:template match="oai:record">
 	<h2 class="oaiRecordTitle">OAI Record: <xsl:value-of select="oai:header/oai:identifier"/></h2>
 	<div class="oaiRecord">
@@ -379,8 +382,9 @@ p.intro {
 	</div>
 </xsl:template>
 
-<!-- Resumption Token -->
-
+<!--
+	Resumption Token
+-->
 <xsl:template match="oai:resumptionToken">
 	<p>There are more results.</p>
 	<table class="values">
@@ -397,8 +401,9 @@ p.intro {
 	</table>
 </xsl:template>
 
-<!-- Unknown Metadata -->
-
+<!--
+	Unknown Metadata
+-->
 <xsl:template match="oai:metadata/*" priority='-100'>
 	<h3>Unknown Metadata Format</h3>
 	<div class="xmlSource">
@@ -406,8 +411,9 @@ p.intro {
 	</div>
 </xsl:template>
 
-<!-- DublinCore Metadata -->
-
+<!--
+	DublinCore Metadata
+-->
 <xsl:template match="oai_dc:dc"  xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" >
 	<div class="dcdata">
 		<h3>DublinCore Metadata</h3>
@@ -471,7 +477,8 @@ p.intro {
 			<xsl:value-of select="."/>
 		</xsl:otherwise>
 	</xsl:choose>
-</td></tr></xsl:template>
+</td></tr>
+</xsl:template>
 
 <xsl:template match="dc:coverage" xmlns:dc="http://purl.org/dc/elements/1.1/">
 <tr><td class="key">Coverage</td><td class="value"><xsl:value-of select="."/></td></tr></xsl:template>
@@ -479,8 +486,9 @@ p.intro {
 <xsl:template match="dc:rights" xmlns:dc="http://purl.org/dc/elements/1.1/">
 <tr><td class="key">Rights Management</td><td class="value"><xsl:value-of select="."/></td></tr></xsl:template>
 
-<!-- XML Pretty Maker -->
-
+<!--
+	XML Pretty Maker
+-->
 <xsl:template match="node()" mode='xmlMarkup'>
 	<div class="xmlBlock">
 		&lt;<span class="xmlTagName"><xsl:value-of select='name(.)' /></span><xsl:apply-templates select="@*" mode='xmlMarkup'/>&gt;<xsl:apply-templates select="node()" mode='xmlMarkup' />&lt;/<span class="xmlTagName"><xsl:value-of select='name(.)' /></span>&gt;

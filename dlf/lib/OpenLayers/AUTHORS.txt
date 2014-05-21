@@ -7,7 +7,7 @@ Seb Benthall
 Bruno Binet
 Stéphane Brunner
 Howard Butler
-Bertil Chaupis                                                               
+Bertil Chaupis
 John Cole
 Tim Coulter
 Robert Coup
@@ -32,10 +32,10 @@ Peter William Robins
 Gregers Rygg
 Tim Schaub
 Christopher Schmidt
-Cameron Shorter                                                              
+Cameron Shorter
 Pedro Simonetti
-Paul Spencer                                                                 
-Paul Smith                                                                 
+Paul Spencer
+Paul Smith
 Glen Stampoultzis
 James Stembridge
 Erik Uzureau
