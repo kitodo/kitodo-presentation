@@ -168,26 +168,9 @@ class tx_dlf_tcemain {
 
 						if ($status && $status[0] == 0) {
 
-							// Build request for adding new Solr core for fulltext coordinates.
-							// @see http://wiki.apache.org/solr/CoreAdmin
-							$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?action=CREATE&name=dlfCore'.$coreNumber.'_txtcoords&instanceDir=.&dataDir=dlfCore'.$coreNumber.'_txtcoords&schema=schema_txtcoords.xml';
+							$fieldArray['index_name'] = 'dlfCore'.$coreNumber;
 
-							$response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
-
-							// Process response.
-							if ($response) {
-
-								$status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-
-								if ($status && $status[0] == 0) {
-
-									$fieldArray['index_name'] = 'dlfCore'.$coreNumber;
-
-									return;
-
-								}
-
-							}
+							return;
 
 						}
 
