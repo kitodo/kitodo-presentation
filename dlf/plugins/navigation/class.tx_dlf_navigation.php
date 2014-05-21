@@ -86,7 +86,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			'forceAbsoluteUrl' => 1
 		);
 
-		$output = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+		$output = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" /><input type="hidden" name="no_cache" value="1" />';
 
 		// Add plugin variables.
 		foreach ($this->piVars as $piVar => $value) {
