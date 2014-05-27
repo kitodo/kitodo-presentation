@@ -68,4 +68,24 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array
 
 // Register AJAX eID handlers.
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = 'EXT:'.$_EXTKEY.'/plugins/search/class.tx_dlf_search_suggest.php';
+
+function user_dlf_docTypeCheck($cmd) {
+
+        $pidCondition = explode(':', $cmd);
+
+        $conf['pages'] = $pidCondition[0];
+
+        $la = t3lib_div::makeInstance('tx_dlf_doctype');
+        switch($pidCondition[1]){
+      case "periodical":
+                 if ($la->main('', $conf) == "periodical")
+            return true;
+         break;
+      case "checkSomethingElse":
+         break;
+   }
+   // Wichtig: Die Funktion sollte immer true/false zurückgeben
+   return false;
+}
+
 ?>
