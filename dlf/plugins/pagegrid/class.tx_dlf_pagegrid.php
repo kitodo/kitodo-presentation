@@ -200,9 +200,6 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 		$this->init($conf);
 
-		// Don't cache the output.
-		$this->setCache(FALSE);
-
 		$this->loadDocument();
 
 		if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpThumbs'])) {

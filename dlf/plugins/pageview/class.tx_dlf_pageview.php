@@ -294,9 +294,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$this->init($conf);
 
-		// Disable caching for this plugin.
-		$this->setCache(FALSE);
-
 		// Load current document.
 		$this->loadDocument();
 
