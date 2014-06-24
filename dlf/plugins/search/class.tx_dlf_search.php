@@ -333,7 +333,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			
 			//Reset facets
 			if ($this->conf['resetFacets']) {
-				//remove ($count) for selectet facet in Template
+				//remove ($count) for selected facet in template
 				$entryArray['count'] = FALSE;
 				//build link to delete selected facet
 				$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
