@@ -330,6 +330,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 			$entryArray['ITEM_STATE'] = 'CUR';
 
 			$state = 'ACTIFSUB';
+			
+			//Reset facets
+			if ($this->conf['resetFacets']) {
+				//remove ($count) for selected facet in template
+				$entryArray['count'] = FALSE;
+				//build link to delete selected facet
+				$entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
+				$entryArray['title'] = sprintf($this->pi_getLL('resetFacet', ''), $entryArray['title']);
+			}
 
 		} else {
 
