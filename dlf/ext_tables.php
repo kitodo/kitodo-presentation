@@ -387,6 +387,7 @@ if (TYPO3_MODE == 'BE')	{
 
 	t3lib_extMgm::addLLrefForTCAdescr('_MOD_txdlfmodules_txdlfnewclient','EXT:dlf/modules/newclient/locallang_mod.xml');
 
+	t3lib_extMgm::addNavigationComponent('txdlfmodules', 'typo3-pagetree');
 }
 
 ?>
