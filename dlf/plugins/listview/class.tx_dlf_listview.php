@@ -201,7 +201,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 					$imgAlt = htmlspecialchars($value);
 
-					$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $this->list[$number]['uid'], 'page' => $this->list[$number]['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+					$additionalParams = array ('id' => $this->list[$number]['uid'], 'page' => $subpart['page']);
+					$conf = array (
+						'useCacheHash' => 1,
+						'parameter' => $this->conf['targetPid'],
+						'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+					);
+
+					$value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
 
 				// Translate name of holding library.
 				} elseif ($index_name == 'owner' && !empty($value)) {
@@ -393,7 +400,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 						$imgAlt = htmlspecialchars($value);
 
-						$value = $this->pi_linkTP(htmlspecialchars($value), array ($this->prefixId => array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer'])), TRUE, $this->conf['targetPid']);
+						$additionalParams = array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer']);
+						$conf = array (
+							'useCacheHash' => 1,
+							'parameter' => $this->conf['targetPid'],
+							'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+						);
+
+						$value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
 
 					// Translate name of holding library.
 					} elseif ($index_name == 'owner' && !empty($value)) {
