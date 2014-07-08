@@ -400,7 +400,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 						$imgAlt = htmlspecialchars($value);
 
-						$additionalParams = array ('id' => $subpart['uid'], 'page' => $subpart['page'], 'pointer' => $this->piVars['pointer']);
+						$additionalParams = array ('id' => $subpart['uid'], 'page' => $subpart['page']);
 						$conf = array (
 							'useCacheHash' => 1,
 							'parameter' => $this->conf['targetPid'],
