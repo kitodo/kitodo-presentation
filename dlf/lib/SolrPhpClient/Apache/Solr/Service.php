@@ -506,7 +506,7 @@ class Apache_Solr_Service
 	}
 
 	/**
-	 * Get the current state of teh create documents flag.
+	 * Get the current state of the create documents flag.
 	 *
 	 * @return boolean
 	 */

@@ -84,7 +84,7 @@ limitations under the License.
 		-->
 		<maxFieldLength>10000</maxFieldLength>
 
-		<!-- Specify the timeouts for writing to the index and commiting changes. -->
+		<!-- Specify the timeouts for writing to the index and committing changes. -->
 		<writeLockTimeout>1000</writeLockTimeout>
 		<commitLockTimeout>10000</commitLockTimeout>
 
