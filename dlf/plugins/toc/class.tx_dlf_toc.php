@@ -273,7 +273,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 				'tx_dlf_documents,tx_dlf_structures',
 				$whereClause,
 				'',
-				'tx_dlf_documents.volume_sorting',
+				'CAST(tx_dlf_documents.volume_sorting AS UNSIGNED)',
 				''
 			);
 
