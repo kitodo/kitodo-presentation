@@ -649,6 +649,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$search['params']['facet'] = 'true';
 
 		$search['params']['facet.field'] = array_keys($this->conf['facets']);
+		
+		//override SOLR default value for facet.limit of 100 
+		$search['params']['facet.limit'] = $this->conf['limitFacets'];
 
 		// Perform search.
 		$results = $solr->service->search($search['query'], 0, $this->conf['limit'], $search['params']);
