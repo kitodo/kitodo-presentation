@@ -49,7 +49,7 @@
 			<label index="flash.structureAdded">Basic configuration added!</label>
 			<label index="flash.structureAddedMsg">Basic configuration records for structural metadata were added. The records should be checked in the list module!</label>
 			<label index="flash.structureNotAdded">No configuration added!</label>
-			<label index="flash.structureNotAddedMsg">While adding the configuration records an error occured. The records should be checked in the list module!</label>
+			<label index="flash.structureNotAddedMsg">While adding the configuration records an error occurred. The records should be checked in the list module!</label>
 			<label index="flash.metadataOkay">Metadata found!</label>
 			<label index="flash.metadataOkayMsg">There are configuration records for bibliographic metadata. They can be edited in die list module.</label>
 			<label index="flash.metadataNotOkay">No metadata found!</label>
@@ -57,7 +57,7 @@
 			<label index="flash.metadataAdded">Basic configuration added!</label>
 			<label index="flash.metadataAddedMsg">Basic configuration records for bibliographic metadata were added. The records should be checked in the list module!</label>
 			<label index="flash.metadataNotAdded">No configuration added!</label>
-			<label index="flash.metadataNotAddedMsg">While adding the configuration records an error occured. The records should be checked in the list module!</label>
+			<label index="flash.metadataNotAddedMsg">While adding the configuration records an error occurred. The records should be checked in the list module!</label>
 			<label index="flash.usergroupOkay">Usergroup has access!</label>
 			<label index="flash.usergroupOkayMsg">The usergroup "_cli_dlf" has access to this SysFolder.</label>
 			<label index="flash.usergroupNotOkay">Usergroup has no access!</label>
@@ -75,7 +75,7 @@
 			<label index="flash.solrcoreAdded">Solr core created!</label>
 			<label index="flash.solrcoreAddedMsg">A new Solr core was created. It can be edited in the list module.</label>
 			<label index="flash.solrcoreNotAdded">No Solr core created!</label>
-			<label index="flash.solrcoreNotAddedMsg">While creating a new Solr core an error occured. The record should be checked in the list module!</label>
+			<label index="flash.solrcoreNotAddedMsg">While creating a new Solr core an error occurred. The record should be checked in the list module!</label>
 			<label index="flash.solrException">Apache Solr exception thrown:</label>
 			<label index="flash.solrNoConnection">Could not connect to Apache Solr server.</label>
 			<label index="flash.seeLog">See administration log for more details.</label>

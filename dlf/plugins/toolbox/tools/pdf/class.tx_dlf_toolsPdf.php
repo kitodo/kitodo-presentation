@@ -56,9 +56,6 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		// Merge configuration with conf array of toolbox.
 		$this->conf = t3lib_div::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
 
-		// Turn cache off.
-		$this->setCache(FALSE);
-
 		// Load current document.
 		$this->loadDocument();
 
