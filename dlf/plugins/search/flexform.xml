@@ -164,7 +164,7 @@
 								<eval>num,int</eval>
 								<range>
 									<lower>1</lower>
-									<upper>100</upper>
+									<upper>50000</upper>
 								</range>
 								<default>15</default>
 							</config>
