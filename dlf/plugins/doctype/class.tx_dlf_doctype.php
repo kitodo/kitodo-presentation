@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2014 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -21,10 +21,6 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- */
 
 /**
  * Plugin 'DLF: Doctype Plugin' for the 'dlf' extension.
@@ -48,16 +44,19 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 	 */
 	public function main($content, $conf) {
 
+		//~ t3lib_utility_Debug::debug($this->piVars, 'main: piVars1... ');
+
 		$this->init($conf);
-
-		t3lib_utility_Debug::debug($conf, 'main: conf... ');
-
-		if (TYPO3_DLOG) {
-			t3lib_div::devLog('[tx_dlf_calendar->main()] piVars: ', $this->extKey, SYSLOG_SEVERITY_ERROR, $this->piVars);
-		}
 
 		// Load current document.
 		$this->loadDocument();
+
+		if ($this->doc === NULL) {
+
+			// Quit without doing anything if required variables are not set.
+			return $content;
+
+		}
 
 		$toc = $this->doc->tableOfContents;
 
@@ -80,18 +79,10 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 		 *			  - children array([0], [1], [2], ...) --> type = volume
 		 * 			  - children array([0], [1], [2], ...) --> type = issue | front_cover
 		 *
-		 * 2. Addressbook
-		 *    case 1) - type=periodical
-		 *			  - children array([0]) --> type = periodical_volume
-		 * 			  - children array([0], [1], [2], ...) --> type = title_page | contents | index | periodical_part ...
-		 *
-		 * type = newspaper
-		 *
-		 *
-		 *
-		 *
 		 */
-		t3lib_utility_Debug::debug($toc[0], 'toc[0]: conf... ');
+
+		//~ t3lib_utility_Debug::debug($toc[0], 'toc[0]: conf... ');
+
 		switch ($toc[0]['type']) {
 			case 'newspaper':
 				if (count($toc[0]['children']) > 1)
@@ -104,13 +95,10 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 				return 'newspaper';
 				break;
 			case 'periodical':
-				if (in_array(array('label' => '2. Einwohnerverzeichnis'), $toc[0]['children']))
-					return 'addressbook';
-				else
 					return 'periodical';
 				break;
 			default:
-					return $toc[0]['type'];
+				return $toc[0]['type'];
 		}
 
 		return $this->doc->tableOfContents;
@@ -123,7 +111,7 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 	 *
 	 * @access	protected
 	 *
-	 * @param	array		$conf: configuration array from TS-Template
+	 * @param	array	$conf: configuration array from TS-Template
 	 *
 	 * @return	void
 	 */
@@ -133,18 +121,17 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 		$this->conf = $conf;
 
 		// Set default plugin variables.
-		$this->pi_setPiVarDefaults();
+		//~ $this->pi_setPiVarDefaults();
 
 		// Load translation files.
 		//~ $this->pi_loadLL();
 
 	}
 
-
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/calendar/class.tx_dlf_calendar.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/calendar/class.tx_dlf_calendar.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/calendar/class.tx_dlf_doctype.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/calendar/class.tx_dlf_doctype.php']);
 }
 
 ?>
