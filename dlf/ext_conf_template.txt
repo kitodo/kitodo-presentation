@@ -48,3 +48,25 @@ solrUser =
 
 # cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrPass
 solrPass =
+
+# cat=Elasticsearch; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkElasticsearchConnection]; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchConnect
+elasticSearchConnect = 0
+
+# cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchHost
+elasticSearchHost = localhost
+
+# cat=Elasticsearch; type=int[0-65535]; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchPort
+elasticSearchPort = 9200
+
+# cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchPath
+elasticSearchPath = /myindex/
+
+# cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchType
+elasticSearchType = /myindex/
+
+# cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchUser
+elasticSearchUser =
+
+# cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchPass
+elasticSearchPass =
+

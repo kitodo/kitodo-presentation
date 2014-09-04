@@ -508,6 +508,34 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
+			// Check for existing elasticsearch index.
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid,pid',
+				'tx_dlf_elasticsearchindexes',
+				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores')
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+
+
+			} else {
+				// error no exisiting elasticsearch
+				$_url = t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'addSolrcore')));
+
+				$_message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					sprintf("test", $_url),
+					tx_dlf_helper::getLL('flash.solrcoreMissing', TRUE),
+					t3lib_FlashMessage::WARNING,
+					FALSE
+				);
+
+			}
+
+
+
+
 			t3lib_FlashMessageQueue::addMessage($_message);
 
 			$this->markerArray['CONTENT'] .= t3lib_FlashMessageQueue::renderFlashMessages();
