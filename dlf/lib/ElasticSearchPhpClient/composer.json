@@ -1,0 +1,26 @@
+{
+    "name" : "nervetattoo/elasticsearch",
+    "type" : "library",
+    "description" : "ElasticSearch client for PHP 5.3",
+    "keywords" : ["elasticsearch", "client"],
+    "homepage" : "http://github.com/nervetattoo/elasticsearch",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name" : "Raymond Julin",
+            "email" : "raymond.julin@gmail.com",
+            "homepage" : "http://raymondjulin.com"
+        }
+    ],
+    "require" : {
+        "php" : ">=5.3.0"
+    },
+    "require-dev" : {
+        "atoum/atoum" : "dev-master@dev"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "ElasticSearch" : "src/"
+        }
+    }
+}
