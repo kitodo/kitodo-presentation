@@ -225,6 +225,55 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 	}
 
+
+	/**
+	 * Add Elasticsearch index
+	 *
+	 * @access	protected
+	 *
+	 * @return	void
+	 */
+	protected function cmdAddElasticsearchindex() {
+
+		// Build data array.
+		$data['tx_dlf_elasticsearchindexes'][uniqid('NEW')] = array (
+			'pid' => intval($this->id),
+			// 'label' => $GLOBALS['LANG']->getLL('solrcore').' (PID '.$this->id.')',
+			'label' => 'Elasticsearch Index'.' (PID '.$this->id.')',
+			'index_name' => 'index',
+		);
+
+		$_ids = tx_dlf_helper::processDBasAdmin($data);
+
+		// Check for failed inserts.
+		if (count($_ids) == 1) {
+
+			// Fine.
+			$_message = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				tx_dlf_helper::getLL('flash.solrcoreAddedMsg'),
+				tx_dlf_helper::getLL('flash.solrcoreAdded', TRUE),
+				t3lib_FlashMessage::OK,
+				FALSE
+			);
+
+		} else {
+
+			// Something went wrong.
+			$_message = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				tx_dlf_helper::getLL('flash.solrcoreNotAddedMsg'),
+				tx_dlf_helper::getLL('flash.solrcoreNotAdded', TRUE),
+				t3lib_FlashMessage::ERROR,
+				FALSE
+			);
+
+		}
+
+		t3lib_FlashMessageQueue::addMessage($_message);
+
+	}
+
 	/**
 	 * Add structure configuration
 	 *
@@ -508,25 +557,35 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
+			t3lib_FlashMessageQueue::addMessage($_message);
+
+
 			// Check for existing elasticsearch index.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,pid',
 				'tx_dlf_elasticsearchindexes',
-				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores')
+				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes')
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-
+				// elasticsearch is configured
+				$_message = t3lib_div::makeInstance(
+						't3lib_FlashMessage',
+						tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
+						tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
+						t3lib_FlashMessage::OK,
+						FALSE
+					);
 
 			} else {
 				// error no exisiting elasticsearch
-				$_url = t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'addSolrcore')));
+				$_url = t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
 
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					sprintf("test", $_url),
-					tx_dlf_helper::getLL('flash.solrcoreMissing', TRUE),
+					sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_url),
+					tx_dlf_helper::getLL('flash.elasticsearchindexMissing', TRUE),
 					t3lib_FlashMessage::WARNING,
 					FALSE
 				);
