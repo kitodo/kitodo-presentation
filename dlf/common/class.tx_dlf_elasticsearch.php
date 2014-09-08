@@ -157,46 +157,46 @@ class tx_dlf_elasticsearch {
 	 *
 	 * @return	tx_dlf_solr		Instance of this class
 	 */
-	public static function getInstance($core) {
+	public static function getInstance() {
 
-		// Save parameter for logging purposes.
-		$_core = $core;
+		// // Save parameter for logging purposes.
+		// $_core = $core;
 
-		// Get core name if UID is given.
-		if (tx_dlf_helper::testInt($core)) {
+		// // Get core name if UID is given.
+		// if (tx_dlf_helper::testInt($core)) {
 
-			$core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+		// 	$core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
 
-		}
+		// }
 
-		// Check if core is set.
-		if (empty($core)) {
+		// // Check if core is set.
+		// if (empty($core)) {
 
-			if (TYPO3_DLOG) {
+		// 	if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
+		// 		t3lib_div::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
-			}
+		// 	}
 
-			return;
+		// 	return;
 
-		}
+		// }
 
 		// Check if there is an instance in the registry already.
-		if (is_object(self::$registry[$core]) && self::$registry[$core] instanceof self) {
+		if (is_object(self::$registry) && self::$registry instanceof self) {
 
 			// Return singleton instance if available.
-			return self::$registry[$core];
+			return self::$registry;
 
 		}
 
 		// Create new instance...
-		$instance = new self($core);
+		$instance = new self();
 
 		// ...and save it to registry.
 		if ($instance->ready) {
 
-			self::$registry[$core] = $instance;
+			self::$registry[] = $instance;
 
 			// Return new instance.
 			return $instance;
@@ -205,7 +205,7 @@ class tx_dlf_elasticsearch {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_solr->getInstance()] Could not connect to Elasticsearch server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -229,7 +229,7 @@ class tx_dlf_elasticsearch {
 		// Extract extension configuration.
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
-		// Derive Solr host name.
+		// Derive Elasticsearch host name.
 		$host = ($conf['elasticSearchHost'] ? $conf['elasticSearchHost'] : 'localhost');
 
 		// Prepend username and password to hostname.
@@ -612,7 +612,10 @@ class tx_dlf_elasticsearch {
 
 		$extensionPath = t3lib_extMgm::extPath('dlf');
 
+		
+
 		require_once $extensionPath . 'lib/ElasticSearchPhpClient/vendor/autoload.php';
+		//require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/ElasticSearchPhpClient/src/ElasticSearch/Client.php'));
 
 		// get configuration for elasticsearch
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
@@ -632,7 +635,7 @@ class tx_dlf_elasticsearch {
 		// configuration array for elasticsearch client
 		$params = array();
 
-		//$params['hosts'] =
+		// $params['hosts'] =
 		
 		if ($conf['elasticSearchUser'] && $conf['elasticSearchPass']) {
 
@@ -645,12 +648,25 @@ class tx_dlf_elasticsearch {
 
 		}
 
-		$this->service = t3lib_div::makeInstance('Client', $params);
+		$this->service = Client::connection(array(
+		    'servers' => $host.':'.$port,
+		    'protocol' => 'http',
+		    'index' => 'slub',
+		    'type' => 'goobi'
+		));
+		$result = $this->service->search('name:Charlie');
+		print_r("test");
+		print_r($result);
 
-		$this->service->setIndex();
-		$this->service->setType();
+		// Instantiation successful!
+		$this->ready = TRUE;
 
-		$this->service->connection($host.':'.$port);
+		//$this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Client', $params);
+
+		// $this->service->setIndex();
+		// $this->service->setType();
+
+		// $this->service->connection($host.':'.$port);
 
 		//$es = Client::connection('http://192.168.2.230:9200/slub/goobi');
 

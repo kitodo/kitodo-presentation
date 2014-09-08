@@ -372,8 +372,14 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Disable caching for this plugin.
 		$this->setCache(FALSE);
 
+		$es = tx_dlf_elasticsearch::getInstance();
+		// print_r("Search Main");
+		// print_r($es->service);
+		// 
+		print_r($this->conf);
+
 		// Quit without doing anything if required variables are not set.
-		if (empty($this->conf['solrcore'])) {
+		if (empty($this->conf['solrcore']) AND empty($this->conf['elasticSearch'])) {
 
 			if (TYPO3_DLOG) {
 
