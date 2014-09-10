@@ -38,6 +38,9 @@
 			<label index="tt_content.pi_flexform.searchIn.document">document only</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">collection only</label>
 			<label index="tt_content.pi_flexform.searchIn.all">both</label>
+			<label index="tt_content.pi_flexform.searchEngine">Choose Search Engine</label>
+			<label index="tt_content.pi_flexform.searchEngine.solr">Solr</label>
+			<label index="tt_content.pi_flexform.searchEngine.elasticsearch">Elasticsearch</label>
 			<label index="tt_content.pi_flexform.facets">Show these facets</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximum facet values</label>
 			<label index="tt_content.pi_flexform.resetFacets">Allow to reset facets</label>
@@ -67,6 +70,9 @@
 			<label index="tt_content.pi_flexform.searchIn.document">nur Dokument</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">nur Kollektion</label>
 			<label index="tt_content.pi_flexform.searchIn.all">beides</label>
+			<label index="tt_content.pi_flexform.searchEngine">Suchengine wählen</label>
+			<label index="tt_content.pi_flexform.searchEngine.solr">Solr</label>
+			<label index="tt_content.pi_flexform.searchEngine.elasticsearch">Elasticsearch</label>
 			<label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximale Facettenwerte</label>
 			<label index="tt_content.pi_flexform.resetFacets">Facetten zurücksetzen erlauben</label>

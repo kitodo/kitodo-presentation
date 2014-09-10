@@ -262,9 +262,16 @@ class tx_dlf_elasticsearch {
 	public function search($query = '') {
 
 		// Perform search.
-		$results = $this->service->search((string) $query, 0, $this->limit, $this->params);
+		// $results = $this->service->search((string) $query, 0, $this->limit, $this->params);
+		$results = $this->service->search((string) $query);
 
-		$this->numberOfHits = count($results->response->docs);
+		$this->cPid = 9;
+
+		print_r($results);
+
+		// $this->numberOfHits = count($results->response->docs);
+		 
+		$this->numberOfHits = $results['hits']['total'];
 
 		$toplevel = array ();
 
@@ -294,7 +301,12 @@ class tx_dlf_elasticsearch {
 
 		// Keep track of relevance.
 		$i = 0;
+print_r($results['hits']['hits']);
+print_r('<br>');
 
+		foreach ($results['hits']['hits'] as $doc){
+			print_r($doc['_source']);
+		}
 		// Process results.
 		foreach ($results->response->docs as $doc) {
 
@@ -654,9 +666,9 @@ class tx_dlf_elasticsearch {
 		    'index' => 'slub',
 		    'type' => 'goobi'
 		));
-		$result = $this->service->search('name:Charlie');
-		print_r("test");
-		print_r($result);
+		// $result = $this->service->search('name:Charlie');
+		// print_r("test");
+		// print_r($result);
 
 		// Instantiation successful!
 		$this->ready = TRUE;
