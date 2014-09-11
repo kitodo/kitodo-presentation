@@ -267,7 +267,7 @@ class tx_dlf_elasticsearch {
 
 		$this->cPid = 9;
 
-		print_r($results);
+		// print_r($results);
 
 		// $this->numberOfHits = count($results->response->docs);
 		 
@@ -301,14 +301,21 @@ class tx_dlf_elasticsearch {
 
 		// Keep track of relevance.
 		$i = 0;
-print_r($results['hits']['hits']);
-print_r('<br>');
+		// print_r($results['hits']['hits']);
+		// print_r('<br>');
 
 		foreach ($results['hits']['hits'] as $doc){
+			$toplevel[] = array ( 
+				'u' => $doc['_source']['PID'],
+				's' => array(),
+				'p' => '',
+			);
 			print_r($doc['_source']);
 		}
+
+
 		// Process results.
-		foreach ($results->response->docs as $doc) {
+		/*foreach ($results->response->docs as $doc) {
 
 			// Split toplevel documents from subparts.
 			if ($doc->toplevel == 1) {
@@ -360,10 +367,10 @@ print_r('<br>');
 
 			$i++;
 
-		}
+		}*/
 
 		// Check if the toplevel documents have metadata.
-		foreach ($checks as $check) {
+		/*foreach ($checks as $check) {
 
 			if (empty($toplevel[$check]['u'])) {
 
@@ -425,12 +432,18 @@ print_r('<br>');
 
 			}
 
-		}
+		}*/
 
 		// Save list of documents.
 		$list = t3lib_div::makeInstance('tx_dlf_list');
 
 		$list->reset();
+
+		// $toplevel[1] = array ( 
+		// 	'u' => 'qucosa:1077',
+		// 	's' => array(),
+		// 	'p' => '',
+		// );
 
 		$list->add(array_values($toplevel));
 
@@ -440,6 +453,7 @@ print_r('<br>');
 			'description' => '',
 			'options' => array (
 				'source' => 'search',
+				'engine' => 'elasticsearch',
 				'select' => $query,
 				'userid' => 0,
 				'params' => $this->params,
@@ -663,8 +677,8 @@ print_r('<br>');
 		$this->service = Client::connection(array(
 		    'servers' => $host.':'.$port,
 		    'protocol' => 'http',
-		    'index' => 'slub',
-		    'type' => 'goobi'
+		    'index' => 'fedora',
+		    'type' => 'object'
 		));
 		// $result = $this->service->search('name:Charlie');
 		// print_r("test");

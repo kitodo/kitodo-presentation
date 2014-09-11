@@ -80,6 +80,14 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	protected $records = array ();
 
 	/**
+	 * Instance of ElasticSearc PHP Client class
+	 *
+	 * @var	Client
+	 * @access protected
+	 */
+	protected $es;
+
+	/**
 	 * Instance of Apache_Solr_Service class
 	 *
 	 * @var	Apache_Solr_Service
@@ -257,7 +265,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 				}
 
-			} elseif (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'search') {
+			} elseif (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'search'
+				&& $this->metadata['options']['engine'] != 'elasticsearch') {
 
 				if ($this->solrConnect()) {
 
@@ -302,6 +311,39 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 				}
 
+			} elseif (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'search'
+				&& $this->metadata['options']['engine'] == 'elasticsearch') {
+
+				// connection established
+				if($this->elasticsearchConnect()) {
+
+					// get result from record id
+					$result = $this->es->service->get($record['uid']);
+
+					// store metadata
+					foreach ($result as $key => $entry) {
+						print_r($key);print_r($entry);print_r("<br>");
+						$metadata[$key] = array($key => $entry);
+					}
+
+					// print_r("<br><br>");
+					// print_r($result);
+				}
+
+				// Direkter aufruf des dokuments in elasticsearch 
+				// $metadata['Author'] = array('Author' => 'DanBrown');
+				// $metadata['title'] = array('title' => 'Titel');
+				// $metadata['author'] = 'Autor';
+				// $metadata['LABEL'] = array('LABEL' => 'DasIstEinLabel');
+
+				$record['metadata'] = $metadata;
+
+					// $record['subparts'][1] = array (
+					// 	'uid' => 1,
+					// 	'page' => 9,
+					// 	'thumbnail' => '',
+					// 	'metadata' => $metadata
+					// );
 			}
 
 			// Unset subparts without any metadata.
@@ -615,6 +657,53 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 			tx_dlf_helper::saveToSession(array ($this->elements, $this->metadata), get_class($this));
 
 		}
+
+	}
+
+	/**
+	 * Connects to Elasticsearch server.
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		TRUE on success or FALSE on failure
+	 */
+	protected function elasticsearchConnect() {
+
+		if(!$this->es){
+			$this->es = tx_dlf_elasticsearch::getInstance();
+		}
+
+		// // Get Solr instance.
+		// if (!$this->solr) {
+
+		// 	// Connect to Solr server.
+		// 	if ($this->solr = tx_dlf_solr::getInstance($this->metadata['options']['core'])) {
+
+		// 		// Load index configuration.
+		// 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		// 				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed',
+		// 				'tx_dlf_metadata',
+		// 				'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+		// 				'',
+		// 				'tx_dlf_metadata.sorting ASC',
+		// 				''
+		// 		);
+
+		// 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+		// 			$this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
+
+		// 		}
+
+		// 	} else {
+
+		// 		return FALSE;
+
+		// 	}
+
+		// }
+
+		return TRUE;
 
 	}
 

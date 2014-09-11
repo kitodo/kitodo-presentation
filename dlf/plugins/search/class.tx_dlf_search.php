@@ -462,12 +462,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		} else {
 
+			// switch between elasticsearch and solr
 			if($this->conf['searchengine'] == "elasticsearch"){
 				print_r("ELASTICSEARCH AUSGEWÄHLT FÜR DIE SUCHE");
 				// print_r($this->piVars['query']);
 				$result2 = $es->search($this->piVars['query']);
 				//print_r($result2->getResults());
-				print_r($this->piVars);
+				//print_r($this->piVars);
 
 
 				// Build label for result list.
@@ -485,7 +486,38 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				$results = $es->search($query);
 
+				print_r("<br>");
+				print_r($results2);
 
+				$results->metadata = array (
+					'label' => $label,
+					'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $es->numberOfHits, count($results))).'</p>',
+					'options' => $results->metadata['options']
+				);
+
+				$results->save();
+
+				
+
+				// // Clean output buffer.
+				// t3lib_div::cleanOutputBuffers();
+
+				// // Keep some plugin variables.
+				// $linkConf['parameter'] = $this->conf['targetPid'];
+
+				// if (!empty($this->piVars['order'])) {
+
+				// 	$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+
+				// }
+
+				// // Send headers.
+				// header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
+
+				// // Flush output buffer and end script processing.
+				// ob_end_flush();
+
+				// exit;
 
 				// print_r('<br>');
 				// print_r($result2);
