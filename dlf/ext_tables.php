@@ -178,7 +178,7 @@ $TCA['tx_dlf_elasticsearchindexes'] = array (
 		'iconfile'	=> t3lib_extMgm::extRelPath($_EXTKEY).'res/icons/txdlfsolrcores.png',
 		'rootLevel'	=> -1,
 		'dividers2tabs' => 2,
-		'searchFields' => 'label,index_name',
+		'searchFields' => 'label,index_name, type_name',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',

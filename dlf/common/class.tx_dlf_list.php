@@ -316,44 +316,28 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 				// connection established
 				if($this->elasticsearchConnect()) {
-
+					print_r($this->es);
 					// get result from record id
+					$this->es->service->setIndex("fedora")->setType("object");
+
 					$result = $this->es->service->get($record['uid']);
 
+					print_r($result);
+
+					$metadata = array();
+
 					// store metadata
-					foreach ($result as $key => $entry) {
-						print_r($key);print_r($entry);print_r("<br>");
+					$test = array_walk_recursive($result, function($entry, $key) use(&$metadata) {
 						$metadata[$key] = array($key => $entry);
-					}
+					});
 
-					// print_r("<br><br>");
-					// print_r($result);
+					// foreach ($result as $key => $entry) {
+					// 	$metadata[$key] = array($key => $entry);
+					// }
+					
 				}
-
-				// Direkter aufruf des dokuments in elasticsearch 
-				// $metadata['Author'] = array('Author' => 'DanBrown');
-				// $metadata['title'] = array('title' => 'Titel');
-				// $metadata['author'] = 'Autor';
-				// $metadata['LABEL'] = array('LABEL' => 'DasIstEinLabel');
 
 				$record['metadata'] = $metadata;
-
-					// $record['subparts'][1] = array (
-					// 	'uid' => 1,
-					// 	'page' => 9,
-					// 	'thumbnail' => '',
-					// 	'metadata' => $metadata
-					// );
-			}
-
-			// Unset subparts without any metadata.
-			foreach ($record['subparts'] as $id => $subpart) {
-
-				if (!is_array($subpart)) {
-
-					unset ($record['subparts'][$id]);
-
-				}
 
 			}
 
@@ -389,6 +373,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 		return $this->position;
 
 	}
+
+
 
 	/**
 	 * This moves the element at the given position up or down
@@ -670,38 +656,28 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	protected function elasticsearchConnect() {
 
 		if(!$this->es){
-			$this->es = tx_dlf_elasticsearch::getInstance();
+
+			// Load index configuration.
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_dlf_elasticsearchindexes.index_name, tx_dlf_elasticsearchindexes.type_name',
+					'tx_dlf_elasticsearchindexes',
+					'tx_dlf_elasticsearchindexes.pid='.intval($this->metadata['options']['pid']).tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes'),
+					'',
+					'',
+					''
+			);
+
+			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+				$conf[0] = $resArray['index_name'];
+				$conf[1] = $resArray['type_name'];
+
+			}
+			
+			if (!$this->es = tx_dlf_elasticsearch::getInstance($conf)) {
+				return FALSE;
+			}
 		}
-
-		// // Get Solr instance.
-		// if (!$this->solr) {
-
-		// 	// Connect to Solr server.
-		// 	if ($this->solr = tx_dlf_solr::getInstance($this->metadata['options']['core'])) {
-
-		// 		// Load index configuration.
-		// 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-		// 				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.tokenized AS tokenized,tx_dlf_metadata.indexed AS indexed',
-		// 				'tx_dlf_metadata',
-		// 				'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
-		// 				'',
-		// 				'tx_dlf_metadata.sorting ASC',
-		// 				''
-		// 		);
-
-		// 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-
-		// 			$this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
-
-		// 		}
-
-		// 	} else {
-
-		// 		return FALSE;
-
-		// 	}
-
-		// }
 
 		return TRUE;
 

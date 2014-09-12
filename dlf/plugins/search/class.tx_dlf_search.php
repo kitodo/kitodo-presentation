@@ -372,23 +372,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Disable caching for this plugin.
 		$this->setCache(FALSE);
 
-		$es = tx_dlf_elasticsearch::getInstance();
-		// print_r("Search Main");
-		// print_r($es->service);
-		// 
-		// print_r("CONFIGURATION PLUGIN SEARCH");
-		// print_r($this->conf);
-
-		if($this->conf['searchengine'] == "elasticsearch"){
-			print_r("ELASTICSEARCH AUSGEWÄHLT FÜR DIE SUCHE");
-			// print_r($this->piVars['query']);
-			$result2 = $es->search($this->piVars['query']);
-			// print_r('<br>');
-			// print_r($result2);
-		} else {
-			print_r("SOLR AUSGEWÄHLT FÜR DIE SUCHE");
-		}
-
 		// Quit without doing anything if required variables are not set.
 		if (empty($this->conf['solrcore'])) {
 
@@ -461,15 +444,26 @@ class tx_dlf_search extends tx_dlf_plugin {
 			return $this->pi_wrapInBaseClass($content);
 
 		} else {
-
 			// switch between elasticsearch and solr
 			if($this->conf['searchengine'] == "elasticsearch"){
-				print_r("ELASTICSEARCH AUSGEWÄHLT FÜR DIE SUCHE");
-				// print_r($this->piVars['query']);
-				$result2 = $es->search($this->piVars['query']);
-				//print_r($result2->getResults());
-				//print_r($this->piVars);
 
+				// get elasticsearch configuration
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_dlf_elasticsearchindexes.index_name,tx_dlf_elasticsearchindexes.type_name',
+					'tx_dlf_elasticsearchindexes',
+					'tx_dlf_elasticsearchindexes.pid='.$this->conf['pages'].tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes'),
+					'',
+					'',
+					'1'
+				);
+
+				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+					// Get title information.
+					$elasticsearchConf = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+				}
+				
+				$es = tx_dlf_elasticsearch::getInstance($elasticsearchConf);
 
 				// Build label for result list.
 				$label = $this->pi_getLL('search', '', TRUE);
@@ -484,10 +478,12 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				$query = $this->piVars['query'];
 
-				$results = $es->search($query);
+				// set elasticsearch configuration
+				$es->service->setIndex($elasticsearchConf[0]);
+				$es->service->setType($elasticsearchConf[1]);
 
-				print_r("<br>");
-				print_r($results2);
+				// search for specified query
+				$results = $es->search($query);
 
 				$results->metadata = array (
 					'label' => $label,
@@ -496,33 +492,29 @@ class tx_dlf_search extends tx_dlf_plugin {
 				);
 
 				$results->save();
-
 				
 
-				// // Clean output buffer.
-				// t3lib_div::cleanOutputBuffers();
+				// Clean output buffer.
+				t3lib_div::cleanOutputBuffers();
 
-				// // Keep some plugin variables.
-				// $linkConf['parameter'] = $this->conf['targetPid'];
+				// Keep some plugin variables.
+				$linkConf['parameter'] = $this->conf['targetPid'];
 
-				// if (!empty($this->piVars['order'])) {
+				if (!empty($this->piVars['order'])) {
 
-				// 	$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+					$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
 
-				// }
+				}
 
-				// // Send headers.
-				// header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
+				// Send headers.
+				header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
 
-				// // Flush output buffer and end script processing.
-				// ob_end_flush();
+				// Flush output buffer and end script processing.
+				ob_end_flush();
 
-				// exit;
+				exit;
 
-				// print_r('<br>');
-				// print_r($result2);
 			} else {
-				print_r("SOLR AUSGEWÄHLT FÜR DIE SUCHE");
 			
 
 				// Instantiate search object.

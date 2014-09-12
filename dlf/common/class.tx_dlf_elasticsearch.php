@@ -157,7 +157,7 @@ class tx_dlf_elasticsearch {
 	 *
 	 * @return	tx_dlf_solr		Instance of this class
 	 */
-	public static function getInstance() {
+	public static function getInstance($conf) {
 
 		// // Save parameter for logging purposes.
 		// $_core = $core;
@@ -183,20 +183,20 @@ class tx_dlf_elasticsearch {
 		// }
 
 		// Check if there is an instance in the registry already.
-		if (is_object(self::$registry) && self::$registry instanceof self) {
+		if (is_object(self::$registry[$conf]) && self::$registry[$conf] instanceof self) {
 
 			// Return singleton instance if available.
-			return self::$registry;
+			return self::$registry[$conf];
 
 		}
-
+print_r($conf);print_r("<br><br>");
 		// Create new instance...
-		$instance = new self();
+		$instance = new self($conf);
 
 		// ...and save it to registry.
 		if ($instance->ready) {
 
-			self::$registry[] = $instance;
+			self::$registry[$conf] = $instance;
 
 			// Return new instance.
 			return $instance;
@@ -265,11 +265,7 @@ class tx_dlf_elasticsearch {
 		// $results = $this->service->search((string) $query, 0, $this->limit, $this->params);
 		$results = $this->service->search((string) $query);
 
-		$this->cPid = 9;
-
-		// print_r($results);
-
-		// $this->numberOfHits = count($results->response->docs);
+		//$this->cPid = 9;
 		 
 		$this->numberOfHits = $results['hits']['total'];
 
@@ -301,149 +297,20 @@ class tx_dlf_elasticsearch {
 
 		// Keep track of relevance.
 		$i = 0;
-		// print_r($results['hits']['hits']);
-		// print_r('<br>');
 
 		foreach ($results['hits']['hits'] as $doc){
 			$toplevel[] = array ( 
 				'u' => $doc['_source']['PID'],
 				's' => array(),
-				'p' => '',
+				'p' => ''
 			);
-			print_r($doc['_source']);
 		}
 
-
-		// Process results.
-		/*foreach ($results->response->docs as $doc) {
-
-			// Split toplevel documents from subparts.
-			if ($doc->toplevel == 1) {
-
-				// Prepare document's metadata for sorting.
-				$docSorting = array ();
-
-				foreach ($sorting as $index_name => $solr_name) {
-
-					if (!empty($doc->$solr_name)) {
-
-						$docSorting[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name[0] : $doc->$solr_name);
-
-					}
-
-				}
-
-				// Preserve relevance ranking.
-				if (!empty($toplevel[$doc->uid]['s']['relevance'])) {
-
-					$docSorting['relevance'] = $toplevel[$doc->uid]['s']['relevance'];
-
-				}
-
-				$toplevel[$doc->uid] = array (
-					'u' => $doc->uid,
-					's' => $docSorting,
-					'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : array ())
-				);
-
-			} else {
-
-				$toplevel[$doc->uid]['p'][] = $doc->id;
-
-				if (!in_array($doc->uid, $checks)) {
-
-					$checks[] = $doc->uid;
-
-				}
-
-			}
-
-			// Add relevance to sorting values.
-			if (empty($toplevel[$doc->uid]['s']['relevance'])) {
-
-				$toplevel[$doc->uid]['s']['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
-
-			}
-
-			$i++;
-
-		}*/
-
-		// Check if the toplevel documents have metadata.
-		/*foreach ($checks as $check) {
-
-			if (empty($toplevel[$check]['u'])) {
-
-				// Get information for toplevel document.
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting',
-					'tx_dlf_documents',
-					'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
-					'',
-					'',
-					'1'
-				);
-
-				// Process results.
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-					$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-					// Prepare document's metadata for sorting.
-					$sorting = unserialize($resArray['metadata_sorting']);
-
-					if (!empty($sorting['type']) && tx_dlf_helper::testInt($sorting['type'])) {
-
-						$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->cPid);
-
-					}
-
-					if (!empty($sorting['owner']) && tx_dlf_helper::testInt($sorting['owner'])) {
-
-						$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->cPid);
-
-					}
-
-					if (!empty($sorting['collection']) && tx_dlf_helper::testInt($sorting['collection'])) {
-
-						$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->cPid);
-
-					}
-
-					// Preserve relevance ranking.
-					if (!empty($toplevel[$check]['s']['relevance'])) {
-
-						$sorting['relevance'] = $toplevel[$check]['s']['relevance'];
-
-					}
-
-					$toplevel[$check] = array (
-						'u' => $resArray['uid'],
-						's' => $sorting,
-						'p' => $toplevel[$check]['p']
-					);
-
-				} else {
-
-					// Clear entry if there is no (accessible) toplevel document.
-					unset ($toplevel[$check]);
-
-				}
-
-			}
-
-		}*/
 
 		// Save list of documents.
 		$list = t3lib_div::makeInstance('tx_dlf_list');
 
 		$list->reset();
-
-		// $toplevel[1] = array ( 
-		// 	'u' => 'qucosa:1077',
-		// 	's' => array(),
-		// 	'p' => '',
-		// );
 
 		$list->add(array_values($toplevel));
 
@@ -457,7 +324,7 @@ class tx_dlf_elasticsearch {
 				'select' => $query,
 				'userid' => 0,
 				'params' => $this->params,
-				'core' => $this->core,
+				// 'core' => $this->core,
 				'pid' => $this->cPid,
 				'order' => 'relevance',
 				'order.asc' => TRUE,
@@ -634,11 +501,9 @@ class tx_dlf_elasticsearch {
 	 *
 	 * @return	void
 	 */
-	protected function __construct() {
+	protected function __construct($elasticsearchConf) {
 
 		$extensionPath = t3lib_extMgm::extPath('dlf');
-
-		
 
 		require_once $extensionPath . 'lib/ElasticSearchPhpClient/vendor/autoload.php';
 		//require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/ElasticSearchPhpClient/src/ElasticSearch/Client.php'));
@@ -653,15 +518,17 @@ class tx_dlf_elasticsearch {
 		$port = tx_dlf_helper::intInRange($conf['elasticSearchPort'], 1, 65535, 9200);
 
 		// index
-		$index = $conf['elasticSearchIndex'];
+		// $index = $conf['elasticSearchIndex'];
 
+		// //type
+		// $type = $conf['elasticSearchType'];
+		
+		// index
+		$this->index = $elasticsearchConf[0];
 		//type
-		$type = $conf['elasticSearchType'];
-
+		$this->type = $elasticsearchConf[1];
 		// configuration array for elasticsearch client
 		$params = array();
-
-		// $params['hosts'] =
 		
 		if ($conf['elasticSearchUser'] && $conf['elasticSearchPass']) {
 
@@ -674,76 +541,20 @@ class tx_dlf_elasticsearch {
 
 		}
 
+		
+
+		// establish connection 
 		$this->service = Client::connection(array(
 		    'servers' => $host.':'.$port,
 		    'protocol' => 'http',
-		    'index' => 'fedora',
-		    'type' => 'object'
+		    'index' => $this->index,
+		    'type' => $this->type
+		    // 'index' => $index,
+		    // 'type' => $type
 		));
-		// $result = $this->service->search('name:Charlie');
-		// print_r("test");
-		// print_r($result);
 
 		// Instantiation successful!
 		$this->ready = TRUE;
-
-		//$this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Client', $params);
-
-		// $this->service->setIndex();
-		// $this->service->setType();
-
-		// $this->service->connection($host.':'.$port);
-
-		//$es = Client::connection('http://192.168.2.230:9200/slub/goobi');
-
-
-		
-
-
-
-		
-
-		// // Load class.
-		// if (!class_exists('Apache_Solr_Service')) {
-
-		// 	require_once(t3lib_div::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
-
-		// }
-
-		// // Get Solr credentials.
-		// $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-
-		// $host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
-
-		// // Prepend username and password to hostname.
-		// if ($conf['solrUser'] && $conf['solrPass']) {
-
-		// 	$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
-
-		// }
-
-		// // Set port if not set.
-		// $port = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
-
-		// // Append core name to path.
-		// $path = trim($conf['solrPath'], '/').'/'.$core;
-
-		// // Instantiate Apache_Solr_Service class.
-		// $this->service = t3lib_div::makeInstance('Apache_Solr_Service', $host, $port, $path);
-
-		// // Check if connection is established.
-		// if ($this->service->ping() !== FALSE) {
-
-		// 	// Do not collapse single value arrays.
-		// 	$this->service->setCollapseSingleValueArrays = FALSE;
-
-		// 	// Set core name.
-		// 	$this->core = $core;
-
-		// 	// Instantiation successful!
-		// 	$this->ready = TRUE;
-
-		// }
 
 	}
 

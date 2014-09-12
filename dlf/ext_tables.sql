@@ -172,6 +172,7 @@ CREATE TABLE tx_dlf_elasticsearchindexes (
     deleted tinyint(4) DEFAULT '0' NOT NULL,
     label tinytext NOT NULL,
     index_name tinytext NOT NULL,
+    type_name tinytext NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid),

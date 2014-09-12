@@ -58,8 +58,8 @@ elasticSearchHost = localhost
 # cat=Elasticsearch; type=int[0-65535]; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchPort
 elasticSearchPort = 9200
 
-# cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchPath
-elasticSearchPath = /myindex/
+# cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchIndex
+elasticSearchIndex = myindex
 
 # cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchType
 elasticSearchType = /myindex/

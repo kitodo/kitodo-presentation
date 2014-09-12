@@ -171,7 +171,7 @@
 			<label index="config.elasticSearchConnect">Elasticsearch Connection</label>
 			<label index="config.elasticSearchHost">Elasticsearch Server Host: (default is "localhost")</label>
 			<label index="config.elasticSearchPort">Elasticsearch Server Port: (default is "9200")</label>
-			<label index="config.elasticSearchPath">Elasticsearch Server Path: </label>
+			<label index="config.elasticSearchIndex">Elasticsearch Server Index: </label>
 			<label index="config.elasticSearchType">Elasticsearch Server Type: </label>
 			<label index="config.elasticSearchUser">Elasticsearch Server User: (default is "")</label>
 			<label index="config.elasticSearchPass">Elasticsearch Server Password: (default is "")</label>
@@ -361,7 +361,7 @@
 			<label index="config.elasticSearchConnect">Elasticsearch Verbindung</label>
 			<label index="config.elasticSearchHost">Elasticsearch Server Host: (Standard ist "localhost")</label>
 			<label index="config.elasticSearchPort">Elasticsearch Server Port: (Standard ist "9200")</label>
-			<label index="config.elasticSearchPath">Elasticsearch Server Pfad: </label>
+			<label index="config.elasticSearchIndex">Elasticsearch Server Index: </label>
 			<label index="config.elasticSearchType">Elasticsearch Server Type: </label>
 			<label index="config.elasticSearchUser">Elasticsearch Server Benutzername: (Standard ist "")</label>
 			<label index="config.elasticSearchPass">Elasticsearch Server Kennwort: (Standard ist "")</label>
