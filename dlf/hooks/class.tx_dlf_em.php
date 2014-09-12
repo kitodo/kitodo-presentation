@@ -215,10 +215,6 @@ class tx_dlf_em {
 
 		$extensionPath = t3lib_extMgm::extPath('dlf');
 
-		//print_r($this->conf);
-		//require_once $extensionPath . 'lib/ElasticSearchPhpClient/vendor/autoload.php';
-
-		//$es = Client::connection('http://127.0.0.1:9200/myindex/mytype');
 
 
 	}

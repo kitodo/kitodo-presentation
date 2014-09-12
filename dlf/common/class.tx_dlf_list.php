@@ -316,13 +316,11 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 				// connection established
 				if($this->elasticsearchConnect()) {
-					print_r($this->es);
 					// get result from record id
 					$this->es->service->setIndex("fedora")->setType("object");
 
 					$result = $this->es->service->get($record['uid']);
 
-					print_r($result);
 
 					$metadata = array();
 

@@ -189,7 +189,7 @@ class tx_dlf_elasticsearch {
 			return self::$registry[$conf];
 
 		}
-print_r($conf);print_r("<br><br>");
+
 		// Create new instance...
 		$instance = new self($conf);
 
