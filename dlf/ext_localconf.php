@@ -94,18 +94,18 @@ function user_dlf_docTypeCheck($cmd) {
 
 	switch($pidCondition[1]){
 		case "periodical":
-			if ($docType->main($cObj, $conf) == "periodical")
+			if ($docType->main($cObj, $conf) === "periodical")
 				return TRUE;
 		 break;
 		case "newspaper_global_anchor":
-			if ($docType->main('', $conf) == "newspaper_global_anchor")
+			if ($docType->main($cObj, $conf) === "newspaper_global_anchor")
 				return TRUE;
 		 break;
 		case "newspaper_year_anchor":
 			if ($docType->main($cObj, $conf) === "newspaper_year_anchor")
 				return TRUE;
 		case "newspaper_issue":
-			if ($docType->main('', $conf) == "newspaper_issue")
+			if ($docType->main($cObj, $conf) === "newspaper_issue")
 				return TRUE;
 		// [...]
 		 break;

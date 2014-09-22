@@ -86,22 +86,22 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 		switch ($toc[0]['type']) {
 			case 'newspaper':
 				if (count($toc[0]['children']) > 1)
-					return 'newspaper_global_anchor';
+					$ret = 'newspaper_global_anchor';
 				else
-					if (count($toc[0]['children'][0]['children']) > 1)
-						return 'newspaper_year_anchor';
+					if (count($toc[0]['children'][0]['children']) >= 1)
+						$ret = 'newspaper_year_anchor';
 					else
-						return 'newspaper_issue';
-				return 'newspaper';
+						$ret = 'newspaper_issue';
 				break;
 			case 'periodical':
-					return 'periodical';
+					$ret = 'periodical';
 				break;
 			default:
-				return $toc[0]['type'];
+				$ret = $toc[0]['type'];
 		}
 
-		return $this->doc->tableOfContents;
+		//~ t3lib_utility_Debug::debug($ret, 'ret: conf... ');
+		return $ret;
 
 	}
 
