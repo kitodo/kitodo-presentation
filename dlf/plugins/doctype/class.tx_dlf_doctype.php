@@ -88,7 +88,7 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 				if (count($toc[0]['children']) > 1)
 					$ret = 'newspaper_global_anchor';
 				else
-					if (count($toc[0]['children'][0]['children']) >= 1)
+					if (count($toc[0]['children'][0]['children']) > 1)
 						$ret = 'newspaper_year_anchor';
 					else
 						$ret = 'newspaper_issue';
