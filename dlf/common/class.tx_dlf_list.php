@@ -80,12 +80,29 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	protected $records = array ();
 
 	/**
-	 * Instance of ElasticSearc PHP Client class
+	 * Instance of ElasticSearch PHP Client class
 	 *
 	 * @var	Client
 	 * @access protected
 	 */
 	protected $es;
+
+	/**
+	 * Elasticsearch configuration
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $esConfig = array();
+
+
+	/**
+	 * Holds metadata for es
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $metadataResult = array();
 
 	/**
 	 * Instance of Apache_Solr_Service class
@@ -317,24 +334,47 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 				// connection established
 				if($this->elasticsearchConnect()) {
 					// get result from record id
-					$this->es->service->setIndex("fedora")->setType("object");
+					$this->es->service->setIndex($this->esConfig['index_name'])->setType($this->esConfig['type_name']);
 
 					$result = $this->es->service->get($record['uid']);
 
-
+					// print_r($result);print_r("<br><br><br>");
 					$metadata = array();
 
-					// store metadata
-					$test = array_walk_recursive($result, function($entry, $key) use(&$metadata) {
-						$metadata[$key] = array($key => $entry);
-					});
+					$metadata = $this->elasticsearchResultWalkRecursive($result);
 
+
+					$metadata = $this->metadataResult;
+					// print_r("MetadataResult");print_r($this->metadataResult);
+
+					// print_r("<br><br>Metadaten:<br><br>");
+					// print_r($metadata);
+					// store metadata
+					// $test = array_walk_recursive($result, function($entry, $key) use(&$metadata) {
+					// 	print_r($key);
+					// 	$metadata[$key] = array($key => $entry);
+					// });
+					
+					// foreach($result as $key => $value){
+					// 	if(!is_array($value)){
+					// 		$metadata[$key] = array($key => $value);
+					// 	} else {
+					// 		$i = 0;
+					// 		foreach($value as $sub_key => $sub_value){
+					// 			//$metadata[$key] = array($key.'_'.$i => $sub_value);
+					// 			if(!is_array($sub_value))
+					// 			$metadata[$key] = array($sub_key => $sub_value);
+					// 			$i++;
+					// 		}
+					// 	}
+					// }
+
+					// print_r($metadata);
 					// foreach ($result as $key => $entry) {
 					// 	$metadata[$key] = array($key => $entry);
 					// }
 					
 				}
-
 				$record['metadata'] = $metadata;
 
 			}
@@ -356,6 +396,34 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 		return $record;
 
+	}
+
+	/**
+	 * Get all metadata from elasticsearch result recursive
+	 * @param  array $data data from elasticsearch
+	 * @param  string $key  key from last point
+	 * @return array       Array with metadata
+	 */
+	public function elasticsearchResultWalkRecursive($data, $keyPoint = '') {
+		// try to get all metadata from elasticsearch result
+		foreach($data as $key => $value){
+			if(!is_array($value)){
+				// print_r($keyPoint);print_r($key);print_r($value);print_r("<br>");
+				if(is_int($key) && !empty($keyPoint)) {
+					$metadata[$keyPoint] = array($keyPoint => $value);
+					$this->metadataResult[$keyPoint] = array($keyPoint => $value);
+				} else {
+					$metadata[$key] = array($key => $value);
+					$this->metadataResult[$key] = array($key => $value);
+				}
+				
+			} else {
+				$new_metadata = $this->elasticsearchResultWalkRecursive($value, $key);
+				$metadata = array_merge($new_metadata,$metadata);
+			}
+
+		}
+		return $metadata;
 	}
 
 	/**
@@ -667,8 +735,11 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
+				// get solr config
 				$conf[0] = $resArray['index_name'];
 				$conf[1] = $resArray['type_name'];
+
+				$this->esConfig = $resArray;
 
 			}
 			
