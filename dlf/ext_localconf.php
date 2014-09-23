@@ -104,11 +104,12 @@ function user_dlf_docTypeCheck($cmd) {
 		case "newspaper_year_anchor":
 			if ($docType->main($cObj, $conf) === "newspaper_year_anchor")
 				return TRUE;
+		 break;
 		case "newspaper_issue":
 			if ($docType->main($cObj, $conf) === "newspaper_issue")
 				return TRUE;
-		// [...]
 		 break;
+		default	: return FALSE;
 	}
 	// this function has to return FALSE or TRUE nothing else
 	return FALSE;
