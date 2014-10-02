@@ -915,7 +915,7 @@ final class tx_dlf_document {
 		$titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
 
 		// Set record identifier for METS file if not present.
-		if (!in_array($this->recordId, $titledata['record_id'])) {
+		if (is_array($titledata) && !in_array($this->recordId, $titledata['record_id'])) {
 
 			array_unshift($titledata['record_id'], $this->recordId);
 
