@@ -421,7 +421,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 			return $content;
 
 		}
-			t3lib_div::devLog('[tx_dlf_search->main('.$content.', [data])] piVars', $this->extKey, SYSLOG_SEVERITY_ERROR, $this->piVars);
 
 		if (!isset($this->piVars['query']) && empty($this->piVars['extQuery'])) {
 
