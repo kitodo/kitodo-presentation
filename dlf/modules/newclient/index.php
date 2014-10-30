@@ -512,6 +512,13 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores')
 			);
 
+			// Check for existing elasticsearch index.
+			$es_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid,pid',
+				'tx_dlf_elasticsearchindexes',
+				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes')
+			);
+
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -542,14 +549,27 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				}
 
+			} else if ($GLOBALS['TYPO3_DB']->sql_num_rows($es_result)) {
+				// elasticsearch is configured
+				$_message = t3lib_div::makeInstance(
+						't3lib_FlashMessage',
+						tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
+						tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
+						t3lib_FlashMessage::OK,
+						FALSE
+				);
+
 			} else {
 
 				// Solr core missing.
 				$_url = t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'addSolrcore')));
 
+				// Elasticsearch url
+				$_es_url = t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
+
 				$_message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
-					sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url),
+					sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url). '<br>' . sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_es_url),
 					tx_dlf_helper::getLL('flash.solrcoreMissing', TRUE),
 					t3lib_FlashMessage::WARNING,
 					FALSE
@@ -560,42 +580,40 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			t3lib_FlashMessageQueue::addMessage($_message);
 
 
-			// Check for existing elasticsearch index.
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,pid',
-				'tx_dlf_elasticsearchindexes',
-				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes')
-			);
+			// // Check for existing elasticsearch index.
+			// $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			// 	'uid,pid',
+			// 	'tx_dlf_elasticsearchindexes',
+			// 	'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes')
+			// );
 
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+			// if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-				// elasticsearch is configured
-				$_message = t3lib_div::makeInstance(
-						't3lib_FlashMessage',
-						tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
-						tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
-						t3lib_FlashMessage::OK,
-						FALSE
-					);
+			// 	// elasticsearch is configured
+			// 	$_message = t3lib_div::makeInstance(
+			// 			't3lib_FlashMessage',
+			// 			tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
+			// 			tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
+			// 			t3lib_FlashMessage::OK,
+			// 			FALSE
+			// 		);
 
-			} else {
-				// error no exisiting elasticsearch
-				$_url = t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
+			// } else {
+			// 	// error no exisiting elasticsearch
+			// 	$_url = t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
 
-				$_message = t3lib_div::makeInstance(
-					't3lib_FlashMessage',
-					sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_url),
-					tx_dlf_helper::getLL('flash.elasticsearchindexMissing', TRUE),
-					t3lib_FlashMessage::WARNING,
-					FALSE
-				);
+			// 	$_message = t3lib_div::makeInstance(
+			// 		't3lib_FlashMessage',
+			// 		sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_url),
+			// 		tx_dlf_helper::getLL('flash.elasticsearchindexMissing', TRUE),
+			// 		t3lib_FlashMessage::WARNING,
+			// 		FALSE
+			// 	);
 
-			}
+			// }
 
+			// t3lib_FlashMessageQueue::addMessage($_message);
 
-
-
-			t3lib_FlashMessageQueue::addMessage($_message);
 
 			$this->markerArray['CONTENT'] .= t3lib_FlashMessageQueue::renderFlashMessages();
 

@@ -140,16 +140,19 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	 *
 	 * @return	void
 	 */
-	protected function loadDocument() {
+	protected function loadDocument($docUrl = '') {
+		$docUrl = 'http://mets.sub.uni-hamburg.de/goobi/HANSb22136';
 
 		// Check for required variable.
-		if (!empty($this->piVars['id']) && !empty($this->conf['pages'])) {
+		if (!empty($this->piVars['id']) && !empty($this->conf['pages']) && empty($docUrl)) {
 
 			// Should we exclude documents from other pages than $this->conf['pages']?
 			$pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
 
 			// Get instance of tx_dlf_document.
 			$this->doc =& tx_dlf_document::getInstance($this->piVars['id'], $pid);
+			// http://mets.sub.uni-hamburg.de/goobi/HANSb22136
+			// $this->doc =& tx_dlf_document::getInstance("http://mets.sub.uni-hamburg.de/goobi/HANSb22136", false);
 
 			if (!$this->doc->ready) {
 
@@ -169,7 +172,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			}
 
-		} elseif (!empty($this->piVars['recordId'])) {
+		} elseif (!empty($this->piVars['recordId']) && empty($docUrl)) {
 
 			// Get UID of document with given record identifier.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -201,6 +204,29 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 					t3lib_div::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
+
+			}
+
+		} else if (!empty($docUrl)) {
+
+			// get document 
+			$this->doc =& tx_dlf_document::getInstance($docUrl, false);
+
+			if (!$this->doc->ready) {
+
+				// Destroy the incomplete object.
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+
+				}
+
+				$this->doc = NULL;
+
+			} else {
+
+				// Set configuration PID.
+				$this->doc->cPid = $this->conf['pages'];
 
 			}
 

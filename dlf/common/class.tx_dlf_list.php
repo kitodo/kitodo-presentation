@@ -419,11 +419,11 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 				
 			} else {
 				$new_metadata = $this->elasticsearchResultWalkRecursive($value, $key);
-				$metadata = array_merge($new_metadata,$metadata);
+				//$metadata = array_merge($new_metadata,$metadata);
 			}
 
 		}
-		return $metadata;
+		//return $metadata;
 	}
 
 	/**
