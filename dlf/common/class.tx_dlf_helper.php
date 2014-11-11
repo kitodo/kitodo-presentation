@@ -504,6 +504,77 @@ class tx_dlf_helper {
 	}
 
 	/**
+	 * Get the UID for a given "index_name"
+	 *
+	 * @access	public
+	 *
+	 * @param	integer		$index_name: The index_name of the record
+	 * @param	string		$table: Get the "index_name" from this table
+	 * @param	integer		$pid: Get the "index_name" from this page
+	 *
+	 * @return	string		"uid" for the given index_name
+	 */
+	public static function getIdFromIndexName($index_name, $table, $pid = -1) {
+
+		// Save parameters for logging purposes.
+		$_index_name = $index_name;
+
+		$_pid = $pid;
+
+		if (!$index_name || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'))) {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getIdFromIndexName('.$_index_name.', '.$table.', '.$_pid.')] Invalid UID "'.$index_name.'" or table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+			return '';
+
+		}
+
+		$where = '';
+
+		// Should we check for a specific PID, too?
+		if ($pid !== -1) {
+
+			$pid = max(intval($pid), 0);
+
+			$where = ' AND '.$table.'.pid='.$pid;
+
+		}
+
+		// Get index_name from database.
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$table.'.uid AS uid',
+			$table,
+			$table.'.index_name='.$index_name.$where.self::whereClause($table),
+			'',
+			'',
+			'1'
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+			return $resArray['uid'];
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getIdFromIndexName('.$_index_name.', '.$table.', '.$_pid.')] No UID for given "index_name" "'.$index_name.'" and PID "'.$pid.'" found in table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return '';
+
+		}
+
+	}
+
+	/**
 	 * Get language name from ISO code
 	 *
 	 * @access	public
