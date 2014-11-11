@@ -115,7 +115,7 @@ class tx_dlf_cli extends t3lib_cli {
 		);
 
 		// Run parent constructor.
-		parent::t3lib_cli();
+		parent::__construct();
 
 	}
 

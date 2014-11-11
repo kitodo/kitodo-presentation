@@ -15,7 +15,7 @@ plugin.tx_dlf_search.facetsConf {
 		ACT < .NO
 		ACT.wrapItemAndSub = <li class="tx-dlf-search-act">|</li>
 		ACTIFSUB < .NO
-		ACTIFSUB.wrapItemAndSub = <li class="tx-dlf-search-act" tx-dlf-search-ifsub>|</li>
+		ACTIFSUB.wrapItemAndSub = <li class="tx-dlf-search-act tx-dlf-search-ifsub">|</li>
 	}
 	2 < .1
 	2 {
