@@ -622,7 +622,7 @@ $TCA['tx_dlf_metadata'] = array (
 			),
 		),
 		'autocomplete' => array (
-			'exlude' => 1,
+			'exclude' => 1,
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.autocomplete',
 			'config' => array (
 				'type' => 'check',
