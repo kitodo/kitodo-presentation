@@ -373,7 +373,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$this->setCache(FALSE);
 
 		// Quit without doing anything if required variables are not set.
-		if (empty($this->conf['solrcore'])) {
+		if (empty($this->conf['solrcore']) && empty($this->conf['elasticsearch'])) {
 
 			if (TYPO3_DLOG) {
 
