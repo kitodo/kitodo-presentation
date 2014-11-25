@@ -62,6 +62,15 @@
 							</config>
 						</TCEforms>
 					</tools>
+					<pdf>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/toolbox/locallang.xml:tt_content.pi_flexform.pdf_download</label>
+							<config>
+							  <type>check</type>
+							</config>
+						</TCEforms>
+					</pdf>
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>

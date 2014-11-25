@@ -84,16 +84,64 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 		}
 
-		// Get single page downloads.
-		$markerArray['###PAGE###'] = $this->getPageLink();
+		if($this->conf['pdf']) {
+			// Show all PDF Documents
 
-		// Get work download.
-		$markerArray['###WORK###'] = $this->getWorkLink();
+			$markerArray['###PAGE###'] = $this->getPDFDocuments();
 
-		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+			$markerArray['###WORK###'] = '';
 
-		return $this->pi_wrapInBaseClass($content);
+			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
+			return $this->pi_wrapInBaseClass($content);
+
+		} else {
+
+			// Get single page downloads.
+			$markerArray['###PAGE###'] = $this->getPageLink();
+
+			// Get work download.
+			$markerArray['###WORK###'] = $this->getWorkLink();
+
+			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+
+			return $this->pi_wrapInBaseClass($content);
+		}
+
+	}
+
+	/**
+	 * Get PDF document list 
+	 * @return html List of PDF documents
+	 */
+	protected function getPDFDocuments()
+	{
+		// Get pdf documents
+		// 
+		// print_r("<br><br>");print_r($this->doc->physicalPagesInfo);
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[1]]['files'][$this->conf['fileGrpDownload']])) {
+
+			#$pageLink[] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[2]]['files'][$this->conf['fileGrpDownload']]);
+
+			$documents = '<ul>';
+
+			$i = 1;
+			while($this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']])) {
+				// get all pdf documents related to this document
+				$link = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']]);
+
+				$title = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']];
+
+				$documents .= '<li>'.$this->cObj->typoLink($title, array ('parameter' => $link, 'title' => $title)).'</li>';
+				$i++;
+			}
+			$documents .= '</ul>';
+
+			// $documents[] = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), array ('parameter' => $pageLink[1], 'title' => $this->pi_getLL('leftPage', '')));
+			// $documents[] = 'test2';
+ 
+			return $documents;
+		}
 	}
 
 	/**
