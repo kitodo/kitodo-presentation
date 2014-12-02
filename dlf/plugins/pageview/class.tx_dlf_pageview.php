@@ -311,8 +311,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
 
 		}
-//~ t3lib_utility_Debug::debug($this->piVars, 'tx_dfgviewer_newspaperyear: $this->piVars... ');
-//~ t3lib_utility_Debug::debug($this->doc->tableOfContents, 'tx_dfgviewer_newspaperyear: $this->tableOfContents... ');
+
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
 
