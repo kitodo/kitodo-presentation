@@ -130,6 +130,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Console.js',
 			'OpenLayers/Lang.js',
 			'OpenLayers/Util.js',
+			'OpenLayers/Util/vendorPrefix.js',
 			'OpenLayers/Lang/'.$this->lang.'.js',
 			'OpenLayers/Events.js',
 			'OpenLayers/Events/buttonclick.js',
@@ -155,6 +156,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Tile.js',
 			'OpenLayers/Tile/Image.js',
 			'OpenLayers/Layer.js',
+			'OpenLayers/Layer/HTTPRequest.js',
+			'OpenLayers/Layer/Grid.js',
 			'OpenLayers/Layer/Image.js',
 		);
 
