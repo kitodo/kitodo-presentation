@@ -159,6 +159,25 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Layer/HTTPRequest.js',
 			'OpenLayers/Layer/Grid.js',
 			'OpenLayers/Layer/Image.js',
+			// Geometry layer.
+			'OpenLayers/Geometry.js',
+			'OpenLayers/Geometry/Collection.js',
+			'OpenLayers/Geometry/Polygon.js',
+			'OpenLayers/Geometry/MultiPolygon.js',
+			'OpenLayers/Geometry/MultiPoint.js',
+			'OpenLayers/Geometry/Curve.js',
+			'OpenLayers/Geometry/LineString.js',
+			'OpenLayers/Geometry/LinearRing.js',
+			'OpenLayers/Geometry/Point.js',
+			'OpenLayers/Feature.js',
+			'OpenLayers/Feature/Vector.js',
+			'OpenLayers/Layer/Vector.js',
+			'OpenLayers/Renderer.js',
+			'OpenLayers/Renderer/Elements.js',
+			'OpenLayers/Renderer/SVG.js',
+			'OpenLayers/StyleMap.js',
+			'OpenLayers/Style.js',
+			'OpenLayers/Console.js',
 		);
 
 		// Add custom control features.

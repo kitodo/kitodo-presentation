@@ -50,6 +50,13 @@ function dlfViewer() {
 	this.images = [];
 
 	/**
+	 * This holds the original images' information like width and height
+	 *
+	 * var array
+	 */
+	this.origImages = [];
+
+	/**
 	 * This holds information about the loading state of the images
 	 *
 	 * var array
@@ -69,6 +76,27 @@ function dlfViewer() {
 	 * var integer
 	 */
 	this.offset = 0;
+
+	/**
+	 * This holds the offset for the second image
+	 *
+	 * var integer
+	 */
+	this.offset = 0;
+
+	/**
+	 * This holds the highlightning layer
+	 *
+	 * var OpenLayers.Layer.Vector
+	 */
+	this.highlightLayer = null;
+
+	/**
+	 * This holds the highlightning layer
+	 *
+	 * var array
+	 */
+	this.highlightFields = [];
 
 }
 
@@ -268,6 +296,8 @@ dlfViewer.prototype.init = function() {
 
 		}
 
+		//~ this.addPolygon(this.images[i].width, this.images[i].height);
+
 	}
 
 	// Add default controls to controls array.
@@ -306,6 +336,20 @@ dlfViewer.prototype.init = function() {
 		this.map.zoomToMaxExtent();
 
 	}
+
+	// add polygon layer if any
+	if (this.highlightFields) {
+
+		for (var i in this.highlightFields) {
+
+			this.addPolygon(this.images[0].width, this.images[0].height, this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3]);
+
+		}
+
+		this.map.addLayer(this.highlightLayer);
+
+	}
+
 
 }
 
@@ -379,3 +423,88 @@ $(window).unload(function() {
 	tx_dlf_viewer.saveSettings();
 
 });
+
+/**
+ * Add hightlight field
+ *
+ * @param	integer x1
+ * @param	integer y1
+ * @param	integer x2
+ * @param	integer y2
+ *
+ * @return	void
+ */
+dlfViewer.prototype.addHightlightField = function(x1, y1, x2, y2) {
+
+	this.highlightFields.push([x1,y1,x2,y2]);
+
+}
+
+/**
+ * Add layer with highlighted words found
+ *
+ * @param	integer width
+ * @param	integer height
+ *
+ * @return	void
+ */
+dlfViewer.prototype.addPolygon = function(width, height, x1, y1, x2, y2) {
+
+	//~ alert('hi' + width + ' x1 ' + x1);
+
+	if (!this.origImage) {
+		this.origImage = {
+			'width': width,
+			'height': height
+		};
+	}
+
+	var polygon = new OpenLayers.Geometry.Polygon(
+				new OpenLayers.Geometry.LinearRing(
+					[
+					new OpenLayers.Geometry.Point((width/this.origImage.width * x1), height - (y1 * height/ this.origImage.height)),
+					new OpenLayers.Geometry.Point((width/this.origImage.width * x2), height - (y1 * height/ this.origImage.height)),
+					new OpenLayers.Geometry.Point((width/this.origImage.width * x2), height - (y2 * height/ this.origImage.height)),
+					new OpenLayers.Geometry.Point((width/this.origImage.width * x1), height - (y2 * height/ this.origImage.height)),
+					]
+				)
+			)
+
+	var feature = new OpenLayers.Feature.Vector(polygon);
+
+	if (! this.highlightLayer) {
+
+		var layer = new OpenLayers.Layer.Vector("Words Highlightning");
+
+		this.highlightLayer = layer;
+
+	}
+
+	this.highlightLayer.addFeatures([feature]);
+
+}
+
+/**
+ * Set Original Image Size
+ *
+ * @param	integer width
+ * @param	integer height
+ *
+ * @return	void
+ */
+dlfViewer.prototype.setOrigImage = function(width, height) {
+
+	//~ alert(width + ' xx ' + height);
+
+	if (width && height) {
+		this.origImage = {
+			'width': width,
+			'height': height
+		};
+	} else {
+		this.origImage = null;
+	}
+
+}
+
+
