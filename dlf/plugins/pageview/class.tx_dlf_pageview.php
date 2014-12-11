@@ -327,8 +327,16 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		} else {
 
 			// Set default values if not set.
-			//~ $this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
-			$this->piVars['page'] = $this->piVars['page'];
+			// page may be integer or string (pyhsical page attribute)
+			if (tx_dlf_helper::testInt($this->piVars['page'])) {
+
+				$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+
+			} else {
+
+				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+
+			}
 
 			$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
 
