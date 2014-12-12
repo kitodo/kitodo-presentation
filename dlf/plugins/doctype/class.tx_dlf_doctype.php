@@ -85,13 +85,35 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 
 		switch ($toc[0]['type']) {
 			case 'newspaper':
-				if (count($toc[0]['children']) > 1)
+				if (count($toc[0]['children']) > 1) {
 					$ret = 'newspaper_global_anchor';
-				else
-					if (count($toc[0]['children'][0]['children']) > 1)
+				} else {
+					if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) == 0) {
+
+						// it's possible to have only one year in the global anchor file
+						$ret = 'newspaper_global_anchor';
+
+					} else if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) > 1) {
+
+						// one year, multiple month
 						$ret = 'newspaper_year_anchor';
-					else
+
+					} else if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) == 1 && count($toc[0]['children'][0]['children'][0]['children']) > 1) {
+
+						// one year, one month, multiple days
+						$ret = 'newspaper_year_anchor';
+
+					} else if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) == 1 && count($toc[0]['children'][0]['children'][0]['children']) == 1 && empty($toc[0]['children'][0]['children'][0]['children'][0]['children'][0]['dmdId'])) {
+
+						// one year, one month, single month
+						$ret = 'newspaper_year_anchor';
+
+					} else {
+
 						$ret = 'newspaper_issue';
+
+					}
+				}
 				break;
 			case 'periodical':
 					$ret = 'periodical';
