@@ -296,8 +296,6 @@ dlfViewer.prototype.init = function() {
 
 		}
 
-		//~ this.addPolygon(this.images[i].width, this.images[i].height);
-
 	}
 
 	// Add default controls to controls array.
@@ -338,7 +336,7 @@ dlfViewer.prototype.init = function() {
 	}
 
 	// add polygon layer if any
-	if (this.highlightFields) {
+	if (this.highlightFields.length) {
 
 		for (var i in this.highlightFields) {
 
