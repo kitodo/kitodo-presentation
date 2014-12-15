@@ -177,7 +177,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Renderer/SVG.js',
 			'OpenLayers/StyleMap.js',
 			'OpenLayers/Style.js',
-			'OpenLayers/Console.js',
 		);
 
 		// Add custom control features.

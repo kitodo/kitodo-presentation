@@ -472,7 +472,28 @@ dlfViewer.prototype.addPolygon = function(width, height, x1, y1, x2, y2) {
 
 	if (! this.highlightLayer) {
 
-		var layer = new OpenLayers.Layer.Vector("Words Highlightning");
+		var hightlightStyle = new OpenLayers.Style({
+			strokeColor : '#ee9900',
+			strokeOpacity : 0.8,
+			strokeWidth : 2,
+			fillColor : '#ee9900',
+			fillOpacity : 0.4,
+			graphicName : 'square',
+			cursor : 'inherit'
+		});
+
+		var stylemapObj = new OpenLayers.StyleMap(
+			{
+				'default' : hightlightStyle
+			}
+		);
+
+		var layer = new OpenLayers.Layer.Vector(
+			"Words Highlightning",
+			{
+				styleMap : stylemapObj
+			}
+			);
 
 		this.highlightLayer = layer;
 
