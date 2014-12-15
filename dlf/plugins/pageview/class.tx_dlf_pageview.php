@@ -328,7 +328,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			// Set default values if not set.
 			// page may be integer or string (pyhsical page attribute)
-			if (tx_dlf_helper::testInt($this->piVars['page'])) {
+			if (tx_dlf_helper::testInt($this->piVars['page']) || empty($this->piVars['page'])) {
 
 				$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
