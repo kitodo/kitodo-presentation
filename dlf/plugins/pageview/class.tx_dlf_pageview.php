@@ -173,9 +173,13 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output[] = 'var openLayersFiles = ["'.implode('", "', $components).'"];';
 
 		// concat files for syntax highlightning, if present in header
-		if (!empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
+		if (! empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
 
 			$output[] = 'window.OpenLayers = openLayersFiles.concat( openLayerFilesHightlightning );';
+
+		} else {
+
+			$output[] = 'window.OpenLayers = openLayersFiles;';
 
 		}
 
