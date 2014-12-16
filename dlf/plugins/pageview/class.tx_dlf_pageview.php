@@ -159,24 +159,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Layer/HTTPRequest.js',
 			'OpenLayers/Layer/Grid.js',
 			'OpenLayers/Layer/Image.js',
-			// Geometry layer.
-			'OpenLayers/Geometry.js',
-			'OpenLayers/Geometry/Collection.js',
-			'OpenLayers/Geometry/Polygon.js',
-			'OpenLayers/Geometry/MultiPolygon.js',
-			'OpenLayers/Geometry/MultiPoint.js',
-			'OpenLayers/Geometry/Curve.js',
-			'OpenLayers/Geometry/LineString.js',
-			'OpenLayers/Geometry/LinearRing.js',
-			'OpenLayers/Geometry/Point.js',
-			'OpenLayers/Feature.js',
-			'OpenLayers/Feature/Vector.js',
-			'OpenLayers/Layer/Vector.js',
-			'OpenLayers/Renderer.js',
-			'OpenLayers/Renderer/Elements.js',
-			'OpenLayers/Renderer/SVG.js',
-			'OpenLayers/StyleMap.js',
-			'OpenLayers/Style.js',
 		);
 
 		// Add custom control features.
@@ -186,10 +168,18 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		$output[] = '
-		<script type="text/javascript">
-			window.OpenLayers = ["'.implode('", "', $components).'"];
-		</script>';
+		$output[] = '<script type="text/javascript">';
+
+		$output[] = 'var openLayersFiles = ["'.implode('", "', $components).'"];';
+
+		// concat files for syntax highlightning, if present in header
+		if (!empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
+
+			$output[] = 'window.OpenLayers = openLayersFiles.concat( openLayerFilesHightlightning );';
+
+		}
+
+		$output[] = '</script>';
 
 		// Add OpenLayers library.
 		$output[] = '
