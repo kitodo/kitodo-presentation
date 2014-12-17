@@ -274,7 +274,12 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		// Add link to listview if applicable.
 		$markerArray['###LINKLISTVIEW###'] = $this->getLinkToListview();
 
-		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+		// fill some language labels if available
+		$markerArray['###ZOOM_IN###'] =  $this->pi_getLL('zoom-in', '', TRUE);
+		$markerArray['###ZOOM_OUT###'] = $this->pi_getLL('zoom-out', '', TRUE);
+		$markerArray['###ZOOM_FULLSCREEN###'] = $this->pi_getLL('zoom-fullscreen', '', TRUE);
+
+ 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
 		return $this->pi_wrapInBaseClass($content);
 

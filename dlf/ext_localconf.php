@@ -68,4 +68,55 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array
 
 // Register AJAX eID handlers.
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = 'EXT:'.$_EXTKEY.'/plugins/search/class.tx_dlf_search_suggest.php';
+
+
+if (TYPO3_MODE === 'FE') {
+
+	/*
+	 * docType user function to use in typoscript:
+	 *
+	 * STORAGEID: uid of dlf storage folder
+	 * DOCTYPE: document type string to test
+	 *
+	 * [userFunc = user_dlf_docTypeCheck(STORAGEID:DOCTYPE)]
+	 *
+	 * do something different
+	 *
+	 * [global]
+	 *
+	 **/
+	function user_dlf_docTypeCheck($cmd) {
+
+		// we have to split the cmd as we cannot have two parameters.
+		// this changed in TYPO3 6.2
+		$pidCondition = explode(':', $cmd);
+
+		$conf['pages'] = $pidCondition[0];
+
+		$docType = t3lib_div::makeInstance('tx_dlf_doctype');
+
+		switch($pidCondition[1]){
+			case "periodical":
+				if ($docType->main($cObj, $conf) === "periodical")
+					return TRUE;
+			 break;
+			case "newspaper_global_anchor":
+				if ($docType->main($cObj, $conf) === "newspaper_global_anchor")
+					return TRUE;
+			 break;
+			case "newspaper_year_anchor":
+				if ($docType->main($cObj, $conf) === "newspaper_year_anchor")
+					return TRUE;
+			 break;
+			case "newspaper_issue":
+				if ($docType->main($cObj, $conf) === "newspaper_issue")
+					return TRUE;
+			 break;
+			default	: return FALSE;
+		}
+		// this function has to return FALSE or TRUE nothing else
+		return FALSE;
+	}
+
+}
 ?>

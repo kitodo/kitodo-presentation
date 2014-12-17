@@ -56,7 +56,8 @@ return array (
 	'tx_dlf_toc' => $extensionPath.'plugins/toc/class.tx_dlf_toc.php',
 	'tx_dlf_toolbox' => $extensionPath.'plugins/toolbox/class.tx_dlf_toolbox.php',
 	'tx_dlf_toolsPdf' => $extensionPath.'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php',
-	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php'
+	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php',
+	'tx_dlf_doctype' => $extensionPath.'plugins/doctype/class.tx_dlf_doctype.php'
 );
 
 ?>

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <!--
   Copyright notice
-  
+
   (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
   All rights reserved
-  
+
   This script is part of the TYPO3 project. The TYPO3 project is
   free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   The GNU General Public License can be found at
   http://www.gnu.org/copyleft/gpl.html.
-  
+
   This script is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   This copyright notice MUST APPEAR in all copies of the script!
 -->
 <T3locallang>
@@ -43,6 +43,9 @@
 			<label index="doublePageOff">Show single page</label>
 			<label index="doublePage+1">Adjust recto/verso</label>
 			<label index="linkToList">Return to list view</label>
+			<label index="zoom-in">Zoom In</label>
+			<label index="zoom-out">Zoom Out</label>
+			<label index="zoom-fullscreen">Fullscreen Mode</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -60,6 +63,9 @@
 			<label index="doublePageOff">Einzelseitenansicht</label>
 			<label index="doublePage+1">Recto/Verso korrigieren</label>
 			<label index="linkToList">Zurück zur Listenansicht</label>
+			<label index="zoom-in">Ansicht vergrößern</label>
+			<label index="zoom-out">Ansicht verkleinern</label>
+			<label index="zoom-fullscreen">Vollansicht</label>
 		</languageKey>
 	</data>
 </T3locallang>
