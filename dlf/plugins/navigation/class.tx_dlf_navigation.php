@@ -146,7 +146,17 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			// Set default values if not set.
 			if ($this->doc->numPages > 0) {
 
-				$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+				// Set default values if not set.
+				// page may be integer or string (pyhsical page attribute)
+				if (tx_dlf_helper::testInt($this->piVars['page']) || empty($this->piVars['page'])) {
+
+					$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+
+				} else {
+
+					$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+
+				}
 
 				$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
 
