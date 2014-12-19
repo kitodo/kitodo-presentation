@@ -259,10 +259,14 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				$labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
 
 				$markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$labelTitles);
+				// version without any label
+				$markerArray[$_key]['###COUNT_TITLES_NUM###'] = htmlspecialchars($resArray['titles']);
 
 				$labelVolumes = $this->pi_getLL(($volumes[$resArray['uid']] > 1 ? 'volumes' : 'volume'), '', FALSE);
 
 				$markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$labelVolumes);
+				// version without any label
+				$markerArray[$_key]['###COUNT_VOLUMES_NUM###'] = htmlspecialchars($volumes[$resArray['uid']]);
 
 			}
 
