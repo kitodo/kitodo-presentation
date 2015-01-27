@@ -50,6 +50,13 @@ function dlfViewer() {
 	this.images = [];
 
 	/**
+	 * This holds the fulltexts' information like URL
+	 *
+	 * var array
+	 */
+	this.fulltexts = [];
+
+	/**
 	 * This holds the original images' information like width and height
 	 *
 	 * var array
@@ -78,13 +85,6 @@ function dlfViewer() {
 	this.offset = 0;
 
 	/**
-	 * This holds the offset for the second image
-	 *
-	 * var integer
-	 */
-	this.offset = 0;
-
-	/**
 	 * This holds the highlightning layer
 	 *
 	 * var OpenLayers.Layer.Vector
@@ -94,9 +94,23 @@ function dlfViewer() {
 	/**
 	 * This holds the highlightning layer
 	 *
+	 * var OpenLayers.Layer.Vector
+	 */
+	this.boxLayer = null;
+
+	/**
+	 * This holds the highlightning layer
+	 *
 	 * var array
 	 */
 	this.highlightFields = [];
+
+	/**
+	 * This holds the highlightning layer
+	 *
+	 * var OpenLayers.Control.DrawFeature
+	 */
+	this.words = [];
 
 }
 
@@ -226,6 +240,25 @@ dlfViewer.prototype.addImages = function(urls) {
 
 }
 
+
+/**
+ * Set Original Image Size
+ *
+ * @param	array	urls: Array of URLs of the fulltext files
+ *
+ * @return	void
+ */
+dlfViewer.prototype.addFulltexts = function(urls) {
+
+	for (var i in urls) {
+
+		this.fulltexts[i] = urls[i];
+
+	}
+
+}
+
+
 /**
  * Get a cookie value
  *
@@ -262,6 +295,8 @@ dlfViewer.prototype.init = function() {
 
 	var layers = [];
 
+	var fullTextCoordinates = [];
+
 	// Create image layers.
 	for (var i in this.images) {
 
@@ -286,13 +321,18 @@ dlfViewer.prototype.init = function() {
 			this.offset = this.images[i].width;
 
 		}
-
 		// Calculate overall width and height.
 		width += this.images[i].width;
 
 		if (this.images[i].height > height) {
 
 			height = this.images[i].height;
+
+		}
+
+		if (this.fulltexts[i]) {
+
+			fullTextCoordinates[i] = this.loadALTO("http://dfgviewer/?eID=tx_dlf_fulltext_eid&url=" + this.fulltexts[i]);
 
 		}
 
@@ -340,7 +380,9 @@ dlfViewer.prototype.init = function() {
 
 		for (var i in this.highlightFields) {
 
-			this.addPolygon(this.images[0].width, this.images[0].height, this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3]);
+			var polygon = this.createPolygon(this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3], 'String');
+
+			this.addPolygonlayer(this.highlightLayer, polygon, 1);
 
 		}
 
@@ -348,7 +390,122 @@ dlfViewer.prototype.init = function() {
 
 	}
 
+	var textBlockLayer = null;
 
+	var ocrLayer = null;
+
+	for (var i in this.images) {
+
+		var textBlockCoordinates = fullTextCoordinates[i];
+
+		for (var j in textBlockCoordinates) {
+
+			if (textBlockCoordinates[j].type == 'PrintSpace') {
+
+				this.setOrigImage(i, textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+
+			} else if (textBlockCoordinates[j].type == 'TextBlock') {
+
+				if (! textBlockLayer) {
+
+					textBlockLayer = new OpenLayers.Layer.Vector(
+
+						"TextBlock"
+
+					);
+
+				}
+
+				var polygon = this.createPolygon(i, textBlockCoordinates[j].coords['x1'], textBlockCoordinates[j].coords['y1'], textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+
+				this.addPolygonlayer(textBlockLayer, polygon, 'TextBlock');
+
+			}
+			else if (textBlockCoordinates[j].type == 'String') {
+
+				// we need to fix the coordinates for double-page view:
+				textBlockCoordinates[j].coords['x1'] = textBlockCoordinates[j].coords['x1'] + (this.offset * i)/this.origImages[i].scale;
+				textBlockCoordinates[j].coords['x2'] = textBlockCoordinates[j].coords['x2'] + (this.offset * i)/this.origImages[i].scale;
+
+				this.words.push(textBlockCoordinates[j]);
+
+			}
+		}
+
+	}
+	if (textBlockLayer instanceof OpenLayers.Layer.Vector) {
+
+		this.map.addLayer(textBlockLayer);
+
+	}
+	// add ocrLayer if present
+	if (ocrLayer instanceof OpenLayers.Layer.Vector) {
+
+		this.map.addLayer(ocrLayer);
+
+	}
+
+	// boxLayer layer
+	this.boxLayer = new OpenLayers.Layer.Vector("OCR Selection Layer", {
+          displayInLayerSwitcher: true
+        });
+	this.map.addLayer(this.boxLayer);
+
+	this.box = new OpenLayers.Control.DrawFeature(this.boxLayer, OpenLayers.Handler.RegularPolygon, {
+			handlerOptions: {
+            sides: 4, // get a rectangular box
+            irregular: true,
+          }
+        });
+
+	// callback after box is drawn
+	this.box.handler.callbacks.done = this.endDrag;
+
+	this.map.addControl(this.box);
+
+	this.box.activate();
+
+	//~ this.map.addControl(new OpenLayers.Control.MousePosition());
+	//~ this.map.addControl(new OpenLayers.Control.LayerSwitcher());
+}
+
+/**
+ * Show Popup with OCR results
+ *
+ * @param {Object} feature
+ * @param {Object} bounds
+ */
+dlfViewer.prototype.showPopup = function(text, bounds){
+
+	popupHTML = '<div id="ocrText" style="width:285px; ">' + text + '</div>';
+
+	lonlat = bounds.getCenterLonLat();
+
+	var ocrPopup = new OpenLayers.Popup.FramedCloud (
+			"popup_ocr",
+			lonlat,
+			null,
+			popupHTML,
+			null,
+			true,
+			this.popUpClosed
+	);
+
+	this.map.addPopup(ocrPopup);
+
+}
+
+/**
+ * Destroy boxLayer if popup closed
+ */
+dlfViewer.prototype.popUpClosed = function() {
+
+	tx_dlf_viewer.boxLayer.destroyFeatures();
+
+	// (re-) activate box drawing
+	tx_dlf_viewer.box.activate();
+
+	this.hide();
 }
 
 /**
@@ -441,46 +598,103 @@ dlfViewer.prototype.addHightlightField = function(x1, y1, x2, y2) {
 /**
  * Add layer with highlighted words found
  *
- * @param	integer width
- * @param	integer height
+ * @param	integer x1
+ * @param	integer y1
+ * @param	integer x2
+ * @param	integer y2
  *
  * @return	void
+
  */
-dlfViewer.prototype.addPolygon = function(width, height, x1, y1, x2, y2) {
+dlfViewer.prototype.createPolygon = function(image, x1, y1, x2, y2) {
 
-	//~ alert('hi' + width + ' x1 ' + x1);
+	//~ alert('image p1 ' + x1 + ' x ' + y1 + ' p2 ' + x2 + ' x ' + y2 + 'offset: ' + offset);
 
-	if (!this.origImage) {
-		this.origImage = {
-			'width': width,
-			'height': height
-		};
+	if (this.origImages.length > 1 && image == 1) {
+
+		var scale = this.origImages[1].scale;
+		var height = this.images[1].height;
+		var offset = this.images[0].width;
+
+	} else {
+
+		var scale = this.origImages[0].scale;
+		var height = this.images[0].height;
+		var offset = 0;
+
 	}
 
-	var polygon = new OpenLayers.Geometry.Polygon(
-				new OpenLayers.Geometry.LinearRing(
-					[
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x1), height - (y1 * height/ this.origImage.height)),
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x2), height - (y1 * height/ this.origImage.height)),
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x2), height - (y2 * height/ this.origImage.height)),
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x1), height - (y2 * height/ this.origImage.height)),
-					]
-				)
-			)
+	var polygon = new OpenLayers.Geometry.Polygon (
+		new OpenLayers.Geometry.LinearRing (
+			[
+			new OpenLayers.Geometry.Point(offset + (scale * x1), height - (scale *y1)),
+			new OpenLayers.Geometry.Point(offset + (scale * x2), height - (scale *y1)),
+			new OpenLayers.Geometry.Point(offset + (scale * x2), height - (scale *y2)),
+			new OpenLayers.Geometry.Point(offset + (scale * x1), height - (scale *y2)),
+			]
+		)
+	)
 
 	var feature = new OpenLayers.Feature.Vector(polygon);
 
-	if (! this.highlightLayer) {
+	return feature;
 
-		var hightlightStyle = new OpenLayers.Style({
-			strokeColor : '#ee9900',
-			strokeOpacity : 0.8,
-			strokeWidth : 2,
-			fillColor : '#ee9900',
-			fillOpacity : 0.4,
-			graphicName : 'square',
-			cursor : 'inherit'
-		});
+}
+/**
+ * Add layer with highlighted polygon
+ *
+ * @param	{Object} layer
+ * @param	{Object} feature
+ * @param	integer type
+ *
+ * @return	void
+
+ */
+dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
+
+	if (layer instanceof OpenLayers.Layer.Vector) {
+
+		switch (type) {
+			case 'TextBlock': var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#cccccc',
+					strokeOpacity : 0.8,
+					strokeWidth : 3,
+					fillColor : '#aa0000',
+					fillOpacity : 0.1,
+					graphicName : 'square',
+					cursor : 'inherit'
+				});
+				break;
+			case 'String': var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#ee9900',
+					strokeOpacity : 0.8,
+					strokeWidth : 1,
+					fillColor : '#ee9900',
+					fillOpacity : 0.2,
+					graphicName : 'square',
+					cursor : 'inherit'
+				});
+				break;
+			case 3: var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#ffffff',
+					strokeOpacity : 0.8,
+					strokeWidth : 4,
+					fillColor : '#3d4ac2',
+					fillOpacity : 0.5,
+					graphicName : 'square',
+					cursor : 'inherit'
+				});
+				break;
+			default: var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#ee9900',
+					strokeOpacity : 0.8,
+					strokeWidth : 2,
+					fillColor : '#ee9900',
+					fillOpacity : 0.4,
+					graphicName : 'square',
+					cursor : 'inherit'
+				});
+		}
 
 		var stylemapObj = new OpenLayers.StyleMap(
 			{
@@ -488,42 +702,129 @@ dlfViewer.prototype.addPolygon = function(width, height, x1, y1, x2, y2) {
 			}
 		);
 
-		var layer = new OpenLayers.Layer.Vector(
-			"Words Highlightning",
-			{
-				styleMap : stylemapObj
-			}
-			);
+		layer.styleMap = stylemapObj;
 
-		this.highlightLayer = layer;
+		layer.addFeatures([feature]);
 
 	}
 
-	this.highlightLayer.addFeatures([feature]);
 
+}
+
+/**
+ * End of Box dragging
+ * *
+ * @return	void
+ */
+dlfViewer.prototype.endDrag = function(bbox) {
+
+	var bounds = bbox.getBounds();
+
+	var img = 0;
+
+	// drawn box in left or right image?
+	if (bounds.left > tx_dlf_viewer.offset) {
+		img = 1;
+	}
+
+	var scale = tx_dlf_viewer.origImages[img].scale;
+
+	// draw box
+	tx_dlf_viewer.drawBox(bounds);
+
+    var text = '';
+
+    var wordCoord = tx_dlf_viewer.words;
+
+	if (wordCoord.length > 0) {
+
+		var size_disp = new OpenLayers.Size(tx_dlf_viewer.images[img].width, tx_dlf_viewer.images[img].height);
+
+		// walk through all words
+		for (var i = 0; i < wordCoord.length; i++) {
+
+			// find center point of word coordinates
+			centerWord = new OpenLayers.Geometry.Point(
+				scale * (wordCoord[i].coords['x1'] + ((wordCoord[i].coords['x2'] - wordCoord[i].coords['x1']) / 2)),
+				(size_disp.h - scale * (wordCoord[i].coords['y1'] + (wordCoord[i].coords['y2'] - wordCoord[i].coords['y1']) / 2))
+				);
+
+			// take word if center point is inside the drawn box
+			if (bbox.containsPoint(centerWord)) {
+
+				text += wordCoord[i].word + " ";
+
+				//~ var polygon = tx_dlf_viewer.createPolygon(img, wordCoord[i].coords['x1'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y1'], wordCoord[i].coords['x2'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y2']);
+				//~ tx_dlf_viewer.addPolygonlayer(tx_dlf_viewer.boxLayer, polygon, 3);
+
+			}
+		}
+	}
+
+	tx_dlf_viewer.showPopup(text, bounds);
+	tx_dlf_viewer.box.deactivate();
+
+}
+
+/**
+ * End of Box dragging
+ * *
+ * @return	void
+ */
+dlfViewer.prototype.drawBox = function(bounds) {
+
+	var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+
+	this.boxLayer.addFeatures(feature);
 }
 
 /**
  * Set Original Image Size
  *
+ * @param	integer image number
  * @param	integer width
  * @param	integer height
  *
  * @return	void
  */
-dlfViewer.prototype.setOrigImage = function(width, height) {
-
-	//~ alert(width + ' xx ' + height);
+dlfViewer.prototype.setOrigImage = function(i, width, height) {
 
 	if (width && height) {
-		this.origImage = {
+
+		this.origImages[i] = {
 			'width': width,
-			'height': height
+			'height': height,
+			'scale': tx_dlf_viewer.images[i].width/width,
 		};
-	} else {
-		this.origImage = null;
+
 	}
 
 }
+
+
+/**
+ * Read ALTO file and return found words
+ *
+ * @param {Object} url
+ * @param {Object} scale
+ */
+dlfViewer.prototype.loadALTO = function(url, scale){
+
+    var request = OpenLayers.Request.GET({
+        url: url,
+        async: false
+    });
+
+    var format = new OpenLayers.Format.ALTO({
+        scale: scale
+    });
+
+    if (request.responseXML)
+        var wordCoords = format.read(request.responseXML);
+
+    return wordCoords;
+}
+
+
 
 

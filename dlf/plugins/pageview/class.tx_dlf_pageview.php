@@ -86,6 +86,14 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	protected $images = array ();
 
 	/**
+	 * Holds the current fulltexts' URLs
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $fulltexts = array ();
+
+	/**
 	 * Holds the language code for OpenLayers
 	 *
 	 * @var	string
@@ -159,6 +167,36 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Layer/HTTPRequest.js',
 			'OpenLayers/Layer/Grid.js',
 			'OpenLayers/Layer/Image.js',
+			// Geometry layer --> dfgviewer
+			'OpenLayers/Control/DrawFeature.js',
+			'OpenLayers/Handler/Feature.js',
+			'OpenLayers/Handler/RegularPolygon.js',
+			'OpenLayers/Geometry.js',
+			'OpenLayers/Geometry/Collection.js',
+			'OpenLayers/Geometry/Polygon.js',
+			'OpenLayers/Geometry/MultiPoint.js',
+			'OpenLayers/Geometry/Curve.js',
+			'OpenLayers/Geometry/LineString.js',
+			'OpenLayers/Geometry/LinearRing.js',
+			'OpenLayers/Geometry/Point.js',
+			'OpenLayers/Feature.js',
+			'OpenLayers/Feature/Vector.js',
+			'OpenLayers/Layer/Vector.js',
+			'OpenLayers/Renderer.js',
+			'OpenLayers/Renderer/Elements.js',
+			'OpenLayers/Renderer/SVG.js',
+			'OpenLayers/StyleMap.js',
+			'OpenLayers/Style.js',
+			// XML Parser.
+			'OpenLayers/Request.js',
+			'OpenLayers/Request/XMLHttpRequest.js',
+			'OpenLayers/Format.js',
+			'OpenLayers/Format/XML.js',
+			'../../../plugins/pageview/OpenLayers_Format_Alto.js',
+			'OpenLayers/Popup.js',
+			'OpenLayers/Popup/Anchored.js',
+			'OpenLayers/Popup/Framed.js',
+			'OpenLayers/Popup/FramedCloud.js',
 		);
 
 		// Add custom control features.
@@ -222,6 +260,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			tx_dlf_viewer.setLang("'.$this->lang.'");
 			tx_dlf_viewer.addControls(["'.implode('", "', $this->controls).'"]);
 			tx_dlf_viewer.addImages(["'.implode('", "', $this->images).'"]);
+			tx_dlf_viewer.addFulltexts(["'.implode('", "', $this->fulltexts).'"]);
 		</script>';
 
 		return implode("\n", $output);
@@ -250,6 +289,49 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
 
 				$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+
+				break;
+
+			} else {
+
+				if (TYPO3_DLOG) {
+
+					t3lib_div::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+
+				}
+
+			}
+
+		}
+
+		return $imageUrl;
+
+	}
+
+	/**
+	 * Get ALTO XML URL
+	 *
+	 * @access	protected
+	 *
+	 * @param	integer		$page: Page number
+	 *
+	 * @return	string		URL of image file
+	 */
+	protected function getAltoUrl($page) {
+
+		$imageUrl = '';
+
+		// Get @USE value of METS fileGrp.
+
+		// we need USE="FULLTEXT"
+		$fileGrpFulltext = t3lib_div::trimExplode(',', $this->conf['fileGrpFulltext']);
+
+		while ($fileGrpFulltext = @array_pop($fileGrpFulltext)) {
+
+			// Get fulltext link.
+			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext])) {
+
+				$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
 
 				break;
 
@@ -348,10 +430,12 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		// Get image data.
 		$this->images[0] = $this->getImageUrl($this->piVars['page']);
+		$this->fulltexts[0] = $this->getAltoUrl($this->piVars['page']);
 
 		if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
 
 			$this->images[1] = $this->getImageUrl($this->piVars['page'] + 1);
+			$this->fulltexts[1] = $this->getAltoUrl($this->piVars['page'] + 1);
 
 		}
 
