@@ -390,80 +390,77 @@ dlfViewer.prototype.init = function() {
 
 	}
 
-	var textBlockLayer = null;
+	// add fulltext layers if we have fulltexts to show
+	if (fullTextCoordinates.length > 0) {
 
-	var ocrLayer = null;
+		var textBlockLayer = null;
 
-	for (var i in this.images) {
+		for (var i in this.images) {
 
-		var textBlockCoordinates = fullTextCoordinates[i];
+			var textBlockCoordinates = fullTextCoordinates[i];
 
-		for (var j in textBlockCoordinates) {
+			for (var j in textBlockCoordinates) {
 
-			if (textBlockCoordinates[j].type == 'PrintSpace') {
+				if (textBlockCoordinates[j].type == 'PrintSpace') {
 
-				this.setOrigImage(i, textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+					this.setOrigImage(i, textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
 
-			} else if (textBlockCoordinates[j].type == 'TextBlock') {
+				} else if (textBlockCoordinates[j].type == 'TextBlock') {
 
-				if (! textBlockLayer) {
+					if (! textBlockLayer) {
 
-					textBlockLayer = new OpenLayers.Layer.Vector(
+						textBlockLayer = new OpenLayers.Layer.Vector(
 
-						"TextBlock"
+							"TextBlock"
 
-					);
+						);
+
+					}
+
+					var polygon = this.createPolygon(i, textBlockCoordinates[j].coords['x1'], textBlockCoordinates[j].coords['y1'], textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+
+					this.addPolygonlayer(textBlockLayer, polygon, 'TextBlock');
 
 				}
+				else if (textBlockCoordinates[j].type == 'String') {
 
-				var polygon = this.createPolygon(i, textBlockCoordinates[j].coords['x1'], textBlockCoordinates[j].coords['y1'], textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+					// we need to fix the coordinates for double-page view:
+					textBlockCoordinates[j].coords['x1'] = textBlockCoordinates[j].coords['x1'] + (this.offset * i)/this.origImages[i].scale;
+					textBlockCoordinates[j].coords['x2'] = textBlockCoordinates[j].coords['x2'] + (this.offset * i)/this.origImages[i].scale;
 
-				this.addPolygonlayer(textBlockLayer, polygon, 'TextBlock');
+					this.words.push(textBlockCoordinates[j]);
 
+				}
 			}
-			else if (textBlockCoordinates[j].type == 'String') {
 
-				// we need to fix the coordinates for double-page view:
-				textBlockCoordinates[j].coords['x1'] = textBlockCoordinates[j].coords['x1'] + (this.offset * i)/this.origImages[i].scale;
-				textBlockCoordinates[j].coords['x2'] = textBlockCoordinates[j].coords['x2'] + (this.offset * i)/this.origImages[i].scale;
+		}
+		if (textBlockLayer instanceof OpenLayers.Layer.Vector) {
 
-				this.words.push(textBlockCoordinates[j]);
+			this.map.addLayer(textBlockLayer);
 
-			}
 		}
 
+		// boxLayer layer
+		this.boxLayer = new OpenLayers.Layer.Vector("OCR Selection Layer", {
+			  displayInLayerSwitcher: true
+			});
+		this.map.addLayer(this.boxLayer);
+
+		this.box = new OpenLayers.Control.DrawFeature(this.boxLayer, OpenLayers.Handler.RegularPolygon, {
+				handlerOptions: {
+				sides: 4, // get a rectangular box
+				irregular: true,
+			  }
+			});
+
+		// callback after box is drawn
+		this.box.handler.callbacks.done = this.endDrag;
+
+		this.map.addControl(this.box);
+
+		this.box.activate();
+
 	}
-	if (textBlockLayer instanceof OpenLayers.Layer.Vector) {
-
-		this.map.addLayer(textBlockLayer);
-
-	}
-	// add ocrLayer if present
-	if (ocrLayer instanceof OpenLayers.Layer.Vector) {
-
-		this.map.addLayer(ocrLayer);
-
-	}
-
-	// boxLayer layer
-	this.boxLayer = new OpenLayers.Layer.Vector("OCR Selection Layer", {
-          displayInLayerSwitcher: true
-        });
-	this.map.addLayer(this.boxLayer);
-
-	this.box = new OpenLayers.Control.DrawFeature(this.boxLayer, OpenLayers.Handler.RegularPolygon, {
-			handlerOptions: {
-            sides: 4, // get a rectangular box
-            irregular: true,
-          }
-        });
-
-	// callback after box is drawn
-	this.box.handler.callbacks.done = this.endDrag;
-
-	this.map.addControl(this.box);
-
-	this.box.activate();
 
 	//~ this.map.addControl(new OpenLayers.Control.MousePosition());
 	//~ this.map.addControl(new OpenLayers.Control.LayerSwitcher());
