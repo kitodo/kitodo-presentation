@@ -332,7 +332,7 @@ dlfViewer.prototype.init = function() {
 
 		if (this.fulltexts[i]) {
 
-			fullTextCoordinates[i] = this.loadALTO("http://dfgviewer/?eID=tx_dlf_fulltext_eid&url=" + this.fulltexts[i]);
+			fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
 
 		}
 

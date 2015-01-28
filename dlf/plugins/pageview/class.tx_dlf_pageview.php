@@ -47,6 +47,14 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	protected $controls = array ();
 
 	/**
+	 * Flag if fulltexts are present
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $hasFulltexts = false;
+
+	/**
 	 * Holds the dependencies of the control features
 	 *
 	 * @var	array
@@ -167,6 +175,10 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Layer/HTTPRequest.js',
 			'OpenLayers/Layer/Grid.js',
 			'OpenLayers/Layer/Image.js',
+		);
+
+		// Load required OpenLayers components.
+		$componentsFulltexts = array (
 			// Geometry layer --> dfgviewer
 			'OpenLayers/Control/DrawFeature.js',
 			'OpenLayers/Handler/Feature.js',
@@ -204,6 +216,11 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			$components = array_merge($components, array_diff($this->controlDependency[$control], $components));
 
+		}
+
+		// Add fulltext polygon features.
+		if ($this->hasFulltexts) {
+			$components = array_merge($components, $componentsFulltexts);
 		}
 
 		$output[] = '<script type="text/javascript">';
@@ -246,7 +263,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		tx_dlf_helper::loadJQuery();
 
 		// Add OpenLayers library.
-		$output[] = $this->addOpenLayersJS();
+		$output[] = $this->addOpenLayersJS($fulltexts);
 
 		// Add viewer library.
 		$output[] = '
@@ -331,7 +348,12 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			// Get fulltext link.
 			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext])) {
 
-				$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
+				$fulltextUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
+
+				// Build typolink configuration array.
+				$fulltextUrl =  '/index.php?eID=tx_dlf_fulltext_eid&url='. $fulltextUrl;
+
+				$this->hasFulltexts = true;
 
 				break;
 
@@ -347,7 +369,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		return $imageUrl;
+		return $fulltextUrl;
 
 	}
 
