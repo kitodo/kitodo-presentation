@@ -295,8 +295,6 @@ dlfViewer.prototype.init = function() {
 
 	var layers = [];
 
-	var fullTextCoordinates = [];
-
 	// Create image layers.
 	for (var i in this.images) {
 
@@ -330,11 +328,6 @@ dlfViewer.prototype.init = function() {
 
 		}
 
-		if (this.fulltexts[i]) {
-
-			fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
-
-		}
 
 	}
 
@@ -390,81 +383,19 @@ dlfViewer.prototype.init = function() {
 
 	}
 
-	// add fulltext layers if we have fulltexts to show
-	if (fullTextCoordinates.length > 0) {
+	// keep fulltext feature active
+	isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
 
-		var textBlockLayer = null;
+	if (isFulltextActive == 'enabled') {
 
-		for (var i in this.images) {
-
-			var textBlockCoordinates = fullTextCoordinates[i];
-
-			for (var j in textBlockCoordinates) {
-
-				if (textBlockCoordinates[j].type == 'PrintSpace') {
-
-					this.setOrigImage(i, textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
-
-				} else if (textBlockCoordinates[j].type == 'TextBlock') {
-
-					if (! textBlockLayer) {
-
-						textBlockLayer = new OpenLayers.Layer.Vector(
-
-							"TextBlock"
-
-						);
-
-					}
-
-					var polygon = this.createPolygon(i, textBlockCoordinates[j].coords['x1'], textBlockCoordinates[j].coords['y1'], textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
-
-					this.addPolygonlayer(textBlockLayer, polygon, 'TextBlock');
-
-				}
-				else if (textBlockCoordinates[j].type == 'String') {
-
-					// we need to fix the coordinates for double-page view:
-					textBlockCoordinates[j].coords['x1'] = textBlockCoordinates[j].coords['x1'] + (this.offset * i)/this.origImages[i].scale;
-					textBlockCoordinates[j].coords['x2'] = textBlockCoordinates[j].coords['x2'] + (this.offset * i)/this.origImages[i].scale;
-
-					this.words.push(textBlockCoordinates[j]);
-
-				}
-			}
-
-		}
-		if (textBlockLayer instanceof OpenLayers.Layer.Vector) {
-
-			this.map.addLayer(textBlockLayer);
-
-		}
-
-		// boxLayer layer
-		this.boxLayer = new OpenLayers.Layer.Vector("OCR Selection Layer", {
-			  displayInLayerSwitcher: true
-			});
-		this.map.addLayer(this.boxLayer);
-
-		this.box = new OpenLayers.Control.DrawFeature(this.boxLayer, OpenLayers.Handler.RegularPolygon, {
-				handlerOptions: {
-				sides: 4, // get a rectangular box
-				irregular: true,
-			  }
-			});
-
-		// callback after box is drawn
-		this.box.handler.callbacks.done = this.endDrag;
-
-		this.map.addControl(this.box);
-
-		this.box.activate();
+		this.enableFulltextSelect();
 
 	}
 
 	//~ this.map.addControl(new OpenLayers.Control.MousePosition());
 	//~ this.map.addControl(new OpenLayers.Control.LayerSwitcher());
 }
+
 
 /**
  * Show Popup with OCR results
@@ -822,6 +753,136 @@ dlfViewer.prototype.loadALTO = function(url, scale){
     return wordCoords;
 }
 
+/**
+ * Activate Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewer.prototype.toogleFulltextSelect = function() {
 
+	isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
+
+	if (isFulltextActive == 'enabled') {
+
+		this.disableFulltextSelect();
+		this.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
+
+	} else {
+
+		this.enableFulltextSelect();
+		this.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
+
+	}
+
+}
+
+/**
+ * Disable Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewer.prototype.disableFulltextSelect = function() {
+
+	// deactivate box drawing
+	this.box.deactivate();
+	// destroy layer features
+	this.textBlockLayer.destroyFeatures();
+	this.boxLayer.destroyFeatures();
+
+}
+
+/**
+ * Activate Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewer.prototype.enableFulltextSelect = function() {
+
+	var fullTextCoordinates = [];
+
+	// Create image layers.
+	for (var i in this.images) {
+
+		if (this.fulltexts[i]) {
+
+			fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
+
+		}
+
+	}
+
+	// add fulltext layers if we have fulltexts to show
+	if (fullTextCoordinates.length > 0) {
+
+		for (var i in this.images) {
+
+			var textBlockCoordinates = fullTextCoordinates[i];
+
+			for (var j in textBlockCoordinates) {
+
+				if (textBlockCoordinates[j].type == 'PrintSpace') {
+
+					this.setOrigImage(i, textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+
+				} else if (textBlockCoordinates[j].type == 'TextBlock') {
+
+					if (! this.textBlockLayer) {
+
+						this.textBlockLayer = new OpenLayers.Layer.Vector(
+
+							"TextBlock"
+
+						);
+
+					}
+
+					var polygon = this.createPolygon(i, textBlockCoordinates[j].coords['x1'], textBlockCoordinates[j].coords['y1'], textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+
+					this.addPolygonlayer(this.textBlockLayer, polygon, 'TextBlock');
+
+				}
+				else if (textBlockCoordinates[j].type == 'String') {
+
+					// we need to fix the coordinates for double-page view:
+					textBlockCoordinates[j].coords['x1'] = textBlockCoordinates[j].coords['x1'] + (this.offset * i)/this.origImages[i].scale;
+					textBlockCoordinates[j].coords['x2'] = textBlockCoordinates[j].coords['x2'] + (this.offset * i)/this.origImages[i].scale;
+
+					this.words.push(textBlockCoordinates[j]);
+
+				}
+			}
+
+		}
+		if (this.textBlockLayer instanceof OpenLayers.Layer.Vector) {
+
+			tx_dlf_viewer.map.addLayer(this.textBlockLayer);
+
+		}
+
+		// boxLayer layer
+		this.boxLayer = new OpenLayers.Layer.Vector("OCR Selection Layer", {
+
+			  displayInLayerSwitcher: true
+
+		});
+		this.map.addLayer(this.boxLayer);
+
+		this.box = new OpenLayers.Control.DrawFeature(this.boxLayer, OpenLayers.Handler.RegularPolygon, {
+				handlerOptions: {
+				sides: 4, // get a rectangular box
+				irregular: true,
+			  }
+			});
+
+		// callback after box is drawn
+		this.box.handler.callbacks.done = this.endDrag;
+
+		this.map.addControl(this.box);
+
+		this.box.activate();
+
+	}
+
+}
 
 
