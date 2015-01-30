@@ -594,6 +594,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			$results->metadata = array (
 				'label' => $label,
 				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
+				'thumbnail' => '',
 				'options' => $results->metadata['options']
 			);
 
