@@ -328,7 +328,6 @@ dlfViewer.prototype.init = function() {
 
 		}
 
-
 	}
 
 	// Add default controls to controls array.
@@ -371,11 +370,29 @@ dlfViewer.prototype.init = function() {
 	// add polygon layer if any
 	if (this.highlightFields.length) {
 
+		if (! this.highlightLayer) {
+
+			this.highlightLayer = new OpenLayers.Layer.Vector(
+									"HightLight Words"
+								);
+		}
+
 		for (var i in this.highlightFields) {
 
-			var polygon = this.createPolygon(this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3], 'String');
+			if (this.origImages[0].scale == 0) {
 
-			this.addPolygonlayer(this.highlightLayer, polygon, 1);
+				// scale may be still zero in this context
+				this.origImages[0] = {
+
+					'scale': this.images[0].width/this.origImages[0].width,
+
+				};
+
+			}
+
+			var polygon = this.createPolygon(0, this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3]);
+
+			this.addPolygonlayer(this.highlightLayer, polygon, 'String');
 
 		}
 
@@ -536,8 +553,6 @@ dlfViewer.prototype.addHightlightField = function(x1, y1, x2, y2) {
  */
 dlfViewer.prototype.createPolygon = function(image, x1, y1, x2, y2) {
 
-	//~ alert('image p1 ' + x1 + ' x ' + y1 + ' p2 ' + x2 + ' x ' + y2 + 'offset: ' + offset);
-
 	if (this.origImages.length > 1 && image == 1) {
 
 		var scale = this.origImages[1].scale;
@@ -551,6 +566,8 @@ dlfViewer.prototype.createPolygon = function(image, x1, y1, x2, y2) {
 		var offset = 0;
 
 	}
+
+	//~ alert('image ' + image + ' scale: ' + scale + ' height: ' + height + ' offset: ' + offset);
 
 	var polygon = new OpenLayers.Geometry.Polygon (
 		new OpenLayers.Geometry.LinearRing (
@@ -716,6 +733,7 @@ dlfViewer.prototype.drawBox = function(bounds) {
  * @return	void
  */
 dlfViewer.prototype.setOrigImage = function(i, width, height) {
+
 
 	if (width && height) {
 
