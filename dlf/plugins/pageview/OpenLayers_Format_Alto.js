@@ -68,7 +68,7 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
         // Loop throught the following node types in this order and
         // process the nodes found
         //~ var types = ["TextBlock", "TextLine", "String"];
-        var types = ["PrintSpace", "TextBlock",  "String"];
+        var types = ["PrintSpace", "TextBlock", "TextLine", "String", "SP", "HYP"];
 
         for(var i=0, len=types.length; i<len; ++i) {
             var type = types[i];

@@ -150,6 +150,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Lang/'.$this->lang.'.js',
 			'OpenLayers/Events.js',
 			'OpenLayers/Events/buttonclick.js',
+			'OpenLayers/Events/featureclick.js',
 			'OpenLayers/Animation.js',
 			'OpenLayers/Tween.js',
 			'OpenLayers/Projection.js',
@@ -180,6 +181,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Load required OpenLayers components.
 		$componentsFulltexts = array (
 			// Geometry layer --> dfgviewer
+			'OpenLayers/Control/SelectFeature.js',
 			'OpenLayers/Control/DrawFeature.js',
 			'OpenLayers/Handler/Feature.js',
 			'OpenLayers/Handler/RegularPolygon.js',
@@ -197,6 +199,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Renderer.js',
 			'OpenLayers/Renderer/Elements.js',
 			'OpenLayers/Renderer/SVG.js',
+			'OpenLayers/Renderer/Canvas.js',
 			'OpenLayers/StyleMap.js',
 			'OpenLayers/Style.js',
 			// XML Parser.
