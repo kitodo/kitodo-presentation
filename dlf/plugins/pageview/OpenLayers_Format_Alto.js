@@ -67,8 +67,8 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
 
         // Loop throught the following node types in this order and
         // process the nodes found
-        //~ var types = ["TextBlock", "TextLine", "String"];
-        var types = ["PrintSpace", "TextBlock", "TextLine", "String", "SP", "HYP"];
+        //~ var types = ["TextBlock", "TextLine"];
+        var types = ["PrintSpace", "TextBlock"]; // , "TextLine", "String"];
 
         for(var i=0, len=types.length; i<len; ++i) {
             var type = types[i];
@@ -84,13 +84,8 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
 
                 // Get Printspace
                 case "PrintSpace":
-                   this.parseTextBlock(nodes, options);
-                    //~ var geometry = this.parsePrintSpace(nodes);
-
-					// can't we scale already here?
-                    //~ tx_dlf_viewer.setOrigImage(geometry[0], geometry[1]);
-
-                    break;
+                   this.parsePrintSpace(nodes);
+                   break;
 
                 // Fetch external links
                 case "TextBlock":
@@ -100,39 +95,39 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
                 // parse style information
                 case "TextLine":
                     this.parseTextBlock(nodes, options);
-					//~ this.parseStyles(nodes, options);
                     break;
 
                 case "String":
                     this.parseTextBlock(nodes, options);
-                        //~ this.parseStyleMaps(nodes, options);
                     break;
 
             }
 
         }
-        //~ console.dir(this.features);
+        //~ console.log(this.features);
 
         return this.features;
     },
 
    /**
      * Method: parseTextBlock
-     * Finds TextBlocks of Alto files
+     * Finds PrintSpace of Alto files
      *
      * Parameters:
      * nodes   - {Array} of {DOMElement} data to read/parse.
-     * options - {Object} Hash of options
      *
      */
-    parsePrintSpace: function(nodes) {
+    parsePrintSpace: function(node) {
 
 		var geometry = [];
+		var type = node[0].nodeName;
 
-		geometry.push(parseInt(nodes[0].getAttribute("WIDTH")));
-		geometry.push(parseInt(nodes[0].getAttribute("HEIGHT")));
+		geometry['width'] = parseInt(node[0].getAttribute("WIDTH"));
+		geometry['height'] = parseInt(node[0].getAttribute("HEIGHT"));
 
-        return geometry;
+ 		var feature = {type:type, geometry:geometry};
+
+		this.features = this.features.concat(feature);
 
     },
 
@@ -148,10 +143,43 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
     parseTextBlock: function(nodes, options) {
 
 		var features = [];
+		var fulltext = '';
 
 		for (var i = 0; i < nodes.length; i++) {
 
-			features.push(this.parseFeature(nodes[i]));
+			fulltext = '';
+
+            var lineNodes = this.getElementsByTagNameNS(nodes[i], this.namespaces.alto, "TextLine");
+
+			for (var j = 0; j < lineNodes.length; j++) {
+
+				var wordNodes = this.getElementsByTagNameNS(lineNodes[j], this.namespaces.alto, "*");
+
+				for (var k = 0; k < wordNodes.length; k++) {
+
+					if (wordNodes[k].nodeName == "String") {
+
+						fulltext += wordNodes[k].getAttribute("CONTENT");
+
+					} else if (wordNodes[k].nodeName == "SP") {
+
+						fulltext += ' ';
+
+					} else if (wordNodes[k].nodeName == "HYP") {
+
+						fulltext += '-';
+
+					}
+
+				}
+
+				fulltext += "\n";
+
+			}
+
+			//~ console.log(text);
+
+			features.push(this.parseFeature(nodes[i], fulltext));
 
         }
 
@@ -170,7 +198,7 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
 	 * Parameters:
 	 * node - {DOMElement} A GML feature node.
 	 */
-    parseFeature: function(node) {
+    parseFeature: function(node, fulltext) {
 
 		var type = node.nodeName;
 
@@ -185,7 +213,7 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
 		coords['x2'] = parseInt(node.getAttribute("WIDTH")) + coords['x1'];
 		coords['y2'] = parseInt(node.getAttribute("HEIGHT")) + coords['y1'];
 
-		var feature = {type:type, coords:coords, word:word};
+		var feature = {type:type, coords:coords, word:word, fulltext:fulltext};
 
         return feature;
     },

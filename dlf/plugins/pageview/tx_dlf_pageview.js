@@ -99,11 +99,13 @@ function dlfViewer() {
 	this.highlightFields = [];
 
 	/**
-	 * This holds the highlightning layer
+	 * This holds all fulltexts and coordinates of the textblocks
 	 *
-	 * var OpenLayers.Control.DrawFeature
+	 * var array
 	 */
-	this.words = [];
+	this.fullTextCoordinates = [];
+
+	this.featureClicked = null;
 
 }
 
@@ -406,33 +408,6 @@ dlfViewer.prototype.init = function() {
 	//~ this.map.addControl(new OpenLayers.Control.LayerSwitcher());
 }
 
-
-/**
- * Show Popup with OCR results
- *
- * @param {Object} feature
- * @param {Object} bounds
- */
-dlfViewer.prototype.showPopup = function(text, bounds){
-
-	popupHTML = '<div id="ocrText" style="width:285px;">' + text + '</div>';
-
-	lonlat = bounds.getCenterLonLat();
-
-	var ocrPopup = new OpenLayers.Popup.FramedCloud (
-			"popup_ocr",
-			lonlat,
-			null,
-			popupHTML,
-			null,
-			true,
-			this.popUpClosed
-	);
-
-	this.map.addPopup(ocrPopup);
-
-}
-
 /**
  * Show Popup with OCR results
  *
@@ -441,7 +416,7 @@ dlfViewer.prototype.showPopup = function(text, bounds){
  */
 dlfViewer.prototype.showPopupDiv = function(text, bounds){
 
-	popupHTML = '<div class="ocrText">' + text + '</div>';
+	popupHTML = '<div class="ocrText">' + text.replace(/\n/g, '<br />') + '</div>';
 
 	$('#tx-dlf-fulltextselection').html(popupHTML);
 
@@ -641,8 +616,17 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 				});
 		};
 
-		var selectStyle = new OpenLayers.Style({
+		var hoverStyle = new OpenLayers.Style({
 			strokeColor : '#cccccc',
+			strokeOpacity : 0.8,
+			strokeWidth : 1,
+			fillColor : '#ee9900',
+			fillOpacity : 0.2,
+			cursor : 'inherit'
+		});
+
+		var selectStyle = new OpenLayers.Style({
+			strokeColor : '#aa0000',
 			strokeOpacity : 0.8,
 			strokeWidth : 1,
 			fillColor : '#ee9900',
@@ -653,6 +637,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 		var stylemapObj = new OpenLayers.StyleMap(
 			{
 				'default' : hightlightStyle,
+				'hover' : hoverStyle,
 				'select' : selectStyle,
 			}
 		);
@@ -756,31 +741,29 @@ dlfViewer.prototype.disableFulltextSelect = function() {
  */
 dlfViewer.prototype.enableFulltextSelect = function() {
 
-	var fullTextCoordinates = [];
-
 	// Create image layers.
 	for (var i in this.images) {
 
 		if (this.fulltexts[i]) {
 
-			fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
+			this.fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
 
 		}
 
 	}
 
 	// add fulltext layers if we have fulltexts to show
-	if (fullTextCoordinates.length > 0) {
+	if (this.fullTextCoordinates.length > 0) {
 
 		for (var i in this.images) {
 
-			var textBlockCoordinates = fullTextCoordinates[i];
+			var textBlockCoordinates = this.fullTextCoordinates[i];
 
 			for (var j in textBlockCoordinates) {
 
 				if (textBlockCoordinates[j].type == 'PrintSpace') {
 
-					this.setOrigImage(i, textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+					this.setOrigImage(i, textBlockCoordinates[j].geometry['width'], textBlockCoordinates[j].geometry['height']);
 
 				} else if (textBlockCoordinates[j].type == 'TextBlock') {
 
@@ -793,20 +776,40 @@ dlfViewer.prototype.enableFulltextSelect = function() {
 						);
 
 						this.textBlockLayer.events.on({
-									'featureover': function(e) {
-										e.feature.renderIntent = "select";
-										e.feature.layer.drawFeature(e.feature);
-									},
-									'featureout': function(e) {
-										e.feature.renderIntent = "default";
-										e.feature.layer.drawFeature(e.feature);
-										//~ this.selectFulltext("Map says: Pointer left " + e.feature.id + " on " + e.feature.layer.name);
-									},
-									"featureclick": function(e) {
-										this.showFulltext(e);
-									},
-									scope: this
-								});
+
+							'featureover': function(e) {
+
+								if (e.feature != this.featureClicked) {
+									e.feature.layer.drawFeature(e.feature, "hover");
+								}
+
+							},
+
+							'featureout': function(e) {
+
+								if (e.feature != this.featureClicked) {
+									e.feature.layer.drawFeature(e.feature, "default");
+								}
+
+							},
+
+							"featureclick": function(e) {
+
+								if (this.featureClicked != null) {
+
+									this.featureClicked.layer.drawFeature(this.featureClicked, "default");
+
+								}
+
+								this.showFulltext(e);
+								e.feature.layer.drawFeature(e.feature, "select");
+								this.featureClicked = e.feature;
+
+							},
+
+							scope: this
+
+						});
 
 					}
 
@@ -814,18 +817,12 @@ dlfViewer.prototype.enableFulltextSelect = function() {
 
 					this.addPolygonlayer(this.textBlockLayer, polygon, 'TextBlock');
 
-				} else if (textBlockCoordinates[j].type == 'String') {
-
-					// we need to fix the coordinates for double-page view:
-					textBlockCoordinates[j].coords['x1'] = textBlockCoordinates[j].coords['x1'] + (this.offset * i)/this.origImages[i].scale;
-					textBlockCoordinates[j].coords['x2'] = textBlockCoordinates[j].coords['x2'] + (this.offset * i)/this.origImages[i].scale;
-
-					this.words.push(textBlockCoordinates[j]);
-
 				}
+
 			}
 
 		}
+
 		if (this.textBlockLayer instanceof OpenLayers.Layer.Vector) {
 
 			tx_dlf_viewer.map.addLayer(this.textBlockLayer);
@@ -850,43 +847,45 @@ dlfViewer.prototype.showFulltext = function(evt) {
 
 	var img = 0;
 
-	// drawn box in left or right image?
+	// selected TextBlock in left or right image?
 	if (bounds.left > tx_dlf_viewer.offset) {
+
 		img = 1;
+
 	}
 
 	var scale = tx_dlf_viewer.origImages[img].scale;
 
     var text = '';
 
-    var wordCoord = tx_dlf_viewer.words;
+    var wordCoord = tx_dlf_viewer.fullTextCoordinates[img];
 
 	if (wordCoord.length > 0) {
 
 		var size_disp = new OpenLayers.Size(tx_dlf_viewer.images[img].width, tx_dlf_viewer.images[img].height);
 
-		// walk through all words
+		// walk through all textblocks
 		for (var i = 0; i < wordCoord.length; i++) {
 
-			// find center point of word coordinates
-			centerWord = new OpenLayers.Geometry.Point(
-				scale * (wordCoord[i].coords['x1'] + ((wordCoord[i].coords['x2'] - wordCoord[i].coords['x1']) / 2)),
-				(size_disp.h - scale * (wordCoord[i].coords['y1'] + (wordCoord[i].coords['y2'] - wordCoord[i].coords['y1']) / 2))
-				);
+			if (wordCoord[i].type == 'TextBlock') {
 
-			// take word if center point is inside the drawn box
-			if (feature.geometry.containsPoint(centerWord)) {
+				// find center point of word coordinates
+				centerWord = new OpenLayers.Geometry.Point(
+					(img * this.offset) + (scale * (wordCoord[i].coords['x1'] + ((wordCoord[i].coords['x2'] - wordCoord[i].coords['x1']) / 2))),
+					(size_disp.h - scale * (wordCoord[i].coords['y1'] + (wordCoord[i].coords['y2'] - wordCoord[i].coords['y1']) / 2))
+					);
 
-				text += wordCoord[i].word + " ";
+				// take word if center point is inside the drawn box
+				if (feature.geometry.containsPoint(centerWord)) {
+					//~ var polygon = tx_dlf_viewer.createPolygon(img, wordCoord[i].coords['x1'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y1'], wordCoord[i].coords['x2'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y2']);
+					//~ tx_dlf_viewer.addPolygonlayer(tx_dlf_viewer.textBlockLayer, polygon, 3);
 
-				//~ var polygon = tx_dlf_viewer.createPolygon(img, wordCoord[i].coords['x1'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y1'], wordCoord[i].coords['x2'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y2']);
-				//~ tx_dlf_viewer.addPolygonlayer(tx_dlf_viewer.boxLayer, polygon, 3);
-
+					text += wordCoord[i].fulltext + " ";
+				}
 			}
 		}
 	}
 
-	//~ tx_dlf_viewer.showPopup(text, bounds);
 	tx_dlf_viewer.showPopupDiv(text);
 
 }
