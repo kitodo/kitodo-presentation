@@ -597,6 +597,16 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$markerArray['###LISTDESCRIPTION###'] = $this->list->metadata['description'];
 
+		if (!empty($this->list->metadata['thumbnail'])) {
+
+			$markerArray['###LISTTHUMBNAIL###'] = '<img alt="" src="'.$this->list->metadata['thumbnail'].'" />';
+
+		} else {
+
+			$markerArray['###LISTTHUMBNAIL###'] = '';
+
+		}
+
 		if ($i) {
 
 			$markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), ($this->piVars['pointer'] * $this->conf['limit']) + 1, $i, count($this->list)));

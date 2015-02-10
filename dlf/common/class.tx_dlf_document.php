@@ -513,6 +513,8 @@ final class tx_dlf_document {
 
 		$details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
 
+		$details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
+
 		$details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
 
 		$details['volume'] = '';

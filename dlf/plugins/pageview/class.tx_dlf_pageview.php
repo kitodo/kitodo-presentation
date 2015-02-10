@@ -130,6 +130,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Console.js',
 			'OpenLayers/Lang.js',
 			'OpenLayers/Util.js',
+			'OpenLayers/Util/vendorPrefix.js',
 			'OpenLayers/Lang/'.$this->lang.'.js',
 			'OpenLayers/Events.js',
 			'OpenLayers/Events/buttonclick.js',
@@ -155,6 +156,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Tile.js',
 			'OpenLayers/Tile/Image.js',
 			'OpenLayers/Layer.js',
+			'OpenLayers/Layer/HTTPRequest.js',
+			'OpenLayers/Layer/Grid.js',
 			'OpenLayers/Layer/Image.js',
 		);
 
@@ -165,10 +168,22 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		$output[] = '
-		<script type="text/javascript">
-			window.OpenLayers = ["'.implode('", "', $components).'"];
-		</script>';
+		$output[] = '<script type="text/javascript">';
+
+		$output[] = 'var openLayersFiles = ["'.implode('", "', $components).'"];';
+
+		// concat files for syntax highlightning, if present in header
+		if (! empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
+
+			$output[] = 'window.OpenLayers = openLayersFiles.concat( openLayerFilesHightlightning );';
+
+		} else {
+
+			$output[] = 'window.OpenLayers = openLayersFiles;';
+
+		}
+
+		$output[] = '</script>';
 
 		// Add OpenLayers library.
 		$output[] = '
@@ -305,7 +320,16 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		} else {
 
 			// Set default values if not set.
-			$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+			// page may be integer or string (pyhsical page attribute)
+			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+
+				$this->piVars['page'] = tx_dlf_helper::intInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+
+			} else {
+
+				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+
+			}
 
 			$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
 
