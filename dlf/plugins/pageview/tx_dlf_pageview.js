@@ -50,6 +50,13 @@ function dlfViewer() {
 	this.images = [];
 
 	/**
+	 * This holds the fulltexts' information like URL
+	 *
+	 * var array
+	 */
+	this.fulltexts = [];
+
+	/**
 	 * This holds the original images' information like width and height
 	 *
 	 * var array
@@ -78,13 +85,6 @@ function dlfViewer() {
 	this.offset = 0;
 
 	/**
-	 * This holds the offset for the second image
-	 *
-	 * var integer
-	 */
-	this.offset = 0;
-
-	/**
 	 * This holds the highlightning layer
 	 *
 	 * var OpenLayers.Layer.Vector
@@ -97,6 +97,15 @@ function dlfViewer() {
 	 * var array
 	 */
 	this.highlightFields = [];
+
+	/**
+	 * This holds all fulltexts and coordinates of the textblocks
+	 *
+	 * var array
+	 */
+	this.fullTextCoordinates = [];
+
+	this.featureClicked = null;
 
 }
 
@@ -226,6 +235,25 @@ dlfViewer.prototype.addImages = function(urls) {
 
 }
 
+
+/**
+ * Set Original Image Size
+ *
+ * @param	array	urls: Array of URLs of the fulltext files
+ *
+ * @return	void
+ */
+dlfViewer.prototype.addFulltexts = function(urls) {
+
+	for (var i in urls) {
+
+		this.fulltexts[i] = urls[i];
+
+	}
+
+}
+
+
 /**
  * Get a cookie value
  *
@@ -286,7 +314,6 @@ dlfViewer.prototype.init = function() {
 			this.offset = this.images[i].width;
 
 		}
-
 		// Calculate overall width and height.
 		width += this.images[i].width;
 
@@ -338,9 +365,29 @@ dlfViewer.prototype.init = function() {
 	// add polygon layer if any
 	if (this.highlightFields.length) {
 
+		if (! this.highlightLayer) {
+
+			this.highlightLayer = new OpenLayers.Layer.Vector(
+									"HightLight Words"
+								);
+		}
+
 		for (var i in this.highlightFields) {
 
-			this.addPolygon(this.images[0].width, this.images[0].height, this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3]);
+			if (this.origImages[0].scale == 0) {
+
+				// scale may be still zero in this context
+				this.origImages[0] = {
+
+					'scale': this.images[0].width/this.origImages[0].width,
+
+				};
+
+			}
+
+			var polygon = this.createPolygon(0, this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3]);
+
+			this.addPolygonlayer(this.highlightLayer, polygon, 'String');
 
 		}
 
@@ -348,7 +395,39 @@ dlfViewer.prototype.init = function() {
 
 	}
 
+	// keep fulltext feature active
+	isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
 
+	if (isFulltextActive == 'enabled') {
+
+		this.enableFulltextSelect();
+
+	}
+
+	//~ this.map.addControl(new OpenLayers.Control.MousePosition());
+	//~ this.map.addControl(new OpenLayers.Control.LayerSwitcher());
+}
+
+/**
+ * Show Popup with OCR results
+ *
+ * @param {Object} feature
+ * @param {Object} bounds
+ */
+dlfViewer.prototype.showPopupDiv = function(text, bounds){
+
+	popupHTML = '<div class="ocrText">' + text.replace(/\n/g, '<br />') + '</div>';
+
+	$('#tx-dlf-fulltextselection').html(popupHTML);
+
+}
+
+/**
+ * Destroy boxLayer if popup closed
+ */
+dlfViewer.prototype.popUpClosed = function() {
+
+	this.hide();
 }
 
 /**
@@ -441,89 +520,373 @@ dlfViewer.prototype.addHightlightField = function(x1, y1, x2, y2) {
 /**
  * Add layer with highlighted words found
  *
- * @param	integer width
- * @param	integer height
+ * @param	integer x1
+ * @param	integer y1
+ * @param	integer x2
+ * @param	integer y2
  *
  * @return	void
+
  */
-dlfViewer.prototype.addPolygon = function(width, height, x1, y1, x2, y2) {
+dlfViewer.prototype.createPolygon = function(image, x1, y1, x2, y2) {
 
-	//~ alert('hi' + width + ' x1 ' + x1);
+	if (this.origImages.length > 1 && image == 1) {
 
-	if (!this.origImage) {
-		this.origImage = {
-			'width': width,
-			'height': height
-		};
+		var scale = this.origImages[1].scale;
+		var height = this.images[1].height;
+		var offset = this.images[0].width;
+
+	} else {
+
+		var scale = this.origImages[0].scale;
+		var height = this.images[0].height;
+		var offset = 0;
+
 	}
 
-	var polygon = new OpenLayers.Geometry.Polygon(
-				new OpenLayers.Geometry.LinearRing(
-					[
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x1), height - (y1 * height/ this.origImage.height)),
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x2), height - (y1 * height/ this.origImage.height)),
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x2), height - (y2 * height/ this.origImage.height)),
-					new OpenLayers.Geometry.Point((width/this.origImage.width * x1), height - (y2 * height/ this.origImage.height)),
-					]
-				)
-			)
+	//~ alert('image ' + image + ' scale: ' + scale + ' height: ' + height + ' offset: ' + offset);
+
+	var polygon = new OpenLayers.Geometry.Polygon (
+		new OpenLayers.Geometry.LinearRing (
+			[
+			new OpenLayers.Geometry.Point(offset + (scale * x1), height - (scale *y1)),
+			new OpenLayers.Geometry.Point(offset + (scale * x2), height - (scale *y1)),
+			new OpenLayers.Geometry.Point(offset + (scale * x2), height - (scale *y2)),
+			new OpenLayers.Geometry.Point(offset + (scale * x1), height - (scale *y2)),
+			]
+		)
+	)
 
 	var feature = new OpenLayers.Feature.Vector(polygon);
 
-	if (! this.highlightLayer) {
+	return feature;
 
-		var hightlightStyle = new OpenLayers.Style({
-			strokeColor : '#ee9900',
+}
+/**
+ * Add layer with highlighted polygon
+ *
+ * http://dev.openlayers.org/docs/files/OpenLayers/Symbolizer/Polygon-js.html
+ *
+ * @param	{Object} layer
+ * @param	{Object} feature
+ * @param	integer type
+ *
+ * @return	void
+
+ */
+dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
+
+	if (layer instanceof OpenLayers.Layer.Vector) {
+
+		switch (type) {
+			case 'TextBlock': var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#cccccc',
+					strokeOpacity : 0.8,
+					strokeWidth : 3,
+					fillColor : '#aa0000',
+					fillOpacity : 0.1,
+					cursor : 'inherit'
+				});
+				break;
+			case 'String': var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#ee9900',
+					strokeOpacity : 0.8,
+					strokeWidth : 1,
+					fillColor : '#ee9900',
+					fillOpacity : 0.2,
+					cursor : 'inherit'
+				});
+				break;
+			case 3: var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#ffffff',
+					strokeOpacity : 0.8,
+					strokeWidth : 4,
+					fillColor : '#3d4ac2',
+					fillOpacity : 0.5,
+					cursor : 'inherit'
+				});
+				break;
+			default: var hightlightStyle = new OpenLayers.Style({
+					strokeColor : '#ee9900',
+					strokeOpacity : 0.8,
+					strokeWidth : 1,
+					fillColor : '#ee9900',
+					fillOpacity : 0.4,
+					cursor : 'inherit'
+				});
+		};
+
+		var hoverStyle = new OpenLayers.Style({
+			strokeColor : '#cccccc',
 			strokeOpacity : 0.8,
-			strokeWidth : 2,
+			strokeWidth : 1,
 			fillColor : '#ee9900',
-			fillOpacity : 0.4,
-			graphicName : 'square',
+			fillOpacity : 0.2,
+			cursor : 'inherit'
+		});
+
+		var selectStyle = new OpenLayers.Style({
+			strokeColor : '#aa0000',
+			strokeOpacity : 0.8,
+			strokeWidth : 1,
+			fillColor : '#ee9900',
+			fillOpacity : 0.2,
 			cursor : 'inherit'
 		});
 
 		var stylemapObj = new OpenLayers.StyleMap(
 			{
-				'default' : hightlightStyle
+				'default' : hightlightStyle,
+				'hover' : hoverStyle,
+				'select' : selectStyle,
 			}
 		);
 
-		var layer = new OpenLayers.Layer.Vector(
-			"Words Highlightning",
-			{
-				styleMap : stylemapObj
-			}
-			);
+		layer.styleMap = stylemapObj;
 
-		this.highlightLayer = layer;
+		layer.addFeatures([feature]);
 
 	}
 
-	this.highlightLayer.addFeatures([feature]);
-
 }
+
 
 /**
  * Set Original Image Size
  *
+ * @param	integer image number
  * @param	integer width
  * @param	integer height
  *
  * @return	void
  */
-dlfViewer.prototype.setOrigImage = function(width, height) {
-
-	//~ alert(width + ' xx ' + height);
+dlfViewer.prototype.setOrigImage = function(i, width, height) {
 
 	if (width && height) {
-		this.origImage = {
+
+		this.origImages[i] = {
 			'width': width,
-			'height': height
+			'height': height,
+			'scale': tx_dlf_viewer.images[i].width/width,
 		};
-	} else {
-		this.origImage = null;
+
 	}
 
 }
 
+
+/**
+ * Read ALTO file and return found words
+ *
+ * @param {Object} url
+ * @param {Object} scale
+ */
+dlfViewer.prototype.loadALTO = function(url, scale){
+
+    var request = OpenLayers.Request.GET({
+        url: url,
+        async: false
+    });
+
+    var format = new OpenLayers.Format.ALTO({
+        scale: scale
+    });
+
+    if (request.responseXML)
+        var wordCoords = format.read(request.responseXML);
+
+    return wordCoords;
+}
+
+/**
+ * Activate Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewer.prototype.toogleFulltextSelect = function() {
+
+	isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
+
+	if (isFulltextActive == 'enabled') {
+
+		this.disableFulltextSelect();
+		this.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
+
+	} else {
+
+		this.enableFulltextSelect();
+		this.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
+
+	}
+
+}
+
+/**
+ * Disable Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewer.prototype.disableFulltextSelect = function() {
+
+	// destroy layer features
+	this.textBlockLayer.destroyFeatures();
+	$("#tx-dlf-fulltextselection").hide();
+
+}
+
+/**
+ * Activate Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewer.prototype.enableFulltextSelect = function() {
+
+	// Create image layers.
+	for (var i in this.images) {
+
+		if (this.fulltexts[i]) {
+
+			this.fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
+
+		}
+
+	}
+
+	// add fulltext layers if we have fulltexts to show
+	if (this.fullTextCoordinates.length > 0) {
+
+		for (var i in this.images) {
+
+			var textBlockCoordinates = this.fullTextCoordinates[i];
+
+			for (var j in textBlockCoordinates) {
+
+				if (textBlockCoordinates[j].type == 'PrintSpace') {
+
+					this.setOrigImage(i, textBlockCoordinates[j].geometry['width'], textBlockCoordinates[j].geometry['height']);
+
+				} else if (textBlockCoordinates[j].type == 'TextBlock') {
+
+					if (! this.textBlockLayer) {
+
+						this.textBlockLayer = new OpenLayers.Layer.Vector(
+
+							"TextBlock"
+
+						);
+
+						this.textBlockLayer.events.on({
+
+							'featureover': function(e) {
+
+								if (e.feature != this.featureClicked) {
+									e.feature.layer.drawFeature(e.feature, "hover");
+								}
+
+							},
+
+							'featureout': function(e) {
+
+								if (e.feature != this.featureClicked) {
+									e.feature.layer.drawFeature(e.feature, "default");
+								}
+
+							},
+
+							"featureclick": function(e) {
+
+								if (this.featureClicked != null) {
+
+									this.featureClicked.layer.drawFeature(this.featureClicked, "default");
+
+								}
+
+								this.showFulltext(e);
+								e.feature.layer.drawFeature(e.feature, "select");
+								this.featureClicked = e.feature;
+
+							},
+
+							scope: this
+
+						});
+
+					}
+
+					var polygon = this.createPolygon(i, textBlockCoordinates[j].coords['x1'], textBlockCoordinates[j].coords['y1'], textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
+
+					this.addPolygonlayer(this.textBlockLayer, polygon, 'TextBlock');
+
+				}
+
+			}
+
+		}
+
+		if (this.textBlockLayer instanceof OpenLayers.Layer.Vector) {
+
+			tx_dlf_viewer.map.addLayer(this.textBlockLayer);
+			$("#tx-dlf-fulltextselection").show();
+
+		}
+
+	}
+
+}
+
+/**
+ * Activate Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewer.prototype.showFulltext = function(evt) {
+
+	var feature = evt.feature;
+
+	var bounds = feature.geometry.getBounds();
+
+	var img = 0;
+
+	// selected TextBlock in left or right image?
+	if (bounds.left > tx_dlf_viewer.offset) {
+
+		img = 1;
+
+	}
+
+	var scale = tx_dlf_viewer.origImages[img].scale;
+
+    var text = '';
+
+    var wordCoord = tx_dlf_viewer.fullTextCoordinates[img];
+
+	if (wordCoord.length > 0) {
+
+		var size_disp = new OpenLayers.Size(tx_dlf_viewer.images[img].width, tx_dlf_viewer.images[img].height);
+
+		// walk through all textblocks
+		for (var i = 0; i < wordCoord.length; i++) {
+
+			if (wordCoord[i].type == 'TextBlock') {
+
+				// find center point of word coordinates
+				centerWord = new OpenLayers.Geometry.Point(
+					(img * this.offset) + (scale * (wordCoord[i].coords['x1'] + ((wordCoord[i].coords['x2'] - wordCoord[i].coords['x1']) / 2))),
+					(size_disp.h - scale * (wordCoord[i].coords['y1'] + (wordCoord[i].coords['y2'] - wordCoord[i].coords['y1']) / 2))
+					);
+
+				// take word if center point is inside the drawn box
+				if (feature.geometry.containsPoint(centerWord)) {
+					//~ var polygon = tx_dlf_viewer.createPolygon(img, wordCoord[i].coords['x1'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y1'], wordCoord[i].coords['x2'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y2']);
+					//~ tx_dlf_viewer.addPolygonlayer(tx_dlf_viewer.textBlockLayer, polygon, 3);
+
+					text += wordCoord[i].fulltext + " ";
+				}
+			}
+		}
+	}
+
+	tx_dlf_viewer.showPopupDiv(text);
+
+}
 
