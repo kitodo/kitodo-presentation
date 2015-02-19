@@ -104,7 +104,7 @@ class tx_dlf_tcemain {
 					}
 
 					// Ensure that index names don't get mixed up with sorting values.
-					if (substr($fielArray['index_name'], -8) == '_sorting') {
+					if (substr($fieldArray['index_name'], -8) == '_sorting') {
 
 						$fieldArray['index_name'] .= '0';
 
