@@ -65,6 +65,12 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray['volume'] = $entry['volume'];
 
+		if (empty($entryArray['volume'])) {
+
+			$entryArray['volume'] = $entry['orderlabel'];
+
+		}
+
 		$entryArray['type'] = tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
 
 		$entryArray['pagination'] = $entry['pagination'];
