@@ -341,7 +341,9 @@ class tx_dlf_em {
 			// Set allowed exclude fields.
 			foreach ($settings['tables_modify'] as $table) {
 
-				t3lib_div::loadTCA($table);
+				if (version_compare(TYPO3_branch, '6.1', '<')) {
+					t3lib_div::loadTCA($table);
+				}
 
 				foreach ($GLOBALS['TCA'][$table]['columns'] as $field => $fieldConf) {
 
