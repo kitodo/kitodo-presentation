@@ -105,7 +105,9 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 		include_once(t3lib_extMgm::extPath($this->extKey).'modules/'.$this->modPath.'metadata.inc.php');
 
 		// Load table configuration array to get default field values.
-		t3lib_div::loadTCA('tx_dlf_metadata');
+		if (version_compare(TYPO3_branch, '6.1', '<')) {
+			t3lib_div::loadTCA('tx_dlf_metadata');
+		}
 
 		$i = 0;
 
