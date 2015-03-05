@@ -189,7 +189,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$TSconfig['special.']['userFunc'] = 'tx_dlf_toc->makeMenuArray';
 
-		$TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['menuConf.'], $TSconfig);
+		$TSconfig = tx_dlf_helper::array_merge_recursive_overrule($this->conf['menuConf.'], $TSconfig);
 
 		$markerArray['###TOCMENU###'] = $this->cObj->HMENU($TSconfig);
 

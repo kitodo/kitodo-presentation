@@ -54,6 +54,28 @@ class tx_dlf_helper {
 	protected static $locallang = array ();
 
 	/**
+	 * Implements array_merge_recursive_overrule() in a cross-version way.
+	 *
+	 * This code is a copy from realurl, written by Dmitry Dulepov <dmitry.dulepov@gmail.com>.
+	 *
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	static public function array_merge_recursive_overrule($array1, $array2) {
+		if (class_exists('\\TYPO3\\CMS\\Core\\Utility\\ArrayUtility')) {
+			/** @noinspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection */
+			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($array1, $array2);
+		}
+		else {
+			/** @noinspection PhpDeprecationInspection */
+			$array1 = t3lib_div::array_merge_recursive_overrule($array1, $array2);
+		}
+
+		return $array1;
+	}
+
+	/**
 	 * Searches the array recursively for a given value and returns the corresponding key if successful
 	 * @see http://php.net/array_search
 	 *

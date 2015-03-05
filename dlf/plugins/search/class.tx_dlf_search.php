@@ -302,7 +302,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		$TSconfig['special.']['limit'] = max(intval($this->conf['limitFacets']), 1);
 
-		$TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
+		$TSconfig = tx_dlf_helper::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
 
 		return $this->cObj->HMENU($TSconfig);
 
