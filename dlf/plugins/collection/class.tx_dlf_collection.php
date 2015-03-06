@@ -214,7 +214,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 					unset($piVars['DATA']);
 
-					$additionalParams = t3lib_div::array_merge_recursive_overrule($piVars, $additionalParams);
+					$additionalParams = tx_dlf_helper::array_merge_recursive_overrule($piVars, $additionalParams);
 
 				}
 

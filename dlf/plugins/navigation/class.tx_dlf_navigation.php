@@ -315,7 +315,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 			unset($piVars['DATA']);
 
-			$overrulePIvars = t3lib_div::array_merge_recursive_overrule($piVars, $overrulePIvars);
+			$overrulePIvars = tx_dlf_helper::array_merge_recursive_overrule($piVars, $overrulePIvars);
 
 		}
 
