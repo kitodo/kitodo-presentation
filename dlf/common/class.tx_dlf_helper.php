@@ -1180,6 +1180,45 @@ class tx_dlf_helper {
 
 		}
 
+		/* The $labels already contain the translated content element, but with the index_name of the translated content element itself
+		 * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
+		 * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
+		
+		// First fetch the uid of the received index_name
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',
+				$table,
+				'pid='.$pid.' AND index_name="'.$index_name.'"'.self::whereClause($table),
+				'',
+				'',
+				''
+		);
+		
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+				
+			// Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
+				
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+		
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'index_name',
+					$table,
+					'pid='.$pid.' AND l18n_parent='.$resArray['uid'].' AND sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content).self::whereClause($table),
+					'',
+					'',
+					''
+			);
+		
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+		
+				// If there is an translated content element, overwrite the received $index_name.
+		
+				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+		
+				$index_name = $resArray['index_name'];
+			}
+		}
+
 		// Check if we already got a translation.
 		if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
 
