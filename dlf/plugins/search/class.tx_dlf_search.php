@@ -548,6 +548,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 				}
 
 			}
+			else if (empty($this->piVars['fq']) && $query != "*") {
+			
+				$query = tx_dlf_solr::escapeQuery($query);
+			
+			}
 
 			// Set query parameters.
 			$params = array ();
