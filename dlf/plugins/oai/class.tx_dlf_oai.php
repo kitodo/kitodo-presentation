@@ -973,7 +973,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			}
 
-			exit;
+			return $this->error('Incomplete plugin configuration');
 
 		}
 
