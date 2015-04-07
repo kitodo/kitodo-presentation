@@ -184,9 +184,11 @@ p.intro {
 			<li><a href="?verb=Identify">Identify</a> | </li>
 			<li><a href="?verb=ListIdentifiers&amp;metadataPrefix=oai_dc">ListIdentifiers (OAI_DC)</a> | </li>
 			<li><a href="?verb=ListIdentifiers&amp;metadataPrefix=mets">ListIdentifiers (METS)</a> | </li>
+			<li><a href="?verb=ListIdentifiers&amp;metadataPrefix=epicur">ListIdentifiers (EPICUR)</a> | </li>
 			<li><a href="?verb=ListMetadataFormats">ListMetadataFormats</a> | </li>
 			<li><a href="?verb=ListRecords&amp;metadataPrefix=oai_dc">ListRecords (OAI_DC)</a> | </li>
 			<li><a href="?verb=ListRecords&amp;metadataPrefix=mets">ListRecords (METS)</a> | </li>
+			<li><a href="?verb=ListRecords&amp;metadataPrefix=epicur">ListRecords (EPICUR)</a> | </li>
 			<li><a href="?verb=ListSets">ListSets</a></li>
 		</ul>
 </xsl:template>
@@ -321,8 +323,10 @@ p.intro {
 	<td class="value"><xsl:value-of select="."/>
 		<xsl:text> </xsl:text><a class="link" href="?verb=ListIdentifiers&amp;metadataPrefix=oai_dc&amp;set={.}">Identifiers (OAI_DC)</a>
 		<xsl:text> </xsl:text><a class="link" href="?verb=ListIdentifiers&amp;metadataPrefix=mets&amp;set={.}">Identifiers (METS)</a>
+		<xsl:text> </xsl:text><a class="link" href="?verb=ListIdentifiers&amp;metadataPrefix=epicur&amp;set={.}">Identifiers (EPICUR)</a>
 		<xsl:text> </xsl:text><a class="link" href="?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;set={.}">Records (OAI_DC)</a>
 		<xsl:text> </xsl:text><a class="link" href="?verb=ListRecords&amp;metadataPrefix=mets&amp;set={.}">Records (METS)</a>
+		<xsl:text> </xsl:text><a class="link" href="?verb=ListRecords&amp;metadataPrefix=epicur&amp;set={.}">Records (EPICUR)</a>
 	</td></tr>
 </xsl:template>
 
@@ -364,6 +368,7 @@ p.intro {
 			<xsl:value-of select="oai:identifier"/>
 			<xsl:text> </xsl:text><a class="link" href="?verb=GetRecord&amp;metadataPrefix=oai_dc&amp;identifier={oai:identifier}">OAI_DC</a>
 			<xsl:text> </xsl:text><a class="link" href="?verb=GetRecord&amp;metadataPrefix=mets&amp;identifier={oai:identifier}">METS</a>
+			<xsl:text> </xsl:text><a class="link" href="?verb=GetRecord&amp;metadataPrefix=epicur&amp;identifier={oai:identifier}">EPICUR</a>
 			<xsl:text> </xsl:text><a class="link" href="?verb=ListMetadataFormats&amp;identifier={oai:identifier}">formats</a>
 		</td></tr>
 		<tr><td class="key">Datestamp</td>
@@ -485,6 +490,26 @@ p.intro {
 
 <xsl:template match="dc:rights" xmlns:dc="http://purl.org/dc/elements/1.1/">
 <tr><td class="key">Rights Management</td><td class="value"><xsl:value-of select="."/></td></tr></xsl:template>
+
+<!--
+	EPICUR Metadata
+-->
+<xsl:template match="epicur:epicur" xmlns:epicur="urn:nbn:de:1111-2004033116" >
+	<div class="dcdata">
+		<h3>EPICUR Metadata</h3>
+		<table class="dcdata">
+			<xsl:apply-templates select="*" />
+		</table>
+	</div>
+</xsl:template>
+
+<xsl:template match="epicur:format" xmlns:epicur="urn:nbn:de:1111-2004033116" >
+	<tr><td class="key">Format</td><td class="value"><xsl:value-of select="."/></td></tr>
+</xsl:template>
+
+<xsl:template match="epicur:identifier" xmlns:epicur="urn:nbn:de:1111-2004033116" >
+	<tr><td class="key">Resource Identifier</td><td class="value"><xsl:value-of select="."/></td></tr>
+</xsl:template>
 
 <!--
 	XML Pretty Maker
