@@ -168,7 +168,7 @@ dlfViewer.prototype.addControls = function(controls) {
 
 	}
 
-}
+};
 
 /**
  * Register image files to load into map
@@ -233,7 +233,7 @@ dlfViewer.prototype.addImages = function(urls) {
 
 	}
 
-}
+};
 
 
 /**
@@ -251,7 +251,7 @@ dlfViewer.prototype.addFulltexts = function(urls) {
 
 	}
 
-}
+};
 
 
 /**
@@ -275,7 +275,7 @@ dlfViewer.prototype.getCookie = function(name) {
 
 	}
 
-}
+};
 
 /**
  * Initialize and display the OpenLayers map with default layers
@@ -396,7 +396,7 @@ dlfViewer.prototype.init = function() {
 	}
 
 	// keep fulltext feature active
-	isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
+	var isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
 
 	if (isFulltextActive == 'enabled') {
 
@@ -406,7 +406,7 @@ dlfViewer.prototype.init = function() {
 
 	//~ this.map.addControl(new OpenLayers.Control.MousePosition());
 	//~ this.map.addControl(new OpenLayers.Control.LayerSwitcher());
-}
+};
 
 /**
  * Show Popup with OCR results
@@ -416,11 +416,11 @@ dlfViewer.prototype.init = function() {
  */
 dlfViewer.prototype.showPopupDiv = function(text, bounds){
 
-	popupHTML = '<div class="ocrText">' + text.replace(/\n/g, '<br />') + '</div>';
+	var popupHTML = '<div class="ocrText">' + text.replace(/\n/g, '<br />') + '</div>';
 
 	$('#tx-dlf-fulltextselection').html(popupHTML);
 
-}
+};
 
 /**
  * Destroy boxLayer if popup closed
@@ -428,7 +428,7 @@ dlfViewer.prototype.showPopupDiv = function(text, bounds){
 dlfViewer.prototype.popUpClosed = function() {
 
 	this.hide();
-}
+};
 
 /**
  * Save current user preferences in cookie
@@ -447,7 +447,7 @@ dlfViewer.prototype.saveSettings = function() {
 
 	}
 
-}
+};
 
 /**
  * Set a cookie value
@@ -461,7 +461,7 @@ dlfViewer.prototype.setCookie = function(name, value) {
 
 	document.cookie = name+"="+escape(value)+"; path=/";
 
-}
+};
 
 /**
  * Set OpenLayers' div
@@ -479,7 +479,7 @@ dlfViewer.prototype.setDiv = function(elementId) {
 
 	}
 
-}
+};
 
 /**
  * Set OpenLayers' language
@@ -492,7 +492,7 @@ dlfViewer.prototype.setLang = function(lang) {
 
 	OpenLayers.Lang.setCode(lang);
 
-}
+};
 
 // Register page unload handler to save user settings.
 $(window).unload(function() {
@@ -515,7 +515,7 @@ dlfViewer.prototype.addHightlightField = function(x1, y1, x2, y2) {
 
 	this.highlightFields.push([x1,y1,x2,y2]);
 
-}
+};
 
 /**
  * Add layer with highlighted words found
@@ -555,13 +555,13 @@ dlfViewer.prototype.createPolygon = function(image, x1, y1, x2, y2) {
 			new OpenLayers.Geometry.Point(offset + (scale * x1), height - (scale *y2)),
 			]
 		)
-	)
+	);
 
 	var feature = new OpenLayers.Feature.Vector(polygon);
 
 	return feature;
 
-}
+};
 /**
  * Add layer with highlighted polygon
  *
@@ -648,7 +648,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 
 	}
 
-}
+};
 
 
 /**
@@ -672,7 +672,7 @@ dlfViewer.prototype.setOrigImage = function(i, width, height) {
 
 	}
 
-}
+};
 
 
 /**
@@ -696,7 +696,7 @@ dlfViewer.prototype.loadALTO = function(url, scale){
         var wordCoords = format.read(request.responseXML);
 
     return wordCoords;
-}
+};
 
 /**
  * Activate Fulltext Features
@@ -705,7 +705,7 @@ dlfViewer.prototype.loadALTO = function(url, scale){
  */
 dlfViewer.prototype.toogleFulltextSelect = function() {
 
-	isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
+	var isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
 
 	if (isFulltextActive == 'enabled') {
 
@@ -719,7 +719,7 @@ dlfViewer.prototype.toogleFulltextSelect = function() {
 
 	}
 
-}
+};
 
 /**
  * Disable Fulltext Features
@@ -732,7 +732,7 @@ dlfViewer.prototype.disableFulltextSelect = function() {
 	this.textBlockLayer.destroyFeatures();
 	$("#tx-dlf-fulltextselection").hide();
 
-}
+};
 
 /**
  * Activate Fulltext Features
@@ -832,7 +832,7 @@ dlfViewer.prototype.enableFulltextSelect = function() {
 
 	}
 
-}
+};
 
 /**
  * Activate Fulltext Features
@@ -870,10 +870,10 @@ dlfViewer.prototype.showFulltext = function(evt) {
 			if (wordCoord[i].type == 'TextBlock') {
 
 				// find center point of word coordinates
-				centerWord = new OpenLayers.Geometry.Point(
+				var centerWord = new OpenLayers.Geometry.Point(
 					(img * this.offset) + (scale * (wordCoord[i].coords['x1'] + ((wordCoord[i].coords['x2'] - wordCoord[i].coords['x1']) / 2))),
 					(size_disp.h - scale * (wordCoord[i].coords['y1'] + (wordCoord[i].coords['y2'] - wordCoord[i].coords['y1']) / 2))
-					);
+				);
 
 				// take word if center point is inside the drawn box
 				if (feature.geometry.containsPoint(centerWord)) {
@@ -888,5 +888,5 @@ dlfViewer.prototype.showFulltext = function(evt) {
 
 	tx_dlf_viewer.showPopupDiv(text);
 
-}
+};
 
