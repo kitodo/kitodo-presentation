@@ -1403,9 +1403,9 @@ final class tx_dlf_document {
 		// Get UID of superior document.
 		$partof = 0;
 
-		if (!empty($this->tableOfContents[0]['points'])
-			&& $this->tableOfContents[0]['points'] != $this->location
-			&& !tx_dlf_helper::testInt($this->tableOfContents[0]['points'])) {
+		if (!empty($this->tableOfContents[0]['points']) &&
+			$this->tableOfContents[0]['points'] != $this->location &&
+			!tx_dlf_helper::testInt($this->tableOfContents[0]['points'])) {
 
 			$superior =& tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
 
