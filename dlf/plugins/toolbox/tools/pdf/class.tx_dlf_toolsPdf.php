@@ -114,49 +114,50 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 	 */
 	protected function getPageLink() {
 
-		$pageLink = array ();
+		$page1Link = '';
+		$page2Link = '';
+		$pageNumber = $this->piVars['page'];
 
 		// Get image link.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpDownload']])) {
+		$details = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$pageNumber]];
+		$file = $details['files'][$this->conf['fileGrpDownload']];
+		if (!empty($file)) {
+			$page1Link = $this->doc->getFileLocation($file);
+		}
 
-			$pageLink[] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpDownload']]);
-
-			// Get second page, too, if double page view is activated.
-			if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
-
-				$pageLink[] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page'] + 1]]['files'][$this->conf['fileGrpDownload']]);
-
+		// Get second page, too, if double page view is activated.
+		if ($this->piVars['double'] && $pageNumber < $this->doc->numPages) {
+			$details = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$pageNumber + 1]];
+			$file = $details['files'][$this->conf['fileGrpDownload']];
+			if (!empty($file)) {
+				$page2Link = $this->doc->getFileLocation($file);
 			}
+		}
 
-		} else {
-
-			if (TYPO3_DLOG) {
-
-				t3lib_div::devLog('[tx_dlf_toolsPdf->getPageLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-			}
-
+		if (TYPO3_DLOG && empty($page1Link) && empty($page2Link)) {
+			t3lib_div::devLog('[tx_dlf_toolsPdf->getPageLink()] ' .
+					  'File not found in fileGrp "' .
+					  $this->conf['fileGrpDownload'] . '"',
+					  $this->extKey,
+					  SYSLOG_SEVERITY_WARNING);
 		}
 
 		// Wrap URLs with HTML.
-		if (!empty($pageLink)) {
-
-			if (count($pageLink) > 1) {
-
-				$pageLink[0] = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), array ('parameter' => $pageLink[0], 'title' => $this->pi_getLL('leftPage', '')));
-
-				$pageLink[1] = $this->cObj->typoLink($this->pi_getLL('rightPage', ''), array ('parameter' => $pageLink[1], 'title' => $this->pi_getLL('rightPage', '')));
-
+		if (!empty($page1Link)) {
+			if ($this->piVars['double']) {
+				$page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''),
+					array('parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')));
 			} else {
-
-				$pageLink[0] = $this->cObj->typoLink($this->pi_getLL('singlePage', ''), array ('parameter' => $pageLink[0], 'title' => $this->pi_getLL('singlePage', '')));
-
+				$page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''),
+					array('parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')));
 			}
-
+		}
+		if (!empty($page2Link)) {
+			$page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''),
+				array('parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')));
 		}
 
-		return implode('', $pageLink);
-
+		return $page1Link . $page2Link;
 	}
 
 	/**
