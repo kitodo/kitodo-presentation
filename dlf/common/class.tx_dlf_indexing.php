@@ -128,7 +128,7 @@ class tx_dlf_indexing {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+						t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 					}
 
@@ -223,7 +223,7 @@ class tx_dlf_indexing {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+					t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -249,7 +249,7 @@ class tx_dlf_indexing {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -318,7 +318,7 @@ class tx_dlf_indexing {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+						t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 					}
 
@@ -344,7 +344,7 @@ class tx_dlf_indexing {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Could not connect to Apache Solr server', $this->extKey, SYSLOG_SEVERITY_ERROR);
+					t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -372,7 +372,7 @@ class tx_dlf_indexing {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -404,7 +404,7 @@ class tx_dlf_indexing {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_indexing->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_indexing->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 

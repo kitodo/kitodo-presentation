@@ -77,7 +77,7 @@ final class tx_dlf_document {
 	 * @var	string
 	 * @access public
 	 */
-	public $extKey = 'dlf';
+	public static $extKey = 'dlf';
 
 	/**
 	 * This holds the file ID -> USE concordance
@@ -332,7 +332,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -502,7 +502,7 @@ final class tx_dlf_document {
 		}
 
 		// Load plugin configuration.
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
 		// Extract identity information.
 		$details = array ();
@@ -637,7 +637,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -708,7 +708,7 @@ final class tx_dlf_document {
 
 						if (TYPO3_DLOG) {
 
-							t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+							t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 						}
 
@@ -720,7 +720,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -883,7 +883,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -893,7 +893,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -952,7 +952,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->init()] No METS part found in document with UID "'.$this->uid.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->init()] No METS part found in document with UID "'.$this->uid.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1008,7 +1008,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Could not load XML file from "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+					t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Could not load XML file from "'.$location.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -1018,7 +1018,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Invalid file location "'.$location.'" for document loading', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Invalid file location "'.$location.'" for document loading', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1092,7 +1092,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1130,7 +1130,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1154,7 +1154,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1180,7 +1180,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1189,7 +1189,7 @@ final class tx_dlf_document {
 		}
 
 		// Load plugin configuration.
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
 		// Get UID for user "_cli_dlf".
 		$be_user = 0;
@@ -1211,7 +1211,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1239,7 +1239,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1531,7 +1531,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', self::$extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
 
@@ -1627,7 +1627,7 @@ final class tx_dlf_document {
 		if (!$this->fileGrpsLoaded) {
 
 			// Get configured USE attributes.
-			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
 			$useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
 
@@ -1704,7 +1704,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -2002,7 +2002,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', $this->extKey, SYSLOG_SEVERITY_ERROR);
+					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -2013,13 +2013,13 @@ final class tx_dlf_document {
 			}
 
 			// Load extension configuration.
-			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
 			if (empty($extConf['fileGrpThumbs'])) {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No fileGrp for thumbnails specified', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No fileGrp for thumbnails specified', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -2079,7 +2079,7 @@ final class tx_dlf_document {
 
 			} elseif (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -2313,7 +2313,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -2338,7 +2338,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_document->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -2370,7 +2370,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -2450,7 +2450,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__wakeup()] Could not load XML after deserialization', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_document->__wakeup()] Could not load XML after deserialization', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
