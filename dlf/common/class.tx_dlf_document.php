@@ -1423,6 +1423,31 @@ final class tx_dlf_document {
 
 		}
 
+		// Use the date of publication as alternative sorting metric for parts of multi-part works.
+		if (!empty($partof)) {
+
+			if (empty($metadata['volume'][0]) && !empty($metadata['year'][0])) {
+
+				$metadata['volume'] = $metadata['year'];
+
+			}
+
+			if (empty($metadata['volume_sorting'][0])) {
+
+				if (!empty($metadata['year_sorting'][0])) {
+
+					$metadata['volume_sorting'][0] = $metadata['year_sorting'][0];
+
+				} elseif (!empty($metadata['year'][0])) {
+
+					$metadata['volume_sorting'][0] = $metadata['year'][0];
+
+				}
+
+			}
+
+		}
+
 		// Get metadata for lists and sorting.
 		$listed = array ();
 
