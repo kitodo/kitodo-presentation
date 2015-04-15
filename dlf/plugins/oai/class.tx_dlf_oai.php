@@ -415,7 +415,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$this->deleteExpiredTokens();
 
 		// Create XML document.
-		$this->oai = new DOMDocument('1.0', 'utf-8');
+		$this->oai = new DOMDocument('1.0', 'UTF-8');
 
 		// Add processing instruction (aka XSL stylesheet).
 		if (!empty($this->conf['stylesheet'])) {
