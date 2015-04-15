@@ -415,7 +415,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$this->deleteExpiredTokens();
 
 		// Create XML document.
-		$this->oai = new DOMDocument('1.0', 'utf-8');
+		$this->oai = new DOMDocument('1.0', 'UTF-8');
 
 		// Add processing instruction (aka XSL stylesheet).
 		if (!empty($this->conf['stylesheet'])) {
@@ -976,13 +976,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
 								   'protocolVersion', '2.0'));
 		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'adminEmail', $adminEmail));
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
 								   'earliestDatestamp', $earliestDatestamp));
 		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
 								   'deletedRecord', 'transient'));
 		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
 								   'granularity', 'YYYY-MM-DDThh:mm:ssZ'));
-		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
-								   'adminEmail', $adminEmail));
 
 		return $Identify;
 	}
