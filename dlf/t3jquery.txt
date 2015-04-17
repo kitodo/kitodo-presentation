@@ -1,1 +1,1 @@
-components=jQuery,Core,Position,Autocomplete
+components=jQuery,Core,Position,Autocomplete,Resizable,Slider
