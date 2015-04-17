@@ -368,7 +368,7 @@ dlfViewer.prototype.init = function() {
 		if (! this.highlightLayer) {
 
 			this.highlightLayer = new OpenLayers.Layer.Vector(
-									"HightLight Words"
+									"HighLight Words"
 								);
 		}
 
@@ -502,7 +502,7 @@ $(window).unload(function() {
 });
 
 /**
- * Add hightlight field
+ * Add highlight field
  *
  * @param	integer x1
  * @param	integer y1
@@ -511,7 +511,7 @@ $(window).unload(function() {
  *
  * @return	void
  */
-dlfViewer.prototype.addHightlightField = function(x1, y1, x2, y2) {
+dlfViewer.prototype.addHighlightField = function(x1, y1, x2, y2) {
 
 	this.highlightFields.push([x1,y1,x2,y2]);
 
@@ -579,7 +579,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 	if (layer instanceof OpenLayers.Layer.Vector) {
 
 		switch (type) {
-			case 'TextBlock': var hightlightStyle = new OpenLayers.Style({
+			case 'TextBlock': var highlightStyle = new OpenLayers.Style({
 					strokeColor : '#cccccc',
 					strokeOpacity : 0.8,
 					strokeWidth : 3,
@@ -588,7 +588,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 					cursor : 'inherit'
 				});
 				break;
-			case 'String': var hightlightStyle = new OpenLayers.Style({
+			case 'String': var highlightStyle = new OpenLayers.Style({
 					strokeColor : '#ee9900',
 					strokeOpacity : 0.8,
 					strokeWidth : 1,
@@ -597,7 +597,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 					cursor : 'inherit'
 				});
 				break;
-			case 3: var hightlightStyle = new OpenLayers.Style({
+			case 3: var highlightStyle = new OpenLayers.Style({
 					strokeColor : '#ffffff',
 					strokeOpacity : 0.8,
 					strokeWidth : 4,
@@ -606,7 +606,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 					cursor : 'inherit'
 				});
 				break;
-			default: var hightlightStyle = new OpenLayers.Style({
+			default: var highlightStyle = new OpenLayers.Style({
 					strokeColor : '#ee9900',
 					strokeOpacity : 0.8,
 					strokeWidth : 1,
@@ -636,7 +636,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 
 		var stylemapObj = new OpenLayers.StyleMap(
 			{
-				'default' : hightlightStyle,
+				'default' : highlightStyle,
 				'hover' : hoverStyle,
 				'select' : selectStyle,
 			}
