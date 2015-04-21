@@ -90,7 +90,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.solrcore</label>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.elasticsearch</label>
 							<config>
 								<type>select</type>
 								<items type="array"></items>

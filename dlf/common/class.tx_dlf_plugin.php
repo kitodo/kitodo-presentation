@@ -141,7 +141,27 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	 * @return	void
 	 */
 	protected function loadDocument($docUrl = '') {
-		$docUrl = 'http://mets.sub.uni-hamburg.de/goobi/HANSb22136';
+
+		// get elasticsearch configuration
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_dlf_elasticsearchindexes.index_name,tx_dlf_elasticsearchindexes.type_name',
+			'tx_dlf_elasticsearchindexes',
+			'tx_dlf_elasticsearchindexes.pid='.$this->conf['pages'].tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes'),
+			'',
+			'',
+			'1'
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+			// Get title information.
+			$elasticsearchConf = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+		}
+		if(!empty($elasticsearchConf)){
+			// build document url if elasticsearch is in use
+			$docUrl = 'http://qucosa.vagrant.dev:8080/fedora/objects/'.$this->piVars['id'].'/methods/qucosa:SDef/getMETSDissemination';
+			// $docUrl = 'http://local.commsy.dev/getMETSDissemination';
+			$es_flag = true;
+		}
 
 		// Check for required variable.
 		if (!empty($this->piVars['id']) && !empty($this->conf['pages']) && empty($docUrl)) {
@@ -151,8 +171,6 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			// Get instance of tx_dlf_document.
 			$this->doc =& tx_dlf_document::getInstance($this->piVars['id'], $pid);
-			// http://mets.sub.uni-hamburg.de/goobi/HANSb22136
-			// $this->doc =& tx_dlf_document::getInstance("http://mets.sub.uni-hamburg.de/goobi/HANSb22136", false);
 
 			if (!$this->doc->ready) {
 
