@@ -326,6 +326,11 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 						// Translate document type.
 						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
 
+					} elseif ($index_name == 'collection' && !empty($value)) {
+
+						// Translate collection.
+						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+
 					} elseif ($index_name == 'language' && !empty($value)) {
 
 						// Translate ISO 639 language code.

@@ -415,7 +415,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$this->deleteExpiredTokens();
 
 		// Create XML document.
-		$this->oai = new DOMDocument('1.0', 'utf-8');
+		$this->oai = new DOMDocument('1.0', 'UTF-8');
 
 		// Add processing instruction (aka XSL stylesheet).
 		if (!empty($this->conf['stylesheet'])) {
@@ -900,6 +900,11 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		}
 
 		// Get repository name and administrative contact.
+		// Use default values for an installation with incomplete plugin configuration.
+
+		$adminEmail = 'unknown@example.org';
+		$repositoryName = 'Goobi.Presentation OAI-PMH interface (incomplete configuration)';
+
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_libraries.oai_label AS oai_label,tx_dlf_libraries.contact AS contact',
 			'tx_dlf_libraries',
@@ -913,70 +918,73 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-			// Get earliest datestamp.
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_documents.tstamp AS tstamp',
-				'tx_dlf_documents',
-				'tx_dlf_documents.pid='.intval($this->conf['pages']),
-				'',
-				'tx_dlf_documents.tstamp ASC',
-				'1'
-			);
-
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-				list ($timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-
-				$datestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
-
-			} else {
-
-				$datestamp = '0000-00-00T00:00:00Z';
-
-				if (TYPO3_DLOG) {
-
-					t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "'.$this->conf['pages'].'"', $this->extKey, SYSLOG_SEVERITY_NOTICE);
-
-				}
-
-			}
-
-			// Add identification node.
-			$Identify = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'Identify');
-
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'repositoryName', htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES, 'UTF-8')));
-
-			$linkConf = array (
-				'parameter' => $GLOBALS['TSFE']->id,
-				'forceAbsoluteUrl' => 1
-			);
-
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'baseURL', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
-
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'protocolVersion', '2.0'));
-
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'earliestDatestamp', $datestamp));
-
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'deletedRecord', 'transient'));
-
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'granularity', 'YYYY-MM-DDThh:mm:ssZ'));
-
-			$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'adminEmail', htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES, 'UTF-8')));
-
-			return $Identify;
+			$adminEmail = htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES);
+			$repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
 
 		} else {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration',
+						  $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
 
-			exit;
+		}
+
+		// Get earliest datestamp. Use a default value if that fails.
+
+		$earliestDatestamp = '0000-00-00T00:00:00Z';
+
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_dlf_documents.tstamp AS tstamp',
+			'tx_dlf_documents',
+			'tx_dlf_documents.pid=' . intval($this->conf['pages']),
+			'',
+			'tx_dlf_documents.tstamp ASC',
+			'1'
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+			list ($timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+			$earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' .
+						  $this->conf['pages'] . '"', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+
+			}
 
 		}
 
+		$linkConf = array (
+			'parameter' => $GLOBALS['TSFE']->id,
+			'forceAbsoluteUrl' => 1
+		);
+		$baseURL = htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES);
+
+		// Add identification node.
+		$Identify = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'Identify');
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'repositoryName', $repositoryName));
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'baseURL', $baseURL));
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'protocolVersion', '2.0'));
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'adminEmail', $adminEmail));
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'earliestDatestamp', $earliestDatestamp));
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'deletedRecord', 'transient'));
+		$Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
+								   'granularity', 'YYYY-MM-DDThh:mm:ssZ'));
+
+		return $Identify;
 	}
 
 	/**

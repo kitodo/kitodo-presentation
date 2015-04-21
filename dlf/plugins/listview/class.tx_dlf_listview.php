@@ -201,7 +201,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 					$imgAlt = htmlspecialchars($value);
 
-					$additionalParams = array ('id' => $this->list[$number]['uid'], 'page' => $subpart['page']);
+					$additionalParams = array ('id' => $this->list[$number]['uid'], 'page' => $this->list[$number]['page']);
 					$conf = array (
 						'useCacheHash' => 1,
 						'parameter' => $this->conf['targetPid'],
@@ -596,6 +596,16 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		$markerArray['###LISTTITLE###'] = $this->list->metadata['label'];
 
 		$markerArray['###LISTDESCRIPTION###'] = $this->list->metadata['description'];
+
+		if (!empty($this->list->metadata['thumbnail'])) {
+
+			$markerArray['###LISTTHUMBNAIL###'] = '<img alt="" src="'.$this->list->metadata['thumbnail'].'" />';
+
+		} else {
+
+			$markerArray['###LISTTHUMBNAIL###'] = '';
+
+		}
 
 		if ($i) {
 

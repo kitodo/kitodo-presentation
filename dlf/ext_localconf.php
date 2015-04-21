@@ -54,6 +54,8 @@ t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/validator/class.tx_dlf_validator.ph
 // Register tools for toolbox plugin.
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php', '_toolsPdf', '', TRUE);
 
+t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php', '_toolsFulltext', '', TRUE);
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][t3lib_extMgm::getCN($_EXTKEY).'_toolsPdf'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsPdf';
 
 // Register hooks.
@@ -68,4 +70,56 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array
 
 // Register AJAX eID handlers.
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = 'EXT:'.$_EXTKEY.'/plugins/search/class.tx_dlf_search_suggest.php';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_fulltext_eid'] = 'EXT:'.$_EXTKEY.'/plugins/pageview/class.tx_dlf_fulltext_eid.php';
+
+
+if (TYPO3_MODE === 'FE') {
+
+	/*
+	 * docType user function to use in typoscript:
+	 *
+	 * STORAGEID: uid of dlf storage folder
+	 * DOCTYPE: document type string to test
+	 *
+	 * [userFunc = user_dlf_docTypeCheck(STORAGEID:DOCTYPE)]
+	 *
+	 * do something different
+	 *
+	 * [global]
+	 *
+	 **/
+	function user_dlf_docTypeCheck($cmd) {
+
+		// we have to split the cmd as we cannot have two parameters.
+		// this changed in TYPO3 6.2
+		$pidCondition = explode(':', $cmd);
+
+		$conf['pages'] = $pidCondition[0];
+
+		$docType = t3lib_div::makeInstance('tx_dlf_doctype');
+
+		switch($pidCondition[1]){
+			case "periodical":
+				if ($docType->main($cObj, $conf) === "periodical")
+					return TRUE;
+			 break;
+			case "newspaper_global_anchor":
+				if ($docType->main($cObj, $conf) === "newspaper_global_anchor")
+					return TRUE;
+			 break;
+			case "newspaper_year_anchor":
+				if ($docType->main($cObj, $conf) === "newspaper_year_anchor")
+					return TRUE;
+			 break;
+			case "newspaper_issue":
+				if ($docType->main($cObj, $conf) === "newspaper_issue")
+					return TRUE;
+			 break;
+			default	: return FALSE;
+		}
+		// this function has to return FALSE or TRUE nothing else
+		return FALSE;
+	}
+
+}
 ?>

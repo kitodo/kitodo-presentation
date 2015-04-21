@@ -97,6 +97,23 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Get collection's UID.
 			return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$list->metadata['options']['select'].'" />';
 
+		} else if (!empty($list->metadata['options']['params']['fq'])) {
+
+			// get collection's UID from search metadata
+			foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
+
+				$facetKeyVal = explode(':', $facet, 2);
+
+				if ($facetKeyVal[0] == 'collection_faceting') {
+
+					$collectionId = tx_dlf_helper::getIdFromIndexName($facetKeyVal[1], 'tx_dlf_collections');
+
+				}
+
+			}
+
+			return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$collectionId.'" />';
+
 		}
 
 		return '';
@@ -112,6 +129,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 */
 	protected function addCurrentDocument() {
 
+		// Load current list object.
+		$list = t3lib_div::makeInstance('tx_dlf_list');
+
 		// Load current document.
 		if (!empty($this->piVars['id']) && tx_dlf_helper::testInt($this->piVars['id'])) {
 
@@ -123,6 +143,23 @@ class tx_dlf_search extends tx_dlf_plugin {
 				return '<input type="hidden" name="'.$this->prefixId.'[id]" value="'.($this->doc->parentId > 0 ? $this->doc->parentId : $this->doc->uid).'" />';
 
 			}
+
+		} else if (!empty($list->metadata['options']['params']['fq'])) {
+
+			// get document's UID from search metadata
+			foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
+
+				$facetKeyVal = explode(':', $facet);
+
+				if ($facetKeyVal[0] == 'uid') {
+
+					$documentId = (int)substr($facetKeyVal[1],0,strpos($facetKeyVal[1], ' '));
+
+				}
+
+			}
+
+			return '<input type="hidden" name="'.$this->prefixId.'[id]" value="'.$documentId.'" />';
 
 		}
 
@@ -265,7 +302,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		$TSconfig['special.']['limit'] = max(intval($this->conf['limitFacets']), 1);
 
-		$TSconfig = t3lib_div::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
+		$TSconfig = tx_dlf_helper::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
 
 		return $this->cObj->HMENU($TSconfig);
 
@@ -330,7 +367,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 			$entryArray['ITEM_STATE'] = 'CUR';
 
 			$state = 'ACTIFSUB';
-			
+
 			//Reset facets
 			if ($this->conf['resetFacets']) {
 				//remove ($count) for selected facet in template
@@ -582,7 +619,12 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					}
 
-				}
+			}
+			else if (empty($this->piVars['fq']) && $query != "*") {
+			
+				$query = tx_dlf_solr::escapeQuery($query);
+			
+			}
 
 				// Set query parameters.
 				$params = array ();
@@ -620,18 +662,18 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					}
 
-				}
+			}
+			$solr->params = $params;
 
-				$solr->params = $params;
+			// Perform search.
+			$results = $solr->search($query);
 
-				// Perform search.
-				$results = $solr->search($query);
-
-				$results->metadata = array (
-					'label' => $label,
-					'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
-					'options' => $results->metadata['options']
-				);
+			$results->metadata = array (
+				'label' => $label,
+				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
+				'thumbnail' => '',
+				'options' => $results->metadata['options']
+			);
 
 				$results->save();
 
@@ -722,8 +764,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$search['params']['facet'] = 'true';
 
 		$search['params']['facet.field'] = array_keys($this->conf['facets']);
-		
-		//override SOLR default value for facet.limit of 100 
+
+		//override SOLR default value for facet.limit of 100
 		$search['params']['facet.limit'] = $this->conf['limitFacets'];
 
 		// Perform search.

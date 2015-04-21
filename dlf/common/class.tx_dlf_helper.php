@@ -54,6 +54,28 @@ class tx_dlf_helper {
 	protected static $locallang = array ();
 
 	/**
+	 * Implements array_merge_recursive_overrule() in a cross-version way.
+	 *
+	 * This code is a copy from realurl, written by Dmitry Dulepov <dmitry.dulepov@gmail.com>.
+	 *
+	 * @param array $array1
+	 * @param array $array2
+	 * @return array
+	 */
+	static public function array_merge_recursive_overrule($array1, $array2) {
+		if (class_exists('\\TYPO3\\CMS\\Core\\Utility\\ArrayUtility')) {
+			/** @noinspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection */
+			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($array1, $array2);
+		}
+		else {
+			/** @noinspection PhpDeprecationInspection */
+			$array1 = t3lib_div::array_merge_recursive_overrule($array1, $array2);
+		}
+
+		return $array1;
+	}
+
+	/**
 	 * Searches the array recursively for a given value and returns the corresponding key if successful
 	 * @see http://php.net/array_search
 	 *
@@ -494,6 +516,77 @@ class tx_dlf_helper {
 			if (TYPO3_DLOG) {
 
 				t3lib_div::devLog('[tx_dlf_helper->getIndexName('.$_uid.', '.$table.', '.$_pid.')] No "index_name" with UID "'.$uid.'" and PID "'.$pid.'" found in table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return '';
+
+		}
+
+	}
+
+	/**
+	 * Get the UID for a given "index_name"
+	 *
+	 * @access	public
+	 *
+	 * @param	integer		$index_name: The index_name of the record
+	 * @param	string		$table: Get the "index_name" from this table
+	 * @param	integer		$pid: Get the "index_name" from this page
+	 *
+	 * @return	string		"uid" for the given index_name
+	 */
+	public static function getIdFromIndexName($index_name, $table, $pid = -1) {
+
+		// Save parameters for logging purposes.
+		$_index_name = $index_name;
+
+		$_pid = $pid;
+
+		if (!$index_name || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'))) {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getIdFromIndexName('.$_index_name.', '.$table.', '.$_pid.')] Invalid UID "'.$index_name.'" or table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+
+			}
+
+			return '';
+
+		}
+
+		$where = '';
+
+		// Should we check for a specific PID, too?
+		if ($pid !== -1) {
+
+			$pid = max(intval($pid), 0);
+
+			$where = ' AND '.$table.'.pid='.$pid;
+
+		}
+
+		// Get index_name from database.
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$table.'.uid AS uid',
+			$table,
+			$table.'.index_name='.$index_name.$where.self::whereClause($table),
+			'',
+			'',
+			'1'
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+			return $resArray['uid'];
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				t3lib_div::devLog('[tx_dlf_helper->getIdFromIndexName('.$_index_name.', '.$table.', '.$_pid.')] No UID for given "index_name" "'.$index_name.'" and PID "'.$pid.'" found in table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -1085,6 +1178,45 @@ class tx_dlf_helper {
 
 			$index_name = self::getIndexName($index_name, $table, $pid);
 
+		}
+
+		/* The $labels already contain the translated content element, but with the index_name of the translated content element itself
+		 * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
+		 * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
+		
+		// First fetch the uid of the received index_name
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',
+				$table,
+				'pid='.$pid.' AND index_name="'.$index_name.'"'.self::whereClause($table),
+				'',
+				'',
+				''
+		);
+		
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+				
+			// Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
+				
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+		
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'index_name',
+					$table,
+					'pid='.$pid.' AND l18n_parent='.$resArray['uid'].' AND sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content).self::whereClause($table),
+					'',
+					'',
+					''
+			);
+		
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+		
+				// If there is an translated content element, overwrite the received $index_name.
+		
+				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+		
+				$index_name = $resArray['index_name'];
+			}
 		}
 
 		// Check if we already got a translation.

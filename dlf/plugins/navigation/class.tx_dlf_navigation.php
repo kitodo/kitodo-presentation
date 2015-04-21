@@ -146,7 +146,17 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			// Set default values if not set.
 			if ($this->doc->numPages > 0) {
 
-				$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+				// Set default values if not set.
+				// page may be integer or string (physical page attribute)
+				if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+
+					$this->piVars['page'] = tx_dlf_helper::intInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+
+				} else {
+
+					$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+
+				}
 
 				$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
 
@@ -274,7 +284,12 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		// Add link to listview if applicable.
 		$markerArray['###LINKLISTVIEW###'] = $this->getLinkToListview();
 
-		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+		// fill some language labels if available
+		$markerArray['###ZOOM_IN###'] =  $this->pi_getLL('zoom-in', '', TRUE);
+		$markerArray['###ZOOM_OUT###'] = $this->pi_getLL('zoom-out', '', TRUE);
+		$markerArray['###ZOOM_FULLSCREEN###'] = $this->pi_getLL('zoom-fullscreen', '', TRUE);
+
+ 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
 		return $this->pi_wrapInBaseClass($content);
 
@@ -300,7 +315,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 			unset($piVars['DATA']);
 
-			$overrulePIvars = t3lib_div::array_merge_recursive_overrule($piVars, $overrulePIvars);
+			$overrulePIvars = tx_dlf_helper::array_merge_recursive_overrule($piVars, $overrulePIvars);
 
 		}
 
