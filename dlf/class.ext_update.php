@@ -22,8 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once('common/class.tx_dlf_helper.php');
-
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
