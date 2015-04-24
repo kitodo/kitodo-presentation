@@ -74,6 +74,15 @@ class ext_update {
 
 		$uids = array ();
 
+		// check if tx_dlf_metadata.xpath exists anyhow
+		$fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
+
+		if (! in_array('xpath', array_keys($fieldsInDatabase))) {
+
+			return $uids;
+
+		}
+
 		// Get all records with outdated configuration.
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_metadata.uid AS uid',
