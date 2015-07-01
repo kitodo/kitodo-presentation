@@ -222,7 +222,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:format', 'application/mets+xml'));
 
-		$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:type', 'text'));
+		$oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:type', 'Text'));
 
 		if (!empty($metadata['partof'])) {
 
