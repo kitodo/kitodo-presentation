@@ -175,6 +175,7 @@
 			<label index="config.elasticSearchType">Elasticsearch Server Type: </label>
 			<label index="config.elasticSearchUser">Elasticsearch Server User: (default is "")</label>
 			<label index="config.elasticSearchPass">Elasticsearch Server Password: (default is "")</label>
+			<label index="config.repository">Repository</label>
 			<label index="elasticSearch.status">The status code returned by Elasticsearch is &lt;strong&gt;%s&lt;/strong&gt;.</label>
 			<label index="elasticSearch.error">Elasticsearch was not reachable under &lt;strong&gt;%s&lt;/strong&gt;.</label>
 			<label index="solr.connected">Connection established!</label>
@@ -365,6 +366,7 @@
 			<label index="config.elasticSearchType">Elasticsearch Server Type: </label>
 			<label index="config.elasticSearchUser">Elasticsearch Server Benutzername: (Standard ist "")</label>
 			<label index="config.elasticSearchPass">Elasticsearch Server Kennwort: (Standard ist "")</label>
+			<label index="config.repository">Repository</label>
 			<label index="elasticSearch.status">Elasticsearch gibt den Statuscode &lt;strong&gt;%s&lt;/strong&gt; zurück.</label>
 			<label index="elasticSearch.error">Elasticsearch ist unter &lt;strong&gt;%s&lt;/strong&gt; nicht erreichbar.</label>
 			<label index="solr.connected">Verbindung hergestellt!</label>
