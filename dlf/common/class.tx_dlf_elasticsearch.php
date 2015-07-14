@@ -27,10 +27,9 @@
  */
 use \ElasticSearch\Client;
 /**
- * Solr class 'tx_dlf_solr' for the 'dlf' extension.
+ * Elasticsearch class 'tx_dlf_elasticsearch' for the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author	Henrik Lochmann <dev@mentalmotive.com>
+ * @author	Christopher Timm <timm@effective-webwork.de>
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public

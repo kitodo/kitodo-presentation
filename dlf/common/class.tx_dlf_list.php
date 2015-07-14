@@ -338,41 +338,11 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 					$result = $this->es->service->get($record['uid']);
 
-					// print_r($result);print_r("<br><br><br>");
 					$metadata = array();
 
 					$metadata = $this->elasticsearchResultWalkRecursive($result);
 
-
 					$metadata = $this->metadataResult;
-					// print_r("MetadataResult");print_r($this->metadataResult);
-
-					// print_r("<br><br>Metadaten:<br><br>");
-					// print_r($metadata);
-					// store metadata
-					// $test = array_walk_recursive($result, function($entry, $key) use(&$metadata) {
-					// 	print_r($key);
-					// 	$metadata[$key] = array($key => $entry);
-					// });
-					
-					// foreach($result as $key => $value){
-					// 	if(!is_array($value)){
-					// 		$metadata[$key] = array($key => $value);
-					// 	} else {
-					// 		$i = 0;
-					// 		foreach($value as $sub_key => $sub_value){
-					// 			//$metadata[$key] = array($key.'_'.$i => $sub_value);
-					// 			if(!is_array($sub_value))
-					// 			$metadata[$key] = array($sub_key => $sub_value);
-					// 			$i++;
-					// 		}
-					// 	}
-					// }
-
-					// print_r($metadata);
-					// foreach ($result as $key => $entry) {
-					// 	$metadata[$key] = array($key => $entry);
-					// }
 					
 				}
 				$record['metadata'] = $metadata;
@@ -408,7 +378,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 		// try to get all metadata from elasticsearch result
 		foreach($data as $key => $value){
 			if(!is_array($value)){
-				// print_r($keyPoint);print_r($key);print_r($value);print_r("<br>");
 				if(is_int($key) && !empty($keyPoint)) {
 					$metadata[$keyPoint] = array($keyPoint => $value);
 					$this->metadataResult[$keyPoint] = array($keyPoint => $value);
