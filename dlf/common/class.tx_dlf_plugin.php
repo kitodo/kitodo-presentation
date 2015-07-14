@@ -83,7 +83,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (!empty($flexFormConf)) {
 
-			$conf = tx_dlf_helper::array_merge_recursive_overrule($flexFormConf, $conf);
+			$conf = t3lib_div::array_merge_recursive_overrule($flexFormConf, $conf);
 
 		}
 
@@ -92,7 +92,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($pluginConf)) {
 
-			$conf = tx_dlf_helper::array_merge_recursive_overrule($pluginConf, $conf);
+			$conf = t3lib_div::array_merge_recursive_overrule($pluginConf, $conf);
 
 		}
 
@@ -101,7 +101,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($generalConf)) {
 
-			$conf = tx_dlf_helper::array_merge_recursive_overrule($generalConf, $conf);
+			$conf = t3lib_div::array_merge_recursive_overrule($generalConf, $conf);
 
 		}
 
@@ -110,7 +110,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($extConf)) {
 
-			$conf = tx_dlf_helper::array_merge_recursive_overrule($extConf, $conf);
+			$conf = t3lib_div::array_merge_recursive_overrule($extConf, $conf);
 
 		}
 
@@ -119,7 +119,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($varsConf)) {
 
-			$conf = tx_dlf_helper::array_merge_recursive_overrule($varsConf, $conf);
+			$conf = t3lib_div::array_merge_recursive_overrule($varsConf, $conf);
 
 		}
 
@@ -156,9 +156,9 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 			// Get title information.
 			$elasticsearchConf = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 		}
-		if(!empty($elasticsearchConf)){
+		if(!empty($elasticsearchConf) && empty($docUrl)){
 			// build document url if elasticsearch is in use
-			$docUrl = 'http://qucosa.vagrant.dev:8080/fedora/objects/'.$this->piVars['id'].'/methods/qucosa:SDef/getMETSDissemination';
+			$docUrl = $this->conf['repositoryServerAdress'].'fedora/objects/'.$this->piVars['id'].'/methods/qucosa:SDef/getMETSDissemination';
 			// $docUrl = 'http://local.commsy.dev/getMETSDissemination';
 			$es_flag = true;
 		}
@@ -307,7 +307,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			}
 
-			$this->piVars = tx_dlf_helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array());
+			$this->piVars = t3lib_div::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
 
 		}
 

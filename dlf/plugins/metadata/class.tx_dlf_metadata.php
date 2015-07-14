@@ -67,6 +67,14 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
+        // Load get parameter
+        $params = t3lib_div::_GET();
+
+        // show document demo (publication)
+        if ($params['tx_dlf_document_url']) {
+            $this->loadDocument($params['tx_dlf_document_url']);
+        }
+
 		if ($this->doc === NULL) {
 
 			// Quit without doing anything if required variables are not set.
@@ -325,11 +333,6 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 						// Translate document type.
 						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
-
-					} elseif ($index_name == 'collection' && !empty($value)) {
-
-						// Translate collection.
-						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
 
 					} elseif ($index_name == 'language' && !empty($value)) {
 
