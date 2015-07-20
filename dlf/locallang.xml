@@ -134,6 +134,7 @@
 			<label index="tx_dlf_libraries.tab2">Translation</label>
 			<label index="tx_dlf_libraries.tab3">Catalogs</label>
 			<label index="tx_dlf_toolbox.toolsPdf">PDF Download</label>
+			<label index="tx_dlf_toolbox.toolsFulltext">Fulltext</label>
 			<label index="tt_content.dlf_collection">DLF: Collection</label>
 			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
 			<label index="tt_content.dlf_listview">DLF: List View</label>
@@ -311,6 +312,7 @@
 			<label index="tx_dlf_libraries.tab2">Übersetzung</label>
 			<label index="tx_dlf_libraries.tab3">Kataloge</label>
 			<label index="tx_dlf_toolbox.toolsPdf">PDF-Download</label>
+			<label index="tx_dlf_toolbox.toolsFulltext">Volltext</label>
 			<label index="tt_content.dlf_collection">DLF: Kollektion</label>
 			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
 			<label index="tt_content.dlf_listview">DLF: Listenansicht</label>
