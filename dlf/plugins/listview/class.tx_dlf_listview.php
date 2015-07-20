@@ -70,7 +70,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	 *
 	 * @return	string		The rendered page browser ready for output
 	 */
-	protected function getPagebrowser() {
+	protected function getPageBrowser() {
 
 		// Get overall number of pages.
 		$maxPages = intval(ceil(count($this->list) / $this->conf['limit']));

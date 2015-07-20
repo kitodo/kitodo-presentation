@@ -114,7 +114,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 	 *
 	 * @return	string		The rendered page browser ready for output
 	 */
-	protected function getPagebrowser() {
+	protected function getPageBrowser() {
 
 		// Get overall number of pages.
 		$maxPages = intval(ceil($this->doc->numPages / $this->conf['limit']));
