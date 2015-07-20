@@ -411,10 +411,9 @@ dlfViewer.prototype.init = function() {
 /**
  * Show Popup with OCR results
  *
- * @param {Object} feature
- * @param {Object} bounds
+ * @param {Object} text
  */
-dlfViewer.prototype.showPopupDiv = function(text, bounds){
+dlfViewer.prototype.showPopupDiv = function(text) {
 
 	var popupHTML = '<div class="ocrText">' + text.replace(/\n/g, '<br />') + '</div>';
 
