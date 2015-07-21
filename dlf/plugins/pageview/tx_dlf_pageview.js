@@ -702,7 +702,7 @@ dlfViewer.prototype.loadALTO = function(url, scale){
  *
  * @return	void
  */
-dlfViewer.prototype.toogleFulltextSelect = function() {
+dlfViewer.prototype.toggleFulltextSelect = function() {
 
 	var isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
 
