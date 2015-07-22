@@ -92,9 +92,8 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 
 		$fullTextFile = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
 
-		// Get single page downloads.
 		if (!empty($fullTextFile)) {
-			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select" title="'.$this->pi_getLL('fulltext-select', '', TRUE).'" onclick="tx_dlf_viewer.toogleFulltextSelect();">'.$this->pi_getLL('fulltext-select', '', TRUE).'</a>';
+			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select" title="'.$this->pi_getLL('fulltext-select', '', TRUE).'" onclick="tx_dlf_viewer.toggleFulltextSelect();">'.$this->pi_getLL('fulltext-select', '', TRUE).'</a>';
 		} else {
 			$markerArray['###FULLTEXT_SELECT###'] = $this->pi_getLL('fulltext-select', '', TRUE);
 		}
