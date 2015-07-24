@@ -543,7 +543,7 @@ dlfViewer.prototype.createPolygon = function(image, x1, y1, x2, y2) {
 
 	}
 
-	//~ alert('image ' + image + ' scale: ' + scale + ' height: ' + height + ' offset: ' + offset);
+	//alert('image ' + image + ' scale: ' + scale + ' height: ' + height + ' offset: ' + offset);
 
 	var polygon = new OpenLayers.Geometry.Polygon (
 		new OpenLayers.Geometry.LinearRing (
@@ -678,18 +678,15 @@ dlfViewer.prototype.setOrigImage = function(i, width, height) {
  * Read ALTO file and return found words
  *
  * @param {Object} url
- * @param {Object} scale
  */
-dlfViewer.prototype.loadALTO = function(url, scale){
+dlfViewer.prototype.loadALTO = function(url){
 
     var request = OpenLayers.Request.GET({
         url: url,
         async: false
     });
 
-    var format = new OpenLayers.Format.ALTO({
-        scale: scale
-    });
+    var format = new OpenLayers.Format.ALTO();
 
     if (request.responseXML)
         var wordCoords = format.read(request.responseXML);
@@ -760,11 +757,20 @@ dlfViewer.prototype.enableFulltextSelect = function() {
 
 			for (var j in textBlockCoordinates) {
 
-				if (textBlockCoordinates[j].type == 'PrintSpace') {
+				// set scale either by Page or Printspace
+				if (textBlockCoordinates[j].type == 'Page') {
 
-					this.setOrigImage(i, textBlockCoordinates[j].geometry['width'], textBlockCoordinates[j].geometry['height']);
+					if (! tx_dlf_viewer.origImages[i]) {
+						this.setOrigImage(i, textBlockCoordinates[j].geometry['width'] , textBlockCoordinates[j].geometry['height'] );
+					}
 
-				} else if (textBlockCoordinates[j].type == 'TextBlock') {
+				} else if (textBlockCoordinates[j].type == 'PrintSpace') {
+
+					if (! tx_dlf_viewer.origImages[i]) {
+						this.setOrigImage(i, textBlockCoordinates[j].geometry['width'], textBlockCoordinates[j].geometry['height']);
+					}
+				}
+				else if (textBlockCoordinates[j].type == 'TextBlock') {
 
 					if (! this.textBlockLayer) {
 
