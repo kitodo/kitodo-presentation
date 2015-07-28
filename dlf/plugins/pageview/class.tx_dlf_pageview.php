@@ -268,7 +268,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		tx_dlf_helper::loadJQuery();
 
 		// Add OpenLayers library.
-		$output[] = $this->addOpenLayersJS($fulltexts);
+		$output[] = $this->addOpenLayersJS();
 
 		// Add viewer library.
 		$output[] = '
