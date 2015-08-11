@@ -1,11 +1,17 @@
 {
   "exports": [
+    "ol.animation.zoom",
     "ol.extent.getCenter",
     "ol.layer.Image",
     "ol.Map",
+    "ol.Map#beforeRender",
+    "ol.Map#getView",
     "ol.proj.Projection",
     "ol.source.ImageStatic",
-    "ol.View"
+    "ol.View",
+    "ol.View#getResolution",
+    "ol.View#getZoom",
+    "ol.View#setZoom"
   ],
   "compile": {
     "externs": [

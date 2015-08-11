@@ -22,6 +22,7 @@
  ***************************************************************/
 
 /**
+ * @todo check if all interactions / controls are supported
  * @param {Object} settings
  *      {string=} div
  *      {Array.<?>} images
@@ -289,7 +290,8 @@ dlfViewerOl3.prototype.init = function(){
             view: new ol.View({
                 projection: mapProj,
                 center: ol.extent.getCenter(mapExtent),
-                zoom: 2
+                zoom: 2,
+                maxZoom: 8
             })
         });
 
