@@ -1,0 +1,34 @@
+{
+  "exports": [
+    "ol.extent.getCenter",
+    "ol.layer.Image",
+    "ol.Map",
+    "ol.proj.Projection",
+    "ol.source.ImageStatic",
+    "ol.View"
+  ],
+  "compile": {
+    "externs": [
+      "externs/bingmaps.js",
+      "externs/geojson.js",
+      "externs/oli.js",
+      "externs/olx.js",
+      "externs/proj4js.js",
+      "externs/tilejson.js",
+      "externs/topojson.js",
+      "externs/vbarray.js"
+    ],
+    "define": [
+      "ol.ENABLE_DOM=false",
+      "ol.ENABLE_WEBGL=true",
+      "ol.ENABLE_PROJ4JS=false",
+      "ol.ENABLE_VECTOR=true",
+      "goog.dom.ASSUME_STANDARDS_MODE=true",
+      "goog.DEBUG=false"
+    ],
+    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "output_wrapper": "(function(){%output%})();",
+    "use_types_for_optimization": true,
+    "manage_closure_dependencies": true
+  }
+}

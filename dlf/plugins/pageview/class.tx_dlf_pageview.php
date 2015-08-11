@@ -246,8 +246,11 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output[] = '</script>';
 
 		// Add OpenLayers library.
+		// <script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>
 		$output[] = '
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol.js"></script>
+		';
 
 		return implode("\n", $output);
 
@@ -272,17 +275,28 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		// Add viewer library.
 		$output[] = '
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_ol3.js"></script>
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			tx_dlf_viewer = new dlfViewer();
+/*			tx_dlf_viewer = new dlfViewer();
 			tx_dlf_viewer.setDiv("'.$this->conf['elementId'].'");
 			tx_dlf_viewer.setLang("'.$this->lang.'");
 			tx_dlf_viewer.addControls(["'.implode('", "', $this->controls).'"]);
 			tx_dlf_viewer.addImages(["'.implode('", "', $this->images).'"]);
-			tx_dlf_viewer.addFulltexts(["'.implode('", "', $this->fulltexts).'"]);
+			tx_dlf_viewer.addFulltexts(["'.implode('", "', $this->fulltexts).'"]);*/
+			if (dlfUtils.exists(dlfViewerOl3)) {
+				tx_dlf_view = new dlfViewerOl3({
+					controls: ["' . implode('", "', $this->images) . '"],
+					div: "' . $this->conf['elementId'] . '",
+					fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
+					images: ["' . implode('", "', $this->images) . '"],
+					lang: "de"
+				})
+			}
 		</script>';
 
 		return implode("\n", $output);

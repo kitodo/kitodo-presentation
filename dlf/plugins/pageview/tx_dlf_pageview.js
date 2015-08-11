@@ -283,7 +283,7 @@ dlfViewer.prototype.getCookie = function(name) {
  * @return	void
  */
 dlfViewer.prototype.init = function() {
-
+	debugger;
 	var width = 0;
 
 	var height = 0;
