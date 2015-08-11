@@ -4,3 +4,6 @@
 .project
 .settings/
 .idea/
+
+# developing library for ol3 upgrade
+/dlf/lib/OL3/ol-debug.js
