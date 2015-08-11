@@ -22,7 +22,7 @@
  ***************************************************************/
 
 /**
- * @todo check if all interactions / controls are supported
+ * @TODO Trigger resize map event after fullscreen is toggled
  * @param {Object} settings
  *      {string=} div
  *      {Array.<?>} images
@@ -287,11 +287,21 @@ dlfViewerOl3.prototype.init = function(){
         this.map = new ol.Map({
             layers: layers,
             target: this.div,
+            controls: [],
+            interactions: [
+                new ol.interaction.DragPan(),
+                new ol.interaction.MouseWheelZoom(),
+                new ol.interaction.KeyboardPan(),
+                new ol.interaction.KeyboardZoom
+            ],
+            // necessary for proper working of the keyboard events
+            keyboardEventTarget: document,
             view: new ol.View({
                 projection: mapProj,
                 center: ol.extent.getCenter(mapExtent),
-                zoom: 2,
-                maxZoom: 8
+                zoom: 0,
+                maxZoom: 8,
+                extent: mapExtent
             })
         });
 

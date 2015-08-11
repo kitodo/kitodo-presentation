@@ -2,6 +2,10 @@
   "exports": [
     "ol.animation.zoom",
     "ol.extent.getCenter",
+    "ol.interaction.DragPan",
+    "ol.interaction.MouseWheelZoom",
+    "ol.interaction.KeyboardPan",
+    "ol.interaction.KeyboardZoom",
     "ol.layer.Image",
     "ol.Map",
     "ol.Map#beforeRender",
