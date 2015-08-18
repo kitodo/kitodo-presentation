@@ -81,7 +81,7 @@ var dlfViewerOl3 = function(settings){
      * @type {Array.<?>}
      * @private
      */
-    this.controls = dlfUtils.exists(settings.controls) ? settings.controls : [];
+    //this.controls = dlfUtils.exists(settings.controls) ? settings.controls : [];
 
     /**
      * Offset for the second image
@@ -91,38 +91,11 @@ var dlfViewerOl3 = function(settings){
     this.offset = 0;
 
     /**
-     * Highlighting layer ol3
-     * @type {ol.layer.Vector|null}
-     * @private
-     */
-    this.highlightLayer = null;
-
-    /**
-     * Highlighting fields
-     * @type {Array.<?>}
-     * @private
-     */
-    this.highlightFields = [];
-
-    /**
      * Fulltexts together with the coordinates of the textblocks
      * @type {Array.<Array.<ol.Feature>>}
      * @private
      */
     this.fullTextCoordinates = [];
-
-    /**
-     * Lock to check if feature is clicked
-     * @type {null|boolean}
-     * @private
-     */
-    this.featureClicked = null;
-
-    /**
-     * @type {ol.layer.Vector|undefined}
-     * @private
-     */
-    this.textBlockLayer = undefined;
 
     /**
      * Language token
@@ -131,66 +104,117 @@ var dlfViewerOl3 = function(settings){
      */
     this.lang = dlfUtils.exists(settings.lang) ? settings.lang : 'de';
 
+    /**
+     * @private
+     * @type {ol.layer.Vector}
+     */
+    this.textBlockLayer = new ol.layer.Vector({
+        'source': new ol.source.Vector(),
+        'style': dlfViewerOl3.style.defaultStyle()
+    });
+
+    /**
+     * @private
+     * @type {ol.layer.Vector}
+     */
+    this.highlightLayer = new ol.layer.Vector({
+        'source': new ol.source.Vector(),
+        'style': dlfViewerOl3.style.hoverStyle()
+    });
+
+    /**
+     * @private
+     * @type {ol.layer.Vector}
+     */
+    this.selectLayer = new ol.layer.Vector({
+        'source': new ol.source.Vector(),
+        'style': dlfViewerOl3.style.selectStyle()
+    });
+
+    /**
+     * @type {Array.<number>}
+     * @private
+     */
+    this.highlightFields = [];
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.highlightFieldParams = undefined;
+
     this.init();
 };
 
 /**
- * Register controls to load for map
- * @todo Check if all controls a initialize properly
- * @param {Array.<string>} control keyswords
+ * Add highlight field
+ *
+ * @param {Array.<number>} highlightField
+ * @param {number} imageIndex
+ * @param {number} width
+ * @param {number} height
+ *
+ * @return	void
  */
-dlfViewerOl3.prototype.addControls = function(controls) {
+dlfViewerOl3.prototype.addHighlightField = function(highlightField, imageIndex, width, height) {
 
-    for (var i in controls) {
+    this.highlightFields.push(highlightField);
 
-        // Initialize control.
-        switch(controls[i]) {
+    this.highlightFieldParams = {
+        index: imageIndex,
+        width: width,
+        height: height
+    };
 
-            /*             case "OverviewMap":
+    if (this.map)
+        this.displayHighlightWord();
+};
 
-                controls[i] = new ol.control.OverviewMap();
+/**
+ *
+ */
+dlfViewerOl3.prototype.displayHighlightWord = function() {
 
-                break;
+    if (!dlfUtils.exists(this.highlighLayer)){
 
-           case "PanPanel":
+        this.highlighLayer = new ol.layer.Vector({
+            'source': new ol.source.Vector(),
+            'style': dlfViewerOl3.style.selectStyle()
+        });
 
-                controls[i] = new OpenLayers.Control.PanPanel();
+    };
 
-                break;
+    // clear in case of old displays
+    this.highlighLayer.getSource().clear();
 
-            case "PanZoom":
 
-                controls[i] = new OpenLayers.Control.PanZoom();
+    // set origimage with highlightFieldParams
+    if (!this.origImages.length && dlfUtils.exists(this.highlightFields)) {
 
-                break;
-
-            case "PanZoomBar":
-
-                controls[i] = new OpenLayers.Control.PanZoomBar();
-
-                break;
-
-            case "ZoomPanel":
-
-                controls[i] = new OpenLayers.Control.ZoomPanel();
-
-                break;*/
-
-            default:
-
-                controls[i] = null;
-
-        }
-
-        if (!dlfUtils.isNull(controls[i])) {
-
-            // Register control.
-            this.controls.push(controls[i]);
-
-        }
+        this.setOrigImage(this.highlightFieldParams.index, this.highlightFieldParams.width,
+            this.highlightFieldParams.height);
 
     }
 
+
+    // create features and scale it down
+    for (var i = 0; i < this.highlightFields.length; i++) {
+
+        var field = this.highlightFields[i],
+            coordinates = [[
+                [field[0], field[1]],
+                [field[2], field[1]],
+                [field[2], field[3]],
+                [field[0], field[3]],
+                [field[0], field[1]],
+            ]],
+            feature = this.scaleDown(0, [new ol.Feature(new ol.geom.Polygon(coordinates))]);
+
+        // add feature to layer and map
+        this.highlighLayer.getSource().addFeatures(feature);
+    };
+
+    this.map.addLayer(this.highlighLayer);
 };
 
 /**
@@ -222,103 +246,6 @@ dlfViewerOl3.prototype.enableFulltextSelect = function() {
             var textBlockCoordinates = this.scaleDown(i, pageOrPrintSpaceFeature.get('features'));
             for (var j in textBlockCoordinates) {
 
-                var type = textBlockCoordinates[j].get('type');
-
-
-
-                if (! this.textBlockLayer) {
-
-                    /**
-                     * @private
-                     * @type {ol.layer.Vector}
-                     */
-                    this.textBlockLayer = new ol.layer.Vector({
-                        'source': new ol.source.Vector(),
-                        'style': dlfViewerOl3.style.defaultStyle()
-                    });
-
-                    /**
-                     * @private
-                     * @type {ol.layer.Vector}
-                     */
-                    this.highlightLayer = new ol.layer.Vector({
-                        'source': new ol.source.Vector(),
-                        'style': dlfViewerOl3.style.hoverStyle()
-                    });
-
-                    /**
-                     * @private
-                     * @type {ol.layer.Vector}
-                     */
-                    this.selectLayer = new ol.layer.Vector({
-                        'source': new ol.source.Vector(),
-                        'style': dlfViewerOl3.style.selectStyle()
-                    });
-
-                    var featureClicked;
-                    this.map.on('click', function(event) {
-
-                        var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                            return feature;
-                        });
-
-                        // highlight features
-                        if (feature !== featureClicked) {
-
-                            if (featureClicked) {
-
-                                this.selectLayer.getSource().removeFeature(featureClicked);
-
-                            }
-
-                            if (feature) {
-
-                                this.selectLayer.getSource().addFeature(feature);
-
-                            }
-
-                            featureClicked = feature;
-
-                        }
-
-                        this.showFulltext(feature);
-                        this.featureClicked = feature;
-
-                    }, this);
-
-                    var highlightFeature;
-                    this.map.on('pointermove', function(event) {
-
-                        if (event['dragging']) {
-                            return;
-                        };
-
-                        var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                            return feature;
-                        });
-
-                        // highlight features
-                        if (feature !== highlightFeature) {
-
-                            if (highlightFeature) {
-
-                                this.highlightLayer.getSource().removeFeature(highlightFeature);
-
-                            }
-
-                            if (feature) {
-
-                                this.highlightLayer.getSource().addFeature(feature);
-
-                            }
-
-                            highlightFeature = feature;
-
-                        }
-                    }, this);
-
-                }
-
                 this.textBlockLayer.getSource().addFeature(textBlockCoordinates[j]);
 
             }
@@ -327,9 +254,12 @@ dlfViewerOl3.prototype.enableFulltextSelect = function() {
 
         if (dlfUtils.exists(this.textBlockLayer)) {
 
+            // add layers to map
             this.map.addLayer(this.textBlockLayer);
             this.map.addLayer(this.highlightLayer);
             this.map.addLayer(this.selectLayer);
+
+            // show fulltext container
             $("#tx-dlf-fulltextselection").show();
 
         }
@@ -414,6 +344,7 @@ dlfViewerOl3.prototype.init = function(){
      * @param {Array.<{src: *, width: *, height: *}>} images
      */
     var init_ = $.proxy(function(images){
+
         // set image property of the object
         this.images = images;
 
@@ -484,6 +415,85 @@ dlfViewerOl3.prototype.init = function(){
             this.map.zoomTo([lon, lat], zoom);
         };
 
+        //
+        // couple fulltext event behavior with map
+        //
+
+        var featureClicked;
+        this.map.on('click', function(event) {
+
+            var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
+                return feature;
+            });
+
+            // highlight features
+            if (feature !== featureClicked) {
+
+                if (featureClicked) {
+
+                    this.selectLayer.getSource().removeFeature(featureClicked);
+
+                }
+
+                if (feature) {
+
+                    this.selectLayer.getSource().addFeature(feature);
+
+                }
+
+                featureClicked = feature;
+
+            }
+
+            if (dlfUtils.exists(feature))
+                this.showFulltext(feature);
+
+        }, this);
+
+        var highlightFeature;
+        this.map.on('pointermove', function(event) {
+
+            if (event['dragging']) {
+                return;
+            };
+
+            var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
+                return feature;
+            });
+
+            // highlight features
+            if (feature !== highlightFeature) {
+
+                if (highlightFeature) {
+
+                    this.highlightLayer.getSource().removeFeature(highlightFeature);
+
+                }
+
+                if (feature) {
+
+                    this.highlightLayer.getSource().addFeature(feature);
+
+                }
+
+                highlightFeature = feature;
+
+            }
+
+        }, this);
+
+        // keep fulltext feature active
+        var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
+        if (isFulltextActive == 'enabled') {
+
+            this.enableFulltextSelect();
+
+        };
+
+        // highlight word in case a highlight field is registered
+        if (this.highlightFields.length)
+            this.displayHighlightWord();
+
     }, this);
 
     // init image loading process
@@ -493,6 +503,8 @@ dlfViewerOl3.prototype.init = function(){
 
     };
 
+
+
 };
 
 /**
@@ -500,8 +512,8 @@ dlfViewerOl3.prototype.init = function(){
  */
 dlfViewerOl3.prototype.toggleFulltextSelect = function() {
 
-    var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
-
+    //var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
+    //
     if (isFulltextActive == 'enabled') {
 
         this.disableFulltextSelect();
@@ -543,6 +555,7 @@ dlfViewerOl3.prototype.scaleDown = function(image, features) {
 
         var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
             newCoordinates = [];
+
 
         for (var j = 0; j < oldCoordinates.length; j++) {
             newCoordinates.push([offset + (scale * oldCoordinates[j][0]), height - (scale * oldCoordinates[j][1])]);
@@ -610,7 +623,14 @@ dlfViewerOl3.prototype.disableFulltextSelect = function() {
 
     // destroy layer features
     this.map.removeLayer(this.textBlockLayer);
-    this.textBlockLayer = undefined;
+    this.map.removeLayer(this.highlightLayer);
+    this.map.removeLayer(this.selectLayer);
+
+    // clear all layers
+    this.textBlockLayer.getSource().clear();
+    this.highlightLayer.getSource().clear();
+    this.selectLayer.getSource().clear();
+
     $("#tx-dlf-fulltextselection").hide();
 
 };
@@ -684,5 +704,5 @@ dlfViewerOl3.style.selectStyle = function() {
             'color': 'rgba(238,153,0,0.2)'
         })
     });
-    
+
 };
