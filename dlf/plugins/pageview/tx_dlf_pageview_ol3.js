@@ -32,81 +32,102 @@
  */
 var dlfViewerOl3 = function(settings){
 
+    console.log(settings);
+
     /**
      * The element id of the map container
      * @type {string}
+     * @private
      */
     this.div = dlfUtils.exists(settings.div) ? settings.div : "tx-dlf-map";
 
     /**
      * Openlayers map object
      * @type {ol.Map|null}
+     * @private
      */
     this.map = null;
 
     /**
      * Contains image information (e.g. URL, width, height)
      * @type {Array.<string>}
+     * @private
      */
     this.imageUrls = dlfUtils.exists(settings.images) ? settings.images : [];
 
     /**
      * Contains image information (e.g. URL, width, height)
      * @type {Array.<{src: *, width: *, height: *}>}
+     * @private
      */
     this.images = [];
 
     /**
      * Fulltext information (e.g. URL)
      * @type {Array.<string|?>}
+     * @private
      */
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
 
     /**
      * Original image information (e.g. width, height)
      * @type {Array.<?>}
+     * @private
      */
     this.origImages = [];
 
     /**
      * ol3 controls which should be added to map
      * @type {Array.<?>}
+     * @private
      */
     this.controls = dlfUtils.exists(settings.controls) ? settings.controls : [];
 
     /**
      * Offset for the second image
      * @type {number}
+     * @private
      */
     this.offset = 0;
 
     /**
      * Highlighting layer ol3
      * @type {ol.layer.Vector|null}
+     * @private
      */
     this.highlightLayer = null;
 
     /**
      * Highlighting fields
      * @type {Array.<?>}
+     * @private
      */
     this.highlightFields = [];
 
     /**
      * Fulltexts together with the coordinates of the textblocks
-     * @type {Array.<?>}
+     * @type {Array.<Array.<ol.Feature>>}
+     * @private
      */
-    this.fulltextCoordinates = [];
+    this.fullTextCoordinates = [];
 
     /**
      * Lock to check if feature is clicked
      * @type {null|boolean}
+     * @private
      */
     this.featureClicked = null;
 
     /**
+     * @type {ol.layer.Vector|undefined}
+     * @private
+     */
+    this.textBlockLayer = undefined;
+
+    /**
      * Language token
      * @type {string}
+     * @private
      */
     this.lang = dlfUtils.exists(settings.lang) ? settings.lang : 'de';
 
@@ -165,6 +186,151 @@ dlfViewerOl3.prototype.addControls = function(controls) {
 
             // Register control.
             this.controls.push(controls[i]);
+
+        }
+
+    }
+
+};
+
+/**
+ * Activate Fulltext Features
+ */
+dlfViewerOl3.prototype.enableFulltextSelect = function() {
+
+    // Create image layers.
+    for (var i in this.images) {
+
+        if (this.fulltexts[i]) {
+
+            this.fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
+
+        }
+
+    }
+
+    // add fulltext layers if we have fulltexts to show
+    if (this.fullTextCoordinates.length > 0) {
+
+        for (var i in this.images) {
+
+            // extract the parent geometry and use it for setting the
+            // correct original image options / scale
+            var pageOrPrintSpaceFeature = this.fullTextCoordinates[i][0];
+            this.setOrigImage(i, pageOrPrintSpaceFeature.get('width') , pageOrPrintSpaceFeature.get('height'));
+
+            var textBlockCoordinates = this.scaleDown(i, pageOrPrintSpaceFeature.get('features'));
+            for (var j in textBlockCoordinates) {
+
+                var type = textBlockCoordinates[j].get('type');
+
+
+
+                if (! this.textBlockLayer) {
+
+                    /**
+                     * @private
+                     * @type {ol.layer.Vector}
+                     */
+                    this.textBlockLayer = new ol.layer.Vector({
+                        'source': new ol.source.Vector(),
+                        'style': dlfViewerOl3.style.defaultStyle()
+                    });
+
+                    /**
+                     * @private
+                     * @type {ol.layer.Vector}
+                     */
+                    this.highlightLayer = new ol.layer.Vector({
+                        'source': new ol.source.Vector(),
+                        'style': dlfViewerOl3.style.hoverStyle()
+                    });
+
+                    /**
+                     * @private
+                     * @type {ol.layer.Vector}
+                     */
+                    this.selectLayer = new ol.layer.Vector({
+                        'source': new ol.source.Vector(),
+                        'style': dlfViewerOl3.style.selectStyle()
+                    });
+
+                    var featureClicked;
+                    this.map.on('click', function(event) {
+
+                        var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
+                            return feature;
+                        });
+
+                        // highlight features
+                        if (feature !== featureClicked) {
+
+                            if (featureClicked) {
+
+                                this.selectLayer.getSource().removeFeature(featureClicked);
+
+                            }
+
+                            if (feature) {
+
+                                this.selectLayer.getSource().addFeature(feature);
+
+                            }
+
+                            featureClicked = feature;
+
+                        }
+
+                        this.showFulltext(feature);
+                        this.featureClicked = feature;
+
+                    }, this);
+
+                    var highlightFeature;
+                    this.map.on('pointermove', function(event) {
+
+                        if (event['dragging']) {
+                            return;
+                        };
+
+                        var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
+                            return feature;
+                        });
+
+                        // highlight features
+                        if (feature !== highlightFeature) {
+
+                            if (highlightFeature) {
+
+                                this.highlightLayer.getSource().removeFeature(highlightFeature);
+
+                            }
+
+                            if (feature) {
+
+                                this.highlightLayer.getSource().addFeature(feature);
+
+                            }
+
+                            highlightFeature = feature;
+
+                        }
+                    }, this);
+
+                }
+
+                this.textBlockLayer.getSource().addFeature(textBlockCoordinates[j]);
+
+            }
+
+        }
+
+        if (dlfUtils.exists(this.textBlockLayer)) {
+
+            this.map.addLayer(this.textBlockLayer);
+            this.map.addLayer(this.highlightLayer);
+            this.map.addLayer(this.selectLayer);
+            $("#tx-dlf-fulltextselection").show();
 
         }
 
@@ -287,7 +453,12 @@ dlfViewerOl3.prototype.init = function(){
         this.map = new ol.Map({
             layers: layers,
             target: this.div,
-            controls: [],
+            controls: [
+                new ol.control.MousePosition({
+                    coordinateFormat: ol.coordinate.createStringXY(4),
+                    undefinedHTML: '&nbsp;'
+                })
+            ],
             interactions: [
                 new ol.interaction.DragPan(),
                 new ol.interaction.MouseWheelZoom(),
@@ -305,6 +476,14 @@ dlfViewerOl3.prototype.init = function(){
             })
         });
 
+        // Position image according to user preferences
+        var lon = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
+            lat = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
+            zoom = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
+        if (!dlfUtils.isNull(lon) && !dlfUtils.isNull(lat) && !dlfUtils.isNull(zoom)) {
+            this.map.zoomTo([lon, lat], zoom);
+        };
+
     }, this);
 
     // init image loading process
@@ -316,664 +495,194 @@ dlfViewerOl3.prototype.init = function(){
 
 };
 
+/**
+ * Activate Fulltext Features
+ */
+dlfViewerOl3.prototype.toggleFulltextSelect = function() {
 
-//
-//
-///**
-// * Set Original Image Size
-// *
-// * @param	array	urls: Array of URLs of the fulltext files
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.addFulltexts = function(urls) {
-//
-//    for (var i in urls) {
-//
-//        this.fulltexts[i] = urls[i];
-//
-//    }
-//
-//};
-//
-//
-///**
-// * Get a cookie value
-// *
-// * @param	string		name: The key of the value
-// *
-// * @return	string		The key's value
-// */
-//dlfViewer.prototype.getCookie = function(name) {
-//
-//    var results = document.cookie.match("(^|;) ?"+name+"=([^;]*)(;|$)");
-//
-//    if (results) {
-//
-//        return unescape(results[2]);
-//
-//    } else {
-//
-//        return null;
-//
-//    }
-//
-//};
-//
-///**
-// * Initialize and display the OpenLayers map with default layers
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.init = function() {
-//
-//    var width = 0;
-//
-//    var height = 0;
-//
-//    var layers = [];
-//
-//    // Create image layers.
-//    for (var i in this.images) {
-//
-//        layers.push(
-//            new OpenLayers.Layer.Image(
-//                i,
-//                this.images[i].src,
-//                new OpenLayers.Bounds(this.offset, 0, this.offset + this.images[i].width, this.images[i].height),
-//                new OpenLayers.Size(this.images[i].width / 20, this.images[i].height / 20),
-//                {
-//                    'displayInLayerSwitcher': false,
-//                    'isBaseLayer': false,
-//                    'maxExtent': new OpenLayers.Bounds(this.offset, 0, this.images.length * (this.offset + this.images[i].width), this.images[i].height),
-//                    'visibility': true
-//                }
-//            )
-//        );
-//
-//        // Set offset for right image in double-page mode.
-//        if (this.offset == 0) {
-//
-//            this.offset = this.images[i].width;
-//
-//        }
-//        // Calculate overall width and height.
-//        width += this.images[i].width;
-//
-//        if (this.images[i].height > height) {
-//
-//            height = this.images[i].height;
-//
-//        }
-//
-//    }
-//
-//    // Add default controls to controls array.
-//    this.controls.unshift(new OpenLayers.Control.Navigation());
-//
-//    this.controls.unshift(new OpenLayers.Control.Keyboard());
-//
-//    // Initialize OpenLayers map.
-//    this.map = new OpenLayers.Map({
-//        'allOverlays': true,
-//        'controls': this.controls,
-//        'div': this.div,
-//        'fractionalZoom': true,
-//        'layers': layers,
-//        'maxExtent': new OpenLayers.Bounds(0, 0, width, height),
-//        'minResolution': 1.0,
-//        'numZoomLevels': 20,
-//        'units': "m"
-//    });
-//
-//    // Position image according to user preferences.
-//    if (this.getCookie("tx-dlf-pageview-centerLon") !== null && this.getCookie("tx-dlf-pageview-centerLat") !== null) {
-//
-//        this.map.setCenter(
-//            [
-//                this.getCookie("tx-dlf-pageview-centerLon"),
-//                this.getCookie("tx-dlf-pageview-centerLat")
-//            ],
-//            this.getCookie("tx-dlf-pageview-zoomLevel"),
-//            true,
-//            true
-//        );
-//
-//    } else {
-//
-//        this.map.zoomToMaxExtent();
-//
-//    }
-//
-//    // add polygon layer if any
-//    if (this.highlightFields.length) {
-//
-//        if (! this.highlightLayer) {
-//
-//            this.highlightLayer = new OpenLayers.Layer.Vector(
-//                "HighLight Words"
-//            );
-//        }
-//
-//        for (var i in this.highlightFields) {
-//
-//            if (this.origImages[0].scale == 0) {
-//
-//                // scale may be still zero in this context
-//                this.origImages[0] = {
-//
-//                    'scale': this.images[0].width/this.origImages[0].width,
-//
-//                };
-//
-//            }
-//
-//            var polygon = this.createPolygon(0, this.highlightFields[i][0], this.highlightFields[i][1], this.highlightFields[i][2], this.highlightFields[i][3]);
-//
-//            this.addPolygonlayer(this.highlightLayer, polygon, 'String');
-//
-//        }
-//
-//        this.map.addLayer(this.highlightLayer);
-//
-//    }
-//
-//    // keep fulltext feature active
-//    var isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
-//
-//    if (isFulltextActive == 'enabled') {
-//
-//        this.enableFulltextSelect();
-//
-//    }
-//
-//    //~ this.map.addControl(new OpenLayers.Control.MousePosition());
-//    //~ this.map.addControl(new OpenLayers.Control.LayerSwitcher());
-//};
-//
-///**
-// * Show Popup with OCR results
-// *
-// * @param {Object} text
-// */
-//dlfViewer.prototype.showPopupDiv = function(text) {
-//
-//    var popupHTML = '<div class="ocrText">' + text.replace(/\n/g, '<br />') + '</div>';
-//
-//    $('#tx-dlf-fulltextselection').html(popupHTML);
-//
-//};
-//
-///**
-// * Destroy boxLayer if popup closed
-// */
-//dlfViewer.prototype.popUpClosed = function() {
-//
-//    this.hide();
-//};
-//
-///**
-// * Save current user preferences in cookie
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.saveSettings = function() {
-//
-//    if (this.map !== null) {
-//
-//        this.setCookie("tx-dlf-pageview-zoomLevel", this.map.getZoom());
-//
-//        this.setCookie("tx-dlf-pageview-centerLon", this.map.getCenter().lon);
-//
-//        this.setCookie("tx-dlf-pageview-centerLat", this.map.getCenter().lat);
-//
-//    }
-//
-//};
-//
-///**
-// * Set a cookie value
-// *
-// * @param	string		name: The key of the value
-// * @param	mixed		value: The value to save
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.setCookie = function(name, value) {
-//
-//    document.cookie = name+"="+escape(value)+"; path=/";
-//
-//};
-//
-///**
-// * Set OpenLayers' div
-// *
-// * @param	string		elementId: The div element's @id attribute value
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.setDiv = function(elementId) {
-//
-//    // Check if element exists.
-//    if ($("#"+elementId).length) {
-//
-//        this.div = elementId;
-//
-//    }
-//
-//};
-//
-///**
-// * Set OpenLayers' language
-// *
-// * @param	string		lang: The language code
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.setLang = function(lang) {
-//
-//    OpenLayers.Lang.setCode(lang);
-//
-//};
-//
-//// Register page unload handler to save user settings.
-//$(window).unload(function() {
-//
-//    tx_dlf_viewer.saveSettings();
-//
-//});
-//
-///**
-// * Add highlight field
-// *
-// * @param	integer x1
-// * @param	integer y1
-// * @param	integer x2
-// * @param	integer y2
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.addHighlightField = function(x1, y1, x2, y2) {
-//
-//    this.highlightFields.push([x1,y1,x2,y2]);
-//
-//};
-//
-///**
-// * Add layer with highlighted words found
-// *
-// * @param	integer x1
-// * @param	integer y1
-// * @param	integer x2
-// * @param	integer y2
-// *
-// * @return	void
-//
-// */
-//dlfViewer.prototype.createPolygon = function(image, x1, y1, x2, y2) {
-//
-//    if (this.origImages.length > 1 && image == 1) {
-//
-//        var scale = this.origImages[1].scale;
-//        var height = this.images[1].height;
-//        var offset = this.images[0].width;
-//
-//    } else {
-//
-//        var scale = this.origImages[0].scale;
-//        var height = this.images[0].height;
-//        var offset = 0;
-//
-//    }
-//
-//    //alert('image ' + image + ' scale: ' + scale + ' height: ' + height + ' offset: ' + offset);
-//
-//    var polygon = new OpenLayers.Geometry.Polygon (
-//        new OpenLayers.Geometry.LinearRing (
-//            [
-//                new OpenLayers.Geometry.Point(offset + (scale * x1), height - (scale *y1)),
-//                new OpenLayers.Geometry.Point(offset + (scale * x2), height - (scale *y1)),
-//                new OpenLayers.Geometry.Point(offset + (scale * x2), height - (scale *y2)),
-//                new OpenLayers.Geometry.Point(offset + (scale * x1), height - (scale *y2)),
-//            ]
-//        )
-//    );
-//
-//    var feature = new OpenLayers.Feature.Vector(polygon);
-//
-//    return feature;
-//
-//};
-///**
-// * Add layer with highlighted polygon
-// *
-// * http://dev.openlayers.org/docs/files/OpenLayers/Symbolizer/Polygon-js.html
-// *
-// * @param	{Object} layer
-// * @param	{Object} feature
-// * @param	integer type
-// *
-// * @return	void
-//
-// */
-//dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
-//
-//    if (layer instanceof OpenLayers.Layer.Vector) {
-//
-//        switch (type) {
-//            case 'TextBlock': var highlightStyle = new OpenLayers.Style({
-//                strokeColor : '#cccccc',
-//                strokeOpacity : 0.8,
-//                strokeWidth : 3,
-//                fillColor : '#aa0000',
-//                fillOpacity : 0.1,
-//                cursor : 'inherit'
-//            });
-//                break;
-//            case 'String': var highlightStyle = new OpenLayers.Style({
-//                strokeColor : '#ee9900',
-//                strokeOpacity : 0.8,
-//                strokeWidth : 1,
-//                fillColor : '#ee9900',
-//                fillOpacity : 0.2,
-//                cursor : 'inherit'
-//            });
-//                break;
-//            case 3: var highlightStyle = new OpenLayers.Style({
-//                strokeColor : '#ffffff',
-//                strokeOpacity : 0.8,
-//                strokeWidth : 4,
-//                fillColor : '#3d4ac2',
-//                fillOpacity : 0.5,
-//                cursor : 'inherit'
-//            });
-//                break;
-//            default: var highlightStyle = new OpenLayers.Style({
-//                strokeColor : '#ee9900',
-//                strokeOpacity : 0.8,
-//                strokeWidth : 1,
-//                fillColor : '#ee9900',
-//                fillOpacity : 0.4,
-//                cursor : 'inherit'
-//            });
-//        };
-//
-//        var hoverStyle = new OpenLayers.Style({
-//            strokeColor : '#cccccc',
-//            strokeOpacity : 0.8,
-//            strokeWidth : 1,
-//            fillColor : '#ee9900',
-//            fillOpacity : 0.2,
-//            cursor : 'inherit'
-//        });
-//
-//        var selectStyle = new OpenLayers.Style({
-//            strokeColor : '#aa0000',
-//            strokeOpacity : 0.8,
-//            strokeWidth : 1,
-//            fillColor : '#ee9900',
-//            fillOpacity : 0.2,
-//            cursor : 'inherit'
-//        });
-//
-//        var stylemapObj = new OpenLayers.StyleMap(
-//            {
-//                'default' : highlightStyle,
-//                'hover' : hoverStyle,
-//                'select' : selectStyle,
-//            }
-//        );
-//
-//        layer.styleMap = stylemapObj;
-//
-//        layer.addFeatures([feature]);
-//
-//    }
-//
-//};
-//
-//
-///**
-// * Set Original Image Size
-// *
-// * @param	integer image number
-// * @param	integer width
-// * @param	integer height
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.setOrigImage = function(i, width, height) {
-//
-//    if (width && height) {
-//
-//        this.origImages[i] = {
-//            'width': width,
-//            'height': height,
-//            'scale': tx_dlf_viewer.images[i].width/width,
-//        };
-//
-//    }
-//
-//};
-//
-//
-///**
-// * Read ALTO file and return found words
-// *
-// * @param {Object} url
-// */
-//dlfViewer.prototype.loadALTO = function(url){
-//
-//    var request = OpenLayers.Request.GET({
-//        url: url,
-//        async: false
-//    });
-//
-//    var format = new OpenLayers.Format.ALTO();
-//
-//    if (request.responseXML)
-//        var wordCoords = format.read(request.responseXML);
-//
-//    return wordCoords;
-//};
-//
-///**
-// * Activate Fulltext Features
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.toggleFulltextSelect = function() {
-//
-//    var isFulltextActive = this.getCookie("tx-dlf-pageview-fulltext-select");
-//
-//    if (isFulltextActive == 'enabled') {
-//
-//        this.disableFulltextSelect();
-//        this.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
-//
-//    } else {
-//
-//        this.enableFulltextSelect();
-//        this.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
-//
-//    }
-//
-//};
-//
-///**
-// * Disable Fulltext Features
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.disableFulltextSelect = function() {
-//
-//    // destroy layer features
-//    this.textBlockLayer.destroyFeatures();
-//    $("#tx-dlf-fulltextselection").hide();
-//
-//};
-//
-///**
-// * Activate Fulltext Features
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.enableFulltextSelect = function() {
-//
-//    // Create image layers.
-//    for (var i in this.images) {
-//
-//        if (this.fulltexts[i]) {
-//
-//            this.fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
-//
-//        }
-//
-//    }
-//
-//    // add fulltext layers if we have fulltexts to show
-//    if (this.fullTextCoordinates.length > 0) {
-//
-//        for (var i in this.images) {
-//
-//            var textBlockCoordinates = this.fullTextCoordinates[i];
-//
-//            for (var j in textBlockCoordinates) {
-//
-//                // set scale either by Page or Printspace
-//                if (textBlockCoordinates[j].type == 'Page') {
-//
-//                    if (! tx_dlf_viewer.origImages[i]) {
-//                        this.setOrigImage(i, textBlockCoordinates[j].geometry['width'] , textBlockCoordinates[j].geometry['height'] );
-//                    }
-//
-//                } else if (textBlockCoordinates[j].type == 'PrintSpace') {
-//
-//                    if (! tx_dlf_viewer.origImages[i]) {
-//                        this.setOrigImage(i, textBlockCoordinates[j].geometry['width'], textBlockCoordinates[j].geometry['height']);
-//                    }
-//                }
-//                else if (textBlockCoordinates[j].type == 'TextBlock') {
-//
-//                    if (! this.textBlockLayer) {
-//
-//                        this.textBlockLayer = new OpenLayers.Layer.Vector(
-//
-//                            "TextBlock"
-//
-//                        );
-//
-//                        this.textBlockLayer.events.on({
-//
-//                            'featureover': function(e) {
-//
-//                                if (e.feature != this.featureClicked) {
-//                                    e.feature.layer.drawFeature(e.feature, "hover");
-//                                }
-//
-//                            },
-//
-//                            'featureout': function(e) {
-//
-//                                if (e.feature != this.featureClicked) {
-//                                    e.feature.layer.drawFeature(e.feature, "default");
-//                                }
-//
-//                            },
-//
-//                            "featureclick": function(e) {
-//
-//                                if (this.featureClicked != null) {
-//
-//                                    this.featureClicked.layer.drawFeature(this.featureClicked, "default");
-//
-//                                }
-//
-//                                this.showFulltext(e);
-//                                e.feature.layer.drawFeature(e.feature, "select");
-//                                this.featureClicked = e.feature;
-//
-//                            },
-//
-//                            scope: this
-//
-//                        });
-//
-//                    }
-//
-//                    var polygon = this.createPolygon(i, textBlockCoordinates[j].coords['x1'], textBlockCoordinates[j].coords['y1'], textBlockCoordinates[j].coords['x2'], textBlockCoordinates[j].coords['y2']);
-//
-//                    this.addPolygonlayer(this.textBlockLayer, polygon, 'TextBlock');
-//
-//                }
-//
-//            }
-//
-//        }
-//
-//        if (this.textBlockLayer instanceof OpenLayers.Layer.Vector) {
-//
-//            tx_dlf_viewer.map.addLayer(this.textBlockLayer);
-//            $("#tx-dlf-fulltextselection").show();
-//
-//        }
-//
-//    }
-//
-//};
-//
-///**
-// * Activate Fulltext Features
-// *
-// * @return	void
-// */
-//dlfViewer.prototype.showFulltext = function(evt) {
-//
-//    var feature = evt.feature;
-//
-//    var bounds = feature.geometry.getBounds();
-//
-//    var img = 0;
-//
-//    // selected TextBlock in left or right image?
-//    if (bounds.left > tx_dlf_viewer.offset) {
-//
-//        img = 1;
-//
-//    }
-//
-//    var scale = tx_dlf_viewer.origImages[img].scale;
-//
-//    var text = '';
-//
-//    var wordCoord = tx_dlf_viewer.fullTextCoordinates[img];
-//
-//    if (wordCoord.length > 0) {
-//
-//        var size_disp = new OpenLayers.Size(tx_dlf_viewer.images[img].width, tx_dlf_viewer.images[img].height);
-//
-//        // walk through all textblocks
-//        for (var i = 0; i < wordCoord.length; i++) {
-//
-//            if (wordCoord[i].type == 'TextBlock') {
-//
-//                // find center point of word coordinates
-//                var centerWord = new OpenLayers.Geometry.Point(
-//                    (img * this.offset) + (scale * (wordCoord[i].coords['x1'] + ((wordCoord[i].coords['x2'] - wordCoord[i].coords['x1']) / 2))),
-//                    (size_disp.h - scale * (wordCoord[i].coords['y1'] + (wordCoord[i].coords['y2'] - wordCoord[i].coords['y1']) / 2))
-//                );
-//
-//                // take word if center point is inside the drawn box
-//                if (feature.geometry.containsPoint(centerWord)) {
-//                    //~ var polygon = tx_dlf_viewer.createPolygon(img, wordCoord[i].coords['x1'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y1'], wordCoord[i].coords['x2'] - (tx_dlf_viewer.offset * img)/tx_dlf_viewer.origImages[img].scale, wordCoord[i].coords['y2']);
-//                    //~ tx_dlf_viewer.addPolygonlayer(tx_dlf_viewer.textBlockLayer, polygon, 3);
-//
-//                    text += wordCoord[i].fulltext + " ";
-//                }
-//            }
-//        }
-//    }
-//
-//    tx_dlf_viewer.showPopupDiv(text);
-//
-//};
+    var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
+
+    if (isFulltextActive == 'enabled') {
+
+        this.disableFulltextSelect();
+        dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
+
+    } else {
+
+        this.enableFulltextSelect();
+        dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
+
+    }
+
+};
+
+/**
+ * Scales down the given features geometrys
+ *
+ * @param {number} image
+ * @param {Array.<ol.Feature>} features
+ */
+dlfViewerOl3.prototype.scaleDown = function(image, features) {
+
+    if (this.origImages.length > 1 && image == 1) {
+
+        var scale = this.origImages[1].scale;
+        var height = this.images[1].height;
+        var offset = this.images[0].width;
+
+    } else {
+
+        var scale = this.origImages[0].scale;
+        var height = this.images[0].height;
+        var offset = 0;
+
+    }
+
+    // do a rescaling
+    for (var i in features) {
+
+        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
+            newCoordinates = [];
+
+        for (var j = 0; j < oldCoordinates.length; j++) {
+            newCoordinates.push([offset + (scale * oldCoordinates[j][0]), height - (scale * oldCoordinates[j][1])]);
+        }
+
+        features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
+    }
+
+    return features;
+};
+
+/**
+ * Set Original Image Size
+ *
+ * @param	integer image number
+ * @param	integer width
+ * @param	integer height
+ *
+ * @return	void
+ */
+dlfViewerOl3.prototype.setOrigImage = function(i, width, height) {
+
+    if (width && height) {
+
+        this.origImages[i] = {
+            'width': width,
+            'height': height,
+            'scale': this.images[i].width/width,
+        };
+
+    }
+
+};
+
+
+/**
+ * Read ALTO file and return found words
+ *
+ * @param {Object} url
+ * @return  {Array.<ol.Feature>}
+ */
+dlfViewerOl3.prototype.loadALTO = function(url){
+
+    var request = $.ajax({
+        url: url,
+        async: false
+    });
+
+    var format = new ol.format.ALTO();
+
+    if (request.responseXML)
+        var wordCoords = format.readFeatures(request.responseXML);
+
+    return wordCoords;
+};
+
+
+
+/**
+ * Disable Fulltext Features
+ *
+ * @return	void
+ */
+dlfViewerOl3.prototype.disableFulltextSelect = function() {
+
+    // destroy layer features
+    this.map.removeLayer(this.textBlockLayer);
+    this.textBlockLayer = undefined;
+    $("#tx-dlf-fulltextselection").hide();
+
+};
+
+
+
+/**
+ * Activate Fulltext Features
+ *
+ * @param {ol.Feature} feature
+ */
+dlfViewerOl3.prototype.showFulltext = function(feature) {
+
+    var popupHTML = '<div class="ocrText">' + feature.get('fulltext').replace(/\n/g, '<br />') + '</div>';
+
+    $('#tx-dlf-fulltextselection').html(popupHTML);
+
+};
+
+/**
+ * @const
+ * @namespace
+ */
+dlfViewerOl3.style = {};
+
+/**
+ * @return {ol.style.Style}
+ */
+dlfViewerOl3.style.defaultStyle = function() {
+
+    return new ol.style.Style({
+        'stroke': new ol.style.Stroke({
+            'color': 'rgba(204,204,204,0.8)',
+            'width': 3
+        }),
+        'fill': new ol.style.Fill({
+            'color': 'rgba(170,0,0,0.1)'
+        })
+    });
+
+};
+
+/**
+ * @return {ol.style.Style}
+ */
+dlfViewerOl3.style.hoverStyle = function() {
+
+    return new ol.style.Style({
+        'stroke': new ol.style.Stroke({
+            'color': 'rgba(204,204,204,0.8)',
+            'width': 1
+        }),
+        'fill': new ol.style.Fill({
+            'color': 'rgba(238,153,0,0.2)'
+        })
+    });
+
+};
+
+/**
+ * @return {ol.style.Style}
+ */
+dlfViewerOl3.style.selectStyle = function() {
+
+    return new ol.style.Style({
+        'stroke': new ol.style.Stroke({
+            'color': 'rgba(170,0,0,0.8)',
+            'width': 1
+        }),
+        'fill': new ol.style.Fill({
+            'color': 'rgba(238,153,0,0.2)'
+        })
+    });
+    
+};

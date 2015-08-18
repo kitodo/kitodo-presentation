@@ -248,8 +248,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Add OpenLayers library.
 		// <script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>
 		$output[] = '
+		<link type="text/css" rel="stylesheet" href="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol.css">
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol.js"></script>
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol-debug.js"></script>
 		';
 
 		return implode("\n", $output);
@@ -275,6 +276,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		// Add viewer library.
 		$output[] = '
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/altoformat.js"></script>
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_ol3.js"></script>

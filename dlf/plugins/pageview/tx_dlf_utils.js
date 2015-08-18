@@ -38,10 +38,43 @@ dlfUtils.exists = function(val) {
 };
 
 /**
+ * @param {string} name Name of the cookie
+ * @return {string} Value of the cookie
+ * @TODO replace unescape function
+ */
+dlfUtils.getCookie = function(name) {
+
+    var results = document.cookie.match("(^|;) ?"+name+"=([^;]*)(;|$)");
+
+    if (results) {
+
+        return unescape(results[2]);
+
+    } else {
+
+        return null;
+
+    }
+
+};
+
+/**
  * Returns true if the specified value is null.
  * @param {?} val
  * @return {boolean}
  */
 dlfUtils.isNull = function(val) {
     return val === null;
+};
+
+/**
+ * Set a cookie value
+ *
+ * @param {string} name The key of the value
+ * @param {?} value The value to save
+ */
+dlfUtils.setCookie = function(name, value) {
+
+    document.cookie = name+"="+escape(value)+"; path=/";
+
 };

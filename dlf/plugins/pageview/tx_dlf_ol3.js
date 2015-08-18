@@ -48,3 +48,19 @@ ol.Map.prototype.zoomOut = function() {
     }));
     view.setZoom(zoomLevel);
 };
+
+/**
+ * Zooms to given point
+ * @param {Array.<number>} center
+ * @param {number} zoomLevel
+ */
+ol.Map.prototype.zoomTo = function(center, zoomLevel) {
+    var view = this.getView(),
+        resolution = view.getResolution();
+    this.beforeRender(ol.animation.zoom({
+        resolution: resolution,
+        duration: 500
+    }));
+    view.setCenter(center);
+    view.setZoom(zoomLevel);
+};
