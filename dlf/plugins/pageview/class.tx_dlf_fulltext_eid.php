@@ -59,7 +59,7 @@ class tx_dlf_fulltext_eid extends tslib_pibase {
 
 		$this->extKey = 'dlf';
 
-		$this->scriptRelPath = 'plugins/pageviewer/class.tx_dlf_fulltext_eid.php';
+		$this->scriptRelPath = 'plugins/pageview/class.tx_dlf_fulltext_eid.php';
 
 		$this->LLkey = t3lib_div::_GP('L') ? t3lib_div::_GP('L') : 'default';
 

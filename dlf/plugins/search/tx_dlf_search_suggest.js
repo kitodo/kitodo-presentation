@@ -37,7 +37,7 @@ $(
 					"/",
 					{
 						eID: "tx_dlf_search_suggest",
-						q: escape(request.term.toLowerCase()),
+						q: encodeURIComponent(request.term.toLowerCase()),
 						encrypted: $("input[name='tx_dlf[encrypted]']").val(),
 						hashed: $("input[name='tx_dlf[hashed]']").val()
 					},

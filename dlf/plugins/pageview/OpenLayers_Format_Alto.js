@@ -61,16 +61,16 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
      */
     parseData: function(data, options) {
 
-        if(typeof data == "string") {
+        if (typeof data == "string") {
             data = OpenLayers.Format.XML.prototype.read.apply(this, [data]);
         }
 
         // Loop throught the following node types in this order and
         // process the nodes found
         //~ var types = ["TextBlock", "TextLine"];
-        var types = ["PrintSpace", "TextBlock"]; // , "TextLine", "String"];
+        var types = ["Page", "PrintSpace", "TextBlock"]; // , "TextLine", "String"];
 
-        for(var i=0, len=types.length; i<len; ++i) {
+        for (var i=0, len=types.length; i<len; ++i) {
             var type = types[i];
 
             var nodes = this.getElementsByTagNameNS(data, this.namespaces.alto, type);
@@ -82,7 +82,12 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
 
             switch (type) {
 
-                // Get Printspace
+				// Get Page
+				case "Page":
+					this.parsePrintSpace(nodes);
+					break;
+
+				// Get Printspace
                 case "PrintSpace":
                    this.parsePrintSpace(nodes);
                    break;
@@ -104,7 +109,6 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
             }
 
         }
-        //~ console.log(this.features);
 
         return this.features;
     },
@@ -124,6 +128,8 @@ OpenLayers.Format.ALTO = OpenLayers.Class(OpenLayers.Format.XML, {
 
 		geometry['width'] = parseInt(node[0].getAttribute("WIDTH"));
 		geometry['height'] = parseInt(node[0].getAttribute("HEIGHT"));
+		geometry['hpos'] = parseInt(node[0].getAttribute("HPOS"));
+		geometry['vpos'] = parseInt(node[0].getAttribute("VPOS"));
 
  		var feature = {type:type, geometry:geometry};
 

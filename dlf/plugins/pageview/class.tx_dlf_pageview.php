@@ -65,6 +65,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Control/OverviewMap.js'
 		),
 		'PanPanel' => array (
+			'OpenLayers/Control/Button.js',
 			'OpenLayers/Control/Pan.js',
 			'OpenLayers/Control/Panel.js',
 			'OpenLayers/Control/PanPanel.js'
@@ -77,6 +78,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'OpenLayers/Control/PanZoomBar.js'
 		),
 		'ZoomPanel' => array (
+			'OpenLayers/Control/Button.js',
 			'OpenLayers/Control/Panel.js',
 			'OpenLayers/Control/ZoomIn.js',
 			'OpenLayers/Control/ZoomOut.js',

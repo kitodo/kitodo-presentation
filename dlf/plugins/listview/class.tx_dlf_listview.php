@@ -70,7 +70,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	 *
 	 * @return	string		The rendered page browser ready for output
 	 */
-	protected function getPagebrowser() {
+	protected function getPageBrowser() {
 
 		// Get overall number of pages.
 		$maxPages = intval(ceil(count($this->list) / $this->conf['limit']));
@@ -83,16 +83,16 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		}
 
 		// Get separator.
-		$separator = $this->pi_getLL('separator', ' - ');
+		$separator = $this->pi_getLL('separator', ' - ', TRUE);
 
 		// Add link to previous page.
 		if ($this->piVars['pointer'] > 0) {
 
-			$output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;'), array ('pointer' => $this->piVars['pointer'] - 1), TRUE).$separator;
+			$output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), array ('pointer' => $this->piVars['pointer'] - 1), TRUE).$separator;
 
 		} else {
 
-			$output = $this->pi_getLL('prevPage', '&lt;').$separator;
+			$output = $this->pi_getLL('prevPage', '&lt;', TRUE).$separator;
 
 		}
 
@@ -105,11 +105,11 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				if ($this->piVars['pointer'] != $i) {
 
-					$output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d'), $i + 1), array ('pointer' => $i), TRUE).$separator;
+					$output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), array ('pointer' => $i), TRUE).$separator;
 
 				} else {
 
-					$output .= sprintf($this->pi_getLL('page', '%d'), $i + 1).$separator;
+					$output .= sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1).$separator;
 
 				}
 
@@ -117,7 +117,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			} elseif ($skip == TRUE) {
 
-				$output .= $this->pi_getLL('skip', '...').$separator;
+				$output .= $this->pi_getLL('skip', '...', TRUE).$separator;
 
 				$skip = FALSE;
 
@@ -130,11 +130,11 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		// Add link to next page.
 		if ($this->piVars['pointer'] < $maxPages - 1) {
 
-			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;'), array ('pointer' => $this->piVars['pointer'] + 1), TRUE);
+			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), array ('pointer' => $this->piVars['pointer'] + 1), TRUE);
 
 		} else {
 
-			$output .= $this->pi_getLL('nextPage', '&gt;');
+			$output .= $this->pi_getLL('nextPage', '&gt;', TRUE);
 
 		}
 

@@ -50,7 +50,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 		$this->init($conf);
 
 		// Merge configuration with conf array of toolbox.
-		$this->conf = t3lib_div::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
 
 		// Load current document.
 		$this->loadDocument();
@@ -92,9 +92,8 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 
 		$fullTextFile = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
 
-		// Get single page downloads.
 		if (!empty($fullTextFile)) {
-			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select" title="'.$this->pi_getLL('fulltext-select', '', TRUE).'" onclick="tx_dlf_viewer.toogleFulltextSelect();">'.$this->pi_getLL('fulltext-select', '', TRUE).'</a>';
+			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select" title="'.$this->pi_getLL('fulltext-select', '', TRUE).'" onclick="tx_dlf_viewer.toggleFulltextSelect();">'.$this->pi_getLL('fulltext-select', '', TRUE).'</a>';
 		} else {
 			$markerArray['###FULLTEXT_SELECT###'] = $this->pi_getLL('fulltext-select', '', TRUE);
 		}
