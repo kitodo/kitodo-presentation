@@ -366,6 +366,15 @@ t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_validato
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_validator', 'FILE:EXT:'.$_EXTKEY.'/plugins/validator/flexform.xml');
 
+// Plugin "routing".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_routing'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_routing'] = 'pi_flexform';
+
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_routing', $_EXTKEY.'_routing'), 'list_type');
+
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_routing', 'FILE:EXT:'.$_EXTKEY.'/plugins/routing/flexform.xml');
+
 // Register modules.
 if (TYPO3_MODE == 'BE')	{
 
