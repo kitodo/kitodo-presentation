@@ -29,8 +29,8 @@ ol.Map.prototype.zoomIn = function() {
         zoomLevel = view.getZoom() + 1,
         resolution = view.getResolution();
     this.beforeRender(ol.animation.zoom({
-        resolution: resolution,
-        duration: 500
+        'resolution': resolution,
+        'duration': 500
     }));
     view.setZoom(zoomLevel);
 };
@@ -43,8 +43,8 @@ ol.Map.prototype.zoomOut = function() {
         zoomLevel = view.getZoom() - 1,
      resolution = view.getResolution();
     this.beforeRender(ol.animation.zoom({
-        resolution: resolution,
-        duration: 500
+        'resolution': resolution,
+        'duration': 500
     }));
     view.setZoom(zoomLevel);
 };
@@ -58,9 +58,47 @@ ol.Map.prototype.zoomTo = function(center, zoomLevel) {
     var view = this.getView(),
         resolution = view.getResolution();
     this.beforeRender(ol.animation.zoom({
-        resolution: resolution,
-        duration: 500
+        'resolution': resolution,
+        'duration': 500
     }));
     view.setCenter(center);
     view.setZoom(zoomLevel);
+};
+
+/**
+ * Rotate the map
+ * @param {number} rotation
+ */
+ol.Map.prototype.rotate = function(rotation) {
+    var view = this.getView(),
+        rotate = view.getRotation() + (rotation *  Math.PI/180),
+        center = view.getCenter();
+
+    this.beforeRender(ol.animation.rotate({
+        'rotation':view.getRotation(),
+        'anchor':center,
+        'duration':200
+    }));
+    view.rotate(rotate, center);
+};
+
+/**
+ * Rotate the map in the left direction
+ */
+ol.Map.prototype.rotateLeft = function() {
+    this.rotate(-5);
+};
+
+/**
+ * Rotate the map in the right direction
+ */
+ol.Map.prototype.rotateRight = function() {
+    this.rotate(5);
+};
+
+/**
+ * Resets the rotation of the map
+ */
+ol.Map.prototype.resetRotation = function() {
+    this.getView().rotate(0, this.getView().getCenter());
 };

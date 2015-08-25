@@ -179,7 +179,7 @@ dlfViewerOl3.prototype.displayHighlightWord = function() {
 
         this.highlighLayer = new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOl3.style.selectStyle()
+            'style': dlfViewerOl3.style.wordStyle()
         });
 
     };
@@ -385,10 +385,10 @@ dlfViewerOl3.prototype.init = function(){
             layers: layers,
             target: this.div,
             controls: [
-                new ol.control.MousePosition({
+                /*new ol.control.MousePosition({
                     coordinateFormat: ol.coordinate.createStringXY(4),
                     undefinedHTML: '&nbsp;'
-                })
+                })*/
             ],
             interactions: [
                 new ol.interaction.DragPan(),
@@ -512,8 +512,8 @@ dlfViewerOl3.prototype.init = function(){
  */
 dlfViewerOl3.prototype.toggleFulltextSelect = function() {
 
-    //var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
-    //
+    var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
+
     if (isFulltextActive == 'enabled') {
 
         this.disableFulltextSelect();
@@ -698,6 +698,23 @@ dlfViewerOl3.style.selectStyle = function() {
     return new ol.style.Style({
         'stroke': new ol.style.Stroke({
             'color': 'rgba(170,0,0,0.8)',
+            'width': 1
+        }),
+        'fill': new ol.style.Fill({
+            'color': 'rgba(238,153,0,0.2)'
+        })
+    });
+
+};
+
+/**
+ * @return {ol.style.Style}
+ */
+dlfViewerOl3.style.wordStyle = function() {
+
+    return new ol.style.Style({
+        'stroke': new ol.style.Stroke({
+            'color': 'rgba(238,153,0,0.8)',
             'width': 1
         }),
         'fill': new ol.style.Fill({
