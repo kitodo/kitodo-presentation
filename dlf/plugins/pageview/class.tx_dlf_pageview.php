@@ -106,7 +106,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// <script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>
 		$output[] = '
 		<link type="text/css" rel="stylesheet" href="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol.css">
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol-debug.js"></script>
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol-goobi.js"></script>
 		';
 
 		return implode("\n", $output);
@@ -131,19 +131,18 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output[] = $this->addOpenLayersJS();
 
 		// Add viewer library.
+		// <script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/altoformat.js"></script>
 		$output[] = '
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/altoformat.js"></script>
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_ol3.js"></script>
 		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			if (dlfUtils.exists(dlfViewerOl3)) {
-				tx_dlf_viewer = new dlfViewerOl3({
-					controls: ["' . implode('", "', $this->images) . '"],
+			if (dlfUtils.exists(dlfViewer)) {
+				tx_dlf_viewer = new dlfViewer({
+					controls: ["' . implode('", "', $this->controls) . '"],
 					div: "' . $this->conf['elementId'] . '",
 					fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
 					images: ["' . implode('", "', $this->images) . '"],

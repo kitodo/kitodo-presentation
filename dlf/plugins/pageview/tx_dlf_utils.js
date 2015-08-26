@@ -68,6 +68,33 @@ dlfUtils.isNull = function(val) {
 };
 
 /**
+ * Functions checks if WebGL is enabled in the browser
+ * @return {boolean}
+ */
+dlfUtils.isWebGLEnabled = function(){
+    if (!!window.WebGLRenderingContext) {
+       var canvas = document.createElement("canvas"),
+           rendererNames = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
+           context = false;
+
+       for (var i = 0; i < rendererNames.length; i++) {
+           try {
+               context = canvas.getContext(rendererNames[i]);
+               if (context && typeof context.getParameter == "function") {
+                   // WebGL is enabled;
+                   return true;
+               }
+           } catch(e) {}
+       }
+       // WebGL not supported
+       return false;
+    }
+
+    // WebGL not supported
+    return false;
+};
+
+/**
  * Set a cookie value
  *
  * @param {string} name The key of the value
