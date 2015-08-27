@@ -105,33 +105,6 @@ var dlfViewer = function(settings){
     this.lang = dlfUtils.exists(settings.lang) ? settings.lang : 'de';
 
     /**
-     * @private
-     * @type {ol.layer.Vector}
-     */
-    this.textBlockLayer = new ol.layer.Vector({
-        'source': new ol.source.Vector(),
-        'style': dlfViewer.style.defaultStyle()
-    });
-
-    /**
-     * @private
-     * @type {ol.layer.Vector}
-     */
-    this.highlightLayer = new ol.layer.Vector({
-        'source': new ol.source.Vector(),
-        'style': dlfViewer.style.hoverStyle()
-    });
-
-    /**
-     * @private
-     * @type {ol.layer.Vector}
-     */
-    this.selectLayer = new ol.layer.Vector({
-        'source': new ol.source.Vector(),
-        'style': dlfViewer.style.selectStyle()
-    });
-
-    /**
      * @type {Array.<number>}
      * @private
      */
@@ -142,6 +115,20 @@ var dlfViewer = function(settings){
      * @private
      */
     this.highlightFieldParams = undefined;
+
+    /**
+     * Holds fulltext behavior
+     * @private
+     * @type {dlfViewerFullTextControl|undefined}
+     */
+    this.fulltextControl = undefined;
+
+    /**
+     * Running id index
+     * @number
+     * @private
+     */
+    this.runningIndex_ = 99999999;
 
     this.init();
 };
@@ -212,9 +199,9 @@ dlfViewer.prototype.createControls_ = function(controlNames) {
  */
 dlfViewer.prototype.displayHighlightWord = function() {
 
-    if (!dlfUtils.exists(this.highlighLayer)){
+    if (!dlfUtils.exists(this.highlightLayer)){
 
-        this.highlighLayer = new ol.layer.Vector({
+        this.highlightLayer = new ol.layer.Vector({
             'source': new ol.source.Vector(),
             'style': dlfViewer.style.wordStyle()
         });
@@ -222,7 +209,7 @@ dlfViewer.prototype.displayHighlightWord = function() {
     };
 
     // clear in case of old displays
-    this.highlighLayer.getSource().clear();
+    this.highlightLayer.getSource().clear();
 
 
     // set origimage with highlightFieldParams
@@ -248,10 +235,10 @@ dlfViewer.prototype.displayHighlightWord = function() {
             feature = this.scaleDown(0, [new ol.Feature(new ol.geom.Polygon(coordinates))]);
 
         // add feature to layer and map
-        this.highlighLayer.getSource().addFeatures(feature);
+        this.highlightLayer.getSource().addFeatures(feature);
     };
 
-    this.map.addLayer(this.highlighLayer);
+    this.map.addLayer(this.highlightLayer);
 };
 
 /**
@@ -280,25 +267,16 @@ dlfViewer.prototype.enableFulltextSelect = function() {
             var pageOrPrintSpaceFeature = this.fullTextCoordinates[i][0];
             this.setOrigImage(i, pageOrPrintSpaceFeature.get('width') , pageOrPrintSpaceFeature.get('height'));
 
-            var textBlockCoordinates = this.scaleDown(i, pageOrPrintSpaceFeature.get('features'));
-            for (var j in textBlockCoordinates) {
+            var textBlockFeatures = this.scaleDown(i, pageOrPrintSpaceFeature.get('features')),
+                textLineFeatures = [];
+            for (var j in textBlockFeatures) {
 
-                this.textBlockLayer.getSource().addFeature(textBlockCoordinates[j]);
+                // also add textline coordinates
+                var textLineFeatures = textLineFeatures.concat(this.scaleDown(i, textBlockFeatures[j].get('textline')));
 
             }
 
-        }
-
-        if (dlfUtils.exists(this.textBlockLayer)) {
-
-            // add layers to map
-            this.map.addLayer(this.textBlockLayer);
-            this.map.addLayer(this.highlightLayer);
-            this.map.addLayer(this.selectLayer);
-
-            // show fulltext container
-            $("#tx-dlf-fulltextselection").show();
-
+            this.fulltextControl.enableFulltextSelect(textBlockFeatures, textLineFeatures);
         }
 
     }
@@ -454,78 +432,20 @@ dlfViewer.prototype.init = function(){
             this.map.zoomTo([lon, lat], zoom);
         };
 
-        //
-        // couple fulltext event behavior with map
-        //
-
-        var featureClicked;
-        this.map.on('click', function(event) {
-
-            var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                return feature;
-            });
-
-            // highlight features
-            if (feature !== featureClicked) {
-
-                if (featureClicked) {
-
-                    this.selectLayer.getSource().removeFeature(featureClicked);
-
-                }
-
-                if (feature) {
-
-                    this.selectLayer.getSource().addFeature(feature);
-
-                }
-
-                featureClicked = feature;
-
-            }
-
-            if (dlfUtils.exists(feature))
-                this.showFulltext(feature);
-
-        }, this);
-
-        var highlightFeature;
-        this.map.on('pointermove', function(event) {
-
-            if (event['dragging']) {
-                return;
-            };
-
-            var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                return feature;
-            });
-
-            // highlight features
-            if (feature !== highlightFeature) {
-
-                if (highlightFeature) {
-
-                    this.highlightLayer.getSource().removeFeature(highlightFeature);
-
-                }
-
-                if (feature) {
-
-                    this.highlightLayer.getSource().addFeature(feature);
-
-                }
-
-                highlightFeature = feature;
-
-            }
-
-        }, this);
+        // Adds fulltext behavior
+        this.fulltextControl = new dlfViewerFullTextControl(this.map)
 
         // keep fulltext feature active
-        var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
-        if (isFulltextActive == 'enabled') {
+        var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select"),
+            isDoublePageView = this.images.length > 1 ? true : false;
+        if (isFulltextActive == 'enabled' && !isDoublePageView) {
 
             this.enableFulltextSelect();
+
+        } else if (isDoublePageView) {
+
+            // in case of double page view deactivate this tool
+            $('#tx-dlf-tools-fulltext').addClass('deactivate');
 
         };
 
@@ -551,9 +471,10 @@ dlfViewer.prototype.init = function(){
  */
 dlfViewer.prototype.toggleFulltextSelect = function() {
 
-    var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
+    var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select"),
+        isDoublePageView = this.images.length > 1 ? true : false;
 
-    if (isFulltextActive == 'enabled') {
+    if (isFulltextActive == 'enabled' || isDoublePageView) {
 
         this.disableFulltextSelect();
         dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
@@ -568,7 +489,8 @@ dlfViewer.prototype.toggleFulltextSelect = function() {
 };
 
 /**
- * Scales down the given features geometrys
+ * Scales down the given features geometrys. as a further improvment this functions
+ * add a unique id to every feature
  *
  * @param {number} image
  * @param {Array.<ol.Feature>} features
@@ -589,7 +511,7 @@ dlfViewer.prototype.scaleDown = function(image, features) {
 
     }
 
-    // do a rescaling
+    // do a rescaling and set a id
     for (var i in features) {
 
         var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
@@ -601,6 +523,10 @@ dlfViewer.prototype.scaleDown = function(image, features) {
         }
 
         features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
+
+        // set index
+        this.runningIndex_ += 1;
+        features[i].setId('' + this.runningIndex_);
     }
 
     return features;
@@ -660,32 +586,7 @@ dlfViewer.prototype.loadALTO = function(url){
  */
 dlfViewer.prototype.disableFulltextSelect = function() {
 
-    // destroy layer features
-    this.map.removeLayer(this.textBlockLayer);
-    this.map.removeLayer(this.highlightLayer);
-    this.map.removeLayer(this.selectLayer);
-
-    // clear all layers
-    this.textBlockLayer.getSource().clear();
-    this.highlightLayer.getSource().clear();
-    this.selectLayer.getSource().clear();
-
-    $("#tx-dlf-fulltextselection").hide();
-
-};
-
-
-
-/**
- * Activate Fulltext Features
- *
- * @param {ol.Feature} feature
- */
-dlfViewer.prototype.showFulltext = function(feature) {
-
-    var popupHTML = '<div class="ocrText">' + feature.get('fulltext').replace(/\n/g, '<br />') + '</div>';
-
-    $('#tx-dlf-fulltextselection').html(popupHTML);
+    this.fulltextControl.disableFulltextSelect();
 
 };
 
@@ -695,56 +596,6 @@ dlfViewer.prototype.showFulltext = function(feature) {
  */
 dlfViewer.style = {};
 
-/**
- * @return {ol.style.Style}
- */
-dlfViewer.style.defaultStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(204,204,204,0.8)',
-            'width': 3
-        }),
-        'fill': new ol.style.Fill({
-            'color': 'rgba(170,0,0,0.1)'
-        })
-    });
-
-};
-
-/**
- * @return {ol.style.Style}
- */
-dlfViewer.style.hoverStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(204,204,204,0.8)',
-            'width': 1
-        }),
-        'fill': new ol.style.Fill({
-            'color': 'rgba(238,153,0,0.2)'
-        })
-    });
-
-};
-
-/**
- * @return {ol.style.Style}
- */
-dlfViewer.style.selectStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(170,0,0,0.8)',
-            'width': 1
-        }),
-        'fill': new ol.style.Fill({
-            'color': 'rgba(238,153,0,0.2)'
-        })
-    });
-
-};
 
 /**
  * @return {ol.style.Style}
