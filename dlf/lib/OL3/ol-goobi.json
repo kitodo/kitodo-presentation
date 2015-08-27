@@ -47,6 +47,7 @@
     "ol.View#getResolution",
     "ol.View#getZoom",
     "ol.View#rotate",
+    "ol.View#setCenter",
     "ol.View#setZoom"
   ],
   "compile": {
