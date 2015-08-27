@@ -22,6 +22,13 @@
  ***************************************************************/
 
 /**
+ * @return {number|undefined}
+ */
+ol.Map.prototype.getZoom = function(){
+    return this.getView().getZoom();
+};
+
+/**
  * Zooms in the map. Uses ol.animation for smooth zooming
  */
 ol.Map.prototype.zoomIn = function() {
