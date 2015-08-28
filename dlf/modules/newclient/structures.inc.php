@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2012 Sebastian Meyer <sebastian.meyer@slub-dresden.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -40,6 +40,10 @@ $structures = array (
 	'article' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'bachelor_thesis' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'binding' => array (
 		'toplevel' => 0,
@@ -85,9 +89,21 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'day' => array (
+		'toplevel' => 0,
+		'oai_name' => ''
+	),
 	'dedication' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'diploma_thesis' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'doctoral_thesis' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'edge' => array (
 		'toplevel' => 0,
@@ -113,6 +129,10 @@ $structures = array (
 		'toplevel' => 1,
 		'oai_name' => ''
 	),
+	'habilitation_thesis' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'illustration' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
@@ -133,6 +153,22 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'lecture' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'letter' => array (
+		'toplevel' => 0,
+		'oai_name' => '',
+	),
+	'magister_thesis' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'master_thesis' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'manuscript' => array (
 		'toplevel' => 1,
 		'oai_name' => ''
@@ -145,6 +181,10 @@ $structures = array (
 		'toplevel' => 1,
 		'oai_name' => ''
 	),
+	'month' => array (
+		'toplevel' => 0,
+		'oai_name' => ''
+	),
 	'multivolume_work' => array (
 		'toplevel' => 1,
 		'oai_name' => ''
@@ -153,9 +193,17 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'newspaper' => array (
+		'toplevel' => 1,
+		'oai_name' => ''
+	),
 	'ornament' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'paper' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'paste_down' => array (
 		'toplevel' => 0,
@@ -169,6 +217,10 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'preprint' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'printers_mark' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
@@ -177,9 +229,21 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'proceeding' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'provenance' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'report' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'research_paper' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'scheme' => array (
 		'toplevel' => 0,
@@ -196,6 +260,10 @@ $structures = array (
 	'stamp' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'study' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'table' => array (
 		'toplevel' => 0,
@@ -214,6 +282,10 @@ $structures = array (
 		'oai_name' => ''
 	),
 	'volume' => array (
+		'toplevel' => 1,
+		'oai_name' => ''
+	),
+	'year' => array (
 		'toplevel' => 1,
 		'oai_name' => ''
 	)
