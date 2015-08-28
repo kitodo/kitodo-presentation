@@ -251,7 +251,8 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
             .attr('title', title);
 
         $('#tx-dlf-fulltextselection').addClass(className);
-        $('#whitebox').addClass(className);
+        $('#tx-dlf-fulltextselection').show();
+        $('body').addClass(className);
     }
 
     // add first feature of textBlockFeatures to map
@@ -298,7 +299,8 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
         .attr('title', title);
 
     $('#tx-dlf-fulltextselection').removeClass(className);
-    $('#whitebox').removeClass(className);
+    $('#tx-dlf-fulltextselection').hide();
+    $('body').removeClass(className);
 
 };
 
