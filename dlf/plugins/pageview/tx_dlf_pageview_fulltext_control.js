@@ -248,6 +248,8 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         $("#tx-dlf-tools-fulltext").addClass('fulltext-visible')
             .text(title)
             .attr('title', title);
+
+        $('#tx-dlf-fulltextselection').addClass('fulltext-visible');
     }
 
     // add first feature of textBlockFeatures to map
@@ -291,6 +293,8 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     $("#tx-dlf-tools-fulltext").removeClass('fulltext-visible')
         .text(title)
         .attr('title', title);
+
+    $('#tx-dlf-fulltextselection').removeClass('fulltext-visible');
 
 };
 
