@@ -237,7 +237,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         this.map.addLayer(this.highlightLayerTextLine);
 
         // show fulltext container
-        $("#tx-dlf-fulltextselection").show();
+        $("#tx-dlf-fulltextselection").addClass('fulltext-visible');
     }
 
     // add first feature of textBlockFeatures to map
@@ -277,7 +277,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     this.selectLayer.getSource().clear();
     this.highlightLayerTextLine.getSource().clear()
 
-    $("#tx-dlf-fulltextselection").hide();
+    $("#tx-dlf-fulltextselection").removeClass('fulltext-visible');
 
 };
 
