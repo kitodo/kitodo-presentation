@@ -244,12 +244,14 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         this.map.addLayer(this.highlightLayerTextLine);
 
         // show fulltext container
-        var title = dlfViewerFullTextControl.dic[this.lang][1];
-        $("#tx-dlf-tools-fulltext").addClass('fulltext-visible')
+        var title = dlfViewerFullTextControl.dic[this.lang][1],
+            className = 'fulltext-visible';
+        $("#tx-dlf-tools-fulltext").addClass(className)
             .text(title)
             .attr('title', title);
 
-        $('#tx-dlf-fulltextselection').addClass('fulltext-visible');
+        $('#tx-dlf-fulltextselection').addClass(className);
+        $('#whitebox').addClass(className);
     }
 
     // add first feature of textBlockFeatures to map
@@ -289,12 +291,14 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     this.selectLayer.getSource().clear();
     this.highlightLayerTextLine.getSource().clear()
 
-    var title = dlfViewerFullTextControl.dic[this.lang][0];
-    $("#tx-dlf-tools-fulltext").removeClass('fulltext-visible')
+    var title = dlfViewerFullTextControl.dic[this.lang][0],
+        className = 'fulltext-visible';
+    $("#tx-dlf-tools-fulltext").removeClass(className)
         .text(title)
         .attr('title', title);
 
-    $('#tx-dlf-fulltextselection').removeClass('fulltext-visible');
+    $('#tx-dlf-fulltextselection').removeClass(className);
+    $('#whitebox').removeClass(className);
 
 };
 
