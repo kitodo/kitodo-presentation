@@ -21,14 +21,21 @@ jQuery.fn.scrollTo = function(elem, speed) {
  * Encapsulates especially the fulltext behavior
  * @constructor
  * @param {ol.Map} map
+ * @param {string} lang
  */
-var dlfViewerFullTextControl = function(map){
+var dlfViewerFullTextControl = function(map, lang){
 
     /**
      * @private
      * @type {ol.Map}
      */
     this.map = map;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.lang = lang == 'de' || lang == 'en' ? lang : 'de';
 
     /**
      * @private
@@ -237,7 +244,10 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         this.map.addLayer(this.highlightLayerTextLine);
 
         // show fulltext container
-        $("#tx-dlf-fulltextselection").show();
+        var title = dlfViewerFullTextControl.dic[this.lang][1];
+        $("#tx-dlf-tools-fulltext").addClass('fulltext-visible')
+            .text(title)
+            .attr('title', title);
     }
 
     // add first feature of textBlockFeatures to map
@@ -277,7 +287,10 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     this.selectLayer.getSource().clear();
     this.highlightLayerTextLine.getSource().clear()
 
-    $("#tx-dlf-fulltextselection").hide();
+    var title = dlfViewerFullTextControl.dic[this.lang][0];
+    $("#tx-dlf-tools-fulltext").removeClass('fulltext-visible')
+        .text(title)
+        .attr('title', title);
 
 };
 
@@ -388,4 +401,13 @@ dlfViewerFullTextControl.style.textlineStyle = function() {
         })
     });
 
+};
+
+/**
+ *
+ * @type {{en: string[], de: string[]}}
+ */
+dlfViewerFullTextControl.dic = {
+    'en': ['Activate Fulltext', 'Deactivate Fulltext'],
+    'de': ['Volltexte an', 'Volltexte aus']
 };

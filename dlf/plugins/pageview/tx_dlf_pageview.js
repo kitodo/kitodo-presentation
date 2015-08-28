@@ -433,7 +433,7 @@ dlfViewer.prototype.init = function(){
         };
 
         // Adds fulltext behavior
-        this.fulltextControl = new dlfViewerFullTextControl(this.map)
+        this.fulltextControl = new dlfViewerFullTextControl(this.map, this.lang);
 
         // keep fulltext feature active
         var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select"),

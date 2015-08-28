@@ -148,7 +148,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 					div: "' . $this->conf['elementId'] . '",
 					fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
 					images: ["' . implode('", "', $this->images) . '"],
-					lang: "de"
+					lang: "'.$this->lang.'"
 				})
 			}
 		</script>';
