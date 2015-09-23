@@ -109,43 +109,12 @@ class tx_dlf_elasticsearch {
 	protected static $registry = array ();
 
 	/**
-	 * This holds the Solr service object
+	 * This holds the Elasticsearch service object
 	 *
-	 * @var	Apache_Solr_Service
+	 * @var	ElasticSearchPhpClient
 	 * @access protected
 	 */
 	protected $service;
-
-	/**
-	 * Escape all special characters in a query string
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$query: The query string
-	 *
-	 * @return	string		The escaped query string
-	 */
-	public static function escapeQuery($query) {
-
-		// Load class.
-		if (!class_exists('Apache_Solr_Service')) {
-
-			require_once(t3lib_div::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
-
-		}
-
-		// Escape query phrase or term.
-		if (preg_match('/^".*"$/', $query)) {
-
-			return '"'.Apache_Solr_Service::escapePhrase(trim($query, '"')).'"';
-
-		} else {
-
-			return Apache_Solr_Service::escape($query);
-
-		}
-
-	}
 
 	/**
 	 * This is a singleton class, thus instances must be created by this method
@@ -264,7 +233,17 @@ class tx_dlf_elasticsearch {
 
 		// Perform search.
 		// $results = $this->service->search((string) $query, 0, $this->limit, $this->params);
-		$results = $this->service->search((string) $query);
+		// $results = $this->service->search((string) $query);
+
+        $esQuery['query']['bool']['should'][0]['query_string']['query'] = $query;
+        $esQuery['query']['bool']['should'][1]['has_child']['query']['query_string']['query'] = $query;
+
+        $esQuery['query']['bool']['minimum_should_match'] = "1"; // 1
+
+        $esQuery['query']['bool']['should'][1]['has_child']['child_type'] = "datastream"; // 1
+
+        $results = $this->service->search($esQuery);
+
 
 		//$this->cPid = 9;
 		 
