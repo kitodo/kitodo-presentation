@@ -108,8 +108,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$output[] = '
 		<link type="text/css" rel="stylesheet" href="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol.css">
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol-goobi.js"></script>
-		';
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol-goobi.js"></script>';
 
 		return implode("\n", $output);
 
@@ -142,14 +141,16 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Add viewer configuration.
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			if (dlfUtils.exists(dlfViewer)) {
-				tx_dlf_viewer = new dlfViewer({
-					controls: ["' . implode('", "', $this->controls) . '"],
-					div: "' . $this->conf['elementId'] . '",
-					fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
-					images: ["' . implode('", "', $this->images) . '"],
-					lang: "'.$this->lang.'"
-				})
+			window.onload = function() {
+				if (dlfUtils.exists(dlfViewer)) {
+					tx_dlf_viewer = new dlfViewer({
+						controls: ["' . implode('", "', $this->controls) . '"],
+						div: "' . $this->conf['elementId'] . '",
+						fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
+						images: ["' . implode('", "', $this->images) . '"],
+						lang: "'.$this->lang.'"
+					})
+				}
 			}
 		</script>';
 
