@@ -108,8 +108,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$output[] = '
 		<link type="text/css" rel="stylesheet" href="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol.css">
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol-debug.js"></script>
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/altoformat.js"></script>';
+		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OL3/ol-goobi.js"></script>';
 
 		return implode("\n", $output);
 

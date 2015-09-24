@@ -246,7 +246,7 @@ ol.control.ImageManipulation.prototype.open_ = function(parentEl){
 		.done($.proxy(function() {
 			if ($('#' + this.manipulationMapId).length == 0) {
 				// create manipulation map
-				var imageManipulationMapEl = $('<div id="' + this.manipulationMapId + '"></div>');
+				var imageManipulationMapEl = $('<div id="' + this.manipulationMapId + '" class="tx-dlf-map"></div>');
 				$(this.mainMap.parentElement).append(imageManipulationMapEl);
 
 				this.manipulationMap = new ol.Map({
