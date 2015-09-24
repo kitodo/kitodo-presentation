@@ -81,10 +81,10 @@ ol.control.ImageManipulation.prototype.close_ = function(){
 	$(this).trigger("close", this.manipulationMap);
 	
 	// fadeIn parent map container
-	$('#' + this.manipulationMapId).fadeOut();
-	$(this.mainMap).fadeIn();	
+	$('#' + this.manipulationMapId).hide();
+	$(this.mainMap).show();	
 	
-	$(this.sliderContainer_).fadeOut().removeClass('open');
+	$(this.sliderContainer_).hide().removeClass('open');
 };
 
 /**
@@ -241,7 +241,7 @@ ol.control.ImageManipulation.prototype.open_ = function(parentEl){
 	
 	$.when($(this.mainMap)
 		// fadout parent map container
-		.fadeOut())
+		.hide())
 		// now create new map
 		.done($.proxy(function() {
 			if ($('#' + this.manipulationMapId).length == 0) {
@@ -266,18 +266,18 @@ ol.control.ImageManipulation.prototype.open_ = function(parentEl){
 		        });
 			};
 			
-			$('#' + this.manipulationMapId).fadeIn();
+			$('#' + this.manipulationMapId).show();
 			
 			// trigger open event
 			$(this).trigger("open", this.manipulationMap);
 		}, this));
 	
 	if (dlfUtils.exists(this.sliderContainer_)) {
-		$(this.sliderContainer_).fadeIn().addClass('open');
+		$(this.sliderContainer_).show().addClass('open');
 	} else {
 		this.sliderContainer_ = this.initializeSliderContainer_(parentEl);
 		
 		// fade in
-		$(this.sliderContainer_).fadeIn().addClass('open');
+		$(this.sliderContainer_).show().addClass('open');
 	};
 };
