@@ -362,44 +362,10 @@ dlfViewer.prototype.init = function(){
 
         // set image property of the object
         this.images = images;
-
-        // create image layers
-        var layers = [];
-        for (var i = 0; i < images.length; i++) {
-
-            var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
-                [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height]
-
-            var layerProj = new ol.proj.Projection({
-                    code: 'goobi-image',
-                    units: 'pixels',
-                    extent: layerExtent
-                }),
-                layer = new ol.layer.Image({
-                    source: new ol.source.ImageStatic({
-                        url: images[i].src,
-                        projection: layerProj,
-                        imageExtent: layerExtent,
-                        crossOrigin: '*'
-                    })
-                });
-            layers.push(layer);
-        };
-
-        // create map extent
-        var maxx = images.length === 1 ? images[0].width : images[0].width + images[1].width,
-            maxy = images.length === 1 ? images[0].height : Math.max(images[0].height, images[1].height),
-            mapExtent = [0, 0, maxx, maxy],
-            mapProj = new ol.proj.Projection({
-                code: 'goobi-image',
-                units: 'pixels',
-                extent: mapExtent
-            }),
-            renderer = dlfUtils.isWebGLEnabled() ? 'webgl' : 'canvas';
-
+        
         // create map
         this.map = new ol.Map({
-            layers: layers,
+            layers: dlfUtils.createLayers(images),
             target: this.div,
             controls: this.controls,
                 /*new ol.control.MousePosition({
@@ -414,14 +380,8 @@ dlfViewer.prototype.init = function(){
             ],
             // necessary for proper working of the keyboard events
             keyboardEventTarget: document,
-            view: new ol.View({
-                projection: mapProj,
-                center: ol.extent.getCenter(mapExtent),
-                zoom: 0,
-                maxZoom: 8,
-                extent: mapExtent
-            }),
-            renderer: renderer
+            view: dlfUtils.createView(images),
+            renderer: 'canvas'
         });
 
         // Position image according to user preferences
@@ -454,11 +414,28 @@ dlfViewer.prototype.init = function(){
             this.displayHighlightWord();
         
         // add image manipulation tool if container is added
-        if ($('.tx-dlf-tools-imagetools').length > 0 && renderer === 'webgl')
-        	this.map.addControl(new ol.control.ImageManipulation({
+        if ($('.tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled())
+        	var imageManipulationTool = new ol.control.ImageManipulation({
         		target: $('.tx-dlf-tools-imagetools')[0],
-        		layers: layers
-        	}));    
+        		layers: dlfUtils.createLayers(images),
+        		mapContainer: this.div,
+        		view: dlfUtils.createView(images)
+        	});
+        
+        	this.map.addControl(imageManipulationTool); 
+        	
+        	// couple both map objects
+        	var adjustViews = function(sourceMap, destMap) {
+        		destMap.zoomTo(sourceMap.getView().getCenter(),
+        				sourceMap.getView().getZoom(), 50);
+        	};
+        	
+        	$(imageManipulationTool).on("open", $.proxy(function(event, map) {
+        		adjustViews(this.map, map);
+        	}, this));
+        	$(imageManipulationTool).on("close", $.proxy(function(event, map) {
+        		adjustViews(map, this.map);
+        	}, this));
 
     }, this);
 

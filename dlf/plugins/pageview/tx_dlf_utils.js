@@ -29,6 +29,62 @@
 var dlfUtils = dlfUtils || {};
 
 /**
+ * @param {Array.<{src: *, width: *, height: *}>} images
+ * @return {Array.<ol.layer.Layer>}
+ */
+dlfUtils.createLayers = function(images){
+    // create image layers
+    var layers = [];
+    
+    for (var i = 0; i < images.length; i++) {
+
+        var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
+            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height]
+
+        var layerProj = new ol.proj.Projection({
+                code: 'goobi-image',
+                units: 'pixels',
+                extent: layerExtent
+            }),
+            layer = new ol.layer.Image({
+                source: new ol.source.ImageStatic({
+                    url: images[i].src,
+                    projection: layerProj,
+                    imageExtent: layerExtent,
+                    crossOrigin: '*'
+                })
+            });
+        layers.push(layer);
+    };	
+    
+    return layers;
+};
+
+/**
+ * @param {Array.<{src: *, width: *, height: *}>} images
+ * @return {ol.View}
+ */
+dlfUtils.createView = function(images) {
+    // create map extent
+    var maxx = images.length === 1 ? images[0].width : images[0].width + images[1].width,
+        maxy = images.length === 1 ? images[0].height : Math.max(images[0].height, images[1].height),
+        mapExtent = [0, 0, maxx, maxy],
+        mapProj = new ol.proj.Projection({
+            code: 'goobi-image',
+            units: 'pixels',
+            extent: mapExtent
+        }),
+        mapView = new ol.View({
+            projection: mapProj,
+            center: ol.extent.getCenter(mapExtent),
+            zoom: 0,
+            maxZoom: 8,
+            extent: mapExtent
+        });
+    return mapView;      
+};
+
+/**
  * Returns true if the specified value is not undefiend
  * @param {?} val
  * @return {boolean}
