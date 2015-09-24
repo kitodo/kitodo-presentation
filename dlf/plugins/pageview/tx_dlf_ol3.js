@@ -218,7 +218,7 @@ ol.control.ImageManipulation.prototype.createSlider_ = function(className, orien
         	updatePosition(value, valueEl[0]);
         	updateFn(value);       	
         },
-        'change': goog.bind(function( event, ui ){
+        'change': $.proxy(function( event, ui ){
         	var value = ui['value'];
         	updatePosition(value, valueEl[0]);
         	updateFn(value);
