@@ -379,7 +379,8 @@ dlfViewer.prototype.init = function(){
                     source: new ol.source.ImageStatic({
                         url: images[i].src,
                         projection: layerProj,
-                        imageExtent: layerExtent
+                        imageExtent: layerExtent,
+                        crossOrigin: '*'
                     })
                 });
             layers.push(layer);
@@ -394,8 +395,7 @@ dlfViewer.prototype.init = function(){
                 units: 'pixels',
                 extent: mapExtent
             }),
-            //renderer = dlfUtils.isWebGLEnabled() ? 'webgl' : 'canvas';
-            renderer = 'canvas';
+            renderer = dlfUtils.isWebGLEnabled() ? 'webgl' : 'canvas';
 
         // create map
         this.map = new ol.Map({
@@ -452,6 +452,13 @@ dlfViewer.prototype.init = function(){
         // highlight word in case a highlight field is registered
         if (this.highlightFields.length)
             this.displayHighlightWord();
+        
+        // add image manipulation tool if container is added
+        if ($('.tx-dlf-tools-imagetools').length > 0 && renderer === 'webgl')
+        	this.map.addControl(new ol.control.ImageManipulation({
+        		target: $('.tx-dlf-tools-imagetools')[0],
+        		layers: layers
+        	}));    
 
     }, this);
 
