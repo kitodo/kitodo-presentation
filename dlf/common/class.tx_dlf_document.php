@@ -125,6 +125,14 @@ final class tx_dlf_document {
 	protected $formatsLoaded = FALSE;
 
 	/**
+	 * Are there any fulltext files available?
+	 *
+	 * @var boolean
+	 * @access protected
+	 */
+	protected $hasFulltext = FALSE;
+
+	/**
 	 * This holds the documents location
 	 *
 	 * @var	string
@@ -1692,11 +1700,38 @@ final class tx_dlf_document {
 
 			}
 
+			// Are there any fulltext files available?
+			if (in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
+
+				$this->hasFulltext = TRUE;
+
+			}
+
 			$this->fileGrpsLoaded = TRUE;
 
 		}
 
 		return $this->fileGrps;
+
+	}
+
+	/**
+	 * This returns $this->hasFulltext via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		Are there any fulltext files available?
+	 */
+	protected function _getHasFulltext() {
+
+		// Are the fileGrps already loaded?
+		if (!$this->fileGrpsLoaded) {
+
+			$this->_getFileGrps();
+
+		}
+
+		return $this->hasFulltext;
 
 	}
 
@@ -1739,7 +1774,7 @@ final class tx_dlf_document {
 
 		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $cPid) {
 
-			// Get all logical structure nodes with metadata
+			// Get all logical structure nodes with metadata.
 			if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
 
 				foreach ($ids as $id) {
