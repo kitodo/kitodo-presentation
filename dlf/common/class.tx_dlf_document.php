@@ -1862,6 +1862,8 @@ final class tx_dlf_document {
 
 				$physSeq[0] = (string) $physNode[0]['ID'];
 
+				$this->physicalPagesInfo[$physSeq[0]]['id'] = $physNode[0]['ID'];
+
 				$this->physicalPagesInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
 
 				$this->physicalPagesInfo[$physSeq[0]]['label'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
@@ -1886,6 +1888,8 @@ final class tx_dlf_document {
 				foreach ($pageNodes as $pageNode) {
 
 					$pages[(int) $pageNode['ORDER']] = (string) $pageNode['ID'];
+
+					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['id'] = $pageNode['ID'];
 
 					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['dmdId'] = (isset($pageNode['DMDID']) ? (string) $pageNode['DMDID'] : '');
 
