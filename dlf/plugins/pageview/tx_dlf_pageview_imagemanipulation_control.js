@@ -23,27 +23,24 @@
 
 /**
  * @constructor
- * @extends {ol.control.Control}
  * @param {Object=} opt_options Control options.
  */
-ol.control.ImageManipulation = function(opt_options) {
+dlfViewerImageManipulationControl = function(opt_options) {
 	
   var options = opt_options || {};
 
-  /**
-   * @type {Element}
-   * @private
-   */
-  this.anchor_ = document.createElement('a');
-  this.anchor_.href = '#image-manipulation';
-  this.anchor_.innerHTML = 'Image-Tools';
-  this.anchor_.title = 'Bildbearbeitung aktivieren';
-  
   /**
    * @type {Array.<ol.layer.Layer>}
    * @private
    */
   this.layers = options.layers;
+  
+  /**
+   * @type {Object}
+   * @private
+   */
+  this.dic = {'imagemanipulation-on':'Activate image manipulation', 'imagemanipulation-off':'Dectivate image manipulation',
+		  'saturation':'Saturation', 'hue':'Hue', 'brightness': 'Brightness', 'contrast':'Contrast', 'reset': 'Reset'};
   
   /**
    * @type {Element}
@@ -73,11 +70,19 @@ ol.control.ImageManipulation = function(opt_options) {
    * @type {Element}
    * @private
    */
+  this.anchor_ = $('<a/>', {
+	  href: '#image-manipulation',
+	  text: this.dic['imagemanipulation-on'],
+	  title: this.dic['imagemanipulation-on']
+  });
+  $(options.target).append(this.anchor_);
+  
+  /**
+   * @type {Element}
+   * @private
+   */
   this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer: $('.tx-dlf-toolbox')[0];
-  
-//  var tooltip = goog.dom.createDom('span', {'role':'tooltip','innerHTML':vk2.utils.getMsg('openImagemanipulation')})
-//  goog.dom.appendChild(anchor, tooltip);
-  
+    
   var openToolbox = $.proxy(function(event) {
 	  event.preventDefault();
 	  
@@ -92,19 +97,13 @@ ol.control.ImageManipulation = function(opt_options) {
   
   $(this.anchor_).on('click', openToolbox);
   $(this.anchor_).on('touchstart', openToolbox);  
-
-  ol.control.Control.call(this, {
-    element: this.anchor_,
-    target: options.target
-  });
-
+  
 };
-ol.inherits(ol.control.ImageManipulation, ol.control.Control);
 
 /**
  * Activates the image manipulation tool
  */
-ol.control.ImageManipulation.prototype.activate = function(){ 
+dlfViewerImageManipulationControl.prototype.activate = function(){ 
 	var map;
 	
 	$.when($(this.mainMap)
@@ -141,7 +140,9 @@ ol.control.ImageManipulation.prototype.activate = function(){
 		}, this));
 	
 	// add activate class to control element
-	$(this.anchor_).addClass('active');
+	$(this.anchor_).addClass('active')
+		.text(this.dic['imagemanipulation-off'])
+		.attr('title', this.dic['imagemanipulation-off']);
 	
 	if (dlfUtils.exists(this.sliderContainer_)) {
 		$(this.sliderContainer_).show().addClass('open');
@@ -162,7 +163,7 @@ ol.control.ImageManipulation.prototype.activate = function(){
  * @return {Element}
  * @private
  */
-ol.control.ImageManipulation.prototype.createSlider_ = function(className, orientation, updateFn, opt_baseValue, opt_title){
+dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, orientation, updateFn, opt_baseValue, opt_title){
 	var title = dlfUtils.exists('opt_title') ? opt_title : '',
 		sliderEl = $('<div class="slider slider-imagemanipulation ' + className + '" title="' + title + '"></div>'),
 		baseMin = 0, 
@@ -218,9 +219,11 @@ ol.control.ImageManipulation.prototype.createSlider_ = function(className, orien
 /**
  * Deactivates the image manipulation control
  */
-ol.control.ImageManipulation.prototype.deactivate = function(){
+dlfViewerImageManipulationControl.prototype.deactivate = function(){
 	
-	$(this.anchor_).removeClass('active');
+	$(this.anchor_).removeClass('active')
+		.text(this.dic['imagemanipulation-on'])
+		.attr('title', this.dic['imagemanipulation-on']);;
 	
 	// fadeIn parent map container
 	$('#' + this.manipulationMapId).hide();
@@ -237,7 +240,7 @@ ol.control.ImageManipulation.prototype.deactivate = function(){
  * @param {Element} parentEl
  * @private
  */
-ol.control.ImageManipulation.prototype.initializeSliderContainer_ = function(parentEl){
+dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = function(parentEl){
 	
 	// create outer container
 	var outerContainer = $('<div class="image-manipulation ol-unselectable"></div>');
@@ -252,7 +255,7 @@ ol.control.ImageManipulation.prototype.initializeSliderContainer_ = function(par
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setContrast(value/100);
 		};
-	}, this), undefined, 'Contrast');
+	}, this), undefined, this.dic['contrast']);
 	$(sliderContainer).append(contrastSlider);
 	
 	// add satuartion slider
@@ -260,7 +263,7 @@ ol.control.ImageManipulation.prototype.initializeSliderContainer_ = function(par
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setSaturation(value/100);
 		};
-	}, this), undefined, 'Saturation');
+	}, this), undefined, this.dic['saturation']);
 	$(sliderContainer).append(satSlider);
 	
 	// add brightness slider
@@ -269,7 +272,7 @@ ol.control.ImageManipulation.prototype.initializeSliderContainer_ = function(par
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setBrightness(linarMapping);
 		};
-	}, this), 50, 'Brightness');
+	}, this), 50, this.dic['brightness']);
 	$(sliderContainer).append(brightSlider);
 
 	// add hue slider
@@ -279,11 +282,11 @@ ol.control.ImageManipulation.prototype.initializeSliderContainer_ = function(par
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setHue(hueValue);
 		};
-	}, this), 50, 'Hue');
+	}, this), 50, this.dic['hue']);
 	$(sliderContainer).append(hueSlider);
 	
 	// button for reset to default state
-	var resetBtn = $('<button class="reset-btn" title="Reset">Reset</button>');
+	var resetBtn = $('<button class="reset-btn" title="' + this.dic['reset'] + '">' + this.dic['reset'] + '</button>');
 	$(sliderContainer).append(resetBtn);
 	 
 	var defaultValues = {

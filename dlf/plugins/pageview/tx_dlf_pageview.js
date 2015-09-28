@@ -129,14 +129,12 @@ dlfViewer.prototype.addCustomControls = function() {
     // add image manipulation tool if container is added
     if ($('.tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()){
 
-    	imageManipulationControl = new ol.control.ImageManipulation({
+    	imageManipulationControl = new dlfViewerImageManipulationControl({
     		target: $('.tx-dlf-tools-imagetools')[0],
     		layers: dlfUtils.createLayers(images),
     		mapContainer: this.div,
     		view: dlfUtils.createView(images)
     	});
-    
-    	this.map.addControl(imageManipulationControl); 
     	
     	// couple both map objects
     	var adjustViews = function(sourceMap, destMap) {
