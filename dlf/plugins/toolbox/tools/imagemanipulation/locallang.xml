@@ -28,10 +28,22 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="imagemanipulation-select">Activate Image manipulation</label>
+			<label index="imagemanipulation-on">Activate image manipulation</label>
+			<label index="imagemanipulation-off">Dectivate image manipulation</label>
+			<label index="reset">Reset</label>
+			<label index="saturation">Saturation</label>
+			<label index="hue">Hue</label>
+			<label index="contrast">Contrast</label>
+			<label index="brightness">Brightness</label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="imagemanipulation-select">Bildbearbeitung an</label>
+			<label index="imagemanipulation-on">Bildbearbeitung an</label>
+			<label index="imagemanipulation-off">Bildbearbeitung aus</label>
+			<label index="reset">Zurücksetzen</label>
+			<label index="saturation">Sättigung</label>
+			<label index="hue">Färbung</label>
+			<label index="contrast">Kontrast</label>
+			<label index="brightness">Helligkeit</label>
 		</languageKey>
 	</data>
 </T3locallang>

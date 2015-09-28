@@ -39,7 +39,9 @@ dlfViewerImageManipulationControl = function(opt_options) {
    * @type {Object}
    * @private
    */
-  this.dic = {'imagemanipulation-on':'Activate image manipulation', 'imagemanipulation-off':'Dectivate image manipulation',
+  this.dic = $('#tx-dlf-tools-imagetools').length > 0 && $('#tx-dlf-tools-imagetools').attr('data-dic') ?
+	    	dlfUtils.parseDataDic($('#tx-dlf-tools-imagetools')) :
+	    {'imagemanipulation-on':'Activate image manipulation', 'imagemanipulation-off':'Dectivate image manipulation',
 		  'saturation':'Saturation', 'hue':'Hue', 'brightness': 'Brightness', 'contrast':'Contrast', 'reset': 'Reset'};
   
   /**
