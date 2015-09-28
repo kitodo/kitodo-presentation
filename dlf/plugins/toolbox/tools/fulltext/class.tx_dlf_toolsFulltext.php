@@ -54,7 +54,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 
 		// Load current document.
 		$this->loadDocument();
-
+		
 		if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpFulltext'])) {
 
 			// Quit without doing anything if required variables are not set.
@@ -65,7 +65,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 			// Set default values if not set.
 			// page may be integer or string (physical page attribute)
 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
-
+				
 				$this->piVars['page'] = tx_dlf_helper::intInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			} else {
@@ -97,7 +97,6 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 		} else {
 			$markerArray['###FULLTEXT_SELECT###'] = $this->pi_getLL('fulltext-select', '', TRUE);
 		}
-
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 

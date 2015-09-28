@@ -23,10 +23,9 @@
 ***************************************************************/
 
 /**
- * Tool 'Fulltext selection' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
+ * Tool 'Image manipulation' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @author	Jacob Mendt <Jacob.Mendt@slub-dresden.de>
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
@@ -57,7 +56,7 @@ class tx_dlf_toolsImagemanipulation extends tx_dlf_plugin {
 
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
-
+			
 			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
 
 		} else {
@@ -67,10 +66,10 @@ class tx_dlf_toolsImagemanipulation extends tx_dlf_plugin {
 		}
 
 		$markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools"></span>';
-		
+				
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
-		return $this->pi_wrapInBaseClass('<span class="tx-dlf-tools-imagetools"></span>');
+		return $this->pi_wrapInBaseClass($content);
 
 	}
 
