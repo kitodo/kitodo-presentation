@@ -38,6 +38,7 @@ dlfUtils.RUNNING_INDEX = 99999999;
  * @return {Array.<ol.layer.Layer>}
  */
 dlfUtils.createLayers = function(images, opt_renderer){
+
     // create image layers
     var layers = [],
     	renderer = opt_renderer !== undefined ? opt_renderer : 'webgl';
