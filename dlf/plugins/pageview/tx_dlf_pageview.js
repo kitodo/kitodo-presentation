@@ -110,13 +110,6 @@ var dlfViewer = function(settings){
     this.highlightFieldParams = undefined;
 
     /**
-     * Holds fulltext behavior
-     * @private
-     * @type {dlfViewerFullTextControl|undefined}
-     */
-    this.fulltextControl = undefined;
-
-    /**
      * Running id index
      * @number
      * @private
@@ -125,6 +118,53 @@ var dlfViewer = function(settings){
 
     this.init();
 };
+
+/**
+ * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
+ * fulltext and the image manipulation control
+ */
+dlfViewer.prototype.addCustomControls = function() {
+	var fulltextControl = undefined,
+		imageManipulationControl = undefined, 
+		images = this.images;
+	
+    // Adds fulltext behavior only if there are fulltext availabe and no double page 
+    // behavior is active
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1)
+    	fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0], this.lang);
+    
+    // add image manipulation tool if container is added
+    if ($('.tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()){
+    	
+    	imageManipulationControl = new ol.control.ImageManipulation({
+    		target: $('.tx-dlf-tools-imagetools')[0],
+    		layers: dlfUtils.createLayers(images),
+    		mapContainer: this.div,
+    		view: dlfUtils.createView(images)
+    	});
+    
+    	this.map.addControl(imageManipulationControl); 
+    	
+    	// couple both map objects
+    	var adjustViews = function(sourceMap, destMap) {
+    		destMap.zoomTo(sourceMap.getView().getCenter(),
+    				sourceMap.getView().getZoom(), 50);
+    	};
+    	
+    	$(imageManipulationControl).on("open", $.proxy(function(event, map) {
+    		adjustViews(this.map, map);
+    	}, this));
+    	$(imageManipulationControl).on("close", $.proxy(function(event, map) {
+    		adjustViews(map, this.map);
+    	}, this));
+    };
+    
+    // bind behavior of both together
+    if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+    	$(imageManipulationControl).on("open", $.proxy(fulltextControl.deactivate, fulltextControl))
+    }
+    
+}
 
 /**
  * Add highlight field
@@ -344,39 +384,40 @@ dlfViewer.prototype.init = function(){
             this.map.zoomTo([lon, lat], zoom);
         };
 
-        // Adds fulltext behavior
-        if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '')
-        	this.fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0], this.lang);
+        // Adds fulltext behavior only if there are fulltext availabe and no double page 
+        // behavior is active
+//        if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1)
+//        	this.fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0], this.lang);
 
         // highlight word in case a highlight field is registered
         if (this.highlightFields.length)
             this.displayHighlightWord();
         
         // add image manipulation tool if container is added
-        if ($('.tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled())
-        	var imageManipulationTool = new ol.control.ImageManipulation({
-        		target: $('.tx-dlf-tools-imagetools')[0],
-        		layers: dlfUtils.createLayers(images),
-        		mapContainer: this.div,
-        		view: dlfUtils.createView(images),
-        		dlfViewer: this
-        	});
-        
-        	this.map.addControl(imageManipulationTool); 
-        	
-        	// couple both map objects
-        	var adjustViews = function(sourceMap, destMap) {
-        		destMap.zoomTo(sourceMap.getView().getCenter(),
-        				sourceMap.getView().getZoom(), 50);
-        	};
-        	
-        	$(imageManipulationTool).on("open", $.proxy(function(event, map) {
-        		adjustViews(this.map, map);
-        	}, this));
-        	$(imageManipulationTool).on("close", $.proxy(function(event, map) {
-        		adjustViews(map, this.map);
-        	}, this));
-
+//        if ($('.tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled())
+//        	var imageManipulationTool = new ol.control.ImageManipulation({
+//        		target: $('.tx-dlf-tools-imagetools')[0],
+//        		layers: dlfUtils.createLayers(images),
+//        		mapContainer: this.div,
+//        		view: dlfUtils.createView(images),
+//        		dlfViewer: this
+//        	});
+//        
+//        	this.map.addControl(imageManipulationTool); 
+//        	
+//        	// couple both map objects
+//        	var adjustViews = function(sourceMap, destMap) {
+//        		destMap.zoomTo(sourceMap.getView().getCenter(),
+//        				sourceMap.getView().getZoom(), 50);
+//        	};
+//        	
+//        	$(imageManipulationTool).on("open", $.proxy(function(event, map) {
+//        		adjustViews(this.map, map);
+//        	}, this));
+//        	$(imageManipulationTool).on("close", $.proxy(function(event, map) {
+//        		adjustViews(map, this.map);
+//        	}, this));
+        this.addCustomControls();
     }, this);
 
     // init image loading process

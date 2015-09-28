@@ -243,11 +243,11 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl, lang){
         	  event.preventDefault();
         	  
         	  if ($(event.target).hasClass('active')){        		  	
-        		  this.deactivate(event.target);
+        		  this.deactivate();
         		  return;
         	  } 
         	  
-        	  this.activate(event.target);
+        	  this.activate();
           }, this);
 
           
@@ -270,10 +270,11 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl, lang){
 
 /**
  * Activate Fulltext Features
- * @param {Element} controlEl
  */
-dlfViewerFullTextControl.prototype.activate = function(controlEl) {
+dlfViewerFullTextControl.prototype.activate = function() {
 
+	var controlEl = $('#tx-dlf-tools-fulltext');
+	
 	// if the activate method is called for the first time fetch 
 	// fulltext data from server
 	if (this.fulltextData_.length === 0)  {
@@ -305,9 +306,10 @@ dlfViewerFullTextControl.prototype.activate = function(controlEl) {
 
 /**
  * Activate Fulltext Features
- * @param {Element} controlEl
  */
-dlfViewerFullTextControl.prototype.deactivate = function(controlEl) {
+dlfViewerFullTextControl.prototype.deactivate = function() {
+
+	var controlEl = $('#tx-dlf-tools-fulltext');
 	
 	// deactivate fulltext
 	this.disableFulltextSelect();
