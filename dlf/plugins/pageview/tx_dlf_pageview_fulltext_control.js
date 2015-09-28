@@ -278,12 +278,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl, lang){
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") == 'enabled') {
     	// activate the fulltext behavior
     	this.activate(anchorEl);
-    	
-    	// scroll out toolbox
-//    	if ($('.moreFunctionsTrigger').length > 0){
-//    		if (!$('.moreFunctionsTrigger').hasClass('open'))
-//    			$('.moreFunctionsTrigger').addClass('open');
-//    	}
     }
 };
 
@@ -346,10 +340,6 @@ dlfViewerFullTextControl.prototype.deactivate = function() {
  */
 dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeatures, textLineFeatures) {
 
-    // add features to map
-//    this.textBlockLayer.getSource().addFeatures(textBlockFeatures);
-//    this.textLineLayer.getSource().addFeatures(textLineFeatures);
-
     // register event listeners
     this.map.on('click', this.mapClickHandler);
     this.map.on('pointermove', this.mapHoverHandler);
@@ -398,7 +388,6 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
     // clear all layers
     this.highlightLayer.getSource().clear();
-    //this.selectLayer.getSource().clear();
     this.highlightLayerTextLine.getSource().clear()
 
     var title = dlfViewerFullTextControl.dic[this.lang][0],
