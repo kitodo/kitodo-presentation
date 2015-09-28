@@ -37,9 +37,11 @@ dlfUtils.RUNNING_INDEX = 99999999;
  * @param {Array.<{src: *, width: *, height: *}>} images
  * @return {Array.<ol.layer.Layer>}
  */
-dlfUtils.createLayers = function(images){
+dlfUtils.createLayers = function(images, opt_renderer){
     // create image layers
-    var layers = [];
+    var layers = [],
+    	renderer = opt_renderer !== undefined ? opt_renderer : 'webgl';
+    	crossOrigin = renderer == 'webgl' ? '*' : null;
     
     for (var i = 0; i < images.length; i++) {
 
@@ -56,7 +58,7 @@ dlfUtils.createLayers = function(images){
                     url: images[i].src,
                     projection: layerProj,
                     imageExtent: layerExtent,
-                    crossOrigin: '*'
+                    crossOrigin: crossOrigin
                 })
             });
         layers.push(layer);

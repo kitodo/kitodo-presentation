@@ -312,11 +312,12 @@ dlfViewer.prototype.init = function(){
     var init_ = $.proxy(function(images){
 
         // set image property of the object
-        this.images = images;
+        this.images = images,
+        	renderer = 'canvas';
         
         // create map
         this.map = new ol.Map({
-            layers: dlfUtils.createLayers(images),
+            layers: dlfUtils.createLayers(images, renderer),
             target: this.div,
             controls: this.controls,
                 /*new ol.control.MousePosition({
@@ -332,7 +333,7 @@ dlfViewer.prototype.init = function(){
             // necessary for proper working of the keyboard events
             keyboardEventTarget: document,
             view: dlfUtils.createView(images),
-            renderer: 'canvas'
+            renderer: renderer
         });
 
         // Position image according to user preferences
@@ -344,7 +345,8 @@ dlfViewer.prototype.init = function(){
         };
 
         // Adds fulltext behavior
-        this.fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0], this.lang);
+        if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '')
+        	this.fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0], this.lang);
 
         // highlight word in case a highlight field is registered
         if (this.highlightFields.length)
@@ -383,8 +385,6 @@ dlfViewer.prototype.init = function(){
         this.fetchImages(init_);
 
     };
-
-
 
 };
 
