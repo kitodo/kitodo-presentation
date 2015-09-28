@@ -177,7 +177,7 @@ dlfUtils.setCookie = function(name, value) {
  * @param {Object} imageObj
  * @param {number} width
  * @param {number} height
- * @return	{Array.<ol.Feature>}
+ * @return {Array.<ol.Feature>}
  */
 dlfUtils.scaleToImageSize = function(features, imageObj, width, height) {
 	
@@ -197,7 +197,7 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height) {
     	return [];
     
     var scale = image.scale,
-    	height = imageObj.height,
+    	displayImageHeight = imageObj.height,
     	offset = 0;
     
     // do rescaling and set a id
@@ -207,7 +207,7 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height) {
     		newCoordinates = [];
 
     	for (var j = 0; j < oldCoordinates.length; j++) {
-    		newCoordinates.push([offset + (scale * oldCoordinates[j][0]), height - (scale * oldCoordinates[j][1])]);
+    		newCoordinates.push([offset + (scale * oldCoordinates[j][0]), displayImageHeight - (scale * oldCoordinates[j][1])]);
         }
 
     	features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
