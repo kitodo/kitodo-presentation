@@ -21,21 +21,41 @@ jQuery.fn.scrollTo = function(elem, speed) {
  * Encapsulates especially the fulltext behavior
  * @constructor
  * @param {ol.Map} map
+ * @param {Object} image
+ * @param {string} fulltextUrl
  * @param {string} lang
  */
-var dlfViewerFullTextControl = function(map, lang){
+var dlfViewerFullTextControl = function(map, image, fulltextUrl, lang){
 
     /**
      * @private
      * @type {ol.Map}
      */
     this.map = map;
+    
+    /**
+     * @type {Object}
+     * @private
+     */
+    this.image = image;
+    
+    /**
+     * @type {string}
+     * @private
+     */
+    this.url = fulltextUrl;
 
     /**
      * @private
      * @type {string}
      */
     this.lang = lang == 'de' || lang == 'en' ? lang : 'de';
+    
+    /**
+     * @type {Array.<Array.<ol.Feature>}
+     * @private
+     */
+    this.fulltextData_ = [];
 
     /**
      * @private
@@ -92,7 +112,7 @@ var dlfViewerFullTextControl = function(map, lang){
      * @type {Function}
      * @private
      */
-    this.clickHandler = $.proxy(function(event) {
+    this.mapClickHandler = $.proxy(function(event) {
 
         // the click handler adds the clicked feature to a
         // select layer which could be used to create a highlight
@@ -144,7 +164,7 @@ var dlfViewerFullTextControl = function(map, lang){
      * @type {Function}
      * @private
      */
-    this.hoverHandler = $.proxy(function(event) {
+    this.mapHoverHandler = $.proxy(function(event) {
 
         if (event['dragging']) {
             return;
@@ -215,7 +235,87 @@ var dlfViewerFullTextControl = function(map, lang){
         }
 
     }, this);
+    
+    // add active / deactive behavior in case of click on control
+    var anchorEl = $('#tx-dlf-tools-fulltext');
+    if (anchorEl.length > 0){
+        var toogleFulltext = $.proxy(function(event) {
+        	  event.preventDefault();
+        	  
+        	  if ($(event.target).hasClass('active')){        		  	
+        		  this.deactivate(event.target);
+        		  return;
+        	  } 
+        	  
+        	  this.activate(event.target);
+          }, this);
 
+          
+        anchorEl.on('click', toogleFulltext);
+        anchorEl.on('touchstart', toogleFulltext);  
+    };
+    
+    // if fulltext is activated via cookie than run activation methode
+    if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") == 'enabled') {
+    	// activate the fulltext behavior
+    	this.activate(anchorEl);
+    	
+    	// scroll out toolbox
+//    	if ($('.moreFunctionsTrigger').length > 0){
+//    		if (!$('.moreFunctionsTrigger').hasClass('open'))
+//    			$('.moreFunctionsTrigger').addClass('open');
+//    	}
+    }
+};
+
+/**
+ * Activate Fulltext Features
+ * @param {Element} controlEl
+ */
+dlfViewerFullTextControl.prototype.activate = function(controlEl) {
+
+	// if the activate method is called for the first time fetch 
+	// fulltext data from server
+	if (this.fulltextData_.length === 0)  {
+		this.fulltextData_ = this.fetchFulltextDataFromServer();
+				
+		// add features to fulltext layer
+		this.textBlockLayer.getSource().addFeatures(this.fulltextData_[0]);
+	    this.textLineLayer.getSource().addFeatures(this.fulltextData_[1]);
+	    
+	    // add first feature of textBlockFeatures to map
+	    if (this.fulltextData_[0].length > 0) {
+
+	        this.selectLayer.getSource().addFeature(this.fulltextData_[0][0]);
+	        this.clickedFeature = this.fulltextData_[0][0];
+	        this.showFulltext(this.fulltextData_[0][0]);
+
+	    }
+	    
+	}
+
+	// now activate the fulltext overlay and map behavior   	
+    this.enableFulltextSelect();
+    dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
+    $(controlEl).addClass('active');
+    
+    // trigger event
+    $(this).trigger("activate-fulltext", this);
+};
+
+/**
+ * Activate Fulltext Features
+ * @param {Element} controlEl
+ */
+dlfViewerFullTextControl.prototype.deactivate = function(controlEl) {
+	
+	// deactivate fulltext
+	this.disableFulltextSelect();
+    dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
+    $(controlEl).removeClass('active');
+    
+    // trigger event
+    $(this).trigger("deactivate-fulltext", this);    	
 };
 
 /**
@@ -226,12 +326,12 @@ var dlfViewerFullTextControl = function(map, lang){
 dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeatures, textLineFeatures) {
 
     // add features to map
-    this.textBlockLayer.getSource().addFeatures(textBlockFeatures);
-    this.textLineLayer.getSource().addFeatures(textLineFeatures);
+//    this.textBlockLayer.getSource().addFeatures(textBlockFeatures);
+//    this.textLineLayer.getSource().addFeatures(textLineFeatures);
 
     // register event listeners
-    this.map.on('click', this.clickHandler);
-    this.map.on('pointermove', this.hoverHandler);
+    this.map.on('click', this.mapClickHandler);
+    this.map.on('pointermove', this.mapHoverHandler);
 
     // add layers to map
     if (dlfUtils.exists(this.textBlockLayer)) {
@@ -255,16 +355,6 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         $('body').addClass(className);
     }
 
-    // add first feature of textBlockFeatures to map
-    if (textBlockFeatures.length > 0) {
-
-        this.selectLayer.getSource().addFeature(textBlockFeatures[0]);
-        this.clickedFeature = textBlockFeatures[0];
-        this.showFulltext(textBlockFeatures[0]);
-
-    }
-
-
 };
 
 /**
@@ -275,9 +365,9 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
 dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
     // register event listeners
-    this.map.un('click', this.clickHandler);
-    this.map.un('pointermove', this.hoverHandler);
-
+    this.map.un('click', this.mapClickHandler);
+    this.map.un('pointermove', this.mapHoverHandler);
+    
     // destroy layer features
     this.map.removeLayer(this.textBlockLayer);
     this.map.removeLayer(this.textLineLayer);
@@ -286,10 +376,8 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     this.map.removeLayer(this.highlightLayerTextLine);
 
     // clear all layers
-    this.textBlockLayer.getSource().clear();
-    this.textLineLayer.getSource().clear();
     this.highlightLayer.getSource().clear();
-    this.selectLayer.getSource().clear();
+    //this.selectLayer.getSource().clear();
     this.highlightLayerTextLine.getSource().clear()
 
     var title = dlfViewerFullTextControl.dic[this.lang][0],
@@ -302,6 +390,42 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     $('#tx-dlf-fulltextselection').hide();
     $('body').removeClass(className);
 
+};
+
+/**
+ * Method fetches the fulltext data from the server
+ * @param {string} url
+ * @return {Array.<Array.<ol.Feature>>} [textBlockFeatures, textLineFeatures]
+ */
+dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
+
+	// fetch data from server
+    var request = $.ajax({
+        url: this.url,
+        async: false
+    });
+
+    // parse alto data
+    var format = new ol.format.ALTO(),
+    	fulltextCoordinates = request.responseXML ? format.readFeatures(request.responseXML) : [];
+
+    // group fulltext coordinates in TextBlock and TextLine features
+    // get the Page or PrintSpace feature
+	var pageOrPrintSpaceFeature = fulltextCoordinates[0],
+		width = pageOrPrintSpaceFeature.get('width'),
+		height = pageOrPrintSpaceFeature.get('height');
+		
+	// group data in TextBlock and TextLine features
+	var textBlockFeatures = dlfUtils.scaleToImageSize(pageOrPrintSpaceFeature.get('features'), this.image, 
+		width , height),
+		textLineFeatures = [];
+	for (var j in textBlockFeatures) {
+		// add textline coordinates
+		textLineFeatures = textLineFeatures.concat(dlfUtils.scaleToImageSize(textBlockFeatures[j].get('textline'),
+			this.image, width, height));
+	}
+	
+	return [textBlockFeatures, textLineFeatures];
 };
 
 /**

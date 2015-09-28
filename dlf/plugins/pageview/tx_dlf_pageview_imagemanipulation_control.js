@@ -13,6 +13,12 @@ ol.control.ImageManipulation = function(opt_options) {
   anchor.title = 'Bildbearbeitung aktivieren';
 
   /**
+   * @type {dlfViewer}
+   * @private
+   */
+  this.dlfViewer = options.dlfViewer;
+  
+  /**
    * @type {Array.<ol.layer.Layer>}
    * @private
    */
@@ -53,11 +59,19 @@ ol.control.ImageManipulation = function(opt_options) {
 	  if ($(event.target).hasClass('active')){
 		  $(event.target).removeClass('active');
 		  this.close_();
+		  
+		  // check if fulltext has to be activated again
+		  var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select");
+
+		  if (isFulltextActive == 'enabled') {
+			  this.dlfViewer.enableFulltextSelect();
+		  }
 		  return;
 	  } 
 	  
 	  $(event.target).addClass('active');
 	  this.open_(toolContainerEl_);
+	  this.dlfViewer.disableFulltextSelect();
   }, this);
 
   

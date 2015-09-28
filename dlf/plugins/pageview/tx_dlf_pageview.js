@@ -91,13 +91,6 @@ var dlfViewer = function(settings){
     this.offset = 0;
 
     /**
-     * Fulltexts together with the coordinates of the textblocks
-     * @type {Array.<Array.<ol.Feature>>}
-     * @private
-     */
-    this.fullTextCoordinates = [];
-
-    /**
      * Language token
      * @type {string}
      * @private
@@ -242,48 +235,6 @@ dlfViewer.prototype.displayHighlightWord = function() {
 };
 
 /**
- * Activate Fulltext Features
- */
-dlfViewer.prototype.enableFulltextSelect = function() {
-
-    // Create image layers.
-    for (var i in this.images) {
-
-        if (this.fulltexts[i]) {
-
-            this.fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
-
-        }
-
-    }
-
-    // add fulltext layers if we have fulltexts to show
-    if (this.fullTextCoordinates.length > 0) {
-
-        for (var i in this.images) {
-
-            // extract the parent geometry and use it for setting the
-            // correct original image options / scale
-            var pageOrPrintSpaceFeature = this.fullTextCoordinates[i][0];
-            this.setOrigImage(i, pageOrPrintSpaceFeature.get('width') , pageOrPrintSpaceFeature.get('height'));
-
-            var textBlockFeatures = this.scaleDown(i, pageOrPrintSpaceFeature.get('features')),
-                textLineFeatures = [];
-            for (var j in textBlockFeatures) {
-
-                // also add textline coordinates
-                var textLineFeatures = textLineFeatures.concat(this.scaleDown(i, textBlockFeatures[j].get('textline')));
-
-            }
-
-            this.fulltextControl.enableFulltextSelect(textBlockFeatures, textLineFeatures);
-        }
-
-    }
-
-};
-
-/**
  * Register image files to load into map
  *
  * @param {Function} callback Callback which should be called after successful fetching
@@ -393,21 +344,7 @@ dlfViewer.prototype.init = function(){
         };
 
         // Adds fulltext behavior
-        this.fulltextControl = new dlfViewerFullTextControl(this.map, this.lang);
-
-        // keep fulltext feature active
-        var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select"),
-            isDoublePageView = this.images.length > 1 ? true : false;
-        if (isFulltextActive == 'enabled' && !isDoublePageView) {
-
-            this.enableFulltextSelect();
-
-        } else if (isDoublePageView) {
-
-            // in case of double page view deactivate this tool
-            $('#tx-dlf-tools-fulltext').addClass('deactivate');
-
-        };
+        this.fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0], this.lang);
 
         // highlight word in case a highlight field is registered
         if (this.highlightFields.length)
@@ -419,7 +356,8 @@ dlfViewer.prototype.init = function(){
         		target: $('.tx-dlf-tools-imagetools')[0],
         		layers: dlfUtils.createLayers(images),
         		mapContainer: this.div,
-        		view: dlfUtils.createView(images)
+        		view: dlfUtils.createView(images),
+        		dlfViewer: this
         	});
         
         	this.map.addControl(imageManipulationTool); 
@@ -447,28 +385,6 @@ dlfViewer.prototype.init = function(){
     };
 
 
-
-};
-
-/**
- * Activate Fulltext Features
- */
-dlfViewer.prototype.toggleFulltextSelect = function() {
-
-    var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select"),
-        isDoublePageView = this.images.length > 1 ? true : false;
-
-    if (isFulltextActive == 'enabled' || isDoublePageView) {
-
-        this.disableFulltextSelect();
-        dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
-
-    } else {
-
-        this.enableFulltextSelect();
-        dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
-
-    }
 
 };
 
@@ -536,41 +452,6 @@ dlfViewer.prototype.setOrigImage = function(i, width, height) {
         };
 
     }
-
-};
-
-
-/**
- * Read ALTO file and return found words
- *
- * @param {Object} url
- * @return  {Array.<ol.Feature>}
- */
-dlfViewer.prototype.loadALTO = function(url){
-
-    var request = $.ajax({
-        url: url,
-        async: false
-    });
-
-    var format = new ol.format.ALTO();
-
-    if (request.responseXML)
-        var wordCoords = format.readFeatures(request.responseXML);
-
-    return wordCoords;
-};
-
-
-
-/**
- * Disable Fulltext Features
- *
- * @return	void
- */
-dlfViewer.prototype.disableFulltextSelect = function() {
-
-    this.fulltextControl.disableFulltextSelect();
 
 };
 

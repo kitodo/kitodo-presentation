@@ -29,6 +29,11 @@
 var dlfUtils = dlfUtils || {};
 
 /**
+ * @type {number}
+ */
+dlfUtils.RUNNING_INDEX = 99999999;
+
+/**
  * @param {Array.<{src: *, width: *, height: *}>} images
  * @return {Array.<ol.layer.Layer>}
  */
@@ -160,4 +165,52 @@ dlfUtils.setCookie = function(name, value) {
 
     document.cookie = name+"="+escape(value)+"; path=/";
 
+};
+
+/**
+ * Scales down the given features geometrys. as a further improvment this functions
+ * add a unique id to every feature
+ * @param {Array.<ol.Feature>} features
+ * @param {Object} imageObj
+ * @param {number} width
+ * @param {number} height
+ * @return	{Array.<ol.Feature>}
+ */
+dlfUtils.scaleToImageSize = function(features, imageObj, width, height) {
+	
+	// update size / scale settings of imageObj
+	var image;
+    if (width && height) {
+
+    	image = {
+            'width': width,
+            'height': height,
+            'scale': imageObj.width/width,
+        }
+
+    }
+    
+    var scale = image.scale,
+    	height = imageObj.height,
+    	offset = 0;
+    
+    // do rescaling and set a id
+    for (var i in features) {
+    	
+    	var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
+    		newCoordinates = [];
+
+    	for (var j = 0; j < oldCoordinates.length; j++) {
+    		newCoordinates.push([offset + (scale * oldCoordinates[j][0]), height - (scale * oldCoordinates[j][1])]);
+        }
+
+    	features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
+
+    	// set index
+    	dlfUtils.RUNNING_INDEX += 1;
+    	features[i].setId('' + dlfUtils.RUNNING_INDEX);
+    }
+
+    return features;
+    
 };
