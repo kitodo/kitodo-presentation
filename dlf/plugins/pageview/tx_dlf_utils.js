@@ -193,6 +193,9 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height) {
 
     }
     
+    if (image === undefined)
+    	return [];
+    
     var scale = image.scale,
     	height = imageObj.height,
     	offset = 0;
