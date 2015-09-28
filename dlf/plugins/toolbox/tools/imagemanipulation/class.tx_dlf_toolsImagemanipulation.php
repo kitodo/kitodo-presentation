@@ -55,29 +55,6 @@ class tx_dlf_toolsImagemanipulation extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-// 		if ($this->doc === NULL || $this->doc->numPages < 1) {
-
-// 			// Quit without doing anything if required variables are not set.
-// 			return $content;
-
-// 		} else {
-
-// 			// Set default values if not set.
-// 			// page may be integer or string (physical page attribute)
-// 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
-
-// 				$this->piVars['page'] = tx_dlf_helper::intInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
-
-// 			} else {
-
-// 				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
-
-// 			}
-
-// 			$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
-
-// 		}
-
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
 
@@ -88,14 +65,6 @@ class tx_dlf_toolsImagemanipulation extends tx_dlf_plugin {
 			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/imagemanipulation/template.tmpl'), '###TEMPLATE###');
 
 		}
-
-		//$markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="'.$this->pi_getLL('fulltext-select', '', TRUE).'" onclick="tx_dlf_viewer.toggleFulltextSelect();">'.$this->pi_getLL('fulltext-select', '', TRUE).'</a>';
-		
-// 		if (!empty($fullTextFile)) {
-// 			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="'.$this->pi_getLL('fulltext-select', '', TRUE).'" onclick="tx_dlf_viewer.toggleFulltextSelect();">'.$this->pi_getLL('fulltext-select', '', TRUE).'</a>';
-// 		} else {
-// 			$markerArray['###FULLTEXT_SELECT###'] = $this->pi_getLL('fulltext-select', '', TRUE);
-// 		}
 
 		$markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools"></span>';
 		
