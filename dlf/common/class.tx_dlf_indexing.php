@@ -752,9 +752,6 @@ class tx_dlf_indexing {
 
 			}
 
-			// Parse fulltext from XML.
-			$fulltext = strip_tags($xml->asXML());
-
 			// Load class.
 			if (!class_exists('Apache_Solr_Document')) {
 
@@ -788,7 +785,7 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
 
-			$solrDoc->setField('fulltext', $fulltext);
+			$solrDoc->setField('fulltext', tx_dlf_alto::getRawText($xml));
 
 			try {
 

@@ -26,8 +26,10 @@ $extensionPath = t3lib_extMgm::extPath('dlf');
 
 return array (
 	'tx_dlf_cli' => $extensionPath.'cli/class.tx_dlf_cli.php',
+	'tx_dlf_alto' => $extensionPath.'common/class.tx_dlf_alto.php',
 	'tx_dlf_document' => $extensionPath.'common/class.tx_dlf_document.php',
 	'tx_dlf_format' => $extensionPath.'common/class.tx_dlf_format.php',
+	'tx_dlf_fulltext' => $extensionPath.'common/class.tx_dlf_fulltext.php',
 	'tx_dlf_helper' => $extensionPath.'common/class.tx_dlf_helper.php',
 	'tx_dlf_indexing' => $extensionPath.'common/class.tx_dlf_indexing.php',
 	'tx_dlf_list' => $extensionPath.'common/class.tx_dlf_list.php',
