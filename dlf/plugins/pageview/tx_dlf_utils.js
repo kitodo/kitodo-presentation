@@ -159,6 +159,24 @@ dlfUtils.isWebGLEnabled = function(){
 };
 
 /**
+ * @param {Element} element
+ * @return {Object}
+ */
+dlfUtils.parseDataDic = function(element) {	
+	var dataDicString = $(element).attr('data-dic'),
+		dataDicRecords = dataDicString.split(';'),
+		dataDic = {};
+	
+	for (var i = 0, ii = dataDicRecords.length; i < ii; i++){
+		var key = dataDicRecords[i].split(':')[0],
+			value = dataDicRecords[i].split(':')[1];
+		dataDic[key] = value;
+	}
+	
+	return dataDic;
+};
+
+/**
  * Set a cookie value
  *
  * @param {string} name The key of the value

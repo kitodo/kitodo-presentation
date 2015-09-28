@@ -28,10 +28,14 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="fulltext-select">Activate Fulltext</label>
+			<label index="fulltext-on">Activate Fulltext</label>
+			<label index="fulltext-off">Dectivate Fulltext</label>
+			<label index="fulltext-not-available">No Fulltext available</label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="fulltext-select">Volltexte an</label>
+			<label index="fulltext-on">Volltext an</label>
+			<label index="fulltext-off">Volltext aus</label>
+			<label index="fulltext-not-available">Keine Volltexte vorhanden</label>
 		</languageKey>
 	</data>
 </T3locallang>

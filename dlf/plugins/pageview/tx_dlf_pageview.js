@@ -91,13 +91,6 @@ var dlfViewer = function(settings){
     this.offset = 0;
 
     /**
-     * Language token
-     * @type {string}
-     * @private
-     */
-    this.lang = dlfUtils.exists(settings.lang) ? settings.lang : 'de';
-
-    /**
      * @type {Array.<number>}
      * @private
      */
@@ -131,7 +124,7 @@ dlfViewer.prototype.addCustomControls = function() {
     // Adds fulltext behavior only if there are fulltext availabe and no double page 
     // behavior is active
     if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1)
-    	fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0], this.lang);
+    	fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
     
     // add image manipulation tool if container is added
     if ($('.tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()){
