@@ -110,21 +110,10 @@ dlfViewer.prototype.addCustomControls = function() {
     		target: $('.tx-dlf-tools-imagetools')[0],
     		layers: dlfUtils.createLayers(images),
     		mapContainer: this.div,
+    		referenceMap: this.map,
     		view: dlfUtils.createView(images)
     	});
     	
-    	// couple both map objects
-    	var adjustViews = function(sourceMap, destMap) {
-    		destMap.zoomTo(sourceMap.getView().getCenter(),
-    				sourceMap.getView().getZoom(), 50);
-    	};
-    	
-    	$(imageManipulationControl).on("activate-imagemanipulation", $.proxy(function(event, map) {
-    		adjustViews(this.map, map);
-    	}, this));
-    	$(imageManipulationControl).on("deactivate-imagemanipulation", $.proxy(function(event, map) {
-    		adjustViews(map, this.map);
-    	}, this));
     };
     
     // bind behavior of both together

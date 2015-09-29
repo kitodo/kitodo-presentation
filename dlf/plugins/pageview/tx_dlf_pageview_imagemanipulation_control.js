@@ -51,6 +51,12 @@ dlfViewerImageManipulationControl = function(opt_options) {
   this.mainMap = $('#' + options.mapContainer)[0];
   
   /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.referenceMap = options.referenceMap;
+  
+  /**
    * @type {string}
    * @private
    */
@@ -133,6 +139,31 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 		            view: this.mapView,
 		            renderer: 'webgl'
 		        });
+				
+		    	// couple both map objects
+		    	var adjustViews = function(sourceView, destMap) {
+		    		var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation() ? true : false,
+		    			resDiff = sourceView.getResolution() !== destMap.getView().getResolution() ? true : false,
+		    			centerDiff = sourceView.getCenter() !== destMap.getView().getCenter() ? true : false;
+		    		
+		    		if (rotateDiff || resDiff || centerDiff)
+			    		destMap.zoomTo(sourceView.getCenter(),
+			    				sourceView.getZoom(), 50);
+		    		},
+		    		adjustViewHandler = function(event) {
+		    			adjustViews(event.target, this);
+		    		};
+		    			    	
+		    	// when deactivate / activate adjust both map centers / zoom
+		    	$(this).on("activate-imagemanipulation", $.proxy(function(event, map) {
+			    	this.referenceMap.getView().on('change:resolution', adjustViewHandler, this.manipulationMap);
+		    		adjustViews(this.referenceMap.getView(), this.manipulationMap);
+		    	}, this));
+		    	$(this).on("deactivate-imagemanipulation", $.proxy(function(event, map) {
+			    	this.referenceMap.getView().un('change:resolution', adjustViewHandler, this.manipulationMap);
+		    		adjustViews(this.manipulationMap.getView(), this.referenceMap);
+		    	}, this)); 
+		    	
 			};
 			
 			$('#' + this.manipulationMapId).show();

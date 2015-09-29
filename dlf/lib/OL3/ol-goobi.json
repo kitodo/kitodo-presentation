@@ -59,9 +59,11 @@
     "ol.View#getRotation",
     "ol.View#getResolution",
     "ol.View#getZoom",
+    "ol.View#on",
     "ol.View#rotate",
     "ol.View#setCenter",
-    "ol.View#setZoom"
+    "ol.View#setZoom",
+    "ol.View#un"
   ],
   "compile": {
     "externs": [
