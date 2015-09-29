@@ -342,6 +342,9 @@ dlfViewer.prototype.init = function(){
             this.displayHighlightWord();
         
         this.addCustomControls();
+        
+        // trigger event after all has been initialize
+        $(this).trigger("initialize-end", this);
     }, this);
 
     // init image loading process
