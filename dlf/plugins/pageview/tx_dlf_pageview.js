@@ -32,8 +32,6 @@
  */
 var dlfViewer = function(settings){
 
-    console.log(settings);
-
     /**
      * The element id of the map container
      * @type {string}
@@ -70,25 +68,11 @@ var dlfViewer = function(settings){
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
 
     /**
-     * Original image information (e.g. width, height)
-     * @type {Array.<?>}
-     * @private
-     */
-    this.origImages = [];
-
-    /**
      * ol3 controls which should be added to map
      * @type {Array.<?>}
      * @private
      */
     this.controls = dlfUtils.exists(settings.controls) ? this.createControls_(settings.controls) : [];
-
-    /**
-     * Offset for the second image
-     * @type {number}
-     * @private
-     */
-    this.offset = 0;
 
     /**
      * @type {Array.<number>}
@@ -101,13 +85,6 @@ var dlfViewer = function(settings){
      * @private
      */
     this.highlightFieldParams = undefined;
-
-    /**
-     * Running id index
-     * @number
-     * @private
-     */
-    this.runningIndex_ = 99999999;
 
     this.init();
 };
