@@ -236,16 +236,6 @@ dlfViewer.prototype.displayHighlightWord = function() {
     // clear in case of old displays
     this.highlightLayer.getSource().clear();
 
-
-    // set origimage with highlightFieldParams
-    if (!this.origImages.length && dlfUtils.exists(this.highlightFields)) {
-
-        this.setOrigImage(this.highlightFieldParams.index, this.highlightFieldParams.width,
-            this.highlightFieldParams.height);
-
-    }
-
-
     // create features and scale it down
     for (var i = 0; i < this.highlightFields.length; i++) {
 
@@ -257,7 +247,12 @@ dlfViewer.prototype.displayHighlightWord = function() {
                 [field[0], field[3]],
                 [field[0], field[1]],
             ]],
-            feature = this.scaleDown(0, [new ol.Feature(new ol.geom.Polygon(coordinates))]);
+            offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
+            feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))], 
+            		this.images[this.highlightFieldParams.index], 
+            		this.highlightFieldParams.width,
+                    this.highlightFieldParams.height,
+                    offset);
 
         // add feature to layer and map
         this.highlightLayer.getSource().addFeatures(feature);
@@ -389,73 +384,6 @@ dlfViewer.prototype.init = function(){
         this.fetchImages(init_);
 
     };
-
-};
-
-/**
- * Scales down the given features geometrys. as a further improvment this functions
- * add a unique id to every feature
- *
- * @param {number} image
- * @param {Array.<ol.Feature>} features
- */
-dlfViewer.prototype.scaleDown = function(image, features) {
-
-    if (this.origImages.length > 1 && image == 1) {
-
-        var scale = this.origImages[1].scale;
-        var height = this.images[1].height;
-        var offset = this.images[0].width;
-
-    } else {
-
-        var scale = this.origImages[0].scale;
-        var height = this.images[0].height;
-        var offset = 0;
-
-    }
-
-    // do a rescaling and set a id
-    for (var i in features) {
-
-        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
-            newCoordinates = [];
-
-
-        for (var j = 0; j < oldCoordinates.length; j++) {
-            newCoordinates.push([offset + (scale * oldCoordinates[j][0]), height - (scale * oldCoordinates[j][1])]);
-        }
-
-        features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
-
-        // set index
-        this.runningIndex_ += 1;
-        features[i].setId('' + this.runningIndex_);
-    }
-
-    return features;
-};
-
-/**
- * Set Original Image Size
- *
- * @param	integer image number
- * @param	integer width
- * @param	integer height
- *
- * @return	void
- */
-dlfViewer.prototype.setOrigImage = function(i, width, height) {
-
-    if (width && height) {
-
-        this.origImages[i] = {
-            'width': width,
-            'height': height,
-            'scale': this.images[i].width/width,
-        };
-
-    }
 
 };
 
