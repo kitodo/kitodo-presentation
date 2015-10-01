@@ -35,6 +35,7 @@
 			<label index="hue">Hue</label>
 			<label index="contrast">Contrast</label>
 			<label index="brightness">Brightness</label>
+			<label index="no-support">Image manipulation is not supported</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="imagemanipulation-on">Bildbearbeitung an</label>
@@ -44,6 +45,7 @@
 			<label index="hue">Färbung</label>
 			<label index="contrast">Kontrast</label>
 			<label index="brightness">Helligkeit</label>
+			<label index="no-support">Bildbearbeitung wird nicht unterstützt</label>
 		</languageKey>
 	</data>
 </T3locallang>

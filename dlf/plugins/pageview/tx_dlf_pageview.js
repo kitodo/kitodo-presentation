@@ -104,23 +104,34 @@ dlfViewer.prototype.addCustomControls = function() {
     	fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
     
     // add image manipulation tool if container is added
-    if ($('.tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()){
+    if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()){
 
-    	imageManipulationControl = new dlfViewerImageManipulationControl({
-    		target: $('.tx-dlf-tools-imagetools')[0],
-    		layers: dlfUtils.createLayers(images),
-    		mapContainer: this.div,
-    		referenceMap: this.map,
-    		view: dlfUtils.createView(images)
-    	});
+    	dlfUtils.testIfCORSEnabled(this.imageUrls[0], 
+    		$.proxy(function() {
+    			// should be called if cors is enabled
+	    		imageManipulationControl = new dlfViewerImageManipulationControl({
+	        		target: $('.tx-dlf-tools-imagetools')[0],
+	        		layers: dlfUtils.createLayers(images),
+	        		mapContainer: this.div,
+	        		referenceMap: this.map,
+	        		view: dlfUtils.createView(images)
+	        	});
+	    		
+	    		// bind behavior of both together
+	    	    if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+	    	    	$(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
+	    	    	$(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
+	    	    }
+    		}, this), 
+    		function() {
+    			// should be called if cors is not available
+    			$('#tx-dlf-tools-imagetools').addClass('deactivate');
+    		})
+    	
     	
     };
     
-    // bind behavior of both together
-    if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
-    	$(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
-    	$(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
-    }
+    
     
 }
 
