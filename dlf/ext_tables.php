@@ -379,6 +379,8 @@ if (TYPO3_MODE == 'BE')	{
 	// Main "dlf" module.
 	t3lib_extMgm::addModule('txdlfmodules', '', '', t3lib_extMgm::extPath($_EXTKEY).'modules/');
 
+	t3lib_extMgm::addNavigationComponent('txdlfmodules', 'typo3-pagetree');
+
 	// Module "indexing".
 	t3lib_extMgm::addModule('txdlfmodules', 'txdlfindexing', '', t3lib_extMgm::extPath($_EXTKEY).'modules/indexing/');
 
@@ -389,7 +391,6 @@ if (TYPO3_MODE == 'BE')	{
 
 	t3lib_extMgm::addLLrefForTCAdescr('_MOD_txdlfmodules_txdlfnewclient','EXT:dlf/modules/newclient/locallang_mod.xml');
 
-	t3lib_extMgm::addNavigationComponent('txdlfmodules', 'typo3-pagetree');
 }
 
 ?>
