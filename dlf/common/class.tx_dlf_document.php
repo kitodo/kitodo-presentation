@@ -685,6 +685,11 @@ final class tx_dlf_document {
 
 		}
 
+		if(empty($dmdId)) {
+			$dmdId = $this->mets->xpath('/mets:mets/mets:dmdSec[@ID]');
+			$dmdId = $dmdId[0]->attributes()['ID']->__toString();
+		}
+
 		if (!empty($dmdId)) {
 
 			// Load available metadata formats and dmdSecs.
