@@ -59,7 +59,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-		if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload'])) {
+		$this->doc->numPages = 1;
+
+		if ($this->conf['pdf'] == '0' && ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload']))) {
 
 			// Quit without doing anything if required variables are not set.
 			return $content;
@@ -96,7 +98,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		if($this->conf['pdf']) {
 			// Show all PDF Documents
 
-			$markerArray['###PAGE###'] = $this->getPDFDocuments();
+			$markerArray['###PAGE###'] = $this->getAttachments();
 
 			$markerArray['###WORK###'] = '';
 
@@ -121,13 +123,13 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 	/**
 	 * Get PDF document list 
-	 * @return html List of PDF documents
+	 * @return html List of attachments
 	 */
-	protected function getPDFDocuments()
+	protected function getAttachments()
 	{
+
 		// Get pdf documents
 		// 
-		// print_r("<br><br>");print_r($this->doc->physicalPagesInfo);
 		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[1]]['files'][$this->conf['fileGrpDownload']])) {
 
 			#$pageLink[] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[2]]['files'][$this->conf['fileGrpDownload']]);
@@ -150,6 +152,20 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 			// $documents[] = 'test2';
  
 			return $documents;
+		} else {
+			$xPath = 'mets:fileSec/mets:fileGrp[@USE="'.$this->conf['fileGrpDownload'].'"]/mets:file/mets:FLocat';
+			$files = $this->doc->mets->xpath($xPath);
+
+			$pdfHtml = '<ul>';
+			foreach ($files as $key => $value) {
+				$url = (string) $value->attributes('xlin', true)['href'];
+				$title = (string) $value->attributes('xlin', true)['title'];
+				$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
+			}
+			$pdfHtml .= '</ul>';
+
+
+			return $pdfHtml;
 		}
 	}
 
