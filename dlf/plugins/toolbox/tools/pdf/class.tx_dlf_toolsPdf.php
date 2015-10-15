@@ -158,7 +158,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 			$pdfHtml = '<ul>';
 			foreach ($files as $key => $value) {
-				$url = (string) $value->attributes('xlin', true)['href'];
+				$url = (string) $value->attributes('http://www.w3.org/1999/xlink', true)['href'];
 				$regex = '/\/(\w*:\d*)\/datastreams\/(\w*-\d*)/';
 				preg_match($regex, $url, $treffer);
 
@@ -167,7 +167,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 				$qid = $qucosa[1];
 				$fid = $treffer[2];
 
-				$title = (string) $value->attributes('xlin', true)['title'];
+				$title = (string) $value->attributes('http://www.w3.org/1999/xlink', true)['title'];
 				$pdfHtml .= '<li><a href="/get/file/'.$namespace.'/'.$qid.'/'.$fid.'/">'.$title.'</a></li>';
 			}
 			$pdfHtml .= '</ul>';
