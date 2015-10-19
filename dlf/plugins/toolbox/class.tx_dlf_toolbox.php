@@ -52,8 +52,10 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 
 		$this->init($conf);
 
+		$params = t3lib_div::_GET();
+
 		// Quit without doing anything if required variable is not set.
-		if (empty($this->piVars['id'])) {
+		if (empty($this->piVars['id']) && empty($params['tx_dlf_document_url'])) {
 
 			return $content;
 
