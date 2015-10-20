@@ -56,6 +56,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		// Load get parameter
         $params = t3lib_div::_GET();
 
+        // Merge configuration with conf array of toolbox.
+		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+
         // show document demo (publication)
         if ($params['tx_dlf_document_url']) {
             $this->loadDocument($params['tx_dlf_document_url']);
@@ -66,10 +69,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 			$this->doc->numPages = 1;
 		}
-		// Merge configuration with conf array of toolbox.
-		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
-
-
+		
 		if ($this->conf['pdf'] == '0' && ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload']))) {
 
 			// Quit without doing anything if required variables are not set.
