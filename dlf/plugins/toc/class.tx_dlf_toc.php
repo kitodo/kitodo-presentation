@@ -56,7 +56,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 	 *
 	 * @return	array		HMENU array for menu entry
 	 */
-	protected function getMenuEntry($entry, $recursive = FALSE) {
+	protected function getMenuEntry(array $entry, $recursive = FALSE) {
 
 		$entryArray = array ();
 
@@ -65,11 +65,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$entryArray['volume'] = $entry['volume'];
 
-		if (empty($entryArray['volume'])) {
-
-			$entryArray['volume'] = $entry['orderlabel'];
-
-		}
+		$entryArray['orderlabel'] = $entry['orderlabel'];
 
 		$entryArray['type'] = tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
 

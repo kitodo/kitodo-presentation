@@ -20,7 +20,7 @@ plugin.tx_dlf_toc.menuConf {
 				dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span>
 			}
 			doNotLinkIt.field = doNotLinkIt
-			ATagTitle.field = type
+			ATagTitle.field = type // orderlabel
 			wrapItemAndSub = <li class="tx-dlf-toc-no">|</li>
 		}
 		IFSUB < .NO
