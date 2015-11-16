@@ -67,8 +67,12 @@ class tx_dlf_mods implements tx_dlf_format {
 
 				$authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-				// Check if there are separate family and given names.
-				if (($nameParts = $authors[$i]->xpath('./mods:namePart'))) {
+				// Check if there is a display form.
+				if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
+
+					$metadata['author'][$i] = (string) $displayForm[0];
+
+				} elseif (($nameParts = $authors[$i]->xpath('./mods:namePart'))) {
 
 					$name = array ();
 
@@ -105,13 +109,6 @@ class tx_dlf_mods implements tx_dlf_format {
 					ksort($name);
 
 					$metadata['author'][$i] = trim(implode(', ', $name));
-
-				}
-
-				// Check if there is a display form.
-				if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
-
-					$metadata['author'][$i] = (string) $displayForm[0];
 
 				}
 
