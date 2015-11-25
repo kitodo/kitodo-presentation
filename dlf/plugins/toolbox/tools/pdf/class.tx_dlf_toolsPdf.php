@@ -51,13 +51,13 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 	 */
 	public function main($content, $conf) {
 
+        if (!$conf['pages']) {
+            $conf['pages'] = $this->cObj->data['conf']['pages'];
+        }
 		$this->init($conf);
 
 		// Load get parameter
         $params = t3lib_div::_GET();
-
-        // Merge configuration with conf array of toolbox.
-		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
 
         // show document demo (publication)
         if ($params['tx_dlf_document_url']) {
@@ -67,9 +67,13 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 			// Load current document.
 			$this->loadDocument();
 
-			$this->doc->numPages = 1;
+			if ($this->doc) {
+				$this->doc->numPages = 1;
+			}
 		}
-		
+		// Merge configuration with conf array of toolbox.
+		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+
 		if ($this->conf['pdf'] == '0' && ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload']))) {
 
 			// Quit without doing anything if required variables are not set.
@@ -164,28 +168,35 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		} else {
 
 			$xPath = 'mets:fileSec/mets:fileGrp[@USE="'.$this->conf['fileGrpDownload'].'"]/mets:file/mets:FLocat';
-			$files = $this->doc->mets->xpath($xPath);
+			if ($this->doc->mets) {
 
-			$pdfHtml = '<ul>';
-			foreach ($files as $key => $value) {
-				$url = (string) $value->attributes('http://www.w3.org/1999/xlink')->href;
-				$regex = '/\/(\w*:\d*)\/datastreams\/(\w*-\d*)/';
-				preg_match($regex, $url, $treffer);
+				$files = $this->doc->mets->xpath($xPath);
 
-				$qucosa = explode(":", $treffer[1]);
-				$namespace = $qucosa[0];
-				$qid = $qucosa[1];
-				$fid = $treffer[2];
+				$pdfHtml = '<ul>';
+				foreach ($files as $key => $value) {
+					$url = (string) $value->attributes('http://www.w3.org/1999/xlink')->href;
+					$regex = '/\/(\w*:\d*)\/datastreams\/(\w*-\d*)/';
+					preg_match($regex, $url, $treffer);
 
-				$title = (string) $value->attributes('http://www.w3.org/1999/xlink')->title;
-				if(empty($treffer)) {
-					$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
-				} else {
-					$pdfHtml .= '<li><a href="/get/file/'.$namespace.'/'.$qid.'/'.$fid.'/">'.$title.'</a></li>';
+					$qucosa = explode(":", $treffer[1]);
+					$namespace = $qucosa[0];
+					$qid = $qucosa[1];
+					$fid = $treffer[2];
+
+					$title = (string) $value->attributes('http://www.w3.org/1999/xlink')->title;
+                    
+                    if (!$title) {
+                        $title = $fid;
+                    }
+
+					if(empty($treffer)) {
+						$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
+					} else {
+						$pdfHtml .= '<li><a href="/get/file/'.$namespace.'/'.$qid.'/'.$fid.'/">'.$title.'</a></li>';
+					}
 				}
-				
+				$pdfHtml .= '</ul>';
 			}
-			$pdfHtml .= '</ul>';
 
 			return $pdfHtml;
 		}
