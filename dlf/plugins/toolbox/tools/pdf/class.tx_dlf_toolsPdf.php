@@ -71,6 +71,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 				$this->doc->numPages = 1;
 			}
 		}
+
 		// Merge configuration with conf array of toolbox.
 		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
 
@@ -168,35 +169,41 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		} else {
 
 			$xPath = 'mets:fileSec/mets:fileGrp[@USE="'.$this->conf['fileGrpDownload'].'"]/mets:file/mets:FLocat';
-			if ($this->doc->mets) {
 
-				$files = $this->doc->mets->xpath($xPath);
+			$files = $this->doc->mets->xpath($xPath);
 
-				$pdfHtml = '<ul>';
-				foreach ($files as $key => $value) {
-					$url = (string) $value->attributes('http://www.w3.org/1999/xlink')->href;
-					$regex = '/\/(\w*:\d*)\/datastreams\/(\w*-\d*)/';
-					preg_match($regex, $url, $treffer);
+			$pdfHtml = '<ul>';
+			foreach ($files as $key => $value) {
 
-					$qucosa = explode(":", $treffer[1]);
-					$namespace = $qucosa[0];
-					$qid = $qucosa[1];
-					$fid = $treffer[2];
+                // parent
+                $parent = $value->xpath("..")[0];
+                $title = (string) $parent->attributes('http://slub-dresden.de/mets')->LABEL;
+				$url = (string) $value->attributes('http://www.w3.org/1999/xlink')->href;
 
-					$title = (string) $value->attributes('http://www.w3.org/1999/xlink')->title;
-                    
-                    if (!$title) {
-                        $title = $fid;
-                    }
+				// $regex = '/\/(\w*:\d*)\/datastreams\/(\w*-\d*)/';
+				// preg_match($regex, $url, $treffer);
 
-					if(empty($treffer)) {
-						$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
-					} else {
-						$pdfHtml .= '<li><a href="/get/file/'.$namespace.'/'.$qid.'/'.$fid.'/">'.$title.'</a></li>';
-					}
-				}
-				$pdfHtml .= '</ul>';
+				// $qucosa = explode(":", $treffer[1]);
+				// $namespace = $qucosa[0];
+				// $qid = $qucosa[1];
+				// $fid = $treffer[2];
+
+                if (!$title) {
+				    $title = (string) $value->attributes('http://www.w3.org/1999/xlink')->title;
+                }
+                
+                if (!$title) {
+                    $title = (string) $parent->attributes()->ID;
+                }
+
+				// if(empty($treffer)) {
+				$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
+				// } else {
+				// 	$pdfHtml .= '<li><a href="/get/file/'.$namespace.'/'.$qid.'/'.$fid.'/">'.$title.'</a></li>';
+				// }
 			}
+			$pdfHtml .= '</ul>';
+
 
 			return $pdfHtml;
 		}
