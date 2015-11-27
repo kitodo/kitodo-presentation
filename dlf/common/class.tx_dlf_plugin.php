@@ -156,10 +156,10 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 			// Get title information.
 			$elasticsearchConf = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 		}
-		if(!empty($elasticsearchConf) && empty($docUrl)){
+
+		if(!empty($elasticsearchConf) && empty($docUrl) && !empty($this->piVars['id'])){
 			// build document url if elasticsearch is in use
 			$docUrl = $this->conf['repositoryServerAdress'].'fedora/objects/'.$this->piVars['id'].'/methods/qucosa:SDef/getMETSDissemination';
-			// $docUrl = 'http://local.commsy.dev/getMETSDissemination';
 			$es_flag = true;
 		}
 
