@@ -118,7 +118,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$this->pageInfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
 
-		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
 
 		$this->doc->setModuleTemplate('EXT:'.$this->extKey.'/modules/'.$this->modPath.'template.tmpl');
 
@@ -130,7 +130,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
 
-		$this->data = t3lib_div::_GPmerged($this->prefixId);
+		$this->data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefixId);
 
 	}
 

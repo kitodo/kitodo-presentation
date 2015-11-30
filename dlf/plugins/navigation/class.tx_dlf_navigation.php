@@ -50,7 +50,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		if (!empty($this->conf['targetPid'])) {
 
 			// Load the list.
-			$list = t3lib_div::makeInstance('tx_dlf_list');
+			$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 			if (count($list) > 0) {
 
@@ -324,7 +324,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			'useCacheHash' => 1,
 			'parameter' => $GLOBALS['TSFE']->id,
 			'ATagParams' => $aTagParams,
-			'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE),
+			'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE),
 			'title' => $label
 		);
 

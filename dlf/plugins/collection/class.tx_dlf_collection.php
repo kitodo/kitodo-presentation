@@ -68,7 +68,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_collection->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_collection->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
 
 			}
 
@@ -222,7 +222,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				$conf = array (
 					'useCacheHash' => 1,
 					'parameter' => $GLOBALS['TSFE']->id,
-					'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+					'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
 				);
 
 				// Link collection's title to list view.
@@ -418,7 +418,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 		}
 
 		// Save list of documents.
-		$list = t3lib_div::makeInstance('tx_dlf_list');
+		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 		$list->reset();
 
@@ -429,10 +429,10 @@ class tx_dlf_collection extends tx_dlf_plugin {
 		$list->save();
 
 		// Clean output buffer.
-		t3lib_div::cleanOutputBuffers();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
 		// Send headers.
-		header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
+		header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
 
 		// Flush output buffer and end script processing.
 		ob_end_flush();

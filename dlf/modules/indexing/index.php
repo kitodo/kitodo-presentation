@@ -188,7 +188,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		}
 
 		// Give feedback about progress.
-		$_message = t3lib_div::makeInstance(
+		$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 			't3lib_FlashMessage',
 			htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentsToGo'), count($this->list))),
 			tx_dlf_helper::getLL('flash.running', TRUE),
@@ -199,7 +199,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 		$this->markerArray['CONTENT'] .= $_message->render();
 
 		// Start next loop.
-		$this->markerArray['CONTENT'] .= '<script type="text/javascript">window.location.href=unescape("'.t3lib_div::rawUrlEncodeJS(t3lib_div::locationHeaderUrl(t3lib_div::linkThisScript(array ('id' => $this->id, 'CMD' => 'indexLoop', $this->prefixId => array ('core' => $this->data['core']), 'random' => uniqid())))).'");</script>';
+		$this->markerArray['CONTENT'] .= '<script type="text/javascript">window.location.href=unescape("'.\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'indexLoop', $this->prefixId => array ('core' => $this->data['core']), 'random' => uniqid())))).'");</script>';
 
 		$this->printContent();
 
@@ -243,7 +243,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 						} else {
 
-							$_message = t3lib_div::makeInstance(
+							$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 								't3lib_FlashMessage',
 								htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.FileNotLoaded'), $title, $uid)),
 								tx_dlf_helper::getLL('flash.error', TRUE),
@@ -300,7 +300,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 						}
 
-						$this->list = t3lib_div::makeInstance('tx_dlf_list', $elements);
+						$this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list', $elements);
 
 						// Start index looping.
 						if (count($this->list) > 0) {
@@ -319,7 +319,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 					$GLOBALS['BE_USER']->fetchUserSession();
 
 					// Get document list from user's session.
-					$this->list = t3lib_div::makeInstance('tx_dlf_list');
+					$this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 					// Continue index looping.
 					if (count($this->list) > 0 && isset($this->data['core'])) {
@@ -328,7 +328,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 					} else {
 
-						$_message = t3lib_div::makeInstance(
+						$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 							't3lib_FlashMessage',
 							tx_dlf_helper::getLL('flash.seeLog', TRUE),
 							tx_dlf_helper::getLL('flash.done', TRUE),
@@ -405,7 +405,7 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/mod
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/modules/indexing/index.php']);
 }
 
-$SOBE = t3lib_div::makeInstance('tx_dlf_modIndexing');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_modIndexing');
 
 $SOBE->main();
 
