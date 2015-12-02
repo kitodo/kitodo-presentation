@@ -46,7 +46,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	// Plugins are cached by default (@see setCache()).
 	public $pi_USER_INT_obj = FALSE;
 
-	public $pi_checkCHash = FALSE;
+	public $pi_checkCHash = TRUE;
 
 	/**
 	 * This holds the current document
