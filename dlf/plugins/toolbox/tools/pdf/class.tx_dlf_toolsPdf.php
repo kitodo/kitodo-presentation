@@ -146,8 +146,6 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		// 
 		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[1]]['files'][$this->conf['fileGrpDownload']])) {
 
-			#$pageLink[] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[2]]['files'][$this->conf['fileGrpDownload']]);
-
 			$documents = '<ul>';
 
 			$i = 1;
@@ -161,9 +159,6 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 				$i++;
 			}
 			$documents .= '</ul>';
-
-			// $documents[] = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), array ('parameter' => $pageLink[1], 'title' => $this->pi_getLL('leftPage', '')));
-			// $documents[] = 'test2';
 
 			return $documents;
 		} else {
@@ -180,14 +175,6 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
                 $title = (string) $parent->attributes('http://slub-dresden.de/mets')->LABEL;
 				$url = (string) $value->attributes('http://www.w3.org/1999/xlink')->href;
 
-				// $regex = '/\/(\w*:\d*)\/datastreams\/(\w*-\d*)/';
-				// preg_match($regex, $url, $treffer);
-
-				// $qucosa = explode(":", $treffer[1]);
-				// $namespace = $qucosa[0];
-				// $qid = $qucosa[1];
-				// $fid = $treffer[2];
-
                 if (!$title) {
 				    $title = (string) $value->attributes('http://www.w3.org/1999/xlink')->title;
                 }
@@ -196,11 +183,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
                     $title = (string) $parent->attributes()->ID;
                 }
 
-				// if(empty($treffer)) {
 				$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
-				// } else {
-				// 	$pdfHtml .= '<li><a href="/get/file/'.$namespace.'/'.$qid.'/'.$fid.'/">'.$title.'</a></li>';
-				// }
 			}
 			$pdfHtml .= '</ul>';
 
