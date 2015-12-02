@@ -83,7 +83,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (!empty($flexFormConf)) {
 
-			$conf = t3lib_div::array_merge_recursive_overrule($flexFormConf, $conf);
+			$conf = tx_dlf_helper::array_merge_recursive_overrule($flexFormConf, $conf);
 
 		}
 
@@ -92,7 +92,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($pluginConf)) {
 
-			$conf = t3lib_div::array_merge_recursive_overrule($pluginConf, $conf);
+			$conf = tx_dlf_helper::array_merge_recursive_overrule($pluginConf, $conf);
 
 		}
 
@@ -101,7 +101,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($generalConf)) {
 
-			$conf = t3lib_div::array_merge_recursive_overrule($generalConf, $conf);
+			$conf = tx_dlf_helper::array_merge_recursive_overrule($generalConf, $conf);
 
 		}
 
@@ -110,7 +110,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($extConf)) {
 
-			$conf = t3lib_div::array_merge_recursive_overrule($extConf, $conf);
+			$conf = tx_dlf_helper::array_merge_recursive_overrule($extConf, $conf);
 
 		}
 
@@ -119,7 +119,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 		if (is_array($varsConf)) {
 
-			$conf = t3lib_div::array_merge_recursive_overrule($varsConf, $conf);
+			$conf = tx_dlf_helper::array_merge_recursive_overrule($varsConf, $conf);
 
 		}
 
@@ -307,7 +307,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			}
 
-			$this->piVars = t3lib_div::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
+			$this->piVars = tx_dlf_helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
 
 		}
 
