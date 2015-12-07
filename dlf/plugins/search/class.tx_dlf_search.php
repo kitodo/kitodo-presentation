@@ -97,16 +97,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Get collection's UID.
 			return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$list->metadata['options']['select'].'" />';
 
-		} else if (!empty($list->metadata['options']['params']['fq'])) {
+		} elseif (!empty($list->metadata['options']['params']['fq'])) {
 
-			// get collection's UID from search metadata
+			// Get collection's UID from search metadata.
 			foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
 
 				$facetKeyVal = explode(':', $facet, 2);
 
 				if ($facetKeyVal[0] == 'collection_faceting') {
 
-					$collectionId = tx_dlf_helper::getIdFromIndexName($facetKeyVal[1], 'tx_dlf_collections');
+					$collectionId = tx_dlf_helper::getIdFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
 
 				}
 
@@ -144,16 +144,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
-		} else if (!empty($list->metadata['options']['params']['fq'])) {
+		} elseif (!empty($list->metadata['options']['params']['fq'])) {
 
-			// get document's UID from search metadata
+			// Get document's UID from search metadata.
 			foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
 
 				$facetKeyVal = explode(':', $facet);
 
 				if ($facetKeyVal[0] == 'uid') {
 
-					$documentId = (int)substr($facetKeyVal[1],0,strpos($facetKeyVal[1], ' '));
+					$documentId = (int) substr($facetKeyVal[1], 1, strpos($facetKeyVal[1], ')'));
 
 				}
 
@@ -547,8 +547,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				}
 
-			}
-			else if (empty($this->piVars['fq']) && $query != "*") {
+			} elseif (empty($this->piVars['fq']) && $query != "*") {
 			
 				$query = tx_dlf_solr::escapeQuery($query);
 			
@@ -569,7 +568,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				if (!empty($this->piVars['id']) && tx_dlf_helper::testInt($this->piVars['id'])) {
 
-					$params['fq'][] = 'uid:'.$this->piVars['id'].' OR partof:'.$this->piVars['id'];
+					$params['fq'][] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
 
 					$label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
 
@@ -591,6 +590,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				}
 
 			}
+
 			$solr->params = $params;
 
 			// Perform search.
