@@ -208,6 +208,42 @@ class tx_dlf_solr {
 	}
 
 	/**
+	 * Returns the connection information a specific Solr core
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$core: Name of the core to load
+	 *
+	 * @return	string		The connection parameters for a specific Solr core
+	 */
+	public static function getSolrConnectionInfo($core = '') {
+
+		$solrInfo = array ();
+
+		// Extract extension configuration.
+		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+		// Derive Solr host name.
+		$solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
+
+		// Prepend username and password to hostname.
+		if ($conf['solrUser'] && $conf['solrPass']) {
+
+			$solrInfo['host'] = $conf['solrUser'].':'.$conf['solrPass'].'@'.$solrInfo['host'];
+
+		}
+
+		// Set port if not set.
+		$solrInfo['port'] = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
+
+		// Append core name to path.
+		$solrInfo['path'] = trim($conf['solrPath'], '/').'/'.$core;
+
+		return $solrInfo;
+
+	}
+
+	/**
 	 * Returns the request URL for a specific Solr core
 	 *
 	 * @access	public
@@ -218,27 +254,11 @@ class tx_dlf_solr {
 	 */
 	public static function getSolrUrl($core = '') {
 
-		// Extract extension configuration.
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-
-		// Derive Solr host name.
-		$host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
-
-		// Prepend username and password to hostname.
-		if ($conf['solrUser'] && $conf['solrPass']) {
-
-			$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
-
-		}
-
-		// Set port if not set.
-		$port = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
-
-		// Append core name to path.
-		$path = trim($conf['solrPath'], '/').'/'.$core;
+		// Get Solr connection information.
+		$solrInfo = self::getSolrConnectionInfo($core);
 
 		// Return entire request URL.
-		return 'http://'.$host.':'.$port.'/'.$path;
+		return 'http://'.$solrInfo['host'].':'.$solrInfo['port'].'/'.$solrInfo['path'];
 
 	}
 
@@ -636,26 +656,10 @@ class tx_dlf_solr {
 
 		}
 
-		// Get Solr credentials.
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-
-		$host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
-
-		// Prepend username and password to hostname.
-		if ($conf['solrUser'] && $conf['solrPass']) {
-
-			$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
-
-		}
-
-		// Set port if not set.
-		$port = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
-
-		// Append core name to path.
-		$path = trim($conf['solrPath'], '/').'/'.$core;
+		$solrInfo = self::getSolrInfo($core);
 
 		// Instantiate Apache_Solr_Service class.
-		$this->service = t3lib_div::makeInstance('Apache_Solr_Service', $host, $port, $path);
+		$this->service = t3lib_div::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
 
 		// Check if connection is established.
 		if ($this->service->ping() !== FALSE) {
