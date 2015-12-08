@@ -826,7 +826,7 @@ $TCA['tx_dlf_elasticsearchindexes'] = array (
 			),
 		),
 		'type_name' => array (
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_elasticsearchindexes.index_name',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_elasticsearchindexes.type_name',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
