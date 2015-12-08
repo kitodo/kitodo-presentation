@@ -68,7 +68,7 @@ class tx_dlf_routing extends tslib_pibase {
         // use urlencode instead!
         // $qucosaId = str_replace('-', ":", $qucosaId);
 
-        $path = rtrim($extConf['repositoryServerAdress'],"/").'/fedora/objects/'.$namespace.':'.$qucosaId.'/datastreams/'.$fileId.'/content';
+        $path = rtrim($extConf['repositoryServerAddress'],"/").'/fedora/objects/'.$namespace.':'.$qucosaId.'/datastreams/'.$fileId.'/content';
 
         // get remote header
         $headers = get_headers($path);
