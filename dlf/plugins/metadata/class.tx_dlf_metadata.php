@@ -67,14 +67,6 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 		// Load current document.
 		$this->loadDocument();
 
-        // Load get parameter
-        $params = t3lib_div::_GET();
-
-        // show document demo (publication)
-        if ($params['tx_dlf_document_url']) {
-            $this->loadDocument($params['tx_dlf_document_url']);
-        }
-
 		if ($this->doc === NULL) {
 
 			// Quit without doing anything if required variables are not set.
