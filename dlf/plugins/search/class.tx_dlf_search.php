@@ -499,7 +499,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 					// Get title information.
 					$elasticsearchConf = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 				}
-				
+
 				$es = tx_dlf_elasticsearch::getInstance($elasticsearchConf);
 
 				// Build label for result list.
@@ -510,6 +510,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), $this->piVars['query']));
 
 				}
+
+				// Set search parameters.
+				$es->limit = max(intval($this->conf['limit']), 1);
 
 				$es->cPid = $this->conf['pages'];
 
@@ -529,7 +532,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				);
 
 				$results->save();
-				
+
 
 				// Clean output buffer.
 				t3lib_div::cleanOutputBuffers();
@@ -552,7 +555,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				exit;
 
 			} else {
-			
+
 
 				// Instantiate search object.
 				$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
@@ -621,9 +624,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 			else if (empty($this->piVars['fq']) && $query != "*") {
-			
+
 				$query = tx_dlf_solr::escapeQuery($query);
-			
+
 			}
 
 				// Set query parameters.

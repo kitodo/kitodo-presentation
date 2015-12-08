@@ -149,7 +149,7 @@ class tx_dlf_elasticsearch {
 		// 	return;
 
 		// }
- 
+
         $name = implode("_", $conf);
 
 		// Check if there is an instance in the registry already.
@@ -242,11 +242,13 @@ class tx_dlf_elasticsearch {
 
         $esQuery['query']['bool']['should'][1]['has_child']['child_type'] = "datastream"; // 1
 
-        $results = $this->service->search($esQuery);
+		$esQuery['size'] = $this->limit;
+
+		$results = $this->service->search($esQuery);
 
 
 		//$this->cPid = 9;
-		 
+
 		$this->numberOfHits = $results['hits']['total'];
 
 		$toplevel = array ();
@@ -279,7 +281,7 @@ class tx_dlf_elasticsearch {
 		$i = 0;
 
 		foreach ($results['hits']['hits'] as $doc){
-			$toplevel[] = array ( 
+			$toplevel[] = array (
 				'u' => $doc['_source']['PID'],
 				's' => array(),
 				'p' => ''
@@ -502,28 +504,28 @@ class tx_dlf_elasticsearch {
 
 		// //type
 		// $type = $conf['elasticSearchType'];
-		
+
 		// index
 		$this->index = $elasticsearchConf[0];
 		//type
 		$this->type = $elasticsearchConf[1];
 		// configuration array for elasticsearch client
 		$params = array();
-		
+
 		if ($conf['elasticSearchUser'] && $conf['elasticSearchPass']) {
 
 			// Authentication configuration
 			$params['connectionParams']['auth'] = array(
 		    $conf['elasticSearchUser'],
 		    $conf['elasticSearchPass'],
-		    'Basic' 
+		    'Basic'
 			);
 
 		}
 
-		
 
-		// establish connection 
+
+		// establish connection
 		$this->service = Client::connection(array(
 		    'servers' => $host.':'.$port,
 		    'protocol' => 'http',

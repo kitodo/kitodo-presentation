@@ -82,9 +82,9 @@ class Client {
 
         $server = is_array($config['servers']) ? $config['servers'][0] : $config['servers'];
         list($host, $port) = explode(':', $server);
-        
+
         $transport = new $class($host, $port, $config['timeout']);
-        
+
         $client = new self($transport, $config['index'], $config['type']);
         $client->config($config);
         return $client;
@@ -219,7 +219,7 @@ class Client {
         $result['time'] = microtime(true) - $start;
         return $result;
     }
-    
+
     /**
      * Flush this index/type combination
      *
@@ -322,7 +322,7 @@ class Client {
 
     /**
      * commit a bulk-transaction
-     * @return array 
+     * @return array
      */
 
     public function commitBulk() {
@@ -339,5 +339,5 @@ class Client {
     public function commit() {
         return $this->commitBulk();
     }
-    
+
 }

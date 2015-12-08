@@ -343,7 +343,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 					$metadata = $this->elasticsearchResultWalkRecursive($result);
 
 					$metadata = $this->metadataResult;
-					
+
 				}
 				$record['metadata'] = $metadata;
 
@@ -385,7 +385,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 					$metadata[$key] = array($key => $value);
 					$this->metadataResult[$key] = array($key => $value);
 				}
-				
+
 			} else {
 				$new_metadata = $this->elasticsearchResultWalkRecursive($value, $key);
 				//$metadata = array_merge($new_metadata,$metadata);
@@ -711,7 +711,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 				$this->esConfig = $resArray;
 
 			}
-			
+
 			if (!$this->es = tx_dlf_elasticsearch::getInstance($conf)) {
 				return FALSE;
 			}
