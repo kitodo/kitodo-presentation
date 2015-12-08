@@ -140,31 +140,10 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	 *
 	 * @return	void
 	 */
-	protected function loadDocument($docUrl = '') {
-
-		// get elasticsearch configuration
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_elasticsearchindexes.index_name,tx_dlf_elasticsearchindexes.type_name',
-			'tx_dlf_elasticsearchindexes',
-			'tx_dlf_elasticsearchindexes.pid='.$this->conf['pages'].tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes'),
-			'',
-			'',
-			'1'
-		);
-
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-			// Get title information.
-			$elasticsearchConf = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-		}
-
-		if(!empty($elasticsearchConf) && empty($docUrl) && !empty($this->piVars['id'])){
-			// build document url if elasticsearch is in use
-			$docUrl = $this->conf['repositoryServerAdress'].'fedora/objects/'.$this->piVars['id'].'/methods/qucosa:SDef/getMETSDissemination';
-			$es_flag = true;
-		}
+	protected function loadDocument() {
 
 		// Check for required variable.
-		if (!empty($this->piVars['id']) && !empty($this->conf['pages']) && empty($docUrl)) {
+		if (!empty($this->piVars['id']) && !empty($this->conf['pages'])) {
 
 			// Should we exclude documents from other pages than $this->conf['pages']?
 			$pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
@@ -190,7 +169,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			}
 
-		} elseif (!empty($this->piVars['recordId']) && empty($docUrl)) {
+		} elseif (!empty($this->piVars['recordId'])) {
 
 			// Get UID of document with given record identifier.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -222,29 +201,6 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 					t3lib_div::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
-
-			}
-
-		} else if (!empty($docUrl)) {
-
-			// get document 
-			$this->doc =& tx_dlf_document::getInstance($docUrl, false);
-
-			if (!$this->doc->ready) {
-
-				// Destroy the incomplete object.
-				if (TYPO3_DLOG) {
-
-					t3lib_div::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
-
-				}
-
-				$this->doc = NULL;
-
-			} else {
-
-				// Set configuration PID.
-				$this->doc->cPid = $this->conf['pages'];
 
 			}
 
@@ -307,7 +263,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 
 			}
 
-			$this->piVars = tx_dlf_helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
+			$this->piVars = tx_dlf_helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array());
 
 		}
 
