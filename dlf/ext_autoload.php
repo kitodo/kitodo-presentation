@@ -60,7 +60,6 @@ return array (
 	'tx_dlf_toolsFulltext' => $extensionPath.'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php',
 	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php',
 	'tx_dlf_doctype' => $extensionPath.'plugins/doctype/class.tx_dlf_doctype.php',
-	'tx_dlf_routing' => $extensionPath.'plugins/routing/class.tx_dlf_routing.php'
 );
 
 ?>

@@ -51,9 +51,6 @@ t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/class.tx_dlf_toolbox.php', 
 
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/validator/class.tx_dlf_validator.php', '_validator', 'list_type', FALSE);
 
-// routing
-t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/routing/class.tx_dlf_routing.php', '_routing', 'list_type', TRUE);
-
 // Register tools for toolbox plugin.
 t3lib_extMgm::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php', '_toolsPdf', '', TRUE);
 
@@ -74,7 +71,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array
 
 // Register AJAX eID handlers.
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = 'EXT:'.$_EXTKEY.'/plugins/search/class.tx_dlf_search_suggest.php';
-// $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_fedora_url'] = 'EXT:'.$_EXTKEY.'/plugins/routing/class.tx_dlf_routing.php';
+
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_fulltext_eid'] = 'EXT:'.$_EXTKEY.'/plugins/pageview/class.tx_dlf_fulltext_eid.php';
 
 
