@@ -69,6 +69,3 @@ elasticSearchUser =
 
 # cat=Elasticsearch; type=string; label=LLL:EXT:dlf/locallang.xml:config.elasticSearchPass
 elasticSearchPass =
-
-# cat=Repository; type=string; label=LLL:EXT:dlf/locallang.xml:config.repository
-repositoryServerAddress = http://qucosa.vagrant.dev:8080/
