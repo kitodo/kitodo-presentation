@@ -37,7 +37,7 @@
  */
 class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
-	public $scriptRelPath = 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php';
+	public $scriptRelPath = 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPublicationDownload.php';
 
 	/**
 	 * The main method of the PlugIn
@@ -55,11 +55,15 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 		// Merge configuration with conf array of toolbox.
 		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
-
+debug($this->conf);
 		// Load current document.
 		$this->loadDocument();
 
-		if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload'])) {
+		if ($this->doc) {
+			$this->doc->numPages = 1;
+		}
+
+		if ($this->conf['pdf'] == '0' && ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload']))) {
 
 			// Quit without doing anything if required variables are not set.
 			return $content;
@@ -93,16 +97,87 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 		}
 
-		// Get single page downloads.
-		$markerArray['###PAGE###'] = $this->getPageLink();
+		if($this->conf['pdf']) {
+			// Show all PDF Documents
 
-		// Get work download.
-		$markerArray['###WORK###'] = $this->getWorkLink();
+			$markerArray['###PAGE###'] = $this->getAttachments();
 
-		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+			$markerArray['###WORK###'] = '';
 
-		return $this->pi_wrapInBaseClass($content);
+			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
+			return $this->pi_wrapInBaseClass($content);
+
+		} else {
+
+			// Get single page downloads.
+			$markerArray['###PAGE###'] = $this->getPageLink();
+
+			// Get work download.
+			$markerArray['###WORK###'] = $this->getWorkLink();
+
+			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+
+			return $this->pi_wrapInBaseClass($content);
+		}
+
+	}
+
+	/**
+	 * Get PDF document list
+	 * @return html List of attachments
+	 */
+	protected function getAttachments()
+	{
+
+		// Get pdf documents
+		//
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[1]]['files'][$this->conf['fileGrpDownload']])) {
+
+			$documents = '<ul>';
+
+			$i = 1;
+			while($this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']])) {
+				// get all pdf documents related to this document
+				$link = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']]);
+
+				$title = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']];
+
+				$documents .= '<li>'.$this->cObj->typoLink($title, array ('parameter' => $link, 'title' => $title)).'</li>';
+				$i++;
+			}
+			$documents .= '</ul>';
+
+			return $documents;
+		} else {
+
+			$xPath = 'mets:fileSec/mets:fileGrp[@USE="'.$this->conf['fileGrpDownload'].'"]/mets:file/mets:FLocat';
+
+			$files = $this->doc->mets->xpath($xPath);
+
+			$pdfHtml = '<ul>';
+			foreach ($files as $key => $value) {
+
+                // parent
+                $parent = $value->xpath("..")[0];
+                $title = (string) $parent->attributes('http://slub-dresden.de/mets')->LABEL;
+				$url = (string) $value->attributes('http://www.w3.org/1999/xlink')->href;
+
+                if (!$title) {
+				    $title = (string) $value->attributes('http://www.w3.org/1999/xlink')->title;
+                }
+
+                if (!$title) {
+                    $title = (string) $parent->attributes()->ID;
+                }
+
+				$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
+			}
+			$pdfHtml .= '</ul>';
+
+
+			return $pdfHtml;
+		}
 	}
 
 	/**
@@ -135,7 +210,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		}
 
 		if (TYPO3_DLOG && empty($page1Link) && empty($page2Link)) {
-			t3lib_div::devLog('[tx_dlf_toolsPdf->getPageLink()] ' .
+			t3lib_div::devLog('[tx_dlf_toolsPublicationDownload->getPageLink()] ' .
 					  'File not found in fileGrp "' .
 					  $this->conf['fileGrpDownload'] . '"',
 					  $this->extKey,
@@ -197,7 +272,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_toolsPdf->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_toolsPublicationDownload->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -209,8 +284,8 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/pdf/class.tx_dlf_toolsPublicationDownload.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/pdf/class.tx_dlf_toolsPublicationDownload.php']);
 }
 
 ?>
