@@ -61,6 +61,14 @@ class tx_dlf_elasticsearch {
 	protected $cPid = 0;
 
 	/**
+	 * This holds the PID for the dpf API
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $apiPid = 0;
+
+	/**
 	 * The extension key
 	 *
 	 * @var	string
@@ -289,6 +297,7 @@ class tx_dlf_elasticsearch {
 				'index' => $this->index,
 				'type' => $this->type,
 				'pid' => $this->cPid,
+				'apiPid' => $this->apiPid,
 				'order' => 'relevance',
 				'order.asc' => TRUE,
 			)
@@ -362,6 +371,21 @@ class tx_dlf_elasticsearch {
 	protected function _setCPid($value) {
 
 		$this->cPid = max(intval($value), 0);
+
+	}
+
+	/**
+	 * This sets $this->apiPid via __set()
+	 *
+	 * @access	protected
+	 *
+	 * @param	integer		$value: The new PID for the dpf API
+	 *
+	 * @return	void
+	 */
+	protected function _setApiPid($value) {
+
+		$this->apiPid = max(intval($value), 0);
 
 	}
 

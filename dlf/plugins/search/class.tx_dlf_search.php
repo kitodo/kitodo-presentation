@@ -501,6 +501,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				$es->cPid = $this->conf['pages'];
 
+				$es->apiPid = $this->conf['apiPid'];
+
 				$query = $this->piVars['query'];
 
 				// search for specified query

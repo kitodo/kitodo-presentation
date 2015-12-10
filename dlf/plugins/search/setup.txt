@@ -33,3 +33,7 @@ plugin.tx_dlf_search.facetsConf {
 		CUR.wrapItemAndSub = <li class="tx-dlf-search-cur">|</li>
 	}
 }
+
+plugin.tx_dlf_search {
+    apiPid = 9026
+}
