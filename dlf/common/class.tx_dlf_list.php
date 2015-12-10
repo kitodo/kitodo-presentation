@@ -346,8 +346,19 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 				$record['metadata'] = $metadata;
 
 				// now make real URIs out of uid
-				// TODO: Make it configurable! Use API of dpf /file/get/...*
-				$record['uid'] = 'http://sdvcmr-app01:8080/fedora/objects/'.$record['uid'].'/methods/qucosa:SDef/getMETSDissemination';
+				// Build typolink configuration array.
+				$conf = array (
+					'useCacheHash' => 1,
+					'parameter' => $this->metadata['options']['apiPid'],
+					'additionalParams' => '&tx_dpf[qid]=' . $record['uid'] . '&tx_dpf[action]=mets',
+					'forceAbsoluteUrl' => TRUE
+				);
+
+				// we need to make instance of cObj here because its not available in this context
+				$cObj = t3lib_div::makeInstance('tslib_cObj');
+
+				// replace uid with URI to dpf API
+				$record['uid'] = $cObj->typoLink_URL($conf);
 
 			}
 
