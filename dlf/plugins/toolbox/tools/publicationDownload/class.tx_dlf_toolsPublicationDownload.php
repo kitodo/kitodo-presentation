@@ -65,7 +65,7 @@ class tx_dlf_toolsPublicationDownload extends tx_dlf_plugin {
 			return $content;
 
 		}
-		
+
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
 
@@ -82,22 +82,28 @@ class tx_dlf_toolsPublicationDownload extends tx_dlf_plugin {
 		// Show all PDF Documents
 		$attachments = $this->getAttachments();
 
-		foreach ($attachments as $id => $file) {
+		$content = '';
 
-			$conf = array (
-				'useCacheHash' => 0,
-				'parameter' => $this->conf['apiPid'],
-				'additionalParams' => '&tx_dpf[qid]=' . $this->doc->recordId . '&tx_dpf[action]=attachment' . '&tx_dpf[attachment]=' . $file['ID'],
-				'forceAbsoluteUrl' => TRUE
-			);
+		if (is_array($attachments)) {
 
-			$title = $file['TITLE'] ? $file['TITLE'] : $file['ID'];
+			foreach ($attachments as $id => $file) {
 
-			// replace uid with URI to dpf API
-			$markerArray['###FILE###'] = $this->cObj->typoLink($title, $conf);
+				$conf = array(
+					'useCacheHash' => 0,
+					'parameter' => $this->conf['apiPid'],
+					'additionalParams' => '&tx_dpf[qid]=' . $this->doc->recordId . '&tx_dpf[action]=attachment' . '&tx_dpf[attachment]=' . $file['ID'],
+					'forceAbsoluteUrl' => TRUE
+				);
+
+				$title = $file['TITLE'] ? $file['TITLE'] : $file['ID'];
+
+				// replace uid with URI to dpf API
+				$markerArray['###FILE###'] = $this->cObj->typoLink($title, $conf);
 
 
-			$content .= $this->cObj->substituteMarkerArray($subpartArray['downloads'], $markerArray);
+				$content .= $this->cObj->substituteMarkerArray($subpartArray['downloads'], $markerArray);
+
+			}
 
 		}
 
