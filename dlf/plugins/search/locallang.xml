@@ -33,7 +33,8 @@
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
 			<label index="tt_content.pi_flexform.extSearch.slotCount">Number of search slots</label>
 			<label index="tt_content.pi_flexform.extSearch.fields">Fields for extended search</label>
-			<label index="tt_content.pi_flexform.searchIn">Allow searching in current document or collection?</label>
+			<label index="tt_content.pi_flexform.collections">Restrict search to these collections</label>
+			<label index="tt_content.pi_flexform.searchIn">Restrict search to current document or collection?</label>
 			<label index="tt_content.pi_flexform.searchIn.none">none</label>
 			<label index="tt_content.pi_flexform.searchIn.document">document only</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">collection only</label>
@@ -62,7 +63,8 @@
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
 			<label index="tt_content.pi_flexform.extSearch.slotCount">Anzahl Suchfelder</label>
 			<label index="tt_content.pi_flexform.extSearch.fields">Felder für erweiterte Suche</label>
-			<label index="tt_content.pi_flexform.searchIn">Erlaube Suche in aktuellem Dokument oder Kollektion?</label>
+			<label index="tt_content.pi_flexform.collections">Suche auf diese Kollektionen einschränken</label>
+			<label index="tt_content.pi_flexform.searchIn">Suche auf aktuelle/s Kollektion/Dokument einschränken?</label>
 			<label index="tt_content.pi_flexform.searchIn.none">nein</label>
 			<label index="tt_content.pi_flexform.searchIn.document">nur Dokument</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">nur Kollektion</label>

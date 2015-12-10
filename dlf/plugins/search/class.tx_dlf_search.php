@@ -104,7 +104,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				$facetKeyVal = explode(':', $facet, 2);
 
-				if ($facetKeyVal[0] == 'collection_faceting') {
+				if ($facetKeyVal[0] == 'collection_faceting' && !strpos($facetKeyVal[1], '" OR "')) {
 
 					$collectionId = tx_dlf_helper::getIdFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
 
@@ -466,8 +466,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => htmlspecialchars($lastQuery),
-				'###FIELD_DOC###' => $this->addCurrentDocument(),
-				'###FIELD_COLL###' => $this->addCurrentCollection(),
+				'###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
+				'###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
 				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
 				'###FACETS_MENU###' => $this->addFacetsMenu()
 			);
@@ -548,9 +548,9 @@ class tx_dlf_search extends tx_dlf_plugin {
 				}
 
 			} elseif (empty($this->piVars['fq']) && $query != "*") {
-			
+
 				$query = tx_dlf_solr::escapeQuery($query);
-			
+
 			}
 
 			// Set query parameters.
@@ -588,6 +588,24 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$label .= sprintf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
 
 				}
+
+			}
+
+			// Add filter query for collection restrictions.
+			if ($this->conf['collections']) {
+
+				$collIds = explode(',', $this->conf['collections']);
+
+				$collIndexNames = array ();
+
+				foreach ($collIds as $collId) {
+
+					$collIndexNames[] = tx_dlf_solr::escapeQuery(tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+
+				}
+
+				// Last value is fake and used for distinction in $this->addCurrentCollection()
+				$params['fq'][] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
 
 			}
 
