@@ -37,3 +37,5 @@ plugin.tx_dlf_search.facetsConf {
 plugin.tx_dlf_search {
     apiPid = 9026
 }
+
+plugin.tx_dlf_toolsPublicationDownload.apiPid < plugin.tx_dlf_search.apiPid

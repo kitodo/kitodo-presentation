@@ -35,7 +35,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_toolsPdf extends tx_dlf_plugin {
+class tx_dlf_toolsPublicationDownload extends tx_dlf_plugin {
 
 	public $scriptRelPath = 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPublicationDownload.php';
 
@@ -55,37 +55,17 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 		// Merge configuration with conf array of toolbox.
 		$this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
-debug($this->conf);
+
 		// Load current document.
 		$this->loadDocument();
 
-		if ($this->doc) {
-			$this->doc->numPages = 1;
-		}
-
-		if ($this->conf['pdf'] == '0' && ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpDownload']))) {
+		if ($this->doc === NULL || empty($this->conf['fileGrpDownload'])) {
 
 			// Quit without doing anything if required variables are not set.
 			return $content;
 
-		} else {
-
-			// Set default values if not set.
-			// page may be integer or string (physical page attribute)
-			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
-
-				$this->piVars['page'] = tx_dlf_helper::intInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
-
-			} else {
-
-				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
-
-			}
-
-			$this->piVars['double'] = tx_dlf_helper::intInRange($this->piVars['double'], 0, 1, 0);
-
 		}
-
+		
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
 
@@ -93,33 +73,35 @@ debug($this->conf);
 
 		} else {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/pdf/template.tmpl'), '###TEMPLATE###');
+			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/publicationDownload/template.tmpl'), '###TEMPLATE###');
 
 		}
 
-		if($this->conf['pdf']) {
-			// Show all PDF Documents
+		$subpartArray['downloads'] = $this->cObj->getSubpart($this->template, '###DOWNLOADS###');
 
-			$markerArray['###PAGE###'] = $this->getAttachments();
+		// Show all PDF Documents
+		$attachments = $this->getAttachments();
 
-			$markerArray['###WORK###'] = '';
+		foreach ($attachments as $id => $file) {
 
-			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+			$conf = array (
+				'useCacheHash' => 0,
+				'parameter' => $this->conf['apiPid'],
+				'additionalParams' => '&tx_dpf[qid]=' . $this->doc->recordId . '&tx_dpf[action]=attachment' . '&tx_dpf[attachment]=' . $file['ID'],
+				'forceAbsoluteUrl' => TRUE
+			);
 
-			return $this->pi_wrapInBaseClass($content);
+			$title = $file['TITLE'] ? $file['TITLE'] : $file['ID'];
 
-		} else {
+			// replace uid with URI to dpf API
+			$markerArray['###FILE###'] = $this->cObj->typoLink($title, $conf);
 
-			// Get single page downloads.
-			$markerArray['###PAGE###'] = $this->getPageLink();
 
-			// Get work download.
-			$markerArray['###WORK###'] = $this->getWorkLink();
+			$content .= $this->cObj->substituteMarkerArray($subpartArray['downloads'], $markerArray);
 
-			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
-
-			return $this->pi_wrapInBaseClass($content);
 		}
+
+		return $this->cObj->substituteSubpart($this->template, '###DOWNLOADS###', $content, TRUE);
 
 	}
 
@@ -127,159 +109,30 @@ debug($this->conf);
 	 * Get PDF document list
 	 * @return html List of attachments
 	 */
-	protected function getAttachments()
-	{
+	protected function getAttachments() {
 
 		// Get pdf documents
 		//
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[1]]['files'][$this->conf['fileGrpDownload']])) {
+		$xPath = 'mets:fileSec/mets:fileGrp[@USE="'.$this->conf['fileGrpDownload'].'"]';
 
-			$documents = '<ul>';
+		$files = $this->doc->mets->xpath($xPath);
 
-			$i = 1;
-			while($this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']])) {
-				// get all pdf documents related to this document
-				$link = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']]);
+		foreach ($files as $key => $value) {
 
-				$title = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['files'][$this->conf['fileGrpDownload']];
+			$file = $value->xpath('mets:file')[0];
 
-				$documents .= '<li>'.$this->cObj->typoLink($title, array ('parameter' => $link, 'title' => $title)).'</li>';
-				$i++;
-			}
-			$documents .= '</ul>';
+			$singleFile = array();
 
-			return $documents;
-		} else {
+			foreach ($file->attributes() as $attribute => $value) {
 
-			$xPath = 'mets:fileSec/mets:fileGrp[@USE="'.$this->conf['fileGrpDownload'].'"]/mets:file/mets:FLocat';
-
-			$files = $this->doc->mets->xpath($xPath);
-
-			$pdfHtml = '<ul>';
-			foreach ($files as $key => $value) {
-
-                // parent
-                $parent = $value->xpath("..")[0];
-                $title = (string) $parent->attributes('http://slub-dresden.de/mets')->LABEL;
-				$url = (string) $value->attributes('http://www.w3.org/1999/xlink')->href;
-
-                if (!$title) {
-				    $title = (string) $value->attributes('http://www.w3.org/1999/xlink')->title;
-                }
-
-                if (!$title) {
-                    $title = (string) $parent->attributes()->ID;
-                }
-
-				$pdfHtml .= '<li><a href="'.$url.'">'.$title.'</a></li>';
-			}
-			$pdfHtml .= '</ul>';
-
-
-			return $pdfHtml;
-		}
-	}
-
-	/**
-	 * Get page's download link
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		Link to downloadable page
-	 */
-	protected function getPageLink() {
-
-		$page1Link = '';
-		$page2Link = '';
-		$pageNumber = $this->piVars['page'];
-
-		// Get image link.
-		$details = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$pageNumber]];
-		$file = $details['files'][$this->conf['fileGrpDownload']];
-		if (!empty($file)) {
-			$page1Link = $this->doc->getFileLocation($file);
-		}
-
-		// Get second page, too, if double page view is activated.
-		if ($this->piVars['double'] && $pageNumber < $this->doc->numPages) {
-			$details = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$pageNumber + 1]];
-			$file = $details['files'][$this->conf['fileGrpDownload']];
-			if (!empty($file)) {
-				$page2Link = $this->doc->getFileLocation($file);
-			}
-		}
-
-		if (TYPO3_DLOG && empty($page1Link) && empty($page2Link)) {
-			t3lib_div::devLog('[tx_dlf_toolsPublicationDownload->getPageLink()] ' .
-					  'File not found in fileGrp "' .
-					  $this->conf['fileGrpDownload'] . '"',
-					  $this->extKey,
-					  SYSLOG_SEVERITY_WARNING);
-		}
-
-		// Wrap URLs with HTML.
-		if (!empty($page1Link)) {
-			if ($this->piVars['double']) {
-				$page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''),
-					array('parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')));
-			} else {
-				$page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''),
-					array('parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')));
-			}
-		}
-		if (!empty($page2Link)) {
-			$page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''),
-				array('parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')));
-		}
-
-		return $page1Link . $page2Link;
-	}
-
-	/**
-	 * Get work's download link
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		Link to downloadable work
-	 */
-	protected function getWorkLink() {
-
-		$workLink = '';
-
-		// Get work link.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[0]]['files'][$this->conf['fileGrpDownload']])) {
-
-			$workLink = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[0]]['files'][$this->conf['fileGrpDownload']]);
-
-		} else {
-
-			$details = $this->doc->getLogicalStructure($this->doc->toplevelId);
-
-			if (!empty($details['files'][$this->conf['fileGrpDownload']])) {
-
-				$workLink = $this->doc->getFileLocation($details['files'][$this->conf['fileGrpDownload']]);
+				$singleFile[$attribute] = $value;
 
 			}
 
+			$attachments[] = $singleFile;
 		}
 
-		// Wrap URLs with HTML.
-		if (!empty($workLink)) {
-
-			$workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), array ('parameter' => $workLink, 'title' => $this->pi_getLL('work', '')));
-
-		} else {
-
-			if (TYPO3_DLOG) {
-
-				t3lib_div::devLog('[tx_dlf_toolsPublicationDownload->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-			}
-
-		}
-
-		return $workLink;
-
+			return $attachments;
 	}
 
 }
