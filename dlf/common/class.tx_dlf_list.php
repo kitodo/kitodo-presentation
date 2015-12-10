@@ -332,20 +332,33 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 				&& $this->metadata['options']['engine'] == 'elasticsearch') {
 
 				// connection established
-				if($this->elasticsearchConnect()) {
+				if ($this->elasticsearchConnect()) {
+
 					// get result from record id
 					$this->es->service->setIndex($this->esConfig['index_name'])->setType($this->esConfig['type_name']);
 
 					$result = $this->es->service->get($record['uid']);
 
-					$metadata = array();
-
 					$metadata = $this->elasticsearchResultWalkRecursive($result);
 
-					$metadata = $this->metadataResult;
-					
 				}
+
 				$record['metadata'] = $metadata;
+
+				// now make real URIs out of uid
+				// Build typolink configuration array.
+				$conf = array (
+					'useCacheHash' => 1,
+					'parameter' => $this->metadata['options']['apiPid'],
+					'additionalParams' => '&tx_dpf[qid]=' . $record['uid'] . '&tx_dpf[action]=mets',
+					'forceAbsoluteUrl' => TRUE
+				);
+
+				// we need to make instance of cObj here because its not available in this context
+				$cObj = t3lib_div::makeInstance('tslib_cObj');
+
+				// replace uid with URI to dpf API
+				$record['uid'] = $cObj->typoLink_URL($conf);
 
 			}
 
@@ -371,28 +384,41 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	/**
 	 * Get all metadata from elasticsearch result recursive
 	 * @param  array $data data from elasticsearch
-	 * @param  string $key  key from last point
+	 * @param  string $keyPoint  key from last point
 	 * @return array       Array with metadata
 	 */
 	public function elasticsearchResultWalkRecursive($data, $keyPoint = '') {
+
+		$metadata = array();
+
 		// try to get all metadata from elasticsearch result
-		foreach($data as $key => $value){
-			if(!is_array($value)){
+		foreach($data as $key => $value) {
+
+			if (!is_array($value)) {
+
 				if(is_int($key) && !empty($keyPoint)) {
+
 					$metadata[$keyPoint] = array($keyPoint => $value);
-					$this->metadataResult[$keyPoint] = array($keyPoint => $value);
+
 				} else {
+
 					$metadata[$key] = array($key => $value);
-					$this->metadataResult[$key] = array($key => $value);
+
 				}
-				
+
 			} else {
+
 				$new_metadata = $this->elasticsearchResultWalkRecursive($value, $key);
-				//$metadata = array_merge($new_metadata,$metadata);
+
+				if (is_array($new_metadata)) {
+
+					$metadata = array_merge($new_metadata, $metadata);
+
+				}
 			}
 
 		}
-		//return $metadata;
+		return $metadata;
 	}
 
 	/**
@@ -690,31 +716,18 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	 */
 	protected function elasticsearchConnect() {
 
-		if(!$this->es){
+		if (!$this->es) {
 
-			// Load index configuration.
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_elasticsearchindexes.index_name, tx_dlf_elasticsearchindexes.type_name',
-					'tx_dlf_elasticsearchindexes',
-					'tx_dlf_elasticsearchindexes.pid='.intval($this->metadata['options']['pid']).tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes'),
-					'',
-					'',
-					''
-			);
+			// Connect to Solr server.
+			if (!$this->es = tx_dlf_elasticsearch::getInstance($this->metadata['options']['index'])) {
 
-			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-
-				// get solr config
-				$conf[0] = $resArray['index_name'];
-				$conf[1] = $resArray['type_name'];
-
-				$this->esConfig = $resArray;
-
-			}
-			
-			if (!$this->es = tx_dlf_elasticsearch::getInstance($conf)) {
 				return FALSE;
+
 			}
+
+			$this->esConfig['index_name'] = $this->metadata['options']['index'];
+			$this->esConfig['type_name'] = $this->metadata['options']['type'];
+
 		}
 
 		return TRUE;

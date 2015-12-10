@@ -61,6 +61,14 @@ class tx_dlf_elasticsearch {
 	protected $cPid = 0;
 
 	/**
+	 * This holds the PID for the dpf API
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $apiPid = 0;
+
+	/**
 	 * The extension key
 	 *
 	 * @var	string
@@ -103,7 +111,7 @@ class tx_dlf_elasticsearch {
 	/**
 	 * This holds the singleton search objects with their core as array key
 	 *
-	 * @var	array(tx_dlf_solr)
+	 * @var	array(tx_dlf_elasticsearch)
 	 * @access protected
 	 */
 	protected static $registry = array ();
@@ -121,52 +129,49 @@ class tx_dlf_elasticsearch {
 	 *
 	 * @access	public
 	 *
-	 * @param	mixed		$core: Name or UID of the core to load
+	 * @param	mixed	$index: Name or UID of the index to load
 	 *
 	 * @return	tx_dlf_solr		Instance of this class
 	 */
-	public static function getInstance($conf) {
+	public static function getInstance($index) {
 
-		// // Save parameter for logging purposes.
-		// $_core = $core;
+		// Save parameter for logging purposes.
+		$_index = $index;
 
 		// // Get core name if UID is given.
-		// if (tx_dlf_helper::testInt($core)) {
+		 if (tx_dlf_helper::testInt($index)) {
 
-		// 	$core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+			 $index = tx_dlf_helper::getIndexName($index, 'tx_dlf_elasticsearchindexes');
 
-		// }
+		 }
 
 		// // Check if core is set.
-		// if (empty($core)) {
+		 if (empty($index)) {
 
-		// 	if (TYPO3_DLOG) {
+		 	if (TYPO3_DLOG) {
 
-		// 		t3lib_div::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
+		 		t3lib_div::devLog('[tx_dlf_elasticsearch->getInstance('.$_index.')] Invalid index name "'.$index.'" for Elasticsearch', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
-		// 	}
+		 	}
 
-		// 	return;
+		 	return;
 
-		// }
- 
-        $name = implode("_", $conf);
-
-		// Check if there is an instance in the registry already.
-		if (is_object(self::$registry[$name]) && self::$registry[$name] instanceof self) {
+		 }
+        // Check if there is an instance in the registry already.
+		if (is_object(self::$registry[$index]) && self::$registry[$index] instanceof self) {
 
 			// Return singleton instance if available.
-			return self::$registry[$name];
+			return self::$registry[$index];
 
 		}
 
 		// Create new instance...
-		$instance = new self($conf);
+		$instance = new self($index);
 
 		// ...and save it to registry.
 		if ($instance->ready) {
 
-			self::$registry[$name] = $instance;
+			self::$registry[$index] = $instance;
 
 			// Return new instance.
 			return $instance;
@@ -175,7 +180,7 @@ class tx_dlf_elasticsearch {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->getInstance()] Could not connect to Elasticsearch server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				t3lib_div::devLog('[tx_dlf_elasticsearch->getInstance()] Could not connect to Elasticsearch server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -202,13 +207,6 @@ class tx_dlf_elasticsearch {
 		// Derive Elasticsearch host name.
 		$host = ($conf['elasticSearchHost'] ? $conf['elasticSearchHost'] : 'localhost');
 
-		// Prepend username and password to hostname.
-		// if ($conf['solrUser'] && $conf['solrPass']) {
-
-		// 	$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
-
-		// }
-
 		// Set port if not set.
 		$port = tx_dlf_helper::intInRange($conf['elasticSearchPort'], 1, 65535, 8180);
 
@@ -231,22 +229,18 @@ class tx_dlf_elasticsearch {
 	 */
 	public function search($query = '') {
 
-		// Perform search.
-		// $results = $this->service->search((string) $query, 0, $this->limit, $this->params);
-		// $results = $this->service->search((string) $query);
+		$esQuery['query']['bool']['should'][0]['query_string']['query'] = $query;
+		$esQuery['query']['bool']['should'][1]['has_child']['query']['query_string']['query'] = $query;
 
-        $esQuery['query']['bool']['should'][0]['query_string']['query'] = $query;
-        $esQuery['query']['bool']['should'][1]['has_child']['query']['query_string']['query'] = $query;
+		$esQuery['query']['bool']['minimum_should_match'] = "1"; // 1
 
-        $esQuery['query']['bool']['minimum_should_match'] = "1"; // 1
+		$esQuery['query']['bool']['should'][1]['has_child']['child_type'] = "datastream"; // 1
 
-        $esQuery['query']['bool']['should'][1]['has_child']['child_type'] = "datastream"; // 1
+		$esQuery['size'] = $this->limit;
 
-        $results = $this->service->search($esQuery);
+		// perform search
+		$results = $this->service->search($esQuery);
 
-
-		//$this->cPid = 9;
-		 
 		$this->numberOfHits = $results['hits']['total'];
 
 		$toplevel = array ();
@@ -275,17 +269,13 @@ class tx_dlf_elasticsearch {
 
 		}
 
-		// Keep track of relevance.
-		$i = 0;
-
 		foreach ($results['hits']['hits'] as $doc){
-			$toplevel[] = array ( 
+			$toplevel[] = array (
 				'u' => $doc['_source']['PID'],
-				's' => array(),
-				'p' => ''
+				's' => $doc['_score'],
+				'p' => array()
 			);
 		}
-
 
 		// Save list of documents.
 		$list = t3lib_div::makeInstance('tx_dlf_list');
@@ -304,8 +294,10 @@ class tx_dlf_elasticsearch {
 				'select' => $query,
 				'userid' => 0,
 				'params' => $this->params,
-				// 'core' => $this->core,
+				'index' => $this->index,
+				'type' => $this->type,
 				'pid' => $this->cPid,
+				'apiPid' => $this->apiPid,
 				'order' => 'relevance',
 				'order.asc' => TRUE,
 			)
@@ -383,6 +375,21 @@ class tx_dlf_elasticsearch {
 	}
 
 	/**
+	 * This sets $this->apiPid via __set()
+	 *
+	 * @access	protected
+	 *
+	 * @param	integer		$value: The new PID for the dpf API
+	 *
+	 * @return	void
+	 */
+	protected function _setApiPid($value) {
+
+		$this->apiPid = max(intval($value), 0);
+
+	}
+
+	/**
 	 * This sets $this->limit via __set()
 	 *
 	 * @access	protected
@@ -429,7 +436,7 @@ class tx_dlf_elasticsearch {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+				t3lib_div::devLog('[tx_dlf_elasticsearch->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -461,7 +468,7 @@ class tx_dlf_elasticsearch {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
+				t3lib_div::devLog('[tx_dlf_elasticsearch->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
 
 			}
 
@@ -481,7 +488,7 @@ class tx_dlf_elasticsearch {
 	 *
 	 * @return	void
 	 */
-	protected function __construct($elasticsearchConf) {
+	protected function __construct($index) {
 
 		$extensionPath = t3lib_extMgm::extPath('dlf');
 
@@ -497,44 +504,48 @@ class tx_dlf_elasticsearch {
 		// get port
 		$port = tx_dlf_helper::intInRange($conf['elasticSearchPort'], 1, 65535, 9200);
 
-		// index
-		// $index = $conf['elasticSearchIndex'];
+		// type
+		$type = 'object';
 
-		// //type
-		// $type = $conf['elasticSearchType'];
-		
-		// index
-		$this->index = $elasticsearchConf[0];
-		//type
-		$this->type = $elasticsearchConf[1];
 		// configuration array for elasticsearch client
 		$params = array();
-		
+
 		if ($conf['elasticSearchUser'] && $conf['elasticSearchPass']) {
 
 			// Authentication configuration
 			$params['connectionParams']['auth'] = array(
-		    $conf['elasticSearchUser'],
-		    $conf['elasticSearchPass'],
-		    'Basic' 
+				$conf['elasticSearchUser'],
+				$conf['elasticSearchPass'],
+				'Basic'
 			);
 
 		}
 
-		
+		// establish connection
+		$this->service = Client::connection(
+			array(
+				'servers' => $host.':'.$port,
+				'protocol' => 'http',
+				'index' => $index,
+				'type' => $type
+			)
+		);
 
-		// establish connection 
-		$this->service = Client::connection(array(
-		    'servers' => $host.':'.$port,
-		    'protocol' => 'http',
-		    'index' => $this->index,
-		    'type' => $this->type
-		    // 'index' => $index,
-		    // 'type' => $type
-		));
+		if ($this->service) {
 
-		// Instantiation successful!
-		$this->ready = TRUE;
+			$this->index = $index;
+
+			$this->type = $type;
+
+			// Instantiation successful!
+			$this->ready = TRUE;
+
+		} else {
+
+			// Instantiation not successful!
+			$this->ready = FALSE;
+
+		}
 
 	}
 

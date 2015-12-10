@@ -481,26 +481,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 			return $this->pi_wrapInBaseClass($content);
 
 		} else {
+
 			// switch between elasticsearch and solr
-			if($this->conf['searchengine'] == "elasticsearch"){
+			if ($this->conf['searchengine'] == "elasticsearch") {
 
-				// get elasticsearch configuration
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_elasticsearchindexes.index_name,tx_dlf_elasticsearchindexes.type_name',
-					'tx_dlf_elasticsearchindexes',
-					'tx_dlf_elasticsearchindexes.pid='.$this->conf['pages'].tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes'),
-					'',
-					'',
-					'1'
-				);
-
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-					// Get title information.
-					$elasticsearchConf = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-				}
-				
-				$es = tx_dlf_elasticsearch::getInstance($elasticsearchConf);
+				$es = tx_dlf_elasticsearch::getInstance($this->conf['elasticsearch']);
 
 				// Build label for result list.
 				$label = $this->pi_getLL('search', '', TRUE);
@@ -511,13 +496,14 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				}
 
+				// Set search parameters.
+				$es->limit = max(intval($this->conf['limit']), 1);
+
 				$es->cPid = $this->conf['pages'];
 
-				$query = $this->piVars['query'];
+				$es->apiPid = $this->conf['apiPid'];
 
-				// set elasticsearch configuration
-				$es->service->setIndex($elasticsearchConf[0]);
-				$es->service->setType($elasticsearchConf[1]);
+				$query = $this->piVars['query'];
 
 				// search for specified query
 				$results = $es->search($query);
@@ -529,7 +515,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 				);
 
 				$results->save();
-				
 
 				// Clean output buffer.
 				t3lib_div::cleanOutputBuffers();
@@ -552,7 +537,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 				exit;
 
 			} else {
-			
 
 				// Instantiate search object.
 				$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
@@ -619,12 +603,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					}
 
-			}
-			else if (empty($this->piVars['fq']) && $query != "*") {
-			
-				$query = tx_dlf_solr::escapeQuery($query);
-			
-			}
+				} else if (empty($this->piVars['fq']) && $query != "*") {
+
+					$query = tx_dlf_solr::escapeQuery($query);
+
+				}
 
 				// Set query parameters.
 				$params = array ();
