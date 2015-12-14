@@ -130,7 +130,6 @@ class tx_dlf_em {
 		return $this->content;
 
 	}
-	
 
 	/**
 	 * Check if a connection to a Elasticsearch server could be established with the given credentials.
@@ -153,7 +152,7 @@ class tx_dlf_em {
 
 			$host = (!empty($this->conf['elasticSearchHost']) ? $this->conf['elasticSearchHost'] : 'localhost');
 
-		} 
+		}
 
 		// Set port if not set.
 		$port = (!empty($this->conf['elasticSearchPort']) ? tx_dlf_helper::intInRange($this->conf['elasticSearchPort'], 0, 65535, 9200) : 9200);
@@ -172,8 +171,8 @@ class tx_dlf_em {
 
 		$response = json_decode(@file_get_contents($url, FALSE, $context));
 
-		if($response) {
-			if($response->status == "200"){
+		if ($response) {
+			if ($response->status == "200") {
 				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
 					sprintf($GLOBALS['LANG']->getLL('elasticSearch.status'), (string) $response->status),
@@ -185,6 +184,7 @@ class tx_dlf_em {
 				$this->content .= $message->render();
 
 				return $this->content;
+
 			} else {
 				$message = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
@@ -214,8 +214,6 @@ class tx_dlf_em {
 		}
 
 		$extensionPath = t3lib_extMgm::extPath('dlf');
-
-
 
 	}
 
