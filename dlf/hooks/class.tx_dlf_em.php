@@ -132,6 +132,92 @@ class tx_dlf_em {
 	}
 
 	/**
+	 * Check if a connection to a Elasticsearch server could be established with the given credentials.
+	 *
+	 * @access	public
+	 *
+	 * @param	array		&$params: An array with parameters
+	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 *
+	 * @return	string		Message informing the user of success or failure
+	 */
+	public function checkElasticsearchConnection(&$params, &$pObj) {
+
+		// Prepend username and password to hostname.
+		if (!empty($this->conf['elasticSearchUser']) && !empty($this->conf['elasticSearchPass'])) {
+
+			$host = $this->conf['elasticSearchUser'].':'.$this->conf['elasticSearchPass'].'@'.(!empty($this->conf['elasticSearchHost']) ? $this->conf['elasticSearchHost'] : 'localhost');
+
+		} else {
+
+			$host = (!empty($this->conf['elasticSearchHost']) ? $this->conf['elasticSearchHost'] : 'localhost');
+
+		}
+
+		// Set port if not set.
+		$port = (!empty($this->conf['elasticSearchPort']) ? tx_dlf_helper::intInRange($this->conf['elasticSearchPort'], 0, 65535, 9200) : 9200);
+
+		// Build request URI.
+		$url = 'http://'.$host.':'.$port.'/';
+
+		//$url = 'http://127.0.0.1:9200';
+
+		$context = stream_context_create(array (
+			'http' => array (
+				'method' => 'GET',
+				'user_agent' => (!empty($this->conf['useragent']) ? $this->conf['useragent'] : ini_get('user_agent'))
+			)
+		));
+
+		$response = json_decode(@file_get_contents($url, FALSE, $context));
+
+		if ($response) {
+			if ($response->status == "200") {
+				$message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					sprintf($GLOBALS['LANG']->getLL('elasticSearch.status'), (string) $response->status),
+					$GLOBALS['LANG']->getLL('solr.connected'),
+					($status[0] == 0 ? t3lib_FlashMessage::OK : t3lib_FlashMessage::WARNING),
+					FALSE
+				);
+
+				$this->content .= $message->render();
+
+				return $this->content;
+
+			} else {
+				$message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					sprintf($GLOBALS['LANG']->getLL('elasticSearch.error'), $url),
+					$GLOBALS['LANG']->getLL('solr.notConnected'),
+					t3lib_FlashMessage::WARNING,
+					FALSE
+				);
+
+				$this->content .= $message->render();
+
+				return $this->content;
+
+			}
+		} else {
+			$message = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					sprintf($GLOBALS['LANG']->getLL('elasticSearch.error'), $url),
+					$GLOBALS['LANG']->getLL('solr.notConnected'),
+					t3lib_FlashMessage::WARNING,
+					FALSE
+				);
+
+				$this->content .= $message->render();
+
+				return $this->content;
+		}
+
+		$extensionPath = t3lib_extMgm::extPath('dlf');
+
+	}
+
+	/**
 	 * Make sure a backend user exists and is configured properly.
 	 *
 	 * @access	protected
@@ -329,7 +415,8 @@ class tx_dlf_em {
 					'tx_dlf_metadata',
 					'tx_dlf_metadataformat',
 					'tx_dlf_formats',
-					'tx_dlf_solrcores'
+					'tx_dlf_solrcores',
+					'tx_dlf_elasticsearchindexes'
 				),
 				'tables_modify' => array (
 					'tx_dlf_documents',

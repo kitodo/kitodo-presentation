@@ -472,7 +472,7 @@ class tx_dlf_helper {
 		// Sanitize input.
 		$uid = max(intval($uid), 0);
 
-		if (!$uid || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'))) {
+		if (!$uid || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores', 'tx_dlf_elasticsearchindexes'))) {
 
 			if (TYPO3_DLOG) {
 
