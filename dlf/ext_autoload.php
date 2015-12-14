@@ -37,6 +37,7 @@ return array (
 	'tx_dlf_module' => $extensionPath.'common/class.tx_dlf_module.php',
 	'tx_dlf_plugin' => $extensionPath.'common/class.tx_dlf_plugin.php',
 	'tx_dlf_solr' => $extensionPath.'common/class.tx_dlf_solr.php',
+	'tx_dlf_elasticsearch' => $extensionPath.'common/class.tx_dlf_elasticsearch.php',
 	'tx_dlf_teihdr' => $extensionPath.'common/class.tx_dlf_teihdr.php',
 	'tx_dlf_em' => $extensionPath.'hooks/class.tx_dlf_em.php',
 	'tx_dlf_hacks' => $extensionPath.'hooks/class.tx_dlf_hacks.php',
@@ -59,8 +60,9 @@ return array (
 	'tx_dlf_toolbox' => $extensionPath.'plugins/toolbox/class.tx_dlf_toolbox.php',
 	'tx_dlf_toolsPdf' => $extensionPath.'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php',
 	'tx_dlf_toolsFulltext' => $extensionPath.'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php',
+	'tx_dlf_toolsPublicationDownload' => $extensionPath.'plugins/toolbox/tools/publicationDownload/class.tx_dlf_toolsPublicationDownload.php',
 	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php',
-	'tx_dlf_doctype' => $extensionPath.'plugins/doctype/class.tx_dlf_doctype.php'
+	'tx_dlf_doctype' => $extensionPath.'plugins/doctype/class.tx_dlf_doctype.php',
 );
 
 ?>

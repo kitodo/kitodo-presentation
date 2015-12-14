@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <!--
   Copyright notice
-  
+
   (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
   All rights reserved
-  
+
   This script is part of the TYPO3 project. The TYPO3 project is
   free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   The GNU General Public License can be found at
   http://www.gnu.org/copyleft/gpl.html.
-  
+
   This script is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   This copyright notice MUST APPEAR in all copies of the script!
 -->
 <T3locallang>
@@ -30,6 +30,7 @@
 		<languageKey index="default" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
+			<label index="tt_content.pi_flexform.elasticsearch">Elasticsearch Index</label>
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
 			<label index="tt_content.pi_flexform.extSearch.slotCount">Number of search slots</label>
 			<label index="tt_content.pi_flexform.extSearch.fields">Fields for extended search</label>
@@ -39,6 +40,9 @@
 			<label index="tt_content.pi_flexform.searchIn.document">document only</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">collection only</label>
 			<label index="tt_content.pi_flexform.searchIn.all">both</label>
+			<label index="tt_content.pi_flexform.searchEngine">Choose Search Engine</label>
+			<label index="tt_content.pi_flexform.searchEngine.solr">Solr</label>
+			<label index="tt_content.pi_flexform.searchEngine.elasticsearch">Elasticsearch</label>
 			<label index="tt_content.pi_flexform.facets">Show these facets</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximum facet values</label>
 			<label index="tt_content.pi_flexform.resetFacets">Allow to reset facets</label>
@@ -60,6 +64,7 @@
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
+			<label index="tt_content.pi_flexform.elasticsearch">Elasticsearch Index</label>
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
 			<label index="tt_content.pi_flexform.extSearch.slotCount">Anzahl Suchfelder</label>
 			<label index="tt_content.pi_flexform.extSearch.fields">Felder für erweiterte Suche</label>
@@ -69,6 +74,9 @@
 			<label index="tt_content.pi_flexform.searchIn.document">nur Dokument</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">nur Kollektion</label>
 			<label index="tt_content.pi_flexform.searchIn.all">beides</label>
+			<label index="tt_content.pi_flexform.searchEngine">Suchengine wählen</label>
+			<label index="tt_content.pi_flexform.searchEngine.solr">Solr</label>
+			<label index="tt_content.pi_flexform.searchEngine.elasticsearch">Elasticsearch</label>
 			<label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximale Facettenwerte</label>
 			<label index="tt_content.pi_flexform.resetFacets">Facetten zurücksetzen erlauben</label>

@@ -800,6 +800,49 @@ $TCA['tx_dlf_solrcores'] = array (
 	),
 );
 
+$TCA['tx_dlf_elasticsearchindexes'] = array (
+	'ctrl' => $TCA['tx_dlf_elasticsearchindexes']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'label,index_name,type_name',
+	),
+	'feInterface' => $TCA['tx_dlf_elasticsearchindexes']['feInterface'],
+	'columns' => array (
+		'label' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_elasticsearchindexes.label',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'required,trim',
+			),
+		),
+		'index_name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_elasticsearchindexes.index_name',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'alphanum,unique',
+			),
+		),
+		'type_name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_elasticsearchindexes.type_name',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'alphanum,unique',
+			),
+		),
+	),
+	'types' => array (
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_elasticsearchindexes.tab1, label;;;;1-1-1, index_name;;;;2-2-2, type_name;;;;2-2-2'),
+	),
+	'palettes' => array (
+		'1' => array ('showitem' => ''),
+	),
+);
+
 $TCA['tx_dlf_collections'] = array (
 	'ctrl' => $TCA['tx_dlf_collections']['ctrl'],
 	'interface' => array (
