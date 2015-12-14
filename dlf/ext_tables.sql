@@ -161,6 +161,25 @@ CREATE TABLE tx_dlf_solrcores (
 );
 
 --
+-- Table structure for table 'tx_dlf_elasticsearchindexes'
+--
+CREATE TABLE tx_dlf_elasticsearchindexes (
+    uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    tstamp int(11) DEFAULT '0' NOT NULL,
+    crdate int(11) DEFAULT '0' NOT NULL,
+    cruser_id int(11) DEFAULT '0' NOT NULL,
+    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    label tinytext NOT NULL,
+    index_name tinytext NOT NULL,
+    type_name tinytext NOT NULL,
+
+    PRIMARY KEY (uid),
+    KEY parent (pid),
+    INDEX index_name (index_name(32))
+);
+
+--
 -- Table structure for table 'tx_dlf_collections'
 --
 CREATE TABLE tx_dlf_collections (
