@@ -236,6 +236,9 @@ class tx_dlf_elasticsearch {
 
 		$esQuery['query']['bool']['should'][1]['has_child']['child_type'] = "datastream"; // 1
 
+		// STATE inactive
+		$esQuery['query']['bool']['must'][] = array('match' => array('STATE' => 'A'));
+
 		$esQuery['size'] = $this->limit;
 
 		// perform search
