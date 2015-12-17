@@ -113,17 +113,17 @@ limitations under the License.
 		<!-- Type of document (eg. monograph, chapter, etc.) -->
 		<field name="type" type="string" indexed="true" stored="true" required="true" default="" />
 		<!-- Next two fields are mandatory for identifying documents. -->
-		<field name="title" type="standard" indexed="true" stored="true" default="" multiValued="false" />
-		<field name="volume" type="standard" indexed="true" stored="true" multiValued="false" />
+		<field name="title" type="standard" indexed="true" stored="true" multiValued="false" default="" />
+		<field name="volume" type="standard" indexed="true" stored="true" multiValued="false" default="" />
 		<!-- URL of thumbnail image for the document. -->
-		<field name="thumbnail" type="string" indexed="false" stored="true" default="" multiValued="false" />
+		<field name="thumbnail" type="string" indexed="false" stored="true" multiValued="false" default="" />
 		<!-- CatchAll field. See <copyField> below. -->
-		<field name="default" type="standard" indexed="true" stored="false" required="true" default="" multiValued="true" />
-		<field name="timestamp" type="date" indexed="true" stored="true" required="true" default="NOW" multiValued="false" />
+		<field name="default" type="standard" indexed="true" stored="false" required="true" multiValued="true" default="" />
+		<field name="timestamp" type="date" indexed="true" stored="true" required="true" multiValued="false" default="NOW" />
 		<!-- Autocomplete field for search form. -->
 		<field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
 		<!-- Fulltext field for OCR results. -->
-		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" />
+		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" />
 
 		<!--
 			The following dynamic fields define all possible field variants.
