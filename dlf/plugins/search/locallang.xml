@@ -29,6 +29,9 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
+			<label index="tt_content.pi_flexform.fulltext">Enable fulltext search?</label>
+			<label index="tt_content.pi_flexform.fulltext.yes">yes</label>
+			<label index="tt_content.pi_flexform.fulltext.no">no</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
 			<label index="tt_content.pi_flexform.elasticsearch">Elasticsearch Index</label>
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
@@ -60,9 +63,14 @@
 			<label index="OR">or</label>
 			<label index="NOT">not</label>
 			<label index="resetFacet">Reset selection (%s)</label>
+			<label index="inFulltext">in fulltext</label>
+			<label index="inMetadata">in metadata</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+			<label index="tt_content.pi_flexform.fulltext">Volltext-Suche aktivieren?</label>
+			<label index="tt_content.pi_flexform.fulltext.yes">ja</label>
+			<label index="tt_content.pi_flexform.fulltext.no">nein</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
 			<label index="tt_content.pi_flexform.elasticsearch">Elasticsearch Index</label>
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
@@ -94,6 +102,8 @@
 			<label index="OR">oder</label>
 			<label index="NOT">nicht</label>
 			<label index="resetFacet">Auswahl entfernen (%s)</label>
+			<label index="inFulltext">im Volltext</label>
+			<label index="inMetadata">in Metadaten</label>
 		</languageKey>
 	</data>
 </T3locallang>

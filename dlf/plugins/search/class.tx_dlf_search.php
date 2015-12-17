@@ -222,7 +222,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		foreach (array ('AND', 'OR', 'NOT') as $operator) {
 
-			$operatorOptions .= '<option class="tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
+			$operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
 
 		}
 
@@ -233,16 +233,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		foreach ($searchFields as $searchField) {
 
-			$fieldSelectorOptions .= '<option class="tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
+			$fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
 
 		}
 
 		for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
 
 			$markerArray = array (
-				'###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator-'.$i.'" name="tx_dlf[extOperator]['.$i.']">'.$operatorOptions.'</select>',
-				'###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field-'.$i.'" name="tx_dlf[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
-				'###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query-'.$i.'" type="text" name="tx_dlf[extQuery]['.$i.']" />'
+				'###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator tx-dlf-search-operator-'.$i.'" name="'.$this->prefixId.'[extOperator]['.$i.']">'.$operatorOptions.'</select>',
+				'###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field tx-dlf-search-field-'.$i.'" name="'.$this->prefixId.'[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
+				'###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query tx-dlf-search-query-'.$i.'" type="text" name="'.$this->prefixId.'[extQuery]['.$i.']" />'
 			);
 
 			$extendedSearch .= $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
@@ -305,6 +305,33 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$TSconfig = tx_dlf_helper::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
 
 		return $this->cObj->HMENU($TSconfig);
+
+	}
+
+	/**
+	 * Adds the fulltext switch to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		HTML output of fulltext switch
+	 */
+	protected function addFulltextSwitch() {
+
+		// Check for plugin configuration.
+		if (empty($this->conf['fulltext'])) {
+
+			return '';
+
+		}
+
+		$output = array (
+			'<input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1"'.(!empty($this->piVars['fulltext']) ? 'checked="checked"' : '').' />',
+			'<label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('inFulltext', '').'</label>',
+			'<input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0"'.(empty($this->piVars['fulltext']) ? 'checked="checked"' : '').' />',
+			'<label for="tx-dlf-search-fulltext-no">'.$this->pi_getLL('inMetadata', '').'</label>',
+		);
+
+		return implode(' ', $output);
 
 	}
 
@@ -466,6 +493,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
 				'###QUERY###' => htmlspecialchars($lastQuery),
+				'###FULLTEXTSWITCH###' => $this->addFulltextSwitch(),
 				'###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
 				'###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
 				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
@@ -553,6 +581,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				}
 
+				// Set search parameters.
+				$solr->limit = max(intval($this->conf['limit']), 1);
+
+				$solr->cPid = $this->conf['pages'];
+
 				// Build label for result list.
 				$label = $this->pi_getLL('search', '', TRUE);
 
@@ -562,24 +595,22 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				}
 
-				// Set search parameters.
-				$solr->limit = max(intval($this->conf['limit']), 1);
-
-				$solr->cPid = $this->conf['pages'];
-
 				// Set search query.
-				$query = $this->piVars['query'];
+				if (!empty($this->piVars['fulltext'])) {
+
+					// Search in fulltext field if applicable.
+					$query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
+
+				} else {
+
+						$query = tx_dlf_solr::escapeQuery($query);
+
+				}
 
 				// Add extended search query.
 				if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
 
-					if (!empty($query)) {
-
-						$query = tx_dlf_solr::escapeQuery($query);
-
-					}
-
-					$allowedOperators = array ('AND', 'OR', 'NOT');
+					$allowedOperators = array('AND', 'OR', 'NOT');
 
 					$allowedFields = t3lib_div::trimExplode(',', $this->conf['extendedFields'], TRUE);
 
@@ -603,10 +634,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					}
 
-				} elseif (empty($this->piVars['fq']) && $query != "*") {
-
-					$query = tx_dlf_solr::escapeQuery($query);
-
 				}
 
 				// Set query parameters.
@@ -615,7 +642,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				// Add filter query for faceting.
 				if (!empty($this->piVars['fq'])) {
 
-					$params = array ('fq' => $this->piVars['fq']);
+					$params['fq'] = $this->piVars['fq']);
 
 				}
 

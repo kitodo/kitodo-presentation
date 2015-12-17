@@ -54,6 +54,27 @@
 							</config>
 						</TCEforms>
 					</pages>
+					<fulltext>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext</label>
+							<config>
+								<type>radio</type>
+								<items type="array">
+									<numIndex index="0" type="array">
+										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.yes</numIndex>
+										<numIndex index="1">yes</numIndex>
+									</numIndex>
+									<numIndex index="1" type="array">
+										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.no</numIndex>
+										<numIndex index="1">no</numIndex>
+									</numIndex>
+								</items>
+								<maxitems>1</maxitems>
+								<minitems>1</minitems>
+							</config>
+						</TCEforms>
+					</fulltext>
 					<searchengine>
 						<TCEforms>
 							<onChange>reload</onChange>
