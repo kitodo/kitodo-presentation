@@ -275,6 +275,7 @@ class tx_dlf_elasticsearch {
 		foreach ($results['hits']['hits'] as $doc){
 			$toplevel[] = array (
 				'u' => $doc['_source']['PID'],
+				'h' => '',
 				's' => $doc['_score'],
 				'p' => array()
 			);
