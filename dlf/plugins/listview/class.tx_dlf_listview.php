@@ -98,6 +98,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$i = 0;
 
+		$skip = NULL;
+
 		// Add links to pages.
 		while ($i < $maxPages) {
 
@@ -115,7 +117,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				$skip = TRUE;
 
-			} elseif ($skip == TRUE) {
+			} elseif ($skip === TRUE) {
 
 				$output .= $this->pi_getLL('skip', '...', TRUE).$separator;
 

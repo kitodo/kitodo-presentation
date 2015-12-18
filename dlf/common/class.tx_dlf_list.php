@@ -202,7 +202,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 		$record = array ();
 
-		if (is_array($element) && array_keys($element) == array ('u', 's', 'p')) {
+		if (is_array($element) && array_keys($element) == array ('u', 'h', 's', 'p')) {
 
 			// Return already processed record if possible.
 			if (!empty($this->records[$element['u']])) {

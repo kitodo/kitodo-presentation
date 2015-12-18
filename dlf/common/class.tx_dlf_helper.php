@@ -96,11 +96,9 @@ class tx_dlf_helper {
 
 		foreach ($haystack as $key => $value) {
 
-			$current = $key;
-
 			if (($strict && $value === $needle) || (!$strict && $value == $needle) || (is_array($value) && self::array_search_recursive($needle, $value, $strict) !== FALSE)) {
 
-				return $current;
+				return $key;
 
 			}
 
@@ -1186,7 +1184,7 @@ class tx_dlf_helper {
 		/* The $labels already contain the translated content element, but with the index_name of the translated content element itself
 		 * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
 		 * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
-		
+
 		// First fetch the uid of the received index_name
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid',
@@ -1196,13 +1194,13 @@ class tx_dlf_helper {
 				'',
 				''
 		);
-		
+
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-				
+
 			// Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-				
+
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-		
+
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'index_name',
 					$table,
@@ -1211,13 +1209,13 @@ class tx_dlf_helper {
 					'',
 					''
 			);
-		
+
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-		
+
 				// If there is an translated content element, overwrite the received $index_name.
-		
+
 				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-		
+
 				$index_name = $resArray['index_name'];
 			}
 		}
