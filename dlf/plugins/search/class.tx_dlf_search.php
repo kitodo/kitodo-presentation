@@ -643,7 +643,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				// Add filter query for faceting.
 				if (!empty($this->piVars['fq'])) {
 
-					$params['fq'] = $this->piVars['fq']);
+					$params['fq'] = $this->piVars['fq'];
 
 				}
 
