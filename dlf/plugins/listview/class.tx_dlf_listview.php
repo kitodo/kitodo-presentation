@@ -430,10 +430,12 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Translate document type.
 					} elseif ($index_name == 'type' && !empty($value)) {
 
+						$_value = $value;
+
 						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
 
 						// Add page number for single pages.
-						if ($value == 'page') {
+						if ($_value == 'page') {
 
 							$value .= ' '.intval($subpart['page']);
 
