@@ -63,11 +63,11 @@
 								<items type="array">
 									<numIndex index="0" type="array">
 										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.yes</numIndex>
-										<numIndex index="1">yes</numIndex>
+										<numIndex index="1">1</numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
 										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.no</numIndex>
-										<numIndex index="1">no</numIndex>
+										<numIndex index="1">0</numIndex>
 									</numIndex>
 								</items>
 								<maxitems>1</maxitems>
