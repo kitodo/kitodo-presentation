@@ -141,6 +141,67 @@ class tx_dlf_solr {
 	}
 
 	/**
+	 * Escape all special characters in a query string while retaining valid field queries
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$query: The query string
+	 * @param	integer		$pid: The PID for the field configuration
+	 *
+	 * @return	string		The escaped query string
+	 */
+	public static function escapeQueryKeepField($query, $pid) {
+
+		// Is there a field query?
+		if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(.*\)$/', $query)) {
+
+			// Get all indexed fields.
+			$fields = array();
+
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'index_name,tokenized,stored',
+				'tx_dlf_metadata',
+				'indexed=1 AND pid=' . intval($pid) . ' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)' . tx_dlf_helper::whereClause('tx_dlf_metadata'),
+				'',
+				'',
+				''
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+
+					$fields[] = $resArray[0].'_'.($resArray[1] ? 't' : 'u').($resArray[2] ? 's' : 'u').'i';
+
+				}
+
+			}
+
+			// Check if queried field is valid.
+			$splitQuery = explode(':', $query, 2);
+
+			if (in_array($splitQuery[0], $fields)) {
+
+				$query = $splitQuery[0].':('.self::escapeQuery(trim($splitQuery[1], '()')).')';
+
+			} else {
+
+				$query = self::escapeQuery($query);
+
+			}
+
+		} elseif (!empty($query) && $query !== '*') {
+
+			// Don't escape plain asterisk search.
+			$query = self::escapeQuery($query);
+
+		}
+
+		return $query;
+
+	}
+
+	/**
 	 * This is a singleton class, thus instances must be created by this method
 	 *
 	 * @access	public

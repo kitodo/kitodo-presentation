@@ -603,7 +603,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				} else {
 
-						$query = tx_dlf_solr::escapeQuery($query);
+					// Retain given search field if valid.
+					$query = tx_dlf_solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
 
 				}
 
