@@ -717,7 +717,7 @@ class tx_dlf_solr {
 
 		}
 
-		$solrInfo = self::getSolrInfo($core);
+		$solrInfo = self::getSolrConnectionInfo($core);
 
 		// Instantiate Apache_Solr_Service class.
 		$this->service = t3lib_div::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
