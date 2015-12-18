@@ -1701,7 +1701,7 @@ final class tx_dlf_document {
 			}
 
 			// Are there any fulltext files available?
-			if (in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
+			if (!empty($extConf['fileGrpFulltext']) && in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
 
 				$this->hasFulltext = TRUE;
 

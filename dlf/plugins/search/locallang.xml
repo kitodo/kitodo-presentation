@@ -55,6 +55,8 @@
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
 			<label index="label.query">Search for:</label>
 			<label index="label.submit">Search</label>
+			<label index="label.inFulltext">in fulltext</label>
+			<label index="label.inMetadata">in metadata</label>
 			<label index="search">Search</label>
 			<label index="for"> for "%s"</label>
 			<label index="in"> in "%s"</label>
@@ -63,8 +65,6 @@
 			<label index="OR">or</label>
 			<label index="NOT">not</label>
 			<label index="resetFacet">Reset selection (%s)</label>
-			<label index="inFulltext">in fulltext</label>
-			<label index="inMetadata">in metadata</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -94,6 +94,8 @@
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
 			<label index="label.query">Suchen nach:</label>
 			<label index="label.submit">Suchen</label>
+			<label index="label.inFulltext">im Volltext</label>
+			<label index="label.inMetadata">in Metadaten</label>
 			<label index="search">Suche</label>
 			<label index="for"> nach "%s"</label>
 			<label index="in"> in "%s"</label>
@@ -102,8 +104,6 @@
 			<label index="OR">oder</label>
 			<label index="NOT">nicht</label>
 			<label index="resetFacet">Auswahl entfernen (%s)</label>
-			<label index="inFulltext">im Volltext</label>
-			<label index="inMetadata">in Metadaten</label>
 		</languageKey>
 	</data>
 </T3locallang>

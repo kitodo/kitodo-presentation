@@ -324,14 +324,15 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		}
 
-		$output = array (
-			'<input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1"'.(!empty($this->piVars['fulltext']) ? 'checked="checked"' : '').' />',
-			'<label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('inFulltext', '').'</label>',
-			'<input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0"'.(empty($this->piVars['fulltext']) ? 'checked="checked"' : '').' />',
-			'<label for="tx-dlf-search-fulltext-no">'.$this->pi_getLL('inMetadata', '').'</label>',
-		);
+		$output = ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1"'.(!empty($this->piVars['fulltext']) ? 'checked="checked"' : '').' />';
 
-		return implode(' ', $output);
+		$output .= ' <label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('label.inFulltext', '').'</label>';
+
+		$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0"'.(empty($this->piVars['fulltext']) ? 'checked="checked"' : '').' />';
+
+		$output .= ' <label for="tx-dlf-search-fulltext-no">'.$this->pi_getLL('label.inMetadata', '').'</label>';
+
+		return $output;
 
 	}
 
