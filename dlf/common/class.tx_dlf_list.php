@@ -200,8 +200,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 	 */
 	protected function getRecord($element) {
 
-		$record = array ();
-
 		if (is_array($element) && array_keys($element) == array ('u', 'h', 's', 'p')) {
 
 			// Return already processed record if possible.
@@ -767,6 +765,9 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 					$this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
 
 				}
+
+				// Add static fields.
+				$this->solrConfig['type'] = 'type';
 
 			} else {
 

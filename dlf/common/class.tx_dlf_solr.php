@@ -532,6 +532,7 @@ class tx_dlf_solr {
 			'description' => '',
 			'options' => array (
 				'source' => 'search',
+				'engine' => 'solr',
 				'select' => $query,
 				'userid' => 0,
 				'params' => $this->params,

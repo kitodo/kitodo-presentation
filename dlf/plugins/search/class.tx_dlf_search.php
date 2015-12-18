@@ -324,13 +324,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		}
 
-		$output = ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1"'.(!empty($this->piVars['fulltext']) ? ' checked="checked"' : '').' />';
-
-		$output .= ' <label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('label.inFulltext', '').'</label>';
-
-		$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0"'.(empty($this->piVars['fulltext']) ? ' checked="checked"' : '').' />';
+		$output = ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0" checked="checked" />';
 
 		$output .= ' <label for="tx-dlf-search-fulltext-no">'.$this->pi_getLL('label.inMetadata', '').'</label>';
+
+		$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1" />';
+
+		$output .= ' <label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('label.inFulltext', '').'</label>';
 
 		return $output;
 
@@ -470,17 +470,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
-			// Set last query if applicable.
-			$lastQuery = '';
-
-			$list = t3lib_div::makeInstance('tx_dlf_list');
-
-			if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'search') {
-
-				$lastQuery = $list->metadata['options']['select'];
-
-			}
-
 			// Configure @action URL for form.
 			$linkConf = array (
 				'parameter' => $GLOBALS['TSFE']->id,
@@ -493,7 +482,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###LABEL_QUERY###' => $this->pi_getLL('label.query'),
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
-				'###QUERY###' => htmlspecialchars($lastQuery),
+				'###QUERY###' => '',
 				'###FULLTEXTSWITCH###' => $this->addFulltextSwitch(),
 				'###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
 				'###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
