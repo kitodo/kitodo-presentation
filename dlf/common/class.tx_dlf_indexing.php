@@ -645,6 +645,13 @@ class tx_dlf_indexing {
 
 			}
 
+			// Add collection information to logical sub-elements if applicable.
+			if (in_array('collection', self::$fields['facets']) && empty($metadata['collection']) && !empty($doc->metadataArray[$doc->toplevelId]['collection'])) {
+
+				$solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+
+			}
+
 			try {
 
 				self::$solr->service->addDocument($solrDoc);
