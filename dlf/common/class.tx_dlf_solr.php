@@ -422,13 +422,17 @@ class tx_dlf_solr {
 
 				$toplevel[$doc->uid] = array (
 					'u' => $doc->uid,
+					'h' => '',
 					's' => $docSorting,
 					'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : array ())
 				);
 
 			} else {
 
-				$toplevel[$doc->uid]['p'][] = $doc->id;
+				$toplevel[$doc->uid]['p'][] = array (
+					'u' => $doc->id,
+					'h' => (!empty($results->highlighting->{$doc->id}->fulltext) ? $results->highlighting->{$doc->id}->fulltext[0] : '')
+				);
 
 				if (!in_array($doc->uid, $checks)) {
 
@@ -499,6 +503,7 @@ class tx_dlf_solr {
 
 					$toplevel[$check] = array (
 						'u' => $resArray['uid'],
+						'h' => '',
 						's' => $sorting,
 						'p' => $toplevel[$check]['p']
 					);

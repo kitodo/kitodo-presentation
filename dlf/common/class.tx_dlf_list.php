@@ -214,6 +214,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 			$record = array (
 				'uid' => $element['u'],
 				'page' => 1,
+				'preview' => '',
 				'subparts' => $element['p']
 			);
 
@@ -269,13 +270,14 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 						$record['metadata'] = $metadata;
 
-					} elseif (($key = array_search($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
+					} elseif (($key = tx_dlf_helper::array_search_recursive($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
 
 						$record['subparts'][$key] = array (
 							'uid' => $resArray['uid'],
 							'page' => 1,
+							'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
 							'thumbnail' => $resArray['thumbnail'],
-							'metadata' => $metadata,
+							'metadata' => $metadata
 						);
 
 					}
@@ -313,11 +315,12 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 							$record['metadata'] = $metadata;
 
-						} elseif (($key = array_search($resArray->id, $record['subparts'], TRUE)) !== FALSE) {
+						} elseif (($key = tx_dlf_helper::array_search_recursive($resArray->id, $record['subparts'], TRUE)) !== FALSE) {
 
 							$record['subparts'][$key] = array (
 								'uid' => $resArray->uid,
 								'page' => $resArray->page,
+								'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
 								'thumbnail' => $resArray->thumbnail,
 								'metadata' => $metadata
 							);

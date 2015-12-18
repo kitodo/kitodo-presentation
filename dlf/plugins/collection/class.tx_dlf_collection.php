@@ -392,6 +392,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 				$toplevel[$resArray['uid']] = array (
 					'u' => $resArray['uid'],
+					'h' => '',
 					's' => $sorting,
 					'p' => array ()
 				);
@@ -411,7 +412,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 				ksort($parts);
 
-				$toplevel[$partof]['p'] = array_values($parts);
+				foreach ($parts as $part) {
+
+					$toplevel[$partof]['p'][] = array ('u' => $part);
+
+				}
 
 			}
 

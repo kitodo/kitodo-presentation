@@ -582,11 +582,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				}
 
-				// Set search parameters.
-				$solr->limit = max(intval($this->conf['limit']), 1);
-
-				$solr->cPid = $this->conf['pages'];
-
 				// Build label for result list.
 				$label = $this->pi_getLL('search', '', TRUE);
 
@@ -596,11 +591,19 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				}
 
+				// Prepare query parameters.
+				$params = array ();
+
 				// Set search query.
 				if (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) {
 
 					// Search in fulltext field if applicable.
 					$query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
+
+					// Add highlighting for fulltext.
+					$params['hl'] = 'true';
+
+					$params['hl.fl'] = 'fulltext';
 
 				} else {
 
@@ -637,9 +640,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 					}
 
 				}
-
-				// Set query parameters.
-				$params = array ();
 
 				// Add filter query for faceting.
 				if (!empty($this->piVars['fq'])) {
@@ -693,6 +693,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$params['fq'][] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
 
 				}
+
+				// Set search parameters.
+				$solr->limit = max(intval($this->conf['limit']), 1);
+
+				$solr->cPid = $this->conf['pages'];
 
 				$solr->params = $params;
 
