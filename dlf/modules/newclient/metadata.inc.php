@@ -350,5 +350,3 @@ $metadata = array (
 		'autocomplete' => 0,
 	)
 );
-
-?>

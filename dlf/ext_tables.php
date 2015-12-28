@@ -386,5 +386,3 @@ if (TYPO3_MODE == 'BE')	{
 
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('txdlfmodules', 'typo3-pagetree');
 }
-
-?>

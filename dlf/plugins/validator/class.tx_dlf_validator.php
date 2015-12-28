@@ -98,5 +98,3 @@ class tx_dlf_validator extends tx_dlf_plugin {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/validator/class.tx_dlf_validator.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/validator/class.tx_dlf_validator.php']);
 }
-
-?>

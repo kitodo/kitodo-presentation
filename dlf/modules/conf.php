@@ -33,5 +33,3 @@ $MCONF['defaultMod'] = 'txdlfindexing';
 $MLANG['default']['tabs_images']['tab'] = '../res/icons/txdlfmodules.png';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:dlf/modules/locallang_mod.xml';
-
-?>

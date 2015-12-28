@@ -148,5 +148,3 @@ class tx_dlf_statistics extends tx_dlf_plugin {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/statistics/class.tx_dlf_statistics.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/statistics/class.tx_dlf_statistics.php']);
 }
-
-?>
