@@ -42,7 +42,7 @@ $(
 						hashed: $("input[name='tx_dlf[hashed]']").val()
 					},
 					function(data) {
-						var result = new Array();
+						var result = [];
 						var option = "";
 						$("arr[name='suggestion'] str", data).each(function(i) {
 							option = $(this).text();
