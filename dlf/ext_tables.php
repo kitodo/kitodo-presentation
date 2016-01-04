@@ -220,6 +220,15 @@ $TCA['tx_dlf_libraries'] = array (
 // Register static typoscript.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'typoscript/', 'Basic Configuration');
 
+// Plugin "basket".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_basket'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_basket'] = 'pi_flexform';
+
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_basket', $_EXTKEY.'_basket'), 'list_type');
+
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_basket', 'FILE:EXT:'.$_EXTKEY.'/plugins/basket/flexform.xml');
+
 // Plugin "collection".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collection'] = 'layout,select_key,pages,recursive';
 

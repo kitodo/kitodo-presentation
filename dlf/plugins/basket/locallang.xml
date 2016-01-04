@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<!--
+  Copyright notice
+  
+  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+  All rights reserved
+  
+  This script is part of the TYPO3 project. The TYPO3 project is
+  free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+  
+  The GNU General Public License can be found at
+  http://www.gnu.org/copyleft/gpl.html.
+  
+  This script is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  This copyright notice MUST APPEAR in all copies of the script!
+-->
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin tx_dlf_listview</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Options</label>
+			<label index="tt_content.pi_flexform.limit">Documents per page</label>
+			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
+			<label index="tt_content.pi_flexform.getTitle">Show title of parent document if document has no title itself</label>
+			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="nohits">Nothing found.</label>
+			<label index="count">Entries %d to %d of %d.</label>
+			<label index="prevPage">&lt;</label>
+			<label index="nextPage">&gt;</label>
+			<label index="page">%d</label>
+			<label index="separator"> - </label>
+			<label index="skip">...</label>
+			<label index="orderBy">Order by: </label>
+			<label index="relevance">relevance</label>
+			<label index="direction">Direction: </label>
+			<label index="direction.asc">ascending</label>
+			<label index="direction.desc">descending</label>
+			<label index="noTitle">[no title]</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+			<label index="tt_content.pi_flexform.limit">Dokumente pro Seite</label>
+			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
+			<label index="tt_content.pi_flexform.getTitle">Bei Bedarf Titel des übergeordneten Dokuments anzeigen</label>
+			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="nohits">Keine Treffer.</label>
+			<label index="count">Einträge %d bis %d von %d.</label>
+			<label index="prevPage">&lt;</label>
+			<label index="nextPage">&gt;</label>
+			<label index="page">%d</label>
+			<label index="separator"> - </label>
+			<label index="skip">...</label>
+			<label index="orderBy">Sortieren nach: </label>
+			<label index="relevance">Relevanz</label>
+			<label index="direction">Richtung: </label>
+			<label index="direction.asc">aufsteigend</label>
+			<label index="direction.desc">absteigend</label>
+			<label index="noTitle">[kein Titel]</label>
+		</languageKey>
+	</data>
+</T3locallang>
