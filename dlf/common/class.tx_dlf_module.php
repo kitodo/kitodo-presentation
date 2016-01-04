@@ -122,7 +122,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$this->doc->setModuleTemplate('EXT:'.$this->extKey.'/modules/'.$this->modPath.'template.tmpl');
 
-		$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath($this->extKey) . 'res/backend.css');
+		$this->doc->getPageRenderer()->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($this->extKey) . 'res/backend.css');
 
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 

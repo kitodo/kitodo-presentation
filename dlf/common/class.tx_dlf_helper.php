@@ -612,11 +612,11 @@ class tx_dlf_helper {
 
 		if (preg_match('/^[a-z]{3}$/', $isoCode)) {
 
-			$file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml';
+			$file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml';
 
 		} elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
 
-			$file = t3lib_extMgm::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml';
+			$file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml';
 
 		} else {
 
@@ -693,7 +693,7 @@ class tx_dlf_helper {
 		// Load common locallang file.
 		if (empty(self::$locallang)) {
 
-			$file = t3lib_extMgm::extPath(self::$extKey, 'common/locallang.xml');
+			$file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'common/locallang.xml');
 
 			if (TYPO3_MODE === 'FE') {
 
@@ -936,9 +936,9 @@ class tx_dlf_helper {
 	public static function loadJQuery() {
 
 		// Ensure extension "t3jquery" is available.
-		if (t3lib_extMgm::isLoaded('t3jquery')) {
+		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3jquery')) {
 
-			require_once(t3lib_extMgm::extPath('t3jquery').'class.tx_t3jquery.php');
+			require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3jquery').'class.tx_t3jquery.php');
 
 		}
 

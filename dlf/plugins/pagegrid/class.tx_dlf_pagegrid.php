@@ -79,7 +79,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 		} else {
 
-			$thumbnailFile = t3lib_extMgm::siteRelPath($this->extKey).'plugins/pagegrid/placeholder.jpg';
+			$thumbnailFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pagegrid/placeholder.jpg';
 
 		}
 

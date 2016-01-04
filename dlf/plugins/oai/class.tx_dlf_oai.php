@@ -425,9 +425,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				list ($extKey, $filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
 
-				if (t3lib_extMgm::isLoaded($extKey)) {
+				if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey)) {
 
-					$this->conf['stylesheet'] = t3lib_extMgm::siteRelPath($extKey).$filePath;
+					$this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($extKey).$filePath;
 
 				}
 
@@ -438,7 +438,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		} else {
 
 			// Use default stylesheet if no custom stylesheet is given.
-			$stylesheet = t3lib_div::locationHeaderUrl(t3lib_extMgm::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
+			$stylesheet = t3lib_div::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
 
 		}
 
