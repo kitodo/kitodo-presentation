@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-$extensionPath = t3lib_extMgm::extPath('dlf');
+$extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('dlf');
 
 return array (
 	'tx_dlf_cli' => $extensionPath.'cli/class.tx_dlf_cli.php',

@@ -213,7 +213,7 @@ class tx_dlf_em {
 				return $this->content;
 		}
 
-		$extensionPath = t3lib_extMgm::extPath('dlf');
+		$extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('dlf');
 
 	}
 

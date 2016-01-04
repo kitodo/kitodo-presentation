@@ -77,7 +77,7 @@ OpenLayers.Control.Keyboard = OpenLayers.Class(OpenLayers.Control, {
 	 * evt - {Event}
 	 */
 	defaultKeyPress: function (evt) {
-		var size, handled = true;
+		var handled = true;
 		switch(evt.keyCode) {
 			case OpenLayers.Event.KEY_LEFT:
 				this.map.pan(-this.slideFactor, 0);

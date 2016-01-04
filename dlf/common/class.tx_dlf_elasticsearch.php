@@ -494,7 +494,7 @@ class tx_dlf_elasticsearch {
 	 */
 	protected function __construct($index) {
 
-		$extensionPath = t3lib_extMgm::extPath('dlf');
+		$extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('dlf');
 
 		require_once $extensionPath . 'lib/ElasticSearchPhpClient/vendor/autoload.php';
 		//require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/ElasticSearchPhpClient/src/ElasticSearch/Client.php'));

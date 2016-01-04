@@ -102,7 +102,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 	protected function cmdAddMetadata() {
 
 		// Include metadata definition file.
-		include_once(t3lib_extMgm::extPath($this->extKey).'modules/'.$this->modPath.'metadata.inc.php');
+		include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey).'modules/'.$this->modPath.'metadata.inc.php');
 
 		// Load table configuration array to get default field values.
 		if (version_compare(TYPO3_branch, '6.1', '<')) {
@@ -286,7 +286,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 	protected function cmdAddStructure() {
 
 		// Include structure definition file.
-		include_once(t3lib_extMgm::extPath($this->extKey).'modules/'.$this->modPath.'structures.inc.php');
+		include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey).'modules/'.$this->modPath.'structures.inc.php');
 
 		// Build data array.
 		foreach ($structures as $index_name => $values) {

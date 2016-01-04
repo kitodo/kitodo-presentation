@@ -125,7 +125,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Get localization for OpenLayers.
 		if ($GLOBALS['TSFE']->lang) {
 
-			$langFile = t3lib_extMgm::extPath($this->extKey, 'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js');
+			$langFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey, 'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js');
 
 			if (file_exists($langFile)) {
 
@@ -247,7 +247,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		// Add OpenLayers library.
 		$output[] = '
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
 
 		return implode("\n", $output);
 
@@ -268,11 +268,11 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		tx_dlf_helper::loadJQuery();
 
 		// Add OpenLayers library.
-		$output[] = $this->addOpenLayersJS($fulltexts);
+		$output[] = $this->addOpenLayersJS();
 
 		// Add viewer library.
 		$output[] = '
-		<script type="text/javascript" src="'.t3lib_extMgm::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
 		$output[] = '
