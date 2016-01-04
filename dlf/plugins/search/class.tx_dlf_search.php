@@ -317,20 +317,20 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 */
 	protected function addFulltextSwitch() {
 
-		// Check for plugin configuration.
-		if (empty($this->conf['fulltext'])) {
+		$output = '';
 
-			return '';
+		// Check for plugin configuration.
+		if (!empty($this->conf['fulltext'])) {
+
+			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" checked="checked" />';
+
+			$output .= ' <label for="tx-dlf-search-fulltext-no">' . $this->pi_getLL('label.inMetadata', '') . '</label>';
+
+			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" />';
+
+			$output .= ' <label for="tx-dlf-search-fulltext-yes">' . $this->pi_getLL('label.inFulltext', '') . '</label>';
 
 		}
-
-		$output = ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0" checked="checked" />';
-
-		$output .= ' <label for="tx-dlf-search-fulltext-no">'.$this->pi_getLL('label.inMetadata', '').'</label>';
-
-		$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1" />';
-
-		$output .= ' <label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('label.inFulltext', '').'</label>';
 
 		return $output;
 

@@ -247,6 +247,23 @@ final class tx_dlf_document {
 	protected static $registry;
 
 	/**
+	 * This holds the UID of the root document or zero if not multi-volumed
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $rootId = 0;
+
+	/**
+	 * Is the root id loaded?
+	 * @see $rootId
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $rootIdLoaded = FALSE;
+
+	/**
 	 * This holds the smLinks between logical and physical structMap
 	 *
 	 * @var	array
@@ -1991,6 +2008,33 @@ final class tx_dlf_document {
 	protected function _getRecordId() {
 
 		return $this->recordId;
+
+	}
+
+	/**
+	 * This returns $this->rootId via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	integer		The UID of the root document or zero if not applicable
+	 */
+	protected function _getRootId() {
+
+		if (!$this->rootIdLoaded) {
+
+			if ($this->parentId) {
+
+				$parent = self::getInstance($this->parentId, $this->pid);
+
+				$this->rootId = $parent->rootId;
+
+			}
+
+			$this->rootIdLoaded = TRUE;
+
+		}
+
+		return $this->rootId;
 
 	}
 

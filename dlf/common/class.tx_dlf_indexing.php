@@ -596,6 +596,8 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('partof', $doc->parentId);
 
+			$solrDoc->setField('root', $doc->rootId);
+
 			$solrDoc->setField('sid', $logicalUnit['id']);
 
 			$solrDoc->setField('toplevel', in_array($logicalUnit['type'], self::$toplevel));
@@ -787,6 +789,8 @@ class tx_dlf_indexing {
 			}
 
 			$solrDoc->setField('partof', $doc->parentId);
+
+			$solrDoc->setField('root', $doc->rootId);
 
 			$solrDoc->setField('sid', $physicalUnit['id']);
 

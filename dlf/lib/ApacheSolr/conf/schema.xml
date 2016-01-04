@@ -106,6 +106,8 @@ limitations under the License.
 		<field name="page" type="int" indexed="false" stored="true" required="true" default="0" />
 		<!-- Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! -->
 		<field name="partof" type="int" indexed="true" stored="true" required="true" default="0" />
+		<!-- Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! -->
+		<field name="root" type="int" indexed="true" stored="true" required="true" default="0" />
 		<!-- XML ID of this document in the METS file. This is only unique within the METS file! -->
 		<field name="sid" type="string" indexed="false" stored="true" required="true" default="" />
 		<!-- If it is a top-level document, leave this as default "true". -->
