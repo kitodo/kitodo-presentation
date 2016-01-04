@@ -32,8 +32,6 @@
  */
 var dlfViewer = function(settings){
 
-    console.log(settings);
-
     /**
      * The element id of the map container
      * @type {string}
@@ -70,39 +68,11 @@ var dlfViewer = function(settings){
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
 
     /**
-     * Original image information (e.g. width, height)
-     * @type {Array.<?>}
-     * @private
-     */
-    this.origImages = [];
-
-    /**
      * ol3 controls which should be added to map
      * @type {Array.<?>}
      * @private
      */
     this.controls = dlfUtils.exists(settings.controls) ? this.createControls_(settings.controls) : [];
-
-    /**
-     * Offset for the second image
-     * @type {number}
-     * @private
-     */
-    this.offset = 0;
-
-    /**
-     * Fulltexts together with the coordinates of the textblocks
-     * @type {Array.<Array.<ol.Feature>>}
-     * @private
-     */
-    this.fullTextCoordinates = [];
-
-    /**
-     * Language token
-     * @type {string}
-     * @private
-     */
-    this.lang = dlfUtils.exists(settings.lang) ? settings.lang : 'de';
 
     /**
      * @type {Array.<number>}
@@ -116,22 +86,54 @@ var dlfViewer = function(settings){
      */
     this.highlightFieldParams = undefined;
 
-    /**
-     * Holds fulltext behavior
-     * @private
-     * @type {dlfViewerFullTextControl|undefined}
-     */
-    this.fulltextControl = undefined;
-
-    /**
-     * Running id index
-     * @number
-     * @private
-     */
-    this.runningIndex_ = 99999999;
-
     this.init();
 };
+
+/**
+ * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
+ * fulltext and the image manipulation control
+ */
+dlfViewer.prototype.addCustomControls = function() {
+	var fulltextControl = undefined,
+		imageManipulationControl = undefined, 
+		images = this.images;
+	
+    // Adds fulltext behavior only if there are fulltext availabe and no double page 
+    // behavior is active
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1)
+    	fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
+    
+    // add image manipulation tool if container is added
+    if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()){
+
+    	dlfUtils.testIfCORSEnabled(this.imageUrls[0], 
+    		$.proxy(function() {
+    			// should be called if cors is enabled
+	    		imageManipulationControl = new dlfViewerImageManipulationControl({
+	        		target: $('.tx-dlf-tools-imagetools')[0],
+	        		layers: dlfUtils.createLayers(images),
+	        		mapContainer: this.div,
+	        		referenceMap: this.map,
+	        		view: dlfUtils.createView(images)
+	        	});
+	    		
+	    		// bind behavior of both together
+	    	    if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+	    	    	$(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
+	    	    	$(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
+	    	    }
+    		}, this), 
+    		function() {
+    			// should be called if cors is not available
+    			$('#tx-dlf-tools-imagetools').addClass('deactivate');
+    		})
+    	
+    	
+    };
+    
+    
+    
+}
 
 /**
  * Add highlight field
@@ -211,16 +213,6 @@ dlfViewer.prototype.displayHighlightWord = function() {
     // clear in case of old displays
     this.highlightLayer.getSource().clear();
 
-
-    // set origimage with highlightFieldParams
-    if (!this.origImages.length && dlfUtils.exists(this.highlightFields)) {
-
-        this.setOrigImage(this.highlightFieldParams.index, this.highlightFieldParams.width,
-            this.highlightFieldParams.height);
-
-    }
-
-
     // create features and scale it down
     for (var i = 0; i < this.highlightFields.length; i++) {
 
@@ -232,55 +224,18 @@ dlfViewer.prototype.displayHighlightWord = function() {
                 [field[0], field[3]],
                 [field[0], field[1]],
             ]],
-            feature = this.scaleDown(0, [new ol.Feature(new ol.geom.Polygon(coordinates))]);
+            offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
+            feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))], 
+            		this.images[this.highlightFieldParams.index], 
+            		this.highlightFieldParams.width,
+                    this.highlightFieldParams.height,
+                    offset);
 
         // add feature to layer and map
         this.highlightLayer.getSource().addFeatures(feature);
     };
 
     this.map.addLayer(this.highlightLayer);
-};
-
-/**
- * Activate Fulltext Features
- */
-dlfViewer.prototype.enableFulltextSelect = function() {
-
-    // Create image layers.
-    for (var i in this.images) {
-
-        if (this.fulltexts[i]) {
-
-            this.fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
-
-        }
-
-    }
-
-    // add fulltext layers if we have fulltexts to show
-    if (this.fullTextCoordinates.length > 0) {
-
-        for (var i in this.images) {
-
-            // extract the parent geometry and use it for setting the
-            // correct original image options / scale
-            var pageOrPrintSpaceFeature = this.fullTextCoordinates[i][0];
-            this.setOrigImage(i, pageOrPrintSpaceFeature.get('width') , pageOrPrintSpaceFeature.get('height'));
-
-            var textBlockFeatures = this.scaleDown(i, pageOrPrintSpaceFeature.get('features')),
-                textLineFeatures = [];
-            for (var j in textBlockFeatures) {
-
-                // also add textline coordinates
-                var textLineFeatures = textLineFeatures.concat(this.scaleDown(i, textBlockFeatures[j].get('textline')));
-
-            }
-
-            this.fulltextControl.enableFulltextSelect(textBlockFeatures, textLineFeatures);
-        }
-
-    }
-
 };
 
 /**
@@ -361,45 +316,12 @@ dlfViewer.prototype.init = function(){
     var init_ = $.proxy(function(images){
 
         // set image property of the object
-        this.images = images;
-
-        // create image layers
-        var layers = [];
-        for (var i = 0; i < images.length; i++) {
-
-            var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
-                [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height]
-
-            var layerProj = new ol.proj.Projection({
-                    code: 'goobi-image',
-                    units: 'pixels',
-                    extent: layerExtent
-                }),
-                layer = new ol.layer.Image({
-                    source: new ol.source.ImageStatic({
-                        url: images[i].src,
-                        projection: layerProj,
-                        imageExtent: layerExtent
-                    })
-                });
-            layers.push(layer);
-        };
-
-        // create map extent
-        var maxx = images.length === 1 ? images[0].width : images[0].width + images[1].width,
-            maxy = images.length === 1 ? images[0].height : Math.max(images[0].height, images[1].height),
-            mapExtent = [0, 0, maxx, maxy],
-            mapProj = new ol.proj.Projection({
-                code: 'goobi-image',
-                units: 'pixels',
-                extent: mapExtent
-            }),
-            //renderer = dlfUtils.isWebGLEnabled() ? 'webgl' : 'canvas';
-            renderer = 'canvas';
-
+        this.images = images,
+        	renderer = 'canvas';
+        
         // create map
         this.map = new ol.Map({
-            layers: layers,
+            layers: dlfUtils.createLayers(images, renderer),
             target: this.div,
             controls: this.controls,
                 /*new ol.control.MousePosition({
@@ -414,13 +336,7 @@ dlfViewer.prototype.init = function(){
             ],
             // necessary for proper working of the keyboard events
             keyboardEventTarget: document,
-            view: new ol.View({
-                projection: mapProj,
-                center: ol.extent.getCenter(mapExtent),
-                zoom: 0,
-                maxZoom: 8,
-                extent: mapExtent
-            }),
+            view: dlfUtils.createView(images),
             renderer: renderer
         });
 
@@ -432,27 +348,14 @@ dlfViewer.prototype.init = function(){
             this.map.zoomTo([lon, lat], zoom);
         };
 
-        // Adds fulltext behavior
-        this.fulltextControl = new dlfViewerFullTextControl(this.map, this.lang);
-
-        // keep fulltext feature active
-        var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select"),
-            isDoublePageView = this.images.length > 1 ? true : false;
-        if (isFulltextActive == 'enabled' && !isDoublePageView) {
-
-            this.enableFulltextSelect();
-
-        } else if (isDoublePageView) {
-
-            // in case of double page view deactivate this tool
-            $('#tx-dlf-tools-fulltext').addClass('deactivate');
-
-        };
-
         // highlight word in case a highlight field is registered
         if (this.highlightFields.length)
             this.displayHighlightWord();
-
+        
+        this.addCustomControls();
+        
+        // trigger event after all has been initialize
+        $(this).trigger("initialize-end", this);
     }, this);
 
     // init image loading process
@@ -461,132 +364,6 @@ dlfViewer.prototype.init = function(){
         this.fetchImages(init_);
 
     };
-
-
-
-};
-
-/**
- * Activate Fulltext Features
- */
-dlfViewer.prototype.toggleFulltextSelect = function() {
-
-    var isFulltextActive = dlfUtils.getCookie("tx-dlf-pageview-fulltext-select"),
-        isDoublePageView = this.images.length > 1 ? true : false;
-
-    if (isFulltextActive == 'enabled' || isDoublePageView) {
-
-        this.disableFulltextSelect();
-        dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
-
-    } else {
-
-        this.enableFulltextSelect();
-        dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
-
-    }
-
-};
-
-/**
- * Scales down the given features geometrys. as a further improvment this functions
- * add a unique id to every feature
- *
- * @param {number} image
- * @param {Array.<ol.Feature>} features
- */
-dlfViewer.prototype.scaleDown = function(image, features) {
-
-    if (this.origImages.length > 1 && image == 1) {
-
-        var scale = this.origImages[1].scale;
-        var height = this.images[1].height;
-        var offset = this.images[0].width;
-
-    } else {
-
-        var scale = this.origImages[0].scale;
-        var height = this.images[0].height;
-        var offset = 0;
-
-    }
-
-    // do a rescaling and set a id
-    for (var i in features) {
-
-        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
-            newCoordinates = [];
-
-
-        for (var j = 0; j < oldCoordinates.length; j++) {
-            newCoordinates.push([offset + (scale * oldCoordinates[j][0]), height - (scale * oldCoordinates[j][1])]);
-        }
-
-        features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
-
-        // set index
-        this.runningIndex_ += 1;
-        features[i].setId('' + this.runningIndex_);
-    }
-
-    return features;
-};
-
-/**
- * Set Original Image Size
- *
- * @param	integer image number
- * @param	integer width
- * @param	integer height
- *
- * @return	void
- */
-dlfViewer.prototype.setOrigImage = function(i, width, height) {
-
-    if (width && height) {
-
-        this.origImages[i] = {
-            'width': width,
-            'height': height,
-            'scale': this.images[i].width/width,
-        };
-
-    }
-
-};
-
-
-/**
- * Read ALTO file and return found words
- *
- * @param {Object} url
- * @return  {Array.<ol.Feature>}
- */
-dlfViewer.prototype.loadALTO = function(url){
-
-    var request = $.ajax({
-        url: url,
-        async: false
-    });
-
-    var format = new ol.format.ALTO();
-
-    if (request.responseXML)
-        var wordCoords = format.readFeatures(request.responseXML);
-
-    return wordCoords;
-};
-
-
-
-/**
- * Disable Fulltext Features
- *
- * @return	void
- */
-dlfViewer.prototype.disableFulltextSelect = function() {
-
-    this.fulltextControl.disableFulltextSelect();
 
 };
 

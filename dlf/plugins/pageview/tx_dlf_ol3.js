@@ -29,6 +29,21 @@ ol.Map.prototype.getZoom = function(){
 };
 
 /**
+ * Zooms to given zoomLevel
+ * 
+ * @param {number} zoomLevel
+ */
+ol.Map.prototype.zoom = function(zoomLevel) {
+    var view = this.getView(),
+    	resolution = view.getResolution();
+	this.beforeRender(ol.animation.zoom({
+	    'resolution': resolution,
+	    'duration': 500
+	}));
+	view.setZoom(zoomLevel);
+};
+
+/**
  * Zooms in the map. Uses ol.animation for smooth zooming
  */
 ol.Map.prototype.zoomIn = function() {
@@ -60,13 +75,15 @@ ol.Map.prototype.zoomOut = function() {
  * Zooms to given point
  * @param {Array.<number>} center
  * @param {number} zoomLevel
+ * @param {number=} opt_duration
  */
-ol.Map.prototype.zoomTo = function(center, zoomLevel) {
+ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
     var view = this.getView(),
-        resolution = view.getResolution();
+        resolution = view.getResolution(),
+        duration = opt_duration !== undefined ? opt_duration : 500;
     this.beforeRender(ol.animation.zoom({
         'resolution': resolution,
-        'duration': 500
+        'duration': duration
     }));
     view.setCenter(center);
     view.setZoom(zoomLevel);
