@@ -353,16 +353,16 @@ class tx_dlf_helper {
 	/**
 	 * Get a backend user object (even in frontend mode)
 	 *
-	 * @access	public
+	 * @access public
 	 *
-	 * @return	t3lib_beUserAuth		Instance of t3lib_beUserAuth or NULL on failure
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication Instance of \TYPO3\CMS\Core\Authentication\BackendUserAuthentication or NULL on failure
 	 */
 	public static function getBeUser() {
 
 		if (TYPO3_MODE === 'FE' || TYPO3_MODE === 'BE') {
 
 			// Initialize backend session with CLI user's rights.
-			$userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_beUserAuth');
+			$userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
 
 			$userObj->dontSetCookie = TRUE;
 
