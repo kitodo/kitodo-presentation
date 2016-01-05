@@ -84,7 +84,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					FALSE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($_message);
+				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			}
 
@@ -176,7 +176,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		t3lib_FlashMessageQueue::addMessage($_message);
+		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 	}
 
@@ -223,7 +223,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		t3lib_FlashMessageQueue::addMessage($_message);
+		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 	}
 
@@ -280,7 +280,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		t3lib_FlashMessageQueue::addMessage($_message);
+		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 	}
 
@@ -309,9 +309,9 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					FALSE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($_message);
+				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
-				$this->markerArray['CONTENT'] .= t3lib_FlashMessageQueue::renderFlashMessages();
+				$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
 
 				$this->printContent();
 
@@ -369,7 +369,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			// Check for existing metadata configuration.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -404,7 +404,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			// Check the access conditions for the command line indexer's user.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -456,7 +456,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			// Check for existing Solr core.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -510,9 +510,9 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
-			$this->markerArray['CONTENT'] .= t3lib_FlashMessageQueue::renderFlashMessages();
+			$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
 
 		} else {
 
