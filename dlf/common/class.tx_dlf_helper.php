@@ -1333,11 +1333,11 @@ class tx_dlf_helper {
 
 			} else {
 
-				$t3lib_pageSelect = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_pageSelect');
+				$pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 
 				$GLOBALS['TSFE']->includeTCA();
 
-				return $t3lib_pageSelect->enableFields($table, $ignoreHide);
+				return $pageRepository->enableFields($table, $ignoreHide);
 
 			}
 
