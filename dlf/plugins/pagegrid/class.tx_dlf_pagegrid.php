@@ -97,7 +97,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		$linkConf = array (
 			'useCacheHash' => 1,
 			'parameter' => $this->conf['targetPid'],
-			'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $piVars, '', TRUE, FALSE),
+			'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', TRUE, FALSE),
 			'title' => $markerArray['###PAGINATION###']
 		);
 
@@ -231,7 +231,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_pagegrid->main('.$content.', [data])] No template subpart for list entry found', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pagegrid->main('.$content.', [data])] No template subpart for list entry found', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
 
 			}
 

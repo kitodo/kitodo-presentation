@@ -303,7 +303,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$imageUrl = '';
 
 		// Get @USE value of METS fileGrp.
-		$fileGrps = t3lib_div::trimExplode(',', $this->conf['fileGrps']);
+		$fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrps']);
 
 		while ($fileGrp = @array_pop($fileGrps)) {
 
@@ -318,7 +318,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -346,7 +346,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		// Get @USE value of METS fileGrp.
 
 		// we need USE="FULLTEXT"
-		$fileGrpFulltext = t3lib_div::trimExplode(',', $this->conf['fileGrpFulltext']);
+		$fileGrpFulltext = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
 
 		while ($fileGrpFulltext = @array_pop($fileGrpFulltext)) {
 
@@ -366,7 +366,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 

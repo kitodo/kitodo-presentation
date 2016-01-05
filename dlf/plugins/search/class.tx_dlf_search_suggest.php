@@ -51,15 +51,15 @@ class tx_dlf_search_suggest extends tslib_pibase {
 	 */
 	public function main($content = '', $conf = array ()) {
 
-		if (t3lib_div::_GP('encrypted') != '' && t3lib_div::_GP('hashed') != '') {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted') != '' && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '') {
 
-			$core = tx_dlf_helper::decrypt(t3lib_div::_GP('encrypted'), t3lib_div::_GP('hashed'));
+			$core = tx_dlf_helper::decrypt(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted'), \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed'));
 
 		}
 
 		if (!empty($core)) {
 
-			$url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.tx_dlf_solr::escapeQuery(t3lib_div::_GP('q'));
+			$url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.tx_dlf_solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
 
 			if ($stream = fopen($url, 'r')) {
 
@@ -81,7 +81,7 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plu
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/search/class.tx_dlf_search_suggest.php']);
 }
 
-$cObj = t3lib_div::makeInstance('tx_dlf_search_suggest');
+$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_search_suggest');
 
 $cObj->main();
 

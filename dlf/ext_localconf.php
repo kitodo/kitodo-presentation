@@ -97,7 +97,7 @@ if (TYPO3_MODE === 'FE') {
 
 		$conf['pages'] = $pidCondition[0];
 
-		$docType = t3lib_div::makeInstance('tx_dlf_doctype');
+		$docType = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_doctype');
 
 		switch($pidCondition[1]){
 			case "periodical":

@@ -332,7 +332,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -637,7 +637,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -700,7 +700,7 @@ final class tx_dlf_document {
 					$class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
 
 					// Get the metadata from class.
-					if (class_exists($class) && ($obj = t3lib_div::makeInstance($class)) instanceof tx_dlf_format) {
+					if (class_exists($class) && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof tx_dlf_format) {
 
 						$obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
 
@@ -708,7 +708,7 @@ final class tx_dlf_document {
 
 						if (TYPO3_DLOG) {
 
-							t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+							\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 						}
 
@@ -720,7 +720,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -883,7 +883,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -893,7 +893,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -952,7 +952,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->init()] No METS part found in document with UID "'.$this->uid.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->init()] No METS part found in document with UID "'.$this->uid.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -972,7 +972,7 @@ final class tx_dlf_document {
 	protected function load($location) {
 
 		// Load XML file.
-		if (t3lib_div::isValidUrl($location)
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location)
 			// There is a bug in filter_var($var, FILTER_VALIDATE_URL) in PHP < 5.3.3 which causes
 			// the function to validate URLs containing whitespaces and invalidate URLs containing
 			// hyphens. (see https://bugs.php.net/bug.php?id=51192)
@@ -1008,7 +1008,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Could not load XML file from "'.$location.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->load('.$location.')] Could not load XML file from "'.$location.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -1018,7 +1018,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->load('.$location.')] Invalid file location "'.$location.'" for document loading', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->load('.$location.')] Invalid file location "'.$location.'" for document loading', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1092,7 +1092,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1130,7 +1130,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1154,7 +1154,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1180,7 +1180,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1211,7 +1211,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1239,7 +1239,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -1302,7 +1302,7 @@ final class tx_dlf_document {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$message = t3lib_div::makeInstance(
+					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 						't3lib_FlashMessage',
 						htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
 						tx_dlf_helper::getLL('flash.attention', TRUE),
@@ -1381,7 +1381,7 @@ final class tx_dlf_document {
 
 			if (!defined('TYPO3_cliMode')) {
 
-				$message = t3lib_div::makeInstance(
+				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					't3lib_FlashMessage',
 					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newLibrary'), $metadata['owner'][0], $owner)),
 					tx_dlf_helper::getLL('flash.attention', TRUE),
@@ -1535,7 +1535,7 @@ final class tx_dlf_document {
 
 		if (!defined('TYPO3_cliMode')) {
 
-			$message = t3lib_div::makeInstance(
+			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 				't3lib_FlashMessage',
 				htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
 				tx_dlf_helper::getLL('flash.done', TRUE),
@@ -1556,7 +1556,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', self::$extKey, SYSLOG_SEVERITY_NOTICE);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', self::$extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
 
@@ -1654,7 +1654,7 @@ final class tx_dlf_document {
 			// Get configured USE attributes.
 			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
-			$useGrps = t3lib_div::trimExplode(',', $extConf['fileGrps']);
+			$useGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrps']);
 
 			if (!empty($extConf['fileGrpThumbs'])) {
 
@@ -1729,7 +1729,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -2027,7 +2027,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -2044,7 +2044,7 @@ final class tx_dlf_document {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No fileGrp for thumbnails specified', self::$extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->_getThumbnail()] No fileGrp for thumbnails specified', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -2104,7 +2104,7 @@ final class tx_dlf_document {
 
 			} elseif (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -2338,7 +2338,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -2363,7 +2363,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -2395,7 +2395,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -2475,7 +2475,7 @@ final class tx_dlf_document {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_document->__wakeup()] Could not load XML after deserialization', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->__wakeup()] Could not load XML after deserialization', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 

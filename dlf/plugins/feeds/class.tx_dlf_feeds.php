@@ -68,7 +68,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 
 		$channel->appendChild($rss->createElement('title', htmlspecialchars($this->conf['title'], ENT_NOQUOTES, 'UTF-8')));
 
-		$channel->appendChild($rss->createElement('link', htmlspecialchars(t3lib_div::locationHeaderUrl($this->pi_linkTP_keepPIvars_url()), ENT_NOQUOTES, 'UTF-8')));
+		$channel->appendChild($rss->createElement('link', htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->pi_linkTP_keepPIvars_url()), ENT_NOQUOTES, 'UTF-8')));
 
 		if (!empty($this->conf['description'])) {
 
@@ -98,7 +98,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 		$channel->appendChild($rss->createElement('generator', htmlspecialchars($this->conf['useragent'], ENT_NOQUOTES, 'UTF-8')));
 
 		// Add item elements.
-		if (!$this->conf['excludeOther'] || empty($this->piVars['collection']) || t3lib_div::inList($this->conf['collections'], $this->piVars['collection'])) {
+		if (!$this->conf['excludeOther'] || empty($this->piVars['collection']) || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])) {
 
 			$additionalWhere = '';
 
@@ -184,7 +184,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 					$linkConf = array (
 						'parameter' => $this->conf['targetPid'],
 						'forceAbsoluteUrl' => 1,
-						'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, array ('id' => $resArray['uid']), '', TRUE, FALSE)
+						'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('id' => $resArray['uid']), '', TRUE, FALSE)
 					);
 
 					$item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
@@ -218,7 +218,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 		$content = $rss->saveXML();
 
 		// Clean output buffer.
-		t3lib_div::cleanOutputBuffers();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
 		// Send headers.
 		header('HTTP/1.1 200 OK');
