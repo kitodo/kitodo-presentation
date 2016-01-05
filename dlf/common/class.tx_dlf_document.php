@@ -1197,7 +1197,7 @@ final class tx_dlf_document {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'be_users.uid AS uid',
 			'be_users',
-			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').t3lib_BEfunc::BEenableFields('be_users').t3lib_BEfunc::deleteClause('be_users'),
+			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('be_users').\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_users'),
 			'',
 			'',
 			'1'

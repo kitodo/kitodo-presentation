@@ -1313,7 +1313,7 @@ class tx_dlf_helper {
 			// Table "tx_dlf_formats" always has PID 0.
 			if ($table == 'tx_dlf_formats') {
 
-				return t3lib_BEfunc::deleteClause($table);
+				return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 
 			}
 
@@ -1343,7 +1343,7 @@ class tx_dlf_helper {
 
 		} elseif (TYPO3_MODE === 'BE') {
 
-			return t3lib_BEfunc::deleteClause($table);
+			return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 
 		} else {
 

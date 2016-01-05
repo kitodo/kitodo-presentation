@@ -150,7 +150,7 @@ class tx_dlf_em {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid,admin,usergroup',
 			'be_users',
-			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').t3lib_BEfunc::deleteClause('be_users')
+			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_users')
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -164,7 +164,7 @@ class tx_dlf_em {
 			$result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'1',
 				'be_users',
-				'uid='.intval($resArray['uid']).t3lib_BEfunc::BEenableFields('be_users')
+				'uid='.intval($resArray['uid']).\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('be_users')
 			);
 
 			// Check if user is configured properly.
@@ -370,7 +370,7 @@ class tx_dlf_em {
 					$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
 				'be_groups',
 				'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
-					t3lib_BEfunc::deleteClause('be_groups')
+					\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
 			);
 		} else {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -378,7 +378,7 @@ class tx_dlf_em {
 					$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
 				'be_groups',
 				'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
-					t3lib_BEfunc::deleteClause('be_groups')
+					\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
 			);
 		}
 
