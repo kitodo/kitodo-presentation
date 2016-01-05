@@ -180,20 +180,20 @@ class ext_update {
 				if (!empty($substUids)) {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('update.metadataConfigOkay', TRUE),
 						$GLOBALS['LANG']->getLL('update.metadataConfig', TRUE),
-						t3lib_FlashMessage::OK,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 						FALSE
 					);
 
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('update.metadataConfigNotOkay', TRUE),
 						$GLOBALS['LANG']->getLL('update.metadataConfig', TRUE),
-						t3lib_FlashMessage::WARNING,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 						FALSE
 					);
 

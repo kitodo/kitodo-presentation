@@ -189,10 +189,10 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 		// Give feedback about progress.
 		$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			't3lib_FlashMessage',
+			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentsToGo'), count($this->list))),
 			tx_dlf_helper::getLL('flash.running', TRUE),
-			t3lib_FlashMessage::INFO,
+			\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 			TRUE
 		);
 
@@ -244,10 +244,10 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 						} else {
 
 							$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-								't3lib_FlashMessage',
+								'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 								htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.FileNotLoaded'), $title, $uid)),
 								tx_dlf_helper::getLL('flash.error', TRUE),
-								t3lib_FlashMessage::ERROR,
+								\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 								TRUE
 							);
 
@@ -329,10 +329,10 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 					} else {
 
 						$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							tx_dlf_helper::getLL('flash.seeLog', TRUE),
 							tx_dlf_helper::getLL('flash.done', TRUE),
-							t3lib_FlashMessage::OK,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 							TRUE
 						);
 

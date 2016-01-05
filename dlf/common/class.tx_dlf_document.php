@@ -1303,10 +1303,10 @@ final class tx_dlf_document {
 				if (!defined('TYPO3_cliMode')) {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
 						tx_dlf_helper::getLL('flash.attention', TRUE),
-						t3lib_FlashMessage::INFO,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 						TRUE
 					);
 
@@ -1382,10 +1382,10 @@ final class tx_dlf_document {
 			if (!defined('TYPO3_cliMode')) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newLibrary'), $metadata['owner'][0], $owner)),
 					tx_dlf_helper::getLL('flash.attention', TRUE),
-					t3lib_FlashMessage::INFO,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 					TRUE
 				);
 
@@ -1536,10 +1536,10 @@ final class tx_dlf_document {
 		if (!defined('TYPO3_cliMode')) {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
 				tx_dlf_helper::getLL('flash.done', TRUE),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				TRUE
 			);
 

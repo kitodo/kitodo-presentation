@@ -102,10 +102,10 @@ class tx_dlf_em {
 			if (is_array($status)) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
 					$GLOBALS['LANG']->getLL('solr.connected'),
-					($status[0] == 0 ? t3lib_FlashMessage::OK : t3lib_FlashMessage::WARNING),
+					($status[0] == 0 ? \TYPO3\CMS\Core\Messaging\FlashMessage::OK : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING),
 					FALSE
 				);
 
@@ -118,10 +118,10 @@ class tx_dlf_em {
 		}
 
 		$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			't3lib_FlashMessage',
+			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
 			$GLOBALS['LANG']->getLL('solr.notConnected'),
-			t3lib_FlashMessage::WARNING,
+			\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 			FALSE
 		);
 
@@ -175,10 +175,10 @@ class tx_dlf_em {
 				$usrUid = $resArray['uid'];
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrOkayMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrOkay'),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					FALSE
 				);
 
@@ -206,20 +206,20 @@ class tx_dlf_em {
 						$usrUid = $resArray['uid'];
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrConfigured'),
-							t3lib_FlashMessage::INFO,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 							FALSE
 						);
 
 					} else {
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-							t3lib_FlashMessage::ERROR,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 							FALSE
 						);
 
@@ -228,10 +228,10 @@ class tx_dlf_em {
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -262,20 +262,20 @@ class tx_dlf_em {
 					$usrUid = $substUid[$tempUid];
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrCreated'),
-						t3lib_FlashMessage::INFO,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 						FALSE
 					);
 
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -284,10 +284,10 @@ class tx_dlf_em {
 			} else {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
@@ -403,10 +403,10 @@ class tx_dlf_em {
 				$grpUid = $resArray['uid'];
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpOkayMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpOkay'),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					FALSE
 				);
 
@@ -447,20 +447,20 @@ class tx_dlf_em {
 						$grpUid = $resArray['uid'];
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpConfigured'),
-							t3lib_FlashMessage::INFO,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 							FALSE
 						);
 
 					} else {
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-							t3lib_FlashMessage::ERROR,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 							FALSE
 						);
 
@@ -469,10 +469,10 @@ class tx_dlf_em {
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -516,20 +516,20 @@ class tx_dlf_em {
 					$grpUid = $substUid[$tempUid];
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpCreated'),
-						t3lib_FlashMessage::INFO,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 						FALSE
 					);
 
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -538,10 +538,10 @@ class tx_dlf_em {
 			} else {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
@@ -583,20 +583,20 @@ class tx_dlf_em {
 		if (is_executable(PATH_typo3.'cli_dispatch.phpsh')) {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliOkayMsg'),
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliOkay'),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
 		} else {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkayMsg'),
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkay'),
-				t3lib_FlashMessage::ERROR,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 				FALSE
 			);
 
@@ -675,20 +675,20 @@ class tx_dlf_em {
 			if (!empty($substUid)) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg'),
 					$GLOBALS['LANG']->getLL('metadataFormats.nsCreated'),
-					t3lib_FlashMessage::INFO,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 					FALSE
 				);
 
 			} else {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('metadataFormats.nsNotCreatedMsg'),
 					$GLOBALS['LANG']->getLL('metadataFormats.nsNotCreated'),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
@@ -697,10 +697,10 @@ class tx_dlf_em {
 		} else {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				$GLOBALS['LANG']->getLL('metadataFormats.nsOkayMsg'),
 				$GLOBALS['LANG']->getLL('metadataFormats.nsOkay'),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
