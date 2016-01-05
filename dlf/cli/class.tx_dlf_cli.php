@@ -40,7 +40,7 @@ if (!defined('TYPO3_cliMode')) {
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_cli extends t3lib_cli {
+class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 	/**
 	 * Main function of the script.
