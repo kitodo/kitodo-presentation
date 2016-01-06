@@ -27,7 +27,7 @@
  */
 
 /**
- * Hooks and helper for the 't3lib_TCEforms' library.
+ * Hooks and helper for the '\TYPO3\CMS\Backend\Form\FormEngine' library.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
@@ -42,7 +42,7 @@ class tx_dlf_tceforms {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
 	 *
 	 * @return	string		HTML <img> tag for thumbnail
 	 */
@@ -71,7 +71,7 @@ class tx_dlf_tceforms {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
 	 *
 	 * @return	void
 	 */
@@ -126,7 +126,7 @@ class tx_dlf_tceforms {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
 	 *
 	 * @return	void
 	 */
@@ -181,7 +181,7 @@ class tx_dlf_tceforms {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
 	 *
 	 * @return	void
 	 */
@@ -236,7 +236,7 @@ class tx_dlf_tceforms {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
 	 *
 	 * @return	void
 	 */
@@ -291,7 +291,7 @@ class tx_dlf_tceforms {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
 	 *
 	 * @return	void
 	 */
@@ -346,7 +346,7 @@ class tx_dlf_tceforms {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_TCEforms		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
 	 *
 	 * @return	void
 	 */
