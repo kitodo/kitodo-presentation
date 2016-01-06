@@ -180,26 +180,26 @@ class tx_dlf_indexing {
 					if (!$errors) {
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
 							tx_dlf_helper::getLL('flash.done', TRUE),
-							t3lib_FlashMessage::OK,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 							TRUE
 						);
 
 					} else {
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
 							tx_dlf_helper::getLL('flash.error', TRUE),
-							t3lib_FlashMessage::ERROR,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 							TRUE
 						);
 
 					}
 
-					t3lib_FlashMessageQueue::addMessage($message);
+					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 				}
 
@@ -210,14 +210,14 @@ class tx_dlf_indexing {
 				if (!defined('TYPO3_cliMode')) {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 						tx_dlf_helper::getLL('flash.error', TRUE),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($message);
+					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 				}
 
@@ -236,14 +236,14 @@ class tx_dlf_indexing {
 			if (!defined('TYPO3_cliMode')) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
 					tx_dlf_helper::getLL('flash.warning', TRUE),
-					t3lib_FlashMessage::WARNING,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					TRUE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($message);
+				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 			}
 
@@ -305,14 +305,14 @@ class tx_dlf_indexing {
 					if (!defined('TYPO3_cliMode')) {
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 							tx_dlf_helper::getLL('flash.error', TRUE),
-							t3lib_FlashMessage::ERROR,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 							TRUE
 						);
 
-						t3lib_FlashMessageQueue::addMessage($message);
+						\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 					}
 
@@ -331,14 +331,14 @@ class tx_dlf_indexing {
 				if (!defined('TYPO3_cliMode')) {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
 						tx_dlf_helper::getLL('flash.error', TRUE),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($message);
+					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 				}
 
@@ -355,14 +355,14 @@ class tx_dlf_indexing {
 			if (!defined('TYPO3_cliMode')) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentDeleted'), $title, $uid)),
 					tx_dlf_helper::getLL('flash.done', TRUE),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					TRUE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($message);
+				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 			}
 
@@ -635,14 +635,14 @@ class tx_dlf_indexing {
 				if (!defined('TYPO3_cliMode')) {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 						tx_dlf_helper::getLL('flash.error', TRUE),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($message);
+					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 				}
 
