@@ -845,17 +845,7 @@ class tx_dlf_helper {
 	 */
 	public static function intInRange($theInt, $min, $max = 2000000000, $zeroValue = 0) {
 
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 6000000) {
-
-			// TYPO3 > 6.0
-			return t3lib_utility_Math::forceIntegerInRange($theInt, $min, $max, $zeroValue);
-
-		} else {
-
-			// TYPO3 4.5 - 4.7
-			return \TYPO3\CMS\Core\Utility\GeneralUtility::intInRange($theInt, $min, $max, $zeroValue);
-
-		}
+		return t3lib_utility_Math::forceIntegerInRange($theInt, $min, $max, $zeroValue);
 
 	}
 
@@ -1123,17 +1113,7 @@ class tx_dlf_helper {
 	 */
 	public static function testInt($theInt) {
 
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 6000000) {
-
-			// TYPO3 > 6.0
-			return t3lib_utility_Math::canBeInterpretedAsInteger($theInt);
-
-		} else {
-
-			// TYPO3 4.5 - 4.7
-			return \TYPO3\CMS\Core\Utility\GeneralUtility::testInt($theInt);
-
-		}
+		return t3lib_utility_Math::canBeInterpretedAsInteger($theInt);
 
 	}
 

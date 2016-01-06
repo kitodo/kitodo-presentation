@@ -359,28 +359,14 @@ class tx_dlf_em {
 
 		}
 
-		// be_groups:inc_access_lists was removed in TYPO3 6.2.
-		$hasIncAccessList =
-			(t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6002000);
-
 		// Check if group "_cli_dlf" exists and is not disabled.
-		if ($hasIncAccessList) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,non_exclude_fields,tables_select,tables_modify,inc_access_lists,' .
-					$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
-				'be_groups',
-				'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
-					\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
-			);
-		} else {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,non_exclude_fields,tables_select,tables_modify,' .
-					$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
-				'be_groups',
-				'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
-					\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
-			);
-		}
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid,non_exclude_fields,tables_select,tables_modify,' .
+				$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
+			'be_groups',
+			'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
+				\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
+		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
@@ -397,7 +383,6 @@ class tx_dlf_em {
 			if (count(array_diff($settings['non_exclude_fields'], $resArray['non_exclude_fields'])) == 0
 					&& count(array_diff($settings['tables_select'], $resArray['tables_select'])) == 0
 					&& count(array_diff($settings['tables_modify'], $resArray['tables_modify'])) == 0
-					&& (!$hasIncAccessList || $resArray['inc_access_lists'] == 1)
 					&& $resArray[$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled']] == 0) {
 
 				$grpUid = $resArray['uid'];
@@ -422,22 +407,12 @@ class tx_dlf_em {
 					$tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
 
 					// Try to configure usergroup.
-					if ($hasIncAccessList) {
-						$data['be_groups'][$resArray['uid']] = array(
-							'non_exclude_fields' => implode(',', $non_exclude_fields),
-							'tables_select' => implode(',', $tables_select),
-							'tables_modify' => implode(',', $tables_modify),
-							'inc_access_lists' => 1,
-							$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
-						);
-					} else {
-						$data['be_groups'][$resArray['uid']] = array(
-							'non_exclude_fields' => implode(',', $non_exclude_fields),
-							'tables_select' => implode(',', $tables_select),
-							'tables_modify' => implode(',', $tables_modify),
-							$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
-						);
-					}
+					$data['be_groups'][$resArray['uid']] = array(
+						'non_exclude_fields' => implode(',', $non_exclude_fields),
+						'tables_select' => implode(',', $tables_select),
+						'tables_modify' => implode(',', $tables_modify),
+						$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
+					);
 
 					tx_dlf_helper::processDBasAdmin($data);
 
@@ -487,26 +462,14 @@ class tx_dlf_em {
 				// Try to create usergroup.
 				$tempUid = uniqid('NEW');
 
-				if ($hasIncAccessList) {
-					$data['be_groups'][$tempUid] = array(
-						'pid' => 0,
-						'title' => '_cli_dlf',
-						'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
-						'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
-						'tables_select' => implode(',', $settings['tables_select']),
-						'tables_modify' => implode(',', $settings['tables_modify']),
-						'inc_access_lists' => 1
-					);
-				} else {
-					$data['be_groups'][$tempUid] = array(
-						'pid' => 0,
-						'title' => '_cli_dlf',
-						'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
-						'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
-						'tables_select' => implode(',', $settings['tables_select']),
-						'tables_modify' => implode(',', $settings['tables_modify'])
-					);
-				}
+				$data['be_groups'][$tempUid] = array(
+					'pid' => 0,
+					'title' => '_cli_dlf',
+					'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
+					'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
+					'tables_select' => implode(',', $settings['tables_select']),
+					'tables_modify' => implode(',', $settings['tables_modify'])
+				);
 
 				$substUid = tx_dlf_helper::processDBasAdmin($data);
 
