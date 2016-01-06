@@ -721,6 +721,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				ob_end_flush();
 
 				exit;
+
 			}
 
 		}
