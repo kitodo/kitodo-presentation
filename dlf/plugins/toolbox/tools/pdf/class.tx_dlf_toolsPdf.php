@@ -135,7 +135,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		}
 
 		if (TYPO3_DLOG && empty($page1Link) && empty($page2Link)) {
-			t3lib_div::devLog('[tx_dlf_toolsPdf->getPageLink()] ' .
+			\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_toolsPdf->getPageLink()] ' .
 					  'File not found in fileGrp "' .
 					  $this->conf['fileGrpDownload'] . '"',
 					  $this->extKey,
@@ -197,7 +197,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_toolsPdf->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_toolsPdf->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 

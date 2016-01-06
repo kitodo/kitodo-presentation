@@ -242,7 +242,7 @@ $TCA['tx_dlf_libraries'] = array (
 
 // Register plugins.
 if (version_compare(TYPO3_branch, '6.1', '<')) {
-	t3lib_div::loadTCA('tt_content');
+	\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('tt_content');
 }
 
 // Plugin "collection".

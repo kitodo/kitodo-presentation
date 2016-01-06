@@ -72,7 +72,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_search->addAutocompleteJS()] No metadata fields configured for search suggestions', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->addAutocompleteJS()] No metadata fields configured for search suggestions', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -90,7 +90,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 	protected function addCurrentCollection() {
 
 		// Load current collection.
-		$list = t3lib_div::makeInstance('tx_dlf_list');
+		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 		if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'collection') {
 
@@ -130,7 +130,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 	protected function addCurrentDocument() {
 
 		// Load current list object.
-		$list = t3lib_div::makeInstance('tx_dlf_list');
+		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 		// Load current document.
 		if (!empty($this->piVars['id']) && tx_dlf_helper::testInt($this->piVars['id'])) {
@@ -229,7 +229,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Get field selector options.
 		$fieldSelectorOptions = '';
 
-		$searchFields = t3lib_div::trimExplode(',', $this->conf['extendedFields'], TRUE);
+		$searchFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
 
 		foreach ($searchFields as $searchField) {
 
@@ -267,7 +267,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_search->addFacetsMenu()] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->addFacetsMenu()] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -285,7 +285,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		// Get facets from plugin configuration.
 		$facets = array ();
 
-		foreach (t3lib_div::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
+		foreach (\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
 
 			$facets[$facet.'_faceting'] = tx_dlf_helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
 
@@ -442,7 +442,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_search->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
 
 			}
 
@@ -535,19 +535,19 @@ class tx_dlf_search extends tx_dlf_plugin {
 				$results->save();
 
 				// Clean output buffer.
-				t3lib_div::cleanOutputBuffers();
+				\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
 				// Keep some plugin variables.
 				$linkConf['parameter'] = $this->conf['targetPid'];
 
 				if (!empty($this->piVars['order'])) {
 
-					$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
 
 				}
 
 				// Send headers.
-				header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
+				header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
 
 				// Flush output buffer and end script processing.
 				ob_end_flush();
@@ -563,7 +563,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+						\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
 
 					}
 
@@ -606,7 +606,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 					$allowedOperators = array('AND', 'OR', 'NOT');
 
-					$allowedFields = t3lib_div::trimExplode(',', $this->conf['extendedFields'], TRUE);
+					$allowedFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
 
 					for ($i = 0; $i < count($this->piVars['extQuery']); $i++) {
 
@@ -703,19 +703,19 @@ class tx_dlf_search extends tx_dlf_plugin {
 				$results->save();
 
 				// Clean output buffer.
-				t3lib_div::cleanOutputBuffers();
+				\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
 				// Keep some plugin variables.
 				$linkConf['parameter'] = $this->conf['targetPid'];
 
 				if (!empty($this->piVars['order'])) {
 
-					$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
 
 				}
 
 				// Send headers.
-				header('Location: '.t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
+				header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
 
 				// Flush output buffer and end script processing.
 				ob_end_flush();
@@ -750,7 +750,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		);
 
 		// Extract query and filter from last search.
-		$list = t3lib_div::makeInstance('tx_dlf_list');
+		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 		if (!empty($list->metadata['options']['source'])) {
 
@@ -771,7 +771,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
 
 			}
 

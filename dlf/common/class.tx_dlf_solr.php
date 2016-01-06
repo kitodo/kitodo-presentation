@@ -123,7 +123,7 @@ class tx_dlf_solr {
 		// Load class.
 		if (!class_exists('Apache_Solr_Service')) {
 
-			require_once(t3lib_div::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+			require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
 
 		}
 
@@ -227,7 +227,7 @@ class tx_dlf_solr {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -258,7 +258,7 @@ class tx_dlf_solr {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -520,7 +520,7 @@ class tx_dlf_solr {
 		}
 
 		// Save list of documents.
-		$list = t3lib_div::makeInstance('tx_dlf_list');
+		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 		$list->reset();
 
@@ -661,7 +661,7 @@ class tx_dlf_solr {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -693,7 +693,7 @@ class tx_dlf_solr {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
 
 			}
 
@@ -719,14 +719,14 @@ class tx_dlf_solr {
 		// Load class.
 		if (!class_exists('Apache_Solr_Service')) {
 
-			require_once(t3lib_div::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+			require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
 
 		}
 
 		$solrInfo = self::getSolrConnectionInfo($core);
 
 		// Instantiate Apache_Solr_Service class.
-		$this->service = t3lib_div::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
+		$this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
 
 		// Check if connection is established.
 		if ($this->service->ping() !== FALSE) {

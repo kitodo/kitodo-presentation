@@ -128,7 +128,7 @@ class tx_dlf_indexing {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+						\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 					}
 
@@ -198,7 +198,7 @@ class tx_dlf_indexing {
 
 					if (!$errors) {
 
-						$message = t3lib_div::makeInstance(
+						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 							't3lib_FlashMessage',
 							htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
 							tx_dlf_helper::getLL('flash.done', TRUE),
@@ -208,7 +208,7 @@ class tx_dlf_indexing {
 
 					} else {
 
-						$message = t3lib_div::makeInstance(
+						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 							't3lib_FlashMessage',
 							htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
 							tx_dlf_helper::getLL('flash.error', TRUE),
@@ -228,7 +228,7 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$message = t3lib_div::makeInstance(
+					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 						't3lib_FlashMessage',
 						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 						tx_dlf_helper::getLL('flash.error', TRUE),
@@ -242,7 +242,7 @@ class tx_dlf_indexing {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -254,7 +254,7 @@ class tx_dlf_indexing {
 
 			if (!defined('TYPO3_cliMode')) {
 
-				$message = t3lib_div::makeInstance(
+				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					't3lib_FlashMessage',
 					tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
 					tx_dlf_helper::getLL('flash.warning', TRUE),
@@ -268,7 +268,7 @@ class tx_dlf_indexing {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -323,7 +323,7 @@ class tx_dlf_indexing {
 
 					if (!defined('TYPO3_cliMode')) {
 
-						$message = t3lib_div::makeInstance(
+						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 							't3lib_FlashMessage',
 							tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 							tx_dlf_helper::getLL('flash.error', TRUE),
@@ -337,7 +337,7 @@ class tx_dlf_indexing {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+						\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 					}
 
@@ -349,7 +349,7 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$message = t3lib_div::makeInstance(
+					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 						't3lib_FlashMessage',
 						tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
 						tx_dlf_helper::getLL('flash.error', TRUE),
@@ -363,7 +363,7 @@ class tx_dlf_indexing {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->delete('.$_uid.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -373,7 +373,7 @@ class tx_dlf_indexing {
 
 			if (!defined('TYPO3_cliMode')) {
 
-				$message = t3lib_div::makeInstance(
+				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					't3lib_FlashMessage',
 					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentDeleted'), $title, $uid)),
 					tx_dlf_helper::getLL('flash.done', TRUE),
@@ -391,7 +391,7 @@ class tx_dlf_indexing {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_indexing->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -423,7 +423,7 @@ class tx_dlf_indexing {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_indexing->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -564,7 +564,7 @@ class tx_dlf_indexing {
 			// Load class.
 			if (!class_exists('Apache_Solr_Document')) {
 
-				require_once(t3lib_div::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Document.php'));
+				require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Document.php'));
 
 			}
 
@@ -664,7 +664,7 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$message = t3lib_div::makeInstance(
+					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 						't3lib_FlashMessage',
 						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 						tx_dlf_helper::getLL('flash.error', TRUE),
@@ -729,7 +729,7 @@ class tx_dlf_indexing {
 			$file = $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpFulltext']]);
 
 			// Load XML file.
-			if (t3lib_div::isValidUrl($file)
+			if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($file)
 				// There is a bug in filter_var($var, FILTER_VALIDATE_URL) in PHP < 5.3.3 which causes
 				// the function to validate URLs containing whitespaces and invalidate URLs containing
 				// hyphens. (see https://bugs.php.net/bug.php?id=51192)
@@ -766,7 +766,7 @@ class tx_dlf_indexing {
 			// Load class.
 			if (!class_exists('Apache_Solr_Document')) {
 
-				require_once(t3lib_div::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Document.php'));
+				require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Document.php'));
 
 			}
 
@@ -808,7 +808,7 @@ class tx_dlf_indexing {
 
 				if (!defined('TYPO3_cliMode')) {
 
-					$message = t3lib_div::makeInstance(
+					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 						't3lib_FlashMessage',
 						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
 						tx_dlf_helper::getLL('flash.error', TRUE),

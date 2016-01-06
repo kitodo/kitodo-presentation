@@ -179,7 +179,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->current()] Invalid position "'.$this->position.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->current()] Invalid position "'.$this->position.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
 
@@ -356,7 +356,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 				);
 
 				// we need to make instance of cObj here because its not available in this context
-				$cObj = t3lib_div::makeInstance('tslib_cObj');
+				$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
 
 				// replace uid with URI to dpf API
 				$record['uid'] = $cObj->typoLink_URL($conf);
@@ -370,7 +370,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->getRecord([data])] No UID of list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_NOTICE, $element);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->getRecord([data])] No UID of list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_NOTICE, $element);
 
 			}
 
@@ -462,7 +462,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -477,7 +477,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -571,7 +571,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
 
@@ -631,7 +631,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -835,7 +835,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', $this->extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -981,7 +981,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -1013,7 +1013,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_list->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $value);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $value);
 
 			}
 

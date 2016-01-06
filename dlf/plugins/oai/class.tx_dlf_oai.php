@@ -98,7 +98,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			// Deletion failed.
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens', $this->extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -152,9 +152,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		// Set only allowed parameters.
 		foreach ($allowedParams as $param) {
 
-			if (t3lib_div::_GP($param)) {
+			if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP($param)) {
 
-				$this->piVars[$param] = t3lib_div::_GP($param);
+				$this->piVars[$param] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP($param);
 
 			}
 
@@ -364,7 +364,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
 
 				}
 
@@ -374,7 +374,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
 
 			}
 
@@ -433,12 +433,12 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			}
 
-			$stylesheet = t3lib_div::locationHeaderUrl($this->conf['stylesheet']);
+			$stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
 
 		} else {
 
 			// Use default stylesheet if no custom stylesheet is given.
-			$stylesheet = t3lib_div::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
+			$stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
 
 		}
 
@@ -528,7 +528,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$content = $this->oai->saveXML();
 
 		// Clean output buffer.
-		t3lib_div::cleanOutputBuffers();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
 		// Send headers.
 		header('HTTP/1.1 200 OK');
@@ -727,7 +727,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					t3lib_div::devLog('[tx_dlf_oai->resume()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->resume()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
 
@@ -925,7 +925,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration',
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration',
 						  $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
@@ -954,7 +954,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' .
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' .
 						  $this->conf['pages'] . '"', $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
 			}
@@ -1227,7 +1227,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			if (!$complete) {
 
 				// Save result set as list object.
-				$resultSet = t3lib_div::makeInstance('tx_dlf_list');
+				$resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 				$resultSet->reset();
 
@@ -1267,7 +1267,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_oai->verbListIdentifiers()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
+						\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbListIdentifiers()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 					}
 
@@ -1632,7 +1632,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			if (!$complete) {
 
 				// Save result set as list object.
-				$resultSet = t3lib_div::makeInstance('tx_dlf_list');
+				$resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 				$resultSet->reset();
 
@@ -1672,7 +1672,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 					if (TYPO3_DLOG) {
 
-						t3lib_div::devLog('[tx_dlf_oai->verbListRecords()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
+						\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbListRecords()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 					}
 

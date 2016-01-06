@@ -613,7 +613,7 @@ dlfViewer.prototype.addPolygonlayer = function(layer, feature, type) {
 					fillOpacity : 0.4,
 					cursor : 'inherit'
 				});
-		};
+		}
 
 		var hoverStyle = new OpenLayers.Style({
 			strokeColor : '#cccccc',

@@ -79,7 +79,7 @@ class tx_dlf_tceforms {
 
 		if ($params['row']['pi_flexform']) {
 
-			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
 
 			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
 
@@ -134,7 +134,7 @@ class tx_dlf_tceforms {
 
 		if ($params['row']['pi_flexform']) {
 
-			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
 
 			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
 
@@ -189,7 +189,7 @@ class tx_dlf_tceforms {
 
 		if ($params['row']['pi_flexform']) {
 
-			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
 
 			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
 
@@ -244,7 +244,7 @@ class tx_dlf_tceforms {
 
 		if ($params['row']['pi_flexform']) {
 
-			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
 
 			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
 
@@ -299,7 +299,7 @@ class tx_dlf_tceforms {
 
 		if ($params['row']['pi_flexform']) {
 
-			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
 
 			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
 
@@ -354,7 +354,7 @@ class tx_dlf_tceforms {
 
 		if ($params['row']['pi_flexform']) {
 
-			$pi_flexform = t3lib_div::xml2array($params['row']['pi_flexform']);
+			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
 
 			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
 

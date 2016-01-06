@@ -52,20 +52,20 @@ class tx_dlf_fulltext_eid extends tslib_pibase {
 	 */
 	public function main($content = '', $conf = array ()) {
 
-		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
 
 		// Load translation files.
-		$LANG = t3lib_div::makeInstance('language');
+		$LANG = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
 
 		$this->extKey = 'dlf';
 
 		$this->scriptRelPath = 'plugins/pageview/class.tx_dlf_fulltext_eid.php';
 
-		$this->LLkey = t3lib_div::_GP('L') ? t3lib_div::_GP('L') : 'default';
+		$this->LLkey = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('L') ? \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('L') : 'default';
 
 		$this->pi_loadLL();
 
-		$url = t3lib_div::_GP('url');
+		$url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
 
 		$fulltextData = file_get_contents($url);
 
@@ -85,7 +85,7 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plu
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/pageview/class.tx_dlf_fulltext_eid.php']);
 }
 
-$cObj = t3lib_div::makeInstance('tx_dlf_fulltext_eid');
+$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_fulltext_eid');
 
 $cObj->main();
 

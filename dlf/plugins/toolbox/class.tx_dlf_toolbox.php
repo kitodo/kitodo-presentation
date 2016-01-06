@@ -86,7 +86,7 @@ class tx_dlf_toolbox extends tx_dlf_plugin {
 
 			$tool = trim($tool);
 
-			$cObj = t3lib_div::makeInstance('tslib_cObj');
+			$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
 
 			$cObj->data = $data;
 

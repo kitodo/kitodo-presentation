@@ -150,7 +150,7 @@ class tx_dlf_elasticsearch {
 
 		 	if (TYPO3_DLOG) {
 
-		 		t3lib_div::devLog('[tx_dlf_elasticsearch->getInstance('.$_index.')] Invalid index name "'.$index.'" for Elasticsearch', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_elasticsearch->getInstance('.$_index.')] Invalid index name "'.$index.'" for Elasticsearch', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 		 	}
 
@@ -180,7 +180,7 @@ class tx_dlf_elasticsearch {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_elasticsearch->getInstance()] Could not connect to Elasticsearch server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_elasticsearch->getInstance()] Could not connect to Elasticsearch server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
 			}
 
@@ -282,7 +282,7 @@ class tx_dlf_elasticsearch {
 		}
 
 		// Save list of documents.
-		$list = t3lib_div::makeInstance('tx_dlf_list');
+		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 		$list->reset();
 
@@ -440,7 +440,7 @@ class tx_dlf_elasticsearch {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_elasticsearch->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_elasticsearch->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
@@ -472,7 +472,7 @@ class tx_dlf_elasticsearch {
 
 			if (TYPO3_DLOG) {
 
-				t3lib_div::devLog('[tx_dlf_elasticsearch->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_elasticsearch->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
 
 			}
 
