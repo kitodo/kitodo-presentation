@@ -27,7 +27,7 @@
  */
 
 /**
- * Hooks and helper for the 't3lib_TCEmain' library.
+ * Hooks and helper for the '\TYPO3\CMS\Core\DataHandling\DataHandler' library.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
@@ -45,7 +45,7 @@ class tx_dlf_tcemain {
 	 * @param	string		$table: The destination table
 	 * @param	integer		$id: The uid of the record
 	 * @param	array		&$fieldArray: Array of field values
-	 * @param	t3lib_TCEmain		$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
 	 *
 	 * @return	void
 	 */
@@ -309,7 +309,7 @@ class tx_dlf_tcemain {
 	 * @param	string		$table: The destination table
 	 * @param	integer		$id: The uid of the record
 	 * @param	array		&$fieldArray: Array of field values
-	 * @param	t3lib_TCEmain		$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
 	 *
 	 * @return	void
 	 */
@@ -393,7 +393,7 @@ class tx_dlf_tcemain {
 	 * @param	string		$table: The destination table
 	 * @param	integer		$id: The uid of the record
 	 * @param	mixed		$value: The value for the command
-	 * @param	t3lib_TCEmain		$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
 	 *
 	 * @return	void
 	 */
