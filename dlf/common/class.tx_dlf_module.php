@@ -35,7 +35,7 @@
  * @access	public
  * @abstract
  */
-abstract class tx_dlf_module extends t3lib_SCbase {
+abstract class tx_dlf_module extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 	public $extKey = 'dlf';
 
