@@ -304,7 +304,7 @@ abstract class tx_dlf_plugin extends tslib_pibase {
 	 */
 	protected function parseTS($string = '') {
 
-		$parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_TSparser');
+		$parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
 
 		$parser->parse($string);
 
