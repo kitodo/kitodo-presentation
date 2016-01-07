@@ -32,7 +32,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_fulltext_eid extends tslib_pibase {
+class tx_dlf_fulltext_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	/**
 	 *

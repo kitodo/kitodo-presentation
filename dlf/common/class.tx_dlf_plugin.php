@@ -35,7 +35,7 @@
  * @access	public
  * @abstract
  */
-abstract class tx_dlf_plugin extends tslib_pibase {
+abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	public $extKey = 'dlf';
 

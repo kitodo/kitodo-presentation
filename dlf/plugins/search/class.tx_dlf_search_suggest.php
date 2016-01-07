@@ -35,7 +35,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_search_suggest extends tslib_pibase {
+class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search_suggest.php';
 
