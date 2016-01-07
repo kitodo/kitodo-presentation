@@ -220,11 +220,6 @@ $TCA['tx_dlf_libraries'] = array (
 // Register static typoscript.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'typoscript/', 'Basic Configuration');
 
-// Register plugins.
-if (version_compare(TYPO3_branch, '6.1', '<')) {
-	\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('tt_content');
-}
-
 // Plugin "collection".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collection'] = 'layout,select_key,pages,recursive';
 
