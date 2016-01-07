@@ -832,24 +832,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Forces the integer $theInt into the boundaries of $min and $max.
-	 *
-	 * @access	public
-	 *
-	 * @param	integer		$theInt: Input value
-	 * @param	integer		$min: Lower limit
-	 * @param	integer		$max: Higher limit
-	 * @param	integer		$zeroValue: Default value if input is FALSE
-	 *
-	 * @return	integer		The input value forced into the boundaries of $min and $max
-	 */
-	public static function intInRange($theInt, $min, $max = 2000000000, $zeroValue = 0) {
-
-		return t3lib_utility_Math::forceIntegerInRange($theInt, $min, $max, $zeroValue);
-
-	}
-
-	/**
 	 * Check if given ID is a valid Pica Production Number (PPN)
 	 *
 	 * @access	public

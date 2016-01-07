@@ -110,7 +110,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 		// Save parameters for logging purposes.
 		$_position = $position;
 
-		$position = tx_dlf_helper::intInRange($position, 0, $this->count, $this->count);
+		$position = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($position, 0, $this->count, $this->count);
 
 		if (!empty($elements)) {
 

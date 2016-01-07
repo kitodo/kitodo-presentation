@@ -232,7 +232,7 @@ class tx_dlf_solr {
 		}
 
 		// Set port if not set.
-		$port = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
+		$port = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
 
 		// Append core name to path.
 		$path = trim($conf['solrPath'], '/').'/'.$core;
@@ -649,7 +649,7 @@ class tx_dlf_solr {
 		}
 
 		// Set port if not set.
-		$port = tx_dlf_helper::intInRange($conf['solrPort'], 1, 65535, 8180);
+		$port = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
 
 		// Append core name to path.
 		$path = trim($conf['solrPath'], '/').'/'.$core;
