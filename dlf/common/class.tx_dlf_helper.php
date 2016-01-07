@@ -1085,21 +1085,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Tests if the input can be interpreted as integer.
-	 *
-	 * @access	public
-	 *
-	 * @param	integer		$theInt: Input value
-	 *
-	 * @return	boolean		TRUE if $theInt is an integer, FALSE otherwise
-	 */
-	public static function testInt($theInt) {
-
-		return t3lib_utility_Math::canBeInterpretedAsInteger($theInt);
-
-	}
-
-	/**
 	 * This translates an internal "index_name"
 	 *
 	 * @access	public
@@ -1136,7 +1121,7 @@ class tx_dlf_helper {
 		}
 
 		// Check if "index_name" is an UID.
-		if (tx_dlf_helper::testInt($index_name)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
 
 			$index_name = self::getIndexName($index_name, $table, $pid);
 

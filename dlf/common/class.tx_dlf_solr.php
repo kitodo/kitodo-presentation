@@ -155,7 +155,7 @@ class tx_dlf_solr {
 		$_core = $core;
 
 		// Get core name if UID is given.
-		if (tx_dlf_helper::testInt($core)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
 
 			$core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
 
@@ -391,19 +391,19 @@ class tx_dlf_solr {
 					// Prepare document's metadata for sorting.
 					$sorting = unserialize($resArray['metadata_sorting']);
 
-					if (!empty($sorting['type']) && tx_dlf_helper::testInt($sorting['type'])) {
+					if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
 
 						$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->cPid);
 
 					}
 
-					if (!empty($sorting['owner']) && tx_dlf_helper::testInt($sorting['owner'])) {
+					if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
 
 						$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->cPid);
 
 					}
 
-					if (!empty($sorting['collection']) && tx_dlf_helper::testInt($sorting['collection'])) {
+					if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
 
 						$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->cPid);
 

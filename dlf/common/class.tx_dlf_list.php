@@ -211,13 +211,13 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 					// Prepare document's metadata.
 					$metadata = unserialize($resArray['metadata']);
 
-					if (!empty($metadata['type'][0]) && tx_dlf_helper::testInt($metadata['type'][0])) {
+					if (!empty($metadata['type'][0]) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['type'][0])) {
 
 						$metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
 
 					}
 
-					if (!empty($metadata['owner'][0]) && tx_dlf_helper::testInt($metadata['owner'][0])) {
+					if (!empty($metadata['owner'][0]) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])) {
 
 						$metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
 
@@ -227,7 +227,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 						foreach ($metadata['collection'] as $i => $collection) {
 
-							if (tx_dlf_helper::testInt($collection)) {
+							if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($collection)) {
 
 								$metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
 
@@ -504,7 +504,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 	 */
 	public function offsetSet($offset, $value) {
 
-		if (tx_dlf_helper::testInt($offset)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($offset)) {
 
 			$this->elements[$offset] = $value;
 
