@@ -197,7 +197,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 		// Set defaults for buttons and menu.
 		if (empty($this->buttonArray['RELOAD'])) {
 
-			$this->buttonArray['RELOAD'] = '<a href="'.$GLOBALS['MCONF']['_'].'" title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.reload', TRUE).'">'.t3lib_iconWorks::getSpriteIcon('actions-system-refresh').'</a>';
+			$this->buttonArray['RELOAD'] = '<a href="' . $GLOBALS['MCONF']['_'] . '" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.reload', TRUE) . '">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
 
 		}
 
