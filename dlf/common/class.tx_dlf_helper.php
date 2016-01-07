@@ -406,7 +406,7 @@ class tx_dlf_helper {
 
 			} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('eID') !== NULL) {
 
-				return tslib_eidtools::initFeUser();
+				return \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
 
 			}
 
