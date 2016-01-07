@@ -61,7 +61,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,db_mountpoints',
 				'be_groups',
-				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.t3lib_BEfunc::deleteClause('be_groups')
+				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -410,7 +410,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,db_mountpoints',
 				'be_groups',
-				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.t3lib_BEfunc::deleteClause('be_groups')
+				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {

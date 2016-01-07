@@ -34,7 +34,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_list implements ArrayAccess, Countable, Iterator, t3lib_Singleton {
+class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * This holds the number of documents in the list

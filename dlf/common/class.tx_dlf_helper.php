@@ -353,16 +353,16 @@ class tx_dlf_helper {
 	/**
 	 * Get a backend user object (even in frontend mode)
 	 *
-	 * @access	public
+	 * @access public
 	 *
-	 * @return	t3lib_beUserAuth		Instance of t3lib_beUserAuth or NULL on failure
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication Instance of \TYPO3\CMS\Core\Authentication\BackendUserAuthentication or NULL on failure
 	 */
 	public static function getBeUser() {
 
 		if (TYPO3_MODE === 'FE' || TYPO3_MODE === 'BE') {
 
 			// Initialize backend session with CLI user's rights.
-			$userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_beUserAuth');
+			$userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
 
 			$userObj->dontSetCookie = TRUE;
 
@@ -978,7 +978,7 @@ class tx_dlf_helper {
 	public static function processDB(array $data = array (), array $cmd = array (), $reverseOrder = FALSE, $be_user = FALSE) {
 
 		// Instantiate TYPO3 core engine.
-		$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_TCEmain');
+		$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 
 		// Set some configuration variables.
 		$tce->stripslashes_values = FALSE;
@@ -1183,7 +1183,7 @@ class tx_dlf_helper {
 		/* The $labels already contain the translated content element, but with the index_name of the translated content element itself
 		 * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
 		 * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
-		
+
 		// First fetch the uid of the received index_name
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid',
@@ -1193,13 +1193,13 @@ class tx_dlf_helper {
 				'',
 				''
 		);
-		
+
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-				
+
 			// Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-				
+
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-		
+
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'index_name',
 					$table,
@@ -1208,13 +1208,13 @@ class tx_dlf_helper {
 					'',
 					''
 			);
-		
+
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-		
+
 				// If there is an translated content element, overwrite the received $index_name.
-		
+
 				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-		
+
 				$index_name = $resArray['index_name'];
 			}
 		}
@@ -1313,7 +1313,7 @@ class tx_dlf_helper {
 			// Table "tx_dlf_formats" always has PID 0.
 			if ($table == 'tx_dlf_formats') {
 
-				return t3lib_BEfunc::deleteClause($table);
+				return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 
 			}
 
@@ -1333,17 +1333,17 @@ class tx_dlf_helper {
 
 			} else {
 
-				$t3lib_pageSelect = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_pageSelect');
+				$pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 
 				$GLOBALS['TSFE']->includeTCA();
 
-				return $t3lib_pageSelect->enableFields($table, $ignoreHide);
+				return $pageRepository->enableFields($table, $ignoreHide);
 
 			}
 
 		} elseif (TYPO3_MODE === 'BE') {
 
-			return t3lib_BEfunc::deleteClause($table);
+			return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 
 		} else {
 
