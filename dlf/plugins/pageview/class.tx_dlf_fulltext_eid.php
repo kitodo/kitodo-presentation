@@ -52,7 +52,7 @@ class tx_dlf_fulltext_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 */
 	public function main($content = '', $conf = array ()) {
 
-		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
+		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		// Load translation files.
 		$LANG = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
