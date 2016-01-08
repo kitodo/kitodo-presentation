@@ -372,19 +372,19 @@ class tx_dlf_collection extends tx_dlf_plugin {
 				// Prepare document's metadata for sorting.
 				$sorting = unserialize($resArray['metadata_sorting']);
 
-				if (!empty($sorting['type']) && tx_dlf_helper::testInt($sorting['type'])) {
+				if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
 
 					$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
 
 				}
 
-				if (!empty($sorting['owner']) && tx_dlf_helper::testInt($sorting['owner'])) {
+				if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
 
 					$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
 
 				}
 
-				if (!empty($sorting['collection']) && tx_dlf_helper::testInt($sorting['collection'])) {
+				if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
 
 					$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
@@ -451,5 +451,3 @@ class tx_dlf_collection extends tx_dlf_plugin {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/collection/class.tx_dlf_collection.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/collection/class.tx_dlf_collection.php']);
 }
-
-?>

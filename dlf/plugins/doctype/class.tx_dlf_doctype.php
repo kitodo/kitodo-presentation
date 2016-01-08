@@ -44,8 +44,6 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 	 */
 	public function main($content, $conf) {
 
-		//~ t3lib_utility_Debug::debug($this->piVars, 'main: piVars1... ');
-
 		$this->init($conf);
 
 		// Load current document.
@@ -80,8 +78,6 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 		 * 			  - children array([0], [1], [2], ...) --> type = issue | front_cover
 		 *
 		 */
-
-		//~ t3lib_utility_Debug::debug($toc[0], 'toc[0]: conf... ');
 
 		switch ($toc[0]['type']) {
 			case 'newspaper':
@@ -122,7 +118,6 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 				$ret = $toc[0]['type'];
 		}
 
-		//~ t3lib_utility_Debug::debug($ret, 'ret: conf... ');
 		return $ret;
 
 	}
@@ -155,5 +150,3 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/doctype/class.tx_dlf_doctype.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/doctype/class.tx_dlf_doctype.php']);
 }
-
-?>

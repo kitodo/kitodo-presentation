@@ -1224,5 +1224,3 @@ $TCA['tx_dlf_libraries'] = array (
 		'4' => array ('showitem' => 'union_base', 'canNotCollapse' => 1),
 	),
 );
-
-?>

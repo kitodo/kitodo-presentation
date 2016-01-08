@@ -354,16 +354,16 @@ class tx_dlf_helper {
 	/**
 	 * Get a backend user object (even in frontend mode)
 	 *
-	 * @access	public
+	 * @access public
 	 *
-	 * @return	t3lib_beUserAuth		Instance of t3lib_beUserAuth or NULL on failure
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication Instance of \TYPO3\CMS\Core\Authentication\BackendUserAuthentication or NULL on failure
 	 */
 	public static function getBeUser() {
 
 		if (TYPO3_MODE === 'FE' || TYPO3_MODE === 'BE') {
 
 			// Initialize backend session with CLI user's rights.
-			$userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_beUserAuth');
+			$userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
 
 			$userObj->dontSetCookie = TRUE;
 
@@ -392,9 +392,9 @@ class tx_dlf_helper {
 	/**
 	 * Get the current frontend user object
 	 *
-	 * @access	public
+	 * @access public
 	 *
-	 * @return	tslib_feUserAuth		Instance of tslib_feUserAuth or NULL on failure
+	 * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication Instance of \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication or NULL on failure
 	 */
 	public static function getFeUser() {
 
@@ -407,7 +407,7 @@ class tx_dlf_helper {
 
 			} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('eID') !== NULL) {
 
-				return tslib_eidtools::initFeUser();
+				return \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
 
 			}
 
@@ -833,34 +833,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Forces the integer $theInt into the boundaries of $min and $max.
-	 *
-	 * @access	public
-	 *
-	 * @param	integer		$theInt: Input value
-	 * @param	integer		$min: Lower limit
-	 * @param	integer		$max: Higher limit
-	 * @param	integer		$zeroValue: Default value if input is FALSE
-	 *
-	 * @return	integer		The input value forced into the boundaries of $min and $max
-	 */
-	public static function intInRange($theInt, $min, $max = 2000000000, $zeroValue = 0) {
-
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 6000000) {
-
-			// TYPO3 > 6.0
-			return t3lib_utility_Math::forceIntegerInRange($theInt, $min, $max, $zeroValue);
-
-		} else {
-
-			// TYPO3 4.5 - 4.7
-			return \TYPO3\CMS\Core\Utility\GeneralUtility::intInRange($theInt, $min, $max, $zeroValue);
-
-		}
-
-	}
-
-	/**
 	 * Check if given ID is a valid Pica Production Number (PPN)
 	 *
 	 * @access	public
@@ -979,7 +951,7 @@ class tx_dlf_helper {
 	public static function processDB(array $data = array (), array $cmd = array (), $reverseOrder = FALSE, $be_user = FALSE) {
 
 		// Instantiate TYPO3 core engine.
-		$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_TCEmain');
+		$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 
 		// Set some configuration variables.
 		$tce->stripslashes_values = FALSE;
@@ -1114,31 +1086,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Tests if the input can be interpreted as integer.
-	 *
-	 * @access	public
-	 *
-	 * @param	integer		$theInt: Input value
-	 *
-	 * @return	boolean		TRUE if $theInt is an integer, FALSE otherwise
-	 */
-	public static function testInt($theInt) {
-
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 6000000) {
-
-			// TYPO3 > 6.0
-			return t3lib_utility_Math::canBeInterpretedAsInteger($theInt);
-
-		} else {
-
-			// TYPO3 4.5 - 4.7
-			return \TYPO3\CMS\Core\Utility\GeneralUtility::testInt($theInt);
-
-		}
-
-	}
-
-	/**
 	 * This translates an internal "index_name"
 	 *
 	 * @access	public
@@ -1175,7 +1122,7 @@ class tx_dlf_helper {
 		}
 
 		// Check if "index_name" is an UID.
-		if (tx_dlf_helper::testInt($index_name)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
 
 			$index_name = self::getIndexName($index_name, $table, $pid);
 
@@ -1314,7 +1261,7 @@ class tx_dlf_helper {
 			// Table "tx_dlf_formats" always has PID 0.
 			if ($table == 'tx_dlf_formats') {
 
-				return t3lib_BEfunc::deleteClause($table);
+				return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 
 			}
 
@@ -1334,17 +1281,17 @@ class tx_dlf_helper {
 
 			} else {
 
-				$t3lib_pageSelect = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_pageSelect');
+				$pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 
 				$GLOBALS['TSFE']->includeTCA();
 
-				return $t3lib_pageSelect->enableFields($table, $ignoreHide);
+				return $pageRepository->enableFields($table, $ignoreHide);
 
 			}
 
 		} elseif (TYPO3_MODE === 'BE') {
 
-			return t3lib_BEfunc::deleteClause($table);
+			return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
 
 		} else {
 
@@ -1374,5 +1321,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/com
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_helper.php']);
 }
 */
-
-?>

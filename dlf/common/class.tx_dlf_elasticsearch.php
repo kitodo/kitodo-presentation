@@ -139,7 +139,7 @@ class tx_dlf_elasticsearch {
 		$_index = $index;
 
 		// // Get core name if UID is given.
-		 if (tx_dlf_helper::testInt($index)) {
+		 if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index)) {
 
 			 $index = tx_dlf_helper::getIndexName($index, 'tx_dlf_elasticsearchindexes');
 
@@ -208,7 +208,7 @@ class tx_dlf_elasticsearch {
 		$host = ($conf['elasticSearchHost'] ? $conf['elasticSearchHost'] : 'localhost');
 
 		// Set port if not set.
-		$port = tx_dlf_helper::intInRange($conf['elasticSearchPort'], 1, 65535, 8180);
+		$port = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['elasticSearchPort'], 1, 65535, 8180);
 
 		// Append core name to path.
 		$path = trim($conf['index'], '/').'/'.$type;
@@ -506,7 +506,7 @@ class tx_dlf_elasticsearch {
 		$host = ($conf['elasticSearchHost'] ? $conf['elasticSearchHost'] : 'localhost');
 
 		// get port
-		$port = tx_dlf_helper::intInRange($conf['elasticSearchPort'], 1, 65535, 9200);
+		$port = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['elasticSearchPort'], 1, 65535, 9200);
 
 		// type
 		$type = 'object';
@@ -560,5 +560,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/com
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php']);
 }
 */
-
-?>

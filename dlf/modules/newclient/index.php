@@ -61,7 +61,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,db_mountpoints',
 				'be_groups',
-				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.t3lib_BEfunc::deleteClause('be_groups')
+				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -77,14 +77,14 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				// Fine.
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					tx_dlf_helper::getLL('flash.usergroupAddedMsg'),
 					tx_dlf_helper::getLL('flash.usergroupAdded', TRUE),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					FALSE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($_message);
+				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			}
 
@@ -103,11 +103,6 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		// Include metadata definition file.
 		include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey).'modules/'.$this->modPath.'metadata.inc.php');
-
-		// Load table configuration array to get default field values.
-		if (version_compare(TYPO3_branch, '6.1', '<')) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('tx_dlf_metadata');
-		}
 
 		$i = 0;
 
@@ -156,10 +151,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Fine.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.metadataAddedMsg'),
 				tx_dlf_helper::getLL('flash.metadataAdded', TRUE),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
@@ -167,16 +162,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Something went wrong.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.metadataNotAddedMsg'),
 				tx_dlf_helper::getLL('flash.metadataNotAdded', TRUE),
-				t3lib_FlashMessage::ERROR,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 				FALSE
 			);
 
 		}
 
-		t3lib_FlashMessageQueue::addMessage($_message);
+		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 	}
 
@@ -203,10 +198,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Fine.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.solrcoreAddedMsg'),
 				tx_dlf_helper::getLL('flash.solrcoreAdded', TRUE),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
@@ -214,16 +209,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Something went wrong.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.solrcoreNotAddedMsg'),
 				tx_dlf_helper::getLL('flash.solrcoreNotAdded', TRUE),
-				t3lib_FlashMessage::ERROR,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 				FALSE
 			);
 
 		}
 
-		t3lib_FlashMessageQueue::addMessage($_message);
+		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 	}
 
@@ -252,10 +247,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Fine.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.solrcoreAddedMsg'),
 				tx_dlf_helper::getLL('flash.solrcoreAdded', TRUE),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
@@ -263,16 +258,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Something went wrong.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.solrcoreNotAddedMsg'),
 				tx_dlf_helper::getLL('flash.solrcoreNotAdded', TRUE),
-				t3lib_FlashMessage::ERROR,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 				FALSE
 			);
 
 		}
 
-		t3lib_FlashMessageQueue::addMessage($_message);
+		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 	}
 
@@ -309,10 +304,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Fine.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.structureAddedMsg'),
 				tx_dlf_helper::getLL('flash.structureAdded', TRUE),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
@@ -320,16 +315,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// Something went wrong.
 			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				tx_dlf_helper::getLL('flash.structureNotAddedMsg'),
 				tx_dlf_helper::getLL('flash.structureNotAdded', TRUE),
-				t3lib_FlashMessage::ERROR,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 				FALSE
 			);
 
 		}
 
-		t3lib_FlashMessageQueue::addMessage($_message);
+		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 	}
 
@@ -351,16 +346,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			if ($this->pageInfo['doktype'] != 254) {
 
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					tx_dlf_helper::getLL('flash.wrongPageTypeMsg'),
 					tx_dlf_helper::getLL('flash.wrongPageType', TRUE),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($_message);
+				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
-				$this->markerArray['CONTENT'] .= t3lib_FlashMessageQueue::renderFlashMessages();
+				$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
 
 				$this->printContent();
 
@@ -396,10 +391,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				// Fine.
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					tx_dlf_helper::getLL('flash.structureOkayMsg'),
 					tx_dlf_helper::getLL('flash.structureOkay', TRUE),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					FALSE
 				);
 
@@ -409,16 +404,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				$_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addStructure')));
 
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					sprintf(tx_dlf_helper::getLL('flash.structureNotOkayMsg'), $_url),
 					tx_dlf_helper::getLL('flash.structureNotOkay', TRUE),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			// Check for existing metadata configuration.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -431,10 +426,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				// Fine.
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					tx_dlf_helper::getLL('flash.metadataOkayMsg'),
 					tx_dlf_helper::getLL('flash.metadataOkay', TRUE),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					FALSE
 				);
 
@@ -444,22 +439,22 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				$_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addMetadata')));
 
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					sprintf(tx_dlf_helper::getLL('flash.metadataNotOkayMsg'), $_url),
 					tx_dlf_helper::getLL('flash.metadataNotOkay', TRUE),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			// Check the access conditions for the command line indexer's user.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,db_mountpoints',
 				'be_groups',
-				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.t3lib_BEfunc::deleteClause('be_groups')
+				'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'.\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
 			);
 
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -470,10 +465,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 					// Fine.
 					$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						tx_dlf_helper::getLL('flash.usergroupOkayMsg'),
 						tx_dlf_helper::getLL('flash.usergroupOkay', TRUE),
-						t3lib_FlashMessage::OK,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 						FALSE
 					);
 
@@ -483,10 +478,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					$_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addAccessRights')));
 
 					$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						sprintf(tx_dlf_helper::getLL('flash.usergroupNotOkayMsg'), $_url),
 						tx_dlf_helper::getLL('flash.usergroupNotOkay', TRUE),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -496,16 +491,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				// Usergoup missing.
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					tx_dlf_helper::getLL('flash.usergroupMissingMsg'),
 					tx_dlf_helper::getLL('flash.usergroupMissing', TRUE),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 			// Check for existing Solr core.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -529,10 +524,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 					// Fine.
 					$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						tx_dlf_helper::getLL('flash.solrcoreOkayMsg'),
 						tx_dlf_helper::getLL('flash.solrcoreOkay', TRUE),
-						t3lib_FlashMessage::OK,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 						FALSE
 					);
 
@@ -542,10 +537,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					$_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addSolrcore')));
 
 					$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						sprintf(tx_dlf_helper::getLL('flash.solrcoreDeprecatedMsg'), $_url),
 						tx_dlf_helper::getLL('flash.solrcoreDeprecatedOkay', TRUE),
-						t3lib_FlashMessage::NOTICE,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::NOTICE,
 						FALSE
 					);
 
@@ -554,10 +549,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			} else if ($GLOBALS['TYPO3_DB']->sql_num_rows($es_result)) {
 				// elasticsearch is configured
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
 						tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
-						t3lib_FlashMessage::OK,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 						FALSE
 				);
 
@@ -570,16 +565,16 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				$_es_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
 
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
-					sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url). '<br>' . sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_es_url),
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+					sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url). '<br />' . sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_es_url),
 					tx_dlf_helper::getLL('flash.solrcoreMissing', TRUE),
-					t3lib_FlashMessage::WARNING,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					FALSE
 				);
 
 			}
 
-			t3lib_FlashMessageQueue::addMessage($_message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 
 			// // Check for existing elasticsearch index.
@@ -593,10 +588,10 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			// 	// elasticsearch is configured
 			// 	$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			// 			't3lib_FlashMessage',
+			// 			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			// 			tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
 			// 			tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
-			// 			t3lib_FlashMessage::OK,
+			// 			\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 			// 			FALSE
 			// 		);
 
@@ -605,19 +600,19 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 			// 	$_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
 
 			// 	$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			// 		't3lib_FlashMessage',
+			// 		'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			// 		sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_url),
 			// 		tx_dlf_helper::getLL('flash.elasticsearchindexMissing', TRUE),
-			// 		t3lib_FlashMessage::WARNING,
+			// 		\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 			// 		FALSE
 			// 	);
 
 			// }
 
-			// t3lib_FlashMessageQueue::addMessage($_message);
+			// \TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 
-			$this->markerArray['CONTENT'] .= t3lib_FlashMessageQueue::renderFlashMessages();
+			$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
 
 		} else {
 
@@ -639,5 +634,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/mod
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_modNewclient');
 
 $SOBE->main();
-
-?>

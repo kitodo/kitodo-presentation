@@ -133,7 +133,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
 		// Load current document.
-		if (!empty($this->piVars['id']) && tx_dlf_helper::testInt($this->piVars['id'])) {
+		if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
 
 			$this->loadDocument();
 
@@ -640,7 +640,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				// Add filter query for in-document searching.
 				if ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all') {
 
-					if (!empty($this->piVars['id']) && tx_dlf_helper::testInt($this->piVars['id'])) {
+					if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
 
 						$params['fq'][] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
 
@@ -653,7 +653,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 				// Add filter query for in-collection searching.
 				if ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all') {
 
-					if (!empty($this->piVars['collection']) && tx_dlf_helper::testInt($this->piVars['collection'])) {
+					if (!empty($this->piVars['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])) {
 
 						$index_name = tx_dlf_helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
@@ -859,5 +859,3 @@ class tx_dlf_search extends tx_dlf_plugin {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/search/class.tx_dlf_search.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/search/class.tx_dlf_search.php']);
 }
-
-?>

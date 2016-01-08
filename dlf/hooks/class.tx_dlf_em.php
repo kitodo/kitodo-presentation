@@ -58,7 +58,7 @@ class tx_dlf_em {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
 	 *
 	 * @return	string		Message informing the user of success or failure
 	 */
@@ -76,7 +76,7 @@ class tx_dlf_em {
 		}
 
 		// Set port if not set.
-		$port = (!empty($this->conf['solrPort']) ? tx_dlf_helper::intInRange($this->conf['solrPort'], 0, 65535, 8180) : 8180);
+		$port = (!empty($this->conf['solrPort']) ? \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->conf['solrPort'], 0, 65535, 8180) : 8180);
 
 		// Trim path and append trailing slash.
 		$path = (!empty($this->conf['solrPath']) ? trim($this->conf['solrPath'], '/').'/' : '');
@@ -102,10 +102,10 @@ class tx_dlf_em {
 			if (is_array($status)) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
 					$GLOBALS['LANG']->getLL('solr.connected'),
-					($status[0] == 0 ? t3lib_FlashMessage::OK : t3lib_FlashMessage::WARNING),
+					($status[0] == 0 ? \TYPO3\CMS\Core\Messaging\FlashMessage::OK : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING),
 					FALSE
 				);
 
@@ -118,10 +118,10 @@ class tx_dlf_em {
 		}
 
 		$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			't3lib_FlashMessage',
+			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
 			$GLOBALS['LANG']->getLL('solr.notConnected'),
-			t3lib_FlashMessage::WARNING,
+			\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 			FALSE
 		);
 
@@ -137,7 +137,7 @@ class tx_dlf_em {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\TypoScript\ConfigurationForm		&$pObj: The parent object
 	 *
 	 * @return	string		Message informing the user of success or failure
 	 */
@@ -155,7 +155,7 @@ class tx_dlf_em {
 		}
 
 		// Set port if not set.
-		$port = (!empty($this->conf['elasticSearchPort']) ? tx_dlf_helper::intInRange($this->conf['elasticSearchPort'], 0, 65535, 9200) : 9200);
+		$port = (!empty($this->conf['elasticSearchPort']) ? \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->conf['elasticSearchPort'], 0, 65535, 9200) : 9200);
 
 		// Build request URI.
 		$url = 'http://'.$host.':'.$port.'/';
@@ -174,10 +174,10 @@ class tx_dlf_em {
 		if ($response) {
 			if ($response->status == "200") {
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					sprintf($GLOBALS['LANG']->getLL('elasticSearch.status'), (string) $response->status),
 					$GLOBALS['LANG']->getLL('solr.connected'),
-					($status[0] == 0 ? t3lib_FlashMessage::OK : t3lib_FlashMessage::WARNING),
+					($status[0] == 0 ? \TYPO3\CMS\Core\Messaging\FlashMessage::OK : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING),
 					FALSE
 				);
 
@@ -187,10 +187,10 @@ class tx_dlf_em {
 
 			} else {
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					sprintf($GLOBALS['LANG']->getLL('elasticSearch.error'), $url),
 					$GLOBALS['LANG']->getLL('solr.notConnected'),
-					t3lib_FlashMessage::WARNING,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					FALSE
 				);
 
@@ -201,10 +201,10 @@ class tx_dlf_em {
 			}
 		} else {
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					sprintf($GLOBALS['LANG']->getLL('elasticSearch.error'), $url),
 					$GLOBALS['LANG']->getLL('solr.notConnected'),
-					t3lib_FlashMessage::WARNING,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					FALSE
 				);
 
@@ -236,7 +236,7 @@ class tx_dlf_em {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid,admin,usergroup',
 			'be_users',
-			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').t3lib_BEfunc::deleteClause('be_users')
+			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_users')
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -250,7 +250,7 @@ class tx_dlf_em {
 			$result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'1',
 				'be_users',
-				'uid='.intval($resArray['uid']).t3lib_BEfunc::BEenableFields('be_users')
+				'uid='.intval($resArray['uid']).\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('be_users')
 			);
 
 			// Check if user is configured properly.
@@ -261,10 +261,10 @@ class tx_dlf_em {
 				$usrUid = $resArray['uid'];
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrOkayMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrOkay'),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					FALSE
 				);
 
@@ -292,20 +292,20 @@ class tx_dlf_em {
 						$usrUid = $resArray['uid'];
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrConfigured'),
-							t3lib_FlashMessage::INFO,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 							FALSE
 						);
 
 					} else {
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-							t3lib_FlashMessage::ERROR,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 							FALSE
 						);
 
@@ -314,10 +314,10 @@ class tx_dlf_em {
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -348,20 +348,20 @@ class tx_dlf_em {
 					$usrUid = $substUid[$tempUid];
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrCreated'),
-						t3lib_FlashMessage::INFO,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 						FALSE
 					);
 
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -370,10 +370,10 @@ class tx_dlf_em {
 			} else {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
@@ -428,10 +428,6 @@ class tx_dlf_em {
 			// Set allowed exclude fields.
 			foreach ($settings['tables_modify'] as $table) {
 
-				if (version_compare(TYPO3_branch, '6.1', '<')) {
-					\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA($table);
-				}
-
 				foreach ($GLOBALS['TCA'][$table]['columns'] as $field => $fieldConf) {
 
 					if (!empty($fieldConf['exclude'])) {
@@ -446,28 +442,14 @@ class tx_dlf_em {
 
 		}
 
-		// be_groups:inc_access_lists was removed in TYPO3 6.2.
-		$hasIncAccessList =
-			(t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6002000);
-
 		// Check if group "_cli_dlf" exists and is not disabled.
-		if ($hasIncAccessList) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,non_exclude_fields,tables_select,tables_modify,inc_access_lists,' .
-					$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
-				'be_groups',
-				'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
-					t3lib_BEfunc::deleteClause('be_groups')
-			);
-		} else {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,non_exclude_fields,tables_select,tables_modify,' .
-					$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
-				'be_groups',
-				'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
-					t3lib_BEfunc::deleteClause('be_groups')
-			);
-		}
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid,non_exclude_fields,tables_select,tables_modify,' .
+				$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
+			'be_groups',
+			'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
+				\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
+		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
@@ -484,16 +466,15 @@ class tx_dlf_em {
 			if (count(array_diff($settings['non_exclude_fields'], $resArray['non_exclude_fields'])) == 0
 					&& count(array_diff($settings['tables_select'], $resArray['tables_select'])) == 0
 					&& count(array_diff($settings['tables_modify'], $resArray['tables_modify'])) == 0
-					&& (!$hasIncAccessList || $resArray['inc_access_lists'] == 1)
 					&& $resArray[$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled']] == 0) {
 
 				$grpUid = $resArray['uid'];
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpOkayMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpOkay'),
-					t3lib_FlashMessage::OK,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 					FALSE
 				);
 
@@ -509,22 +490,12 @@ class tx_dlf_em {
 					$tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
 
 					// Try to configure usergroup.
-					if ($hasIncAccessList) {
-						$data['be_groups'][$resArray['uid']] = array(
-							'non_exclude_fields' => implode(',', $non_exclude_fields),
-							'tables_select' => implode(',', $tables_select),
-							'tables_modify' => implode(',', $tables_modify),
-							'inc_access_lists' => 1,
-							$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
-						);
-					} else {
-						$data['be_groups'][$resArray['uid']] = array(
-							'non_exclude_fields' => implode(',', $non_exclude_fields),
-							'tables_select' => implode(',', $tables_select),
-							'tables_modify' => implode(',', $tables_modify),
-							$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
-						);
-					}
+					$data['be_groups'][$resArray['uid']] = array(
+						'non_exclude_fields' => implode(',', $non_exclude_fields),
+						'tables_select' => implode(',', $tables_select),
+						'tables_modify' => implode(',', $tables_modify),
+						$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
+					);
 
 					tx_dlf_helper::processDBasAdmin($data);
 
@@ -534,20 +505,20 @@ class tx_dlf_em {
 						$grpUid = $resArray['uid'];
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpConfigured'),
-							t3lib_FlashMessage::INFO,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 							FALSE
 						);
 
 					} else {
 
 						$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
 							$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-							t3lib_FlashMessage::ERROR,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 							FALSE
 						);
 
@@ -556,10 +527,10 @@ class tx_dlf_em {
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -574,26 +545,14 @@ class tx_dlf_em {
 				// Try to create usergroup.
 				$tempUid = uniqid('NEW');
 
-				if ($hasIncAccessList) {
-					$data['be_groups'][$tempUid] = array(
-						'pid' => 0,
-						'title' => '_cli_dlf',
-						'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
-						'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
-						'tables_select' => implode(',', $settings['tables_select']),
-						'tables_modify' => implode(',', $settings['tables_modify']),
-						'inc_access_lists' => 1
-					);
-				} else {
-					$data['be_groups'][$tempUid] = array(
-						'pid' => 0,
-						'title' => '_cli_dlf',
-						'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
-						'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
-						'tables_select' => implode(',', $settings['tables_select']),
-						'tables_modify' => implode(',', $settings['tables_modify'])
-					);
-				}
+				$data['be_groups'][$tempUid] = array(
+					'pid' => 0,
+					'title' => '_cli_dlf',
+					'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
+					'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
+					'tables_select' => implode(',', $settings['tables_select']),
+					'tables_modify' => implode(',', $settings['tables_modify'])
+				);
 
 				$substUid = tx_dlf_helper::processDBasAdmin($data);
 
@@ -603,20 +562,20 @@ class tx_dlf_em {
 					$grpUid = $substUid[$tempUid];
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpCreated'),
-						t3lib_FlashMessage::INFO,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 						FALSE
 					);
 
 				} else {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
 						$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-						t3lib_FlashMessage::ERROR,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 						FALSE
 					);
 
@@ -625,10 +584,10 @@ class tx_dlf_em {
 			} else {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
 					$GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
@@ -648,7 +607,7 @@ class tx_dlf_em {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
 	 *
 	 * @return	string		Message informing the user of success or failure
 	 */
@@ -670,20 +629,20 @@ class tx_dlf_em {
 		if (is_executable(PATH_typo3.'cli_dispatch.phpsh')) {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliOkayMsg'),
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliOkay'),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
 		} else {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkayMsg'),
 				$GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkay'),
-				t3lib_FlashMessage::ERROR,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 				FALSE
 			);
 
@@ -701,7 +660,7 @@ class tx_dlf_em {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
 	 *
 	 * @return	string		Message informing the user of success or failure
 	 */
@@ -762,20 +721,20 @@ class tx_dlf_em {
 			if (!empty($substUid)) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg'),
 					$GLOBALS['LANG']->getLL('metadataFormats.nsCreated'),
-					t3lib_FlashMessage::INFO,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 					FALSE
 				);
 
 			} else {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->getLL('metadataFormats.nsNotCreatedMsg'),
 					$GLOBALS['LANG']->getLL('metadataFormats.nsNotCreated'),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					FALSE
 				);
 
@@ -784,10 +743,10 @@ class tx_dlf_em {
 		} else {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				$GLOBALS['LANG']->getLL('metadataFormats.nsOkayMsg'),
 				$GLOBALS['LANG']->getLL('metadataFormats.nsOkay'),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				FALSE
 			);
 
@@ -821,5 +780,3 @@ class tx_dlf_em {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/hooks/class.tx_dlf_em.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/hooks/class.tx_dlf_em.php']);
 }
-
-?>

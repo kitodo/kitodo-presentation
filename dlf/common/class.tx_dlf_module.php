@@ -35,7 +35,7 @@
  * @access	public
  * @abstract
  */
-abstract class tx_dlf_module extends t3lib_SCbase {
+abstract class tx_dlf_module extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 	public $extKey = 'dlf';
 
@@ -116,7 +116,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		$this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 
-		$this->pageInfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+		$this->pageInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
 
 		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
 
@@ -197,7 +197,7 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 		// Set defaults for buttons and menu.
 		if (empty($this->buttonArray['RELOAD'])) {
 
-			$this->buttonArray['RELOAD'] = '<a href="'.$GLOBALS['MCONF']['_'].'" title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.reload', TRUE).'">'.t3lib_iconWorks::getSpriteIcon('actions-system-refresh').'</a>';
+			$this->buttonArray['RELOAD'] = '<a href="'.$GLOBALS['MCONF']['_'].'" title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.reload', TRUE).'">'.\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh').'</a>';
 
 		}
 
@@ -209,13 +209,13 @@ abstract class tx_dlf_module extends t3lib_SCbase {
 
 		if (empty($this->markerArray['CSH'])) {
 
-			$this->markerArray['CSH'] = t3lib_BEfunc::cshItem('_MOD_'.$GLOBALS['MCONF']['name'], 'csh', $GLOBALS['BACK_PATH'], '', TRUE);
+			$this->markerArray['CSH'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_'.$GLOBALS['MCONF']['name'], 'csh', $GLOBALS['BACK_PATH'], '', TRUE);
 
 		}
 
 		if (empty($this->markerArray['MOD_MENU'])) {
 
-			$this->markerArray['MOD_MENU'] = t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']);
+			$this->markerArray['MOD_MENU'] = \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']);
 
 		}
 
@@ -234,5 +234,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/com
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_module.php']);
 }
 */
-
-?>

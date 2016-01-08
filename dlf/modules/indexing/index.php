@@ -189,10 +189,10 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 		// Give feedback about progress.
 		$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			't3lib_FlashMessage',
+			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentsToGo'), count($this->list))),
 			tx_dlf_helper::getLL('flash.running', TRUE),
-			t3lib_FlashMessage::INFO,
+			\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 			TRUE
 		);
 
@@ -244,14 +244,14 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 						} else {
 
 							$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-								't3lib_FlashMessage',
+								'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 								htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.FileNotLoaded'), $title, $uid)),
 								tx_dlf_helper::getLL('flash.error', TRUE),
-								t3lib_FlashMessage::ERROR,
+								\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 								TRUE
 							);
 
-							t3lib_FlashMessageQueue::addMessage($_message);
+							\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 						}
 
@@ -329,14 +329,14 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 					} else {
 
 						$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							't3lib_FlashMessage',
+							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 							tx_dlf_helper::getLL('flash.seeLog', TRUE),
 							tx_dlf_helper::getLL('flash.done', TRUE),
-							t3lib_FlashMessage::OK,
+							\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 							TRUE
 						);
 
-						t3lib_FlashMessageQueue::addMessage($_message);
+						\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
 
 					}
 
@@ -345,7 +345,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 			}
 
 
-			$this->markerArray['CONTENT'] .= t3lib_FlashMessageQueue::renderFlashMessages();
+			$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
 
 			switch ($this->MOD_SETTINGS['function']) {
 
@@ -408,5 +408,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/mod
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_modIndexing');
 
 $SOBE->main();
-
-?>

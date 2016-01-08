@@ -40,7 +40,7 @@ if (!defined('TYPO3_cliMode')) {
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_cli extends t3lib_cli {
+class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 	/**
 	 * Main function of the script.
@@ -182,5 +182,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/cli
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_cli');
 
 $SOBE->main();
-
-?>

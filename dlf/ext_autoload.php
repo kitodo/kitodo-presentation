@@ -64,5 +64,3 @@ return array (
 	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php',
 	'tx_dlf_doctype' => $extensionPath.'plugins/doctype/class.tx_dlf_doctype.php',
 );
-
-?>

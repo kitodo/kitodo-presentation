@@ -32,7 +32,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_fulltext_eid extends tslib_pibase {
+class tx_dlf_fulltext_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	/**
 	 *
@@ -52,7 +52,7 @@ class tx_dlf_fulltext_eid extends tslib_pibase {
 	 */
 	public function main($content = '', $conf = array ()) {
 
-		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
+		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		// Load translation files.
 		$LANG = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
@@ -88,5 +88,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plu
 $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_fulltext_eid');
 
 $cObj->main();
-
-?>

@@ -1222,7 +1222,7 @@ final class tx_dlf_document {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'be_users.uid AS uid',
 			'be_users',
-			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').t3lib_BEfunc::BEenableFields('be_users').t3lib_BEfunc::deleteClause('be_users'),
+			'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users').\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('be_users').\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_users'),
 			'',
 			'',
 			'1'
@@ -1328,14 +1328,14 @@ final class tx_dlf_document {
 				if (!defined('TYPO3_cliMode')) {
 
 					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						't3lib_FlashMessage',
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 						htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
 						tx_dlf_helper::getLL('flash.attention', TRUE),
-						t3lib_FlashMessage::INFO,
+						\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 						TRUE
 					);
 
-					t3lib_FlashMessageQueue::addMessage($message);
+					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 				}
 
@@ -1407,14 +1407,14 @@ final class tx_dlf_document {
 			if (!defined('TYPO3_cliMode')) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-					't3lib_FlashMessage',
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newLibrary'), $metadata['owner'][0], $owner)),
 					tx_dlf_helper::getLL('flash.attention', TRUE),
-					t3lib_FlashMessage::INFO,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 					TRUE
 				);
 
-				t3lib_FlashMessageQueue::addMessage($message);
+				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 			}
 
@@ -1430,7 +1430,7 @@ final class tx_dlf_document {
 
 		if (!empty($this->tableOfContents[0]['points']) &&
 			$this->tableOfContents[0]['points'] != $this->location &&
-			!tx_dlf_helper::testInt($this->tableOfContents[0]['points'])) {
+			!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->tableOfContents[0]['points'])) {
 
 			$superior =& tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
 
@@ -1561,14 +1561,14 @@ final class tx_dlf_document {
 		if (!defined('TYPO3_cliMode')) {
 
 			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
 				tx_dlf_helper::getLL('flash.done', TRUE),
-				t3lib_FlashMessage::OK,
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
 				TRUE
 			);
 
-			t3lib_FlashMessageQueue::addMessage($message);
+			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
 
 		}
 
@@ -2296,7 +2296,7 @@ final class tx_dlf_document {
 	protected function __construct($uid, $pid) {
 
 		// Prepare to check database for the requested document.
-		if (tx_dlf_helper::testInt($uid)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
 
 			$whereClause = 'tx_dlf_documents.uid='.intval($uid).tx_dlf_helper::whereClause('tx_dlf_documents');
 
@@ -2573,5 +2573,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/com
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_document.php']);
 }
 */
-
-?>

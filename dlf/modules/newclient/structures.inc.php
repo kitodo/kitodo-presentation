@@ -290,5 +290,3 @@ $structures = array (
 		'oai_name' => ''
 	)
 );
-
-?>

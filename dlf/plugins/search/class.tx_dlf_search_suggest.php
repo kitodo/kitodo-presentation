@@ -35,7 +35,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_search_suggest extends tslib_pibase {
+class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	public $scriptRelPath = 'plugins/search/class.tx_dlf_search_suggest.php';
 
@@ -84,5 +84,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plu
 $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_search_suggest');
 
 $cObj->main();
-
-?>
