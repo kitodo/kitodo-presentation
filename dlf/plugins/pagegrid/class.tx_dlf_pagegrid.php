@@ -210,7 +210,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		} else {
 
 			// Set default values for page if not set.
-			$this->piVars['pointer'] = tx_dlf_helper::intInRange($this->piVars['pointer'], 0, $this->doc->numPages, 0);
+			$this->piVars['pointer'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['pointer'], 0, $this->doc->numPages, 0);
 
 		}
 
@@ -243,7 +243,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		// Set some variable defaults.
 		if (!empty($this->piVars['page'])) {
 
-			$this->piVars['page'] = tx_dlf_helper::intInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
+			$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			$this->piVars['pointer'] = intval(floor($this->piVars['page'] / $this->conf['limit']));
 

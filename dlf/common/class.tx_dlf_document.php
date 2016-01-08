@@ -1405,7 +1405,7 @@ final class tx_dlf_document {
 
 		if (!empty($this->tableOfContents[0]['points']) &&
 			$this->tableOfContents[0]['points'] != $this->location &&
-			!tx_dlf_helper::testInt($this->tableOfContents[0]['points'])) {
+			!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->tableOfContents[0]['points'])) {
 
 			$superior =& tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
 
@@ -2213,7 +2213,7 @@ final class tx_dlf_document {
 	protected function __construct($uid, $pid) {
 
 		// Prepare to check database for the requested document.
-		if (tx_dlf_helper::testInt($uid)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
 
 			$whereClause = 'tx_dlf_documents.uid='.intval($uid).tx_dlf_helper::whereClause('tx_dlf_documents');
 

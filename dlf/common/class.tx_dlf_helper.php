@@ -832,24 +832,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Forces the integer $theInt into the boundaries of $min and $max.
-	 *
-	 * @access	public
-	 *
-	 * @param	integer		$theInt: Input value
-	 * @param	integer		$min: Lower limit
-	 * @param	integer		$max: Higher limit
-	 * @param	integer		$zeroValue: Default value if input is FALSE
-	 *
-	 * @return	integer		The input value forced into the boundaries of $min and $max
-	 */
-	public static function intInRange($theInt, $min, $max = 2000000000, $zeroValue = 0) {
-
-		return t3lib_utility_Math::forceIntegerInRange($theInt, $min, $max, $zeroValue);
-
-	}
-
-	/**
 	 * Check if given ID is a valid Pica Production Number (PPN)
 	 *
 	 * @access	public
@@ -1103,21 +1085,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Tests if the input can be interpreted as integer.
-	 *
-	 * @access	public
-	 *
-	 * @param	integer		$theInt: Input value
-	 *
-	 * @return	boolean		TRUE if $theInt is an integer, FALSE otherwise
-	 */
-	public static function testInt($theInt) {
-
-		return t3lib_utility_Math::canBeInterpretedAsInteger($theInt);
-
-	}
-
-	/**
 	 * This translates an internal "index_name"
 	 *
 	 * @access	public
@@ -1154,7 +1121,7 @@ class tx_dlf_helper {
 		}
 
 		// Check if "index_name" is an UID.
-		if (tx_dlf_helper::testInt($index_name)) {
+		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
 
 			$index_name = self::getIndexName($index_name, $table, $pid);
 

@@ -76,7 +76,7 @@ class tx_dlf_em {
 		}
 
 		// Set port if not set.
-		$port = (!empty($this->conf['solrPort']) ? tx_dlf_helper::intInRange($this->conf['solrPort'], 0, 65535, 8180) : 8180);
+		$port = (!empty($this->conf['solrPort']) ? \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->conf['solrPort'], 0, 65535, 8180) : 8180);
 
 		// Trim path and append trailing slash.
 		$path = (!empty($this->conf['solrPath']) ? trim($this->conf['solrPath'], '/').'/' : '');
