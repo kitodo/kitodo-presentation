@@ -57,5 +57,3 @@ class tx_dlf_teihdr implements tx_dlf_format {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_teihdr.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_teihdr.php']);
 }
-
-?>

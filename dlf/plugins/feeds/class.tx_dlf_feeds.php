@@ -247,5 +247,3 @@ class tx_dlf_feeds extends tx_dlf_plugin {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/feeds/class.tx_dlf_feeds.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/feeds/class.tx_dlf_feeds.php']);
 }
-
-?>

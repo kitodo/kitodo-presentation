@@ -182,5 +182,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/cli
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_cli');
 
 $SOBE->main();
-
-?>

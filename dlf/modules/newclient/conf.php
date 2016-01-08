@@ -31,5 +31,3 @@ $MCONF['script'] = '_DISPATCH';
 $MLANG['default']['tabs_images']['tab'] = '../../res/icons/txdlfnewclient.png';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:dlf/modules/newclient/locallang_mod.xml';
-
-?>
