@@ -391,9 +391,9 @@ class tx_dlf_helper {
 	/**
 	 * Get the current frontend user object
 	 *
-	 * @access	public
+	 * @access public
 	 *
-	 * @return	tslib_feUserAuth		Instance of tslib_feUserAuth or NULL on failure
+	 * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication Instance of \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication or NULL on failure
 	 */
 	public static function getFeUser() {
 
@@ -406,7 +406,7 @@ class tx_dlf_helper {
 
 			} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('eID') !== NULL) {
 
-				return tslib_eidtools::initFeUser();
+				return \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
 
 			}
 

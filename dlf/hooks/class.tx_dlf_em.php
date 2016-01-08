@@ -58,7 +58,7 @@ class tx_dlf_em {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
 	 *
 	 * @return	string		Message informing the user of success or failure
 	 */
@@ -520,7 +520,7 @@ class tx_dlf_em {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
 	 *
 	 * @return	string		Message informing the user of success or failure
 	 */
@@ -573,7 +573,7 @@ class tx_dlf_em {
 	 * @access	public
 	 *
 	 * @param	array		&$params: An array with parameters
-	 * @param	t3lib_tsStyleConfig		&$pObj: The parent object
+	 * @param	\TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
 	 *
 	 * @return	string		Message informing the user of success or failure
 	 */
