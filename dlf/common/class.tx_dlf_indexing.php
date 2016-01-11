@@ -716,9 +716,9 @@ class tx_dlf_indexing {
 	/**
 	 * This is a static class, thus no instances should be created
 	 *
-	 * @access	protected
+	 * @access private
 	 */
-	protected function __construct() {}
+	private function __construct() {}
 
 }
 
