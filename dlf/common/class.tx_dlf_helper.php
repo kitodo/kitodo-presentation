@@ -1307,6 +1307,48 @@ class tx_dlf_helper {
 	}
 
 	/**
+	 * @param FlashMessage $message
+	 * @return void
+	 */
+	public static function addMessage($message) {
+		$flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+		$flashMessageService->getMessageQueueByIdentifier()->enqueue($message);
+	}
+
+	/**
+	 * Fetches and renders all available flash messages from the queue.
+	 *
+	 * @return string All flash messages in the queue rendered as HTML.
+	 */
+	public static function renderFlashMessages() {
+		$flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+		if (version_compare(TYPO3_branch, '7.4', '<')) {
+			// For TYPO3 6.2 - 7.3, we can use the existing method.
+			$content = $flashMessageService->getMessageQueueByIdentifier()->renderFlashMessages();
+		} else {
+			// Since TYPO3 7.4.0, \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages
+			// uses htmlspecialchars on all texts, but we have message text with HTML tags.
+			// Therefore we copy the implementation from 7.4.0, but remove the htmlspecialchars call.
+			$content = '';
+			$flashMessages = $flashMessageService->getMessageQueueByIdentifier()->getAllMessagesAndFlush();
+			if (!empty($flashMessages)) {
+				$content = '<ul class="typo3-messages">';
+				foreach ($flashMessages as $flashMessage) {
+					$severityClass = sprintf('alert %s', $flashMessage->getClass());
+					//~ $messageContent = htmlspecialchars($flashMessage->getMessage());
+					$messageContent = $flashMessage->getMessage();
+					if ($flashMessage->getTitle() !== '') {
+						$messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($flashMessage->getTitle())) . $messageContent;
+					}
+					$content .= sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
+				}
+				$content .= '</ul>';
+			}
+		}
+		return $content;
+	}
+
+	/**
 	 * This is a static class, thus no instances should be created
 	 *
 	 * @access	protected

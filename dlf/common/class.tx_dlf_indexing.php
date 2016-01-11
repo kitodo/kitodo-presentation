@@ -199,7 +199,7 @@ class tx_dlf_indexing {
 
 					}
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -217,7 +217,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -243,7 +243,7 @@ class tx_dlf_indexing {
 					TRUE
 				);
 
-				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+				tx_dlf_helper::addMessage($message);
 
 			}
 
@@ -312,7 +312,7 @@ class tx_dlf_indexing {
 							TRUE
 						);
 
-						\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+						tx_dlf_helper::addMessage($message);
 
 					}
 
@@ -338,7 +338,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -362,7 +362,7 @@ class tx_dlf_indexing {
 					TRUE
 				);
 
-				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+				tx_dlf_helper::addMessage($message);
 
 			}
 
@@ -642,7 +642,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
