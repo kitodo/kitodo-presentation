@@ -79,27 +79,23 @@ if (TYPO3_MODE === 'FE') {
 	/*
 	 * docType user function to use in typoscript:
 	 *
-	 * STORAGEID: uid of dlf storage folder
-	 * DOCTYPE: document type string to test
+	 * $storageId: uid of dlf storage folder
+	 * $condition: document type string to test for
 	 *
-	 * [userFunc = user_dlf_docTypeCheck(STORAGEID:DOCTYPE)]
+	 * [userFunc = user_dlf_docTypeCheck($storageId, $condition)]
 	 *
 	 * do something different
 	 *
 	 * [global]
 	 *
 	 **/
-	function user_dlf_docTypeCheck($cmd) {
+	function user_dlf_docTypeCheck($storageId, $condition) {
 
-		// we have to split the cmd as we cannot have two parameters.
-		// this changed in TYPO3 6.2
-		$pidCondition = explode(':', $cmd);
-
-		$conf['pages'] = $pidCondition[0];
+		$conf['pages'] = $storageId;
 
 		$docType = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_doctype');
 
-		switch($pidCondition[1]){
+		switch($condition){
 			case "periodical":
 				if ($docType->main($cObj, $conf) === "periodical")
 					return TRUE;

@@ -80,42 +80,62 @@ class tx_dlf_doctype extends tx_dlf_plugin {
 		 */
 
 		switch ($toc[0]['type']) {
+
 			case 'newspaper':
-				if (count($toc[0]['children']) > 1) {
+
+				$nodes_year = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]');
+
+				if (count($nodes_year) > 1) {
+
+					// multiple years --> global anchor
 					$ret = 'newspaper_global_anchor';
+
 				} else {
-					if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) == 0) {
+
+					$nodes_month = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]/mets:div[@TYPE="month"]');
+					$nodes_day = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]/mets:div[@TYPE="month"]/mets:div[@TYPE="day"]');
+					$nodes_issue = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]');
+					$nodes_issue_local = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]/@DMDID');
+
+					if (count($nodes_year) == 1 && count($nodes_issue) == 0) {
 
 						// it's possible to have only one year in the global anchor file
 						$ret = 'newspaper_global_anchor';
 
-					} else if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) > 1) {
+					} else if (count($nodes_year) == 1 && count($nodes_month) > 1) {
 
 						// one year, multiple month
 						$ret = 'newspaper_year_anchor';
 
-					} else if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) == 1 && count($toc[0]['children'][0]['children'][0]['children']) > 1) {
+					} else if (count($nodes_year) == 1 && count($nodes_month) == 1 && count($nodes_day) > 1) {
 
-						// one year, one month, multiple days
+						// one year, one month, one or more days
 						$ret = 'newspaper_year_anchor';
 
-					} else if (count($toc[0]['children']) == 1 && count($toc[0]['children'][0]['children']) == 1 && count($toc[0]['children'][0]['children'][0]['children']) == 1 && empty($toc[0]['children'][0]['children'][0]['children'][0]['children'][0]['dmdId'])) {
+					} else if (count($nodes_year) == 1 && count($nodes_month) == 1 && count($nodes_day) == 1 && count($nodes_issue_local) == 0) {
 
-						// one year, one month, single month
+						// one year, one month, single day, one ore more issues but no local one
 						$ret = 'newspaper_year_anchor';
 
 					} else {
 
+						// in all other cases we assume a newspaper issue
 						$ret = 'newspaper_issue';
 
 					}
 				}
 				break;
+
 			case 'periodical':
+
 					$ret = 'periodical';
+
 				break;
+
 			default:
+
 				$ret = $toc[0]['type'];
+
 		}
 
 		return $ret;
