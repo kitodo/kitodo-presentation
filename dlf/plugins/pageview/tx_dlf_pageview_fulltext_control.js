@@ -422,25 +422,30 @@ dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
 
     // parse alto data
     var format = new ol.format.ALTO(),
-    	fulltextCoordinates = request.responseXML ? format.readFeatures(request.responseXML) : [];
+    	fulltextCoordinates = request.responseXML ? format.readFeatures(request.responseXML) :
+            request.responseText ? format.readFeatures(request.responseText) : [];
 
-    // group fulltext coordinates in TextBlock and TextLine features
-    // get the Page or PrintSpace feature
-	var pageOrPrintSpaceFeature = fulltextCoordinates[0],
-		width = pageOrPrintSpaceFeature.get('width'),
-		height = pageOrPrintSpaceFeature.get('height');
-		
-	// group data in TextBlock and TextLine features
-	var textBlockFeatures = dlfUtils.scaleToImageSize(pageOrPrintSpaceFeature.get('features'), this.image, 
-		width , height),
-		textLineFeatures = [];
-	for (var j in textBlockFeatures) {
-		// add textline coordinates
-		textLineFeatures = textLineFeatures.concat(dlfUtils.scaleToImageSize(textBlockFeatures[j].get('textline'),
-			this.image, width, height));
-	}
-	
-	return [textBlockFeatures, textLineFeatures];
+    if (fulltextCoordinates.length > 0) {
+        // group fulltext coordinates in TextBlock and TextLine features
+        // get the Page or PrintSpace feature
+        var pageOrPrintSpaceFeature = fulltextCoordinates[0],
+            width = pageOrPrintSpaceFeature.get('width'),
+            height = pageOrPrintSpaceFeature.get('height');
+
+        // group data in TextBlock and TextLine features
+        var textBlockFeatures = dlfUtils.scaleToImageSize(pageOrPrintSpaceFeature.get('features'), this.image,
+            width , height),
+            textLineFeatures = [];
+        for (var j in textBlockFeatures) {
+            // add textline coordinates
+            textLineFeatures = textLineFeatures.concat(dlfUtils.scaleToImageSize(textBlockFeatures[j].get('textline'),
+                this.image, width, height));
+        }
+
+        return [textBlockFeatures, textLineFeatures];
+    }
+
+    return [];
 };
 
 /**
