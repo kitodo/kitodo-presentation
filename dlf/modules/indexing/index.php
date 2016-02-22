@@ -251,7 +251,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 								TRUE
 							);
 
-							\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+							tx_dlf_helper::addMessage($_message);
 
 						}
 
@@ -336,7 +336,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 							TRUE
 						);
 
-						\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+						tx_dlf_helper::addMessage($_message);
 
 					}
 
@@ -345,7 +345,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 			}
 
 
-			$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
+			$this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
 
 			switch ($this->MOD_SETTINGS['function']) {
 

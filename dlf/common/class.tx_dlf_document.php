@@ -1335,7 +1335,7 @@ final class tx_dlf_document {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -1414,7 +1414,7 @@ final class tx_dlf_document {
 					TRUE
 				);
 
-				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+				tx_dlf_helper::addMessage($message);
 
 			}
 
@@ -1568,7 +1568,7 @@ final class tx_dlf_document {
 				TRUE
 			);
 
-			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+			tx_dlf_helper::addMessage($message);
 
 		}
 

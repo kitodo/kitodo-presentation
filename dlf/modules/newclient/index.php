@@ -84,7 +84,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					FALSE
 				);
 
-				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+				tx_dlf_helper::addMessage($_message);
 
 			}
 
@@ -171,7 +171,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+		tx_dlf_helper::addMessage($_message);
 
 	}
 
@@ -218,7 +218,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+		tx_dlf_helper::addMessage($_message);
 
 	}
 
@@ -267,7 +267,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+		tx_dlf_helper::addMessage($_message);
 
 	}
 
@@ -324,7 +324,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 		}
 
-		\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+		tx_dlf_helper::addMessage($_message);
 
 	}
 
@@ -353,9 +353,9 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 					FALSE
 				);
 
-				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+				tx_dlf_helper::addMessage($_message);
 
-				$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
+				$this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
 
 				$this->printContent();
 
@@ -413,7 +413,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+			tx_dlf_helper::addMessage($_message);
 
 			// Check for existing metadata configuration.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -448,7 +448,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+			tx_dlf_helper::addMessage($_message);
 
 			// Check the access conditions for the command line indexer's user.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -500,7 +500,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+			tx_dlf_helper::addMessage($_message);
 
 			// Check for existing Solr core.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -574,45 +574,9 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 			}
 
-			\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
+			tx_dlf_helper::addMessage($_message);
 
-
-			// // Check for existing elasticsearch index.
-			// $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			// 	'uid,pid',
-			// 	'tx_dlf_elasticsearchindexes',
-			// 	'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes')
-			// );
-
-			// if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-			// 	// elasticsearch is configured
-			// 	$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			// 			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-			// 			tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
-			// 			tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
-			// 			\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-			// 			FALSE
-			// 		);
-
-			// } else {
-			// 	// error no exisiting elasticsearch
-			// 	$_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
-
-			// 	$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			// 		'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-			// 		sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_url),
-			// 		tx_dlf_helper::getLL('flash.elasticsearchindexMissing', TRUE),
-			// 		\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-			// 		FALSE
-			// 	);
-
-			// }
-
-			// \TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($_message);
-
-
-			$this->markerArray['CONTENT'] .= \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages();
+			$this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
 
 		} else {
 

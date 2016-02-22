@@ -218,7 +218,7 @@ class tx_dlf_indexing {
 
 					}
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -236,7 +236,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -262,7 +262,7 @@ class tx_dlf_indexing {
 					TRUE
 				);
 
-				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+				tx_dlf_helper::addMessage($message);
 
 			}
 
@@ -331,7 +331,7 @@ class tx_dlf_indexing {
 							TRUE
 						);
 
-						\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+						tx_dlf_helper::addMessage($message);
 
 					}
 
@@ -357,7 +357,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -381,7 +381,7 @@ class tx_dlf_indexing {
 					TRUE
 				);
 
-				\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+				tx_dlf_helper::addMessage($message);
 
 			}
 
@@ -672,7 +672,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -816,7 +816,7 @@ class tx_dlf_indexing {
 						TRUE
 					);
 
-					\TYPO3\CMS\Core\Messaging\FlashMessageQueue::addMessage($message);
+					tx_dlf_helper::addMessage($message);
 
 				}
 
@@ -870,9 +870,9 @@ class tx_dlf_indexing {
 	/**
 	 * This is a static class, thus no instances should be created
 	 *
-	 * @access	protected
+	 * @access private
 	 */
-	protected function __construct() {}
+	private function __construct() {}
 
 }
 

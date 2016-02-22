@@ -54,6 +54,23 @@ class tx_dlf_helper {
 	protected static $locallang = array ();
 
 	/**
+	 * Adds a message to the message queue.
+	 *
+	 * @access	public
+	 *
+	 * @param	\TYPO3\CMS\Core\Messaging\FlashMessage		$message: Instance of \TYPO3\CMS\Core\Messaging\FlashMessage
+	 *
+	 * @return	void
+	 */
+	public static function addMessage($message) {
+
+		$flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+
+		$flashMessageService->getMessageQueueByIdentifier()->enqueue($message);
+
+	}
+
+	/**
 	 * Implements array_merge_recursive_overrule() in a cross-version way
 	 *
 	 * This code is a copy from realurl, written by Dmitry Dulepov <dmitry.dulepov@gmail.com>.
@@ -354,9 +371,9 @@ class tx_dlf_helper {
 	/**
 	 * Get a backend user object (even in frontend mode)
 	 *
-	 * @access public
+	 * @access	public
 	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication Instance of \TYPO3\CMS\Core\Authentication\BackendUserAuthentication or NULL on failure
+	 * @return	\TYPO3\CMS\Core\Authentication\BackendUserAuthentication		Instance of \TYPO3\CMS\Core\Authentication\BackendUserAuthentication or NULL on failure
 	 */
 	public static function getBeUser() {
 
@@ -392,9 +409,9 @@ class tx_dlf_helper {
 	/**
 	 * Get the current frontend user object
 	 *
-	 * @access public
+	 * @access	public
 	 *
-	 * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication Instance of \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication or NULL on failure
+	 * @return	\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication		Instance of \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication or NULL on failure
 	 */
 	public static function getFeUser() {
 
@@ -1027,6 +1044,60 @@ class tx_dlf_helper {
 	}
 
 	/**
+	 * Fetches and renders all available flash messages from the queue.
+	 *
+	 * @return	string		All flash messages in the queue rendered as HTML.
+	 */
+	public static function renderFlashMessages() {
+
+		$flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+
+		$content = '';
+
+		if (version_compare(TYPO3_branch, '7.4', '<')) {
+
+			// For TYPO3 6.2 - 7.3, we can use the existing method.
+			$content .= $flashMessageService->getMessageQueueByIdentifier()->renderFlashMessages();
+
+		} else {
+
+			// Since TYPO3 7.4.0, \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages
+			// uses htmlspecialchars on all texts, but we have message text with HTML tags.
+			// Therefore we copy the implementation from 7.4.0, but remove the htmlspecialchars call.
+			$flashMessages = $flashMessageService->getMessageQueueByIdentifier()->getAllMessagesAndFlush();
+
+			if (!empty($flashMessages)) {
+
+				$content .= '<ul class="typo3-messages">';
+
+				foreach ($flashMessages as $flashMessage) {
+
+					$severityClass = sprintf('alert %s', $flashMessage->getClass());
+
+					//~ $messageContent = htmlspecialchars($flashMessage->getMessage());
+					$messageContent = $flashMessage->getMessage();
+
+					if ($flashMessage->getTitle() !== '') {
+
+						$messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($flashMessage->getTitle())) . $messageContent;
+
+					}
+
+					$content .= sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
+
+				}
+
+				$content .= '</ul>';
+
+			}
+
+		}
+
+		return $content;
+
+	}
+
+	/**
 	 * Save given value to user's session.
 	 *
 	 * @access	public
@@ -1310,9 +1381,9 @@ class tx_dlf_helper {
 	/**
 	 * This is a static class, thus no instances should be created
 	 *
-	 * @access	protected
+	 * @access private
 	 */
-	protected function __construct() {}
+	private function __construct() {}
 
 }
 
