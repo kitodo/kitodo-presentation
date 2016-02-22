@@ -80,31 +80,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 	protected $records = array ();
 
 	/**
-	 * Instance of ElasticSearch PHP Client class
-	 *
-	 * @var	Client
-	 * @access protected
-	 */
-	protected $es;
-
-	/**
-	 * Elasticsearch configuration
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $esConfig = array();
-
-
-	/**
-	 * Holds metadata for es
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $metadataResult = array();
-
-	/**
 	 * Instance of Apache_Solr_Service class
 	 *
 	 * @var	Apache_Solr_Service
@@ -282,8 +257,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 				}
 
-			} elseif (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'search'
-				&& $this->metadata['options']['engine'] != 'elasticsearch') {
+			} elseif (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'search') {
 
 				if ($this->solrConnect()) {
 
@@ -329,38 +303,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 				}
 
-			} elseif (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'search'
-				&& $this->metadata['options']['engine'] == 'elasticsearch') {
-
-				// connection established
-				if ($this->elasticsearchConnect()) {
-
-					// get result from record id
-					$this->es->service->setIndex($this->esConfig['index_name'])->setType($this->esConfig['type_name']);
-
-					$result = $this->es->service->get($record['uid']);
-
-					$metadata = $this->elasticsearchResultWalkRecursive($result);
-
-				}
-
-				$record['metadata'] = $metadata;
-
-				// now make real URIs out of uid
-				// Build typolink configuration array.
-				$conf = array (
-					'useCacheHash' => 1,
-					'parameter' => $this->metadata['options']['apiPid'],
-					'additionalParams' => '&tx_dpf[qid]=' . $record['uid'] . '&tx_dpf[action]=mets',
-					'forceAbsoluteUrl' => TRUE
-				);
-
-				// we need to make instance of cObj here because its not available in this context
-				$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-
-				// replace uid with URI to dpf API
-				$record['uid'] = $cObj->typoLink_URL($conf);
-
 			}
 
 			// Save record for later usage.
@@ -380,46 +322,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 		return $record;
 
-	}
-
-	/**
-	 * Get all metadata from elasticsearch result recursive
-	 * @param  array $data data from elasticsearch
-	 * @param  string $keyPoint  key from last point
-	 * @return array       Array with metadata
-	 */
-	public function elasticsearchResultWalkRecursive($data, $keyPoint = '') {
-
-		$metadata = array();
-
-		// try to get all metadata from elasticsearch result
-		foreach($data as $key => $value) {
-
-			if (!is_array($value)) {
-
-				if(is_int($key) && !empty($keyPoint)) {
-
-					$metadata[$keyPoint] = array($keyPoint => $value);
-
-				} else {
-
-					$metadata[$key] = array($key => $value);
-
-				}
-
-			} else {
-
-				$new_metadata = $this->elasticsearchResultWalkRecursive($value, $key);
-
-				if (is_array($new_metadata)) {
-
-					$metadata = array_merge($new_metadata, $metadata);
-
-				}
-			}
-
-		}
-		return $metadata;
 	}
 
 	/**
@@ -705,33 +607,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 			tx_dlf_helper::saveToSession(array ($this->elements, $this->metadata), get_class($this));
 
 		}
-
-	}
-
-	/**
-	 * Connects to Elasticsearch server.
-	 *
-	 * @access	protected
-	 *
-	 * @return	boolean		TRUE on success or FALSE on failure
-	 */
-	protected function elasticsearchConnect() {
-
-		if (!$this->es) {
-
-			// Connect to Solr server.
-			if (!$this->es = tx_dlf_elasticsearch::getInstance($this->metadata['options']['index'])) {
-
-				return FALSE;
-
-			}
-
-			$this->esConfig['index_name'] = $this->metadata['options']['index'];
-			$this->esConfig['type_name'] = $this->metadata['options']['type'];
-
-		}
-
-		return TRUE;
 
 	}
 

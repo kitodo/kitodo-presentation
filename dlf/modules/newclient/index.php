@@ -222,55 +222,6 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 	}
 
-
-	/**
-	 * Add Elasticsearch index
-	 *
-	 * @access	protected
-	 *
-	 * @return	void
-	 */
-	protected function cmdAddElasticsearchindex() {
-
-		// Build data array.
-		$data['tx_dlf_elasticsearchindexes'][uniqid('NEW')] = array (
-			'pid' => intval($this->id),
-			// 'label' => $GLOBALS['LANG']->getLL('solrcore').' (PID '.$this->id.')',
-			'label' => 'Elasticsearch Index'.' (PID '.$this->id.')',
-			'index_name' => 'index',
-		);
-
-		$_ids = tx_dlf_helper::processDBasAdmin($data);
-
-		// Check for failed inserts.
-		if (count($_ids) == 1) {
-
-			// Fine.
-			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-				tx_dlf_helper::getLL('flash.solrcoreAddedMsg'),
-				tx_dlf_helper::getLL('flash.solrcoreAdded', TRUE),
-				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-				FALSE
-			);
-
-		} else {
-
-			// Something went wrong.
-			$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-				tx_dlf_helper::getLL('flash.solrcoreNotAddedMsg'),
-				tx_dlf_helper::getLL('flash.solrcoreNotAdded', TRUE),
-				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-				FALSE
-			);
-
-		}
-
-		tx_dlf_helper::addMessage($_message);
-
-	}
-
 	/**
 	 * Add structure configuration
 	 *
@@ -509,13 +460,6 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores')
 			);
 
-			// Check for existing elasticsearch index.
-			$es_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid,pid',
-				'tx_dlf_elasticsearchindexes',
-				'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_elasticsearchindexes')
-			);
-
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 				$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -546,27 +490,14 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 				}
 
-			} else if ($GLOBALS['TYPO3_DB']->sql_num_rows($es_result)) {
-				// elasticsearch is configured
-				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-						tx_dlf_helper::getLL('flash.elasticsearchindexOkayMsg'),
-						tx_dlf_helper::getLL('flash.elasticsearchindexOkay', TRUE),
-						\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-						FALSE
-				);
-
 			} else {
 
 				// Solr core missing.
 				$_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addSolrcore')));
 
-				// Elasticsearch url
-				$_es_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addElasticsearchindex')));
-
 				$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-					sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url). '<br />' . sprintf(tx_dlf_helper::getLL('flash.elasticsearchindexMissingMsg'), $_es_url),
+					sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url),
 					tx_dlf_helper::getLL('flash.solrcoreMissing', TRUE),
 					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					FALSE

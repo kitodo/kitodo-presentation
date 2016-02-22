@@ -438,7 +438,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$this->setCache(FALSE);
 
 		// Quit without doing anything if required variables are not set.
-		if (empty($this->conf['solrcore']) && empty($this->conf['elasticsearch'])) {
+		if (empty($this->conf['solrcore'])) {
 
 			if (TYPO3_DLOG) {
 
@@ -500,129 +500,71 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		} else {
 
-			// switch between elasticsearch and solr
-			if ($this->conf['searchengine'] == "elasticsearch") {
+			// Instantiate search object.
+			$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
-				$es = tx_dlf_elasticsearch::getInstance($this->conf['elasticsearch']);
+			if (!$solr->ready) {
 
-				// Build label for result list.
-				$label = $this->pi_getLL('search', '', TRUE);
+				if (TYPO3_DLOG) {
 
-				if (!empty($this->piVars['query'])) {
-
-					$label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), $this->piVars['query']));
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
 
 				}
 
-				// Set search parameters.
-				$es->limit = max(intval($this->conf['limit']), 1);
+				return $content;
 
-				$es->cPid = $this->conf['pages'];
+			}
 
-				$es->apiPid = $this->conf['apiPid'];
+			// Build label for result list.
+			$label = $this->pi_getLL('search', '', TRUE);
 
-				$query = $this->piVars['query'];
+			if (!empty($this->piVars['query'])) {
 
-				// search for specified query
-				$results = $es->search($query);
+				$label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), $this->piVars['query']));
 
-				$results->metadata = array (
-					'label' => $label,
-					'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $es->numberOfHits, count($results))).'</p>',
-					'options' => $results->metadata['options']
-				);
+			}
 
-				$results->save();
+			// Prepare query parameters.
+			$params = array ();
 
-				// Clean output buffer.
-				\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+			// Set search query.
+			if (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) {
 
-				// Keep some plugin variables.
-				$linkConf['parameter'] = $this->conf['targetPid'];
+				// Search in fulltext field if applicable.
+				$query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
 
-				if (!empty($this->piVars['order'])) {
+				// Add highlighting for fulltext.
+				$params['hl'] = 'true';
 
-					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
-
-				}
-
-				// Send headers.
-				header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
-
-				// Flush output buffer and end script processing.
-				ob_end_flush();
-
-				exit;
+				$params['hl.fl'] = 'fulltext';
 
 			} else {
 
-				// Instantiate search object.
-				$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+				// Retain given search field if valid.
+				$query = tx_dlf_solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
 
-				if (!$solr->ready) {
+			}
 
-					if (TYPO3_DLOG) {
+			// Add extended search query.
+			if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
 
-						\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+				$allowedOperators = array('AND', 'OR', 'NOT');
 
-					}
+				$allowedFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
 
-					return $content;
+				for ($i = 0; $i < count($this->piVars['extQuery']); $i++) {
 
-				}
+					if (!empty($this->piVars['extQuery'][$i])) {
 
-				// Build label for result list.
-				$label = $this->pi_getLL('search', '', TRUE);
+						if (in_array($this->piVars['extOperator'][$i], $allowedOperators) && in_array($this->piVars['extField'][$i], $allowedFields)) {
 
-				if (!empty($this->piVars['query'])) {
+							if (!empty($query)) {
 
-					$label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), $this->piVars['query']));
-
-				}
-
-				// Prepare query parameters.
-				$params = array ();
-
-				// Set search query.
-				if (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) {
-
-					// Search in fulltext field if applicable.
-					$query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
-
-					// Add highlighting for fulltext.
-					$params['hl'] = 'true';
-
-					$params['hl.fl'] = 'fulltext';
-
-				} else {
-
-					// Retain given search field if valid.
-					$query = tx_dlf_solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
-
-				}
-
-				// Add extended search query.
-				if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
-
-					$allowedOperators = array('AND', 'OR', 'NOT');
-
-					$allowedFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
-
-					for ($i = 0; $i < count($this->piVars['extQuery']); $i++) {
-
-						if (!empty($this->piVars['extQuery'][$i])) {
-
-							if (in_array($this->piVars['extOperator'][$i], $allowedOperators) && in_array($this->piVars['extField'][$i], $allowedFields)) {
-
-								if (!empty($query)) {
-
-									$query .= ' '.$this->piVars['extOperator'][$i].' ';
-
-								}
-
-								$query .= tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':('.tx_dlf_solr::escapeQuery($this->piVars['extQuery'][$i]).')';
+								$query .= ' '.$this->piVars['extOperator'][$i].' ';
 
 							}
+
+							$query .= tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':('.tx_dlf_solr::escapeQuery($this->piVars['extQuery'][$i]).')';
 
 						}
 
@@ -630,99 +572,99 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				}
 
-				// Add filter query for faceting.
-				if (!empty($this->piVars['fq'])) {
+			}
 
-					$params['fq'] = $this->piVars['fq'];
+			// Add filter query for faceting.
+			if (!empty($this->piVars['fq'])) {
 
-				}
-
-				// Add filter query for in-document searching.
-				if ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all') {
-
-					if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
-
-						$params['fq'][] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
-
-						$label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
-
-					}
-
-				}
-
-				// Add filter query for in-collection searching.
-				if ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all') {
-
-					if (!empty($this->piVars['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])) {
-
-						$index_name = tx_dlf_helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
-
-						$params['fq'][] = 'collection_faceting:("'.tx_dlf_solr::escapeQuery($index_name).'")';
-
-						$label .= sprintf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
-
-					}
-
-				}
-
-				// Add filter query for collection restrictions.
-				if ($this->conf['collections']) {
-
-					$collIds = explode(',', $this->conf['collections']);
-
-					$collIndexNames = array ();
-
-					foreach ($collIds as $collId) {
-
-						$collIndexNames[] = tx_dlf_solr::escapeQuery(tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
-
-					}
-
-					// Last value is fake and used for distinction in $this->addCurrentCollection()
-					$params['fq'][] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
-
-				}
-
-				// Set search parameters.
-				$solr->limit = max(intval($this->conf['limit']), 1);
-
-				$solr->cPid = $this->conf['pages'];
-
-				$solr->params = $params;
-
-				// Perform search.
-				$results = $solr->search($query);
-
-				$results->metadata = array (
-					'label' => $label,
-					'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
-					'thumbnail' => '',
-					'options' => $results->metadata['options']
-				);
-
-				$results->save();
-
-				// Clean output buffer.
-				\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
-
-				// Keep some plugin variables.
-				$linkConf['parameter'] = $this->conf['targetPid'];
-
-				if (!empty($this->piVars['order'])) {
-
-					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
-
-				}
-
-				// Send headers.
-				header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
-
-				// Flush output buffer and end script processing.
-				ob_end_flush();
-
-				exit;
+				$params['fq'] = $this->piVars['fq'];
 
 			}
+
+			// Add filter query for in-document searching.
+			if ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all') {
+
+				if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
+
+					$params['fq'][] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
+
+					$label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
+
+				}
+
+			}
+
+			// Add filter query for in-collection searching.
+			if ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all') {
+
+				if (!empty($this->piVars['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])) {
+
+					$index_name = tx_dlf_helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
+
+					$params['fq'][] = 'collection_faceting:("'.tx_dlf_solr::escapeQuery($index_name).'")';
+
+					$label .= sprintf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
+
+				}
+
+			}
+
+			// Add filter query for collection restrictions.
+			if ($this->conf['collections']) {
+
+				$collIds = explode(',', $this->conf['collections']);
+
+				$collIndexNames = array ();
+
+				foreach ($collIds as $collId) {
+
+					$collIndexNames[] = tx_dlf_solr::escapeQuery(tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+
+				}
+
+				// Last value is fake and used for distinction in $this->addCurrentCollection()
+				$params['fq'][] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
+
+			}
+
+			// Set search parameters.
+			$solr->limit = max(intval($this->conf['limit']), 1);
+
+			$solr->cPid = $this->conf['pages'];
+
+			$solr->params = $params;
+
+			// Perform search.
+			$results = $solr->search($query);
+
+			$results->metadata = array (
+				'label' => $label,
+				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
+				'thumbnail' => '',
+				'options' => $results->metadata['options']
+			);
+
+			$results->save();
+
+			// Clean output buffer.
+			\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+
+			// Keep some plugin variables.
+			$linkConf['parameter'] = $this->conf['targetPid'];
+
+			if (!empty($this->piVars['order'])) {
+
+				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+
+			}
+
+			// Send headers.
+			header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
+
+			// Flush output buffer and end script processing.
+			ob_end_flush();
+
+			exit;
 
 		}
 

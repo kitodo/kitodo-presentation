@@ -165,26 +165,6 @@ $TCA['tx_dlf_solrcores'] = array (
 	)
 );
 
-$TCA['tx_dlf_elasticsearchindexes'] = array (
-	'ctrl' => array (
-		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_elasticsearchindexes',
-		'label'     => 'label',
-		'tstamp'    => 'tstamp',
-		'crdate'    => 'crdate',
-		'cruser_id' => 'cruser_id',
-		'default_sortby' => 'ORDER BY label',
-		'delete'	=> 'deleted',
-		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'tca.php',
-		'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY).'res/icons/txdlfsolrcores.png',
-		'rootLevel'	=> -1,
-		'dividers2tabs' => 2,
-		'searchFields' => 'label,index_name, type_name',
-	),
-	'feInterface' => array (
-		'fe_admin_fieldList' => '',
-	)
-);
-
 $TCA['tx_dlf_collections'] = array (
 	'ctrl' => array (
 		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections',
