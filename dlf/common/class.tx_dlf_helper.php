@@ -72,7 +72,6 @@ class tx_dlf_helper {
 
 	/**
 	 * Implements array_merge_recursive_overrule() in a cross-version way
-	 *
 	 * This code is a copy from realurl, written by Dmitry Dulepov <dmitry.dulepov@gmail.com>.
 	 *
 	 * @access	public
@@ -83,16 +82,19 @@ class tx_dlf_helper {
 	 * @return	array		Merged array with second array overruling first one
 	 */
 	static public function array_merge_recursive_overrule($array1, $array2) {
+
 		if (class_exists('\\TYPO3\\CMS\\Core\\Utility\\ArrayUtility')) {
-			/** @noinspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection */
+
 			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($array1, $array2);
-		}
-		else {
-			/** @noinspection PhpDeprecationInspection */
+
+		} else {
+
 			$array1 = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($array1, $array2);
+
 		}
 
 		return $array1;
+
 	}
 
 	/**

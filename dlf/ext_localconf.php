@@ -52,11 +52,14 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/validator/class.tx_dlf_validator.php', '_validator', 'list_type', FALSE);
 
 // Register tools for toolbox plugin.
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php', '_toolsPdf', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsPdf'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsPdf';
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php', '_toolsFulltext', '', TRUE);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsFulltext'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsFulltext';
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php', '_toolsImagemanipulation', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsImagemanipulation'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsImagemanipulation';
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php', '_toolsPdf', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsPdf'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsPdf';
 
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:'.$_EXTKEY.'/hooks/class.tx_dlf_tcemain.php:tx_dlf_tcemain';
@@ -76,63 +79,24 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_fulltext_eid'] = 'EXT:'
 if (TYPO3_MODE === 'FE') {
 
 	/*
-	 * docType user function to use in typoscript:
+	 * docTypeCheck user function to use in Typoscript
 	 *
-	 * STORAGEID: uid of dlf storage folder
-	 * DOCTYPE: document type string to test
+	 * @access	public
 	 *
-	 * [userFunc = user_dlf_docTypeCheck(STORAGEID:DOCTYPE)]
+	 * @param	string		$type: document type string to test for
+	 *
+	 * @usage:
+	 * [userFunc = user_dlf_docTypeCheck($type)]
 	 * ...
 	 * [global]
 	 *
+	 * @return	boolean		TRUE if document type matches, FALSE if not
 	 **/
-	function user_dlf_docTypeCheck($cmd) {
+	function user_dlf_docTypeCheck($type) {
 
-		$pidCondition = explode(':', $cmd);
+		$hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_doctype');
 
-		$conf['pages'] = $pidCondition[0];
-
-		$docType = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_doctype');
-
-		switch($pidCondition[1]){
-
-			case "periodical":
-
-				if ($docType->main($cObj, $conf) === "periodical")
-
-					return TRUE;
-
-				break;
-
-			case "newspaper_global_anchor":
-
-				if ($docType->main($cObj, $conf) === "newspaper_global_anchor")
-
-					return TRUE;
-
-				break;
-
-			case "newspaper_year_anchor":
-
-				if ($docType->main($cObj, $conf) === "newspaper_year_anchor")
-
-					return TRUE;
-
-				break;
-
-			case "newspaper_issue":
-
-				if ($docType->main($cObj, $conf) === "newspaper_issue")
-
-					return TRUE;
-
-				break;
-
-			default:
-
-				return FALSE;
-
-		}
+		return ($hook->getDocType() === $type);
 
 	}
 

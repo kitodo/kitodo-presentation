@@ -38,6 +38,7 @@ return array (
 	'tx_dlf_plugin' => $extensionPath.'common/class.tx_dlf_plugin.php',
 	'tx_dlf_solr' => $extensionPath.'common/class.tx_dlf_solr.php',
 	'tx_dlf_teihdr' => $extensionPath.'common/class.tx_dlf_teihdr.php',
+	'tx_dlf_doctype' => $extensionPath.'hooks/class.tx_dlf_doctype.php',
 	'tx_dlf_em' => $extensionPath.'hooks/class.tx_dlf_em.php',
 	'tx_dlf_hacks' => $extensionPath.'hooks/class.tx_dlf_hacks.php',
 	'tx_dlf_tceforms' => $extensionPath.'hooks/class.tx_dlf_tceforms.php',
@@ -59,6 +60,6 @@ return array (
 	'tx_dlf_toolbox' => $extensionPath.'plugins/toolbox/class.tx_dlf_toolbox.php',
 	'tx_dlf_toolsPdf' => $extensionPath.'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php',
 	'tx_dlf_toolsFulltext' => $extensionPath.'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php',
-	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php',
-	'tx_dlf_doctype' => $extensionPath.'plugins/doctype/class.tx_dlf_doctype.php',
+	'tx_dlf_toolsImagemanipulation' => $extensionPath.'plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php',
+	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php'
 );
