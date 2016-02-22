@@ -125,6 +125,14 @@ final class tx_dlf_document {
 	protected $formatsLoaded = FALSE;
 
 	/**
+	 * Are there any fulltext files available?
+	 *
+	 * @var boolean
+	 * @access protected
+	 */
+	protected $hasFulltext = FALSE;
+
+	/**
 	 * This holds the documents location
 	 *
 	 * @var	string
@@ -237,6 +245,23 @@ final class tx_dlf_document {
 	 * @access protected
 	 */
 	protected static $registry;
+
+	/**
+	 * This holds the UID of the root document or zero if not multi-volumed
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $rootId = 0;
+
+	/**
+	 * Is the root id loaded?
+	 * @see $rootId
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $rootIdLoaded = FALSE;
 
 	/**
 	 * This holds the smLinks between logical and physical structMap
@@ -1692,11 +1717,38 @@ final class tx_dlf_document {
 
 			}
 
+			// Are there any fulltext files available?
+			if (!empty($extConf['fileGrpFulltext']) && in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
+
+				$this->hasFulltext = TRUE;
+
+			}
+
 			$this->fileGrpsLoaded = TRUE;
 
 		}
 
 		return $this->fileGrps;
+
+	}
+
+	/**
+	 * This returns $this->hasFulltext via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		Are there any fulltext files available?
+	 */
+	protected function _getHasFulltext() {
+
+		// Are the fileGrps already loaded?
+		if (!$this->fileGrpsLoaded) {
+
+			$this->_getFileGrps();
+
+		}
+
+		return $this->hasFulltext;
 
 	}
 
@@ -1739,7 +1791,7 @@ final class tx_dlf_document {
 
 		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $cPid) {
 
-			// Get all logical structure nodes with metadata
+			// Get all logical structure nodes with metadata.
 			if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
 
 				foreach ($ids as $id) {
@@ -1827,6 +1879,8 @@ final class tx_dlf_document {
 
 				$physSeq[0] = (string) $physNode[0]['ID'];
 
+				$this->physicalPagesInfo[$physSeq[0]]['id'] = $physNode[0]['ID'];
+
 				$this->physicalPagesInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
 
 				$this->physicalPagesInfo[$physSeq[0]]['label'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
@@ -1851,6 +1905,8 @@ final class tx_dlf_document {
 				foreach ($pageNodes as $pageNode) {
 
 					$pages[(int) $pageNode['ORDER']] = (string) $pageNode['ID'];
+
+					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['id'] = $pageNode['ID'];
 
 					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['dmdId'] = (isset($pageNode['DMDID']) ? (string) $pageNode['DMDID'] : '');
 
@@ -1952,6 +2008,33 @@ final class tx_dlf_document {
 	protected function _getRecordId() {
 
 		return $this->recordId;
+
+	}
+
+	/**
+	 * This returns $this->rootId via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	integer		The UID of the root document or zero if not applicable
+	 */
+	protected function _getRootId() {
+
+		if (!$this->rootIdLoaded) {
+
+			if ($this->parentId) {
+
+				$parent = self::getInstance($this->parentId, $this->pid);
+
+				$this->rootId = $parent->rootId;
+
+			}
+
+			$this->rootIdLoaded = TRUE;
+
+		}
+
+		return $this->rootId;
 
 	}
 

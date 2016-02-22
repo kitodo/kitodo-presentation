@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <!--
   Copyright notice
-  
+
   (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
   All rights reserved
-  
+
   This script is part of the TYPO3 project. The TYPO3 project is
   free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   The GNU General Public License can be found at
   http://www.gnu.org/copyleft/gpl.html.
-  
+
   This script is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   This copyright notice MUST APPEAR in all copies of the script!
 -->
 <T3locallang>
@@ -29,11 +29,15 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
+			<label index="tt_content.pi_flexform.fulltext">Enable fulltext search?</label>
+			<label index="tt_content.pi_flexform.fulltext.yes">yes</label>
+			<label index="tt_content.pi_flexform.fulltext.no">no</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Core</label>
 			<label index="tt_content.pi_flexform.limit">Maximum results</label>
 			<label index="tt_content.pi_flexform.extSearch.slotCount">Number of search slots</label>
 			<label index="tt_content.pi_flexform.extSearch.fields">Fields for extended search</label>
-			<label index="tt_content.pi_flexform.searchIn">Allow searching in current document or collection?</label>
+			<label index="tt_content.pi_flexform.collections">Restrict search to these collections</label>
+			<label index="tt_content.pi_flexform.searchIn">Restrict search to current document or collection?</label>
 			<label index="tt_content.pi_flexform.searchIn.none">none</label>
 			<label index="tt_content.pi_flexform.searchIn.document">document only</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">collection only</label>
@@ -47,6 +51,8 @@
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
 			<label index="label.query">Search for:</label>
 			<label index="label.submit">Search</label>
+			<label index="label.inFulltext">in fulltext</label>
+			<label index="label.inMetadata">in metadata</label>
 			<label index="search">Search</label>
 			<label index="for"> for "%s"</label>
 			<label index="in"> in "%s"</label>
@@ -58,11 +64,15 @@
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+			<label index="tt_content.pi_flexform.fulltext">Volltext-Suche aktivieren?</label>
+			<label index="tt_content.pi_flexform.fulltext.yes">ja</label>
+			<label index="tt_content.pi_flexform.fulltext.no">nein</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
 			<label index="tt_content.pi_flexform.limit">Maximale Ergebnismenge</label>
 			<label index="tt_content.pi_flexform.extSearch.slotCount">Anzahl Suchfelder</label>
 			<label index="tt_content.pi_flexform.extSearch.fields">Felder für erweiterte Suche</label>
-			<label index="tt_content.pi_flexform.searchIn">Erlaube Suche in aktuellem Dokument oder Kollektion?</label>
+			<label index="tt_content.pi_flexform.collections">Suche auf diese Kollektionen einschränken</label>
+			<label index="tt_content.pi_flexform.searchIn">Suche auf aktuelle/s Kollektion/Dokument einschränken?</label>
 			<label index="tt_content.pi_flexform.searchIn.none">nein</label>
 			<label index="tt_content.pi_flexform.searchIn.document">nur Dokument</label>
 			<label index="tt_content.pi_flexform.searchIn.collection">nur Kollektion</label>
@@ -76,6 +86,8 @@
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
 			<label index="label.query">Suchen nach:</label>
 			<label index="label.submit">Suchen</label>
+			<label index="label.inFulltext">im Volltext</label>
+			<label index="label.inMetadata">in Metadaten</label>
 			<label index="search">Suche</label>
 			<label index="for"> nach "%s"</label>
 			<label index="in"> in "%s"</label>

@@ -154,13 +154,13 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			if (!$this->doc->ready) {
 
 				// Destroy the incomplete object.
+				$this->doc = NULL;
+
 				if (TYPO3_DLOG) {
 
 					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
 				}
-
-				$this->doc = NULL;
 
 			} else {
 
@@ -231,7 +231,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	abstract public function main($content, $conf);
 
 	/**
-	 * Sets default plugin variables from typoscript
+	 * Sets default plugin variables from Typoscript
 	 * (stdWrap backport from TYPO3 6.2)
 	 * @see http://forge.typo3.org/issues/22045
 	 *
@@ -294,7 +294,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 
 	/**
-	 * Parses a string into a typoscript array
+	 * Parses a string into a Typoscript array
 	 *
 	 * @access	protected
 	 *
