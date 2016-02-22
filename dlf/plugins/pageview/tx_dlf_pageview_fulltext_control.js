@@ -43,7 +43,7 @@ jQuery.fn.scrollTo = function(elem, speed) {
  * @param {Object} image
  * @param {string} fulltextUrl
  */
-var dlfViewerFullTextControl = function(map, image, fulltextUrl){
+var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
     /**
      * @private
@@ -188,7 +188,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
 
         if (event['dragging']) {
             return;
-        };
+        }
 
         var textblockFeature,
             textlineFeature;
@@ -223,7 +223,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
 
             if (this.highlightTextlineFeature) {
 
-                var oldTargetElem = $('#' + this.highlightTextlineFeature.getId())
+                var oldTargetElem = $('#' + this.highlightTextlineFeature.getId());
 
                 if (oldTargetElem.hasClass('highlight') ) {
 
@@ -273,7 +273,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
 
         anchorEl.on('click', toogleFulltext);
         anchorEl.on('touchstart', toogleFulltext);
-    };
+    }
 
     // set initial title of fulltext element
     $("#tx-dlf-tools-fulltext")
@@ -284,7 +284,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") == 'enabled') {
     	// activate the fulltext behavior
     	this.activate(anchorEl);
-    };
+    }
 
 };
 
@@ -394,7 +394,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
     // clear all layers
     this.highlightLayer.getSource().clear();
-    this.highlightLayerTextLine.getSource().clear()
+    this.highlightLayerTextLine.getSource().clear();
 
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").removeClass(className)

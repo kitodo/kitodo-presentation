@@ -164,7 +164,7 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 		    		adjustViews(this.manipulationMap.getView(), this.referenceMap);
 		    	}, this));
 
-			};
+			}
 
 			$('#' + this.manipulationMapId).show();
 
@@ -184,7 +184,7 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 
 		// fade in
 		$(this.sliderContainer_).show().addClass('open');
-	};
+	}
 };
 
 /**
@@ -210,12 +210,12 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
 	 *	@param {Element} element
 	 */
 	var updatePosition = function(value, element){
-		if (orientation == 'vertical'){
+		if (orientation == 'vertical') {
 			var style_top = 100 - ((value - baseMin) / (baseMax - baseMin) * 100);
 			element.style.top = style_top + '%';
 			element.innerHTML = value + '%';
 			return;
-		};
+		}
 
 		var style_left = (value - baseMin) / (baseMax - baseMin) * 100;
 		element.style.left = style_left + '%';
@@ -256,7 +256,7 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 
 	$(this.anchor_).removeClass('active')
 		.text(this.dic['imagemanipulation-on'])
-		.attr('title', this.dic['imagemanipulation-on']);;
+		.attr('title', this.dic['imagemanipulation-on']);
 
 	// fadeIn parent map container
 	$('#' + this.manipulationMapId).hide();
@@ -287,7 +287,7 @@ dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = functio
 	var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', $.proxy(function(value){
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setContrast(value/100);
-		};
+		}
 	}, this), undefined, this.dic['contrast']);
 	$(sliderContainer).append(contrastSlider);
 
@@ -295,7 +295,7 @@ dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = functio
 	var satSlider = this.createSlider_('slider-saturation', 'horizontal', $.proxy(function(value){
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setSaturation(value/100);
-		};
+		}
 	}, this), undefined, this.dic['saturation']);
 	$(sliderContainer).append(satSlider);
 
@@ -304,7 +304,7 @@ dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = functio
 		var linarMapping = 2 * value / 100 -1;
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setBrightness(linarMapping);
-		};
+		}
 	}, this), 50, this.dic['brightness']);
 	$(sliderContainer).append(brightSlider);
 
@@ -314,7 +314,7 @@ dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = functio
 			hueValue = mapping == 0 ? 0 : mapping + this.layers[0].getHue();
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setHue(hueValue);
-		};
+		}
 	}, this), 50, this.dic['hue']);
 	$(sliderContainer).append(hueSlider);
 
@@ -336,15 +336,15 @@ dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = functio
 			this.layers[i].setHue(defaultValues.hue);
 			this.layers[i].setBrightness(defaultValues.brightness);
 			this.layers[i].setSaturation(defaultValues.saturation);
-		};
+		}
 
 		// reset the sliders
-		var sliderEls = $('.slider-imagemanipulation')
+		var sliderEls = $('.slider-imagemanipulation');
 		for (var i = 0; i < sliderEls.length; i++){
 			var sliderEl = sliderEls[i];
 			var resetValue = $(sliderEl).hasClass('slider-hue') || $(sliderEl).hasClass('slider-brightness') ? 50 : 100;
 			$(sliderEl).slider('value', resetValue);
-		};
+		}
 	}, this));
 
 	return sliderContainer;

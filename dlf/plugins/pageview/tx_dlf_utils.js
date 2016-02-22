@@ -47,7 +47,7 @@ dlfUtils.createLayers = function(images, opt_renderer){
     for (var i = 0; i < images.length; i++) {
 
         var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
-            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height]
+            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height];
 
         var layerProj = new ol.proj.Projection({
                 code: 'goobi-image',
@@ -63,7 +63,7 @@ dlfUtils.createLayers = function(images, opt_renderer){
                 })
             });
         layers.push(layer);
-    };
+    }
 
     return layers;
 };

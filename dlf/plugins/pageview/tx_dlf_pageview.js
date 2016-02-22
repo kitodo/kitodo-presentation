@@ -104,7 +104,7 @@ dlfViewer.prototype.addCustomControls = function() {
     	fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
 
     // add image manipulation tool if container is added
-    if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()){
+    if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()) {
 
     	dlfUtils.testIfCORSEnabled(this.imageUrls[0],
     		$.proxy(function() {
@@ -128,12 +128,8 @@ dlfViewer.prototype.addCustomControls = function() {
     			$('#tx-dlf-tools-imagetools').addClass('deactivate');
     		})
 
-
-    };
-
-
-
-}
+    }
+};
 
 /**
  * Add highlight field
@@ -201,14 +197,14 @@ dlfViewer.prototype.createControls_ = function(controlNames) {
  */
 dlfViewer.prototype.displayHighlightWord = function() {
 
-    if (!dlfUtils.exists(this.highlightLayer)){
+    if (!dlfUtils.exists(this.highlightLayer)) {
 
         this.highlightLayer = new ol.layer.Vector({
             'source': new ol.source.Vector(),
             'style': dlfViewer.style.wordStyle()
         });
 
-    };
+    }
 
     // clear in case of old displays
     this.highlightLayer.getSource().clear();
@@ -233,7 +229,7 @@ dlfViewer.prototype.displayHighlightWord = function() {
 
         // add feature to layer and map
         this.highlightLayer.getSource().addFeatures(feature);
-    };
+    }
 
     this.map.addLayer(this.highlightLayer);
 };
@@ -308,7 +304,7 @@ dlfViewer.prototype.fetchImages = function(callback) {
  * Start the init process of loading the map, etc.
  * @private
  */
-dlfViewer.prototype.init = function(){
+dlfViewer.prototype.init = function() {
 
     /**
      * @param {Array.<{src: *, width: *, height: *}>} images
@@ -346,7 +342,7 @@ dlfViewer.prototype.init = function(){
             zoom = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
         if (!dlfUtils.isNull(lon) && !dlfUtils.isNull(lat) && !dlfUtils.isNull(zoom)) {
             this.map.zoomTo([lon, lat], zoom);
-        };
+        }
 
         // highlight word in case a highlight field is registered
         if (this.highlightFields.length)
@@ -363,7 +359,7 @@ dlfViewer.prototype.init = function(){
 
         this.fetchImages(init_);
 
-    };
+    }
 
 };
 
