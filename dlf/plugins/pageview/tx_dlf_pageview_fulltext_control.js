@@ -43,34 +43,34 @@ jQuery.fn.scrollTo = function(elem, speed) {
  * @param {Object} image
  * @param {string} fulltextUrl
  */
-var dlfViewerFullTextControl = function(map, image, fulltextUrl){
+var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
     /**
      * @private
      * @type {ol.Map}
      */
     this.map = map;
-    
+
     /**
      * @type {Object}
      * @private
      */
     this.image = image;
-    
+
     /**
      * @type {string}
      * @private
      */
     this.url = fulltextUrl;
-   
+
     /**
      * @type {Object}
      * @private
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
-    	dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) : 
-    	{'fulltext-on':'Activate Fulltext','fulltext-off':'Dectivate Fulltext'};    	
-    
+    	dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
+    	{'fulltext-on':'Activate Fulltext','fulltext-off':'Dectivate Fulltext'};
+
     /**
      * @type {Array.<Array.<ol.Feature>}
      * @private
@@ -188,7 +188,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
 
         if (event['dragging']) {
             return;
-        };
+        }
 
         var textblockFeature,
             textlineFeature;
@@ -223,7 +223,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
 
             if (this.highlightTextlineFeature) {
 
-                var oldTargetElem = $('#' + this.highlightTextlineFeature.getId())
+                var oldTargetElem = $('#' + this.highlightTextlineFeature.getId());
 
                 if (oldTargetElem.hasClass('highlight') ) {
 
@@ -255,36 +255,36 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
         }
 
     }, this);
-    
+
     // add active / deactive behavior in case of click on control
     var anchorEl = $('#tx-dlf-tools-fulltext');
     if (anchorEl.length > 0){
         var toogleFulltext = $.proxy(function(event) {
         	  event.preventDefault();
-        	  
-        	  if ($(event.target).hasClass('active')){        		  	
+
+        	  if ($(event.target).hasClass('active')){
         		  this.deactivate();
         		  return;
-        	  } 
-        	  
+        	  }
+
         	  this.activate();
           }, this);
 
-          
+
         anchorEl.on('click', toogleFulltext);
-        anchorEl.on('touchstart', toogleFulltext);  
-    };
-      
+        anchorEl.on('touchstart', toogleFulltext);
+    }
+
     // set initial title of fulltext element
     $("#tx-dlf-tools-fulltext")
     	.text(this.dic['fulltext-on'])
     	.attr('title', this.dic['fulltext-on']);
-    
+
     // if fulltext is activated via cookie than run activation methode
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") == 'enabled') {
     	// activate the fulltext behavior
     	this.activate(anchorEl);
-    };
+    }
 
 };
 
@@ -294,16 +294,16 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl){
 dlfViewerFullTextControl.prototype.activate = function() {
 
 	var controlEl = $('#tx-dlf-tools-fulltext');
-	
-	// if the activate method is called for the first time fetch 
+
+	// if the activate method is called for the first time fetch
 	// fulltext data from server
 	if (this.fulltextData_.length === 0)  {
 		this.fulltextData_ = this.fetchFulltextDataFromServer();
-				
+
 		// add features to fulltext layer
 		this.textBlockLayer.getSource().addFeatures(this.fulltextData_[0]);
 	    this.textLineLayer.getSource().addFeatures(this.fulltextData_[1]);
-	    
+
 	    // add first feature of textBlockFeatures to map
 	    if (this.fulltextData_[0].length > 0) {
 
@@ -312,14 +312,14 @@ dlfViewerFullTextControl.prototype.activate = function() {
 	        this.showFulltext(this.fulltextData_[0][0]);
 
 	    }
-	    
+
 	}
 
-	// now activate the fulltext overlay and map behavior   	
+	// now activate the fulltext overlay and map behavior
     this.enableFulltextSelect();
     dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
     $(controlEl).addClass('active');
-    
+
     // trigger event
     $(this).trigger("activate-fulltext", this);
 };
@@ -330,14 +330,14 @@ dlfViewerFullTextControl.prototype.activate = function() {
 dlfViewerFullTextControl.prototype.deactivate = function() {
 
 	var controlEl = $('#tx-dlf-tools-fulltext');
-	
+
 	// deactivate fulltext
 	this.disableFulltextSelect();
     dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
     $(controlEl).removeClass('active');
-    
+
     // trigger event
-    $(this).trigger("deactivate-fulltext", this);    	
+    $(this).trigger("deactivate-fulltext", this);
 };
 
 /**
@@ -384,7 +384,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     // register event listeners
     this.map.un('click', this.mapClickHandler);
     this.map.un('pointermove', this.mapHoverHandler);
-    
+
     // destroy layer features
     this.map.removeLayer(this.textBlockLayer);
     this.map.removeLayer(this.textLineLayer);
@@ -394,7 +394,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
     // clear all layers
     this.highlightLayer.getSource().clear();
-    this.highlightLayerTextLine.getSource().clear()
+    this.highlightLayerTextLine.getSource().clear();
 
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").removeClass(className)

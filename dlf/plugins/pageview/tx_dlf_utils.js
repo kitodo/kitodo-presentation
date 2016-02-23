@@ -43,11 +43,11 @@ dlfUtils.createLayers = function(images, opt_renderer){
     var layers = [],
     	renderer = opt_renderer !== undefined ? opt_renderer : 'webgl';
     	crossOrigin = renderer == 'webgl' ? '*' : null;
-    
+
     for (var i = 0; i < images.length; i++) {
 
         var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
-            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height]
+            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height];
 
         var layerProj = new ol.proj.Projection({
                 code: 'goobi-image',
@@ -63,8 +63,8 @@ dlfUtils.createLayers = function(images, opt_renderer){
                 })
             });
         layers.push(layer);
-    };	
-    
+    }
+
     return layers;
 };
 
@@ -89,7 +89,7 @@ dlfUtils.createView = function(images) {
             maxZoom: 8,
             extent: mapExtent
         });
-    return mapView;      
+    return mapView;
 };
 
 /**
@@ -162,17 +162,17 @@ dlfUtils.isWebGLEnabled = function(){
  * @param {Element} element
  * @return {Object}
  */
-dlfUtils.parseDataDic = function(element) {	
+dlfUtils.parseDataDic = function(element) {
 	var dataDicString = $(element).attr('data-dic'),
 		dataDicRecords = dataDicString.split(';'),
 		dataDic = {};
-	
+
 	for (var i = 0, ii = dataDicRecords.length; i < ii; i++){
 		var key = dataDicRecords[i].split(':')[0],
 			value = dataDicRecords[i].split(':')[1];
 		dataDic[key] = value;
 	}
-	
+
 	return dataDic;
 };
 
@@ -199,7 +199,7 @@ dlfUtils.setCookie = function(name, value) {
  * @return {Array.<ol.Feature>}
  */
 dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offset) {
-	
+
 	// update size / scale settings of imageObj
 	var image;
     if (width && height) {
@@ -211,17 +211,17 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offs
         }
 
     }
-    
+
     if (image === undefined)
     	return [];
-    
+
     var scale = image.scale,
     	displayImageHeight = imageObj.height,
     	offset = opt_offset !== undefined ? opt_offset : 0;
-    
+
     // do rescaling and set a id
     for (var i in features) {
-    	
+
     	var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
     		newCoordinates = [];
 
@@ -237,7 +237,7 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offs
     }
 
     return features;
-    
+
 };
 
 /**
@@ -252,7 +252,7 @@ dlfUtils.testIfCORSEnabled = function(url, opt_callback_ifEnabled, opt_callback_
 		window.location.origin = window.location.protocol + '//' + window.location.hostname +
 			(window.location.port ? ':' + window.location.port: '');
 	}
-	
+
 	// fetch data from server
 	// with access control allowed
     var request = $.ajax({
@@ -265,5 +265,5 @@ dlfUtils.testIfCORSEnabled = function(url, opt_callback_ifEnabled, opt_callback_
     .fail(function() {
     	if (opt_callback_ifNotEnabled !== undefined)
     		opt_callback_ifNotEnabled();
-    });    
+    });
 };
