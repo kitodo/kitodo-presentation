@@ -2210,8 +2210,8 @@ final class tx_dlf_document {
 
 		if (empty($this->toplevelId)) {
 
-			// Get all logical structure nodes with metadata.
-			if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
+			// Get all logical structure nodes with metadata, but without associated METS-Pointers.
+			if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
 
 				// Load smLinks.
 				$this->_getSmLinks();
