@@ -1427,27 +1427,31 @@ final class tx_dlf_document {
 
 		$metadata['owner'][0] = $owner;
 
-		// Load table of contents.
-		$this->_getTableOfContents();
-
-		// Get UID of superior document.
+		// Get UID of parent document.
 		$partof = 0;
 
-		if (!empty($this->tableOfContents[0]['points']) &&
-			$this->tableOfContents[0]['points'] != $this->location &&
-			!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->tableOfContents[0]['points'])) {
+		// Get the closest ancestor of the current document which has a MPTR child.
+		$parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$this->_getToplevelId().'"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
 
-			$superior =& tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
+		if (!empty($parentMptr[0])) {
 
-			if ($superior->ready) {
+			$parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
-				if ($superior->pid != $pid) {
+			if ($parentLocation != $this->location) {
 
-					$superior->save($pid, $core);
+				$parentDoc =& tx_dlf_document::getInstance($parentLocation, $pid);
+
+				if ($parentDoc->ready) {
+
+					if ($parentDoc->pid != $pid) {
+
+						$parentDoc->save($pid, $core);
+
+					}
+
+					$partof = $parentDoc->uid;
 
 				}
-
-				$partof = $superior->uid;
 
 			}
 
