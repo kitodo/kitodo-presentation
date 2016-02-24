@@ -142,9 +142,9 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 
 		    	// couple both map objects
 		    	var adjustViews = function(sourceView, destMap) {
-		    		var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation() ? true : false,
-		    			resDiff = sourceView.getResolution() !== destMap.getView().getResolution() ? true : false,
-		    			centerDiff = sourceView.getCenter() !== destMap.getView().getCenter() ? true : false;
+				var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
+				var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
+				var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
 		    		if (rotateDiff || resDiff || centerDiff)
 			    		destMap.zoomTo(sourceView.getCenter(),
