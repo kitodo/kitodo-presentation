@@ -566,6 +566,9 @@ final class tx_dlf_document {
 		// Load smLinks.
 		$this->_getSmLinks();
 
+		// Load physical pages.
+		$this->_getPhysicalPages();
+
 		// Get the physical page or external file this structure element is pointing at.
 		$details['points'] = '';
 
@@ -576,11 +579,15 @@ final class tx_dlf_document {
 			$details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
 		// Are there any physical pages and is this logical unit linked to at least one of them?
-		} elseif ($this->_getPhysicalPages() && array_key_exists($details['id'], $this->smLinks['l2p'])) {
+		} elseif (!empty($this->physicalPages) && array_key_exists($details['id'], $this->smLinks['l2p'])) {
 
 			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
 
-			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
+			if (!empty($this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
+
+				$details['thumbnailId'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
+
+			}
 
 			// Get page number of the first page related to this structure element.
 			$details['pagination'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['label'];
@@ -591,7 +598,11 @@ final class tx_dlf_document {
 			// Yes. Point to itself.
 			$details['points'] = 1;
 
-			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']];
+			if (!empty($this->physicalPages) && !empty($this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']])) {
+
+				$details['thumbnailId'] = $this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']];
+
+			}
 
 		}
 
@@ -1217,8 +1228,6 @@ final class tx_dlf_document {
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
 		// Get UID for user "_cli_dlf".
-		$be_user = 0;
-
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'be_users.uid AS uid',
 			'be_users',
@@ -1245,8 +1254,6 @@ final class tx_dlf_document {
 		}
 
 		// Get UID for structure type.
-		$structure = 0;
-
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_structures.uid AS uid',
 			'tx_dlf_structures',
@@ -1364,8 +1371,6 @@ final class tx_dlf_document {
 		$metadata['collection'] = $collections;
 
 		// Get UID for owner.
-		$owner = 0;
-
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_libraries.uid AS uid',
 			'tx_dlf_libraries',
