@@ -207,8 +207,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	 */
 	protected function getAltoUrl($page) {
 
-		$imageUrl = '';
-
 		// Get @USE value of METS fileGrp.
 
 		// we need USE="FULLTEXT"
