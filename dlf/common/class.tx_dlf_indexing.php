@@ -151,11 +151,30 @@ class tx_dlf_indexing {
 
 					if (!$errors) {
 
-						$errors = self::process($doc, $logicalUnit);
+						$errors = self::processLogical($doc, $logicalUnit);
 
 					} else {
 
 						break;
+
+					}
+
+				}
+
+				// Index fulltext files if available.
+				if ($doc->hasFulltext) {
+
+					foreach ($doc->physicalPages as $pageNumber => $xmlId) {
+
+						if (!$errors) {
+
+							$errors = self::processPhysical($doc, $pageNumber, $doc->physicalPagesInfo[$xmlId]);
+
+						} else {
+
+							break;
+
+						}
 
 					}
 
@@ -533,7 +552,7 @@ class tx_dlf_indexing {
 	 *
 	 * @return	integer		0 on success or 1 on failure
 	 */
-	protected static function process(tx_dlf_document &$doc, array $logicalUnit) {
+	protected static function processLogical(tx_dlf_document &$doc, array $logicalUnit) {
 
 		$errors = 0;
 
@@ -576,6 +595,8 @@ class tx_dlf_indexing {
 			}
 
 			$solrDoc->setField('partof', $doc->parentId);
+
+			$solrDoc->setField('root', $doc->rootId);
 
 			$solrDoc->setField('sid', $logicalUnit['id']);
 
@@ -626,6 +647,15 @@ class tx_dlf_indexing {
 
 			}
 
+			// Add collection information to logical sub-elements if applicable.
+			if (in_array('collection', self::$fields['facets'])
+				&& empty($metadata['collection'])
+				&& !empty($doc->metadataArray[$doc->toplevelId]['collection'])) {
+
+				$solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+
+			}
+
 			try {
 
 				self::$solr->service->addDocument($solrDoc);
@@ -660,13 +690,137 @@ class tx_dlf_indexing {
 				if (!$errors) {
 
 					// ...and process them, too.
-					$errors = self::process($doc, $child);
+					$errors = self::processLogical($doc, $child);
 
 				} else {
 
 					break;
 
 				}
+
+			}
+
+		}
+
+		return $errors;
+
+	}
+
+	/**
+	 * Processes a physical unit for the Solr index
+	 *
+	 * @access	protected
+	 *
+	 * @param	tx_dlf_document		&$doc: The METS document
+	 * @param	integer		$page: The page number
+	 * @param	array		$physicalUnit: Array of the physical unit to process
+	 *
+	 * @return	integer		0 on success or 1 on failure
+	 */
+	protected static function processPhysical(tx_dlf_document &$doc, $page, array $physicalUnit) {
+
+		$errors = 0;
+
+		// Read extension configuration.
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+		if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])) {
+
+			$file = $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpFulltext']]);
+
+			// Load XML file.
+			if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($file)
+				// There is a bug in filter_var($var, FILTER_VALIDATE_URL) in PHP < 5.3.3 which causes
+				// the function to validate URLs containing whitespaces and invalidate URLs containing
+				// hyphens. (see https://bugs.php.net/bug.php?id=51192)
+				|| version_compare(phpversion(), '5.3.3', '<')) {
+
+				// Set user-agent to identify self when fetching XML data.
+				if (!empty($extConf['useragent'])) {
+
+					@ini_set('user_agent', $extConf['useragent']);
+
+				}
+
+				// Turn off libxml's error logging.
+				$libxmlErrors = libxml_use_internal_errors(TRUE);
+
+				// Load XML from file.
+				$xml = @simplexml_load_file($file);
+
+				// Reset libxml's error logging.
+				libxml_use_internal_errors($libxmlErrors);
+
+				if ($xml === FALSE) {
+
+					return 1;
+
+				}
+
+			} else {
+
+				return 1;
+
+			}
+
+			// Load class.
+			if (!class_exists('Apache_Solr_Document')) {
+
+				require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Document.php'));
+
+			}
+
+			// Create new Solr document.
+			$solrDoc = new Apache_Solr_Document();
+
+			// Create unique identifier from document's UID and unit's XML ID.
+			$solrDoc->setField('id', $doc->uid.$physicalUnit['id']);
+
+			$solrDoc->setField('uid', $doc->uid);
+
+			$solrDoc->setField('pid', $doc->pid);
+
+			$solrDoc->setField('page', $page);
+
+			if (!empty($physicalUnit['files'][$extConf['fileGrpThumbs']])) {
+
+				$solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpThumbs']]));
+
+			}
+
+			$solrDoc->setField('partof', $doc->parentId);
+
+			$solrDoc->setField('root', $doc->rootId);
+
+			$solrDoc->setField('sid', $physicalUnit['id']);
+
+			$solrDoc->setField('toplevel', FALSE);
+
+			$solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
+
+			$solrDoc->setField('fulltext', tx_dlf_alto::getRawText($xml));
+
+			try {
+
+				self::$solr->service->addDocument($solrDoc);
+
+			} catch (Exception $e) {
+
+				if (!defined('TYPO3_cliMode')) {
+
+					$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+						'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+						tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+						tx_dlf_helper::getLL('flash.error', TRUE),
+						\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
+						TRUE
+					);
+
+					tx_dlf_helper::addMessage($message);
+
+				}
+
+				return 1;
 
 			}
 
@@ -716,9 +870,9 @@ class tx_dlf_indexing {
 	/**
 	 * This is a static class, thus no instances should be created
 	 *
-	 * @access	protected
+	 * @access private
 	 */
-	protected function __construct() {}
+	private function __construct() {}
 
 }
 

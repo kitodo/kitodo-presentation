@@ -51,7 +51,7 @@ class tx_dlf_mods implements tx_dlf_format {
 		$xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
 		// Get "author" and "author_sorting".
-		$authors = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code"][@authority="marcrelator"]="aut"]');
+		$authors = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="aut"]');
 
 		// Get "author" and "author_sorting" again if that was to sophisticated.
 		if (!$authors) {
@@ -67,8 +67,12 @@ class tx_dlf_mods implements tx_dlf_format {
 
 				$authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-				// Check if there are separate family and given names.
-				if (($nameParts = $authors[$i]->xpath('./mods:namePart'))) {
+				// Check if there is a display form.
+				if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
+
+					$metadata['author'][$i] = (string) $displayForm[0];
+
+				} elseif (($nameParts = $authors[$i]->xpath('./mods:namePart'))) {
 
 					$name = array ();
 
@@ -108,13 +112,6 @@ class tx_dlf_mods implements tx_dlf_format {
 
 				}
 
-				// Check if there is a display form.
-				if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
-
-					$metadata['author'][$i] = (string) $displayForm[0];
-
-				}
-
 			}
 
 		}
@@ -147,7 +144,7 @@ class tx_dlf_mods implements tx_dlf_format {
 		}
 
 		// Get "year_sorting".
-		if (($years_sorting = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order"][@encoding="w3cdtf"]'))) {
+		if (($years_sorting = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]'))) {
 
 			foreach ($years_sorting as $year_sorting) {
 

@@ -98,6 +98,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$i = 0;
 
+		$skip = NULL;
+
 		// Add links to pages.
 		while ($i < $maxPages) {
 
@@ -115,7 +117,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				$skip = TRUE;
 
-			} elseif ($skip == TRUE) {
+			} elseif ($skip === TRUE) {
 
 				$output .= $this->pi_getLL('skip', '...', TRUE).$separator;
 
@@ -159,6 +161,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		$markerArray['###METADATA###'] = '';
 
 		$markerArray['###THUMBNAIL###'] = '';
+
+		$markerArray['###PREVIEW###'] = '';
 
 		$subpart = '';
 
@@ -257,6 +261,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		if (!empty($this->list[$number]['thumbnail'])) {
 
 			$markerArray['###THUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$this->list[$number]['thumbnail'].'" />';
+
+		}
+
+		// Add preview.
+		if (!empty($this->list[$number]['preview'])) {
+
+			$markerArray['###PREVIEW###'] = $this->list[$number]['preview'];
 
 		}
 
@@ -363,6 +374,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			$markerArray['###SUBTHUMBNAIL###'] = '';
 
+			$markerArray['###SUBPREVIEW###'] = '';
+
 			$imgAlt = '';
 
 			foreach ($this->metadata as $index_name => $metaConf) {
@@ -417,7 +430,16 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Translate document type.
 					} elseif ($index_name == 'type' && !empty($value)) {
 
-						$value = $this->pi_getLL($value, tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+						$_value = $value;
+
+						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+
+						// Add page number for single pages.
+						if ($_value == 'page') {
+
+							$value .= ' '.intval($subpart['page']);
+
+						}
 
 					// Translate ISO 639 language code.
 					} elseif ($index_name == 'language' && !empty($value)) {
@@ -456,6 +478,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 			if (!empty($subpart['thumbnail'])) {
 
 				$markerArray['###SUBTHUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$subpart['thumbnail'].'" />';
+
+			}
+
+			// Add preview.
+			if (!empty($subpart['preview'])) {
+
+				$markerArray['###SUBPREVIEW###'] = $subpart['preview'];
 
 			}
 

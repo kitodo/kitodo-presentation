@@ -55,39 +55,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	protected $hasFulltexts = false;
 
 	/**
-	 * Holds the dependencies of the control features
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $controlDependency = array (
-		'OverviewMap' => array (
-			'OpenLayers/Control/OverviewMap.js'
-		),
-		'PanPanel' => array (
-			'OpenLayers/Control/Button.js',
-			'OpenLayers/Control/Pan.js',
-			'OpenLayers/Control/Panel.js',
-			'OpenLayers/Control/PanPanel.js'
-		),
-		'PanZoom' => array (
-			'OpenLayers/Control/PanZoom.js'
-		),
-		'PanZoomBar' => array (
-			'OpenLayers/Control/PanZoom.js',
-			'OpenLayers/Control/PanZoomBar.js'
-		),
-		'ZoomPanel' => array (
-			'OpenLayers/Control/Button.js',
-			'OpenLayers/Control/Panel.js',
-			'OpenLayers/Control/ZoomIn.js',
-			'OpenLayers/Control/ZoomOut.js',
-			'OpenLayers/Control/ZoomToMaxExtent.js',
-			'OpenLayers/Control/ZoomPanel.js'
-		)
-	);
-
-	/**
 	 * Holds the current images' URLs
 	 *
 	 * @var	array
@@ -135,119 +102,10 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		// Load required OpenLayers components.
-		$components = array (
-			// Map feature.
-			'OpenLayers/BaseTypes.js',
-			'OpenLayers/BaseTypes/Class.js',
-			'OpenLayers/BaseTypes/Bounds.js',
-			'OpenLayers/BaseTypes/Element.js',
-			'OpenLayers/BaseTypes/LonLat.js',
-			'OpenLayers/BaseTypes/Pixel.js',
-			'OpenLayers/BaseTypes/Size.js',
-			'OpenLayers/Console.js',
-			'OpenLayers/Lang.js',
-			'OpenLayers/Util.js',
-			'OpenLayers/Util/vendorPrefix.js',
-			'OpenLayers/Lang/'.$this->lang.'.js',
-			'OpenLayers/Events.js',
-			'OpenLayers/Events/buttonclick.js',
-			'OpenLayers/Events/featureclick.js',
-			'OpenLayers/Animation.js',
-			'OpenLayers/Tween.js',
-			'OpenLayers/Projection.js',
-			'OpenLayers/Map.js',
-			// Default event handlers and controls.
-			'OpenLayers/Handler.js',
-			'OpenLayers/Handler/Click.js',
-			'OpenLayers/Handler/Drag.js',
-			'OpenLayers/Handler/Box.js',
-			'OpenLayers/Handler/Keyboard.js',
-			'OpenLayers/Handler/MouseWheel.js',
-			'OpenLayers/Handler/Pinch.js',
-			'OpenLayers/Control.js',
-			'OpenLayers/Control/DragPan.js',
-			'OpenLayers/Control/PinchZoom.js',
-			'OpenLayers/Control/ZoomBox.js',
-			'OpenLayers/Control/Navigation.js',
-			'../../../plugins/pageview/OpenLayers_Control_Keyboard.js',
-			// Image layer.
-			'OpenLayers/Tile.js',
-			'OpenLayers/Tile/Image.js',
-			'OpenLayers/Layer.js',
-			'OpenLayers/Layer/HTTPRequest.js',
-			'OpenLayers/Layer/Grid.js',
-			'OpenLayers/Layer/Image.js',
-		);
-
-		// Load required OpenLayers components.
-		$componentsFulltexts = array (
-			// Geometry layer --> dfgviewer
-			'OpenLayers/Control/SelectFeature.js',
-			'OpenLayers/Control/DrawFeature.js',
-			'OpenLayers/Handler/Feature.js',
-			'OpenLayers/Handler/RegularPolygon.js',
-			'OpenLayers/Geometry.js',
-			'OpenLayers/Geometry/Collection.js',
-			'OpenLayers/Geometry/Polygon.js',
-			'OpenLayers/Geometry/MultiPoint.js',
-			'OpenLayers/Geometry/Curve.js',
-			'OpenLayers/Geometry/LineString.js',
-			'OpenLayers/Geometry/LinearRing.js',
-			'OpenLayers/Geometry/Point.js',
-			'OpenLayers/Feature.js',
-			'OpenLayers/Feature/Vector.js',
-			'OpenLayers/Layer/Vector.js',
-			'OpenLayers/Renderer.js',
-			'OpenLayers/Renderer/Elements.js',
-			'OpenLayers/Renderer/SVG.js',
-			'OpenLayers/Renderer/Canvas.js',
-			'OpenLayers/StyleMap.js',
-			'OpenLayers/Style.js',
-			// XML Parser.
-			'OpenLayers/Request.js',
-			'OpenLayers/Request/XMLHttpRequest.js',
-			'OpenLayers/Format.js',
-			'OpenLayers/Format/XML.js',
-			'../../../plugins/pageview/OpenLayers_Format_Alto.js',
-			'OpenLayers/Popup.js',
-			'OpenLayers/Popup/Anchored.js',
-			'OpenLayers/Popup/Framed.js',
-			'OpenLayers/Popup/FramedCloud.js',
-		);
-
-		// Add custom control features.
-		foreach ($this->controls as $control) {
-
-			$components = array_merge($components, array_diff($this->controlDependency[$control], $components));
-
-		}
-
-		// Add fulltext polygon features.
-		if ($this->hasFulltexts) {
-			$components = array_merge($components, $componentsFulltexts);
-		}
-
-		$output[] = '<script type="text/javascript">';
-
-		$output[] = 'var openLayersFiles = ["'.implode('", "', $components).'"];';
-
-		// concat files for syntax highlightning, if present in header
-		if (! empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
-
-			$output[] = 'window.OpenLayers = openLayersFiles.concat( openLayerFilesHighlightning );';
-
-		} else {
-
-			$output[] = 'window.OpenLayers = openLayersFiles;';
-
-		}
-
-		$output[] = '</script>';
-
 		// Add OpenLayers library.
 		$output[] = '
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
+		<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3-dlf.js"></script>';
 
 		return implode("\n", $output);
 
@@ -272,17 +130,25 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		// Add viewer library.
 		$output[] = '
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>
 		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			tx_dlf_viewer = new dlfViewer();
-			tx_dlf_viewer.setDiv("'.$this->conf['elementId'].'");
-			tx_dlf_viewer.setLang("'.$this->lang.'");
-			tx_dlf_viewer.addControls(["'.implode('", "', $this->controls).'"]);
-			tx_dlf_viewer.addImages(["'.implode('", "', $this->images).'"]);
-			tx_dlf_viewer.addFulltexts(["'.implode('", "', $this->fulltexts).'"]);
+			window.onload = function() {
+				if (dlfUtils.exists(dlfViewer)) {
+					tx_dlf_viewer = new dlfViewer({
+						controls: ["' . implode('", "', $this->controls) . '"],
+						div: "' . $this->conf['elementId'] . '",
+						fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
+						images: ["' . implode('", "', $this->images) . '"]
+					})
+				}
+			}
 		</script>';
 
 		return implode("\n", $output);
@@ -340,8 +206,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	 * @return	string		URL of image file
 	 */
 	protected function getAltoUrl($page) {
-
-		$imageUrl = '';
 
 		// Get @USE value of METS fileGrp.
 

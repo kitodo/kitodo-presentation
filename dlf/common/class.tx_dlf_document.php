@@ -125,6 +125,14 @@ final class tx_dlf_document {
 	protected $formatsLoaded = FALSE;
 
 	/**
+	 * Are there any fulltext files available?
+	 *
+	 * @var boolean
+	 * @access protected
+	 */
+	protected $hasFulltext = FALSE;
+
+	/**
 	 * This holds the documents location
 	 *
 	 * @var	string
@@ -237,6 +245,23 @@ final class tx_dlf_document {
 	 * @access protected
 	 */
 	protected static $registry;
+
+	/**
+	 * This holds the UID of the root document or zero if not multi-volumed
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $rootId = 0;
+
+	/**
+	 * Is the root id loaded?
+	 * @see $rootId
+	 *
+	 * @var	boolean
+	 * @access protected
+	 */
+	protected $rootIdLoaded = FALSE;
 
 	/**
 	 * This holds the smLinks between logical and physical structMap
@@ -541,6 +566,9 @@ final class tx_dlf_document {
 		// Load smLinks.
 		$this->_getSmLinks();
 
+		// Load physical pages.
+		$this->_getPhysicalPages();
+
 		// Get the physical page or external file this structure element is pointing at.
 		$details['points'] = '';
 
@@ -551,11 +579,15 @@ final class tx_dlf_document {
 			$details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
 		// Are there any physical pages and is this logical unit linked to at least one of them?
-		} elseif ($this->_getPhysicalPages() && array_key_exists($details['id'], $this->smLinks['l2p'])) {
+		} elseif (!empty($this->physicalPages) && array_key_exists($details['id'], $this->smLinks['l2p'])) {
 
 			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
 
-			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
+			if (!empty($this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
+
+				$details['thumbnailId'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
+
+			}
 
 			// Get page number of the first page related to this structure element.
 			$details['pagination'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['label'];
@@ -566,7 +598,11 @@ final class tx_dlf_document {
 			// Yes. Point to itself.
 			$details['points'] = 1;
 
-			$details['thumbnailId'] = @$this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']];
+			if (!empty($this->physicalPages) && !empty($this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']])) {
+
+				$details['thumbnailId'] = $this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']];
+
+			}
 
 		}
 
@@ -1192,8 +1228,6 @@ final class tx_dlf_document {
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
 		// Get UID for user "_cli_dlf".
-		$be_user = 0;
-
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'be_users.uid AS uid',
 			'be_users',
@@ -1220,8 +1254,6 @@ final class tx_dlf_document {
 		}
 
 		// Get UID for structure type.
-		$structure = 0;
-
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_structures.uid AS uid',
 			'tx_dlf_structures',
@@ -1339,8 +1371,6 @@ final class tx_dlf_document {
 		$metadata['collection'] = $collections;
 
 		// Get UID for owner.
-		$owner = 0;
-
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_libraries.uid AS uid',
 			'tx_dlf_libraries',
@@ -1397,27 +1427,31 @@ final class tx_dlf_document {
 
 		$metadata['owner'][0] = $owner;
 
-		// Load table of contents.
-		$this->_getTableOfContents();
-
-		// Get UID of superior document.
+		// Get UID of parent document.
 		$partof = 0;
 
-		if (!empty($this->tableOfContents[0]['points']) &&
-			$this->tableOfContents[0]['points'] != $this->location &&
-			!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->tableOfContents[0]['points'])) {
+		// Get the closest ancestor of the current document which has a MPTR child.
+		$parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$this->_getToplevelId().'"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
 
-			$superior =& tx_dlf_document::getInstance($this->tableOfContents[0]['points'], $pid);
+		if (!empty($parentMptr[0])) {
 
-			if ($superior->ready) {
+			$parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
-				if ($superior->pid != $pid) {
+			if ($parentLocation != $this->location) {
 
-					$superior->save($pid, $core);
+				$parentDoc =& tx_dlf_document::getInstance($parentLocation, $pid);
+
+				if ($parentDoc->ready) {
+
+					if ($parentDoc->pid != $pid) {
+
+						$parentDoc->save($pid, $core);
+
+					}
+
+					$partof = $parentDoc->uid;
 
 				}
-
-				$partof = $superior->uid;
 
 			}
 
@@ -1692,11 +1726,38 @@ final class tx_dlf_document {
 
 			}
 
+			// Are there any fulltext files available?
+			if (!empty($extConf['fileGrpFulltext']) && in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
+
+				$this->hasFulltext = TRUE;
+
+			}
+
 			$this->fileGrpsLoaded = TRUE;
 
 		}
 
 		return $this->fileGrps;
+
+	}
+
+	/**
+	 * This returns $this->hasFulltext via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		Are there any fulltext files available?
+	 */
+	protected function _getHasFulltext() {
+
+		// Are the fileGrps already loaded?
+		if (!$this->fileGrpsLoaded) {
+
+			$this->_getFileGrps();
+
+		}
+
+		return $this->hasFulltext;
 
 	}
 
@@ -1739,7 +1800,7 @@ final class tx_dlf_document {
 
 		if (!$this->metadataArrayLoaded || $this->metadataArray[0] != $cPid) {
 
-			// Get all logical structure nodes with metadata
+			// Get all logical structure nodes with metadata.
 			if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
 
 				foreach ($ids as $id) {
@@ -1827,6 +1888,8 @@ final class tx_dlf_document {
 
 				$physSeq[0] = (string) $physNode[0]['ID'];
 
+				$this->physicalPagesInfo[$physSeq[0]]['id'] = $physNode[0]['ID'];
+
 				$this->physicalPagesInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
 
 				$this->physicalPagesInfo[$physSeq[0]]['label'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
@@ -1851,6 +1914,8 @@ final class tx_dlf_document {
 				foreach ($pageNodes as $pageNode) {
 
 					$pages[(int) $pageNode['ORDER']] = (string) $pageNode['ID'];
+
+					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['id'] = $pageNode['ID'];
 
 					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['dmdId'] = (isset($pageNode['DMDID']) ? (string) $pageNode['DMDID'] : '');
 
@@ -1952,6 +2017,33 @@ final class tx_dlf_document {
 	protected function _getRecordId() {
 
 		return $this->recordId;
+
+	}
+
+	/**
+	 * This returns $this->rootId via __get()
+	 *
+	 * @access	protected
+	 *
+	 * @return	integer		The UID of the root document or zero if not applicable
+	 */
+	protected function _getRootId() {
+
+		if (!$this->rootIdLoaded) {
+
+			if ($this->parentId) {
+
+				$parent = self::getInstance($this->parentId, $this->pid);
+
+				$this->rootId = $parent->rootId;
+
+			}
+
+			$this->rootIdLoaded = TRUE;
+
+		}
+
+		return $this->rootId;
 
 	}
 
@@ -2127,8 +2219,8 @@ final class tx_dlf_document {
 
 		if (empty($this->toplevelId)) {
 
-			// Get all logical structure nodes with metadata.
-			if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
+			// Get all logical structure nodes with metadata, but without associated METS-Pointers.
+			if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
 
 				// Load smLinks.
 				$this->_getSmLinks();
