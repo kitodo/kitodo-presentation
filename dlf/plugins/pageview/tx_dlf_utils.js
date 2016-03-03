@@ -103,7 +103,7 @@ dlfUtils.exists = function(val) {
 
 /**
  * @param {string} name Name of the cookie
- * @return {string} Value of the cookie
+ * @return {string|null} Value of the cookie
  * @TODO replace unescape function
  */
 dlfUtils.getCookie = function(name) {
