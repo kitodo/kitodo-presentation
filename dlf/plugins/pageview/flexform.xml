@@ -68,21 +68,9 @@
 										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.overviewmap</numIndex>
 										<numIndex index="1">OverviewMap</numIndex>
 									</numIndex>
-									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.panpanel</numIndex>
-										<numIndex index="1">PanPanel</numIndex>
-									</numIndex>
 									<numIndex index="2" type="array">
 										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.zoompanel</numIndex>
 										<numIndex index="1">ZoomPanel</numIndex>
-									</numIndex>
-									<numIndex index="3" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.panzoom</numIndex>
-										<numIndex index="1">PanZoom</numIndex>
-									</numIndex>
-									<numIndex index="4" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.panzoombar</numIndex>
-										<numIndex index="1">PanZoomBar</numIndex>
 									</numIndex>
 								</items>
 								<size>5</size>
