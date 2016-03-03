@@ -176,7 +176,7 @@ dlfViewer.prototype.createControls_ = function(controlNames) {
                     controls.push(new ol.control.OverviewMap());
                     break;
 
-                case "ZoomPanel" || "PanZoomBar" || "PanZoom":
+                case "ZoomPanel":
 
                     controls.push(new ol.control.Zoom());
                     break;
