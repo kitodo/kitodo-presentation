@@ -89,19 +89,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$output = array ();
 
-		// Get localization for OpenLayers.
-		if ($GLOBALS['TSFE']->lang) {
-
-			$langFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey, 'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js');
-
-			if (file_exists($langFile)) {
-
-				$this->lang = strtolower($GLOBALS['TSFE']->lang);
-
-			}
-
-		}
-
 		// Add OpenLayers library.
 		$output[] = '
 		<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">
