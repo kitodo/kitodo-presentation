@@ -68,7 +68,7 @@
 										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.overviewmap</numIndex>
 										<numIndex index="1">OverviewMap</numIndex>
 									</numIndex>
-									<numIndex index="2" type="array">
+									<numIndex index="1" type="array">
 										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.zoompanel</numIndex>
 										<numIndex index="1">ZoomPanel</numIndex>
 									</numIndex>
