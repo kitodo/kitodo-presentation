@@ -745,8 +745,14 @@ class tx_dlf_indexing {
 				// Turn off libxml's error logging.
 				$libxmlErrors = libxml_use_internal_errors(TRUE);
 
+				// disable entity loading
+				$previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+
 				// Load XML from file.
-				$xml = @simplexml_load_file($file);
+				$xml = simplexml_load_string(file_get_contents($file));
+
+				// reset entity loader setting
+				libxml_disable_entity_loader($previousValueOfEntityLoader);
 
 				// Reset libxml's error logging.
 				libxml_use_internal_errors($libxmlErrors);
