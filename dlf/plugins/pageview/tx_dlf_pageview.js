@@ -176,7 +176,7 @@ dlfViewer.prototype.createControls_ = function(controlNames) {
                     controls.push(new ol.control.OverviewMap());
                     break;
 
-                case "ZoomPanel" || "PanZoomBar" || "PanZoom":
+                case "ZoomPanel":
 
                     controls.push(new ol.control.Zoom());
                     break;
@@ -352,6 +352,13 @@ dlfViewer.prototype.init = function() {
 
         // trigger event after all has been initialize
         $(this).trigger("initialize-end", this);
+
+        // append listener for saving view params in case of flipping pages
+        $(window).unload($.proxy(function() {
+            dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', this.map.getZoom());
+            dlfUtils.setCookie('tx-dlf-pageview-centerLon', this.map.getView().getCenter()[0]);
+            dlfUtils.setCookie('tx-dlf-pageview-centerLat', this.map.getView().getCenter()[1]);
+        }, this));
     }, this);
 
     // init image loading process
