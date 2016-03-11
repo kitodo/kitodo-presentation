@@ -1027,8 +1027,14 @@ final class tx_dlf_document {
 			// Turn off libxml's error logging.
 			$libxmlErrors = libxml_use_internal_errors(TRUE);
 
+			// Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+			$previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+
 			// Load XML from file.
-			$xml = @simplexml_load_file($location);
+			$xml = simplexml_load_string(file_get_contents($location));
+
+			// reset entity loader setting
+			libxml_disable_entity_loader($previousValueOfEntityLoader);
 
 			// Reset libxml's error logging.
 			libxml_use_internal_errors($libxmlErrors);
