@@ -590,7 +590,7 @@ class tx_dlf_helper {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			$table.'.uid AS uid',
 			$table,
-			$table.'.index_name='.$index_name.$where.self::whereClause($table),
+			$table.'.index_name=\''.$index_name.'\''.$where.self::whereClause($table),
 			'',
 			'',
 			'1'
