@@ -139,28 +139,33 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         // effect on the map
 
         var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-            if (feature.get('type') === 'TextBlock')
+            if (feature.get('type') === 'textblock')
                 return feature;
         });
 
+        // deselect all
+        if (feature === undefined) {
+            this.selectLayer.getSource().removeFeature(this.clickedFeature);
+            this.clickedFeature = undefined;
+            this.showFulltext(undefined);
+            return;
+        };
+
         // highlight features
-        if (feature !== this.clickedFeature) {
+        if (this.clickedFeature ) {
 
-            if (this.clickedFeature) {
-
-                this.selectLayer.getSource().removeFeature(this.clickedFeature);
-
-            }
-
-            if (feature) {
-
-                this.selectLayer.getSource().addFeature(feature);
-
-            }
-
-            this.clickedFeature = feature;
+            this.selectLayer.getSource().removeFeature(this.clickedFeature);
 
         }
+
+        if (feature) {
+
+            this.selectLayer.getSource().addFeature(feature);
+
+        }
+
+        this.clickedFeature = feature;
+
 
         if (dlfUtils.exists(feature))
             this.showFulltext(feature);
@@ -193,9 +198,9 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         var textblockFeature,
             textlineFeature;
         this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-            if (feature.get('type') === 'TextBlock')
+            if (feature.get('type') === 'textblock')
                 textblockFeature = feature;
-            if (feature.get('type') === 'TextLine')
+            if (feature.get('type') === 'textline')
                 textlineFeature = feature;
         });
 
@@ -422,23 +427,24 @@ dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
 
     // parse alto data
     var format = new ol.format.ALTO(),
-    	fulltextCoordinates = request.responseXML ? format.readFeatures(request.responseXML) :
-            request.responseText ? format.readFeatures(request.responseText) : [];
+    	fulltextCoordinates = request.responseXML ? dlfAltoParser.parseFeatures(request.responseXML) :
+            request.responseText ? dlfAltoParser.parseFeatures(request.responseText) : [];
 
     if (fulltextCoordinates.length > 0) {
         // group fulltext coordinates in TextBlock and TextLine features
-        // get the Page or PrintSpace feature
-        var pageOrPrintSpaceFeature = fulltextCoordinates[0],
-            width = pageOrPrintSpaceFeature.get('width'),
-            height = pageOrPrintSpaceFeature.get('height');
+        var pageFeature = fulltextCoordinates[0],
+            width = pageFeature.get('width') !== null && pageFeature.get('width') !== undefined ? pageFeature.get('width') :
+                pageFeature.get('printspace').get('width'),
+            height = pageFeature.get('height') !== null && pageFeature.get('height') !== undefined ? pageFeature.get('height') :
+                pageFeature.get('printspace').get('height');
 
         // group data in TextBlock and TextLine features
-        var textBlockFeatures = dlfUtils.scaleToImageSize(pageOrPrintSpaceFeature.get('features'), this.image,
+        var textBlockFeatures = dlfUtils.scaleToImageSize(pageFeature.get('printspace').get('textblocks'), this.image,
             width , height),
             textLineFeatures = [];
         for (var j in textBlockFeatures) {
             // add textline coordinates
-            textLineFeatures = textLineFeatures.concat(dlfUtils.scaleToImageSize(textBlockFeatures[j].get('textline'),
+            textLineFeatures = textLineFeatures.concat(dlfUtils.scaleToImageSize(textBlockFeatures[j].get('textlines'),
                 this.image, width, height));
         }
 
@@ -451,22 +457,24 @@ dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
 /**
  * Activate Fulltext Features
  *
- * @param {ol.Feature} feature
+ * @param {ol.Feature|undefined} feature
  */
 dlfViewerFullTextControl.prototype.showFulltext = function(feature) {
 
-    var textlines = feature.get('textline'),
-        popupHTML = '';
+    var popupHTML = '';
 
-    for (var i = 0; i < textlines.length; i++) {
+    if (feature !== undefined) {
+        var textlines = feature.get('textlines');
 
-        // split in case of line break
-        var fulltexts = textlines[i].get('fulltext').split('\n'),
-            popupHTML = popupHTML + '<span class="textline" id="' + textlines[i].getId() + '">'
-                + fulltexts[0].replace(/\n/g, '<br />') + '</span>';
+        for (var i = 0; i < textlines.length; i++) {
 
-
+            // split in case of line break
+            var fulltexts = textlines[i].get('fulltext').split('\n'),
+                popupHTML = popupHTML + '<span class="textline" id="' + textlines[i].getId() + '">'
+                    + fulltexts[0].replace(/\n/g, '<br />') + '</span>';
+        }
     }
+
 
     $('#tx-dlf-fulltextselection').html(popupHTML);
 
