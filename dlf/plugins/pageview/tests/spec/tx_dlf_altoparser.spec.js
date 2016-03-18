@@ -69,13 +69,15 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parseXML_', function() {
 
         it('Input xml is of type string', function() {
-            var testDoc = dlfAltoParser.parseXML_(document);
-            expect(dlfAltoParser.parseXML_(testDoc) instanceof XMLDocument).toBe(true);
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_(document);
+            expect(parser.parseXML_(testDoc) instanceof XMLDocument).toBe(true);
         });
 
         it('Input xml is of type XMLDocument', function() {
-            var testDoc = $.parseXML(document);
-            expect(dlfAltoParser.parseXML_(testDoc) instanceof XMLDocument).toBe(true);
+            var parser = new dlfAltoParser(),
+                testDoc = $.parseXML(document);
+            expect(parser.parseXML_(testDoc) instanceof XMLDocument).toBe(true);
         });
 
     });
@@ -83,9 +85,10 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parseGeometry_', function() {
 
         it('Proper working for correct element', function() {
-            var testDoc = dlfAltoParser.parseXML_('<TextLine HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextLine>'),
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_('<TextLine HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextLine>'),
                 element = $(testDoc).find('TextLine'),
-                geometry = dlfAltoParser.parseGeometry_(element[0]);
+                geometry = parser.parseGeometry_(element[0]);
             expect(typeof geometry).toBe('object');
             expect(geometry instanceof ol.geom.Polygon).toBe(true);
         });
@@ -95,9 +98,10 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parseFeatureWithGeometry_', function() {
 
         it('Proper working for correct element <TextLine>', function() {
-            var testDoc = dlfAltoParser.parseXML_('<TextLine HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextLine>'),
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_('<TextLine HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextLine>'),
                 element = $(testDoc).find('TextLine'),
-                feature = dlfAltoParser.parseFeatureWithGeometry_(element[0]);
+                feature = parser.parseFeatureWithGeometry_(element[0]);
             expect(typeof feature).toBe('object');
             expect(feature instanceof ol.Feature).toBe(true);
             expect(feature.get('height')).toBe(15);
@@ -108,9 +112,10 @@ describe('Test suite for the dlfAltoParser', function() {
         });
 
         it('Proper working for correct element <TextBlock>', function() {
-            var testDoc = dlfAltoParser.parseXML_('<TextBlock HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextBlock>'),
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_('<TextBlock HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextBlock>'),
                 element = $(testDoc).find('TextBlock'),
-                feature = dlfAltoParser.parseFeatureWithGeometry_(element[0]);
+                feature = parser.parseFeatureWithGeometry_(element[0]);
             expect(typeof feature).toBe('object');
             expect(feature instanceof ol.Feature).toBe(true);
             expect(feature.get('height')).toBe(15);
@@ -125,9 +130,10 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parseAltoFeature_', function() {
 
         it('Proper working for correct element <TextLine>', function() {
-            var testDoc = dlfAltoParser.parseXML_('<TextLine HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextLine>'),
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_('<TextLine HEIGHT="15" WIDTH="40" VPOS="144" HPOS="107"></TextLine>'),
                 element = $(testDoc).find('TextLine'),
-                feature = dlfAltoParser.parseAltoFeature_(element[0]);
+                feature = parser.parseAltoFeature_(element[0]);
             expect(typeof feature).toBe('object');
             expect(feature instanceof ol.Feature).toBe(true);
             expect(feature.get('height')).toBe(15);
@@ -138,9 +144,10 @@ describe('Test suite for the dlfAltoParser', function() {
         });
 
         it('Proper working for correct element <Page>', function() {
-            var testDoc = dlfAltoParser.parseXML_('<Page></Page>'),
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_('<Page></Page>'),
                 element = $(testDoc).find('Page'),
-                feature = dlfAltoParser.parseAltoFeature_(element[0]);
+                feature = parser.parseAltoFeature_(element[0]);
             expect(typeof feature).toBe('object');
             expect(feature instanceof ol.Feature).toBe(true);
             expect(feature.get('type')).toBe('page');
@@ -151,8 +158,9 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parseTextBlockFeatures_', function() {
 
         it('Proper working for correct element <TextBlock>', function() {
-            var testDoc = dlfAltoParser.parseXML_(textblock),
-                features = dlfAltoParser.parseTextBlockFeatures_(testDoc);
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_(textblock),
+                features = parser.parseTextBlockFeatures_(testDoc);
 
             expect(features.length).toBe(1);
 
@@ -170,8 +178,9 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parseTextLineFeatures_', function() {
 
         it('Proper working for correct element <TextLine>', function() {
-            var testDoc = dlfAltoParser.parseXML_(textblock),
-                features = dlfAltoParser.parseTextLineFeatures_(testDoc);
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_(textblock),
+                features = parser.parseTextLineFeatures_(testDoc);
 
             expect(features.length).toBe(1);
 
@@ -185,8 +194,9 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parsePrintSpaceFeature_', function() {
 
         it('Proper working for correct element <PrintSpace>', function() {
-            var testDoc = dlfAltoParser.parseXML_(document),
-                feature = dlfAltoParser.parsePrintSpaceFeature_(testDoc);
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_(document),
+                feature = parser.parsePrintSpaceFeature_(testDoc);
 
             expect(feature instanceof ol.Feature).toBe(true);
             expect(feature.get('type')).toBe('printspace');
@@ -197,8 +207,9 @@ describe('Test suite for the dlfAltoParser', function() {
         });
 
         it('Proper working for correct element <PrintSpace> with empty node', function() {
-            var testDoc = dlfAltoParser.parseXML_('<test></test>'),
-                feature = dlfAltoParser.parsePrintSpaceFeature_(testDoc);
+            var parser = new dlfAltoParser(),
+                testDoc = parser.parseXML_('<test></test>'),
+                feature = parser.parsePrintSpaceFeature_(testDoc);
 
             expect(feature).toBe(undefined);
         });
@@ -208,7 +219,8 @@ describe('Test suite for the dlfAltoParser', function() {
     describe('Test function - parseFeatures', function() {
 
         it('Proper working of complete parsing', function() {
-            var features = dlfAltoParser.parseFeatures(document);
+            var parser = new dlfAltoParser(),
+                features = parser.parseFeatures(document);
 
             expect(features.length).toBe(1);
 

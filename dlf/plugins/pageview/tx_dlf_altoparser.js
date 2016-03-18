@@ -22,10 +22,49 @@
  ***************************************************************/
 
 /**
- * @namespace
- * @type {{}}
+ * @constructor
+ * @param {Object=} opt_imageObj
+ * @param {number=} opt_width
+ * @param {number=} opt_height
+ * @param {number=} opt_offset
  */
-var dlfAltoParser = {};
+var dlfAltoParser = function(opt_imageObj, opt_width, opt_height, opt_offset) {
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.image_ = dlfUtils.exists(opt_imageObj) ? opt_imageObj : undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.width_ = dlfUtils.exists(opt_width) ? opt_width : undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.height_ = dlfUtils.exists(opt_height) ? opt_height : undefined;
+
+    /**
+     * @type {number|undefined}
+     * @private
+     */
+    this.offset_ = dlfUtils.exists(opt_offset) ? opt_offset : undefined;
+};
+
+/**
+ * @param {number} width
+ * @param {number} height
+ * @param {number} hpos
+ * @param {number} vpos
+ * @private
+ */
+dlfAltoParser.prototype.generateId_ = function(width, height, hpos, vpos) {
+    return '' + width + '_' + height + '_' + hpos + '_' + vpos;
+};
 
 /**
  * Parse from an alto element a OpenLayers feature object. This function does reproduce the parsing hierarchy of this parser.
@@ -33,13 +72,13 @@ var dlfAltoParser = {};
  * @return {ol.Feature}
  * @private
  */
-dlfAltoParser.parseAltoFeature_ = function(node) {
+dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
     var type = node.nodeName.toLowerCase(),
         feature;
 
     // first parse the node as feature
     if (type === 'printspace' || type === 'textblock' || type === 'textline' || node.hasAttribute('WIDTH')) {
-        feature = dlfAltoParser.parseFeatureWithGeometry_(node);
+        feature = this.parseFeatureWithGeometry_(node);
     } else {
         var feature = new ol.Feature();
         feature.setProperties({'type': node.nodeName.toLowerCase()});
@@ -47,11 +86,31 @@ dlfAltoParser.parseAltoFeature_ = function(node) {
 
     // parse child nodes
     if (type === 'page') {
-        feature.setProperties({'printspace': dlfAltoParser.parsePrintSpaceFeature_(node)});
+        // try to update the general width and height for rescaling
+        var width = feature.get('width'),
+            height = feature.get('height');
+
+        if ((dlfUtils.exists(width) && dlfUtils.exists(height)) && (!dlfUtils.exists(this.width_) && !dlfUtils.exists(this.width_))) {
+            this.width_ = width;
+            this.height_ = height;
+        }
+
+        // add child features
+        feature.setProperties({'printspace': this.parsePrintSpaceFeature_(node)});
     } else if (type === 'printspace') {
-        feature.setProperties({'textblocks': dlfAltoParser.parseTextBlockFeatures_(node)});
+        // try to update the general width and height for rescaling
+        var width = feature.get('width'),
+            height = feature.get('height');
+
+        if ((dlfUtils.exists(width) && dlfUtils.exists(height)) && (!dlfUtils.exists(this.width_) && !dlfUtils.exists(this.width_))) {
+            this.width_ = width;
+            this.height_ = height;
+        }
+
+        // add child features
+        feature.setProperties({'textblocks': this.parseTextBlockFeatures_(node)});
     } else if (type === 'textblock') {
-        feature.setProperties({'textlines': dlfAltoParser.parseTextLineFeatures_(node)});
+        feature.setProperties({'textlines': this.parseTextLineFeatures_(node)});
     }
 
     return feature;
@@ -61,14 +120,14 @@ dlfAltoParser.parseAltoFeature_ = function(node) {
  * @param {XMLDocument|string} document
  * @return {Array.<ol.Feature>}
  */
-dlfAltoParser.parseFeatures = function(document) {
-    var parsedDoc = dlfAltoParser.parseXML_(document),
+dlfAltoParser.prototype.parseFeatures = function(document) {
+    var parsedDoc = this.parseXML_(document),
         pageFeatures = [],
         pageElements = $(parsedDoc).find('Page');
 
     for (var i = 0; i < pageElements.length; i++) {
         // parse page feature
-        var feature = dlfAltoParser.parseAltoFeature_(pageElements[i]);
+        var feature = this.parseAltoFeature_(pageElements[i]);
         pageFeatures.push(feature);
     };
 
@@ -81,15 +140,17 @@ dlfAltoParser.parseFeatures = function(document) {
  * @return {ol.Feature}
  * @private
  */
-dlfAltoParser.parseFeatureWithGeometry_ = function(node) {
-    var geometry = dlfAltoParser.parseGeometry_(node),
+dlfAltoParser.prototype.parseFeatureWithGeometry_ = function(node) {
+    var geometry = this.parseGeometry_(node),
         width = parseInt(node.getAttribute("WIDTH")),
         height = parseInt(node.getAttribute("HEIGHT")),
         hpos = parseInt(node.getAttribute("HPOS")),
         vpos = parseInt(node.getAttribute("VPOS")),
         type = node.nodeName.toLowerCase(),
+        id = this.generateId_(width, height, hpos, vpos),
         feature = new ol.Feature(geometry);
 
+    feature.setId(id);
     feature.setProperties({
         'type':type,
         'width': width,
@@ -107,18 +168,34 @@ dlfAltoParser.parseFeatureWithGeometry_ = function(node) {
  * @return {ol.geom.Polygon|undefined}
  * @private
  */
-dlfAltoParser.parseGeometry_ = function(node) {
+dlfAltoParser.prototype.parseGeometry_ = function(node) {
     var width = parseInt(node.getAttribute("WIDTH")),
         height = parseInt(node.getAttribute("HEIGHT")),
         x1 = parseInt(node.getAttribute("HPOS")),
         y1 = parseInt(node.getAttribute("VPOS")),
         x2 = x1 + width,
         y2 = y1 + height,
-        coordinates = [[[x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]]];
+        coordinatesWithoutScale = [[[x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]]];
 
     if (isNaN(width) || isNaN(height))
         return undefined;
-    return new ol.geom.Polygon(coordinates);
+
+    // return geometry without rescale
+    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_))
+        return new ol.geom.Polygon(coordinatesWithoutScale);
+
+    // rescale coordinates
+    var scale = this.image_.width / this.width_,
+        displayedImageHeight = this.image_.height,
+        offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0,
+        coordinatesRescale = [];
+
+    for (var i = 0; i < coordinatesWithoutScale[0].length; i++) {
+        coordinatesRescale.push([offset + ( scale * coordinatesWithoutScale[0][i][0]),
+            displayedImageHeight - (scale * coordinatesWithoutScale[0][i][1])]);
+    };
+
+    return new ol.geom.Polygon([coordinatesRescale]);
 };
 
 /**
@@ -126,12 +203,12 @@ dlfAltoParser.parseGeometry_ = function(node) {
  * @return {ol.Feature|undefined}
  * @private
  */
-dlfAltoParser.parsePrintSpaceFeature_ = function(node) {
+dlfAltoParser.prototype.parsePrintSpaceFeature_ = function(node) {
     var printspace = $(node).find('PrintSpace');
 
     if (printspace.length === 0)
         return;
-    return dlfAltoParser.parseAltoFeature_(printspace[0]);
+    return this.parseAltoFeature_(printspace[0]);
 };
 
 /**
@@ -139,12 +216,12 @@ dlfAltoParser.parsePrintSpaceFeature_ = function(node) {
  * @return {Array.<ol.Feature>}
  * @private
  */
-dlfAltoParser.parseTextBlockFeatures_ = function(node) {
+dlfAltoParser.prototype.parseTextBlockFeatures_ = function(node) {
     var textblockElements = $(node).find('TextBlock'),
         textblockFeatures = [];
 
     for (var i = 0; i < textblockElements.length; i++) {
-        var feature = dlfAltoParser.parseAltoFeature_(textblockElements[i]),
+        var feature = this.parseAltoFeature_(textblockElements[i]),
             textlines = feature.get('textlines'),
             fulltext = '';
 
@@ -165,12 +242,12 @@ dlfAltoParser.parseTextBlockFeatures_ = function(node) {
  * @return {Array.<ol.Feature>}
  * @private
  */
-dlfAltoParser.parseTextLineFeatures_ = function(node) {
+dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
     var textlineElements = $(node).find('TextLine'),
         textlineFeatures = [];
 
     for (var i = 0; i < textlineElements.length; i++) {
-        var feature = dlfAltoParser.parseAltoFeature_(textlineElements[i]),
+        var feature = this.parseAltoFeature_(textlineElements[i]),
             fulltextElements = $(textlineElements[i]).children(),
             fulltext = '';
 
@@ -206,7 +283,7 @@ dlfAltoParser.parseTextLineFeatures_ = function(node) {
  * @return {XMLDocument}
  * @private
  */
-dlfAltoParser.parseXML_ = function(document) {
+dlfAltoParser.prototype.parseXML_ = function(document) {
     if (typeof document === 'string' || document instanceof String) {
         return $.parseXML(document);
     };

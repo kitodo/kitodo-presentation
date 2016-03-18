@@ -426,26 +426,20 @@ dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
     });
 
     // parse alto data
-    var format = new ol.format.ALTO(),
-    	fulltextCoordinates = request.responseXML ? dlfAltoParser.parseFeatures(request.responseXML) :
-            request.responseText ? dlfAltoParser.parseFeatures(request.responseText) : [];
+    var parser = new dlfAltoParser(this.image),
+    	fulltextCoordinates = request.responseXML ? parser.parseFeatures(request.responseXML) :
+            request.responseText ? parser.parseFeatures(request.responseText) : [];
 
     if (fulltextCoordinates.length > 0) {
         // group fulltext coordinates in TextBlock and TextLine features
-        var pageFeature = fulltextCoordinates[0],
-            width = pageFeature.get('width') !== null && pageFeature.get('width') !== undefined ? pageFeature.get('width') :
-                pageFeature.get('printspace').get('width'),
-            height = pageFeature.get('height') !== null && pageFeature.get('height') !== undefined ? pageFeature.get('height') :
-                pageFeature.get('printspace').get('height');
+        var pageFeature = fulltextCoordinates[0];
 
         // group data in TextBlock and TextLine features
-        var textBlockFeatures = dlfUtils.scaleToImageSize(pageFeature.get('printspace').get('textblocks'), this.image,
-            width , height),
+        var textBlockFeatures = pageFeature.get('printspace').get('textblocks'),
             textLineFeatures = [];
         for (var j in textBlockFeatures) {
             // add textline coordinates
-            textLineFeatures = textLineFeatures.concat(dlfUtils.scaleToImageSize(textBlockFeatures[j].get('textlines'),
-                this.image, width, height));
+            textLineFeatures = textLineFeatures.concat(textBlockFeatures[j].get('textlines'));
         }
 
         return [textBlockFeatures, textLineFeatures];

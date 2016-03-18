@@ -32,6 +32,7 @@ module.exports = function(config) {
             'spec/*.js',
 
             // files to test
+            '../tx_dlf_utils.js',
             '../tx_dlf_altoparser.js'
         ],
         browsers: ['PhantomJS']
