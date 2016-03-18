@@ -108,7 +108,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @private
      * @type {ol.layer.Vector}
      */
-    this.highlightLayer = new ol.layer.Vector({
+    this.highlightLayerTextblock = new ol.layer.Vector({
         'source': new ol.source.Vector(),
         'style': dlfViewerFullTextControl.style.hoverStyle()
     });
@@ -172,94 +172,98 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
     }, this);
 
-    /**
-     * @type {ol.Feature}
-     * @private
-     */
-    this.highlightTextblockFeature;
 
-    /**
-     * @type {ol.Feature}
-     * @private
-     */
-    this.highlightTextlineFeature;
-
+    var highlightSourceTextblock_ = this.highlightLayerTextblock.getSource(),
+        highlightSourceTextline_ = this.highlightLayerTextLine.getSource(),
+        selectLayerSource_ = this.selectLayer.getSource(),
+        map_ = this.map;
 
     /**
      * @type {Function}
      * @private
      */
-    this.mapHoverHandler = $.proxy(function(event) {
+    this.mapHoverHandler = function(event) {
 
+        // hover in case of dragging
         if (event['dragging']) {
             return;
-        }
+        };
 
         var textblockFeature,
             textlineFeature;
-        this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
+        map_.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
             if (feature.get('type') === 'textblock')
                 textblockFeature = feature;
             if (feature.get('type') === 'textline')
                 textlineFeature = feature;
         });
 
-        // highlight textblock features
-        if (textblockFeature !== this.highlightTextblockFeature) {
+        //
+        // Handle TextBlock elements
+        //
+        var activeSelectTextBlockEl_ = selectLayerSource_.getFeatures().length > 0 ?
+                selectLayerSource_.getFeatures()[0] : undefined,
+            activeHoverTextBlockEl_ = highlightSourceTextblock_.getFeatures().length > 0 ?
+                highlightSourceTextblock_.getFeatures()[0] : undefined,
+            isFeatureEqualSelectFeature_ = activeSelectTextBlockEl_ !== undefined && textblockFeature !== undefined &&
+            activeSelectTextBlockEl_.getId() === textblockFeature.getId() ? true : false,
+            isFeatureEqualToOldHoverFeature_ = activeHoverTextBlockEl_ !== undefined && textblockFeature !== undefined &&
+            activeHoverTextBlockEl_.getId() === textblockFeature.getId() ? true : false;
 
-            if (this.highlightTextblockFeature) {
+        if (!isFeatureEqualToOldHoverFeature_ && !isFeatureEqualSelectFeature_) {
 
-                this.highlightLayer.getSource().removeFeature(this.highlightTextblockFeature);
-
-            }
+            // remove old textblock hover features
+            highlightSourceTextblock_.clear();
 
             if (textblockFeature) {
-
-                this.highlightLayer.getSource().addFeature(textblockFeature);
-
+                // add textblock feature to hover
+                highlightSourceTextblock_.addFeature(textblockFeature);
             }
-
-            this.highlightTextblockFeature = textblockFeature;
 
         }
 
-        // highlight textline features
-        if (textlineFeature !== this.highlightTextlineFeature) {
+        //
+        // Handle TextLine elements
+        //
+        var activeHoverTextBlockEl_ = highlightSourceTextline_.getFeatures().length > 0 ?
+                highlightSourceTextline_.getFeatures()[0] : undefined,
+            isFeatureEqualToOldHoverFeature_ = activeHoverTextBlockEl_ !== undefined && textlineFeature !== undefined &&
+                activeHoverTextBlockEl_.getId() === textlineFeature.getId() ? true : false;
 
-            if (this.highlightTextlineFeature) {
+        if (!isFeatureEqualToOldHoverFeature_) {
 
-                var oldTargetElem = $('#' + this.highlightTextlineFeature.getId());
+
+
+            if (activeHoverTextBlockEl_) {
+
+                // remove highlight effect on fulltext view
+                var oldTargetElem = $('#' + activeHoverTextBlockEl_.getId());
 
                 if (oldTargetElem.hasClass('highlight') ) {
-
                     oldTargetElem.removeClass('highlight');
-
-                    this.highlightLayerTextLine.getSource().removeFeature(this.highlightTextlineFeature);
-
                 }
+
+                // remove old textline hover features
+                highlightSourceTextline_.clear();
 
             }
 
             if (textlineFeature) {
 
+                // add highlight effect to fulltext view
                 var targetElem = $('#' + textlineFeature.getId());
 
                 if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
-
                     targetElem.addClass('highlight');
-
                     $('#tx-dlf-fulltextselection').scrollTo(targetElem, 50);
-
-                    this.highlightLayerTextLine.getSource().addFeature(textlineFeature);
+                    highlightSourceTextline_.addFeature(textlineFeature);
                 }
 
             }
 
-            this.highlightTextlineFeature = textlineFeature;
-
         }
 
-    }, this);
+    };
 
     // add active / deactive behavior in case of click on control
     var anchorEl = $('#tx-dlf-tools-fulltext');
@@ -362,7 +366,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         // add layers to map
         this.map.addLayer(this.textBlockLayer);
         this.map.addLayer(this.textLineLayer);
-        this.map.addLayer(this.highlightLayer);
+        this.map.addLayer(this.highlightLayerTextblock);
         this.map.addLayer(this.selectLayer);
         this.map.addLayer(this.highlightLayerTextLine);
 
@@ -393,12 +397,12 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     // destroy layer features
     this.map.removeLayer(this.textBlockLayer);
     this.map.removeLayer(this.textLineLayer);
-    this.map.removeLayer(this.highlightLayer);
+    this.map.removeLayer(this.highlightLayerTextblock);
     this.map.removeLayer(this.selectLayer);
     this.map.removeLayer(this.highlightLayerTextLine);
 
     // clear all layers
-    this.highlightLayer.getSource().clear();
+    this.highlightLayerTextblock.getSource().clear();
     this.highlightLayerTextLine.getSource().clear();
 
     var className = 'fulltext-visible';
