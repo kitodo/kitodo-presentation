@@ -462,13 +462,17 @@ dlfViewerFullTextControl.prototype.showFulltext = function(feature) {
 
         for (var i = 0; i < textlines.length; i++) {
 
-            // split in case of line break
-            var fulltexts = textlines[i].get('fulltext').split('\n'),
-                popupHTML = popupHTML + '<span class="textline" id="' + textlines[i].getId() + '">'
-                    + fulltexts[0].replace(/\n/g, '<br />') + '</span>';
-        }
-    }
+            popupHTML = popupHTML + '<span class="textline" id="' + textlines[i].getId() + '">';
 
+            var content = textlines[i].get('content');
+            for (var j = 0; j < content.length; j++) {
+                popupHTML = popupHTML + '<span class="' + content[j].get('type') + '" id="' + content[j].getId()
+                    + '">' + content[j].get('fulltext').replace(/\n/g, '<br />') + '</span>';
+            }
+
+            popupHTML = popupHTML + '</span>';
+        }
+    };
 
     $('#tx-dlf-fulltextselection').html(popupHTML);
 

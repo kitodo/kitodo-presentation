@@ -111,6 +111,8 @@ dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
         feature.setProperties({'textblocks': this.parseTextBlockFeatures_(node)});
     } else if (type === 'textblock') {
         feature.setProperties({'textlines': this.parseTextLineFeatures_(node)});
+    } else if (type === 'textline') {
+        feature.setProperties({'content': this.parseContentFeatures_(node)});
     }
 
     return feature;
@@ -248,24 +250,12 @@ dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
 
     for (var i = 0; i < textlineElements.length; i++) {
         var feature = this.parseAltoFeature_(textlineElements[i]),
-            fulltextElements = $(textlineElements[i]).children(),
+            fulltextElements = feature.get('content'),
             fulltext = '';
 
         // parse fulltexts
         for (var j = 0; j < fulltextElements.length; j++) {
-            switch (fulltextElements[j].nodeName.toLowerCase()) {
-                case 'string':
-                    fulltext += fulltextElements[j].getAttribute('CONTENT');
-                    break;
-                case 'sp':
-                    fulltext += ' ';
-                    break;
-                case 'hyp':
-                    fulltext += '-';
-                    break;
-                default:
-                    fulltext += '';
-            };
+            fulltext += fulltextElements[j].get('fulltext');
         };
         feature.setProperties({'fulltext':fulltext});
 
@@ -273,6 +263,41 @@ dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
     };
 
     return textlineFeatures;
+};
+
+/**
+ * @param {Element} node
+ * @return {Array.<ol.Feature>}
+ * @private
+ */
+dlfAltoParser.prototype.parseContentFeatures_ = function(node) {
+    var textlineContentElements = $(node).children(),
+        textlineContentFeatures = [];
+
+    for (var i = 0; i < textlineContentElements.length; i++) {
+        var feature = this.parseFeatureWithGeometry_(textlineContentElements[i]),
+            fulltext = '';
+
+        // parse fulltexts
+        switch (textlineContentElements[i].nodeName.toLowerCase()) {
+            case 'string':
+                fulltext = textlineContentElements[i].getAttribute('CONTENT');
+                break;
+            case 'sp':
+                fulltext = ' ';
+                break;
+            case 'hyp':
+                fulltext = '-';
+                break;
+            default:
+                fulltext = '';
+        };
+        feature.setProperties({'fulltext':fulltext});
+
+        textlineContentFeatures.push(feature);
+    };
+
+    return textlineContentFeatures;
 };
 
 
