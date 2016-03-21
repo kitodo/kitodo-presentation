@@ -221,7 +221,7 @@ dlfViewer.prototype.displayHighlightWord = function() {
                 [field[0], field[1]],
             ]],
             offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
-            feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
+            var feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
             		this.images[this.highlightFieldParams.index],
             		this.highlightFieldParams.width,
                     this.highlightFieldParams.height,
