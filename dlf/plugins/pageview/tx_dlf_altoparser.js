@@ -130,6 +130,38 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
     for (var i = 0; i < pageElements.length; i++) {
         // parse page feature
         var feature = this.parseAltoFeature_(pageElements[i]);
+
+        // attach function for a better access of of string elements
+        feature.getStringFeatures = function() {
+            var textblockFeatures = this.get('printspace').get('textblocks'),
+                stringFeatures = [];
+
+            textblockFeatures.forEach(function(textblock) {
+
+                if (textblock !== undefined && textblock.get('textlines').length > 0) {
+
+                    textblock.get('textlines').forEach(function(textline) {
+
+                        if (textline !== undefined && textline.get('content').length > 0) {
+
+                            textline.get('content').forEach(function(content) {
+
+                                if (content !== undefined && content.get('type') === 'string') {
+                                    stringFeatures.push(content);
+                                }
+
+                            });
+                        }
+
+                    });
+
+                }
+
+            });
+
+            return stringFeatures;
+        };
+
         pageFeatures.push(feature);
     };
 

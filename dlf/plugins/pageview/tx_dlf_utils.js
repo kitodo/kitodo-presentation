@@ -196,6 +196,7 @@ dlfUtils.setCookie = function(name, value) {
  * @param {number} width
  * @param {number} height
  * @param {number=} opt_offset
+ * @depreacted
  * @return {Array.<ol.Feature>}
  */
 dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offset) {
@@ -238,6 +239,23 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offs
 
     return features;
 
+};
+
+/**
+ * Search a feature collcetion for a feature with the given text
+ * @param {Array.<ol.Feature>} featureCollection
+ * @param {string} text
+ * @return {ol.Feature|undefined}
+ */
+dlfUtils.searchFeatureCollectionForText = function(featureCollection, text) {
+    var feature;
+    featureCollection.forEach(function(ft) {
+        if (ft.get('fulltext') !== undefined) {
+            if (ft.get('fulltext') === text)
+                feature = ft;
+        }
+    });
+    return feature;
 };
 
 /**

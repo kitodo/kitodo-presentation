@@ -8,6 +8,7 @@
     "ol.control.OverviewMap",
     "ol.extent.getCenter",
     "ol.Feature",
+    "ol.Feature'clone",
     "ol.Feature#get",
     "ol.Feature#getId",
     "ol.Feature#getGeometry",

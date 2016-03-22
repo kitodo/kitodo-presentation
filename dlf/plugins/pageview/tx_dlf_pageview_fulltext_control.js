@@ -154,7 +154,11 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         // highlight features
         if (this.clickedFeature ) {
 
+            // remove old clicks
             this.selectLayer.getSource().removeFeature(this.clickedFeature);
+
+            // remove hover for preventing an adding of styles
+            this.highlightLayerTextblock.getSource().clear();
 
         }
 
@@ -231,8 +235,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                 activeHoverTextBlockEl_.getId() === textlineFeature.getId() ? true : false;
 
         if (!isFeatureEqualToOldHoverFeature_) {
-
-
 
             if (activeHoverTextBlockEl_) {
 

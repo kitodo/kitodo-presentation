@@ -242,5 +242,14 @@ describe('Test suite for the dlfAltoParser', function() {
             var blocks = printspace.get('textblocks');
             expect(blocks.length).toBe(4);
         });
+
+        it('Proper working of getStringFeatures', function() {
+            var parser = new dlfAltoParser(),
+                features = parser.parseFeatures(document),
+                stringFeatures = features[0].getStringFeatures()
+
+            // Test custom attached function to ol.Feature
+            expect(stringFeatures.length).toBe(10);
+        });
     });
 });
