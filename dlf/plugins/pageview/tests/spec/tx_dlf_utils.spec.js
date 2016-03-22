@@ -41,6 +41,12 @@ describe('Test suite for the dlfUtils', function() {
             expect(response.get('fulltext')).toBe('Mmm');
         });
 
+        it('Search for word which exists with lower case support', function() {
+            var response = dlfUtils.searchFeatureCollectionForText(features, 'mmm');
+            expect(response instanceof ol.Feature).toBe(true);
+            expect(response.get('fulltext')).toBe('Mmm');
+        });
+
         it('Search for word does not exists', function() {
             var response = dlfUtils.searchFeatureCollectionForText(features, 'Mmmm');
             expect(response).toBe(undefined);

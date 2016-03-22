@@ -273,7 +273,7 @@ dlfUtils.searchFeatureCollectionForText = function(featureCollection, text) {
     featureCollection.forEach(function(ft) {
         if (ft.get('fulltext') !== undefined) {
             //console.log(ft.get('fulltext'));
-            if (ft.get('fulltext') === text)
+            if (ft.get('fulltext').toLowerCase() === text.toLowerCase())
                 feature = ft;
         }
     });
