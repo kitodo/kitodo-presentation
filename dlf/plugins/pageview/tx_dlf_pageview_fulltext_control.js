@@ -157,13 +157,14 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
             // remove old clicks
             this.selectLayer.getSource().removeFeature(this.clickedFeature);
 
-            // remove hover for preventing an adding of styles
-            this.highlightLayerTextblock.getSource().clear();
-
         }
 
         if (feature) {
 
+            // remove hover for preventing an adding of styles
+            this.highlightLayerTextblock.getSource().clear();
+
+            // add feature
             this.selectLayer.getSource().addFeature(feature);
 
         }
