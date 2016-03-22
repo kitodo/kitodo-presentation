@@ -123,6 +123,15 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     });
 
     /**
+     * @private
+     * @type {ol.layer.Vector}
+     */
+    this.highlightLayerTextblock = new ol.layer.Vector({
+        'source': new ol.source.Vector(),
+        'style': dlfViewerFullTextControl.style.hoverStyle()
+    });
+
+    /**
      * @type {ol.Feature}
      * @private
      */
