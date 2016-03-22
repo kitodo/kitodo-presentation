@@ -83,7 +83,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.textBlockLayer = new ol.layer.Vector({
         'source': new ol.source.Vector(),
-        'style': dlfViewerFullTextControl.style.defaultStyle()
+        'style': dlfViewerOL3Styles.defaultStyle()
     });
 
     /**
@@ -92,7 +92,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.textLineLayer = new ol.layer.Vector({
         'source': new ol.source.Vector(),
-        'style': dlfViewerFullTextControl.style.invisibleStyle()
+        'style': dlfViewerOL3Styles.invisibleStyle()
     });
 
     /**
@@ -101,7 +101,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.selectLayer = new ol.layer.Vector({
         'source': new ol.source.Vector(),
-        'style': dlfViewerFullTextControl.style.selectStyle()
+        'style': dlfViewerOL3Styles.selectStyle()
     });
 
     /**
@@ -110,7 +110,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.highlightLayerTextblock = new ol.layer.Vector({
         'source': new ol.source.Vector(),
-        'style': dlfViewerFullTextControl.style.hoverStyle()
+        'style': dlfViewerOL3Styles.hoverStyle()
     });
 
     /**
@@ -119,7 +119,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.highlightLayerTextLine = new ol.layer.Vector({
         'source': new ol.source.Vector(),
-        'style': dlfViewerFullTextControl.style.textlineStyle()
+        'style': dlfViewerOL3Styles.textlineStyle()
     });
 
     /**
@@ -128,7 +128,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.highlightLayerTextblock = new ol.layer.Vector({
         'source': new ol.source.Vector(),
-        'style': dlfViewerFullTextControl.style.hoverStyle()
+        'style': dlfViewerOL3Styles.hoverStyle()
     });
 
     /**
@@ -137,7 +137,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.highlightWord_ = new ol.layer.Vector({
         'source': new ol.source.Vector(),
-        'style': dlfViewerFullTextControl.style.hoverStyle()
+        'style': dlfViewerOL3Styles.wordStyle()
     });
 
     /**
@@ -511,87 +511,4 @@ dlfViewerFullTextControl.prototype.showFulltext = function(feature) {
 
 };
 
-/**
- * @const
- * @namespace
- */
-dlfViewerFullTextControl.style = {};
 
-/**
- * @return {ol.style.Style}
- */
-dlfViewerFullTextControl.style.defaultStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(204,204,204,0.8)',
-            'width': 3
-        }),
-        'fill': new ol.style.Fill({
-            'color': 'rgba(170,0,0,0.1)'
-        })
-    });
-
-};
-
-/**
- * @return {ol.style.Style}
- */
-dlfViewerFullTextControl.style.hoverStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(204,204,204,0.8)',
-            'width': 1
-        }),
-        'fill': new ol.style.Fill({
-            'color': 'rgba(238,153,0,0.2)'
-        })
-    });
-
-};
-
-/**
- * @return {ol.style.Style}
- */
-dlfViewerFullTextControl.style.invisibleStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(170,0,0,0)',
-            'width': 1
-        })
-    });
-
-};
-
-/**
- * @return {ol.style.Style}
- */
-dlfViewerFullTextControl.style.selectStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(170,0,0,0.8)',
-            'width': 1
-        }),
-        'fill': new ol.style.Fill({
-            'color': 'rgba(238,153,0,0.2)'
-        })
-    });
-
-};
-
-/**
- * @return {ol.style.Style}
- */
-dlfViewerFullTextControl.style.textlineStyle = function() {
-
-    return new ol.style.Style({
-        'stroke': new ol.style.Stroke({
-            'color': 'rgba(170,0,0,1)',
-            'width': 1
-        })
-    });
-
-};
