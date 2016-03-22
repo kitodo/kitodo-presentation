@@ -123,6 +123,27 @@ dlfUtils.getCookie = function(name) {
 };
 
 /**
+ * Returns url parameters
+ * @param {string} key
+ * @returns {Object|undefined}
+ */
+dlfUtils.getUrlParams = function() {
+    if (location.hasOwnProperty('search')) {
+        var search = decodeURIComponent(location.search).split('&'),
+            params = {};
+
+        search.forEach(function(item) {
+           var s = item.split('=');
+           params[s[0]] = s[1]
+        });
+
+        return params;
+    }
+    return undefined;
+
+};
+
+/**
  * Returns true if the specified value is null.
  * @param {?} val
  * @return {boolean}
@@ -251,6 +272,7 @@ dlfUtils.searchFeatureCollectionForText = function(featureCollection, text) {
     var feature;
     featureCollection.forEach(function(ft) {
         if (ft.get('fulltext') !== undefined) {
+            //console.log(ft.get('fulltext'));
             if (ft.get('fulltext') === text)
                 feature = ft;
         }

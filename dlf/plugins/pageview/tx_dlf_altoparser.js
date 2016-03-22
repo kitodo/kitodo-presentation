@@ -131,7 +131,10 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
         // parse page feature
         var feature = this.parseAltoFeature_(pageElements[i]);
 
-        // attach function for a better access of of string elements
+        /**
+         * Attach function for a better access of of string elements
+         * @return {Array}
+         */
         feature.getStringFeatures = function() {
             var textblockFeatures = this.get('printspace').get('textblocks'),
                 stringFeatures = [];
@@ -160,6 +163,28 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
             });
 
             return stringFeatures;
+        };
+
+        /**
+         * Add function for getting the text blocks
+         * @return {Array}
+         */
+        feature.getTextblocks = function() {
+            if (this.get('printspace') !== undefined && this.get('printspace').get('textblocks'))
+                return this.get('printspace').get('textblocks')
+            return [];
+        };
+
+        /**
+         * Adding function for getting the textline
+         * @return {Array}
+         */
+        feature.getTextlines = function() {
+            var textlines = [];
+            this.getTextblocks().forEach(function(textblock) {
+                textlines = textlines.concat(textblock.get('textlines'));
+            });
+            return textlines;
         };
 
         pageFeatures.push(feature);

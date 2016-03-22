@@ -72,10 +72,10 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     	{'fulltext-on':'Activate Fulltext','fulltext-off':'Dectivate Fulltext'};
 
     /**
-     * @type {Array.<Array.<ol.Feature>}
+     * @type {ol.Feature|undefined}
      * @private
      */
-    this.fulltextData_ = [];
+    this.fulltextData_ = undefined;
 
     /**
      * @private
@@ -132,6 +132,15 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     });
 
     /**
+     * @private
+     * @type {ol.layer.Vector}
+     */
+    this.highlightWord_ = new ol.layer.Vector({
+        'source': new ol.source.Vector(),
+        'style': dlfViewerFullTextControl.style.hoverStyle()
+    });
+
+    /**
      * @type {ol.Feature}
      * @private
      */
@@ -154,7 +163,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
         // deselect all
         if (feature === undefined) {
-            this.selectLayer.getSource().removeFeature(this.clickedFeature);
+            this.selectLayer.getSource().clear();
             this.clickedFeature = undefined;
             this.showFulltext(undefined);
             return;
@@ -318,22 +327,38 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
 	// if the activate method is called for the first time fetch
 	// fulltext data from server
-	if (this.fulltextData_.length === 0)  {
+	if (this.fulltextData_ === undefined)  {
 		this.fulltextData_ = this.fetchFulltextDataFromServer();
 
 		// add features to fulltext layer
-		this.textBlockLayer.getSource().addFeatures(this.fulltextData_[0]);
-	    this.textLineLayer.getSource().addFeatures(this.fulltextData_[1]);
+		this.textBlockLayer.getSource().addFeatures(this.fulltextData_.getTextblocks());
+	    this.textLineLayer.getSource().addFeatures(this.fulltextData_.getTextlines());
 
 	    // add first feature of textBlockFeatures to map
-	    if (this.fulltextData_[0].length > 0) {
+	    if (this.fulltextData_ !== undefined && this.fulltextData_.getTextblocks().length > 0) {
 
-	        this.selectLayer.getSource().addFeature(this.fulltextData_[0][0]);
-	        this.clickedFeature = this.fulltextData_[0][0];
-	        this.showFulltext(this.fulltextData_[0][0]);
+	        this.selectLayer.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
+	        this.clickedFeature = this.fulltextData_.getTextblocks()[0];
+	        this.showFulltext(this.fulltextData_.getTextblocks()[0]);
 
 	    }
 
+        // add highlight words
+        var key = 'tx_dlf[highlight_word]',
+            urlParams = dlfUtils.getUrlParams();
+        if (urlParams.hasOwnProperty(key)) {
+            var value = urlParams[key],
+                values = value.split(';')
+
+            var stringFeatures = this.fulltextData_.getStringFeatures();
+            values.forEach($.proxy(function(value) {
+                var feature = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
+
+                if (feature !== undefined) {
+                    this.highlightWord_.getSource().addFeatures([feature]);
+                };
+            }, this));
+        };
 	}
 
 	// now activate the fulltext overlay and map behavior
@@ -381,6 +406,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         this.map.addLayer(this.highlightLayerTextblock);
         this.map.addLayer(this.selectLayer);
         this.map.addLayer(this.highlightLayerTextLine);
+        this.map.addLayer(this.highlightWord_);
 
         // show fulltext container
         var className = 'fulltext-visible';
@@ -391,6 +417,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
         $('#tx-dlf-fulltextselection').addClass(className);
         $('#tx-dlf-fulltextselection').show();
         $('body').addClass(className);
+
     }
 
 };
@@ -412,6 +439,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     this.map.removeLayer(this.highlightLayerTextblock);
     this.map.removeLayer(this.selectLayer);
     this.map.removeLayer(this.highlightLayerTextLine);
+    this.map.removeLayer(this.highlightWord_);
 
     // clear all layers
     this.highlightLayerTextblock.getSource().clear();
@@ -431,7 +459,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 /**
  * Method fetches the fulltext data from the server
  * @param {string} url
- * @return {Array.<Array.<ol.Feature>>} [textBlockFeatures, textLineFeatures]
+ * @return {ol.Feature|undefined}
  */
 dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
 
@@ -447,21 +475,10 @@ dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
             request.responseText ? parser.parseFeatures(request.responseText) : [];
 
     if (fulltextCoordinates.length > 0) {
-        // group fulltext coordinates in TextBlock and TextLine features
-        var pageFeature = fulltextCoordinates[0];
-
-        // group data in TextBlock and TextLine features
-        var textBlockFeatures = pageFeature.get('printspace').get('textblocks'),
-            textLineFeatures = [];
-        for (var j in textBlockFeatures) {
-            // add textline coordinates
-            textLineFeatures = textLineFeatures.concat(textBlockFeatures[j].get('textlines'));
-        }
-
-        return [textBlockFeatures, textLineFeatures];
+        return fulltextCoordinates[0];
     }
 
-    return [];
+    return undefined;
 };
 
 /**
