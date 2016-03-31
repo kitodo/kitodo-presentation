@@ -188,15 +188,17 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
 									foreach($day as $id => $issue) {
 
+										$dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
+
 										$linkConf = array (
 											'useCacheHash' => 1,
 											'parameter' => $this->conf['targetPid'],
 											'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($issue['uid']) . '&' . $this->prefixId . '[page]=1',
 											'ATagParams' => 'id=' . $issue['id'],
 										);
-										$dayLinksText[] = $this->cObj->typoLink($id, $linkConf);
+										$dayLinksText[] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
 
-										$allIssues[] = array(strftime('%A, %x', $currentDayTime), $this->cObj->typoLink($id, $linkConf));
+										$allIssues[] = array(strftime('%A, %x', $currentDayTime), $this->cObj->typoLink($dayLinkLabel, $linkConf));
 									}
 								}
 
