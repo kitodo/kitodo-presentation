@@ -1490,6 +1490,16 @@ final class tx_dlf_document {
 
 			}
 
+			// if volume_sorting is still empty, try to use title_sorting finally (e.g. newspaper year anchor)
+			if (empty($metadata['volume_sorting'][0])) {
+
+				if (!empty($metadata['title_sorting'][0])) {
+
+					$metadata['volume_sorting'][0] = $metadata['title_sorting'][0];
+
+				}
+			}
+
 		}
 
 		// Get metadata for lists and sorting.
