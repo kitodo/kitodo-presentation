@@ -141,6 +141,7 @@
 			<label index="tt_content.dlf_listview">DLF: List View</label>
 			<label index="tt_content.dlf_metadata">DLF: Metadata</label>
 			<label index="tt_content.dlf_navigation">DLF: Navigation</label>
+			<label index="tt_content.dlf_newspaper">DLF: Newspaper</label>
 			<label index="tt_content.dlf_oai">DLF: OAI-PMH Interface</label>
 			<label index="tt_content.dlf_pagegrid">DLF: Page Preview</label>
 			<label index="tt_content.dlf_pageview">DLF: Page View</label>
@@ -320,6 +321,7 @@
 			<label index="tt_content.dlf_listview">DLF: Listenansicht</label>
 			<label index="tt_content.dlf_metadata">DLF: Metadaten</label>
 			<label index="tt_content.dlf_navigation">DLF: Navigation</label>
+			<label index="tt_content.dlf_newspaper">DLF: Zeitungskalendar</label>
 			<label index="tt_content.dlf_oai">DLF: OAI-PMH-Schnittstelle</label>
 			<label index="tt_content.dlf_pagegrid">DLF: Seitenvorschau</label>
 			<label index="tt_content.dlf_pageview">DLF: Seitenansicht</label>

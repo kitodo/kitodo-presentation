@@ -265,6 +265,15 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_navigation'] 
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_navigation', 'FILE:EXT:'.$_EXTKEY.'/plugins/navigation/flexform.xml');
 
+// Plugin "newspaper".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_newspaper'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_newspaper'] = 'pi_flexform';
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_newspaper', $_EXTKEY.'_newspaper'), 'list_type');
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_newspaper', 'FILE:EXT:'.$_EXTKEY.'/plugins/newspaper/flexform.xml');
+
 // Plugin "oai".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_oai'] = 'layout,select_key,pages,recursive';
 

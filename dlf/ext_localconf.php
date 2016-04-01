@@ -35,6 +35,8 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/navigation/class.tx_dlf_navigation.php', '_navigation', 'list_type', TRUE);
 
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/newspaper/class.tx_dlf_newspaper.php', '_newspaper', 'list_type', TRUE);
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/oai/class.tx_dlf_oai.php', '_oai', 'list_type', FALSE);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/pagegrid/class.tx_dlf_pagegrid.php', '_pagegrid', 'list_type', TRUE);
@@ -50,8 +52,6 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/class.tx_dlf_toolbox.php', '_toolbox', 'list_type', TRUE);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/validator/class.tx_dlf_validator.php', '_validator', 'list_type', FALSE);
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/newspaper/class.tx_dlf_newspaper.php', '_newspaper', 'list_type', TRUE);
 
 // Register tools for toolbox plugin.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php', '_toolsFulltext', '', TRUE);

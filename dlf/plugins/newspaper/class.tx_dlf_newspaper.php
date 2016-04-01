@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+ *  (c) 2016 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,9 +22,12 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * [CLASS/FUNCTION INDEX of SCRIPT]
+ */
 
 /**
- * Plugin 'DFG-Viewer: Newspaper Calendar' for the 'dfgviewer' extension.
+ * Plugin 'DLF: Newspaper' for the 'dlf' extension.
  *
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @copyright	Copyright (c) 2016, Alexander Bigga, SLUB Dresden
@@ -36,7 +39,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
 	public $extKey = 'dlf';
 
-	public $scriptRelPath = 'plugins/newspaper-calendar/class.tx_dlf_newspaper.php';
+	public $scriptRelPath = 'plugins/newspaper/class.tx_dlf_newspaper.php';
 
 	/**
 	 * The main method of the PlugIn
@@ -50,7 +53,8 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 	 */
 	public function main($content, $conf) {
 
-		// nothing to do here
+		// Nothing to do here.
+		return $content;
 
 	}
 
@@ -311,7 +315,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 	}
 
 	/**
-	 * The main method of the PlugIn
+	 * The Year Method
 	 *
 	 * @access	public
 	 *
@@ -402,6 +406,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/newspaper-calendar/class.tx_dlf_newspaper-calendar.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/newspaper-calendar/class.tx_dlf_newspaper-calendar.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/newspaper/class.tx_dlf_newspaper.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/newspaper/class.tx_dlf_newspaper.php']);
 }

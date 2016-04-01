@@ -1467,7 +1467,7 @@ final class tx_dlf_document {
 
 		}
 
-		// Use the date of publication as alternative sorting metric for parts of multi-part works.
+		// Use the date of publication or title as alternative sorting metric for parts of multi-part works.
 		if (!empty($partof)) {
 
 			if (empty($metadata['volume'][0]) && !empty($metadata['year'][0])) {
@@ -1490,7 +1490,7 @@ final class tx_dlf_document {
 
 			}
 
-			// if volume_sorting is still empty, try to use title_sorting finally (e.g. newspaper year anchor)
+			// If volume_sorting is still empty, try to use title_sorting finally (workaround for newspapers)
 			if (empty($metadata['volume_sorting'][0])) {
 
 				if (!empty($metadata['title_sorting'][0])) {
