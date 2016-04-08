@@ -198,11 +198,12 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 											'useCacheHash' => 1,
 											'parameter' => $this->conf['targetPid'],
 											'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($issue['uid']) . '&' . $this->prefixId . '[page]=1',
-											'ATagParams' => 'id=' . $issue['id'],
+											'ATagParams' => ' class="title"',
 										);
 										$dayLinksText[] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
 
-										$allIssues[] = array(strftime('%A, %x', $currentDayTime), $this->cObj->typoLink($dayLinkLabel, $linkConf));
+										// save issues for list view later on
+										$allIssues[$currentDayTime][] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
 									}
 								}
 
@@ -268,28 +269,25 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 		// prepare list as alternative of the calendar view
 		$issueListTemplate = $this->cObj->getSubpart($subparts['template'], '###ISSUELIST###');
 
-		$subparts['singleissue'] = $this->cObj->getSubpart($issueListTemplate, '###SINGLEISSUE###');
+		$subparts['singleday'] = $this->cObj->getSubpart($issueListTemplate, '###SINGLEDAY###');
 
-		$allDaysList = array();
+		foreach($allIssues as $dayTime => $issues) {
 
-		foreach($allIssues as $id => $issue) {
+			$markerArrayDay['###DATE_STRING###'] = strftime('%A, %x', $dayTime);
 
-			// only add date output, if not already done (multiple issues per day)
-			if (! in_array($issue[0], $allDaysList)) {
+			unset($markerArrayDay['###ITEMS###']);
 
-				$allDaysList[] = $issue[0];
+			foreach ($issues as $id => $issue) {
 
-				$subPartContentList .= $issue[0];
+				$markerArrayDay['###ITEMS###'] .= $issue;
 
 			}
 
-			$subPartContentList .= $this->cObj->substituteMarker($subparts['singleissue'], '###ITEM###', $issue[1]);
+			$subPartContentList .= $this->cObj->substituteMarkerArray($subparts['singleday'], $markerArrayDay);
 
 		}
 
-		$issueListTemplate = $this->cObj->substituteSubpart($issueListTemplate, '###SINGLEISSUE###', $subPartContentList);
-
-		$this->template = $this->cObj->substituteSubpart($this->template, '###ISSUELIST###', $issueListTemplate);
+		$this->template = $this->cObj->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
 
 		if ($allIssuesCount < 6) {
 
