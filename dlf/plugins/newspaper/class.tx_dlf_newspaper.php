@@ -124,9 +124,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 		}
 
 		// Get subpart templates
-		$subparts['template'] = $this->template;
-
-		$subparts['month'] = $this->cObj->getSubpart($subparts['template'], '###CALMONTH###');
+		$subparts['month'] = $this->cObj->getSubpart($this->template, '###CALMONTH###');
 
 		$subparts['singleissue'] = $this->cObj->getSubpart($subparts['issuelist'], '###SINGLEISSUE###');
 
@@ -267,7 +265,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 		$yearLink = $this->cObj->typoLink($year, $linkConf);
 
 		// prepare list as alternative of the calendar view
-		$issueListTemplate = $this->cObj->getSubpart($subparts['template'], '###ISSUELIST###');
+		$issueListTemplate = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
 
 		$subparts['singleday'] = $this->cObj->getSubpart($issueListTemplate, '###SINGLEDAY###');
 
@@ -348,9 +346,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 		}
 
 		// Get subpart templates
-		$subparts['template'] = $this->template;
-
-		$subparts['year'] = $this->cObj->getSubpart($subparts['template'], '###LISTYEAR###');
+		$subparts['year'] = $this->cObj->getSubpart($this->template, '###LISTYEAR###');
 
 		// get the title of the anchor file
 		$titleAnchor = $this->doc->getTitle($this->doc->uid);
@@ -397,8 +393,24 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 			}
 		}
 
+		// link to years overview (should be itself here)
+		$linkConf = array (
+			'useCacheHash' => 1,
+			'parameter' => $this->conf['targetPid'],
+			'additionalParams' => '&' . $this->prefixId . '[id]=' . $this->doc->uid,
+		);
+		$allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE) . ' ' .$this->doc->getTitle($this->doc->uid), $linkConf);
+
+		// Fill markers.
+		$markerArray = array (
+			'###LABEL_CHOOSE_YEAR###' => $this->pi_getLL('label.please_choose_year'),
+			'###CALALLYEARS###' => $allYearsLink
+		);
+
+		$this->template = $this->cObj->substituteMarkerArray($this->template, $markerArray);
+
 		// fill the week markers
-		return $this->cObj->substituteSubpart($subparts['template'], '###LISTYEAR###', $subYearPartContent);
+		return $this->cObj->substituteSubpart($this->template, '###LISTYEAR###', $subYearPartContent);
 
 	}
 
