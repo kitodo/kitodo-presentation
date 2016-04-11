@@ -30,8 +30,8 @@
             ###CALYEAR###
         </div>
         <div class="calendar-list-selection">
-            <a class="select-calendar-view ###CALENDARVIEWACTIVE###">Kalender</a>
-            <a class="select-list-view ###LISTVIEWACTIVE###">Listenansicht</a>
+            <a class="select-calendar-view ###CALENDARVIEWACTIVE###">###LABEL_CALENDAR###</a>
+            <a class="select-list-view ###LISTVIEWACTIVE###">###LABEL_LIST_VIEW###</a>
         </div>
     </div>
     <div class="calendar-view">
@@ -64,9 +64,14 @@
     <!-- ###ISSUELIST### begin -->
     <div class="list-view">
         <ul>
-            <!-- ###SINGLEISSUE### begin -->
-            <li>###ITEM###</li>
-            <!-- ###SINGLEISSUE### end -->
+            <!-- ###SINGLEDAY### begin -->
+            <li>
+                <span class="listview-date">###DATE_STRING###</span>
+
+                ###ITEMS###
+
+            </li>
+            <!-- ###SINGLEDAY### end -->
         </ul>
     </div>
     <!-- ###ISSUELIST### end -->
@@ -76,11 +81,22 @@
 
 <!-- ###TEMPLATEYEAR### begin -->
 <div class="tx-dlf-newspaper-years">
-    <ul>
-        <!-- ###LISTYEAR### begin -->
-        <li class="year">
-            ###YEARNAME###
-        </li>
-        <!-- ###LISTYEAR### end -->
+    <div class="meta-header">
+        <div class="year-anchor">
+            ###CALALLYEARS###
+        </div>
+        <div class="meta-hint-year">
+            ###LABEL_CHOOSE_YEAR###
+        </div>
+    </div>
+    <div class="year-view">
+        <ul>
+            <!-- ###LISTYEAR### begin -->
+            <li class="year">
+                ###YEARNAME###
+            </li>
+            <!-- ###LISTYEAR### end -->
+        </ul>
+    </div>
 </div>
 <!-- ###TEMPLATEYEAR### end -->
