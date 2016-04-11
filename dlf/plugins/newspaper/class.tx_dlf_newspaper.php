@@ -301,7 +301,9 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 			'###CALENDARVIEWACTIVE###' => $calendarViewActive,
 			'###LISTVIEWACTIVE###' => $listViewActive,
 			'###CALYEAR###' => $yearLink,
-			'###CALALLYEARS###' => $allYearsLink
+			'###CALALLYEARS###' => $allYearsLink,
+			'###LABEL_CALENDAR###' => $this->pi_getLL('label.view_calendar'),
+			'###LABEL_LIST_VIEW###' => $this->pi_getLL('label.view_list'),
 		);
 
 		$this->template = $this->cObj->substituteMarkerArray($this->template, $markerArray);
