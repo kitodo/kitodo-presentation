@@ -23,17 +23,11 @@
 
 /**
  * @constructor
- * @param {Object=} opt_options Control options.
+ * @param {Object=} options Control options.
+ * 		{Array.<ol.layer.Layer>} layers
+ * 		{Element} target
  */
-dlfViewerImageManipulationControl = function(opt_options) {
-
-  var options = opt_options || {};
-
-  /**
-   * @type {Array.<ol.layer.Layer>}
-   * @private
-   */
-  this.layers = options.layers;
+dlfViewerImageManipulationControl = function(options) {
 
   /**
    * @type {Object}
@@ -45,34 +39,10 @@ dlfViewerImageManipulationControl = function(opt_options) {
 		  		'saturation':'Saturation', 'hue':'Hue', 'brightness': 'Brightness', 'contrast':'Contrast', 'reset': 'Reset'};
 
   /**
-   * @type {Element}
-   * @private
-   */
-  this.mainMap = $('#' + options.mapContainer)[0];
-
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.referenceMap = options.referenceMap;
-
-  /**
-   * @type {string}
-   * @private
-   */
-  this.manipulationMapId = 'tx-dfgviewer-map-manipulate';
-
-  /**
-	 * @type {ol.Map|undefined}
-	 * @private
-	 */
-	this.manipulationMap;
-
-  /**
-   * @type {ol.View}
-   * @private
-   */
-  this.mapView = options.view;
+	* @type {Array.<ol.layer.Layer>}
+	* @private
+	*/
+  this.layers = options.layers;
 
   /**
    * @type {Element}
@@ -112,65 +82,6 @@ dlfViewerImageManipulationControl = function(opt_options) {
  * Activates the image manipulation tool
  */
 dlfViewerImageManipulationControl.prototype.activate = function(){
-	var map;
-
-	$.when($(this.mainMap)
-		// fadout parent map container
-		.hide())
-		// now create new map
-		.done($.proxy(function() {
-			if ($('#' + this.manipulationMapId).length == 0) {
-				// create manipulation map
-				var imageManipulationMapEl = $('<div id="' + this.manipulationMapId + '" class="tx-dlf-map"></div>');
-				$(this.mainMap.parentElement).append(imageManipulationMapEl);
-
-				this.manipulationMap = new ol.Map({
-		            layers: this.layers,
-		            target: this.manipulationMapId,
-		            controls: [],
-		            interactions: [
-		                new ol.interaction.DragPan(),
-		                new ol.interaction.MouseWheelZoom(),
-		                new ol.interaction.KeyboardPan(),
-		                new ol.interaction.KeyboardZoom
-		            ],
-		            // necessary for proper working of the keyboard events
-		            keyboardEventTarget: document,
-		            view: this.mapView,
-		            renderer: 'webgl'
-		        });
-
-		    	// couple both map objects
-		    	var adjustViews = function(sourceView, destMap) {
-				var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
-				var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
-				var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
-
-		    		if (rotateDiff || resDiff || centerDiff)
-			    		destMap.zoomTo(sourceView.getCenter(),
-			    				sourceView.getZoom(), 50);
-		    		},
-		    		adjustViewHandler = function(event) {
-		    			adjustViews(event.target, this);
-		    		};
-
-		    	// when deactivate / activate adjust both map centers / zoom
-		    	$(this).on("activate-imagemanipulation", $.proxy(function(event, map) {
-			    	this.referenceMap.getView().on('change:resolution', adjustViewHandler, this.manipulationMap);
-		    		adjustViews(this.referenceMap.getView(), this.manipulationMap);
-		    	}, this));
-		    	$(this).on("deactivate-imagemanipulation", $.proxy(function(event, map) {
-			    	this.referenceMap.getView().un('change:resolution', adjustViewHandler, this.manipulationMap);
-		    		adjustViews(this.manipulationMap.getView(), this.referenceMap);
-		    	}, this));
-
-			}
-
-			$('#' + this.manipulationMapId).show();
-
-			// trigger open event
-			$(this).trigger("activate-imagemanipulation", this.manipulationMap);
-		}, this));
 
 	// add activate class to control element
 	$(this.anchor_).addClass('active')
@@ -258,15 +169,10 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 		.text(this.dic['imagemanipulation-on'])
 		.attr('title', this.dic['imagemanipulation-on']);
 
-	// fadeIn parent map container
-	$('#' + this.manipulationMapId).hide();
-	$(this.mainMap).show();
-
 	$(this.sliderContainer_).hide().removeClass('open');
 
 	// trigger close event but only if an manipulation map has already been initialize
-	if (this.manipulationMap !== undefined)
-		$(this).trigger("deactivate-imagemanipulation", this.manipulationMap);
+	$(this).trigger("deactivate-imagemanipulation");
 };
 
 /**
