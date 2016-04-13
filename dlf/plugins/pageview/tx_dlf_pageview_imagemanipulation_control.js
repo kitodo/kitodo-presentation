@@ -61,6 +61,9 @@ dlfViewerImageManipulationControl = function(options) {
    */
   this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer: $('.tx-dlf-toolbox')[0];
 
+  //
+  // Append open/close behavior to toolbox
+  //
   var openToolbox = $.proxy(function(event) {
 	  event.preventDefault();
 
@@ -71,11 +74,79 @@ dlfViewerImageManipulationControl = function(options) {
 
 	  this.activate();
   }, this);
-
-
   $(this.anchor_).on('click', openToolbox);
   $(this.anchor_).on('touchstart', openToolbox);
 
+  //
+  // Initialize the filter
+  //
+	/**
+	 * @type {{brightness: number, contrast: number, hue: number, saturation: number}}
+	 * @private
+   */
+	this.filtersDefault_ = {
+		'brightness': 1,
+		'contrast': 1,
+		'hue': 0,
+		'saturation': 0
+	};
+
+	/**
+	 * @type {Object}
+	 * @private
+	 */
+	this.filters_ = $.extend({}, this.filtersDefault_);
+
+	/**
+	 * Is filter updated
+	 * @type {boolean}
+	 * @private
+	 */
+	this.filterUpdated_ = false;
+
+	/**
+	 * @type {Object}
+	 * @private
+	 */
+	this.handler_ = {
+		'postcomposeImageFilter': $.proxy(function (event) {
+			var webglContext = event['glContext'],
+				canvas = $('canvas.ol-unselectable')[0];
+
+			if (webglContext !== undefined && webglContext !== null) {
+				var gl = webglContext.getGL();
+
+				if (this.filterUpdated_) {
+					glif.reset();
+
+					for (var filter in this.filters_) {
+						glif.addFilter(filter, this.filters_[filter]);
+					};
+
+					this.filterUpdated_ = false;
+				}
+
+				glif.apply(gl, canvas);
+
+				// for showing openlayers that the program changed
+				// if missing openlayers will produce errors because it
+				// expected other shaders in the webgl program
+				webglContext.useProgram(undefined);
+			}
+		}, this),
+		'resetFilter': $.proxy(function(event) {
+			var layer = this.layers[0];
+
+			var sliderEls = $('.slider.slider-imagemanipulation');
+			for (var i = 0; i < sliderEls.length; i++) {
+				var sliderEl = sliderEls[i],
+					type = sliderEl.getAttribute('data-type'),
+					value = this.filtersDefault_[type];
+
+				$(sliderEl).slider('value', value);
+			};
+		}, this)
+	}
 };
 
 /**
@@ -91,36 +162,78 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 	if (dlfUtils.exists(this.sliderContainer_)) {
 		$(this.sliderContainer_).show().addClass('open');
 	} else {
-		this.sliderContainer_ = this.initializeSliderContainer_(this.toolContainerEl_);
+		// create outer container
+		var outerContainer = $('<div class="image-manipulation ol-unselectable"></div>');
+		$(this.toolContainerEl_).append(outerContainer);
+
+		/**
+		 * Inner slider container
+		 * @type {Element}
+		 * @private
+ 		 */
+		this.sliderContainer_ = $('<div class="slider-container" style="display:none;"></div>');
+		$(outerContainer).append(this.sliderContainer_);
+
+		//
+		// Create slider for filters
+		//
+		var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', 'contrast',
+			[1, 0, 2, 0.01], this.dic['contrast']),
+			saturationSlider = this.createSlider_('slider-saturation', 'horizontal', 'saturation',
+				[0, -1, 1, 0.01], this.dic['saturation']),
+			brightnessSlider = this.createSlider_('slider-brightness', 'horizontal', 'brightness',
+				[1, 0, 2, 0.1], this.dic['brightness']),
+			hueSlider = this.createSlider_('slider-hue', 'horizontal', 'hue',
+				[0, -180, 180, 5], this.dic['hue']);
+		$(this.sliderContainer_).append(contrastSlider);
+		$(this.sliderContainer_).append(saturationSlider);
+		$(this.sliderContainer_).append(brightnessSlider);
+		$(this.sliderContainer_).append(hueSlider);
+
+		// button for reset to default state
+		var resetBtn = $('<button class="reset-btn" title="' + this.dic['reset'] + '">' + this.dic['reset'] + '</button>');
+		$(this.sliderContainer_).append(resetBtn);
+		$(resetBtn).on('click', this.handler_.resetFilter);
 
 		// fade in
 		$(this.sliderContainer_).show().addClass('open');
+	}
+
+	// add postcompose listener to layers
+	for (var i = 0; i < this.layers.length; i++) {
+		this.layers[i].on('postcompose', this.handler_.postcomposeImageFilter);
 	}
 };
 
 /**
  * @param {string} className
  * @param {string} orientation
- * @param {Function} updateFn
- * @param {number=} opt_baseValue
+ * @param {string} key
+ * @param {Array.<number>|undefined} opt_baseValue
  * @param {string=} opt_title
  * @return {Element}
  * @private
  */
-dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, orientation, updateFn, opt_baseValue, opt_title){
+dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, orientation, key, opt_baseValues, opt_title){
 	var title = dlfUtils.exists('opt_title') ? opt_title : '',
-		sliderEl = $('<div class="slider slider-imagemanipulation ' + className + '" title="' + title + '"></div>'),
-		baseMin = 0,
-		baseMax = 100,
+		sliderEl = $('<div class="slider slider-imagemanipulation ' + className + '" title="' + title + '" data-type="' +
+			key +'"></div>'),
+		baseMin = dlfUtils.exists(opt_baseValues) ? opt_baseValues[1] : 0,
+		baseMax = dlfUtils.exists(opt_baseValues) ? opt_baseValues[2] : 100,
+		steps = dlfUtils.exists(opt_baseValues) ? opt_baseValues[3] : 1,
 		minValueEl,
 		maxValueEl,
-		startValue = dlfUtils.exists(opt_baseValue) ? opt_baseValue : 100;
+		startValue = dlfUtils.exists(opt_baseValues) ? opt_baseValues[0] : 100;
 
 	/**
-	 * 	@param {number} value
-	 *	@param {Element} element
+	 * @param {Object} event
+	 * @param {Object} ui
 	 */
-	var updatePosition = function(value, element){
+	var update = $.proxy(function(event, ui){
+		var value = ui['value'],
+				layer = this.layers[0],
+				element = valueEl[0];
+
 		if (orientation == 'vertical') {
 			var style_top = 100 - ((value - baseMin) / (baseMax - baseMin) * 100);
 			element.style.top = style_top + '%';
@@ -131,30 +244,27 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
 		var style_left = (value - baseMin) / (baseMax - baseMin) * 100;
 		element.style.left = style_left + '%';
 		element.innerHTML = value + '%';
-	};
+
+		// update filters.
+		this.filters_[key] = value;
+		this.filterUpdated_ = true;
+		layer.changed();
+	}, this);
 
 	$(sliderEl).slider({
-        'min': 0,
-        'max': 100,
+        'min': baseMin,
+        'max': baseMax,
         'value': startValue,
         'animate': 'slow',
         'orientation': orientation,
-        'step': 1,
-        'slide': function( event, ui ) {
-        	var value = ui['value'];
-        	updatePosition(value, valueEl[0]);
-        	updateFn(value);
-        },
-        'change': $.proxy(function( event, ui ){
-        	var value = ui['value'];
-        	updatePosition(value, valueEl[0]);
-        	updateFn(value);
-        }, this)
+        'step': steps,
+        'slide': update,
+        'change': update
     });
 
 	// append tooltips
-	var innerHtml = dlfUtils.exists(opt_baseValue) ? opt_baseValue + '%' : '100%',
-		valueEl = $('<div class="tooltip value ' + className + '">' + innerHtml + '</div>');
+	var innerHtml = dlfUtils.exists(opt_baseValues) ? opt_baseValues[0] + '%' : '100%',
+			valueEl = $('<div class="tooltip value ' + className + '">' + innerHtml + '</div>');
 	$(sliderEl).append(valueEl);
 
 	return sliderEl;
@@ -170,6 +280,11 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 		.attr('title', this.dic['imagemanipulation-on']);
 
 	$(this.sliderContainer_).hide().removeClass('open');
+
+	// remove postcompose listener to map
+	for (var i = 0; i < this.layers.length; i++) {
+		this.layers[i].un('postcompose', this.handler_.postcomposeImageFilter);
+	};
 
 	// trigger close event but only if an manipulation map has already been initialize
 	$(this).trigger("deactivate-imagemanipulation");
@@ -188,6 +303,8 @@ dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = functio
 	// create inner slider container
 	var sliderContainer = $('<div class="slider-container" style="display:none;"></div>');
 	$(outerContainer).append(sliderContainer);
+
+
 
 	// add contrast slider
 	var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', $.proxy(function(value){
@@ -235,23 +352,39 @@ dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = functio
 		saturation: 1
 	};
 
-	$(resetBtn).on('click', $.proxy(function(e){
-		// reset the layer
-		for (var i = 0; i < this.layers.length; i++) {
-			this.layers[i].setContrast(defaultValues.contrast);
-			this.layers[i].setHue(defaultValues.hue);
-			this.layers[i].setBrightness(defaultValues.brightness);
-			this.layers[i].setSaturation(defaultValues.saturation);
-		}
-
-		// reset the sliders
-		var sliderEls = $('.slider-imagemanipulation');
-		for (var i = 0; i < sliderEls.length; i++){
-			var sliderEl = sliderEls[i];
-			var resetValue = $(sliderEl).hasClass('slider-hue') || $(sliderEl).hasClass('slider-brightness') ? 50 : 100;
-			$(sliderEl).slider('value', resetValue);
-		}
-	}, this));
+	//$(resetBtn).on('click', $.proxy(function(e){
+	//	var layer = this.layers[0];
+    //
+	//	// remove postcomposeHandler
+	//	layer.un('postcompose', postcomposeHandler);
+	//	postcomposeRegistered = false;
+    //
+	//	// reset the sliders
+	//	var sliderEls = goog.dom.getElementsByClass('slider', sliderContainer);
+	//	for (var i = 0; i < sliderEls.length; i++) {
+	//		var sliderEl = sliderEls[i],
+	//			type = sliderEl.getAttribute('data-type'),
+	//			value = vk2.control.ImageManipulation.Filters[type];
+    //
+	//		$(sliderEl).slider('value', value);
+	//	};
+	//
+	//	// reset the layer
+	//	for (var i = 0; i < this.layers.length; i++) {
+	//		this.layers[i].setContrast(defaultValues.contrast);
+	//		this.layers[i].setHue(defaultValues.hue);
+	//		this.layers[i].setBrightness(defaultValues.brightness);
+	//		this.layers[i].setSaturation(defaultValues.saturation);
+	//	}
+    //
+	//	// reset the sliders
+	//	var sliderEls = $('.slider-imagemanipulation');
+	//	for (var i = 0; i < sliderEls.length; i++){
+	//		var sliderEl = sliderEls[i];
+	//		var resetValue = $(sliderEl).hasClass('slider-hue') || $(sliderEl).hasClass('slider-brightness') ? 50 : 100;
+	//		$(sliderEl).slider('value', resetValue);
+	//	}
+	//}, this));
 
 	return sliderContainer;
 };
