@@ -317,7 +317,6 @@ dlfViewerFullTextControl.prototype.activate = function() {
             var stringFeatures = this.fulltextData_.getStringFeatures();
             values.forEach($.proxy(function(value) {
                 var feature = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
-
                 if (feature !== undefined) {
                     this.layers_.word.getSource().addFeatures([feature]);
                 };
