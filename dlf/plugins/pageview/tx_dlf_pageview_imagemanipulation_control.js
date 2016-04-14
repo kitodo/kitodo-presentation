@@ -59,17 +59,10 @@ dlfViewerImageManipulationControl = function(options) {
 	this.baseMap_ = options.map;
 
 	/**
-	 * @type {string}
-	 * @private
-	 */
-	this.manipulationMapId = 'tx-dfgviewer-map-manipulate';
-
-	/**
 	 * @type {ol.Map|undefined}
 	 * @private
 	 */
 	this.map_;
-
 
 	/**
 	 * @type {ol.View}
@@ -113,11 +106,7 @@ dlfViewerImageManipulationControl = function(options) {
   //
   // Initialize the filter
   //
-	/**
-	 * @type {{brightness: number, contrast: number, hue: number, saturation: number}}
-	 * @private
-   */
-	this.filtersDefault_ = {
+	var FILTERS_DEFAULT_ = {
 		'brightness': 1,
 		'contrast': 1,
 		'hue': 0,
@@ -128,7 +117,7 @@ dlfViewerImageManipulationControl = function(options) {
 	 * @type {Object}
 	 * @private
 	 */
-	this.filters_ = $.extend({}, this.filtersDefault_);
+	this.filters_ = $.extend({}, FILTERS_DEFAULT_);
 
 	/**
 	 * Is filter updated
@@ -176,7 +165,7 @@ dlfViewerImageManipulationControl = function(options) {
 			for (var i = 0; i < sliderEls.length; i++) {
 				var sliderEl = sliderEls[i],
 					type = sliderEl.getAttribute('data-type'),
-					value = this.filtersDefault_[type];
+					value = FILTERS_DEFAULT_[type];
 
 				$(sliderEl).slider('value', value);
 			};
@@ -190,78 +179,16 @@ dlfViewerImageManipulationControl = function(options) {
 dlfViewerImageManipulationControl.prototype.activate = function(){
 
 	//
-	// Toggle Maps and control elements
+	// Toggle maps
 	//
 	$.when($(this.baseMap_.getTargetElement())
 		// fadeOut the base map container
 		.hide())
 		// fadeIn image map container
 		.done($.proxy(function(){
-			//
-			// Initialize map if not exists
-			//
 			if (!dlfUtils.exists(this.map_)) {
-				// create map container and map object
-				var mapEl_ = $('<div id="tx-dfgviewer-map-manipulate" class="tx-dlf-map"></div>');
-				$(this.baseMap_.getTargetElement().parentElement).append(mapEl_);
-
-				this.map_ = new ol.Map({
-					layers: this.layers,
-					target: mapEl_[0].id,
-					controls: [],
-					interactions: [
-						new ol.interaction.DragRotate(),
-						new ol.interaction.DragPan(),
-						new ol.interaction.DragZoom(),
-						new ol.interaction.PinchRotate(),
-						new ol.interaction.PinchZoom(),
-						new ol.interaction.MouseWheelZoom(),
-						new ol.interaction.KeyboardPan(),
-						new ol.interaction.KeyboardZoom,
-						new ol.interaction.DragRotateAndZoom()
-					],
-					// necessary for proper working of the keyboard events
-					keyboardEventTarget: document,
-					view: this.view_,
-					renderer: 'webgl'
-				});
-
-				// couple map behavior with baseMap
-				var adjustViews = function(sourceView, destMap) {
-						var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
-						var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
-						var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
-
-						if (rotateDiff || resDiff || centerDiff) {
-							destMap.zoomTo(sourceView.getCenter(),
-								sourceView.getZoom(), 50);
-							destMap.getView().rotate(sourceView.getRotation());
-						}
-
-					},
-					adjustViewHandler = function(event) {
-						adjustViews(event.target, this);
-					};
-
-				// when deactivate / activate adjust both map centers / zoom
-				$(this).on("activate-imagemanipulation", $.proxy(function(event, map) {
-					// pass change events for resolution and rotation to image manipulation map
-					// created through external view controls
-					this.baseMap_.getView().on('change:resolution', adjustViewHandler, this.map_);
-					this.baseMap_.getView().on('change:rotation', adjustViewHandler, this.map_);
-
-					// adjust the view of both maps
-					adjustViews(this.baseMap_.getView(), this.map_);
-				}, this));
-				$(this).on("deactivate-imagemanipulation", $.proxy(function(event, map) {
-					// pass change events for resolution and rotation to image manipulation map
-					// created through external view controls
-					this.baseMap_.getView().un('change:resolution', adjustViewHandler, this.map_);
-					this.baseMap_.getView().un('change:rotation', adjustViewHandler, this.map_);
-
-					// adjust the view of both maps
-					adjustViews(this.map_.getView(), this.baseMap_);
-				}, this));
+				// create map container and map object if not exists yet
+				this.createMap_();
 			}
 
 			// Show map
@@ -271,63 +198,18 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 			$(this).trigger("activate-imagemanipulation", this.map_);
 		}, this));
 
-	// add activate class to control element
+	//
+	// Toggle toolbox controls
+	//
 	$(this.anchor_).addClass('active')
 		.text(this.dic['imagemanipulation-off'])
 		.attr('title', this.dic['imagemanipulation-off']);
 
-	if (dlfUtils.exists(this.sliderContainer_)) {
-		$(this.sliderContainer_).show().addClass('open');
-	} else {
-
-		//
-		// Initialize filters
-		//
-
-		// create outer container
-		var outerContainer = $('<div class="image-manipulation ol-unselectable"></div>');
-		$(this.toolContainerEl_).append(outerContainer);
-
-		/**
-		 * Inner slider container
-		 * @type {Element}
-		 * @private
- 		 */
-		this.sliderContainer_ = $('<div class="slider-container"></div>');
-		$(outerContainer).append(this.sliderContainer_);
-
-		//
-		// Create slider for filters
-		//
-		var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', 'contrast',
-					[1, 0, 2, 0.01], this.dic['contrast'], function(v) {
-						return parseInt(v * 100 - 100);
-					}),
-			saturationSlider = this.createSlider_('slider-saturation', 'horizontal', 'saturation',
-					[0, -1, 1, 0.01], this.dic['saturation'], function(v) {
-						return parseInt(v * 100);
-					}),
-			brightnessSlider = this.createSlider_('slider-brightness', 'horizontal', 'brightness',
-					[1, 0, 2, 0.1], this.dic['brightness'],function(v) {
-						return parseInt(v * 100 - 100);
-					}),
-			hueSlider = this.createSlider_('slider-hue', 'horizontal', 'hue',
-					[0, -180, 180, 5], this.dic['hue'], function(v) {
-						return parseInt(v);
-					});
-		$(this.sliderContainer_).append(contrastSlider);
-		$(this.sliderContainer_).append(saturationSlider);
-		$(this.sliderContainer_).append(brightnessSlider);
-		$(this.sliderContainer_).append(hueSlider);
-
-		// button for reset to default state
-		var resetBtn = $('<button class="reset-btn" title="' + this.dic['reset'] + '">' + this.dic['reset'] + '</button>');
-		$(this.sliderContainer_).append(resetBtn);
-		$(resetBtn).on('click', this.handler_.resetFilter);
-
-		// fade in
-		$(this.sliderContainer_).show().addClass('open');
-	}
+	if (!dlfUtils.exists(this.sliderContainer_)) {
+		// in case filter sliders are not initialize yet add them
+		this.createFilters_();
+	};
+	$(this.sliderContainer_).show().addClass('open');
 
 	// add postcompose listener to layers
 	for (var i = 0; i < this.layers.length; i++) {
@@ -336,6 +218,123 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 };
 
 /**
+ * Setup the image manipulation filters + reset functionality
+ * @private
+ */
+dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
+
+	// create outer container
+	var outerContainer = $('<div class="image-manipulation ol-unselectable"></div>');
+	$(this.toolContainerEl_).append(outerContainer);
+
+	/**
+	 * Inner slider container
+	 * @type {Element}
+	 * @private
+	 */
+	this.sliderContainer_ = $('<div class="slider-container"></div>');
+	$(outerContainer).append(this.sliderContainer_);
+
+	//
+	// Create sliders for filters and append them to the toolbox
+	//
+	var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', 'contrast',
+		[1, 0, 2, 0.01], this.dic['contrast'], function(v) {
+			return parseInt(v * 100 - 100);
+		}),
+		saturationSlider = this.createSlider_('slider-saturation', 'horizontal', 'saturation',
+			[0, -1, 1, 0.01], this.dic['saturation'], function(v) {
+				return parseInt(v * 100);
+			}),
+		brightnessSlider = this.createSlider_('slider-brightness', 'horizontal', 'brightness',
+			[1, 0, 2, 0.1], this.dic['brightness'],function(v) {
+				return parseInt(v * 100 - 100);
+			}),
+		hueSlider = this.createSlider_('slider-hue', 'horizontal', 'hue',
+			[0, -180, 180, 5], this.dic['hue'], function(v) {
+				return parseInt(v);
+			});
+	$(this.sliderContainer_).append(contrastSlider);
+	$(this.sliderContainer_).append(saturationSlider);
+	$(this.sliderContainer_).append(brightnessSlider);
+	$(this.sliderContainer_).append(hueSlider);
+
+	// button for reset to default state
+	var resetBtn = $('<button class="reset-btn" title="' + this.dic['reset'] + '">' + this.dic['reset'] + '</button>');
+	$(this.sliderContainer_).append(resetBtn);
+	$(resetBtn).on('click', this.handler_.resetFilter);
+};
+
+/**
+ * Setup the map object used from the image manipulation tool and bind it to the baseMap
+ * @private
+ */
+dlfViewerImageManipulationControl.prototype.createMap_ = function() {
+	var mapEl_ = $('<div id="tx-dfgviewer-map-manipulate" class="tx-dlf-map"></div>');
+	$(this.baseMap_.getTargetElement().parentElement).append(mapEl_);
+
+	this.map_ = new ol.Map({
+		layers: this.layers,
+		target: mapEl_[0].id,
+		controls: [],
+		interactions: [
+			new ol.interaction.DragRotate(),
+			new ol.interaction.DragPan(),
+			new ol.interaction.DragZoom(),
+			new ol.interaction.PinchRotate(),
+			new ol.interaction.PinchZoom(),
+			new ol.interaction.MouseWheelZoom(),
+			new ol.interaction.KeyboardPan(),
+			new ol.interaction.KeyboardZoom,
+			new ol.interaction.DragRotateAndZoom()
+		],
+		// necessary for proper working of the keyboard events
+		keyboardEventTarget: document,
+		view: this.view_,
+		renderer: 'webgl'
+	});
+
+	// couple map behavior with baseMap
+	var adjustViews = function(sourceView, destMap) {
+			var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
+			var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
+			var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
+
+			if (rotateDiff || resDiff || centerDiff) {
+				destMap.zoomTo(sourceView.getCenter(),
+					sourceView.getZoom(), 50);
+				destMap.getView().rotate(sourceView.getRotation());
+			}
+
+		},
+		adjustViewHandler = function(event) {
+			adjustViews(event.target, this);
+		};
+
+	// when deactivate / activate adjust both map centers / zoom
+	$(this).on("activate-imagemanipulation", $.proxy(function(event, map) {
+		// pass change events for resolution and rotation to image manipulation map
+		// created through external view controls
+		this.baseMap_.getView().on('change:resolution', adjustViewHandler, this.map_);
+		this.baseMap_.getView().on('change:rotation', adjustViewHandler, this.map_);
+
+		// adjust the view of both maps
+		adjustViews(this.baseMap_.getView(), this.map_);
+	}, this));
+	$(this).on("deactivate-imagemanipulation", $.proxy(function(event, map) {
+		// pass change events for resolution and rotation to image manipulation map
+		// created through external view controls
+		this.baseMap_.getView().un('change:resolution', adjustViewHandler, this.map_);
+		this.baseMap_.getView().un('change:rotation', adjustViewHandler, this.map_);
+
+		// adjust the view of both maps
+		adjustViews(this.map_.getView(), this.baseMap_);
+	}, this));
+};
+
+/**
+ * Functions creates a slider + behavior.
+ *
  * @param {string} className
  * @param {string} orientation
  * @param {string} key
@@ -408,8 +407,9 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
 dlfViewerImageManipulationControl.prototype.deactivate = function(){
 
 	// toggle maps
-	if (dlfUtils.exists(this.map_))
+	if (dlfUtils.exists(this.map_)) {
 		$(this.map_.getTargetElement()).hide();
+	}
 	$(this.baseMap_.getTargetElement()).show();
 
 	// toggle view of image manipulation control element
@@ -426,103 +426,4 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 
 	// trigger close event for trigger map adjust behavior
 	$(this).trigger("deactivate-imagemanipulation");
-};
-
-/**
- * @param {Element} parentEl
- * @private
- */
-dlfViewerImageManipulationControl.prototype.initializeSliderContainer_ = function(parentEl){
-
-	// create outer container
-	var outerContainer = $('<div class="image-manipulation ol-unselectable"></div>');
-	$(parentEl).append(outerContainer);
-
-	// create inner slider container
-	var sliderContainer = $('<div class="slider-container" style="display:none;"></div>');
-	$(outerContainer).append(sliderContainer);
-
-
-
-	// add contrast slider
-	var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', $.proxy(function(value){
-		for (var i = 0; i < this.layers.length; i++) {
-			this.layers[i].setContrast(value/100);
-		}
-	}, this), undefined, this.dic['contrast']);
-	$(sliderContainer).append(contrastSlider);
-
-	// add satuartion slider
-	var satSlider = this.createSlider_('slider-saturation', 'horizontal', $.proxy(function(value){
-		for (var i = 0; i < this.layers.length; i++) {
-			this.layers[i].setSaturation(value/100);
-		}
-	}, this), undefined, this.dic['saturation']);
-	$(sliderContainer).append(satSlider);
-
-	// add brightness slider
-	var brightSlider = this.createSlider_('slider-brightness', 'horizontal', $.proxy(function(value){
-		var linarMapping = 2 * value / 100 -1;
-		for (var i = 0; i < this.layers.length; i++) {
-			this.layers[i].setBrightness(linarMapping);
-		}
-	}, this), 50, this.dic['brightness']);
-	$(sliderContainer).append(brightSlider);
-
-	// add hue slider
-	var hueSlider = this.createSlider_('slider-hue', 'horizontal', $.proxy(function(value){
-		var mapping = (value - 50) * 0.25,
-			hueValue = mapping == 0 ? 0 : mapping + this.layers[0].getHue();
-		for (var i = 0; i < this.layers.length; i++) {
-			this.layers[i].setHue(hueValue);
-		}
-	}, this), 50, this.dic['hue']);
-	$(sliderContainer).append(hueSlider);
-
-	// button for reset to default state
-	var resetBtn = $('<button class="reset-btn" title="' + this.dic['reset'] + '">' + this.dic['reset'] + '</button>');
-	$(sliderContainer).append(resetBtn);
-
-	var defaultValues = {
-		hue: 0,
-		brightness:0,
-		contrast: 1,
-		saturation: 1
-	};
-
-	//$(resetBtn).on('click', $.proxy(function(e){
-	//	var layer = this.layers[0];
-    //
-	//	// remove postcomposeHandler
-	//	layer.un('postcompose', postcomposeHandler);
-	//	postcomposeRegistered = false;
-    //
-	//	// reset the sliders
-	//	var sliderEls = goog.dom.getElementsByClass('slider', sliderContainer);
-	//	for (var i = 0; i < sliderEls.length; i++) {
-	//		var sliderEl = sliderEls[i],
-	//			type = sliderEl.getAttribute('data-type'),
-	//			value = vk2.control.ImageManipulation.Filters[type];
-    //
-	//		$(sliderEl).slider('value', value);
-	//	};
-	//
-	//	// reset the layer
-	//	for (var i = 0; i < this.layers.length; i++) {
-	//		this.layers[i].setContrast(defaultValues.contrast);
-	//		this.layers[i].setHue(defaultValues.hue);
-	//		this.layers[i].setBrightness(defaultValues.brightness);
-	//		this.layers[i].setSaturation(defaultValues.saturation);
-	//	}
-    //
-	//	// reset the sliders
-	//	var sliderEls = $('.slider-imagemanipulation');
-	//	for (var i = 0; i < sliderEls.length; i++){
-	//		var sliderEl = sliderEls[i];
-	//		var resetValue = $(sliderEl).hasClass('slider-hue') || $(sliderEl).hasClass('slider-brightness') ? 50 : 100;
-	//		$(sliderEl).slider('value', resetValue);
-	//	}
-	//}, this));
-
-	return sliderContainer;
 };
