@@ -292,13 +292,21 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 		// Create slider for filters
 		//
 		var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', 'contrast',
-			[1, 0, 2, 0.01], this.dic['contrast']),
+					[1, 0, 2, 0.01], this.dic['contrast'], function(v) {
+						return parseInt(v * 100 - 100);
+					}),
 			saturationSlider = this.createSlider_('slider-saturation', 'horizontal', 'saturation',
-				[0, -1, 1, 0.01], this.dic['saturation']),
+					[0, -1, 1, 0.01], this.dic['saturation'], function(v) {
+						return parseInt(v * 100);
+					}),
 			brightnessSlider = this.createSlider_('slider-brightness', 'horizontal', 'brightness',
-				[1, 0, 2, 0.1], this.dic['brightness']),
+					[1, 0, 2, 0.1], this.dic['brightness'],function(v) {
+						return parseInt(v * 100 - 100);
+					}),
 			hueSlider = this.createSlider_('slider-hue', 'horizontal', 'hue',
-				[0, -180, 180, 5], this.dic['hue']);
+					[0, -180, 180, 5], this.dic['hue'], function(v) {
+						return parseInt(v);
+					});
 		$(this.sliderContainer_).append(contrastSlider);
 		$(this.sliderContainer_).append(saturationSlider);
 		$(this.sliderContainer_).append(brightnessSlider);
@@ -325,10 +333,11 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
  * @param {string} key
  * @param {Array.<number>|undefined} opt_baseValue
  * @param {string=} opt_title
+ * @param {Function=} opt_labelFn
  * @return {Element}
  * @private
  */
-dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, orientation, key, opt_baseValues, opt_title){
+dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, orientation, key, opt_baseValues, opt_title, opt_labelFn){
 	var title = dlfUtils.exists('opt_title') ? opt_title : '',
 		sliderEl = $('<div class="slider slider-imagemanipulation ' + className + '" title="' + title + '" data-type="' +
 			key +'"></div>'),
@@ -346,18 +355,19 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
 	var update = $.proxy(function(event, ui){
 		var value = ui['value'],
 				layer = this.layers[0],
-				element = valueEl[0];
+				element = valueEl[0],
+				labelValue = dlfUtils.exists(opt_labelFn) ? opt_labelFn(value) : value + '%';
 
 		if (orientation == 'vertical') {
 			var style_top = 100 - ((value - baseMin) / (baseMax - baseMin) * 100);
 			element.style.top = style_top + '%';
-			element.innerHTML = value + '%';
+			element.innerHTML = labelValue;
 			return;
 		}
 
 		var style_left = (value - baseMin) / (baseMax - baseMin) * 100;
 		element.style.left = style_left + '%';
-		element.innerHTML = value + '%';
+		element.innerHTML = labelValue;
 
 		// update filters.
 		this.filters_[key] = value;
@@ -377,7 +387,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
     });
 
 	// append tooltips
-	var innerHtml = dlfUtils.exists(opt_baseValues) ? opt_baseValues[0] + '%' : '100%',
+	var innerHtml = dlfUtils.exists(opt_labelFn) && dlfUtils.exists(opt_baseValues) ? opt_labelFn(opt_baseValues[0]) : '100%',
 			valueEl = $('<div class="tooltip value ' + className + '">' + innerHtml + '</div>');
 	$(sliderEl).append(valueEl);
 
