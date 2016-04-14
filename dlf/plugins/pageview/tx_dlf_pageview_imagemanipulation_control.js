@@ -22,10 +22,18 @@
  ***************************************************************/
 
 /**
+ * Right know the image manipulation uses an own ol.Map object based on a webgl renderer. This is due to the fact
+ * that other parts of the viewer application are using vector geometries and ol3 does only support full vector
+ * renderering with the canvas and dom renderer yet. In contrast the image manipulation tool is only working
+ * with a webgl renderer. Therefore it uses an own ol.Map object which is overlaid and synchronized with the
+ * base ol.Map object.
+ *
  * @constructor
  * @param {Object=} options Control options.
  * 		{Array.<ol.layer.Layer>} layers
  * 		{Element} target
+ * 	  {ol.View} view
+ * 	  {ol.Map} map
  */
 dlfViewerImageManipulationControl = function(options) {
 
@@ -44,6 +52,31 @@ dlfViewerImageManipulationControl = function(options) {
 	*/
   this.layers = options.layers;
 
+	/**
+	 * @type {ol.Map}
+	 * @private
+	 */
+	this.baseMap_ = options.map;
+
+	/**
+	 * @type {string}
+	 * @private
+	 */
+	this.manipulationMapId = 'tx-dfgviewer-map-manipulate';
+
+	/**
+	 * @type {ol.Map|undefined}
+	 * @private
+	 */
+	this.map_;
+
+
+	/**
+	 * @type {ol.View}
+	 * @private
+	 */
+	this.view_ = options.view;
+
   /**
    * @type {Element}
    * @private
@@ -53,7 +86,7 @@ dlfViewerImageManipulationControl = function(options) {
 	  text: this.dic['imagemanipulation-on'],
 	  title: this.dic['imagemanipulation-on']
   });
-  $(options.target).append(this.anchor_);
+  $(options.controlTarget).append(this.anchor_);
 
   /**
    * @type {Element}
@@ -110,8 +143,10 @@ dlfViewerImageManipulationControl = function(options) {
 	 */
 	this.handler_ = {
 		'postcomposeImageFilter': $.proxy(function (event) {
+			console.log('Postcompose triggered!');
+
 			var webglContext = event['glContext'],
-				canvas = $('canvas.ol-unselectable')[0];
+				canvas = $('#' + this.map_.getTargetElement().id + ' canvas.ol-unselectable')[0];
 
 			if (webglContext !== undefined && webglContext !== null) {
 				var gl = webglContext.getGL();
@@ -154,6 +189,80 @@ dlfViewerImageManipulationControl = function(options) {
  */
 dlfViewerImageManipulationControl.prototype.activate = function(){
 
+	//
+	// Toggle Maps and control elements
+	//
+	$.when($(this.baseMap_.getTargetElement())
+		// fadeOut the base map container
+		.hide())
+		// fadeIn image map container
+		.done($.proxy(function(){
+			//
+			// Initialize map if not exists
+			//
+			if (!dlfUtils.exists(this.map_)) {
+				// create map container and map object
+				var mapEl_ = $('<div id="tx-dfgviewer-map-manipulate" class="tx-dlf-map"></div>');
+				$(this.baseMap_.getTargetElement().parentElement).append(mapEl_);
+
+				this.map_ = new ol.Map({
+					layers: this.layers,
+					target: mapEl_[0].id,
+					controls: [],
+					interactions: [
+						new ol.interaction.DragPan(),
+						new ol.interaction.MouseWheelZoom(),
+						new ol.interaction.KeyboardPan(),
+						new ol.interaction.KeyboardZoom
+					],
+					// necessary for proper working of the keyboard events
+					keyboardEventTarget: document,
+					view: this.view_,
+					renderer: 'webgl'
+				});
+
+				// couple map behavior with baseMap
+				var adjustViews = function(sourceView, destMap) {
+						var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
+						var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
+						var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
+
+						if (rotateDiff || resDiff || centerDiff)
+							destMap.zoomTo(sourceView.getCenter(),
+								sourceView.getZoom(), 50);
+					},
+					adjustViewHandler = function(event) {
+						adjustViews(event.target, this);
+					};
+
+				// when deactivate / activate adjust both map centers / zoom
+				$(this).on("activate-imagemanipulation", $.proxy(function(event, map) {
+					// pass change events for resolution and rotation to image manipulation map
+					// created through external view controls
+					this.baseMap_.getView().on('change:resolution', adjustViewHandler, this.map_);
+					this.baseMap_.getView().on('change:rotation', adjustViewHandler, this.map_);
+
+					// adjust the view of both maps
+					adjustViews(this.baseMap_.getView(), this.map_);
+				}, this));
+				$(this).on("deactivate-imagemanipulation", $.proxy(function(event, map) {
+					// pass change events for resolution and rotation to image manipulation map
+					// created through external view controls
+					this.baseMap_.getView().un('change:resolution', adjustViewHandler, this.map_);
+					this.baseMap_.getView().un('change:rotation', adjustViewHandler, this.map_);
+
+					// adjust the view of both maps
+					adjustViews(this.map_.getView(), this.baseMap_);
+				}, this));
+			}
+
+			// Show map
+			$(this.map_.getTargetElement()).show();
+
+			// trigger open event
+			$(this).trigger("activate-imagemanipulation", this.map_);
+		}, this));
+
 	// add activate class to control element
 	$(this.anchor_).addClass('active')
 		.text(this.dic['imagemanipulation-off'])
@@ -162,6 +271,11 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 	if (dlfUtils.exists(this.sliderContainer_)) {
 		$(this.sliderContainer_).show().addClass('open');
 	} else {
+
+		//
+		// Initialize filters
+		//
+
 		// create outer container
 		var outerContainer = $('<div class="image-manipulation ol-unselectable"></div>');
 		$(this.toolContainerEl_).append(outerContainer);
@@ -171,7 +285,7 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 		 * @type {Element}
 		 * @private
  		 */
-		this.sliderContainer_ = $('<div class="slider-container" style="display:none;"></div>');
+		this.sliderContainer_ = $('<div class="slider-container"></div>');
 		$(outerContainer).append(this.sliderContainer_);
 
 		//
@@ -275,6 +389,12 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
  */
 dlfViewerImageManipulationControl.prototype.deactivate = function(){
 
+	// toggle maps
+	if (dlfUtils.exists(this.map_))
+		$(this.map_.getTargetElement()).hide();
+	$(this.baseMap_.getTargetElement()).show();
+
+	// toggle view of image manipulation control element
 	$(this.anchor_).removeClass('active')
 		.text(this.dic['imagemanipulation-on'])
 		.attr('title', this.dic['imagemanipulation-on']);
@@ -286,7 +406,7 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 		this.layers[i].un('postcompose', this.handler_.postcomposeImageFilter);
 	};
 
-	// trigger close event but only if an manipulation map has already been initialize
+	// trigger close event for trigger map adjust behavior
 	$(this).trigger("deactivate-imagemanipulation");
 };
 

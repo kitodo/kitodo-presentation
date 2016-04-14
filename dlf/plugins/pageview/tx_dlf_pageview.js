@@ -47,12 +47,6 @@ var dlfViewer = function(settings){
     this.map = null;
 
     /**
-     * Openlayers map renderer which is used. Should be of type 'canvas' or 'webgl'
-     * @type {string}
-     */
-    this.mapRenderer = '';
-
-    /**
      * Contains image information (e.g. URL, width, height)
      * @type {Array.<string>}
      * @private
@@ -116,19 +110,34 @@ dlfViewer.prototype.addCustomControls = function() {
     // application has as first to check if the renderer is active. Further it has to check if cors supported through
     // image.
     //
-    if ($('#tx-dlf-tools-imagetools').length > 0 && this.mapRenderer == 'webgl') {
+    if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()) {
 
-        // should be called if cors is enabled
-        imageManipulationControl = new dlfViewerImageManipulationControl({
-            target: $('.tx-dlf-tools-imagetools')[0],
-            layers: this.map.getLayers().getArray()
-        });
+        dlfUtils.testIfCORSEnabled(this.imageUrls[0],
+          $.proxy(function() {
 
-        // bind behavior of both together
-        if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
-            $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
-            $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
-        }
+              // should be called if cors is enabled
+              imageManipulationControl = new dlfViewerImageManipulationControl({
+                  controlTarget: $('.tx-dlf-tools-imagetools')[0],
+                  layers: dlfUtils.createLayers(images),
+                  map: this.map,
+                  view: dlfUtils.createView(images)
+              });
+
+              // bind behavior of both together
+              if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+                  $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
+                  $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
+              }
+
+          }, this),
+          function() {
+
+              // hide the element because the functionality is not supported through missing webgl or cors support.
+              $('#tx-dlf-tools-imagetools').addClass('deactivate');
+
+          });
+
+
     } else if ($('#tx-dlf-tools-imagetools').length > 0) {
 
         // hide the element because the functionality is not supported through missing webgl or cors support.
@@ -320,8 +329,6 @@ dlfViewer.prototype.init = function() {
 
         // set image property of the object
         this.images = images;
-        this.mapRenderer = dlfUtils.isWebGLEnabled() && corsEnabled ? 'webgl' :
-                'canvas';
 
         // create map
         this.map = new ol.Map({
@@ -341,7 +348,7 @@ dlfViewer.prototype.init = function() {
             // necessary for proper working of the keyboard events
             keyboardEventTarget: document,
             view: dlfUtils.createView(images),
-            renderer: this.mapRenderer
+            renderer: 'canvas'
         });
 
         // Position image according to user preferences

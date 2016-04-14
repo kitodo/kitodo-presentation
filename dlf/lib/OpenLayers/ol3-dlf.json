@@ -2,6 +2,8 @@
   "exports": [
     "ol.animation.rotate",
     "ol.animation.zoom",
+    "ol.Collection",
+    "ol.Collection#getArray",
     "ol.control.Control",
     "ol.control.Zoom",
     "ol.control.MousePosition",
@@ -24,14 +26,9 @@
     "ol.interaction.KeyboardZoom",
     "ol.layer.Image",
     "ol.layer.Layer",
-    "ol.layer.Layer#getBrightness",
-    "ol.layer.Layer#getContrast",
-    "ol.layer.Layer#getHue",
-    "ol.layer.Layer#getSaturation",
+    "ol.layer.Layer#changed",
     "ol.layer.Layer#on",
     "ol.layer.Layer#un",
-    "ol.layer.Layer#setHue",
-    "ol.layer.Layer#setSaturation",
     "ol.layer.Vector",
     "ol.layer.Vector#getSource",
     "ol.Map",
@@ -39,6 +36,8 @@
     "ol.Map#addLayer",
     "ol.Map#beforeRender",
     "ol.Map#forEachFeatureAtPixel",
+    "ol.Map#getLayers",
+    "ol.Map#getTargetElement",
     "ol.Map#getView",
     "ol.Map#on",
     "ol.Map#removeLayer",
@@ -63,7 +62,9 @@
     "ol.View#rotate",
     "ol.View#setCenter",
     "ol.View#setZoom",
-    "ol.View#un"
+    "ol.View#un",
+    "ol.webgl.Context#getGL",
+    "ol.webgl.Context#useProgram"
   ],
   "compile": {
     "externs": [
