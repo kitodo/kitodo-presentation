@@ -340,10 +340,15 @@ dlfViewer.prototype.init = function() {
                     undefinedHTML: '&nbsp;'
                 })*/
             interactions: [
+                new ol.interaction.DragRotate(),
                 new ol.interaction.DragPan(),
+                new ol.interaction.DragZoom(),
+                new ol.interaction.PinchRotate(),
+                new ol.interaction.PinchZoom(),
                 new ol.interaction.MouseWheelZoom(),
                 new ol.interaction.KeyboardPan(),
-                new ol.interaction.KeyboardZoom
+                new ol.interaction.KeyboardZoom,
+                new ol.interaction.DragRotateAndZoom()
             ],
             // necessary for proper working of the keyboard events
             keyboardEventTarget: document,

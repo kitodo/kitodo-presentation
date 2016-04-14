@@ -210,10 +210,15 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 					target: mapEl_[0].id,
 					controls: [],
 					interactions: [
+						new ol.interaction.DragRotate(),
 						new ol.interaction.DragPan(),
+						new ol.interaction.DragZoom(),
+						new ol.interaction.PinchRotate(),
+						new ol.interaction.PinchZoom(),
 						new ol.interaction.MouseWheelZoom(),
 						new ol.interaction.KeyboardPan(),
-						new ol.interaction.KeyboardZoom
+						new ol.interaction.KeyboardZoom,
+						new ol.interaction.DragRotateAndZoom()
 					],
 					// necessary for proper working of the keyboard events
 					keyboardEventTarget: document,
@@ -227,9 +232,12 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 						var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
 						var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
-						if (rotateDiff || resDiff || centerDiff)
+						if (rotateDiff || resDiff || centerDiff) {
 							destMap.zoomTo(sourceView.getCenter(),
 								sourceView.getZoom(), 50);
+							destMap.getView().rotate(sourceView.getRotation());
+						}
+
 					},
 					adjustViewHandler = function(event) {
 						adjustViews(event.target, this);
