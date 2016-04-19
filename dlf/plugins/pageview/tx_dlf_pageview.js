@@ -208,7 +208,7 @@ dlfViewer.prototype.createControls_ = function(controlNames) {
 };
 
 /**
- *
+ * Displayes highlight words
  */
 dlfViewer.prototype.displayHighlightWord = function() {
 
@@ -219,34 +219,54 @@ dlfViewer.prototype.displayHighlightWord = function() {
             'style': dlfViewer.style.wordStyle()
         });
 
+        this.map.addLayer(this.highlightLayer);
     }
 
-    // clear in case of old displays
-    this.highlightLayer.getSource().clear();
+    // check if highlight by coords should be activate
+    if (this.highlightFields.length > 0) {
+        // clear in case of old displays
+        this.highlightLayer.getSource().clear();
 
-    // create features and scale it down
-    for (var i = 0; i < this.highlightFields.length; i++) {
+        // create features and scale it down
+        for (var i = 0; i < this.highlightFields.length; i++) {
 
-        var field = this.highlightFields[i],
-            coordinates = [[
-                [field[0], field[1]],
-                [field[2], field[1]],
-                [field[2], field[3]],
-                [field[0], field[3]],
-                [field[0], field[1]],
-            ]],
-            offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
+            var field = this.highlightFields[i],
+              coordinates = [[
+                  [field[0], field[1]],
+                  [field[2], field[1]],
+                  [field[2], field[3]],
+                  [field[0], field[3]],
+                  [field[0], field[1]],
+              ]],
+              offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
             var feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
-            		this.images[this.highlightFieldParams.index],
-            		this.highlightFieldParams.width,
-                    this.highlightFieldParams.height,
-                    offset);
+              this.images[this.highlightFieldParams.index],
+              this.highlightFieldParams.width,
+              this.highlightFieldParams.height,
+              offset);
 
-        // add feature to layer and map
-        this.highlightLayer.getSource().addFeatures(feature);
+            // add feature to layer and map
+            this.highlightLayer.getSource().addFeatures(feature);
+        }
     }
 
-    this.map.addLayer(this.highlightLayer);
+    // check if highlight by words is set
+    var key = 'tx_dlf[highlight_word]',
+        urlParams = dlfUtils.getUrlParams();
+
+    if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length > 0) {
+        var value = urlParams[key],
+            values = value.split(';'),
+            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0], this.images[0]);
+
+        var stringFeatures = fulltextData.getStringFeatures();
+        values.forEach($.proxy(function(value) {
+            var feature = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
+            if (feature !== undefined) {
+                this.highlightLayer.getSource().addFeatures([feature]);
+            };
+        }, this));
+    };
 };
 
 /**
@@ -365,8 +385,7 @@ dlfViewer.prototype.init = function() {
         }
 
         // highlight word in case a highlight field is registered
-        if (this.highlightFields.length)
-            this.displayHighlightWord();
+        this.displayHighlightWord();
 
         this.addCustomControls();
 

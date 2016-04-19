@@ -90,10 +90,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
             'source': new ol.source.Vector(),
             'style': dlfViewerOL3Styles.invisibleStyle()
         }),
-        word: new ol.layer.Vector({
-            'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.wordStyle()
-        }),
         select: new ol.layer.Vector({
             'source': new ol.source.Vector(),
             'style': dlfViewerOL3Styles.selectStyle()
@@ -292,7 +288,7 @@ dlfViewerFullTextControl.prototype.activate = function() {
 	// if the activate method is called for the first time fetch
 	// fulltext data from server
 	if (this.fulltextData_ === undefined)  {
-		this.fulltextData_ = this.fetchFulltextDataFromServer();
+		this.fulltextData_ = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.url, this.image);
 
 		// add features to fulltext layer
 		this.layers_.textblock.getSource().addFeatures(this.fulltextData_.getTextblocks());
@@ -306,22 +302,6 @@ dlfViewerFullTextControl.prototype.activate = function() {
 	        this.showFulltext(this.fulltextData_.getTextblocks()[0]);
 
 	    }
-
-        // add highlight words
-        var key = 'tx_dlf[highlight_word]',
-            urlParams = dlfUtils.getUrlParams();
-        if (urlParams.hasOwnProperty(key)) {
-            var value = urlParams[key],
-                values = value.split(';')
-
-            var stringFeatures = this.fulltextData_.getStringFeatures();
-            values.forEach($.proxy(function(value) {
-                var feature = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
-                if (feature !== undefined) {
-                    this.layers_.word.getSource().addFeatures([feature]);
-                };
-            }, this));
-        };
 	}
 
 	// now activate the fulltext overlay and map behavior
@@ -347,35 +327,6 @@ dlfViewerFullTextControl.prototype.deactivate = function() {
 
     // trigger event
     $(this).trigger("deactivate-fulltext", this);
-};
-
-/**
- * Activate Fulltext Features
- * @param {Array.<ol.Feature>} textBlockFeatures
- * @þaram {Array.<ol.Feature>} textLineFeatures
- */
-dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeatures, textLineFeatures) {
-
-    // register event listeners
-    this.map.on('click', this.handlers_.mapClick);
-    this.map.on('pointermove', this.handlers_.mapHover);
-
-    // add layers to map
-    for (var key in this.layers_) {
-        if (this.layers_.hasOwnProperty(key)) {
-            this.map.addLayer(this.layers_[key]);
-        }
-    };
-
-    // show fulltext container
-    var className = 'fulltext-visible';
-    $("#tx-dlf-tools-fulltext").addClass(className)
-        .text(this.dic['fulltext-off'])
-        .attr('title', this.dic['fulltext-off']);
-
-    $('#tx-dlf-fulltextselection').addClass(className);
-    $('#tx-dlf-fulltextselection').show();
-    $('body').addClass(className);
 };
 
 /**
@@ -412,20 +363,50 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 };
 
 /**
+ * Activate Fulltext Features
+ * @param {Array.<ol.Feature>} textBlockFeatures
+ * @þaram {Array.<ol.Feature>} textLineFeatures
+ */
+dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeatures, textLineFeatures) {
+
+    // register event listeners
+    this.map.on('click', this.handlers_.mapClick);
+    this.map.on('pointermove', this.handlers_.mapHover);
+
+    // add layers to map
+    for (var key in this.layers_) {
+        if (this.layers_.hasOwnProperty(key)) {
+            this.map.addLayer(this.layers_[key]);
+        }
+    };
+
+    // show fulltext container
+    var className = 'fulltext-visible';
+    $("#tx-dlf-tools-fulltext").addClass(className)
+      .text(this.dic['fulltext-off'])
+      .attr('title', this.dic['fulltext-off']);
+
+    $('#tx-dlf-fulltextselection').addClass(className);
+    $('#tx-dlf-fulltextselection').show();
+    $('body').addClass(className);
+};
+
+/**
  * Method fetches the fulltext data from the server
  * @param {string} url
+ * @param {Object} image
  * @return {ol.Feature|undefined}
+ * @static
  */
-dlfViewerFullTextControl.prototype.fetchFulltextDataFromServer = function(){
-
-	// fetch data from server
+dlfViewerFullTextControl.fetchFulltextDataFromServer = function(url, image){
+	  // fetch data from server
     var request = $.ajax({
-        url: this.url,
+        url: url,
         async: false
     });
 
     // parse alto data
-    var parser = new dlfAltoParser(this.image),
+    var parser = new dlfAltoParser(image),
     	fulltextCoordinates = request.responseXML ? parser.parseFeatures(request.responseXML) :
             request.responseText ? parser.parseFeatures(request.responseText) : [];
 
