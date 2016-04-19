@@ -43,7 +43,7 @@
 			<label index="flash.wrongPageType">Page is no SysFolder!</label>
 			<label index="flash.wrongPageTypeMsg">The configuration records of Goobi.Presentation need to be stored in a SysFolder.</label>
 			<label index="flash.structureOkay">Structures found!</label>
-			<label index="flash.structureOkayMsg">There are configuration records for structural metadata. They can be edited in die list module.</label>
+			<label index="flash.structureOkayMsg">There are configuration records for structural metadata. They can be edited in the list module.</label>
 			<label index="flash.structureNotOkay">No structures found!</label>
 			<label index="flash.structureNotOkayMsg">There are no configuration records for structural metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;</label>
 			<label index="flash.structureAdded">Basic configuration added!</label>
@@ -51,7 +51,7 @@
 			<label index="flash.structureNotAdded">No configuration added!</label>
 			<label index="flash.structureNotAddedMsg">While adding the configuration records an error occurred. The records should be checked in the list module!</label>
 			<label index="flash.metadataOkay">Metadata found!</label>
-			<label index="flash.metadataOkayMsg">There are configuration records for bibliographic metadata. They can be edited in die list module.</label>
+			<label index="flash.metadataOkayMsg">There are configuration records for bibliographic metadata. They can be edited in the list module.</label>
 			<label index="flash.metadataNotOkay">No metadata found!</label>
 			<label index="flash.metadataNotOkayMsg">There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;</label>
 			<label index="flash.metadataAdded">Basic configuration added!</label>
