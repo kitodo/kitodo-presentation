@@ -348,11 +348,12 @@ dlfViewer.prototype.init = function() {
     var init_ = $.proxy(function(images, corsEnabled){
 
         // set image property of the object
-        this.images = images;
+        this.images = images,
+          renderer = 'canvas';
 
         // create map
         this.map = new ol.Map({
-            layers: dlfUtils.createLayers(images, this.mapRenderer),
+            layers: dlfUtils.createLayers(images, renderer),
             target: this.div,
             controls: this.controls,
                 /*new ol.control.MousePosition({
@@ -373,7 +374,7 @@ dlfViewer.prototype.init = function() {
             // necessary for proper working of the keyboard events
             keyboardEventTarget: document,
             view: dlfUtils.createView(images),
-            renderer: 'canvas'
+            renderer: renderer
         });
 
         // Position image according to user preferences
