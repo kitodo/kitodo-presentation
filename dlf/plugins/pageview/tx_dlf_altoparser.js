@@ -63,7 +63,8 @@ var dlfAltoParser = function(opt_imageObj, opt_width, opt_height, opt_offset) {
  * @private
  */
 dlfAltoParser.prototype.generateId_ = function(width, height, hpos, vpos) {
-    return '' + width + '_' + height + '_' + hpos + '_' + vpos;
+    var heigt_ = isNaN(height) ? '0' : height;
+    return '' + width + '_' + heigt_ + '_' + hpos + '_' + vpos;
 };
 
 /**
