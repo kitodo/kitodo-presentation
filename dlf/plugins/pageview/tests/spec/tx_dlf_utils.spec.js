@@ -22,7 +22,7 @@
  ***************************************************************/
 describe('Test suite for the dlfUtils', function() {
 
-    var fulltexts = ['Yo Big wake up wake up baby', 'Mmm', 'Yo...', 'Yo Big wake yo ass up c mon'];
+    var fulltexts = ['Yo Big wake up wake up baby', 'Mmm', 'Yo...', 'Yo Big wake yo ass up c mon', 'Dresden,'];
     var features = (function() {
         var features = [];
         for (var i = 0; i < fulltexts.length; i++) {
@@ -50,6 +50,12 @@ describe('Test suite for the dlfUtils', function() {
         it('Search for word does not exists', function() {
             var response = dlfUtils.searchFeatureCollectionForText(features, 'Mmmm');
             expect(response).toBe(undefined);
+        });
+
+        it('Match Dresden in case of "Dresden," given', function() {
+            var response = dlfUtils.searchFeatureCollectionForText(features, 'Dresden')[0];
+            expect(response instanceof ol.Feature).toBe(true);
+            expect(response.get('fulltext')).toBe('Dresden,');
         });
     });
 
