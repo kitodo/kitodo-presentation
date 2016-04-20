@@ -129,7 +129,7 @@ dlfUtils.getCookie = function(name) {
  */
 dlfUtils.getUrlParams = function() {
     if (location.hasOwnProperty('search')) {
-        var search = decodeURIComponent(location.search).split('&'),
+        var search = decodeURIComponent(location.search).slice(1).split('&'),
             params = {};
 
         search.forEach(function(item) {
