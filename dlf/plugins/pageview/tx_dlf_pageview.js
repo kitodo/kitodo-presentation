@@ -103,7 +103,7 @@ dlfViewer.prototype.addCustomControls = function() {
     if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
     } else {
-        $('#tx-dlf-tools-fulltext').addClass('deactivate');
+        $('#tx-dlf-tools-fulltext').remove();
     }
 
 

@@ -132,8 +132,6 @@ dlfViewerImageManipulationControl = function(options) {
 	 */
 	this.handler_ = {
 		'postcomposeImageFilter': $.proxy(function (event) {
-			console.log('Postcompose triggered!');
-
 			var webglContext = event['glContext'],
 				canvas = $('#' + this.map_.getTargetElement().id + ' canvas.ol-unselectable')[0];
 
@@ -141,6 +139,7 @@ dlfViewerImageManipulationControl = function(options) {
 				var gl = webglContext.getGL();
 
 				if (this.filterUpdated_) {
+
 					glif.reset();
 
 					for (var filter in this.filters_) {
@@ -212,9 +211,7 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 	$(this.sliderContainer_).show().addClass('open');
 
 	// add postcompose listener to layers
-	for (var i = 0; i < this.layers.length; i++) {
-		this.layers[i].on('postcompose', this.handler_.postcomposeImageFilter);
-	}
+	this.map_.on('postcompose', this.handler_.postcomposeImageFilter);
 };
 
 /**
@@ -420,9 +417,7 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 	$(this.sliderContainer_).hide().removeClass('open');
 
 	// remove postcompose listener to map
-	for (var i = 0; i < this.layers.length; i++) {
-		this.layers[i].un('postcompose', this.handler_.postcomposeImageFilter);
-	};
+	this.map_.un('postcompose', this.handler_.postcomposeImageFilter);
 
 	// trigger close event for trigger map adjust behavior
 	$(this).trigger("deactivate-imagemanipulation");
