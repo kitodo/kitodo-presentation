@@ -261,13 +261,26 @@ dlfViewer.prototype.displayHighlightWord = function() {
     if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length > 0) {
         var value = urlParams[key],
             values = value.split(';'),
-            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0], this.images[0]);
+            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0], this.images[0]),
+            fulltextDataImageTwo = undefined;
 
-        var stringFeatures = fulltextData.getStringFeatures();
+        // check if there is another image / fulltext to look for
+        if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1] !== '') {
+            var image = $.extend({}, this.images[1]);
+            image.width = image.width + this.images[0].width;
+
+            console.log(image)
+            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1], this.images[1], this.images[0].width)
+        }
+
+        var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
+          fulltextData.getStringFeatures().concat(fulltextDataImageTwo.getStringFeatures());
         values.forEach($.proxy(function(value) {
-            var feature = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
-            if (feature !== undefined) {
-                this.highlightLayer.getSource().addFeatures([feature]);
+            var features = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
+            if (features !== undefined) {
+                for (var i = 0; i < features.length; i++) {
+                    this.highlightLayer.getSource().addFeatures([features[i]]);
+                }
             };
         }, this));
     };

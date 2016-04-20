@@ -266,17 +266,17 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offs
  * Search a feature collcetion for a feature with the given text
  * @param {Array.<ol.Feature>} featureCollection
  * @param {string} text
- * @return {ol.Feature|undefined}
+ * @return {Array.<ol.Feature>|undefined}
  */
 dlfUtils.searchFeatureCollectionForText = function(featureCollection, text) {
-    var feature;
+    var features = [];
     featureCollection.forEach(function(ft) {
         if (ft.get('fulltext') !== undefined) {
             if (ft.get('fulltext').toLowerCase() === text.toLowerCase())
-                feature = ft;
+                features.push(ft);
         }
     });
-    return feature;
+    return features.length > 0 ? features : undefined;
 };
 
 /**

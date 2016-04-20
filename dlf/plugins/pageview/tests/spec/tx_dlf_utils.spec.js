@@ -36,13 +36,13 @@ describe('Test suite for the dlfUtils', function() {
     describe('Test Function - searchFeatureCollectionForText', function() {
 
         it('Search for word which exists', function() {
-            var response = dlfUtils.searchFeatureCollectionForText(features, 'Mmm');
+            var response = dlfUtils.searchFeatureCollectionForText(features, 'Mmm')[0];
             expect(response instanceof ol.Feature).toBe(true);
             expect(response.get('fulltext')).toBe('Mmm');
         });
 
         it('Search for word which exists with lower case support', function() {
-            var response = dlfUtils.searchFeatureCollectionForText(features, 'mmm');
+            var response = dlfUtils.searchFeatureCollectionForText(features, 'mmm')[0];
             expect(response instanceof ol.Feature).toBe(true);
             expect(response.get('fulltext')).toBe('Mmm');
         });
