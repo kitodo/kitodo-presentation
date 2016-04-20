@@ -347,10 +347,6 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
         }
     };
 
-    // clear all layers
-    this.layers_.textblock.getSource().clear();
-    this.layers_.textline.getSource().clear();
-
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").removeClass(className)
         .text(this.dic['fulltext-on'])
