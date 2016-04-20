@@ -211,7 +211,8 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
 	$(this.sliderContainer_).show().addClass('open');
 
 	// add postcompose listener to layers
-	this.map_.on('postcompose', this.handler_.postcomposeImageFilter);
+	if (this.map_ !== undefined)
+		this.map_.on('postcompose', this.handler_.postcomposeImageFilter);
 };
 
 /**
@@ -417,7 +418,8 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 	$(this.sliderContainer_).hide().removeClass('open');
 
 	// remove postcompose listener to map
-	this.map_.un('postcompose', this.handler_.postcomposeImageFilter);
+	if (this.map_ !== undefined)
+		this.map_.un('postcompose', this.handler_.postcomposeImageFilter);
 
 	// trigger close event for trigger map adjust behavior
 	$(this).trigger("deactivate-imagemanipulation");
