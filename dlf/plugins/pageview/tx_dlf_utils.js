@@ -123,6 +123,27 @@ dlfUtils.getCookie = function(name) {
 };
 
 /**
+ * Returns url parameters
+ * @param {string} key
+ * @returns {Object|undefined}
+ */
+dlfUtils.getUrlParams = function() {
+    if (location.hasOwnProperty('search')) {
+        var search = decodeURIComponent(location.search).slice(1).split('&'),
+            params = {};
+
+        search.forEach(function(item) {
+           var s = item.split('=');
+           params[s[0]] = s[1]
+        });
+
+        return params;
+    }
+    return undefined;
+
+};
+
+/**
  * Returns true if the specified value is null.
  * @param {?} val
  * @return {boolean}
@@ -196,6 +217,7 @@ dlfUtils.setCookie = function(name, value) {
  * @param {number} width
  * @param {number} height
  * @param {number=} opt_offset
+ * @depreacted
  * @return {Array.<ol.Feature>}
  */
 dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offset) {
@@ -238,6 +260,23 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offs
 
     return features;
 
+};
+
+/**
+ * Search a feature collcetion for a feature with the given text
+ * @param {Array.<ol.Feature>} featureCollection
+ * @param {string} text
+ * @return {Array.<ol.Feature>|undefined}
+ */
+dlfUtils.searchFeatureCollectionForText = function(featureCollection, text) {
+    var features = [];
+    featureCollection.forEach(function(ft) {
+        if (ft.get('fulltext') !== undefined) {
+            if (ft.get('fulltext').toLowerCase().indexOf(text.toLowerCase()) > -1)
+                features.push(ft);
+        }
+    });
+    return features.length > 0 ? features : undefined;
 };
 
 /**

@@ -100,33 +100,52 @@ dlfViewer.prototype.addCustomControls = function() {
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1)
-    	fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1) {
+        fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
+    } else {
+        $('#tx-dlf-tools-fulltext').remove();
+    }
 
-    // add image manipulation tool if container is added
+
+    //
+    // Add image manipulation tool if container is added.
+    //
+    // It is important to know that the image manipulation tool uses a webgl renderer as basis. Therefor the
+    // application has as first to check if the renderer is active. Further it has to check if cors supported through
+    // image.
+    //
     if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()) {
 
-    	dlfUtils.testIfCORSEnabled(this.imageUrls[0],
-    		$.proxy(function() {
-    			// should be called if cors is enabled
-	    		imageManipulationControl = new dlfViewerImageManipulationControl({
-	        		target: $('.tx-dlf-tools-imagetools')[0],
-	        		layers: dlfUtils.createLayers(images),
-	        		mapContainer: this.div,
-	        		referenceMap: this.map,
-	        		view: dlfUtils.createView(images)
-	        	});
+        dlfUtils.testIfCORSEnabled(this.imageUrls[0],
+          $.proxy(function() {
 
-	    		// bind behavior of both together
-	    	    if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
-	    	    	$(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
-	    	    	$(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
-	    	    }
-    		}, this),
-    		function() {
-    			// should be called if cors is not available
-    			$('#tx-dlf-tools-imagetools').addClass('deactivate');
-    		})
+              // should be called if cors is enabled
+              imageManipulationControl = new dlfViewerImageManipulationControl({
+                  controlTarget: $('.tx-dlf-tools-imagetools')[0],
+                  layers: dlfUtils.createLayers(images),
+                  map: this.map,
+                  view: dlfUtils.createView(images)
+              });
+
+              // bind behavior of both together
+              if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+                  $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
+                  $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
+              }
+
+          }, this),
+          function() {
+
+              // hide the element because the functionality is not supported through missing webgl or cors support.
+              $('#tx-dlf-tools-imagetools').addClass('deactivate');
+
+          });
+
+
+    } else if ($('#tx-dlf-tools-imagetools').length > 0) {
+
+        // hide the element because the functionality is not supported through missing webgl or cors support.
+        $('#tx-dlf-tools-imagetools').addClass('deactivate');
 
     }
 };
@@ -193,7 +212,7 @@ dlfViewer.prototype.createControls_ = function(controlNames) {
 };
 
 /**
- *
+ * Displayes highlight words
  */
 dlfViewer.prototype.displayHighlightWord = function() {
 
@@ -204,34 +223,67 @@ dlfViewer.prototype.displayHighlightWord = function() {
             'style': dlfViewer.style.wordStyle()
         });
 
+        this.map.addLayer(this.highlightLayer);
     }
 
-    // clear in case of old displays
-    this.highlightLayer.getSource().clear();
+    // check if highlight by coords should be activate
+    if (this.highlightFields.length > 0) {
+        // clear in case of old displays
+        this.highlightLayer.getSource().clear();
 
-    // create features and scale it down
-    for (var i = 0; i < this.highlightFields.length; i++) {
+        // create features and scale it down
+        for (var i = 0; i < this.highlightFields.length; i++) {
 
-        var field = this.highlightFields[i],
-            coordinates = [[
-                [field[0], field[1]],
-                [field[2], field[1]],
-                [field[2], field[3]],
-                [field[0], field[3]],
-                [field[0], field[1]],
-            ]],
-            offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
+            var field = this.highlightFields[i],
+              coordinates = [[
+                  [field[0], field[1]],
+                  [field[2], field[1]],
+                  [field[2], field[3]],
+                  [field[0], field[3]],
+                  [field[0], field[1]],
+              ]],
+              offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
             var feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
-            		this.images[this.highlightFieldParams.index],
-            		this.highlightFieldParams.width,
-                    this.highlightFieldParams.height,
-                    offset);
+              this.images[this.highlightFieldParams.index],
+              this.highlightFieldParams.width,
+              this.highlightFieldParams.height,
+              offset);
 
-        // add feature to layer and map
-        this.highlightLayer.getSource().addFeatures(feature);
+            // add feature to layer and map
+            this.highlightLayer.getSource().addFeatures(feature);
+        }
     }
 
-    this.map.addLayer(this.highlightLayer);
+    // check if highlight by words is set
+    var key = 'tx_dlf[highlight_word]',
+        urlParams = dlfUtils.getUrlParams();
+
+    if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length > 0) {
+        var value = urlParams[key],
+            values = value.split(';'),
+            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0], this.images[0]),
+            fulltextDataImageTwo = undefined;
+
+        // check if there is another image / fulltext to look for
+        if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1] !== '') {
+            var image = $.extend({}, this.images[1]);
+            image.width = image.width + this.images[0].width;
+
+            console.log(image)
+            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1], this.images[1], this.images[0].width)
+        }
+
+        var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
+          fulltextData.getStringFeatures().concat(fulltextDataImageTwo.getStringFeatures());
+        values.forEach($.proxy(function(value) {
+            var features = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
+            if (features !== undefined) {
+                for (var i = 0; i < features.length; i++) {
+                    this.highlightLayer.getSource().addFeatures([features[i]]);
+                }
+            };
+        }, this));
+    };
 };
 
 /**
@@ -308,12 +360,13 @@ dlfViewer.prototype.init = function() {
 
     /**
      * @param {Array.<{src: *, width: *, height: *}>} images
+     * @param {boolean} corsEnabled Is cors supported through the image resources or not
      */
-    var init_ = $.proxy(function(images){
+    var init_ = $.proxy(function(images, corsEnabled){
 
         // set image property of the object
         this.images = images,
-        	renderer = 'canvas';
+          renderer = 'canvas';
 
         // create map
         this.map = new ol.Map({
@@ -325,10 +378,15 @@ dlfViewer.prototype.init = function() {
                     undefinedHTML: '&nbsp;'
                 })*/
             interactions: [
+                new ol.interaction.DragRotate(),
                 new ol.interaction.DragPan(),
+                new ol.interaction.DragZoom(),
+                new ol.interaction.PinchRotate(),
+                new ol.interaction.PinchZoom(),
                 new ol.interaction.MouseWheelZoom(),
                 new ol.interaction.KeyboardPan(),
-                new ol.interaction.KeyboardZoom
+                new ol.interaction.KeyboardZoom,
+                new ol.interaction.DragRotateAndZoom()
             ],
             // necessary for proper working of the keyboard events
             keyboardEventTarget: document,
@@ -345,8 +403,7 @@ dlfViewer.prototype.init = function() {
         }
 
         // highlight word in case a highlight field is registered
-        if (this.highlightFields.length)
-            this.displayHighlightWord();
+        this.displayHighlightWord();
 
         this.addCustomControls();
 
@@ -364,7 +421,17 @@ dlfViewer.prototype.init = function() {
     // init image loading process
     if (this.imageUrls.length > 0) {
 
-        this.fetchImages(init_);
+        this.fetchImages($.proxy(function(images) {
+            // save the images and check if cors is enabled. This is important due it is a requirement for a proper
+            // working of the openlayers webgl renderer.
+            dlfUtils.testIfCORSEnabled(this.imageUrls[0],
+                $.proxy(function() {
+                    init_(images, true);
+                }, this),
+                function() {
+                    init_(images, false);
+                });
+        }, this));
 
     }
 
