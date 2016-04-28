@@ -72,7 +72,8 @@ class tx_dlf_toolsImagemanipulation extends tx_dlf_plugin {
 			.$this->pi_getLL('saturation', '', TRUE).';hue:'
 			.$this->pi_getLL('hue', '', TRUE).';contrast:'
 			.$this->pi_getLL('contrast', '', TRUE).';brightness:'
-			.$this->pi_getLL('brightness', '', TRUE).'" title="'
+			.$this->pi_getLL('brightness', '', TRUE).';invert:'
+			.$this->pi_getLL('invert', '', TRUE).'" title="'
 			.$this->pi_getLL('no-support', '', TRUE).'"></span>';
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);

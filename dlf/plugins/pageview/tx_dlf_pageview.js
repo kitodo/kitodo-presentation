@@ -268,8 +268,6 @@ dlfViewer.prototype.displayHighlightWord = function() {
         if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1] !== '') {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
-
-            console.log(image)
             fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1], this.images[1], this.images[0].width)
         }
 
