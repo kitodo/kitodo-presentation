@@ -155,7 +155,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
 
                 if (dlfUtils.exists(feature))
-                    this.showFulltext(feature);
+                    this.showFulltext([feature]);
 
             },
         this),
@@ -299,7 +299,7 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
 	        this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
 	        this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
-	        this.showFulltext(this.fulltextData_.getTextblocks()[0]);
+	        this.showFulltext(this.fulltextData_.getTextblocks());
 
 	    }
 	}
@@ -418,27 +418,43 @@ dlfViewerFullTextControl.fetchFulltextDataFromServer = function(url, image, opt_
 /**
  * Activate Fulltext Features
  *
- * @param {ol.Feature|undefined} feature
+ * @param {Array.<ol.Feature>|undefined} features
  */
-dlfViewerFullTextControl.prototype.showFulltext = function(feature) {
+dlfViewerFullTextControl.prototype.showFulltext = function(features) {
 
-    var popupHTML = '';
+    var popupHTML = '',
+      /**
+       * Functions wraps fulltext context of a given textblock to a html string
+       * @param {ol.Feature} feature
+       * @return {string}
+       */
+      appendHTML = function(feature) {
+          var html = '',
+            textlines = feature.get('textlines');
 
-    if (feature !== undefined) {
-        var textlines = feature.get('textlines');
+          for (var i = 0; i < textlines.length; i++) {
 
-        for (var i = 0; i < textlines.length; i++) {
+              html = html + '<span class="textline" id="' + textlines[i].getId() + '">';
 
-            popupHTML = popupHTML + '<span class="textline" id="' + textlines[i].getId() + '">';
-
-            var content = textlines[i].get('content');
-            for (var j = 0; j < content.length; j++) {
-                popupHTML = popupHTML + '<span class="' + content[j].get('type') + '" id="' + content[j].getId()
+              var content = textlines[i].get('content');
+              for (var j = 0; j < content.length; j++) {
+                  html = html + '<span class="' + content[j].get('type') + '" id="' + content[j].getId()
                     + '">' + content[j].get('fulltext').replace(/\n/g, '<br />') + '</span>';
-            }
+              }
 
-            popupHTML = popupHTML + '</span>';
+              html = html + '</span>';
+          }
+
+          return html;
+      };
+
+    // iterate over given textblocks
+    if (features !== undefined) {
+
+        for (var i = 0; i < features.length; i++) {
+            popupHTML = popupHTML + appendHTML(features[i]) + '<br /><br />';
         }
+
     };
 
     $('#tx-dlf-fulltextselection').html(popupHTML);
