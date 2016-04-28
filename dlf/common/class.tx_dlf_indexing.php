@@ -806,6 +806,22 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('fulltext', tx_dlf_alto::getRawText($xml));
 
+			// Add faceting information to physical sub-elements if applicable.
+			foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
+
+				if (!empty($data) && substr($index_name, -8) !== '_sorting') {
+
+					if (in_array($index_name, self::$fields['facets'])) {
+
+						// Add facets to index.
+						$solrDoc->setField($index_name.'_faceting', $data);
+
+					}
+
+				}
+
+			}
+
 			try {
 
 				self::$solr->service->addDocument($solrDoc);
