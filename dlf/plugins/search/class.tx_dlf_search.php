@@ -530,8 +530,12 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Set search query.
 			if (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) {
 
-				// Search in fulltext field if applicable.
-				$query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
+				// Search in fulltext field if applicable. query must not be empty!
+				if (!empty($this->piVars['query'])) {
+
+					$query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
+
+				}
 
 				// Add highlighting for fulltext.
 				$params['hl'] = 'true';
