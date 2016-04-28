@@ -30,8 +30,9 @@
  * @returns {jQuery}
  */
 jQuery.fn.scrollTo = function(elem, speed) {
+    var manualOffsetTop = $(elem).parent().height() / 2;
     $(this).animate({
-        scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top
+        scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top - manualOffsetTop
     }, speed == undefined ? 1000 : speed);
     return this;
 };
