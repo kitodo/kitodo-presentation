@@ -44,7 +44,8 @@ dlfViewerImageManipulationControl = function(options) {
   this.dic = $('#tx-dlf-tools-imagetools').length > 0 && $('#tx-dlf-tools-imagetools').attr('data-dic') ?
 	    	dlfUtils.parseDataDic($('#tx-dlf-tools-imagetools')) :
 	    		{'imagemanipulation-on':'Activate image manipulation', 'imagemanipulation-off':'Dectivate image manipulation',
-		  		'saturation':'Saturation', 'hue':'Hue', 'brightness': 'Brightness', 'contrast':'Contrast', 'reset': 'Reset'};
+		  		'saturation':'Saturation', 'hue':'Hue', 'brightness': 'Brightness', 'contrast':'Contrast', 'reset': 'Reset',
+					'invert': 'Color inverting'};
 
   /**
 	* @type {Array.<ol.layer.Layer>}
@@ -158,8 +159,13 @@ dlfViewerImageManipulationControl = function(options) {
 			}
 		}, this),
 		'resetFilter': $.proxy(function(event) {
-			var layer = this.layers[0];
 
+			// reset the checked filters
+			if (this.filters_.hasOwnProperty('invert')) {
+				$('#invert-filter').click();
+			}
+			
+			// reset the slider filters
 			var sliderEls = $('.slider.slider-imagemanipulation');
 			for (var i = 0; i < sliderEls.length; i++) {
 				var sliderEl = sliderEls[i],
@@ -256,6 +262,26 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
 	$(this.sliderContainer_).append(saturationSlider);
 	$(this.sliderContainer_).append(brightnessSlider);
 	$(this.sliderContainer_).append(hueSlider);
+
+	// add invert filter
+	var elFilterId = 'invert-filter';
+	$(this.sliderContainer_).append($('<div class="checkbox"><label><input type="checkbox" id="' + elFilterId + '">' +
+		 this.dic['invert'] + '</label></div>'));
+	$('#' + elFilterId).on('click', $.proxy(function(event) {
+		if (event.target.checked === true && !this.filters_.hasOwnProperty('invert')) {
+			// if checked add the invert filter to the filters
+			this.filters_['invert'] = true;
+		} else {
+			// remove invert filter
+			if (this.filters_.hasOwnProperty('invert')) {
+				delete this.filters_['invert'];
+			}
+		}
+
+		// update filter chain
+		this.filterUpdated_ = true;
+		this.layers[0].changed();
+	}, this));
 
 	// button for reset to default state
 	var resetBtn = $('<button class="reset-btn" title="' + this.dic['reset'] + '">' + this.dic['reset'] + '</button>');
