@@ -313,20 +313,22 @@ class tx_dlf_search extends tx_dlf_plugin {
 	 *
 	 * @access	protected
 	 *
+	 * @param int $isFulltextSearch
+	 *
 	 * @return	string		HTML output of fulltext switch
 	 */
-	protected function addFulltextSwitch() {
+	protected function addFulltextSwitch($isFulltextSearch = 0) {
 
 		$output = '';
 
 		// Check for plugin configuration.
 		if (!empty($this->conf['fulltext'])) {
 
-			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" checked="checked" />';
+			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" ' . ($isFulltextSearch == 0 ? 'checked="checked"' : '') .' />';
 
 			$output .= ' <label for="tx-dlf-search-fulltext-no">' . $this->pi_getLL('label.inMetadata', '') . '</label>';
 
-			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" />';
+			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" ' . ($isFulltextSearch == 1 ? 'checked="checked"' : '') .'/>';
 
 			$output .= ' <label for="tx-dlf-search-fulltext-yes">' . $this->pi_getLL('label.inFulltext', '') . '</label>';
 
@@ -452,6 +454,21 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		if (!isset($this->piVars['query']) && empty($this->piVars['extQuery'])) {
 
+			// Extract query and filter from last search.
+			$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+
+			if (!empty($list->metadata['searchString'])) {
+
+				if ($list->metadata['options']['source'] == 'search') {
+
+					$search['query'] = $list->metadata['searchString'];
+
+				}
+
+				$search['params'] = $list->metadata['options']['params'];
+
+			}
+
 			// Add javascript for search suggestions if enabled and jQuery autocompletion is available.
 			if (!empty($this->conf['suggest'])) {
 
@@ -479,11 +496,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Fill markers.
 			$markerArray = array (
 				'###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
-				'###LABEL_QUERY###' => $this->pi_getLL('label.query'),
+				'###LABEL_QUERY###' => (!empty($search['query']) ? $search['query'] : $this->pi_getLL('label.query')),
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
-				'###QUERY###' => '',
-				'###FULLTEXTSWITCH###' => $this->addFulltextSwitch(),
+				'###QUERY###' => (!empty($search['query']) ? $search['query'] : ''),
+				'###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
 				'###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
 				'###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
 				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
@@ -543,7 +560,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 				$params['hl.fl'] = 'fulltext';
 
 			} else {
-
 				// Retain given search field if valid.
 				$query = tx_dlf_solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
 
@@ -645,6 +661,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'label' => $label,
 				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
 				'thumbnail' => '',
+				'searchString' => $this->piVars['query'],
+				'fulltextSearch' => (!empty($this->piVars['fulltext']) ? '1' : '0'),
 				'options' => $results->metadata['options']
 			);
 
@@ -658,7 +676,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			if (!empty($this->piVars['order'])) {
 
-				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,
+						array (
+							'order' => $this->piVars['order'],
+							'asc' => (!empty($this->piVars['asc']) ? '1' : '0')
+						), '', TRUE, FALSE);
 
 			}
 
