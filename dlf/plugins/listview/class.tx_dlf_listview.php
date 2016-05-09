@@ -205,7 +205,11 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 					$imgAlt = htmlspecialchars($value);
 
-					$additionalParams = array ('id' => $this->list[$number]['uid'], 'page' => $this->list[$number]['page']);
+					$additionalParams = array (
+						'id' => $this->list[$number]['uid'],
+						'page' => $this->list[$number]['page']
+					);
+
 					$conf = array (
 						'useCacheHash' => 1,
 						'parameter' => $this->conf['targetPid'],
@@ -413,9 +417,15 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 						$imgAlt = htmlspecialchars($value);
 
-						$additionalParams = array ('id' => $subpart['uid'], 'page' => $subpart['page']);
+						$additionalParams = array (
+							'id' => $subpart['uid'],
+							'page' => $subpart['page'],
+							'highlight_word' => preg_replace('/\s\s+/', ';', $this->list->metadata['searchString'])
+						);
+
 						$conf = array (
-							'useCacheHash' => 1,
+							// we don't want cHash in case of search parameters
+							'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
 							'parameter' => $this->conf['targetPid'],
 							'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
 						);
