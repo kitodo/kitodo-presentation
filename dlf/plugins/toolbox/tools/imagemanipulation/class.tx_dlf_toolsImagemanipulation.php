@@ -55,9 +55,9 @@ class tx_dlf_toolsImagemanipulation extends tx_dlf_plugin {
 		$this->loadDocument();
 
 		// Load template file.
-		if (!empty($this->conf['templateFile'])) {
+		if (!empty($this->conf['toolTemplateFile'])) {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
+			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
 
 		} else {
 
