@@ -2,7 +2,7 @@
 <!--
   Copyright notice
 
-  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
   All rights reserved
 
   This script is part of the TYPO3 project. The TYPO3 project is
@@ -153,7 +153,7 @@
 			<label index="config.metadataFormats">Default metadata namespaces</label>
 			<label index="config.cliUserGroup">CLI user/group</label>
 			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
-			<label index="config.useragent">DLF User-Agent: (default is "Goobi.Presentation")</label>
+			<label index="config.useragent">DLF User-Agent: (default is "Kitodo.Presentation")</label>
 			<label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
 			<label index="config.publishNewCollections">Publish new collections?: Should new collections automatically be published in the OAI interface? (default is "TRUE")</label>
 			<label index="config.unhideOnIndex">Unhide indexed documents?: Should hidden documents be unhidden when re-indexing them? (default is "FALSE")</label>
@@ -177,7 +177,7 @@
 			<label index="metadataFormats.nsCreatedMsg">The namespace definitions for MODS and/or TEIHDR were created properly.</label>
 			<label index="metadataFormats.nsNotCreated">Default namespaces not found!</label>
 			<label index="metadataFormats.nsNotCreatedMsg">The namespace definitions for MODS and/or TEIHDR do not exist and could not be created.</label>
-			<label index="cliUserGroup.usrRealName">Goobi.Presentation command line indexer</label>
+			<label index="cliUserGroup.usrRealName">Kitodo.Presentation command line indexer</label>
 			<label index="cliUserGroup.usrOkay">User "_cli_dlf" found!</label>
 			<label index="cliUserGroup.usrOkayMsg">The backend user for the command line indexer exists and is configured properly.</label>
 			<label index="cliUserGroup.usrConfigured">User "_cli_dlf" configured successfully!</label>
@@ -188,7 +188,7 @@
 			<label index="cliUserGroup.usrCreatedMsg">The backend user for the command line indexer was created and configured properly.</label>
 			<label index="cliUserGroup.usrNotCreated">User "_cli_dlf" not found!</label>
 			<label index="cliUserGroup.usrNotCreatedMsg">The backend user for the command line indexer does not exist.</label>
-			<label index="cliUserGroup.grpDescription">Usergroup for the Goobi.Presentation command line indexer.</label>
+			<label index="cliUserGroup.grpDescription">Usergroup for the Kitodo.Presentation command line indexer.</label>
 			<label index="cliUserGroup.grpOkay">Usergroup "_cli_dlf" found!</label>
 			<label index="cliUserGroup.grpOkayMsg">The backend usergroup for the command line indexer exists and is configured properly.</label>
 			<label index="cliUserGroup.grpConfigured">Usergroup "_cli_dlf" configured successfully!</label>
@@ -333,7 +333,7 @@
 			<label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
 			<label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
 			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
-			<label index="config.useragent">DLF User-Agent: (Standard ist "Goobi.Presentation")</label>
+			<label index="config.useragent">DLF User-Agent: (Standard ist "Kitodo.Presentation")</label>
 			<label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
 			<label index="config.publishNewCollections">Neue Kollektionen publizieren?: Sollen neue Kollektionen automatisch in der OAI-Schnittstelle veröffentlicht werden? (Standard ist "TRUE")</label>
 			<label index="config.unhideOnIndex">Indexierte Dokumente einblenden?: Sollen ausgeblendete Dokumente bei der erneuten Indexierung wieder eingeblendet werden? (Standard ist "FALSE")</label>
@@ -357,7 +357,7 @@
 			<label index="metadataFormats.nsCreatedMsg">Die Standard-Namensräume für MODS und/oder TEIHDR wurden erfolgreich definiert.</label>
 			<label index="metadataFormats.nsNotCreated">Standard-Namensräume nicht gefunden!</label>
 			<label index="metadataFormats.nsNotCreatedMsg">Die Standard-Namensräume für MODS und/oder TEIHDR konnten nicht definiert werden.</label>
-			<label index="cliUserGroup.usrRealName">Goobi.Presentation Kommandozeilen-Indexierungsdienst</label>
+			<label index="cliUserGroup.usrRealName">Kitodo.Presentation Kommandozeilen-Indexierungsdienst</label>
 			<label index="cliUserGroup.usrOkay">Nutzer "_cli_dlf" gefunden!</label>
 			<label index="cliUserGroup.usrOkayMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst ist korrekt konfiguriert und aktiviert.</label>
 			<label index="cliUserGroup.usrConfigured">Nutzer "_cli_dlf" erfolgreich konfiguriert!</label>
@@ -368,7 +368,7 @@
 			<label index="cliUserGroup.usrCreatedMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst wurde erfolgreich angelegt und konfiguriert.</label>
 			<label index="cliUserGroup.usrNotCreated">Nutzer "_cli_dlf" nicht gefunden!</label>
 			<label index="cliUserGroup.usrNotCreatedMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst existiert nicht.</label>
-			<label index="cliUserGroup.grpDescription">Nutzergruppe für den Goobi.Presentation Kommandozeilen-Indexierungsdienst.</label>
+			<label index="cliUserGroup.grpDescription">Nutzergruppe für den Kitodo.Presentation Kommandozeilen-Indexierungsdienst.</label>
 			<label index="cliUserGroup.grpOkay">Nutzergruppe "_cli_dlf" gefunden!</label>
 			<label index="cliUserGroup.grpOkayMsg">Die Nutzergruppe für den Kommandozeilen-Indexierungsdienst ist korrekt konfiguriert und aktiviert.</label>
 			<label index="cliUserGroup.grpConfigured">Nutzergruppe "_cli_dlf" erfolgreich konfiguriert!</label>

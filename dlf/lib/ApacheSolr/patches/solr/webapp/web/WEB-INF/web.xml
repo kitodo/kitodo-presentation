@@ -350,16 +350,16 @@
 
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>Goobi.Presentation Solr Backend</realm-name>
+		<realm-name>Kitodo.Presentation Solr Backend</realm-name>
 	</login-config>
 
 	<security-role>
-		<description>Goobi.Presentation Solr Administrator</description>
+		<description>Kitodo.Presentation Solr Administrator</description>
 		<role-name>dlfSolrAdmin</role-name>
 	</security-role>
 
 	<security-role>
-		<description>Goobi.Presentation Solr Updater</description>
+		<description>Kitodo.Presentation Solr Updater</description>
 		<role-name>dlfSolrUpdate</role-name>
 	</security-role>
 

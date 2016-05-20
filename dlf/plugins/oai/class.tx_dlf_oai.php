@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -382,7 +382,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		if ($mets === NULL) {
 
-			$mets = $this->oai->createElementNS('http://goobi.org/', 'goobi:error', htmlspecialchars($this->pi_getLL('error', 'Error!', FALSE), ENT_NOQUOTES, 'UTF-8'));
+			$mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!', FALSE), ENT_NOQUOTES, 'UTF-8'));
 
 		}
 
@@ -903,7 +903,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		// Use default values for an installation with incomplete plugin configuration.
 
 		$adminEmail = 'unknown@example.org';
-		$repositoryName = 'Goobi.Presentation OAI-PMH interface (incomplete configuration)';
+		$repositoryName = 'Kitodo.Presentation OAI-PMH interface (incomplete configuration)';
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_libraries.oai_label AS oai_label,tx_dlf_libraries.contact AS contact',

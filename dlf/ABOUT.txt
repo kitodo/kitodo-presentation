@@ -1,38 +1,37 @@
-Goobi Digital Library Suite
+Kitodo Digital Library Suite
 ===========================
 
-Goobi is an open source software suite intended to support mass digitization
-projects for cultural heritage institutions. Goobi is widely-used and
+Kitodo is an open source software suite intended to support mass digitization
+projects for cultural heritage institutions. Kitodo is widely-used and
 cooperatively maintained by major German libraries and digitization service
 providers.
-Goobi consists of several independent modules serving different purposes such as
+Kitodo consists of several independent modules serving different purposes such as
 controlling the digitization workflow, enriching descriptive and structural
 metadata, and presenting the results to the public in a modern and convenient
 way.
 
 
-About Goobi.Presentation
+About Kitodo.Presentation
 ------------------------
 
-Goobi.Presentation is a feature-rich framework for building a METS-based digital
+Kitodo.Presentation is a feature-rich framework for building a METS-based digital
 library. It is highly customizable through an user-friendly backend and flexible
 design templates. Since it is based on the great free and open source Content
 Management System TYPO3 (http://typo3.org), it integrates perfectly with your
-website and can easily be managed by editors. Goobi.Presentation provides a
-comprehensive toolset covering all basic requirements for presenting digitized
-book media.
+website and can easily be managed by editors. Kitodo.Presentation provides a
+comprehensive toolset covering all requirements for presenting digitized media.
 
 
-About the naming of Goobi.Presentation
+About the naming of Kitodo.Presentation
 --------------------------------------
 
-The Goobi Software Suite is used for digitizing huge amounts of books, journals,
+The Kitodo Software Suite is used for digitizing huge amounts of books, journals,
 newspapers, and other printed and hand-written material, and making it available
-to the public. Thus Goobi helps collecting, archiving and providing knowledge to
+to the public. Thus Kitodo helps collecting, archiving and providing knowledge to
 everyone. This is a great task that inspired many writers of not only science
 fiction and fantasy novels, too. Thus there are many brilliant stories in which
 libraries or librarians play an important role.
-We therefore decided to name each major release of Goobi.Presentation after a
+We therefore decided to name each major release of Kitodo.Presentation after a
 fictional librarian from one of these novels who ideally shares our vision of
 collecting and publishing the entirety of human knowledge one day (or at least
 is an extraordinary remarkable character in the plot).

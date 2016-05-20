@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,12 +23,12 @@
 ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Goobi.Presentation',
-	'description' => 'Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Goobi Digitization Suite.',
+	'title' => 'Kitodo.Presentation',
+	'description' => 'Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.',
 	'category' => 'fe',
 	'author' => 'Sebastian Meyer',
 	'author_email' => 'sebastian.meyer@slub-dresden.de',
-	'author_company' => '<br /><a href="http://www.goobi.org/" target="_blank">Goobi.org</a><br /><a href="https://github.com/goobi" target="_blank">Goobi on Github</a>',
+	'author_company' => '<br /><a href="http://www.kitodo.org/" target="_blank">Kitodo.org</a><br /><a href="https://github.com/goobi" target="_blank">Kitodo on Github</a>',
 	'shy' => '',
 	'priority' => '',
 	'module' => '',

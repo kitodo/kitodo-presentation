@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2016 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+ *  (c) 2016 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
