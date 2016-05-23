@@ -368,6 +368,35 @@ final class tx_dlf_document {
 	}
 
 	/**
+	 * This gets the MIME type of a file representing a physical page
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$id: The @ID attribute of the file node
+	 *
+	 * @return	string		The file's MIME type
+	 */
+	public function getFileMimeType($id) {
+
+		if (!empty($id) && ($mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/@MIMETYPE'))) {
+
+			return (string) $mimetype[0];
+
+		} else {
+
+			if (TYPO3_DLOG) {
+
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getFileMimeType('.$id.')] There is no file node with @ID "'.$id.'" or no MIME type specified', self::$extKey, SYSLOG_SEVERITY_WARNING);
+
+			}
+
+			return '';
+
+		}
+
+	}
+
+	/**
 	 * This is a singleton class, thus an instance must be created by this method
 	 *
 	 * @access	public

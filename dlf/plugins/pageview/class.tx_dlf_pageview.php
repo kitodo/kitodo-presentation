@@ -55,7 +55,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	protected $hasFulltexts = false;
 
 	/**
-	 * Holds the current images' URLs
+	 * Holds the current images' URLs and MIME types
 	 *
 	 * @var	array
 	 * @access protected
@@ -90,10 +90,12 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output = array ();
 
 		// Add OpenLayers library.
-		$output[] = '
-		<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/glif.min.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3-dlf.js"></script>';
+		$output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/glif.min.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3-dlf.js"></script>';
+
 		return implode("\n", $output);
 
 	}
@@ -116,14 +118,19 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output[] = $this->addOpenLayersJS();
 
 		// Add viewer library.
-		$output[] = '
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3_styles.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_altoparser.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3_styles.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_altoparser.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
 		$output[] = '
@@ -145,17 +152,17 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	}
 
 	/**
-	 * Get image's URL
+	 * Get image's URL and MIME type
 	 *
 	 * @access	protected
 	 *
 	 * @param	integer		$page: Page number
 	 *
-	 * @return	string		URL of image file
+	 * @return	array		URL and MIME type of image file
 	 */
-	protected function getImageUrl($page) {
+	protected function getImage($page) {
 
-		$imageUrl = '';
+		$image = array ();
 
 		// Get @USE value of METS fileGrp.
 		$fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrps']);
@@ -165,7 +172,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			// Get image link.
 			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
 
-				$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+				$image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+
+				$image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
 				break;
 
@@ -173,7 +182,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -181,24 +190,24 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		return $imageUrl;
+		return $image;
 
 	}
 
 	/**
-	 * Get ALTO XML URL
+	 * Get fulltext URL and MIME type
 	 *
 	 * @access	protected
 	 *
 	 * @param	integer		$page: Page number
 	 *
-	 * @return	string		URL of image file
+	 * @return	array		URL and MIME type of fulltext file
 	 */
-	protected function getAltoUrl($page) {
+	protected function getFulltext($page) {
+
+		$fulltext = array ();
 
 		// Get @USE value of METS fileGrp.
-
-		// we need USE="FULLTEXT"
 		$fileGrpFulltext = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
 
 		while ($fileGrpFulltext = @array_pop($fileGrpFulltext)) {
@@ -206,10 +215,13 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			// Get fulltext link.
 			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext])) {
 
-				$fulltextUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
+				$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
 
 				// Build typolink configuration array.
-				$fulltextUrl =  '/index.php?eID=tx_dlf_fulltext_eid&url='. $fulltextUrl;
+				// @TODO change hardcoded path to real typolink configuration
+				$fulltext['url'] = '/index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
+
+				$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
 
 				$this->hasFulltexts = true;
 
@@ -219,7 +231,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getFulltext('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -227,7 +239,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		return $fulltextUrl;
+		return $fulltext;
 
 	}
 
@@ -309,13 +321,13 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		}
 
 		// Get image data.
-		$this->images[0] = $this->getImageUrl($this->piVars['page']);
-		$this->fulltexts[0] = $this->getAltoUrl($this->piVars['page']);
+		$this->images[0] = $this->getImage($this->piVars['page']);
+		$this->fulltexts[0] = $this->getFulltext($this->piVars['page']);
 
 		if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
 
-			$this->images[1] = $this->getImageUrl($this->piVars['page'] + 1);
-			$this->fulltexts[1] = $this->getAltoUrl($this->piVars['page'] + 1);
+			$this->images[1] = $this->getImage($this->piVars['page'] + 1);
+			$this->fulltexts[1] = $this->getFulltext($this->piVars['page'] + 1);
 
 		}
 
