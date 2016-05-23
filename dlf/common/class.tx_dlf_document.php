@@ -1758,6 +1758,12 @@ final class tx_dlf_document {
 
 			}
 
+			if (!empty($extConf['fileGrpAudio'])) {
+
+				$useGrps[] = $extConf['fileGrpAudio'];
+
+			}
+
 			// Get all file groups.
 			$fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
 

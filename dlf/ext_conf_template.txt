@@ -31,6 +31,9 @@ fileGrpDownload = DOWNLOAD
 # cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpFulltext
 fileGrpFulltext = FULLTEXT
 
+# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpAudio
+fileGrpAudio = AUDIO
+
 # cat=Solr; type=user[EXT:dlf/hooks/class.tx_dlf_em.php:tx_dlf_em->checkSolrConnection]; label=LLL:EXT:dlf/locallang.xml:config.solrConnect
 solrConnect = 0
 

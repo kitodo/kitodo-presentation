@@ -136,6 +136,7 @@
 			<label index="tx_dlf_toolbox.toolsPdf">PDF Download</label>
 			<label index="tx_dlf_toolbox.toolsFulltext">Fulltext</label>
 			<label index="tx_dlf_toolbox.toolsImagemanipulation">Image Manipulation</label>
+			<label index="tt_content.dlf_audioplayer">DLF: Audio Player</label>
 			<label index="tt_content.dlf_collection">DLF: Collection</label>
 			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
 			<label index="tt_content.dlf_listview">DLF: List View</label>
@@ -161,6 +162,7 @@
 			<label index="config.fileGrpThumbs">Thumbnail fileGrp: @USE attribute value (default is "THUMBS")</label>
 			<label index="config.fileGrpDownload">Download fileGrp: @USE attribute value (default is "DOWNLOAD")</label>
 			<label index="config.fileGrpFulltext">Fulltext fileGrp: @USE attribute value (default is "FULLTEXT")</label>
+			<label index="config.fileGrpAudio">Audio fileGrp: @USE attribute value (default is "AUDIO")</label>
 			<label index="config.solrConnect">Solr Connection</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
 			<label index="config.solrPort">Solr Server Port: (default is "8180")</label>
@@ -316,6 +318,7 @@
 			<label index="tx_dlf_toolbox.toolsPdf">PDF-Download</label>
 			<label index="tx_dlf_toolbox.toolsFulltext">Volltext</label>
 			<label index="tx_dlf_toolbox.toolsImagemanipulation">Bildbearbeitung</label>
+			<label index="tt_content.dlf_audioplayer">DLF: Audioplayer</label>
 			<label index="tt_content.dlf_collection">DLF: Kollektion</label>
 			<label index="tt_content.dlf_feeds">DLF: Feeds</label>
 			<label index="tt_content.dlf_listview">DLF: Listenansicht</label>
@@ -341,6 +344,7 @@
 			<label index="config.fileGrpThumbs">Vorschau fileGrp: @USE Attributwert der Vorschaubilder (Standard ist "THUMBS")</label>
 			<label index="config.fileGrpDownload">Download fileGrp: @USE Attributwert der Downloads (Standard ist "DOWNLOAD")</label>
 			<label index="config.fileGrpFulltext">Volltext fileGrp: @USE Attributwert der Volltexte (Standard ist "FULLTEXT")</label>
+			<label index="config.fileGrpAudio">Audio fileGrp: @USE Attributwert der Audiodateien (Standard ist "AUDIO")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
 			<label index="config.solrPort">Solr Server Port: (Standard ist "8180")</label>

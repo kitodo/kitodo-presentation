@@ -47,14 +47,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	protected $controls = array ();
 
 	/**
-	 * Flag if fulltexts are present
-	 *
-	 * @var	boolean
-	 * @access protected
-	 */
-	protected $hasFulltexts = false;
-
-	/**
 	 * Holds the current images' URLs and MIME types
 	 *
 	 * @var	array
@@ -71,36 +63,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	protected $fulltexts = array ();
 
 	/**
-	 * Holds the language code for OpenLayers
-	 *
-	 * @var	string
-	 * @access protected
-	 */
-	protected $lang = 'en';
-
-	/**
-	 * Adds OpenLayers javascript
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		OpenLayers script tags ready for output.
-	 */
-	protected function addOpenLayersJS() {
-
-		$output = array ();
-
-		// Add OpenLayers library.
-		$output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">';
-
-		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/glif.min.js"></script>';
-
-		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3-dlf.js"></script>';
-
-		return implode("\n", $output);
-
-	}
-
-	/**
 	 * Adds Viewer javascript
 	 *
 	 * @access	protected
@@ -115,7 +77,11 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		tx_dlf_helper::loadJQuery();
 
 		// Add OpenLayers library.
-		$output[] = $this->addOpenLayersJS();
+		$output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/glif.min.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3-dlf.js"></script>';
 
 		// Add viewer library.
 		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>';
@@ -207,65 +173,30 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$fulltext = array ();
 
-		// Get @USE value of METS fileGrp.
-		$fileGrpFulltext = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+		// Get fulltext link.
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']])) {
 
-		while ($fileGrpFulltext = @array_pop($fileGrpFulltext)) {
+			$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
-			// Get fulltext link.
-			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext])) {
+			// Build typolink configuration array.
+			// @TODO change hardcoded path to real typolink configuration
+			$fulltext['url'] = '/index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
 
-				$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
+			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
-				// Build typolink configuration array.
-				// @TODO change hardcoded path to real typolink configuration
-				$fulltext['url'] = '/index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
+			break;
 
-				$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
+		} else {
 
-				$this->hasFulltexts = true;
+			if (TYPO3_DLOG) {
 
-				break;
-
-			} else {
-
-				if (TYPO3_DLOG) {
-
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getFulltext('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-				}
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
 		}
 
 		return $fulltext;
-
-	}
-
-	/**
-	 * Get map controls
-	 *
-	 * @access	protected
-	 *
-	 * @return	array		Array of control keywords
-	 */
-	protected function getMapControls() {
-
-		$controls = explode(',', $this->conf['features']);
-
-		// Sanitize input.
-		foreach ($controls as $key => $control) {
-
-			if (empty($this->controlDependency[$control])) {
-
-				unset ($controls[$key]);
-
-			}
-
-		}
-
-		return $controls;
 
 	}
 
@@ -332,7 +263,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		}
 
 		// Get the controls for the map.
-		$this->controls = $this->getMapControls();
+		$this->controls = explode(',', $this->conf['features']);
 
 		// Fill in the template markers.
 		$markerArray = array (
