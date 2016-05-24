@@ -100,8 +100,8 @@ dlfViewer.prototype.addCustomControls = function() {
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1) {
-        fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0]['url'] !== '' && this.images.length == 1) {
+        fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]['url']);
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
@@ -116,7 +116,7 @@ dlfViewer.prototype.addCustomControls = function() {
     //
     if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled()) {
 
-        dlfUtils.testIfCORSEnabled(this.imageUrls[0],
+        dlfUtils.testIfCORSEnabled(this.imageUrls[0]['url'],
           $.proxy(function() {
 
               // should be called if cors is enabled
@@ -258,17 +258,17 @@ dlfViewer.prototype.displayHighlightWord = function() {
     var key = 'tx_dlf[highlight_word]',
         urlParams = dlfUtils.getUrlParams();
 
-    if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length > 0) {
+    if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0]['url'] !== '' && this.images.length > 0) {
         var value = urlParams[key],
             values = value.split(';'),
-            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0], this.images[0]),
+            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0]['url'], this.images[0]),
             fulltextDataImageTwo = undefined;
 
         // check if there is another image / fulltext to look for
-        if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1] !== '') {
+        if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1]['url'] !== '') {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
-            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1], this.images[1], this.images[0].width)
+            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1]['url'], this.images[1], this.images[0].width)
         }
 
         var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
@@ -303,7 +303,7 @@ dlfViewer.prototype.fetchImages = function(callback) {
 
         // Prepare image loading.
         images[i] = {
-            src: this.imageUrls[i],
+            src: this.imageUrls[i]['url'],
             width: 0,
             height: 0
         };
@@ -344,7 +344,7 @@ dlfViewer.prototype.fetchImages = function(callback) {
         };
 
         // Initialize image loading.
-        img[i].src = this.imageUrls[i];
+        img[i].src = this.imageUrls[i]['url'];
 
     }
 
@@ -422,7 +422,7 @@ dlfViewer.prototype.init = function() {
         this.fetchImages($.proxy(function(images) {
             // save the images and check if cors is enabled. This is important due it is a requirement for a proper
             // working of the openlayers webgl renderer.
-            dlfUtils.testIfCORSEnabled(this.imageUrls[0],
+            dlfUtils.testIfCORSEnabled(this.imageUrls[0]['url'],
                 $.proxy(function() {
                     init_(images, true);
                 }, this),
