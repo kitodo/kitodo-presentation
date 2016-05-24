@@ -184,8 +184,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
-			break;
-
 		} else {
 
 			if (TYPO3_DLOG) {
