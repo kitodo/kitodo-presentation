@@ -29,6 +29,13 @@
 var dlfUtils = dlfUtils || {};
 
 /**
+ * @type {{ZOOMIFY: string}}
+ */
+dlfUtils.CUSTOM_MIMETYPE = {
+    ZOOMIFY: 'application/x-zoomify'
+};
+
+/**
  * @type {number}
  */
 dlfUtils.RUNNING_INDEX = 99999999;
@@ -37,33 +44,95 @@ dlfUtils.RUNNING_INDEX = 99999999;
  * @param {Array.<{src: *, width: *, height: *}>} images
  * @return {Array.<ol.layer.Layer>}
  */
-dlfUtils.createLayers = function(images, opt_renderer){
+//dlfUtils.createLayers = function(images, opt_renderer){
+//
+//    // create image layers
+//    var layers = [],
+//    	renderer = opt_renderer !== undefined ? opt_renderer : 'webgl';
+//    	crossOrigin = renderer == 'webgl' ? '*' : null;
+//
+//    for (var i = 0; i < images.length; i++) {
+//
+//        var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
+//            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height];
+//
+//        var layerProj = new ol.proj.Projection({
+//                code: 'goobi-image',
+//                units: 'pixels',
+//                extent: layerExtent
+//            }),
+//            layer = new ol.layer.Image({
+//                source: new ol.source.ImageStatic({
+//                    url: images[i].src,
+//                    projection: layerProj,
+//                    imageExtent: layerExtent,
+//                    crossOrigin: crossOrigin
+//                })
+//            });
+//        layers.push(layer);
+//    }
+//
+//    return layers;
+//};
 
-    // create image layers
-    var layers = [],
-    	renderer = opt_renderer !== undefined ? opt_renderer : 'webgl';
-    	crossOrigin = renderer == 'webgl' ? '*' : null;
+/**
+ * @param {Array.<{src: *, width: *, height: *}>} imageSourceObjs
+ * @param {string} mimetype
+ * @paran {string} opt_origin
+ * @return {Array.<ol.layer.Layer>}
+ */
+dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin){
 
-    for (var i = 0; i < images.length; i++) {
+    var origin = opt_origin !== undefined ? opt_origin : null,
+        widthSum = 0,
+        offsetWidth = 0,
+        layers = [];
 
-        var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
-            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height];
+    imageSourceObjs.forEach(function(imageSourceObj) {
+        if (widthSum > 0) {
+            // set offset width in case of multiple images
+            offsetWidth = widthSum;
+        }
 
-        var layerProj = new ol.proj.Projection({
+        //
+        // Create layer
+        //
+        var extent = [ 0 + offsetWidth, 0, imageSourceObj.width + offsetWidth, imageSourceObj.height],
+            // define zoomify layer specific image source
+            proj = new ol.proj.Projection({
                 code: 'goobi-image',
                 units: 'pixels',
-                extent: layerExtent
+                extent : extent
             }),
-            layer = new ol.layer.Image({
-                source: new ol.source.ImageStatic({
-                    url: images[i].src,
-                    projection: layerProj,
-                    imageExtent: layerExtent,
-                    crossOrigin: crossOrigin
+            layer;
+
+        if (imageSourceObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
+            // create zoomify layer
+            layer = new ol.layer.Tile({
+                source: new ol.source.Zoomify({
+                    url: imageSourceObj.src,
+                    size: [ imageSourceObj.width, imageSourceObj.height ],
+                    crossOrigin: origin,
+                    offset: [offsetWidth, 0]
                 })
             });
+        } else {
+            // create static image source
+            layer = new ol.layer.Image({
+                source: new ol.source.ImageStatic({
+                    url: imageSourceObj.src,
+                    projection: proj,
+                    imageExtent: extent,
+                    crossOrigin: origin
+                })
+            });
+        };
+
         layers.push(layer);
-    }
+
+        // add to cumulative width
+        widthSum += imageSourceObj.width;
+    });
 
     return layers;
 };
@@ -72,24 +141,35 @@ dlfUtils.createLayers = function(images, opt_renderer){
  * @param {Array.<{src: *, width: *, height: *}>} images
  * @return {ol.View}
  */
-dlfUtils.createView = function(images) {
-    // create map extent
-    var maxx = images.length === 1 ? images[0].width : images[0].width + images[1].width,
-        maxy = images.length === 1 ? images[0].height : Math.max(images[0].height, images[1].height),
-        mapExtent = [0, 0, maxx, maxy],
-        mapProj = new ol.proj.Projection({
-            code: 'goobi-image',
-            units: 'pixels',
-            extent: mapExtent
-        }),
-        mapView = new ol.View({
-            projection: mapProj,
-            center: ol.extent.getCenter(mapExtent),
-            zoom: 0,
-            maxZoom: 8,
-            extent: mapExtent
-        });
-    return mapView;
+dlfUtils.createOl3View = function(images) {
+
+    //
+    // Calculate map extent
+    //
+    var maxLonX = images.reduce(function(prev, curr) { return prev + curr.width; }, 0),
+        maxLatY = images.reduce(function(prev, curr) { return Math.max(prev, curr.height); }, 0),
+        extent = [0, 0, maxLonX, maxLatY];
+
+    // define map projection
+    var proj = new ol.proj.Projection({
+        code: 'goobi-image',
+        units: 'pixels',
+        extent: extent
+    });
+
+    // define view
+    var viewParams = {
+        projection: proj,
+        center: ol.extent.getCenter(extent),
+        zoom: 0,
+        maxZoom: 8
+    };
+
+    if (images[0]['mimetype'] !== 'application/x-zoomify') {
+        viewParams['extent'] = extent;
+    }
+
+    return new ol.View(viewParams);
 };
 
 /**
@@ -99,6 +179,116 @@ dlfUtils.createView = function(images) {
  */
 dlfUtils.exists = function(val) {
     return val !== undefined;
+};
+
+/**
+ * Fetch image data for given image sources.
+ *
+ * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
+ * @return {jQuery.Deferred.<function(Array.<Object>)>}
+ */
+dlfUtils.fetchImageData = function(imageSourceObjs) {
+
+    // use deferred for async behavior
+    var deferredResponse = new $.Deferred();
+
+    /**
+     * This holds information about the loading state of the images
+     * @type {Array.<number>}
+     */
+    var imageSourceData = [],
+      loadCount = 0,
+      finishLoading = function() {
+          loadCount += 1;
+
+          if (loadCount === imageSourceObjs.length)
+              deferredResponse.resolve(imageSourceData);
+      };
+
+    imageSourceObjs.forEach(function(imageSourceObj, index) {
+        if (imageSourceObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
+            dlfUtils.fetchZoomifyData(imageSourceObj)
+              .done(function(imageSourceDataObj) {
+                  imageSourceData[index] = imageSourceDataObj;
+                  finishLoading();
+              });
+        } else {
+            // In the worse case expect static image file
+            dlfUtils.fetchStaticImageData(imageSourceObj)
+              .done(function(imageSourceDataObj) {
+                  imageSourceData[index] = imageSourceDataObj;
+                  finishLoading();
+              });
+        };
+    });
+
+    return deferredResponse;
+};
+
+/**
+ * Fetches the image data for static images source.
+ *
+ * @param {{url: *, mimetype: *}} imageSourceObj
+ * @return {jQuery.Deferred.<function(Array.<Object>)>}
+ */
+dlfUtils.fetchStaticImageData = function(imageSourceObj) {
+
+    // use deferred for async behavior
+    var deferredResponse = new $.Deferred();
+
+    // Create new Image object.
+    var image = new Image();
+
+    // Register onload handler.
+    image.onload = function() {
+
+        var imageDataObj = {
+            src: this.src,
+            mimetype: imageSourceObj['mimetype'],
+            width: this.width,
+            height:  this.height
+        };
+
+        deferredResponse.resolve(imageDataObj);
+    };
+
+    // Initialize image loading.
+    image.src = imageSourceObj['url'];
+
+    return deferredResponse;
+};
+
+/**
+ * Fetch image data for zoomify source.
+ *
+ * @param {{url: *, mimetype: *}} imageSourceObjs
+ * @return {jQuery.Deferred.<function(Array.<Object>)>}
+ */
+dlfUtils.fetchZoomifyData = function(imageSourceObj) {
+
+    // use deferred for async behavior
+    var deferredResponse = new $.Deferred();
+
+    $.ajax({
+        url: imageSourceObj['url']
+    }).done(function(response, type) {
+        if (type !== 'success')
+            throw new Error('Problems while fetching ImageProperties.xml');
+
+        var properties = $(response).find('IMAGE_PROPERTIES');
+
+        var imageDataObj = {
+            src: response.URL.substring(0, response.URL.lastIndexOf("/") + 1),
+            width: parseInt(properties.attr('WIDTH')),
+            height: parseInt(properties.attr('HEIGHT')),
+            tilesize: parseInt(properties.attr('TILESIZE')),
+            mimetype: imageSourceObj['mimetype']
+        };
+
+        deferredResponse.resolve(imageDataObj);
+    });
+
+    return deferredResponse;
 };
 
 /**
@@ -150,6 +340,47 @@ dlfUtils.getUrlParams = function() {
  */
 dlfUtils.isNull = function(val) {
     return val === null;
+};
+
+/**
+ * @param {Array.<{url: *, mimetype: *}>} imageObjs
+ * @return {boolean}
+ */
+dlfUtils.isCorsEnabled = function(imageObjs) {
+    // fix for proper working with ie
+    if (!window.location.origin) {
+        window.location.origin = window.location.protocol + '//' + window.location.hostname +
+          (window.location.port ? ':' + window.location.port: '');
+    }
+
+    // fetch data from server
+    // with access control allowed
+    var response = true;
+
+    imageObjs.forEach(function(imageObj) {
+        var url = imageObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
+          ? imageObj['url'].replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg')
+          : imageObj['url']
+
+        $.ajax({
+            url: url,
+            async: false
+        }).done(function(data, type) {
+            if (type === 'success') {
+                response = true && response;
+            } else {
+                response = false;
+            };
+        })
+        .error(function(data, type) {
+            if (type === 'error') {
+                response = false;
+            }
+        });
+    });
+
+
+    return response;
 };
 
 /**
