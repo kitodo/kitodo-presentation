@@ -32,6 +32,7 @@ var dlfUtils = dlfUtils || {};
  * @type {{ZOOMIFY: string}}
  */
 dlfUtils.CUSTOM_MIMETYPE = {
+    IIIF: 'application/x-iiif',
     ZOOMIFY: 'application/x-zoomify'
 };
 
@@ -39,41 +40,6 @@ dlfUtils.CUSTOM_MIMETYPE = {
  * @type {number}
  */
 dlfUtils.RUNNING_INDEX = 99999999;
-
-/**
- * @param {Array.<{src: *, width: *, height: *}>} images
- * @return {Array.<ol.layer.Layer>}
- */
-//dlfUtils.createLayers = function(images, opt_renderer){
-//
-//    // create image layers
-//    var layers = [],
-//    	renderer = opt_renderer !== undefined ? opt_renderer : 'webgl';
-//    	crossOrigin = renderer == 'webgl' ? '*' : null;
-//
-//    for (var i = 0; i < images.length; i++) {
-//
-//        var layerExtent = i === 0 ? [0 , 0, images[i].width, images[i].height] :
-//            [images[i-1].width , 0, images[i].width + images[i-1].width, images[i].height];
-//
-//        var layerProj = new ol.proj.Projection({
-//                code: 'goobi-image',
-//                units: 'pixels',
-//                extent: layerExtent
-//            }),
-//            layer = new ol.layer.Image({
-//                source: new ol.source.ImageStatic({
-//                    url: images[i].src,
-//                    projection: layerProj,
-//                    imageExtent: layerExtent,
-//                    crossOrigin: crossOrigin
-//                })
-//            });
-//        layers.push(layer);
-//    }
-//
-//    return layers;
-//};
 
 /**
  * @param {Array.<{src: *, width: *, height: *}>} imageSourceObjs
@@ -106,13 +72,39 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin){
             }),
             layer;
 
-        if (imageSourceObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
+        if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
             // create zoomify layer
             layer = new ol.layer.Tile({
                 source: new ol.source.Zoomify({
                     url: imageSourceObj.src,
                     size: [ imageSourceObj.width, imageSourceObj.height ],
                     crossOrigin: origin,
+                    offset: [offsetWidth, 0]
+                })
+            });
+        } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
+            var tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
+                    ? imageSourceObj.tilesize[0]
+                    : 256,
+                format = $.inArray('jpg', imageSourceObj.formats) || $.inArray('jpeg', imageSourceObj.formats)
+                    ? 'jpg'
+                    :  imageSourceObj.formats.length > 0
+                        ? imageSourceObj.formats[0]
+                        : 'jpg',
+                quality = imageSourceObj.qualities !== undefined && imageSourceObj.qualities.length > 0
+                    ? imageSourceObj.qualities[0]
+                    : 'native';
+
+            layer = new ol.layer.Tile({
+                source: new dlfViewerSource.IIIF({
+                    url: imageSourceObj.src,
+                    size: [ imageSourceObj.width, imageSourceObj.height ],
+                    projection: proj,
+                    crossOrigin: origin,
+                    resolutions: imageSourceObj.resolutions,
+                    tileSize: tileSize,
+                    format: format,
+                    quality: quality,
                     offset: [offsetWidth, 0]
                 })
             });
@@ -165,7 +157,7 @@ dlfUtils.createOl3View = function(images) {
         maxZoom: 8
     };
 
-    if (images[0]['mimetype'] !== 'application/x-zoomify') {
+    if (images[0]['mimetype'] !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY && images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF) {
         viewParams['extent'] = extent;
     }
 
@@ -208,17 +200,23 @@ dlfUtils.fetchImageData = function(imageSourceObjs) {
     imageSourceObjs.forEach(function(imageSourceObj, index) {
         if (imageSourceObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
             dlfUtils.fetchZoomifyData(imageSourceObj)
+                .done(function(imageSourceDataObj) {
+                    imageSourceData[index] = imageSourceDataObj;
+                    finishLoading();
+                });
+        } else if (imageSourceObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
+            dlfUtils.fetchIIIFData(imageSourceObj)
               .done(function(imageSourceDataObj) {
-                  imageSourceData[index] = imageSourceDataObj;
-                  finishLoading();
+                    imageSourceData[index] = imageSourceDataObj;
+                    finishLoading();
               });
         } else {
             // In the worse case expect static image file
             dlfUtils.fetchStaticImageData(imageSourceObj)
-              .done(function(imageSourceDataObj) {
-                  imageSourceData[index] = imageSourceDataObj;
-                  finishLoading();
-              });
+                .done(function(imageSourceDataObj) {
+                    imageSourceData[index] = imageSourceDataObj;
+                    finishLoading();
+                });
         };
     });
 
@@ -254,6 +252,40 @@ dlfUtils.fetchStaticImageData = function(imageSourceObj) {
 
     // Initialize image loading.
     image.src = imageSourceObj['url'];
+
+    return deferredResponse;
+};
+
+/**
+ * Fetches the image data for static images source.
+ *
+ * @param {{url: *, mimetype: *}} imageSourceObj
+ * @return {jQuery.Deferred.<function(Array.<Object>)>}
+ */
+dlfUtils.fetchIIIFData = function(imageSourceObj) {
+
+    // use deferred for async behavior
+    var deferredResponse = new $.Deferred();
+
+    $.ajax({
+        url: imageSourceObj['url'] + '/info.json'
+    }).done(function(response, type) {
+        if (type !== 'success')
+            throw new Error('Problems while fetching ImageProperties.xml');
+
+        var imageDataObj = {
+            src: imageSourceObj['url'],
+            width: response['width'],
+            height: response['height'],
+            tilesize: [ response['tile_width'], response['tile_height']],
+            qualities: response['qualities'],
+            formats: response['formats'],
+            resolutions: response['scale_factors'],
+            mimetype: imageSourceObj['mimetype']
+        };
+
+        deferredResponse.resolve(imageDataObj);
+    });
 
     return deferredResponse;
 };
@@ -360,7 +392,9 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
     imageObjs.forEach(function(imageObj) {
         var url = imageObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
           ? imageObj['url'].replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg')
-          : imageObj['url']
+          : imageObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.IIIF
+            ? imageObj['url'] + '/info.json'
+            : imageObj['url'];
 
         $.ajax({
             url: url,
