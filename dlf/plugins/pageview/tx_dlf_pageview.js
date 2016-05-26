@@ -302,11 +302,11 @@ dlfViewer.prototype.init = function() {
             this.map = new ol.Map({
                 layers: layers,
                 target: this.div,
-                controls: //this.controls,
-                [new ol.control.MousePosition({
-                 coordinateFormat: ol.coordinate.createStringXY(4),
-                 undefinedHTML: '&nbsp;'
-                 })],
+                controls: this.controls,
+                //[new ol.control.MousePosition({
+                // coordinateFormat: ol.coordinate.createStringXY(4),
+                // undefinedHTML: '&nbsp;'
+                // })],
                 interactions: [
                     new ol.interaction.DragRotate(),
                     new ol.interaction.DragPan(),
@@ -344,7 +344,7 @@ dlfViewer.prototype.init = function() {
             $(window).unload($.proxy(function() {
                 // check if image manipulation control exists and if yes deactivate it first for proper recognition of
                 // the actual map view
-                if (this.imageManipulationControl !== undefined) {
+                if (this.imageManipulationControl !== undefined && this.imageManipulationControl.isActive()) {
                     this.imageManipulationControl.deactivate();
                 }
 
