@@ -68,13 +68,6 @@ var dlfViewer = function(settings){
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
 
     /**
-     * ol3 controls which should be added to map
-     * @type {Array.<?>}
-     * @private
-     */
-    this.controls = dlfUtils.exists(settings.controls) ? this.createControls_(settings.controls) : [];
-
-    /**
      * @type {Array.<number>}
      * @private
      */
@@ -92,22 +85,27 @@ var dlfViewer = function(settings){
      */
     this.imageManipulationControl = undefined;
 
-    this.init();
+    this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
 };
 
 /**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext and the image manipulation control
+ *
+ * @param {Array.<string>} controlNames
  */
-dlfViewer.prototype.addCustomControls = function() {
+dlfViewer.prototype.addCustomControls = function(controlNames) {
 	var fulltextControl = undefined,
 		imageManipulationControl = undefined,
-		images = this.images;
+		images = this.images,
+        controls = controlNames.length > 0 || controlNames[0] === ""
+            ? this.createControls_(controlNames, layers)
+            : [];
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0]['url'] !== '' && this.images.length == 1) {
-        fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]['url']);
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length == 1) {
+        fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
@@ -174,10 +172,11 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
 /**
  * Creates OL3 controls
  * @param {Array.<string>} controlNames
+ * @param {Array.<ol.layer.Layer> layers
  * @return {Array.<ol.control.Control>}
  * @private
  */
-dlfViewer.prototype.createControls_ = function(controlNames) {
+dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
     var controls = [];
 
@@ -189,7 +188,9 @@ dlfViewer.prototype.createControls_ = function(controlNames) {
 
                 case "OverviewMap":
 
-                    controls.push(new ol.control.OverviewMap());
+                    controls.push(new ol.control.OverviewMap({
+                        layers: layers
+                    }));
                     break;
 
                 case "ZoomPanel":
@@ -255,17 +256,17 @@ dlfViewer.prototype.displayHighlightWord = function() {
     var key = 'tx_dlf[highlight_word]',
         urlParams = dlfUtils.getUrlParams();
 
-    if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0]['url'] !== '' && this.images.length > 0) {
+    if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
         var value = urlParams[key],
             values = value.split(';'),
-            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0]['url'], this.images[0]),
+            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
 
         // check if there is another image / fulltext to look for
-        if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1]['url'] !== '') {
+        if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
-            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1]['url'], this.images[1], this.images[0].width)
+            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width)
         }
 
         var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
@@ -283,9 +284,11 @@ dlfViewer.prototype.displayHighlightWord = function() {
 
 /**
  * Start the init process of loading the map, etc.
+ *
+ * @param {Array.<string>} controlNames
  * @private
  */
-dlfViewer.prototype.init = function() {
+dlfViewer.prototype.init = function(controlNames) {
 
     if (this.imageUrls.length <= 0)
         throw new Error('Missing image source objects.');
@@ -298,15 +301,20 @@ dlfViewer.prototype.init = function() {
 
     this.initLayer(this.imageUrls, this.isCorsEnabled)
         .done($.proxy(function(layers){
+
+            var controls = controlNames.length > 0 || controlNames[0] === ""
+                ? this.createControls_(controlNames, layers)
+                : [];
+                //: [ new ol.control.MousePosition({
+                //        coordinateFormat: ol.coordinate.createStringXY(4),
+                //        undefinedHTML: '&nbsp;'
+                //    })];
+
             // create map
             this.map = new ol.Map({
                 layers: layers,
                 target: this.div,
-                controls: this.controls,
-                //[new ol.control.MousePosition({
-                // coordinateFormat: ol.coordinate.createStringXY(4),
-                // undefinedHTML: '&nbsp;'
-                // })],
+                controls: controls,
                 interactions: [
                     new ol.interaction.DragRotate(),
                     new ol.interaction.DragPan(),
@@ -335,7 +343,7 @@ dlfViewer.prototype.init = function() {
             // highlight word in case a highlight field is registered
             this.displayHighlightWord();
 
-            this.addCustomControls();
+            this.addCustomControls(controls);
 
             // trigger event after all has been initialize
             $(this).trigger("initialize-end", this);

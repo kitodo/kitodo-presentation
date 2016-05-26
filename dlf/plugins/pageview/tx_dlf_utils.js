@@ -99,7 +99,12 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin){
                     tileSize: tileSize,
                     format: format,
                     quality: quality,
-                    offset: [offsetWidth, 0]
+                    offset: [offsetWidth, 0],
+                    projection: new ol.proj.Projection({
+                        code: 'goobi-image',
+                        units: 'pixels',
+                        extent : extent
+                    })
                 })
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
@@ -117,6 +122,7 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin){
                 })
             });
         } else {
+
             // create static image source
             layer = new ol.layer.Image({
                 source: new ol.source.ImageStatic({
@@ -152,7 +158,10 @@ dlfUtils.createOl3View = function(images) {
     //
     var maxLonX = images.reduce(function(prev, curr) { return prev + curr.width; }, 0),
         maxLatY = images.reduce(function(prev, curr) { return Math.max(prev, curr.height); }, 0),
-        extent = [0, 0, maxLonX, maxLatY];
+        extent = images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY && images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF &&
+                images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIP
+            ? [0, 0, maxLonX, maxLatY]
+            : [0, -maxLatY, maxLonX, 0];
 
     // define map projection
     var proj = new ol.proj.Projection({
@@ -161,18 +170,17 @@ dlfUtils.createOl3View = function(images) {
         extent: extent
     });
 
+    console.log(extent);
+    console.log(ol.extent.getCenter(extent));
+
     // define view
     var viewParams = {
         projection: proj,
         center: ol.extent.getCenter(extent),
-        zoom: 0,
-        maxZoom: 8
+        zoom: 1,
+        maxZoom: 8,
+        extent: extent
     };
-
-    if (images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY && images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF &&
-            images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIP) {
-        viewParams['extent'] = extent;
-    }
 
     return new ol.View(viewParams);
 };
