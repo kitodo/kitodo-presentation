@@ -32,8 +32,9 @@ module.exports = function(config) {
             'spec/*.js',
 
             // files to test
-            '../tx_dlf_utils.js',
-            '../tx_dlf_altoparser.js'
+            '../tx_dlf_altoparser.js',
+            '../tx_dlf_ol3_source.js',
+            '../tx_dlf_utils.js'
         ],
         browsers: ['PhantomJS']
     });

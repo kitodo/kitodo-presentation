@@ -8,6 +8,7 @@
     "ol.control.Zoom",
     "ol.control.MousePosition",
     "ol.control.OverviewMap",
+    "ol.coordinate.createStringXY",
     "ol.extent.getCenter",
     "ol.extent.getTopLeft",
     "ol.Feature",

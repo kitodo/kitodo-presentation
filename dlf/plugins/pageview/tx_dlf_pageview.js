@@ -294,11 +294,11 @@ dlfViewer.prototype.init = function() {
             this.map = new ol.Map({
                 layers: layers,
                 target: this.div,
-                controls: this.controls,
-                /*new ol.control.MousePosition({
+                controls: //this.controls,
+                [new ol.control.MousePosition({
                  coordinateFormat: ol.coordinate.createStringXY(4),
                  undefinedHTML: '&nbsp;'
-                 })*/
+                 })],
                 interactions: [
                     new ol.interaction.DragRotate(),
                     new ol.interaction.DragPan(),
@@ -346,11 +346,11 @@ dlfViewer.prototype.init = function() {
  * Function generate the ol3 layer objects for given image sources. Returns a promise.
  *
  * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
- * @param {string} renderer
+ * @param {boolean} isCorsEnabled
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
-dlfViewer.prototype.initLayer = function(imageSourceObjs, renderer) {
+dlfViewer.prototype.initLayer = function(imageSourceObjs, isCorsEnabled) {
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred(),
@@ -362,7 +362,7 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs, renderer) {
             this.images = imageSourceData;
             deferredResponse.resolve(layers);
         }, this),
-      origin = this.isCorsEnabled ? '*' : null;
+      origin = isCorsEnabled ? '*' : undefined;
 
     dlfUtils.fetchImageData(imageSourceObjs)
       .done(function(imageSourceData) {

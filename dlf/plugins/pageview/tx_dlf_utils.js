@@ -33,6 +33,7 @@ var dlfUtils = dlfUtils || {};
  */
 dlfUtils.CUSTOM_MIMETYPE = {
     IIIF: 'application/x-iiif',
+    IIP: 'application/x-iip',
     ZOOMIFY: 'application/x-zoomify'
 };
 
@@ -64,12 +65,6 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin){
         // Create layer
         //
         var extent = [ 0 + offsetWidth, 0, imageSourceObj.width + offsetWidth, imageSourceObj.height],
-            // define zoomify layer specific image source
-            proj = new ol.proj.Projection({
-                code: 'goobi-image',
-                units: 'pixels',
-                extent : extent
-            }),
             layer;
 
         if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
@@ -99,7 +94,6 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin){
                 source: new dlfViewerSource.IIIF({
                     url: imageSourceObj.src,
                     size: [ imageSourceObj.width, imageSourceObj.height ],
-                    projection: proj,
                     crossOrigin: origin,
                     resolutions: imageSourceObj.resolutions,
                     tileSize: tileSize,
@@ -108,12 +102,30 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin){
                     offset: [offsetWidth, 0]
                 })
             });
+        } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
+            var tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
+                ? imageSourceObj.tilesize[0]
+                : 256;
+
+            layer = new ol.layer.Tile({
+                source: new dlfViewerSource.IIP({
+                    url: imageSourceObj.src,
+                    size: [ imageSourceObj.width, imageSourceObj.height ],
+                    crossOrigin: origin,
+                    tileSize: tileSize,
+                    offset: [offsetWidth, 0]
+                })
+            });
         } else {
             // create static image source
             layer = new ol.layer.Image({
                 source: new ol.source.ImageStatic({
                     url: imageSourceObj.src,
-                    projection: proj,
+                    projection: new ol.proj.Projection({
+                        code: 'goobi-image',
+                        units: 'pixels',
+                        extent : extent
+                    }),
                     imageExtent: extent,
                     crossOrigin: origin
                 })
@@ -157,7 +169,8 @@ dlfUtils.createOl3View = function(images) {
         maxZoom: 8
     };
 
-    if (images[0]['mimetype'] !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY && images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF) {
+    if (images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY && images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF &&
+            images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIP) {
         viewParams['extent'] = extent;
     }
 
@@ -198,17 +211,23 @@ dlfUtils.fetchImageData = function(imageSourceObjs) {
       };
 
     imageSourceObjs.forEach(function(imageSourceObj, index) {
-        if (imageSourceObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
+        if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
             dlfUtils.fetchZoomifyData(imageSourceObj)
                 .done(function(imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
                 });
-        } else if (imageSourceObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
+        } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
             dlfUtils.fetchIIIFData(imageSourceObj)
               .done(function(imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
+              });
+        } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
+            dlfUtils.fetchIIPData(imageSourceObj)
+              .done(function(imageSourceDataObj) {
+                  imageSourceData[index] = imageSourceDataObj;
+                  finishLoading();
               });
         } else {
             // In the worse case expect static image file
@@ -242,7 +261,7 @@ dlfUtils.fetchStaticImageData = function(imageSourceObj) {
 
         var imageDataObj = {
             src: this.src,
-            mimetype: imageSourceObj['mimetype'],
+            mimetype: imageSourceObj.mimetype,
             width: this.width,
             height:  this.height
         };
@@ -251,13 +270,13 @@ dlfUtils.fetchStaticImageData = function(imageSourceObj) {
     };
 
     // Initialize image loading.
-    image.src = imageSourceObj['url'];
+    image.src = imageSourceObj.url;
 
     return deferredResponse;
 };
 
 /**
- * Fetches the image data for static images source.
+ * Fetches the image data for iiif images source.
  *
  * @param {{url: *, mimetype: *}} imageSourceObj
  * @return {jQuery.Deferred.<function(Array.<Object>)>}
@@ -268,21 +287,49 @@ dlfUtils.fetchIIIFData = function(imageSourceObj) {
     var deferredResponse = new $.Deferred();
 
     $.ajax({
-        url: imageSourceObj['url'] + '/info.json'
+        url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url)
     }).done(function(response, type) {
         if (type !== 'success')
             throw new Error('Problems while fetching ImageProperties.xml');
 
         var imageDataObj = {
-            src: imageSourceObj['url'],
-            width: response['width'],
-            height: response['height'],
-            tilesize: [ response['tile_width'], response['tile_height']],
-            qualities: response['qualities'],
-            formats: response['formats'],
-            resolutions: response['scale_factors'],
-            mimetype: imageSourceObj['mimetype']
+            src: imageSourceObj.url,
+            width: response.width,
+            height: response.height,
+            tilesize: [ response.tile_width, response.tile_height ],
+            qualities: response.qualities,
+            formats: response.formats,
+            resolutions: response.scale_factors,
+            mimetype: imageSourceObj.mimetype
         };
+
+        deferredResponse.resolve(imageDataObj);
+    });
+
+    return deferredResponse;
+};
+
+/**
+ * Fetches the image data for iip images source.
+ *
+ * @param {{url: *, mimetype: *}} imageSourceObj
+ * @return {jQuery.Deferred.<function(Array.<Object>)>}
+ */
+dlfUtils.fetchIIPData = function(imageSourceObj) {
+
+    // use deferred for async behavior
+    var deferredResponse = new $.Deferred();
+
+    $.ajax({
+        url: dlfViewerSource.IIP.getMetdadataURL(imageSourceObj.url)//'http://localhost:8000/fcgi-bin/iipsrv.fcgi?FIF=F4713/HD7.tif&obj=IIP,1.0&obj=Max-size&obj=Tile-size&obj=Resolution-number',
+    }).done(function(response, type) {
+        if (type !== 'success')
+            throw new Error('Problems while fetching ImageProperties.xml');
+
+        var imageDataObj = $.extend({
+            src: imageSourceObj.url,
+            mimetype: imageSourceObj.mimetype
+        }, dlfViewerSource.IIP.parseMetadata(response));
 
         deferredResponse.resolve(imageDataObj);
     });
@@ -302,7 +349,7 @@ dlfUtils.fetchZoomifyData = function(imageSourceObj) {
     var deferredResponse = new $.Deferred();
 
     $.ajax({
-        url: imageSourceObj['url']
+        url: imageSourceObj.url
     }).done(function(response, type) {
         if (type !== 'success')
             throw new Error('Problems while fetching ImageProperties.xml');
@@ -314,7 +361,7 @@ dlfUtils.fetchZoomifyData = function(imageSourceObj) {
             width: parseInt(properties.attr('WIDTH')),
             height: parseInt(properties.attr('HEIGHT')),
             tilesize: parseInt(properties.attr('TILESIZE')),
-            mimetype: imageSourceObj['mimetype']
+            mimetype: imageSourceObj.mimetype
         };
 
         deferredResponse.resolve(imageDataObj);
@@ -390,11 +437,13 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
     var response = true;
 
     imageObjs.forEach(function(imageObj) {
-        var url = imageObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
-          ? imageObj['url'].replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg')
-          : imageObj['mimetype'] === dlfUtils.CUSTOM_MIMETYPE.IIIF
-            ? imageObj['url'] + '/info.json'
-            : imageObj['url'];
+        var url = imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
+          ? imageObj.url.replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg')
+          : imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF
+            ? dlfViewerSource.IIIF.getMetdadataURL(imageObj.url)
+            : imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
+                ? dlfViewerSource.IIP.getMetdadataURL(imageObj.url)
+                : imageObj.url;
 
         $.ajax({
             url: url,
