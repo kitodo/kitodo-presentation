@@ -28,6 +28,57 @@
 var dlfViewerSource = dlfViewerSource || {};
 
 /**
+ * Utility Function based on Google Closure Library.
+ * http://google.github.io/closure-library/api/source/closure/goog/object/object.js.src.html#l306
+ *
+ * Searches an object for an element that satisfies the given condition and
+ * returns its key.
+ *
+ * @param {Object<K,V>} obj The object to search in.
+ * @param {function(this:T,V,string,Object<K,V>):boolean} f The
+ *      function to call for every element. Takes 3 arguments (the value,
+ *     the key and the object) and should return a boolean.
+ * @param {T=} opt_this An optional "this" context for the function.
+ * @return {string|undefined} The key of an element for which the function
+ *     returns true or undefined if no such element is found.
+ */
+dlfViewerSource.findKey = function(obj, f, opt_this) {
+    for (var key in obj) {
+        if (f.call(/** @type {?} */ (opt_this), obj[key], key, obj)) {
+            return key;
+        }
+    }
+    return undefined;
+};
+
+/**
+ * OpenLayers 3 TileLoadFunction based on the work of Klokan Technologies GmbH (http://www.klokantech.com) and
+ * the IIIFViewer. See: https://github.com/klokantech/iiifviewer/blob/master/src/iiifsource.js
+ *
+ * @param {number} tileSize
+ * @param {ol.ImageTile} tile
+ * @param {string} url
+ */
+dlfViewerSource.tileLoadFunction = function(tileSize, tile, url) {
+    var img = tile.getImage();
+    $(img).load(function() {
+        if (img.naturalWidth > 0 &&
+          (img.naturalWidth != tileSize || img.naturalHeight != tileSize)) {
+            var canvas = document.createElement('canvas');
+            canvas.width = tileSize;
+            canvas.height = tileSize;
+
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            var key = dlfViewerSource.findKey(tile, function(v) {return v == img;});
+            if (key) tile[key] = canvas;
+        }
+    })
+    img.src = url;
+};
+
+/**
  * OpenLayers 3 compatible source object for an iiif server.
  *
  * Based on the work of Klokan Technologies GmbH (http://www.klokantech.com) and the IIIFViewer. See:
@@ -117,12 +168,18 @@ dlfViewerSource.IIIF = function(options) {
         }
     };
 
-    return new ol.source.TileImage({
+    var tileImageParams = {
         crossOrigin: origin,
         projection: projection,
         tileGrid: tileGrid,
         tileUrlFunction: tileUrlFunction
-    });
+    };
+
+    if (ol.has.CANVAS) {
+        tileImageParams.tileLoadFunction = dlfViewerSource.tileLoadFunction.bind(this, tileSize);
+    }
+
+    return new ol.source.TileImage(tileImageParams);
 };
 
 /**
@@ -182,6 +239,8 @@ dlfViewerSource.IIP = function(options) {
     tierSizeInTiles.push( [1,1]);
     tierSizeInTiles.reverse();
 
+    console.log(resolutions);
+
     var extent = [offset[0], offset[1] + -height, offset[0] + width, offset[1]];
     var tileGrid = new ol.tilegrid.TileGrid({
         extent: extent,
@@ -209,12 +268,20 @@ dlfViewerSource.IIP = function(options) {
         }
     }
 
-    return new ol.source.TileImage({
+    var tileImageParams = {
         crossOrigin: origin,
         projection: projection,
         tileGrid: tileGrid,
         tileUrlFunction: tileUrlFunction
-    });
+    };
+
+    if (ol.has.CANVAS) {
+        tileImageParams.tileLoadFunction = dlfViewerSource.tileLoadFunction.bind(this, tileSize);
+    }
+
+    return new ol.source.TileImage(tileImageParams);
+
+
 };
 
 /**
