@@ -86,6 +86,12 @@ var dlfViewer = function(settings){
      */
     this.highlightFieldParams = undefined;
 
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.imageManipulationControl = undefined;
+
     this.init();
 };
 
@@ -130,6 +136,8 @@ dlfViewer.prototype.addCustomControls = function() {
             $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
         }
 
+        // set on object scope
+        this.imageManipulationControl = imageManipulationControl;
 
     } else if ($('#tx-dlf-tools-imagetools').length > 0) {
 
@@ -334,6 +342,13 @@ dlfViewer.prototype.init = function() {
 
             // append listener for saving view params in case of flipping pages
             $(window).unload($.proxy(function() {
+                // check if image manipulation control exists and if yes deactivate it first for proper recognition of
+                // the actual map view
+                if (this.imageManipulationControl !== undefined) {
+                    this.imageManipulationControl.deactivate();
+                }
+
+                // save actual map view parameters to cookie
                 dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', this.map.getZoom());
                 dlfUtils.setCookie('tx-dlf-pageview-centerLon', this.map.getView().getCenter()[0]);
                 dlfUtils.setCookie('tx-dlf-pageview-centerLat', this.map.getView().getCenter()[1]);
