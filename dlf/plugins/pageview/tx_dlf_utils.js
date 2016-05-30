@@ -430,6 +430,15 @@ dlfUtils.isNull = function(val) {
 };
 
 /**
+ * Returns true if the specified value is null, empty or undefined.
+ * @param {?} val
+ * @return {boolean}
+ */
+dlfUtils.isNullEmptyOrUndefined = function(val) {
+    return val === null || val === undefined || val === '';
+};
+
+/**
  * @param {Array.<{url: *, mimetype: *}>} imageObjs
  * @return {boolean}
  */
