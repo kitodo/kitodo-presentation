@@ -435,7 +435,7 @@ dlfUtils.isNull = function(val) {
  * @return {boolean}
  */
 dlfUtils.isNullEmptyOrUndefined = function(val) {
-    return val === null || val === undefined || val === '';
+    return val === null || val === undefined || val === '' || val === 'undefined';
 };
 
 /**
