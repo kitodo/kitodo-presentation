@@ -58,7 +58,6 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 		$output = array ();
 
 		// $this->audio holds an array with URL and MIME type of the audio file.
-		// $this->audio = array ('url' => URL, 'mimetype' => MIME type)
 
 		return implode("\n", $output);
 
@@ -81,8 +80,6 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 			$this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']]);
 
 			$this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']]);
-
-			break;
 
 		} else {
 

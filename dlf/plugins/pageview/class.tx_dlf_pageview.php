@@ -101,8 +101,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
-		$images = json_encode($this->images);
-		$fulltext = json_encode($this->fulltexts);
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
 			window.onload = function() {
@@ -110,8 +108,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 					tx_dlf_viewer = new dlfViewer({
 						controls: ["' . implode('", "', $this->controls) . '"],
 						div: "' . $this->conf['elementId'] . '",
-						fulltexts: '. $fulltext . ',
-						images: ' . $images . '
+						images: ' . json_encode($this->images) . ',
+						fulltexts: '. json_encode($this->fulltexts) . '
 					})
 				}
 			}
