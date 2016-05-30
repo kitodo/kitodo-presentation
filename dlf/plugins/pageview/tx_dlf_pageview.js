@@ -346,7 +346,7 @@ dlfViewer.prototype.init = function(controlNames) {
             this.addCustomControls(controls);
 
             // trigger event after all has been initialize
-            $(this).trigger("initialize-end", this);
+            $(window).trigger("map-loadend", window);
 
             // append listener for saving view params in case of flipping pages
             $(window).unload($.proxy(function() {
