@@ -163,6 +163,9 @@ dlfUtils.createOl3View = function(images) {
             ? [0, 0, maxLonX, maxLatY]
             : [0, -maxLatY, maxLonX, 0];
 
+    // globally define max zoom
+    window.OL3_MAX_ZOOM = 8;
+
     // define map projection
     var proj = new ol.proj.Projection({
         code: 'goobi-image',
@@ -170,15 +173,12 @@ dlfUtils.createOl3View = function(images) {
         extent: extent
     });
 
-    console.log(extent);
-    console.log(ol.extent.getCenter(extent));
-
     // define view
     var viewParams = {
         projection: proj,
         center: ol.extent.getCenter(extent),
         zoom: 1,
-        maxZoom: 8,
+        maxZoom: window.OL3_MAX_ZOOM,
         extent: extent
     };
 
@@ -427,6 +427,15 @@ dlfUtils.getUrlParams = function() {
  */
 dlfUtils.isNull = function(val) {
     return val === null;
+};
+
+/**
+ * Returns true if the specified value is null, empty or undefined.
+ * @param {?} val
+ * @return {boolean}
+ */
+dlfUtils.isNullEmptyOrUndefined = function(val) {
+    return val === null || val === undefined || val === '' || val === 'undefined';
 };
 
 /**

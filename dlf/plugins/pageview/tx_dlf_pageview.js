@@ -336,7 +336,7 @@ dlfViewer.prototype.init = function(controlNames) {
             var lon = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
               lat = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
               zoom = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
-            if (!dlfUtils.isNull(lon) && !dlfUtils.isNull(lat) && !dlfUtils.isNull(zoom)) {
+            if (!dlfUtils.isNullEmptyOrUndefined(lon) && !dlfUtils.isNullEmptyOrUndefined(lat) && !dlfUtils.isNullEmptyOrUndefined(zoom)) {
                 this.map.zoomTo([lon, lat], zoom);
             }
 
@@ -346,7 +346,7 @@ dlfViewer.prototype.init = function(controlNames) {
             this.addCustomControls(controls);
 
             // trigger event after all has been initialize
-            $(this).trigger("initialize-end", this);
+            $(window).trigger("map-loadend", window);
 
             // append listener for saving view params in case of flipping pages
             $(window).unload($.proxy(function() {
@@ -356,10 +356,13 @@ dlfViewer.prototype.init = function(controlNames) {
                     this.imageManipulationControl.deactivate();
                 }
 
+                var zoom = this.map.getZoom() !== undefined ? this.map.getZoom() : '',
+                    center = this.map.getView().getCenter() !== undefined ? this.map.getView().getCenter() : ['', ''];
+
                 // save actual map view parameters to cookie
-                dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', this.map.getZoom());
-                dlfUtils.setCookie('tx-dlf-pageview-centerLon', this.map.getView().getCenter()[0]);
-                dlfUtils.setCookie('tx-dlf-pageview-centerLat', this.map.getView().getCenter()[1]);
+                dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', zoom);
+                dlfUtils.setCookie('tx-dlf-pageview-centerLon', center[0]);
+                dlfUtils.setCookie('tx-dlf-pageview-centerLat', center[1]);
             }, this));
         }, this));
 
