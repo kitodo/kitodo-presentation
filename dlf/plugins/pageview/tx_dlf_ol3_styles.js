@@ -111,8 +111,12 @@ dlfViewerOL3Styles.textlineStyle = function() {
 dlfViewerOL3Styles.wordStyle = function() {
 
     return new ol.style.Style({
+        'stroke': new ol.style.Stroke({
+            'color': 'rgba(238,153,0,0.8)',
+            'width': 1
+        }),
         'fill': new ol.style.Fill({
-            'color': 'rgba(255, 255, 26,0.2)'
+            'color': 'rgba(238,153,0,0.2)'
         })
     });
 

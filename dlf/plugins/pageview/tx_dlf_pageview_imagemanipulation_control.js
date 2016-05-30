@@ -450,3 +450,12 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 	// trigger close event for trigger map adjust behavior
 	$(this).trigger("deactivate-imagemanipulation");
 };
+
+/**
+ * Function checks if the image manipulation is in active state or not.
+ *
+ * @return {boolean}
+ */
+dlfViewerImageManipulationControl.prototype.isActive = function() {
+	return $(this.anchor_).hasClass('active');
+};
