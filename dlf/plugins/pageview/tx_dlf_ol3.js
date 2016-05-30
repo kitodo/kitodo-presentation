@@ -29,6 +29,15 @@ ol.Map.prototype.getZoom = function(){
 };
 
 /**
+ * Returns an array containing the min and max zoom level [minZoom, maxZoom]
+ * @return {Array.<number>}
+ */
+ol.Map.prototype.getZoomRange = function() {
+    var maxZoom = window.OL3_MAX_ZOOM !== undefined && !isNaN(window.OL3_MAX_ZOOM) ? window.OL3_MAX_ZOOM : 18;
+    return [0, maxZoom];
+};
+
+/**
  * Zooms to given zoomLevel
  * 
  * @param {number} zoomLevel
