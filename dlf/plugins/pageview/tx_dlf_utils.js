@@ -32,9 +32,9 @@ var dlfUtils = dlfUtils || {};
  * @type {{ZOOMIFY: string}}
  */
 dlfUtils.CUSTOM_MIMETYPE = {
-    IIIF: 'application/x-iiif',
-    IIP: 'application/x-iip',
-    ZOOMIFY: 'application/x-zoomify'
+    IIIF: 'application/vnd.kitodo.iiif',
+    IIP: 'application/vnd.netfpx',
+    ZOOMIFY: 'application/vnd.kitodo.zoomify'
 };
 
 /**
