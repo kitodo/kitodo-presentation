@@ -25,6 +25,8 @@
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 // Register plugins.
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/audioplayer/class.tx_dlf_audioplayer.php', '_audioplayer', 'list_type', TRUE);
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/collection/class.tx_dlf_collection.php', '_collection', 'list_type', TRUE);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/feeds/class.tx_dlf_feeds.php', '_feeds', 'list_type', FALSE);
