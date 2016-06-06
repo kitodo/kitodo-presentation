@@ -434,8 +434,8 @@ dlfUtils.isNull = function(val) {
  * @param {?} val
  * @return {boolean}
  */
-dlfUtils.isNullEmptyOrUndefined = function(val) {
-    return val === null || val === undefined || val === '' || val === 'undefined';
+dlfUtils.isNullEmptyUndefinedOrNoNumber = function(val) {
+    return val === null || val === undefined || val === '' || isNaN(val);
 };
 
 /**
