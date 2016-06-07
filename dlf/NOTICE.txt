@@ -1,1 +1,1 @@
-See https://github.com/goobi/goobi-presentation
+See https://github.com/kitodo/kitodo-presentation
