@@ -57,7 +57,35 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 
 		$output = array ();
 
-		// $this->audio holds an array with URL and MIME type of the audio file.
+		// Add jQuery library.
+		tx_dlf_helper::loadJQuery();
+
+		$output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/blue.monday/css/jplayer.blue.monday.min.css">';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.min.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/audioplayer/js/tx_dlf_audioplayer.js"></script>';
+
+		var_dump($this->audio);
+
+		// Add player configuration.
+		$output[] = '
+		<style>
+			#tx-dlf-audio { width: 100px; height: 100px };
+		</style>
+		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
+			window.onload = function() {
+				tx_dlf_audioplayer = new dlfAudioPlayer({
+					audio: {
+						mimeType: "' . $this->audio['mimetype'] . '",
+						title: "",
+						url:  "' . $this->audio['url'] . '"
+					},
+					parentElId: "tx-dlf-audio",
+					swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.swf"
+				});
+			}
+		</script>';
 
 		return implode("\n", $output);
 
