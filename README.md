@@ -13,6 +13,6 @@ To get more information, visit the [Kitodo homepage](http://kitodo.org). You can
 Kitodo.Presentation
 ------------------
 
-Kitodo.Presentation is highly customizable through an user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://github.com/TYPO3/TYPO3.CMS), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media.
+Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://github.com/TYPO3/TYPO3.CMS), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media.
 
 Older releases can be found on [Launchpad](https://launchpad.net/goobi-presentation).
