@@ -1,7 +1,7 @@
 {
-  "name": "goobi-presentation",
+  "name": "kitodo-presentation",
   "version": "1.0.0",
-  "description": "Main goobi-presentation javascript module",
+  "description": "Main kitodo-presentation javascript module",
   "main": "tx_dlf_pageview.js",
   "devDependencies": {
     "jquery": "^1.9.x",
