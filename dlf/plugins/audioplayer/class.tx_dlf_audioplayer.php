@@ -66,8 +66,6 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 
 		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/audioplayer/js/tx_dlf_audioplayer.js"></script>';
 
-		var_dump($this->audio);
-
 		// Add player configuration.
 		$output[] = '
 		<style>
