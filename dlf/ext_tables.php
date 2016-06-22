@@ -220,6 +220,15 @@ $TCA['tx_dlf_libraries'] = array (
 // Register static typoscript.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'typoscript/', 'Basic Configuration');
 
+// Plugin "audioplayer".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_audioplayer'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_audioplayer'] = 'pi_flexform';
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_audioplayer', $_EXTKEY.'_audioplayer'), 'list_type');
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_audioplayer', 'FILE:EXT:'.$_EXTKEY.'/plugins/audioplayer/flexform.xml');
+
 // Plugin "collection".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collection'] = 'layout,select_key,pages,recursive';
 
