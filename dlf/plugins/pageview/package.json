@@ -1,7 +1,7 @@
 {
-  "name": "kitodo-presentation",
+  "name": "dlf",
   "version": "1.0.0",
-  "description": "Main kitodo-presentation javascript module",
+  "description": "Main DLF javascript module",
   "main": "tx_dlf_pageview.js",
   "devDependencies": {
     "jquery": "^1.9.x",
