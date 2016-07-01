@@ -24,7 +24,7 @@ Kitodo.Presentation
 
 	:Description:
 		Kitodo.Presentation is a powerful framework for building a METS-based digital library.
-		It is highly customizable through an user-friendly backend and flexible design templates.
+		It is highly customizable through a user-friendly backend and flexible design templates.
 
 	:Keywords:
 		comma,separated,list,of,keywords
