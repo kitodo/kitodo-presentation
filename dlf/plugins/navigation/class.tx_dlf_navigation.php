@@ -181,6 +181,9 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		}
 
+		// Steps for X pages backward / forward. Double page view uses double steps.
+		$pageSteps = $this->conf['pageStep'] * ($this->piVars['double'] + 1);
+
 		// Link to first page.
 		if ($this->piVars['page'] > 1) {
 
@@ -193,13 +196,13 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		}
 
 		// Link back X pages.
-		if ($this->piVars['page'] > ($this->conf['pageStep'] * ($this->piVars['double'] + 1))) {
+		if ($this->piVars['page'] > $pageSteps) {
 
-			$markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $this->conf['pageStep']), array ('page' => $this->piVars['page'] - ($this->conf['pageStep'] * ($this->piVars['double'] + 1))));
+			$markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps), array ('page' => $this->piVars['page'] - $pageSteps));
 
 		} else {
 
-			$markerArray['###BACK###'] = '<span>'.sprintf($this->pi_getLL('backXPages', '', TRUE), $this->conf['pageStep']).'</span>';
+			$markerArray['###BACK###'] = '<span>'.sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps).'</span>';
 
 		}
 
@@ -226,13 +229,13 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 		}
 
 		// Link forward X pages.
-		if ($this->piVars['page'] <= ($this->doc->numPages - ($this->conf['pageStep'] * ($this->piVars['double'] + 1)))) {
+		if ($this->piVars['page'] <= ($this->doc->numPages - $pageSteps)) {
 
-			$markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $this->conf['pageStep']), array ('page' => $this->piVars['page'] + ($this->conf['pageStep'] * ($this->piVars['double'] + 1))));
+			$markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps), array ('page' => $this->piVars['page'] + $pageSteps));
 
 		} else {
 
-			$markerArray['###FORWARD###'] = '<span>'.sprintf($this->pi_getLL('forwardXPages', '', TRUE), $this->conf['pageStep']).'</span>';
+			$markerArray['###FORWARD###'] = '<span>'.sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps).'</span>';
 
 		}
 
