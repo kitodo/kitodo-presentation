@@ -105,8 +105,9 @@ function dlfViewer() {
 	 */
 	this.fullTextCoordinates = [];
 
-	this.featureClicked = null;
+    this.cropping = true;
 
+    this.init();
 	this.croppingEnabled = false;
 
 	this.selectionInteraction = null;
@@ -120,7 +121,6 @@ function dlfViewer() {
 	this.cropFeature = null;
 
 	this.magnifierEnabled = false;
-
 }
 
 /**
@@ -191,42 +191,46 @@ dlfViewer.prototype.addControls = function(controls) {
  *
  * @return	void
  */
-dlfViewer.prototype.addImages = function(urls) {
+dlfViewer.prototype.addCustomControls = function() {
+  var fulltextControl = undefined,
+    imageManipulationControl = undefined,
+    croppingControl = undefined,
+    images = this.images;
 
-	var img = [];
+    // Add cropping control
+    if (this.cropping) {
+      croppingControl = new dlfViewerCroppingControl();
+    }
+
+    // Adds fulltext behavior only if there is fulltext available and no double page
+    // behavior is active
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0] !== '' && this.images.length == 1)
+      fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0]);
 
 	// Get total number of images.
 	this.imagesLoaded[1] = urls.length;
 
-	for (var i in urls) {
+      dlfUtils.testIfCORSEnabled(this.imageUrls[0],
+        $.proxy(function() {
+          // should be called if cors is enabled
+          imageManipulationControl = new dlfViewerImageManipulationControl({
+              target: $('.tx-dlf-tools-imagetools')[0],
+              layers: dlfUtils.createLayers(images),
+              mapContainer: this.div,
+              referenceMap: this.map,
+              view: dlfUtils.createView(images)
+            });
 
-		// Prepare image loading.
-		this.images[i] = {
-			'src': urls[i],
-			'width': 0,
-			'height': 0
-		};
-
-		// Create new Image object.
-		img[i] = new Image();
-
-		// Register onload handler.
-		img[i].onload = function() {
-
-			for (var j in tx_dlf_viewer.images) {
-
-				if (tx_dlf_viewer.images[j].src == this.src) {
-
-					// Add additional image data.
-					tx_dlf_viewer.images[j] = {
-						'src': this.src,
-						'width': this.width,
-						'height': this.height
-					};
-
-					break;
-
-				}
+          // bind behavior of both together
+            if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+              $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
+              $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
+            }
+        }, this),
+        function() {
+          // should be called if cors is not available
+          $('#tx-dlf-tools-imagetools').addClass('deactivate');
+        })
 
 			}
 
@@ -255,7 +259,7 @@ dlfViewer.prototype.addImages = function(urls) {
  *
  * @param	array	urls: Array of URLs of the fulltext files
  *
- * @return	void
+ * @return  void
  */
 dlfViewer.prototype.addFulltexts = function(urls) {
 
@@ -306,49 +310,9 @@ dlfViewer.prototype.init = function() {
 
 
 
-	// Create image layers.
-	for (var i in this.images) {
-		
-		// var extent = [this.offset, 0, this.offset + this.images[i].width, this.images[i].height];
-		var extent = [0, 0, this.offset + this.images[i].width, this.images[i].height];
+            switch(controlNames[i]) {
 
-		// var extent = [0, 0, 1, 1];
-
-		var projection = new ol.proj.Projection({
-	      code: 'xkcd-image',
-	      units: 'pixels',
-	      extent: extent
-	    });
-
-	    this.imageLayer = new ol.layer.Image({
-	    	source: new ol.source.ImageStatic({
-	    		attributions: [
-	          		new ol.Attribution({
-	            		html: 'Test'
-	          		})
-	        	],
-	        	url: this.images[i].src,
-	        	projection: projection,
-	        	imageExtent: extent
-	      		}),
-	    	extent: extent
-    	})
-
-		layers.push(this.imageLayer
-			
-			// new ol.layer.Image(
-			// 	i,
-			// 	this.images[i].src,
-			// 	new ol.Bounds(this.offset, 0, this.offset + this.images[i].width, this.images[i].height),
-			// 	new ol.Size(this.images[i].width / 20, this.images[i].height / 20),
-			// 	{
-			// 		'displayInLayerSwitcher': false,
-			// 		'isBaseLayer': false,
-			// 		'maxExtent': new ol.Bounds(this.offset, 0, this.images.length * (this.offset + this.images[i].width), this.images[i].height),
-			// 		'visibility': true
-			// 	}
-			// )
-		);
+                case "OverviewMap":
 
 		// Set offset for right image in double-page mode.
 		if (this.offset == 0) {
@@ -363,132 +327,9 @@ dlfViewer.prototype.init = function() {
 
 			height = this.images[i].height;
 
-		}
-
-	}
-
-	// var mousePositionControl = new ol.control.MousePosition({
- //        // coordinateFormat: ol.coordinate.createStringXY(4),
- //        // projection: 'EPSG:4326',
- //        // // comment the following two lines to have the mouse position
- //        // // be placed within the map.
- //        className: 'custom-mouse-position',
- //        target: document.getElementById('mouse-position'),
- //        change: function(){
- //        	console.log("DAS IST EIN TEST");
- //        	console.log(this);
- //        }
- //        // undefinedHTML: '&nbsp;'
- //      });
-	
-
-	this.source = new ol.source.Vector();
-	// crop selection style
-    this.selectionInteraction = new ol.interaction.DragBox({
-        condition: ol.events.condition.noModifierKeys,
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: [0, 0, 255, 1]
-            })
-        })
-    });
-
-	// Add default controls to controls array.
-	// this.controls.unshift(new ol.Control.Navigation());
-
-	// this.controls.unshift(new ol.Control.Keyboard());
-	
-
-	this.view = new ol.View({
-        projection: projection,
-        center: ol.extent.getCenter(extent),
-        zoom: 2,
-        maxZoom: 10,
-        constrainRotation: 4,
-        extent: ol.proj.transform(extent, 
-        	'EPSG:4326', 'EPSG:3857'
-        )
-      });
-
-	// Initialize OpenLayers map.
-	this.map = new ol.Map({
-		controls: this.controls,
-     	layers: layers,
-      	target: 'tx-dlf-map',
-      	view: this.view,
-      	interactions: ol.interaction.defaults().extend([new Drag()]),
-    });
-	// this.map = new OpenLayers.Map({
-	// 	'allOverlays': true,
-	// 	'controls': this.controls,
-	// 	'div': this.div,
-	// 	'fractionalZoom': true,
-	// 	'layers': layers,
-	// 	'maxExtent': new OpenLayers.Bounds(0, 0, width, height),
-	// 	'minResolution': 1.0,
-	// 	'numZoomLevels': 20,
-	// 	'units': "m"
-	// });
-	
-	// cropping function
-	if (this.croppingEnabled) {
-		// a DragBox interaction used to select features by drawing boxes
-	    var dragBox = new ol.interaction.DragBox({
-	    	condition: ol.events.condition.platformModifierKeyOnly
-	    });
-
-	    this.map.addInteraction(dragBox);
-
-	    var dlfViewer = this;
-	    dragBox.on('boxend', function() {
-	        // features that intersect the box are added to the collection of
-	        // selected features, and their names are displayed in the "info"
-	        // div
-	        var info = [];
-	        var extent = dragBox.getGeometry().getExtent();
-	        var imageExtent = dlfViewer.map.getLayers().item(0).getExtent();
-
-	        var pixel = ol.extent.getIntersection(imageExtent, extent);
-	        var rotation = dlfViewer.map.getView().getRotation();
-
-	        // fill form with coordinates
-	        $('#addToBasketForm #startX').val(Math.round(pixel[0]));
-	        $('#addToBasketForm #startY').val(Math.round(pixel[1]));
-	        $('#addToBasketForm #endX').val(Math.round(pixel[2]));
-	        $('#addToBasketForm #endY').val(Math.round(pixel[3]));
-	        $('#addToBasketForm #rotation').val(Math.round(dlfViewer.radianToDegree(rotation)));
-
-	    });
-	} 
-	
-
-	// Position image according to user preferences.
-	if (this.getCookie("tx-dlf-pageview-centerLon") !== null && this.getCookie("tx-dlf-pageview-centerLat") !== null) {
-
-		this.map.getView().setCenter(
-			[
-				this.getCookie("tx-dlf-pageview-centerLon"),
-				this.getCookie("tx-dlf-pageview-centerLat")
-			]
-		);
-		this.map.getView().setZoom(this.getCookie("tx-dlf-pageview-zoomLevel"));
-		// this.map.setCenter(
-		// 	[
-		// 		this.getCookie("tx-dlf-pageview-centerLon"),
-		// 		this.getCookie("tx-dlf-pageview-centerLat")
-		// 	],
-		// 	this.getCookie("tx-dlf-pageview-zoomLevel"),
-		// 	true,
-		// 	true
-		// );
-
-	} else {
-
-		// this.map.zoomToMaxExtent();
-		// var extent = source.getExtent();
-		this.map.getView().fit(extent, this.map.getSize()); 
-
-	}
+            }
+        }
+    }
 
 	// add polygon layer if any
 	if (this.highlightFields.length) {
@@ -593,7 +434,20 @@ dlfViewer.prototype.saveSettings = function() {
  */
 dlfViewer.prototype.setCookie = function(name, value) {
 
-	document.cookie = name+"="+escape(value)+"; path=/";
+        var field = this.highlightFields[i],
+            coordinates = [[
+                [field[0], field[1]],
+                [field[2], field[1]],
+                [field[2], field[3]],
+                [field[0], field[3]],
+                [field[0], field[1]],
+            ]],
+            offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
+            feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
+                this.images[this.highlightFieldParams.index],
+                this.highlightFieldParams.width,
+                    this.highlightFieldParams.height,
+                    offset);
 
 };
 
@@ -622,18 +476,7 @@ dlfViewer.prototype.setDiv = function(elementId) {
  *
  * @return	void
  */
-dlfViewer.prototype.setLang = function(lang) {
-
-	// ol.Lang.setCode(lang);
-
-};
-
-// Register page unload handler to save user settings.
-$(window).unload(function() {
-
-	tx_dlf_viewer.saveSettings();
-
-});
+dlfViewer.prototype.fetchImages = function(callback) {
 
 /**
  * Add highlight field
@@ -872,8 +715,9 @@ dlfViewer.prototype.disableFulltextSelect = function() {
  */
 dlfViewer.prototype.enableFulltextSelect = function() {
 
-	// Create image layers.
-	for (var i in this.images) {
+        // set image property of the object
+        this.images = images,
+          renderer = 'canvas';
 
 		if (this.fulltexts[i]) {
 
@@ -1194,106 +1038,3 @@ function Drag() {
   this.previousCursor_ = undefined;
 
 };
-ol.inherits(Drag, ol.interaction.Pointer);
-
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- * @return {boolean} `true` to start the drag sequence.
- */
-Drag.prototype.handleDownEvent = function(evt) {
-  var map = evt.map;
-
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature, layer) {
-        return feature;
-      });
-
-  if (feature) {
-    this.coordinate_ = evt.coordinate;
-    this.feature_ = feature;
-  }
-
-  return !!feature;
-};
-
-
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- */
-Drag.prototype.handleDragEvent = function(evt) {
-  var map = evt.map;
-
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature, layer) {
-        return feature;
-      });
-
-  var deltaX = evt.coordinate[0] - this.coordinate_[0];
-  var deltaY = evt.coordinate[1] - this.coordinate_[1];
-
-  var geometry = /** @type {ol.geom.SimpleGeometry} */
-      (this.feature_.getGeometry());
-  geometry.translate(deltaX, deltaY);
-
-  this.coordinate_[0] = evt.coordinate[0];
-  this.coordinate_[1] = evt.coordinate[1];
-};
-
-
-/**
- * @param {ol.MapBrowserEvent} evt Event.
- */
-Drag.prototype.handleMoveEvent = function(evt) {
-  if (this.cursor_) {
-    var map = evt.map;
-    var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature, layer) {
-          return feature;
-        });
-    var element = evt.map.getTargetElement();
-    if (feature) {
-      if (element.style.cursor != this.cursor_) {
-        this.previousCursor_ = element.style.cursor;
-        element.style.cursor = this.cursor_;
-      }
-    } else if (this.previousCursor_ !== undefined) {
-      element.style.cursor = this.previousCursor_;
-      this.previousCursor_ = undefined;
-    }
-  }
-};
-
-
-/**
- * @param {ol.MapBrowserEvent} evt Map browser event.
- * @return {boolean} `false` to stop the drag sequence.
- */
-Drag.prototype.handleUpEvent = function(evt) {
-	console.log(this);
-	var extent = this.feature_.getGeometry().getExtent();
-	var imageExtent = evt.map.getLayers().item(0).getExtent();
-
-	var pixel = ol.extent.getIntersection(imageExtent, extent);
-	var rotation = evt.map.getView().getRotation();
-
-	// fill form with coordinates
-	if (pixel[0] != "Infinity" && pixel[1] != "Infinity" && pixel[2] != "Infinity" && pixel[3] != "Infinity") {
-		$('#addToBasketForm #startX').val(Math.round(pixel[0]));
-		$('#addToBasketForm #startY').val(Math.round(pixel[1]));
-		$('#addToBasketForm #endX').val(Math.round(pixel[2]));
-		$('#addToBasketForm #endY').val(Math.round(pixel[3]));
-		$('#addToBasketForm #rotation').val(Math.round(this.radianToDegree(rotation)));
-	}
-	//
-        
-	this.coordinate_ = null;
-	this.feature_ = null;
-	return false;
-};
-
-/**
- * convert radian to degree
- */
-Drag.prototype.radianToDegree = function(radian) {
-    return radian * (180 / Math.PI);
-}
