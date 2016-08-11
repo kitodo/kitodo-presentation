@@ -274,18 +274,27 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		// Add viewer library.
 		$output[] = '
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_cropping_control.js"></script>
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>
 		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
 		$output[] = '
 		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			tx_dlf_viewer = new dlfViewer();
-			tx_dlf_viewer.setDiv("'.$this->conf['elementId'].'");
-			tx_dlf_viewer.setLang("'.$this->lang.'");
-			tx_dlf_viewer.addControls(["'.implode('", "', $this->controls).'"]);
-			tx_dlf_viewer.addImages(["'.implode('", "', $this->images).'"]);
-			tx_dlf_viewer.addFulltexts(["'.implode('", "', $this->fulltexts).'"]);
-			tx_dlf_viewer.enableCropping();
+			window.onload = function() {
+				if (dlfUtils.exists(dlfViewer)) {
+					tx_dlf_viewer = new dlfViewer({
+						controls: ["' . implode('", "', $this->controls) . '"],
+						div: "' . $this->conf['elementId'] . '",
+						fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
+						images: ["' . implode('", "', $this->images) . '"],
+						cropping: "true"
+					})
+				}
+			}
 		</script>';
 
 		return implode("\n", $output);
