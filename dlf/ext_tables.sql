@@ -252,3 +252,71 @@ CREATE TABLE tx_dlf_relations (
     KEY uid_local (uid_local),
     KEY uid_foreign (uid_foreign)
 );
+
+--
+-- Table structure for table 'tx_dlf_basket'
+--
+CREATE TABLE tx_dlf_basket (
+    uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    session_id varchar(32) DEFAULT '' NOT NULL,
+    fe_user_id int(11) DEFAULT '0' NOT NULL,
+    sorting int(11) DEFAULT '0' NOT NULL,
+    doc_ids longtext  NOT NULL,
+    deleted tinyint(4) DEFAULT '0' NOT NULL,
+
+    PRIMARY KEY (uid),
+    KEY parent (pid)
+
+);
+
+--
+-- Table structure for table 'tx_dlf_printer'
+--
+CREATE TABLE tx_dlf_printer (
+    uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    address varchar(100) DEFAULT '' NOT NULL,
+    name varchar(100) DEFAULT '' NOT NULL,
+    label text NOT NULL,
+    deleted tinyint(4) DEFAULT '0' NOT NULL,
+
+    PRIMARY KEY (uid),
+    KEY parent (pid)
+
+);
+
+--
+-- Table structure for table 'tx_dlf_mail'
+--
+CREATE TABLE tx_dlf_mail (
+    uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    mail varchar(100) DEFAULT '' NOT NULL,
+    name varchar(100) DEFAULT '' NOT NULL,
+    label text NOT NULL,
+    deleted tinyint(4) DEFAULT '0' NOT NULL,
+
+    PRIMARY KEY (uid),
+    KEY parent (pid)
+
+);
+
+--
+-- Table structure for table 'tx_dlf_actionlog'
+--
+CREATE TABLE tx_dlf_actionlog (
+    uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    crdate int(11) DEFAULT '0' NOT NULL,
+    user_id int(11) DEFAULT '0' NOT NULL,
+    file_name text NOT NULL,
+    count_pages int(11) DEFAULT '0' NOT NULL,
+    name varchar(100) DEFAULT '' NOT NULL,
+    label text NOT NULL,
+    deleted tinyint(4) DEFAULT '0' NOT NULL,
+
+    PRIMARY KEY (uid),
+    KEY parent (pid)
+
+);

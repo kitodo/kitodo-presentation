@@ -47,41 +47,49 @@
 							</config>
 						</TCEforms>
 					</pages>
-					<limit>
+					<pdfgenerate>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.limit</label>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfGenerate</label>
 							<config>
 								<type>input</type>
-								<eval>required,num,int</eval>
-								<default>25</default>
+								<eval>required</eval>
 							</config>
 						</TCEforms>
-					</limit>
-					<targetPid>
+					</pdfgenerate>
+					<pdfdownload>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.targetPid</label>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfDownload</label>
 							<config>
-								<type>group</type>
-								<internal_type>db</internal_type>
-								<allowed>pages</allowed>
-								<size>1</size>
-								<maxitems>1</maxitems>
-								<minitems>1</minitems>
+								<type>input</type>
+								<eval>required</eval>
+								<default></default>
 							</config>
 						</TCEforms>
-					</targetPid>
-					<getTitle>
+					</pdfdownload>
+					<pdfparams>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.getTitle</label>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfParams</label>
 							<config>
-								<type>check</type>
-								<default>0</default>
+								<type>input</type>
+								<eval>required</eval>
+								<default>##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##</default>
 							</config>
 						</TCEforms>
-					</getTitle>
+					</pdfparams>
+					<pdfparamseparator>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfParamSeparator</label>
+							<config>
+								<type>input</type>
+								<eval>required</eval>
+								<default>*</default>
+							</config>
+						</TCEforms>
+					</pdfparamseparator>
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>

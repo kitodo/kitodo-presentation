@@ -1181,3 +1181,195 @@ $TCA['tx_dlf_libraries'] = array (
 		'4' => array ('showitem' => 'union_base', 'canNotCollapse' => 1),
 	),
 );
+
+$TCA['tx_dlf_basket'] = array (
+	'ctrl' => $TCA['tx_dlf_basket']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'label,doc_ids,session_id',
+	),
+	'feInterface' => $TCA['tx_dlf_basket']['feInterface'],
+	'columns' => array (
+		'label' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.label',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'required,trim',
+			),
+		),
+		'index_name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.sessionId',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'alphanum,unique',
+			),
+		),
+		'type_name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.docIds',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'alphanum,unique',
+			),
+		),
+	),
+	'types' => array (
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_basket.tab1, label;;;;1-1-1, sessionId;;;;2-2-2, docIds;;;;2-2-2'),
+	),
+	'palettes' => array (
+		'1' => array ('showitem' => ''),
+	),
+);
+
+$TCA['tx_dlf_printer'] = array (
+	'ctrl' => $TCA['tx_dlf_printer']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'label,name,address',
+	),
+	'feInterface' => $TCA['tx_dlf_printer']['feInterface'],
+	'columns' => array (
+		'label' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.label',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'required,trim',
+			),
+		),
+		'name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.name',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'required,unique',
+			),
+		),
+		'address' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.address',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'required,unique',
+			),
+		),
+	),
+	'types' => array (
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_printer.tab1, label;;;;1-1-1, name;;;;2-2-2, address;;;;2-2-2'),
+	),
+	'palettes' => array (
+		'1' => array ('showitem' => ''),
+	),
+);
+
+$TCA['tx_dlf_mail'] = array (
+	'ctrl' => $TCA['tx_dlf_mail']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'label,name,mail',
+	),
+	'feInterface' => $TCA['tx_dlf_mail']['feInterface'],
+	'columns' => array (
+		'label' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'required',
+			),
+		),
+		'name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail.name',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'alphanum',
+			),
+		),
+		'mail' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail.mail',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'unique',
+			),
+		),
+	),
+	'types' => array (
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_mail.tab1, label;;;;1-1-1, name;;;;2-2-2, mail;;;;2-2-2'),
+	),
+	'palettes' => array (
+		'1' => array ('showitem' => ''),
+	),
+);
+
+$TCA['tx_dlf_actionlog'] = array (
+	'ctrl' => $TCA['tx_dlf_actionlog']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'label,name,creation_date',
+		'maxDBListItems' => 25,
+		'maxSingleDBListItems' => 50,
+	),
+	'feInterface' => $TCA['tx_dlf_actionlog']['feInterface'],
+	'columns' => array (
+		'label' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.label',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'required,trim',
+			),
+		),
+		'user_id' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.user_id',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'alphanum,unique',
+			),
+		),
+		'file_name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.file_name',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'alphanum,unique',
+			),
+		),
+		'count_pages' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.count_pages',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'trim',
+			),
+		),
+		'name' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.name',
+			'config' => array (
+				'type' => 'input',
+				'size' => 30,
+				'max' => 255,
+				'eval' => 'trim',
+			),
+		)
+	),
+	'types' => array (
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, creation_date;;;;2-2-2, count_pages;;;;2-2-2'),
+	),
+	'palettes' => array (
+		'1' => array ('showitem' => ''),
+	),
+);

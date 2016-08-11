@@ -135,119 +135,121 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		// Load required OpenLayers components.
-		$components = array (
-			// Map feature.
-			'OpenLayers/BaseTypes.js',
-			'OpenLayers/BaseTypes/Class.js',
-			'OpenLayers/BaseTypes/Bounds.js',
-			'OpenLayers/BaseTypes/Element.js',
-			'OpenLayers/BaseTypes/LonLat.js',
-			'OpenLayers/BaseTypes/Pixel.js',
-			'OpenLayers/BaseTypes/Size.js',
-			'OpenLayers/Console.js',
-			'OpenLayers/Lang.js',
-			'OpenLayers/Util.js',
-			'OpenLayers/Util/vendorPrefix.js',
-			'OpenLayers/Lang/'.$this->lang.'.js',
-			'OpenLayers/Events.js',
-			'OpenLayers/Events/buttonclick.js',
-			'OpenLayers/Events/featureclick.js',
-			'OpenLayers/Animation.js',
-			'OpenLayers/Tween.js',
-			'OpenLayers/Projection.js',
-			'OpenLayers/Map.js',
-			// Default event handlers and controls.
-			'OpenLayers/Handler.js',
-			'OpenLayers/Handler/Click.js',
-			'OpenLayers/Handler/Drag.js',
-			'OpenLayers/Handler/Box.js',
-			'OpenLayers/Handler/Keyboard.js',
-			'OpenLayers/Handler/MouseWheel.js',
-			'OpenLayers/Handler/Pinch.js',
-			'OpenLayers/Control.js',
-			'OpenLayers/Control/DragPan.js',
-			'OpenLayers/Control/PinchZoom.js',
-			'OpenLayers/Control/ZoomBox.js',
-			'OpenLayers/Control/Navigation.js',
-			'../../../plugins/pageview/OpenLayers_Control_Keyboard.js',
-			// Image layer.
-			'OpenLayers/Tile.js',
-			'OpenLayers/Tile/Image.js',
-			'OpenLayers/Layer.js',
-			'OpenLayers/Layer/HTTPRequest.js',
-			'OpenLayers/Layer/Grid.js',
-			'OpenLayers/Layer/Image.js',
-		);
+		// // Load required OpenLayers components.
+		// $components = array (
+		// 	// Map feature.
+		// 	'OpenLayers/BaseTypes.js',
+		// 	'OpenLayers/BaseTypes/Class.js',
+		// 	'OpenLayers/BaseTypes/Bounds.js',
+		// 	'OpenLayers/BaseTypes/Element.js',
+		// 	'OpenLayers/BaseTypes/LonLat.js',
+		// 	'OpenLayers/BaseTypes/Pixel.js',
+		// 	'OpenLayers/BaseTypes/Size.js',
+		// 	'OpenLayers/Console.js',
+		// 	'OpenLayers/Lang.js',
+		// 	'OpenLayers/Util.js',
+		// 	'OpenLayers/Util/vendorPrefix.js',
+		// 	'OpenLayers/Lang/'.$this->lang.'.js',
+		// 	'OpenLayers/Events.js',
+		// 	'OpenLayers/Events/buttonclick.js',
+		// 	'OpenLayers/Events/featureclick.js',
+		// 	'OpenLayers/Animation.js',
+		// 	'OpenLayers/Tween.js',
+		// 	'OpenLayers/Projection.js',
+		// 	'OpenLayers/Map.js',
+		// 	// Default event handlers and controls.
+		// 	'OpenLayers/Handler.js',
+		// 	'OpenLayers/Handler/Click.js',
+		// 	'OpenLayers/Handler/Drag.js',
+		// 	'OpenLayers/Handler/Box.js',
+		// 	'OpenLayers/Handler/Keyboard.js',
+		// 	'OpenLayers/Handler/MouseWheel.js',
+		// 	'OpenLayers/Handler/Pinch.js',
+		// 	'OpenLayers/Control.js',
+		// 	'OpenLayers/Control/DragPan.js',
+		// 	'OpenLayers/Control/PinchZoom.js',
+		// 	'OpenLayers/Control/ZoomBox.js',
+		// 	'OpenLayers/Control/Navigation.js',
+		// 	'../../../plugins/pageview/OpenLayers_Control_Keyboard.js',
+		// 	// Image layer.
+		// 	'OpenLayers/Tile.js',
+		// 	'OpenLayers/Tile/Image.js',
+		// 	'OpenLayers/Layer.js',
+		// 	'OpenLayers/Layer/HTTPRequest.js',
+		// 	'OpenLayers/Layer/Grid.js',
+		// 	'OpenLayers/Layer/Image.js',
+		// );
 
-		// Load required OpenLayers components.
-		$componentsFulltexts = array (
-			// Geometry layer --> dfgviewer
-			'OpenLayers/Control/SelectFeature.js',
-			'OpenLayers/Control/DrawFeature.js',
-			'OpenLayers/Handler/Feature.js',
-			'OpenLayers/Handler/RegularPolygon.js',
-			'OpenLayers/Geometry.js',
-			'OpenLayers/Geometry/Collection.js',
-			'OpenLayers/Geometry/Polygon.js',
-			'OpenLayers/Geometry/MultiPoint.js',
-			'OpenLayers/Geometry/Curve.js',
-			'OpenLayers/Geometry/LineString.js',
-			'OpenLayers/Geometry/LinearRing.js',
-			'OpenLayers/Geometry/Point.js',
-			'OpenLayers/Feature.js',
-			'OpenLayers/Feature/Vector.js',
-			'OpenLayers/Layer/Vector.js',
-			'OpenLayers/Renderer.js',
-			'OpenLayers/Renderer/Elements.js',
-			'OpenLayers/Renderer/SVG.js',
-			'OpenLayers/Renderer/Canvas.js',
-			'OpenLayers/StyleMap.js',
-			'OpenLayers/Style.js',
-			// XML Parser.
-			'OpenLayers/Request.js',
-			'OpenLayers/Request/XMLHttpRequest.js',
-			'OpenLayers/Format.js',
-			'OpenLayers/Format/XML.js',
-			'../../../plugins/pageview/OpenLayers_Format_Alto.js',
-			'OpenLayers/Popup.js',
-			'OpenLayers/Popup/Anchored.js',
-			'OpenLayers/Popup/Framed.js',
-			'OpenLayers/Popup/FramedCloud.js',
-		);
+		// // Load required OpenLayers components.
+		// $componentsFulltexts = array (
+		// 	// Geometry layer --> dfgviewer
+		// 	'OpenLayers/Control/SelectFeature.js',
+		// 	'OpenLayers/Control/DrawFeature.js',
+		// 	'OpenLayers/Handler/Feature.js',
+		// 	'OpenLayers/Handler/RegularPolygon.js',
+		// 	'OpenLayers/Geometry.js',
+		// 	'OpenLayers/Geometry/Collection.js',
+		// 	'OpenLayers/Geometry/Polygon.js',
+		// 	'OpenLayers/Geometry/MultiPoint.js',
+		// 	'OpenLayers/Geometry/Curve.js',
+		// 	'OpenLayers/Geometry/LineString.js',
+		// 	'OpenLayers/Geometry/LinearRing.js',
+		// 	'OpenLayers/Geometry/Point.js',
+		// 	'OpenLayers/Feature.js',
+		// 	'OpenLayers/Feature/Vector.js',
+		// 	'OpenLayers/Layer/Vector.js',
+		// 	'OpenLayers/Renderer.js',
+		// 	'OpenLayers/Renderer/Elements.js',
+		// 	'OpenLayers/Renderer/SVG.js',
+		// 	'OpenLayers/Renderer/Canvas.js',
+		// 	'OpenLayers/StyleMap.js',
+		// 	'OpenLayers/Style.js',
+		// 	// XML Parser.
+		// 	'OpenLayers/Request.js',
+		// 	'OpenLayers/Request/XMLHttpRequest.js',
+		// 	'OpenLayers/Format.js',
+		// 	'OpenLayers/Format/XML.js',
+		// 	'../../../plugins/pageview/OpenLayers_Format_Alto.js',
+		// 	'OpenLayers/Popup.js',
+		// 	'OpenLayers/Popup/Anchored.js',
+		// 	'OpenLayers/Popup/Framed.js',
+		// 	'OpenLayers/Popup/FramedCloud.js',
+		// );
 
-		// Add custom control features.
-		foreach ($this->controls as $control) {
+		// // Add custom control features.
+		// foreach ($this->controls as $control) {
 
-			$components = array_merge($components, array_diff($this->controlDependency[$control], $components));
+		// 	$components = array_merge($components, array_diff($this->controlDependency[$control], $components));
 
-		}
+		// }
 
-		// Add fulltext polygon features.
-		if ($this->hasFulltexts) {
-			$components = array_merge($components, $componentsFulltexts);
-		}
+		// // Add fulltext polygon features.
+		// if ($this->hasFulltexts) {
+		// 	$components = array_merge($components, $componentsFulltexts);
+		// }
 
-		$output[] = '<script type="text/javascript">';
+		// $output[] = '<script type="text/javascript">';
 
-		$output[] = 'var openLayersFiles = ["'.implode('", "', $components).'"];';
+		// $output[] = 'var openLayersFiles = ["'.implode('", "', $components).'"];';
 
-		// concat files for syntax highlightning, if present in header
-		if (! empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
+		// // concat files for syntax highlightning, if present in header
+		// if (! empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
 
-			$output[] = 'window.OpenLayers = openLayersFiles.concat( openLayerFilesHighlightning );';
+		// 	$output[] = 'window.OpenLayers = openLayersFiles.concat( openLayerFilesHighlightning );';
 
-		} else {
+		// } else {
 
-			$output[] = 'window.OpenLayers = openLayersFiles;';
+		// 	$output[] = 'window.OpenLayers = openLayersFiles;';
 
-		}
+		// }
 
-		$output[] = '</script>';
+		// $output[] = '</script>';
 
+		// Add css
+		$GLOBALS['TSFE']->getPageRenderer()->addCssFile(t3lib_extMgm::siteRelPath('dlf') . 'lib/OpenLayers3/css/ol.css');
 		// Add OpenLayers library.
 		$output[] = '
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/lib/OpenLayers.js"></script>';
+		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers3/build/ol-debug.js"></script>';
 
 		return implode("\n", $output);
 
@@ -283,6 +285,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			tx_dlf_viewer.addControls(["'.implode('", "', $this->controls).'"]);
 			tx_dlf_viewer.addImages(["'.implode('", "', $this->images).'"]);
 			tx_dlf_viewer.addFulltexts(["'.implode('", "', $this->fulltexts).'"]);
+			tx_dlf_viewer.enableCropping();
 		</script>';
 
 		return implode("\n", $output);

@@ -17,7 +17,7 @@ plugin.tx_dlf_toc.menuConf {
 					append.field = volume
 					append.wrap = &nbsp;|
 				}
-				dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span>
+				dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span> <span class="tx-dlf-basket-button">{field:basketButtonHref}</span>
 			}
 			doNotLinkIt.field = doNotLinkIt
 			ATagTitle.field = type // orderlabel

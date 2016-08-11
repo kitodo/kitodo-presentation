@@ -24,7 +24,7 @@
 <T3locallang>
 	<meta type="array">
 		<type>module</type>
-		<description>Language labels for plugin tx_dlf_listview</description>
+		<description>Language labels for plugin tx_dlf_basket</description>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
@@ -33,19 +33,20 @@
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
 			<label index="tt_content.pi_flexform.getTitle">Show title of parent document if document has no title itself</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+      <label index="tt_content.pi_flexform.pdfGenerate">PDF generate URL (without parameters)</label>
+      <label index="tt_content.pi_flexform.pdfDownload">PDF download URL (without parameters)</label>
+      <label index="tt_content.pi_flexform.pdfParams">Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)</label>
+      <label index="tt_content.pi_flexform.pdfParamSeparator">Parameter separator (for multiple documents)</label>
 			<label index="nohits">Nothing found.</label>
-			<label index="count">Entries %d to %d of %d.</label>
-			<label index="prevPage">&lt;</label>
-			<label index="nextPage">&gt;</label>
-			<label index="page">%d</label>
-			<label index="separator"> - </label>
-			<label index="skip">...</label>
-			<label index="orderBy">Order by: </label>
-			<label index="relevance">relevance</label>
-			<label index="direction">Direction: </label>
-			<label index="direction.asc">ascending</label>
-			<label index="direction.desc">descending</label>
+			<label index="count">Entries %d.</label>
 			<label index="noTitle">[no title]</label>
+      <label index="mailSubject">Goobi Presentation - Document</label>
+      <label index="mailBody">The following documents are sent to you by Goobi Presentation:</label>
+      <label index="basket">Basket</label>
+      <label index="remove">Remove</label>
+      <label index="cutout">Cutout</label>
+      <label index="page">Page</label>
+      <label index="open">Open</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -53,19 +54,20 @@
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
 			<label index="tt_content.pi_flexform.getTitle">Bei Bedarf Titel des übergeordneten Dokuments anzeigen</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+      <label index="tt_content.pi_flexform.pdfGenerate">URL zum Generieren der PDF Dokumente (ohne Parameter)</label>
+      <label index="tt_content.pi_flexform.pdfDownload">URL zum Download der PDF Dokumente (ohne Parameter) </label>
+       <label index="tt_content.pi_flexform.pdfParams">Parameter zu den genannten URLs (mit Platzhalter für die Parameter z.B. ##startX##,##startY##)</label>
+      <label index="tt_content.pi_flexform.pdfParamSeparator">Zeichen zum Separieren der Parameter eines Dokuments</label>
 			<label index="nohits">Keine Treffer.</label>
-			<label index="count">Einträge %d bis %d von %d.</label>
-			<label index="prevPage">&lt;</label>
-			<label index="nextPage">&gt;</label>
-			<label index="page">%d</label>
-			<label index="separator"> - </label>
-			<label index="skip">...</label>
-			<label index="orderBy">Sortieren nach: </label>
-			<label index="relevance">Relevanz</label>
-			<label index="direction">Richtung: </label>
-			<label index="direction.asc">aufsteigend</label>
-			<label index="direction.desc">absteigend</label>
-			<label index="noTitle">[kein Titel]</label>
+			<label index="count">Einträge %d.</label>
+			<label index="noTitle">[Kein Titel]</label>
+      <label index="mailSubject">Goobi Presentation - Dokument</label>
+      <label index="mailBody">Folgendes Dokumente wurde über die Goobi Presentation Extension an Sie verschickt:</label>
+      <label index="basket">Warenkorb</label>
+      <label index="remove">Entfernen</label>
+      <label index="cutout">Ausschnitt</label>
+      <label index="page">Seite</label>
+      <label index="open">Öffnen</label>
 		</languageKey>
 	</data>
 </T3locallang>
