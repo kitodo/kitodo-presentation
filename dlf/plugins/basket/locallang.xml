@@ -35,6 +35,7 @@
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
       <label index="tt_content.pi_flexform.pdfGenerate">PDF generate URL (without parameters)</label>
       <label index="tt_content.pi_flexform.pdfDownload">PDF download URL (without parameters)</label>
+      <label index="tt_content.pi_flexform.pdfPrint">PDF print URL (without parameters)</label>
       <label index="tt_content.pi_flexform.pdfParams">Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)</label>
       <label index="tt_content.pi_flexform.pdfParamSeparator">Parameter separator (for multiple documents)</label>
 			<label index="nohits">Nothing found.</label>
@@ -47,6 +48,11 @@
       <label index="cutout">Cutout</label>
       <label index="page">Page</label>
       <label index="open">Open</label>
+      <label index="download">Download</label>
+      <label index="print">Print</label>
+      <label index="chooseAction">Choose an action</label>
+      <label index="choosePrinter">Choose a printer</label>
+      <label index="chooseMail">Choose a mail</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -56,7 +62,8 @@
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
       <label index="tt_content.pi_flexform.pdfGenerate">URL zum Generieren der PDF Dokumente (ohne Parameter)</label>
       <label index="tt_content.pi_flexform.pdfDownload">URL zum Download der PDF Dokumente (ohne Parameter) </label>
-       <label index="tt_content.pi_flexform.pdfParams">Parameter zu den genannten URLs (mit Platzhalter für die Parameter z.B. ##startX##,##startY##)</label>
+      <label index="tt_content.pi_flexform.pdfPrint">URL zum Drucken der PDF Dokumente (ohne Parameter) </label>
+      <label index="tt_content.pi_flexform.pdfParams">Parameter zu den genannten URLs (mit Platzhalter für die Parameter z.B. ##startX##,##startY##)</label>
       <label index="tt_content.pi_flexform.pdfParamSeparator">Zeichen zum Separieren der Parameter eines Dokuments</label>
 			<label index="nohits">Keine Treffer.</label>
 			<label index="count">Einträge %d.</label>
@@ -68,6 +75,11 @@
       <label index="cutout">Ausschnitt</label>
       <label index="page">Seite</label>
       <label index="open">Öffnen</label>
+      <label index="download">Herunterladen</label>
+      <label index="print">Drucken</label>
+      <label index="chooseAction">Aktion auswählen</label>
+      <label index="choosePrinter">Drucker auswählen</label>
+      <label index="chooseMail">E-Mail Empfänger auswählen</label>
 		</languageKey>
 	</data>
 </T3locallang>

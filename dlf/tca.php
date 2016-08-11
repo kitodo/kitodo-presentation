@@ -1241,27 +1241,18 @@ $TCA['tx_dlf_printer'] = array (
 				'eval' => 'required,trim',
 			),
 		),
-		'name' => array (
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.name',
+		'print' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.printcommand',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'required,unique',
-			),
-		),
-		'address' => array (
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.address',
-			'config' => array (
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-				'eval' => 'required,unique',
+				'eval' => 'required',
 			),
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_printer.tab1, label;;;;1-1-1, name;;;;2-2-2, address;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_printer.tab1, label;;;;1-1-1, print;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),
@@ -1367,7 +1358,7 @@ $TCA['tx_dlf_actionlog'] = array (
 		)
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, creation_date;;;;2-2-2, count_pages;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, creation_date;;;;2-2-2, count_pages;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),

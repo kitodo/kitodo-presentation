@@ -145,9 +145,10 @@
 			<label index="tx_dlf_libraries.tab2">Translation</label>
 			<label index="tx_dlf_libraries.tab3">Catalogs</label>
 			<label index="tx_dlf_printer">Printer</label>
-			<label index="tx_dlf_printer.label">Name</label>
+			<label index="tx_dlf_printer.label">Label</label>
 			<label index="tx_dlf_printer.address">Networkaddress</label>
 			<label index="tx_dlf_printer.name">Name</label>
+			<label index="tx_dlf_printer.printcommand">Drucker Cli Befehl (##fileName##)</label>
 			<label index="tx_dlf_mail">Label mail</label>
 			<label index="tx_dlf_mail.mail">Address</label>
 			<label index="tx_dlf_mail.name">Name</label>
@@ -344,9 +345,10 @@
 			<label index="tx_dlf_libraries.tab2">Übersetzung</label>
 			<label index="tx_dlf_libraries.tab3">Kataloge</label>
 			<label index="tx_dlf_printer">Drucker</label>
-			<label index="tx_dlf_printer.label">Name</label>
+			<label index="tx_dlf_printer.label">Label</label>
 			<label index="tx_dlf_printer.address">Netzwerkadresse</label>
 			<label index="tx_dlf_printer.name">Name</label>
+			<label index="tx_dlf_printer.printcommand">Drucker Cli Befehl (##fileName##)</label>
 			<label index="tx_dlf_mail">Label Mail</label>
 			<label index="tx_dlf_mail.mail">Adresse</label>
 			<label index="tx_dlf_mail.name">Name</label>

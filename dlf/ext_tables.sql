@@ -276,8 +276,7 @@ CREATE TABLE tx_dlf_basket (
 CREATE TABLE tx_dlf_printer (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
-    address varchar(100) DEFAULT '' NOT NULL,
-    name varchar(100) DEFAULT '' NOT NULL,
+    print varchar(255) DEFAULT '' NOT NULL,
     label text NOT NULL,
     deleted tinyint(4) DEFAULT '0' NOT NULL,
 

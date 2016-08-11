@@ -243,15 +243,14 @@ $TCA['tx_dlf_printer'] = array (
 	'ctrl' => array (
 		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer',
 		'label'     => 'label',
-		'name'		=> 'name',
-		'address'	=> 'address',
+		'print' 	=> 'print',
 		'default_sortby' => 'ORDER BY label',
 		'delete'	=> 'deleted',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'tca.php',
 		'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'res/icons/txdlflibraries.png',
 		'rootLevel'	=> 0,
 		'dividers2tabs' => 2,
-		'searchFields' => 'label,name,address',
+		'searchFields' => 'label,print',
 	),
 	'feInterface' => array (
 		'fe_admin_fieldList' => '',

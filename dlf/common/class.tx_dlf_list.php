@@ -293,7 +293,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 								'uid' => $resArray->uid,
 								'page' => $resArray->page,
 								'thumbnail' => $resArray->thumbnail,
-								'metadata' => $metadata
+								'metadata' => $metadata,
+								'sid' => $resArray->sid
 							);
 
 						}

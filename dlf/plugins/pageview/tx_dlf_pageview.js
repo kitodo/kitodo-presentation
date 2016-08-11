@@ -232,19 +232,9 @@ dlfViewer.prototype.addCustomControls = function() {
           $('#tx-dlf-tools-imagetools').addClass('deactivate');
         })
 
-			}
-
-			// Count image as completely loaded.
-			tx_dlf_viewer.imagesLoaded[0]++;
-
-			// Initialize OpenLayers map if all images are completely loaded.
-			if (tx_dlf_viewer.imagesLoaded[0] == tx_dlf_viewer.imagesLoaded[1]) {
-
-				tx_dlf_viewer.init();
-
-			}
-
-		};
+    }
+	// Add default controls to controls array.
+	// this.controls.unshift(new ol.Control.Navigation());
 
 		// Initialize image loading.
 		img[i].src = urls[i];
@@ -994,6 +984,111 @@ dlfViewer.prototype.activateMagnifier = function () {
 	    });
 	} else {
 		$('#ov_map').html('');
+		this.magnifierEnabled = false;
+	}
+}
+
+
+
+/**
+ * @constructor
+ * @extends {ol.interaction.Pointer}
+ */
+function Drag() {
+
+  ol.interaction.Pointer.call(this, {
+    handleDownEvent: Drag.prototype.handleDownEvent,
+    handleDragEvent: Drag.prototype.handleDragEvent,
+    handleMoveEvent: Drag.prototype.handleMoveEvent,
+    handleUpEvent: Drag.prototype.handleUpEvent
+  });
+
+  /**
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.coordinate_ = null;
+
+  /**
+   * @type {string|undefined}
+   * @private
+   */
+  this.cursor_ = 'pointer';
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.feature_ = null;
+
+  /**
+   * @type {string|undefined}
+   * @private
+   */
+  this.previousCursor_ = undefined;
+
+    var selectionLayer = new ol.layer.Vector({
+        source: this.source
+    });
+
+    this.map.addLayer(selectionLayer);
+    this.map.addInteraction(this.selectionInteraction);
+
+    
+}
+
+dlfViewer.prototype.resetCropSelection = function () {
+	this.source.clear();
+}
+dlfViewer.prototype.addMagnifier = function () {
+	// this.magnifierEnabled = true;
+    // not a map with all controls
+    // only for viewing
+    var extent = [0, 0, 1000, 1000];
+    var projection = new ol.proj.Projection({
+        code: 'xkcd-image',
+        units: 'pixels',
+        extent: extent
+    });
+
+    this.ov_view = new ol.View({
+        projection: projection,
+        center: ol.extent.getCenter(extent),
+        zoom: 3
+    });
+
+    // var ov_view = view;
+    // ov_view.setZoom(view.getZoom()+2);
+    var ov_map = new ol.Map({
+      target: 'ov_map',
+      view: this.ov_view,
+      controls: [],
+      interactions: []
+    });
+    var ov_layer = this.imageLayer;
+    ov_map.addLayer(ov_layer);
+
+    var mousePosition = null;
+    var dlfViewer = this;
+    this.map.on('pointermove', function (evt) {
+        // console.log("TEST");
+        mousePosition = dlfViewer.map.getEventCoordinate(evt.originalEvent);
+        dlfViewer.ov_view.setCenter(mousePosition);
+
+        // console.log(mousePosition);
+        // map.render();
+    });
+
+    $('#ov_map').hide();
+}
+
+dlfViewer.prototype.activateMagnifier = function () {
+	if (!this.magnifierEnabled) {
+		$('#ov_map').show();
+		this.magnifierEnabled = true;
+	} else {
+		$('#ov_map').hide();
+		// $('#ov_map').html('');
 		this.magnifierEnabled = false;
 	}
 }
