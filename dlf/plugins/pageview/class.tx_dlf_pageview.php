@@ -276,7 +276,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$output[] = '
 		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
 		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_cropping_control.js"></script>
 		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>
 		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>
 		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
@@ -292,13 +291,50 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 						fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
 						images: ["' . implode('", "', $this->images) . '"],
 						cropping: "true"
-					})
+					});
 				}
 			}
 		</script>';
 
 		return implode("\n", $output);
 
+	}
+
+	protected function addInteraction()
+	{
+        $markerArray = array();
+		if ($this->piVars['id']) {
+            $label = $this->pi_getLL('addBasket', '', TRUE);
+
+            if (empty($this->piVars['page'])) {
+                $params['page'] = 1;
+            }
+
+            if ($this->conf['crop']) {
+            	$markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">'.$this->pi_getLL('editMode', '', TRUE).'</a>';
+            	$markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">'.$this->pi_getLL('editRemove', '', TRUE).'</a>';
+            } else {
+            	$markerArray['###EDITBUTTON###'] = '';
+            	$markerArray['###EDITREMOVE###'] = '';
+            }
+
+            if ($this->conf['magnifier']) {
+            	$markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">'.$this->pi_getLL('magnifier', '', TRUE).'</a>';
+            } else {
+            	$markerArray['###MAGNIFIER###'] = '';
+            }
+
+            if ($this->conf['rotation']) {
+            	$markerArray['###ROTATELEFT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(-90);">'.$this->pi_getLL('rotateleft', '', TRUE).'</a>';
+            	$markerArray['###ROTATERIGHT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(90);">'.$this->pi_getLL('rotateright', '', TRUE).'</a>';
+            } else {
+            	$markerArray['###ROTATELEFT###'] = '';
+            	$markerArray['###ROTATERIGHT###'] = '';
+            }
+
+        }
+
+        return $markerArray;
 	}
 
 	/**
@@ -485,6 +521,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$markerArray = array (
 			'###VIEWER_JS###' => $this->addViewerJS()
 		);
+
+		$markerArray = array_merge($markerArray, $this->addInteraction());
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 

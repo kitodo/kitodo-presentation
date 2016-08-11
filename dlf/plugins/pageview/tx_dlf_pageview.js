@@ -42,12 +42,19 @@ function dlfViewer() {
 	 */
 	this.map = null;
 
-	/**
-	 * This holds the images' information like URL, width and height
-	 *
-	 * var array
-	 */
-	this.images = [];
+    /**
+     * Openlayers map object (magnifier)
+     * @type {ol.Map|null}
+     * @private
+     */
+    this.ov_map = null;
+
+    /**
+     * Contains image information (e.g. URL, width, height)
+     * @type {Array.<string>}
+     * @private
+     */
+    this.imageUrls = dlfUtils.exists(settings.images) ? settings.images : [];
 
 	/**
 	 * This holds the fulltexts' information like URL
@@ -105,7 +112,27 @@ function dlfViewer() {
 	 */
 	this.fullTextCoordinates = [];
 
+    /**
+     * @type {Boolean|true}
+     * @private
+     */
     this.cropping = true;
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.selection = undefined;
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.source = undefined;
+
+    this.selectionLayer = undefined;
+
+    this.draw = undefined;
 
     this.init();
 	this.croppingEnabled = false;
@@ -194,13 +221,7 @@ dlfViewer.prototype.addControls = function(controls) {
 dlfViewer.prototype.addCustomControls = function() {
   var fulltextControl = undefined,
     imageManipulationControl = undefined,
-    croppingControl = undefined,
     images = this.images;
-
-    // Add cropping control
-    if (this.cropping) {
-      croppingControl = new dlfViewerCroppingControl();
-    }
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
@@ -433,7 +454,7 @@ dlfViewer.prototype.setCookie = function(name, value) {
                 [field[0], field[1]],
             ]],
             offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
-            feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
+            var feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
                 this.images[this.highlightFieldParams.index],
                 this.highlightFieldParams.width,
                     this.highlightFieldParams.height,
@@ -709,81 +730,28 @@ dlfViewer.prototype.enableFulltextSelect = function() {
         this.images = images,
           renderer = 'canvas';
 
-		if (this.fulltexts[i]) {
+        this.imageLayers = dlfUtils.createLayers(images, renderer);
 
-			this.fullTextCoordinates[i] = this.loadALTO(this.fulltexts[i]);
-
-		}
-
-	}
-
-	// add fulltext layers if we have fulltexts to show
-	if (this.fullTextCoordinates.length > 0) {
-
-		for (var i in this.images) {
-
-			var textBlockCoordinates = this.fullTextCoordinates[i];
-
-			for (var j in textBlockCoordinates) {
-
-				// set scale either by Page or Printspace
-				if (textBlockCoordinates[j].type == 'Page') {
-
-					if (! tx_dlf_viewer.origImages[i]) {
-						this.setOrigImage(i, textBlockCoordinates[j].geometry['width'] , textBlockCoordinates[j].geometry['height'] );
-					}
-
-				} else if (textBlockCoordinates[j].type == 'PrintSpace') {
-
-					if (! tx_dlf_viewer.origImages[i]) {
-						this.setOrigImage(i, textBlockCoordinates[j].geometry['width'], textBlockCoordinates[j].geometry['height']);
-					}
-				}
-				else if (textBlockCoordinates[j].type == 'TextBlock') {
-
-					if (! this.textBlockLayer) {
-
-						this.textBlockLayer = new OpenLayers.Layer.Vector(
-
-							"TextBlock"
-
-						);
-
-						this.textBlockLayer.events.on({
-
-							'featureover': function(e) {
-
-								if (e.feature != this.featureClicked) {
-									e.feature.layer.drawFeature(e.feature, "hover");
-								}
-
-							},
-
-							'featureout': function(e) {
-
-								if (e.feature != this.featureClicked) {
-									e.feature.layer.drawFeature(e.feature, "default");
-								}
-
-							},
-
-							"featureclick": function(e) {
-
-								if (this.featureClicked != null) {
-
-									this.featureClicked.layer.drawFeature(this.featureClicked, "default");
-
-								}
-
-								this.showFulltext(e);
-								e.feature.layer.drawFeature(e.feature, "select");
-								this.featureClicked = e.feature;
-
-							},
-
-							scope: this
-
-						});
+        // create map
+        this.map = new ol.Map({
+            layers: this.imageLayers,
+            target: this.div,
+            controls: this.controls,
+                /*new ol.control.MousePosition({
+                    coordinateFormat: ol.coordinate.createStringXY(4),
+                    undefinedHTML: '&nbsp;'
+                })*/
+            interactions: [
+                new ol.interaction.DragPan(),
+                new ol.interaction.MouseWheelZoom(),
+                new ol.interaction.KeyboardPan(),
+                new ol.interaction.KeyboardZoom
+            ],
+            // necessary for proper working of the keyboard events
+            keyboardEventTarget: document,
+            view: dlfUtils.createView(images),
+            renderer: renderer
+        });
 
 					}
 
@@ -791,7 +759,8 @@ dlfViewer.prototype.enableFulltextSelect = function() {
 
 					this.addPolygonlayer(this.textBlockLayer, polygon, 'TextBlock');
 
-				}
+        // trigger event after all has been initialize
+        $(this).trigger("initialize-end", this);
 
 			}
 
@@ -806,6 +775,20 @@ dlfViewer.prototype.enableFulltextSelect = function() {
 
 	}
 
+    this.source = new ol.source.Vector();
+    // crop selection style
+    this.selection = new ol.interaction.DragBox({
+        condition: ol.events.condition.noModifierKeys,
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: [0, 0, 255, 1]
+            })
+        })
+    });
+
+    this.initCropping();
+
+    return deferredResponse;
 };
 
 /**
@@ -1027,73 +1010,181 @@ function Drag() {
    */
   this.previousCursor_ = undefined;
 
-    var selectionLayer = new ol.layer.Vector({
-        source: this.source
-    });
+};
 
-    this.map.addLayer(selectionLayer);
-    this.map.addInteraction(this.selectionInteraction);
+/**
+ * convert degree to radian
+ */
+dlfViewer.prototype.degreeToRadian = function (degree) {
+  return degree * (Math.PI / 180);
+}
 
+/**
+ * convert radian to degree
+ */
+dlfViewer.prototype.radianToDegree = function (radian) {
+  return radian * (180 / Math.PI);
+}
+
+/**
+ * activate crop selection and set crop values to form
+ */
+dlfViewer.prototype.activateSelection = function () {
+	this.resetCropSelection();
+    this.map.addInteraction(this.draw);
     
 }
 
-dlfViewer.prototype.resetCropSelection = function () {
-	this.source.clear();
+dlfViewer.prototype.initCropping = function () {
+	var viewerObject = this;
+
+    var source = new ol.source.Vector({wrapX: false});
+
+    this.selectionLayer = new ol.layer.Vector({
+    	source: source
+    });
+
+    value = 'LineString';
+    maxPoints = 2;
+    geometryFunction = function(coordinates, geometry) {
+    	if (!geometry) {
+    		geometry = new ol.geom.Polygon(null);
+    	}
+    	var start = coordinates[0];
+      	var end = coordinates[1];
+      	geometry.setCoordinates([
+        	[start, [start[0], end[1]], end, [end[0], start[1]], start]
+      	]);
+
+      	// add to basket button
+        var extent = geometry.getExtent();
+        var imageExtent = viewerObject.map.getLayers().item(0).getSource().getProjection().getExtent();
+
+        var pixel = ol.extent.getIntersection(imageExtent, extent);
+        var rotation = viewerObject.map.getView().getRotation();
+
+        // fill form with coordinates
+        $('#addToBasketForm #startX').val(Math.round(pixel[0]));
+        $('#addToBasketForm #startY').val(Math.round(pixel[1]));
+        $('#addToBasketForm #endX').val(Math.round(pixel[2]));
+        $('#addToBasketForm #endY').val(Math.round(pixel[3]));
+        $('#addToBasketForm #rotation').val(Math.round(viewerObject.radianToDegree(rotation)));
+        //
+
+      	return geometry;
+    };
+
+    this.setNewCropDrawer(source);
 }
-dlfViewer.prototype.addMagnifier = function () {
-	// this.magnifierEnabled = true;
-    // not a map with all controls
-    // only for viewing
+
+/**
+ * reset crop selection
+ */
+dlfViewer.prototype.resetCropSelection = function () {
+	viewerObject = this;
+    this.map.removeLayer(this.selectionLayer);
+    this.source.clear();
+
+	var source = new ol.source.Vector({wrapX: false});
+
+	this.setNewCropDrawer(source);
+
+    this.selectionLayer = new ol.layer.Vector({
+    	source: source
+    });
+
+    this.map.addLayer(this.selectionLayer);
+    
+}
+
+dlfViewer.prototype.setNewCropDrawer = function (source) {
+	viewerObject = this;
+	this.draw = new ol.interaction.Draw({
+      	source: source,
+      	type: /** @type {ol.geom.GeometryType} */ (value),
+      	geometryFunction: geometryFunction,
+      	maxPoints: maxPoints
+    });
+
+	// reset crop interaction
+    this.draw.on('drawend', function (event) {
+    	viewerObject.map.removeInteraction(viewerObject.draw);
+    });
+
+    this.selectionLayer = new ol.layer.Vector({
+    	source: source
+    });
+}
+
+/**
+ * add magnifier map
+ */
+dlfViewer.prototype.addMagnifier = function (rotation) {
+
+    //magnifier map
     var extent = [0, 0, 1000, 1000];
-    var projection = new ol.proj.Projection({
-        code: 'xkcd-image',
+
+    layerProj = new ol.proj.Projection({
+        code: 'goobi-image',
         units: 'pixels',
         extent: extent
     });
 
     this.ov_view = new ol.View({
-        projection: projection,
+        projection: layerProj,
         center: ol.extent.getCenter(extent),
-        zoom: 3
+        zoom: 3,
+        rotation: rotation,
     });
 
-    // var ov_view = view;
-    // ov_view.setZoom(view.getZoom()+2);
-    var ov_map = new ol.Map({
+    this.ov_map = new ol.Map({
       target: 'ov_map',
       view: this.ov_view,
       controls: [],
       interactions: []
     });
-    var ov_layer = this.imageLayer;
-    ov_map.addLayer(ov_layer);
+
+    this.ov_map.addLayer(this.map.getLayers().getArray()[0]);    
 
     var mousePosition = null;
     var dlfViewer = this;
+    var ov_map = this.ov_map;
+
     this.map.on('pointermove', function (evt) {
-        // console.log("TEST");
         mousePosition = dlfViewer.map.getEventCoordinate(evt.originalEvent);
         dlfViewer.ov_view.setCenter(mousePosition);
-
-        // console.log(mousePosition);
-        // map.render();
     });
 
-    $('#ov_map').hide();
+    var adjustViews = function(sourceView, destMap) {
+        var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
+        var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
+
+        if (rotateDiff || centerDiff) {
+            destMap.getView().rotate(sourceView.getRotation());
+        }
+    },
+    adjustViewHandler = function(event) {
+        adjustViews(event.target, ov_map);
+    };
+
+    this.map.getView().on('change:rotation', adjustViewHandler, this.map);
+    adjustViews(this.map.getView(), this.ov_map);
 }
 
+/**
+ * activates the magnifier map
+ */
 dlfViewer.prototype.activateMagnifier = function () {
-	if (!this.magnifierEnabled) {
-		$('#ov_map').show();
-		this.magnifierEnabled = true;
-	} else {
-		$('#ov_map').hide();
-		// $('#ov_map').html('');
-		this.magnifierEnabled = false;
-	}
+    var rotation = this.map.getView().getRotation();
+    this.addMagnifier(rotation);
+    if (!this.magnifierEnabled) {
+        $('#ov_map').show();
+        this.magnifierEnabled = true;
+    } else {
+        $('#ov_map').hide();
+        this.magnifierEnabled = false;
+    }
 }
-
-
 
 /**
  * @constructor
@@ -1132,4 +1223,4 @@ function Drag() {
    */
   this.previousCursor_ = undefined;
 
-};
+}

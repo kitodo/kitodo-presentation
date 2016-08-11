@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <!--
   Copyright notice
-  
-  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+
+  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
   All rights reserved
-  
+
   This script is part of the TYPO3 project. The TYPO3 project is
   free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   The GNU General Public License can be found at
   http://www.gnu.org/copyleft/gpl.html.
-  
+
   This script is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   This copyright notice MUST APPEAR in all copies of the script!
 -->
 <T3DataStructure>
@@ -29,7 +29,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/plugins/navigation/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/plugins/interaction/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -84,7 +84,7 @@
                     <targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/navigation/locallang.xml:tt_content.pi_flexform.targetPid</label>
+                            <label>LLL:EXT:dlf/plugins/interaction/locallang.xml:tt_content.pi_flexform.targetPid</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -98,7 +98,7 @@
                     <templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/navigation/locallang.xml:tt_content.pi_flexform.templateFile</label>
+                            <label>LLL:EXT:dlf/plugins/interaction/locallang.xml:tt_content.pi_flexform.templateFile</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>

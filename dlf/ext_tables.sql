@@ -259,9 +259,13 @@ CREATE TABLE tx_dlf_relations (
 CREATE TABLE tx_dlf_basket (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
+    tstamp int(11) DEFAULT '0' NOT NULL,
+    label tinytext NOT NULL,
     session_id varchar(32) DEFAULT '' NOT NULL,
     fe_user_id int(11) DEFAULT '0' NOT NULL,
-    sorting int(11) DEFAULT '0' NOT NULL,
+    sys_language_uid int(11) DEFAULT '0' NOT NULL,
+    l18n_parent int(11) DEFAULT '0' NOT NULL,
+    l18n_diffsource mediumblob NOT NULL,
     doc_ids longtext  NOT NULL,
     deleted tinyint(4) DEFAULT '0' NOT NULL,
 

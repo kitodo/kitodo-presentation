@@ -2,7 +2,7 @@
 <!--
   Copyright notice
 
-  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
   All rights reserved
 
   This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 <T3locallang>
     <meta type="array">
         <type>module</type>
-        <description>Language labels for plugin tx_dlf_navigation</description>
+        <description>Language labels for plugin tx_dlf_interaction</description>
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
@@ -36,11 +36,6 @@
             <label index="tt_content.pi_flexform.targetBasket">Target page (with "DLF: Basket" plugin)</label>
             <label index="addBasket">Add to basket</label>
             <label index="goBasket">Go to basket</label>
-            <label index="editMode">Set cutout</label>
-            <label index="editRemove">Remove cutout</label>
-            <label index="magnifier">Magnifier</label>
-            <label index="rotateleft">Rotate left</label>
-            <label index="rotateright">Rotate right</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -51,11 +46,6 @@
             <label index="tt_content.pi_flexform.targetBasket">Zielseite (mit Plugin "DLF: Warenkorb")</label>
             <label index="addBasket">Zum Warenkorb hinzufügen</label>
             <label index="goBasket">Zum Warenkorb</label>
-            <label index="editMode">Ausschnitt auswählen</label>
-            <label index="editRemove">Ausschnitt entfernen</label>
-            <label index="magnifier">Lupe</label>
-            <label index="rotateleft">Links drehen</label>
-            <label index="rotateright">Rechts drehen</label>
         </languageKey>
     </data>
 </T3locallang>

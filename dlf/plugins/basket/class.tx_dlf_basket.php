@@ -1,33 +1,33 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
 
 /**
- * Plugin 'DLF: List View' for the 'dlf' extension.
+ * Plugin 'DLF: Basket' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Christopher Timm <timm@effective-webwork.de>
@@ -55,9 +55,6 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 		// Don't cache the output.
 		$this->setCache(FALSE);
-
-		// Load the list.
-		// $this->list = t3lib_div::makeInstance('tx_dlf_basket');
 
 		// Load template file.
 		if (!empty($this->conf['templateFile'])) {
@@ -164,20 +161,6 @@ class tx_dlf_basket extends tx_dlf_plugin {
 				$this->sendMail($this->piVars);
 			}
 		}
-
-		// if ($this->piVars['print_action']) {
-		// 	if (isset($this->piVars['selected'])) {
-		// 		$this->printDocument();
-		// 	}
-		// }
-
-		$additionalParams = array ('remove' => true);
-		$conf = array (
-			'useCacheHash' => 1,
-			'parameter' => $this->conf['targetBasket'],
-			'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-		);
-		// $link = $this->cObj->typoLink_URL('Go to basket', $conf);
 
 		// set marker
 		$markerArray['###ACTION###'] = $this->pi_getPageLink($GLOBALS['TSFE']->id);
@@ -393,9 +376,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 				$items[$arrayKey] = $documentItem;
 
 				// replace url param placeholder
-				
 				$pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->conf['pdfparams']);
-				$pdfParams = str_replace("##endpage##", $documentItem['endpage'], $pdfParams);
 				$pdfParams = str_replace("##docId##", $document->recordId, $pdfParams);
 				$pdfParams = str_replace("##startx##", $documentItem['startX'], $pdfParams);
 				$pdfParams = str_replace("##starty##", $documentItem['startY'], $pdfParams);
@@ -403,19 +384,27 @@ class tx_dlf_basket extends tx_dlf_plugin {
 				$pdfParams = str_replace("##endy##", $documentItem['endY'], $pdfParams);
 				$pdfParams = str_replace("##rotation##", $documentItem['rotation'], $pdfParams);
 
+				if ($documentItem['startpage'] != $documentItem['endpage']) {
+					$pdfParams = str_replace("##endpage##", $documentItem['endpage'], $pdfParams);
+				} else {
+					// remove parameter endpage
+					$pdfParams = str_replace(",##endpage##", '', $pdfParams);
+				}
+
 				$pdfGenerateUrl = $this->conf['pdfgenerate'].$pdfParams;
 
-				// send ajax request to webapp
-				$output .= '
-				<script>
-					$(document).ready(function(){
-						$.ajax({
-						  url: "'.$pdfGenerateUrl.'",
-						}).done(function() {
+				if ($this->conf['pregeneration']) {
+					// send ajax request to webapp
+					$output .= '
+					<script>
+						$(document).ready(function(){
+							$.ajax({
+							  url: "'.$pdfGenerateUrl.'",
+							}).done(function() {
+							});
 						});
-					});
-				</script>';
-
+					</script>';
+				}
 				
 			}
 
@@ -423,8 +412,6 @@ class tx_dlf_basket extends tx_dlf_plugin {
 			$result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
 
 			$basketData['doc_ids'] = $items;
-
-			// return array('basketData' => $basketData, 'jsOutput' => $output);
 
 		}
 			return array('basketData' => $basketData, 'jsOutput' => $output);
@@ -479,27 +466,27 @@ class tx_dlf_basket extends tx_dlf_plugin {
 	}
 
 
-		/**
-		 * Open selected documents from basket
-		 * @param  array $_piVars    plugin variables
-		 * @param  array $basketData array with document information
-		 * @return array             basket data
-		 */
-		public function openFromBasket($_piVars, $basketData)
-		{
-			$pdfUrl = $this->conf['pdfgenerate'];
-			foreach ($this->piVars['selected'] as $docId => $docValue) {
-				if ($docValue['id']) {
-					$filename .= $docValue['id'].'_';
-					$docData = $this->getDocumentData($docValue['id'], $docValue);
-					$pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
-					$numberOfPages += $docData['pageNums'];
-				}
+	/**
+	 * Open selected documents from basket
+	 * @param  array $_piVars    plugin variables
+	 * @param  array $basketData array with document information
+	 * @return array             basket data
+	 */
+	public function openFromBasket($_piVars, $basketData)
+	{
+		$pdfUrl = $this->conf['pdfgenerate'];
+		foreach ($this->piVars['selected'] as $docId => $docValue) {
+			if ($docValue['id']) {
+				$filename .= $docValue['id'].'_';
+				$docData = $this->getDocumentData($docValue['id'], $docValue);
+				$pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+				$numberOfPages += $docData['pageNums'];
 			}
-			header("Location:".$pdfUrl);
-			exit;
-
 		}
+		header("Location:".$pdfUrl);
+		exit;
+
+	}
 
 	/**
 	 * Returns the downloadurl configured in the basket
@@ -558,10 +545,10 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 			$downloadLink = '<a href="'.$downloadUrl.'" target="_new">'.$title.'</a> ('.$info.')';
 
-			if ($data['page'] == 0) {
-				// $pageNums = $document->numPages;
-			} else {
+			if ($data['startpage'] == $data['endpage']) {
 				$pageNums = 1;
+			} else {
+				$pageNums = $data['endpage'] - $data['startpage'];
 			}
 
 			return array(
@@ -700,7 +687,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 		// printer is selected
 		if ($printerData) {
-			// $pdfUrl = $this->conf['pdfprint'];
+
 			$pdfUrl = $printerData['print'];
 			$filename = 'Document_';
 			$numberOfPages = 0;
@@ -728,12 +715,12 @@ class tx_dlf_basket extends tx_dlf_plugin {
 			// internal user
 			$insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
 			$insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-			$insertArray['label'] = 'Print: '.$printerData['name'];
+			$insertArray['label'] = 'Print: '.$printerData['label'];
 		} else {
 			// external user
 			$insertArray['user_id'] = 0;
 			$insertArray['name'] = 'n/a';
-			$insertArray['label'] = 'Print: '.$mailData['mail'];
+			$insertArray['label'] = 'Print: '.$printerData['label'];
 		}
 
 		// add action to protocol

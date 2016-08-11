@@ -269,9 +269,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		// basket button
 		$markerArray['###BASKETBUTTON###'] = '';
 		if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
-			// $additionalParams = array ('id' => $this->list[$number]['uid'], 'addToBasket' => true);
 			$additionalParams = array ('id' => $this->list[$number]['uid'], 'startpage' => $this->list[$number]['page'], 'addToBasket' => 'list');
-			// $additionalParams = array ('id' => 1, 'addToBasket' => 'list');
 			$conf = array (
 				'useCacheHash' => 1,
 				'parameter' => $this->conf['targetBasket'],
@@ -484,9 +482,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 			// basket button
 			$markerArray['###SUBBASKETBUTTON###'] = '';
 			if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
-				// $additionalParams = array ('id' => $this->list[$number]['uid'], 'addToBasket' => true);
 				$additionalParams = array ('id' => $this->list[$number]['uid'], 'startpage' => $subpart['page'], 'endpage' => $subpart['page'], 'logId' => $subpart['sid'], 'addToBasket' => 'subentry');
-				// $additionalParams = array ('id' => 1, 'addToBasket' => 'list');
 				$conf = array (
 					'useCacheHash' => 1,
 					'parameter' => $this->conf['targetBasket'],

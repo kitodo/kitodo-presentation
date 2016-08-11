@@ -39,6 +39,13 @@
 			<label index="tt_content.pi_flexform.elementId">@ID value of the HTML element for the page view</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
             <label index="tt_content.pi_flexform.crop">Enable cropping</label>
+            <label index="tt_content.pi_flexform.magnifier">Activate magnifier</label>
+            <label index="tt_content.pi_flexform.rotation">Add rotation buttons</label>
+            <label index="editMode">Set cutout</label>
+            <label index="editRemove">Remove cutout</label>
+            <label index="magnifier">Magnifier</label>
+            <label index="rotateleft">Rotate left</label>
+            <label index="rotateright">Rotate right</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -52,6 +59,13 @@
 			<label index="tt_content.pi_flexform.elementId">@ID-Wert des HTML-Elements für die Seitenansicht</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
             <label index="tt_content.pi_flexform.crop">Funktion zum Erstellen eines Bildausschnitts aktivieren</label>
+            <label index="tt_content.pi_flexform.magnifier">Lupenfunktion aktivieren</label>
+            <label index="tt_content.pi_flexform.rotation">Rotations-Knöpfe hinzufügen</label>
+            <label index="editMode">Ausschnitt auswählen</label>
+            <label index="editRemove">Ausschnitt entfernen</label>
+            <label index="magnifier">Lupe</label>
+            <label index="rotateleft">Links drehen</label>
+            <label index="rotateright">Rechts drehen</label>
 		</languageKey>
 	</data>
 </T3locallang>

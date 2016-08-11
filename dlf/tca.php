@@ -1198,7 +1198,7 @@ $TCA['tx_dlf_basket'] = array (
 				'eval' => 'required,trim',
 			),
 		),
-		'index_name' => array (
+		'session_id' => array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.sessionId',
 			'config' => array (
 				'type' => 'input',
@@ -1207,18 +1207,25 @@ $TCA['tx_dlf_basket'] = array (
 				'eval' => 'alphanum,unique',
 			),
 		),
-		'type_name' => array (
+		'doc_ids' => array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.docIds',
 			'config' => array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'alphanum,unique',
+				'eval' => 'alphanum_x',
+			),
+		),
+		'fe_user_id' => array (
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.feUser',
+			'config' => array (
+				'type' => 'input',
+				'eval' => 'int,unique',
 			),
 		),
 	),
 	'types' => array (
-		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_basket.tab1, label;;;;1-1-1, sessionId;;;;2-2-2, docIds;;;;2-2-2'),
+		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'),
 	),
 	'palettes' => array (
 		'1' => array ('showitem' => ''),
@@ -1281,7 +1288,7 @@ $TCA['tx_dlf_mail'] = array (
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-				'eval' => 'alphanum',
+				'eval' => '',
 			),
 		),
 		'mail' => array (

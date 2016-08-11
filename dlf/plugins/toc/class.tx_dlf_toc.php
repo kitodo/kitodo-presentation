@@ -85,7 +85,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			$entryArray['doNotLinkIt'] = 0;
 
 			if ($this->conf['basketButton']) {
-				$entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';//'<a href="basketButtonLink">BasketButtonTODOTRANSLATION</a>';
+				$entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
 			}
 
 		} elseif (!empty($entry['points']) && is_string($entry['points'])) {
@@ -95,7 +95,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			$entryArray['doNotLinkIt'] = 0;
 
 			if ($this->conf['basketButton']) {
-				$entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';//'<a href="basketButtonLink">BasketButtonTODOTRANSLATION</a>';
+				$entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
 			}
 
 		} elseif (!empty($entry['targetUid'])) {
@@ -105,7 +105,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			$entryArray['doNotLinkIt'] = 0;
 
 			if ($this->conf['basketButton']) {
-				$entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';//'<a href="basketButtonLink">BasketButtonTODOTRANSLATION</a>';
+				$entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
 			}
 
 		}
