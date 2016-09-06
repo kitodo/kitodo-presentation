@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -97,16 +97,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Get collection's UID.
 			return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$list->metadata['options']['select'].'" />';
 
-		} else if (!empty($list->metadata['options']['params']['fq'])) {
+		} elseif (!empty($list->metadata['options']['params']['fq'])) {
 
-			// get collection's UID from search metadata
+			// Get collection's UID from search metadata.
 			foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
 
 				$facetKeyVal = explode(':', $facet, 2);
 
-				if ($facetKeyVal[0] == 'collection_faceting') {
+				if ($facetKeyVal[0] == 'collection_faceting' && !strpos($facetKeyVal[1], '" OR "')) {
 
-					$collectionId = tx_dlf_helper::getIdFromIndexName($facetKeyVal[1], 'tx_dlf_collections');
+					$collectionId = tx_dlf_helper::getIdFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
 
 				}
 
@@ -144,16 +144,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
-		} else if (!empty($list->metadata['options']['params']['fq'])) {
+		} elseif (!empty($list->metadata['options']['params']['fq'])) {
 
-			// get document's UID from search metadata
+			// Get document's UID from search metadata.
 			foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
 
 				$facetKeyVal = explode(':', $facet);
 
 				if ($facetKeyVal[0] == 'uid') {
 
-					$documentId = (int)substr($facetKeyVal[1],0,strpos($facetKeyVal[1], ' '));
+					$documentId = (int) substr($facetKeyVal[1], 1, strpos($facetKeyVal[1], ')'));
 
 				}
 
@@ -222,7 +222,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		foreach (array ('AND', 'OR', 'NOT') as $operator) {
 
-			$operatorOptions .= '<option class="tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
+			$operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
 
 		}
 
@@ -233,16 +233,16 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		foreach ($searchFields as $searchField) {
 
-			$fieldSelectorOptions .= '<option class="tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
+			$fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
 
 		}
 
 		for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
 
 			$markerArray = array (
-				'###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator-'.$i.'" name="tx_dlf[extOperator]['.$i.']">'.$operatorOptions.'</select>',
-				'###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field-'.$i.'" name="tx_dlf[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
-				'###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query-'.$i.'" type="text" name="tx_dlf[extQuery]['.$i.']" />'
+				'###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator tx-dlf-search-operator-'.$i.'" name="'.$this->prefixId.'[extOperator]['.$i.']">'.$operatorOptions.'</select>',
+				'###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field tx-dlf-search-field-'.$i.'" name="'.$this->prefixId.'[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
+				'###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query tx-dlf-search-query-'.$i.'" type="text" name="'.$this->prefixId.'[extQuery]['.$i.']" />'
 			);
 
 			$extendedSearch .= $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
@@ -305,6 +305,36 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$TSconfig = tx_dlf_helper::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
 
 		return $this->cObj->HMENU($TSconfig);
+
+	}
+
+	/**
+	 * Adds the fulltext switch to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @param int $isFulltextSearch
+	 *
+	 * @return	string		HTML output of fulltext switch
+	 */
+	protected function addFulltextSwitch($isFulltextSearch = 0) {
+
+		$output = '';
+
+		// Check for plugin configuration.
+		if (!empty($this->conf['fulltext'])) {
+
+			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" ' . ($isFulltextSearch == 0 ? 'checked="checked"' : '') .' />';
+
+			$output .= ' <label for="tx-dlf-search-fulltext-no">' . $this->pi_getLL('label.inMetadata', '') . '</label>';
+
+			$output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" ' . ($isFulltextSearch == 1 ? 'checked="checked"' : '') .'/>';
+
+			$output .= ' <label for="tx-dlf-search-fulltext-yes">' . $this->pi_getLL('label.inFulltext', '') . '</label>';
+
+		}
+
+		return $output;
 
 	}
 
@@ -424,6 +454,21 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		if (!isset($this->piVars['query']) && empty($this->piVars['extQuery'])) {
 
+			// Extract query and filter from last search.
+			$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+
+			if (!empty($list->metadata['searchString'])) {
+
+				if ($list->metadata['options']['source'] == 'search') {
+
+					$search['query'] = $list->metadata['searchString'];
+
+				}
+
+				$search['params'] = $list->metadata['options']['params'];
+
+			}
+
 			// Add javascript for search suggestions if enabled and jQuery autocompletion is available.
 			if (!empty($this->conf['suggest'])) {
 
@@ -442,17 +487,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
-			// Set last query if applicable.
-			$lastQuery = '';
-
-			$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
-
-			if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'search') {
-
-				$lastQuery = $list->metadata['options']['select'];
-
-			}
-
 			// Configure @action URL for form.
 			$linkConf = array (
 				'parameter' => $GLOBALS['TSFE']->id,
@@ -462,12 +496,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Fill markers.
 			$markerArray = array (
 				'###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
-				'###LABEL_QUERY###' => $this->pi_getLL('label.query'),
+				'###LABEL_QUERY###' => (!empty($search['query']) ? $search['query'] : $this->pi_getLL('label.query')),
 				'###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
 				'###FIELD_QUERY###' => $this->prefixId.'[query]',
-				'###QUERY###' => htmlspecialchars($lastQuery),
-				'###FIELD_DOC###' => $this->addCurrentDocument(),
-				'###FIELD_COLL###' => $this->addCurrentCollection(),
+				'###QUERY###' => (!empty($search['query']) ? $search['query'] : ''),
+				'###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
+				'###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
+				'###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
 				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
 				'###FACETS_MENU###' => $this->addFacetsMenu()
 			);
@@ -506,24 +541,34 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
-			// Set search parameters.
-			$solr->limit = max(intval($this->conf['limit']), 1);
-
-			$solr->cPid = $this->conf['pages'];
+			// Prepare query parameters.
+			$params = array ();
 
 			// Set search query.
-			$query = $this->piVars['query'];
+			if (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) {
+
+				// Search in fulltext field if applicable. query must not be empty!
+				if (!empty($this->piVars['query'])) {
+
+					$query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
+
+				}
+
+				// Add highlighting for fulltext.
+				$params['hl'] = 'true';
+
+				$params['hl.fl'] = 'fulltext';
+
+			} else {
+				// Retain given search field if valid.
+				$query = tx_dlf_solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
+
+			}
 
 			// Add extended search query.
 			if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
 
-				if (!empty($query)) {
-
-					$query = tx_dlf_solr::escapeQuery($query);
-
-				}
-
-				$allowedOperators = array ('AND', 'OR', 'NOT');
+				$allowedOperators = array('AND', 'OR', 'NOT');
 
 				$allowedFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
 
@@ -548,19 +593,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 				}
 
 			}
-			else if (empty($this->piVars['fq']) && $query != "*") {
-			
-				$query = tx_dlf_solr::escapeQuery($query);
-			
-			}
-
-			// Set query parameters.
-			$params = array ();
 
 			// Add filter query for faceting.
 			if (!empty($this->piVars['fq'])) {
 
-				$params = array ('fq' => $this->piVars['fq']);
+				$params['fq'] = $this->piVars['fq'];
 
 			}
 
@@ -569,7 +606,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
 
-					$params['fq'][] = 'uid:'.$this->piVars['id'].' OR partof:'.$this->piVars['id'];
+					$params['fq'][] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
 
 					$label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
 
@@ -591,6 +628,30 @@ class tx_dlf_search extends tx_dlf_plugin {
 				}
 
 			}
+
+			// Add filter query for collection restrictions.
+			if ($this->conf['collections']) {
+
+				$collIds = explode(',', $this->conf['collections']);
+
+				$collIndexNames = array ();
+
+				foreach ($collIds as $collId) {
+
+					$collIndexNames[] = tx_dlf_solr::escapeQuery(tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+
+				}
+
+				// Last value is fake and used for distinction in $this->addCurrentCollection()
+				$params['fq'][] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
+
+			}
+
+			// Set search parameters.
+			$solr->limit = max(intval($this->conf['limit']), 1);
+
+			$solr->cPid = $this->conf['pages'];
+
 			$solr->params = $params;
 
 			// Perform search.
@@ -600,6 +661,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'label' => $label,
 				'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
 				'thumbnail' => '',
+				'searchString' => $this->piVars['query'],
+				'fulltextSearch' => (!empty($this->piVars['fulltext']) ? '1' : '0'),
 				'options' => $results->metadata['options']
 			);
 
@@ -613,7 +676,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			if (!empty($this->piVars['order'])) {
 
-				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('order' => $this->piVars['order'], 'asc' => (!empty($this->piVars['asc']) ? '1' : '0')), '', TRUE, FALSE);
+				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,
+						array (
+							'order' => $this->piVars['order'],
+							'asc' => (!empty($this->piVars['asc']) ? '1' : '0')
+						), '', TRUE, FALSE);
 
 			}
 

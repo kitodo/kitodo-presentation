@@ -24,7 +24,7 @@
 		de
 
 	:Beschreibung:
-		Goobi.Presentation kann Drucke, Periodika, Handschriften, Noten
+		Kitodo.Presentation kann Drucke, Periodika, Handschriften, Noten
 		und Musikalien, Einblattmedien und Dokumenten-Nachlässe darstellen.
 
 	:Schlüsselwörter:
@@ -37,7 +37,7 @@
 		###AUTHOR###
 
 	:E-Mail:
-		contact@goobi.org
+		contact@kitodo.org
 
 	:Lizenz:
 		Dieses Dokument wird unter der Open Content License, siehe

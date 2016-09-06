@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <!--
   Copyright notice
-  
-  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+
+  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
   All rights reserved
-  
+
   This script is part of the TYPO3 project. The TYPO3 project is
   free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   The GNU General Public License can be found at
   http://www.gnu.org/copyleft/gpl.html.
-  
+
   This script is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   This copyright notice MUST APPEAR in all copies of the script!
 -->
 <T3DataStructure>
@@ -49,6 +49,27 @@
 							</config>
 						</TCEforms>
 					</pages>
+					<fulltext>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext</label>
+							<config>
+								<type>radio</type>
+								<items type="array">
+									<numIndex index="0" type="array">
+										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.yes</numIndex>
+										<numIndex index="1">1</numIndex>
+									</numIndex>
+									<numIndex index="1" type="array">
+										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.no</numIndex>
+										<numIndex index="1">0</numIndex>
+									</numIndex>
+								</items>
+								<maxitems>1</maxitems>
+								<minitems>1</minitems>
+							</config>
+						</TCEforms>
+					</fulltext>
 					<solrcore>
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
@@ -138,6 +159,22 @@
 							</config>
 						</TCEforms>
 					</searchIn>
+					<collections>
+						<TCEforms>
+							<displayCond>FIELD:pages:REQ:true</displayCond>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.collections</label>
+							<config>
+								<type>select</type>
+								<items type="array"/>
+								<itemsProcFunc>tx_dlf_tceforms-&gt;itemsProcFunc_collectionList</itemsProcFunc>
+								<size>5</size>
+								<autoSizeMax>15</autoSizeMax>
+								<maxitems>1024</maxitems>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</collections>
 					<facets>
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>

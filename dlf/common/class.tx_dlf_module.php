@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -197,7 +197,7 @@ abstract class tx_dlf_module extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		// Set defaults for buttons and menu.
 		if (empty($this->buttonArray['RELOAD'])) {
 
-			$this->buttonArray['RELOAD'] = '<a href="' . $GLOBALS['MCONF']['_'] . '" title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.reload', TRUE) . '">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh') . '</a>';
+			$this->buttonArray['RELOAD'] = '<a href="'.$GLOBALS['MCONF']['_'].'" title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.reload', TRUE).'">'.\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-system-refresh').'</a>';
 
 		}
 

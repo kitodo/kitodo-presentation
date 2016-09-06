@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -249,6 +249,24 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		}
 
+		// Get list of collections to show.
+		$collList = array ();
+
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_dlf_collections.index_name AS index_name',
+			'tx_dlf_collections',
+			'tx_dlf_collections.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'',
+			'',
+			''
+		);
+
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+			$collList[] = $resArray['index_name'];
+
+		}
+
 		// Save original data array.
 		$cObjData = $this->cObj->data;
 
@@ -328,8 +346,17 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 					} elseif ($index_name == 'collection' && !empty($value)) {
 
-						// Translate collection.
-						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+						// Check if collections isn't hidden.
+						if (in_array($value, $collList)) {
+
+							// Translate collection.
+							$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+
+						} else {
+
+							$value = '';
+
+						}
 
 					} elseif ($index_name == 'language' && !empty($value)) {
 

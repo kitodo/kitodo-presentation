@@ -8,7 +8,7 @@
 .. _start:
 
 =============================================================
-Goobi.Presentation
+Kitodo.Presentation
 =============================================================
 
 .. only:: html
@@ -23,7 +23,7 @@ Goobi.Presentation
 		en
 
 	:Description:
-		Goobi.Presentation is a powerful framework for building a METS-based digital library.
+		Kitodo.Presentation is a powerful framework for building a METS-based digital library.
 		It is highly customizable through an user-friendly backend and flexible design templates.
 
 	:Keywords:
@@ -33,10 +33,10 @@ Goobi.Presentation
 		2015
 
 	:Author:
-		Goobi. Digitalisieren im Verein e.V.
+		Kitodo. Key to digital objects e.V.
 
 	:Email:
-		contact@goobi.org
+		contact@kitodo.org
 
 	:License:
 		This document is published under the Open Content License

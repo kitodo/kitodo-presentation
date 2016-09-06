@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -356,7 +356,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 						'source' => 'collection',
 						'select' => $id,
 						'userid' => $resArray['userid'],
-						'params' => array ('fq' => array ('collection_faceting:"'.$resArray['index_name'].'"')),
+						'params' => array ('fq' => array ('collection_faceting:("'.$resArray['index_name'].'")')),
 						'core' => '',
 						'pid' => $this->conf['pages'],
 						'order' => 'title',
@@ -392,6 +392,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 				$toplevel[$resArray['uid']] = array (
 					'u' => $resArray['uid'],
+					'h' => '',
 					's' => $sorting,
 					'p' => array ()
 				);
@@ -411,7 +412,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
 				ksort($parts);
 
-				$toplevel[$partof]['p'] = array_values($parts);
+				foreach ($parts as $part) {
+
+					$toplevel[$partof]['p'][] = array ('u' => $part);
+
+				}
 
 			}
 

@@ -9,7 +9,7 @@
 ---
 conf.py:
   copyright: 2015
-  project: Goobi.Presentation
+  project: Kitodo.Presentation
   version: 1.3
   release: 1.3.1
   intersphinx_mapping:
@@ -19,8 +19,8 @@ conf.py:
   latex_documents:
   - - Index
     - dlf.tex
-    - Goobi.Presentation
-    - Goobi. Digitalisieren im Verein e.V.
+    - Kitodo.Presentation
+    - Kitodo. Key to digital objects e.V.
     - manual
   latex_elements:
     papersize: a4paper

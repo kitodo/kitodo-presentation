@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,7 @@
  */
 
 /**
- * Hooks and hacks for Goobi.Production.
+ * Hooks and hacks for Kitodo.Production.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
@@ -38,7 +38,7 @@ class tx_dlf_hacks {
 
 	/**
 	 * Hook for the __construct() method of dlf/common/class.tx_dlf_document.php
-	 * When using Goobi.Production the record identifier is saved only in MODS, but not
+	 * When using Kitodo.Production the record identifier is saved only in MODS, but not
 	 * in METS. To get it anyway, we have to do some magic.
 	 *
 	 * @access	public
@@ -54,7 +54,8 @@ class tx_dlf_hacks {
 
 			$xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-			if (($divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]'))) {
+			// Get all logical structure nodes with metadata, but without associated METS-Pointers.
+			if (($divs = $xml->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
 
 				$smLinks = $xml->xpath('//mets:structLink/mets:smLink');
 

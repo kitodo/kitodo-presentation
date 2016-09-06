@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -98,6 +98,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$i = 0;
 
+		$skip = NULL;
+
 		// Add links to pages.
 		while ($i < $maxPages) {
 
@@ -115,7 +117,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 				$skip = TRUE;
 
-			} elseif ($skip == TRUE) {
+			} elseif ($skip === TRUE) {
 
 				$output .= $this->pi_getLL('skip', '...', TRUE).$separator;
 
@@ -160,6 +162,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$markerArray['###THUMBNAIL###'] = '';
 
+		$markerArray['###PREVIEW###'] = '';
+
 		$subpart = '';
 
 		$imgAlt = '';
@@ -201,7 +205,11 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 					$imgAlt = htmlspecialchars($value);
 
-					$additionalParams = array ('id' => $this->list[$number]['uid'], 'page' => $this->list[$number]['page']);
+					$additionalParams = array (
+						'id' => $this->list[$number]['uid'],
+						'page' => $this->list[$number]['page']
+					);
+
 					$conf = array (
 						'useCacheHash' => 1,
 						'parameter' => $this->conf['targetPid'],
@@ -257,6 +265,13 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		if (!empty($this->list[$number]['thumbnail'])) {
 
 			$markerArray['###THUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$this->list[$number]['thumbnail'].'" />';
+
+		}
+
+		// Add preview.
+		if (!empty($this->list[$number]['preview'])) {
+
+			$markerArray['###PREVIEW###'] = $this->list[$number]['preview'];
 
 		}
 
@@ -376,6 +391,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 			$markerArray['###SUBTHUMBNAIL###'] = '';
 
+			$markerArray['###SUBPREVIEW###'] = '';
+
 			$imgAlt = '';
 
 			foreach ($this->metadata as $index_name => $metaConf) {
@@ -413,9 +430,15 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 						$imgAlt = htmlspecialchars($value);
 
-						$additionalParams = array ('id' => $subpart['uid'], 'page' => $subpart['page']);
+						$additionalParams = array (
+							'id' => $subpart['uid'],
+							'page' => $subpart['page'],
+							'highlight_word' => preg_replace('/\s\s+/', ';', $this->list->metadata['searchString'])
+						);
+
 						$conf = array (
-							'useCacheHash' => 1,
+							// we don't want cHash in case of search parameters
+							'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
 							'parameter' => $this->conf['targetPid'],
 							'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
 						);
@@ -430,7 +453,16 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Translate document type.
 					} elseif ($index_name == 'type' && !empty($value)) {
 
-						$value = $this->pi_getLL($value, tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']), FALSE);
+						$_value = $value;
+
+						$value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+
+						// Add page number for single pages.
+						if ($_value == 'page') {
+
+							$value .= ' '.intval($subpart['page']);
+
+						}
 
 					// Translate ISO 639 language code.
 					} elseif ($index_name == 'language' && !empty($value)) {

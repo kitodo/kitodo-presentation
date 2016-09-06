@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,8 +26,10 @@ $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('dl
 
 return array (
 	'tx_dlf_cli' => $extensionPath.'cli/class.tx_dlf_cli.php',
+	'tx_dlf_alto' => $extensionPath.'common/class.tx_dlf_alto.php',
 	'tx_dlf_document' => $extensionPath.'common/class.tx_dlf_document.php',
 	'tx_dlf_format' => $extensionPath.'common/class.tx_dlf_format.php',
+	'tx_dlf_fulltext' => $extensionPath.'common/class.tx_dlf_fulltext.php',
 	'tx_dlf_helper' => $extensionPath.'common/class.tx_dlf_helper.php',
 	'tx_dlf_indexing' => $extensionPath.'common/class.tx_dlf_indexing.php',
 	'tx_dlf_list' => $extensionPath.'common/class.tx_dlf_list.php',
@@ -36,12 +38,14 @@ return array (
 	'tx_dlf_plugin' => $extensionPath.'common/class.tx_dlf_plugin.php',
 	'tx_dlf_solr' => $extensionPath.'common/class.tx_dlf_solr.php',
 	'tx_dlf_teihdr' => $extensionPath.'common/class.tx_dlf_teihdr.php',
+	'tx_dlf_doctype' => $extensionPath.'hooks/class.tx_dlf_doctype.php',
 	'tx_dlf_em' => $extensionPath.'hooks/class.tx_dlf_em.php',
 	'tx_dlf_hacks' => $extensionPath.'hooks/class.tx_dlf_hacks.php',
 	'tx_dlf_tceforms' => $extensionPath.'hooks/class.tx_dlf_tceforms.php',
 	'tx_dlf_tcemain' => $extensionPath.'hooks/class.tx_dlf_tcemain.php',
 	'tx_dlf_modIndexing' => $extensionPath.'modules/indexing/index.php',
 	'tx_dlf_modNewclient' => $extensionPath.'modules/newclient/index.php',
+	'tx_dlf_audioplayer' => $extensionPath.'plugins/audioplayer/class.tx_dlf_audioplayer.php',
 	'tx_dlf_basket' => $extensionPath.'plugins/basket/class.tx_dlf_basket.php',
 	'tx_dlf_interaction' => $extensionPath.'plugins/interaction/class.tx_dlf_interaction.php',
 	'tx_dlf_collection' => $extensionPath.'plugins/collection/class.tx_dlf_collection.php',
@@ -49,6 +53,7 @@ return array (
 	'tx_dlf_listview' => $extensionPath.'plugins/listview/class.tx_dlf_listview.php',
 	'tx_dlf_metadata' => $extensionPath.'plugins/metadata/class.tx_dlf_metadata.php',
 	'tx_dlf_navigation' => $extensionPath.'plugins/navigation/class.tx_dlf_navigation.php',
+	'tx_dlf_newspaper' => $extensionPath.'plugins/newspaper/class.tx_dlf_newspaper.php',
 	'tx_dlf_oai' => $extensionPath.'plugins/oai/class.tx_dlf_oai.php',
 	'tx_dlf_pagegrid' => $extensionPath.'plugins/pagegrid/class.tx_dlf_pagegrid.php',
 	'tx_dlf_pageview' => $extensionPath.'plugins/pageview/class.tx_dlf_pageview.php',
@@ -59,6 +64,6 @@ return array (
 	'tx_dlf_toolbox' => $extensionPath.'plugins/toolbox/class.tx_dlf_toolbox.php',
 	'tx_dlf_toolsPdf' => $extensionPath.'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php',
 	'tx_dlf_toolsFulltext' => $extensionPath.'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php',
-	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php',
-	'tx_dlf_doctype' => $extensionPath.'plugins/doctype/class.tx_dlf_doctype.php'
+	'tx_dlf_toolsImagemanipulation' => $extensionPath.'plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php',
+	'tx_dlf_validator' => $extensionPath.'plugins/validator/class.tx_dlf_validator.php'
 );

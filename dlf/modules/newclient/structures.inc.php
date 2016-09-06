@@ -25,6 +25,10 @@
 // Define structure elements.
 // @see http://dfg-viewer.de/en/structural-data-set/
 $structures = array (
+	'act' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'additional' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
@@ -33,6 +37,10 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'album' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'annotation' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
@@ -40,6 +48,10 @@ $structures = array (
 	'article' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'atlas' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'bachelor_thesis' => array (
 		'toplevel' => 1,
@@ -52,6 +64,10 @@ $structures = array (
 	'bookplate' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'cartulary' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'chapter' => array (
 		'toplevel' => 0,
@@ -105,6 +121,14 @@ $structures = array (
 		'toplevel' => 1,
 		'oai_name' => '',
 	),
+	'document' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'dossier' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'edge' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
@@ -125,9 +149,21 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'file' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'folder' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'fragment' => array (
 		'toplevel' => 1,
 		'oai_name' => ''
+	),
+	'ground_plan' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'habilitation_thesis' => array (
 		'toplevel' => 1,
@@ -136,6 +172,10 @@ $structures = array (
 	'illustration' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'image' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'imprint' => array (
 		'toplevel' => 0,
@@ -152,6 +192,18 @@ $structures = array (
 	'issue' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'judgement' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'land_register' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'leaflet' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
 	),
 	'lecture' => array (
 		'toplevel' => 1,
@@ -197,6 +249,14 @@ $structures = array (
 		'toplevel' => 1,
 		'oai_name' => ''
 	),
+	'note' => array (
+		'toplevel' => 0,
+		'oai_name' => '',
+	),
+	'official_notification' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'ornament' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
@@ -213,11 +273,27 @@ $structures = array (
 		'toplevel' => 1,
 		'oai_name' => ''
 	),
+	'photograph' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'plan' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'poster' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'preface' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
 	'preprint' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
+	'printed_archives' => array (
 		'toplevel' => 1,
 		'oai_name' => '',
 	),
@@ -237,6 +313,10 @@ $structures = array (
 		'toplevel' => 0,
 		'oai_name' => ''
 	),
+	'register' => array (
+		'toplevel' => 1,
+		'oai_name' => '',
+	),
 	'report' => array (
 		'toplevel' => 1,
 		'oai_name' => '',
@@ -248,6 +328,10 @@ $structures = array (
 	'scheme' => array (
 		'toplevel' => 0,
 		'oai_name' => ''
+	),
+	'seal' => array (
+		'toplevel' => 0,
+		'oai_name' => '',
 	),
 	'section' => array (
 		'toplevel' => 0,

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2015 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2015 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -66,7 +66,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 			// page may be integer or string (physical page attribute)
 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
-				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			} else {
 
@@ -79,9 +79,9 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 		}
 
 		// Load template file.
-		if (!empty($this->conf['templateFile'])) {
+		if (!empty($this->conf['toolTemplateFile'])) {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
+			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
 
 		} else {
 
@@ -93,11 +93,12 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 		$fullTextFile = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
 
 		if (!empty($fullTextFile)) {
-			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select" title="'.$this->pi_getLL('fulltext-select', '', TRUE).'" onclick="tx_dlf_viewer.toggleFulltextSelect();">'.$this->pi_getLL('fulltext-select', '', TRUE).'</a>';
+			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:'
+					.$this->pi_getLL('fulltext-on', '', TRUE).';fulltext-off:'
+					.$this->pi_getLL('fulltext-off', '', TRUE).'"></a>';
 		} else {
-			$markerArray['###FULLTEXT_SELECT###'] = $this->pi_getLL('fulltext-select', '', TRUE);
+			$markerArray['###FULLTEXT_SELECT###'] = $this->pi_getLL('fulltext-not-available', '', TRUE);
 		}
-
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 

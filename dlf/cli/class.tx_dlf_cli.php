@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -159,13 +159,13 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 		// Set basic information about the script.
 		$this->cli_help = array (
-			'name' => 'Command Line Interface for Goobi.Presentation',
+			'name' => 'Command Line Interface for Kitodo.Presentation',
 			'synopsis' => '###OPTIONS###',
 			'description' => 'Currently the only tasks available are "index" and "reindex".'.LF.'Try "/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK" for more options.',
 			'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
 			'options' => '',
 			'license' => 'GNU GPL - free software!',
-			'author' => 'Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>',
+			'author' => 'Kitodo. Key to digital objects e.V. <contact@kitodo.org>',
 		);
 
 		// Run parent constructor.

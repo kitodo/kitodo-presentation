@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -245,7 +245,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 							$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 								'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-								htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.FileNotLoaded'), $title, $uid)),
+								htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.fileNotLoaded'), $this->data['id'])),
 								tx_dlf_helper::getLL('flash.error', TRUE),
 								\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 								TRUE

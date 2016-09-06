@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <!--
   Copyright notice
-  
-  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+
+  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
   All rights reserved
-  
+
   This script is part of the TYPO3 project. The TYPO3 project is
   free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   The GNU General Public License can be found at
   http://www.gnu.org/copyleft/gpl.html.
-  
+
   This script is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   This copyright notice MUST APPEAR in all copies of the script!
 -->
 <T3locallang>
@@ -41,9 +41,9 @@
 			<label index="flash.documentsToGo">%u documents to go.</label>
 			<label index="flash.fileNotLoaded">File "%s" could not be loaded.</label>
 			<label index="flash.wrongPageType">Page is no SysFolder!</label>
-			<label index="flash.wrongPageTypeMsg">The configuration records of Goobi.Presentation need to be stored in a SysFolder.</label>
+			<label index="flash.wrongPageTypeMsg">The configuration records of Kitodo.Presentation need to be stored in a SysFolder.</label>
 			<label index="flash.structureOkay">Structures found!</label>
-			<label index="flash.structureOkayMsg">There are configuration records for structural metadata. They can be edited in die list module.</label>
+			<label index="flash.structureOkayMsg">There are configuration records for structural metadata. They can be edited in the list module.</label>
 			<label index="flash.structureNotOkay">No structures found!</label>
 			<label index="flash.structureNotOkayMsg">There are no configuration records for structural metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;</label>
 			<label index="flash.structureAdded">Basic configuration added!</label>
@@ -51,7 +51,7 @@
 			<label index="flash.structureNotAdded">No configuration added!</label>
 			<label index="flash.structureNotAddedMsg">While adding the configuration records an error occurred. The records should be checked in the list module!</label>
 			<label index="flash.metadataOkay">Metadata found!</label>
-			<label index="flash.metadataOkayMsg">There are configuration records for bibliographic metadata. They can be edited in die list module.</label>
+			<label index="flash.metadataOkayMsg">There are configuration records for bibliographic metadata. They can be edited in the list module.</label>
 			<label index="flash.metadataNotOkay">No metadata found!</label>
 			<label index="flash.metadataNotOkayMsg">There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;</label>
 			<label index="flash.metadataAdded">Basic configuration added!</label>
@@ -94,7 +94,7 @@
 			<label index="flash.documentsToGo">Verbleibende Dokumente zur Indexierung: %u</label>
 			<label index="flash.fileNotLoaded">Datei "%s" konnte nicht eingelesen werden.</label>
 			<label index="flash.wrongPageType">Seite ist kein SysOrdner!</label>
-			<label index="flash.wrongPageTypeMsg">Die Konfigurationsdatensätze von Goobi.Presentation müssen in SysOrdnern abgelegt werden.</label>
+			<label index="flash.wrongPageTypeMsg">Die Konfigurationsdatensätze von Kitodo.Presentation müssen in SysOrdnern abgelegt werden.</label>
 			<label index="flash.structureOkay">Strukturdaten gefunden!</label>
 			<label index="flash.structureOkayMsg">Es ist eine Konfiguration für Strukturdaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.</label>
 			<label index="flash.structureNotOkay">Keine Strukturdaten gefunden!</label>

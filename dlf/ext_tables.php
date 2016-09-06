@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -303,6 +303,15 @@ $TCA['tx_dlf_actionlog'] = array (
 // Register static typoscript.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'typoscript/', 'Basic Configuration');
 
+// Plugin "audioplayer".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_audioplayer'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_audioplayer'] = 'pi_flexform';
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_audioplayer', $_EXTKEY.'_audioplayer'), 'list_type');
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_audioplayer', 'FILE:EXT:'.$_EXTKEY.'/plugins/audioplayer/flexform.xml');
+
 // Plugin "basket".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_basket'] = 'layout,select_key,pages,recursive';
 
@@ -365,6 +374,15 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_navigation'] 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_navigation', $_EXTKEY.'_navigation'), 'list_type');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_navigation', 'FILE:EXT:'.$_EXTKEY.'/plugins/navigation/flexform.xml');
+
+// Plugin "newspaper".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_newspaper'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_newspaper'] = 'pi_flexform';
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_newspaper', $_EXTKEY.'_newspaper'), 'list_type');
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_newspaper', 'FILE:EXT:'.$_EXTKEY.'/plugins/newspaper/flexform.xml');
 
 // Plugin "oai".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_oai'] = 'layout,select_key,pages,recursive';
@@ -475,6 +493,8 @@ if (TYPO3_MODE == 'BE')	{
 	// Main "dlf" module.
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('txdlfmodules', '', '', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'modules/');
 
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('txdlfmodules', 'typo3-pagetree');
+
 	// Module "indexing".
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('txdlfmodules', 'txdlfindexing', '', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'modules/indexing/');
 
@@ -485,5 +505,4 @@ if (TYPO3_MODE == 'BE')	{
 
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('_MOD_txdlfmodules_txdlfnewclient','EXT:dlf/modules/newclient/locallang_mod.xml');
 
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('txdlfmodules', 'typo3-pagetree');
 }

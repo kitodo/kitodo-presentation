@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -47,48 +47,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	protected $controls = array ();
 
 	/**
-	 * Flag if fulltexts are present
-	 *
-	 * @var	boolean
-	 * @access protected
-	 */
-	protected $hasFulltexts = false;
-
-	/**
-	 * Holds the dependencies of the control features
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $controlDependency = array (
-		'OverviewMap' => array (
-			'OpenLayers/Control/OverviewMap.js'
-		),
-		'PanPanel' => array (
-			'OpenLayers/Control/Button.js',
-			'OpenLayers/Control/Pan.js',
-			'OpenLayers/Control/Panel.js',
-			'OpenLayers/Control/PanPanel.js'
-		),
-		'PanZoom' => array (
-			'OpenLayers/Control/PanZoom.js'
-		),
-		'PanZoomBar' => array (
-			'OpenLayers/Control/PanZoom.js',
-			'OpenLayers/Control/PanZoomBar.js'
-		),
-		'ZoomPanel' => array (
-			'OpenLayers/Control/Button.js',
-			'OpenLayers/Control/Panel.js',
-			'OpenLayers/Control/ZoomIn.js',
-			'OpenLayers/Control/ZoomOut.js',
-			'OpenLayers/Control/ZoomToMaxExtent.js',
-			'OpenLayers/Control/ZoomPanel.js'
-		)
-	);
-
-	/**
-	 * Holds the current images' URLs
+	 * Holds the current images' URLs and MIME types
 	 *
 	 * @var	array
 	 * @access protected
@@ -102,158 +61,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	 * @access protected
 	 */
 	protected $fulltexts = array ();
-
-	/**
-	 * Holds the language code for OpenLayers
-	 *
-	 * @var	string
-	 * @access protected
-	 */
-	protected $lang = 'en';
-
-	/**
-	 * Adds OpenLayers javascript
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		OpenLayers script tags ready for output.
-	 */
-	protected function addOpenLayersJS() {
-
-		$output = array ();
-
-		// Get localization for OpenLayers.
-		if ($GLOBALS['TSFE']->lang) {
-
-			$langFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey, 'lib/OpenLayers/lib/OpenLayers/Lang/'.strtolower($GLOBALS['TSFE']->lang).'.js');
-
-			if (file_exists($langFile)) {
-
-				$this->lang = strtolower($GLOBALS['TSFE']->lang);
-
-			}
-
-		}
-
-		// // Load required OpenLayers components.
-		// $components = array (
-		// 	// Map feature.
-		// 	'OpenLayers/BaseTypes.js',
-		// 	'OpenLayers/BaseTypes/Class.js',
-		// 	'OpenLayers/BaseTypes/Bounds.js',
-		// 	'OpenLayers/BaseTypes/Element.js',
-		// 	'OpenLayers/BaseTypes/LonLat.js',
-		// 	'OpenLayers/BaseTypes/Pixel.js',
-		// 	'OpenLayers/BaseTypes/Size.js',
-		// 	'OpenLayers/Console.js',
-		// 	'OpenLayers/Lang.js',
-		// 	'OpenLayers/Util.js',
-		// 	'OpenLayers/Util/vendorPrefix.js',
-		// 	'OpenLayers/Lang/'.$this->lang.'.js',
-		// 	'OpenLayers/Events.js',
-		// 	'OpenLayers/Events/buttonclick.js',
-		// 	'OpenLayers/Events/featureclick.js',
-		// 	'OpenLayers/Animation.js',
-		// 	'OpenLayers/Tween.js',
-		// 	'OpenLayers/Projection.js',
-		// 	'OpenLayers/Map.js',
-		// 	// Default event handlers and controls.
-		// 	'OpenLayers/Handler.js',
-		// 	'OpenLayers/Handler/Click.js',
-		// 	'OpenLayers/Handler/Drag.js',
-		// 	'OpenLayers/Handler/Box.js',
-		// 	'OpenLayers/Handler/Keyboard.js',
-		// 	'OpenLayers/Handler/MouseWheel.js',
-		// 	'OpenLayers/Handler/Pinch.js',
-		// 	'OpenLayers/Control.js',
-		// 	'OpenLayers/Control/DragPan.js',
-		// 	'OpenLayers/Control/PinchZoom.js',
-		// 	'OpenLayers/Control/ZoomBox.js',
-		// 	'OpenLayers/Control/Navigation.js',
-		// 	'../../../plugins/pageview/OpenLayers_Control_Keyboard.js',
-		// 	// Image layer.
-		// 	'OpenLayers/Tile.js',
-		// 	'OpenLayers/Tile/Image.js',
-		// 	'OpenLayers/Layer.js',
-		// 	'OpenLayers/Layer/HTTPRequest.js',
-		// 	'OpenLayers/Layer/Grid.js',
-		// 	'OpenLayers/Layer/Image.js',
-		// );
-
-		// // Load required OpenLayers components.
-		// $componentsFulltexts = array (
-		// 	// Geometry layer --> dfgviewer
-		// 	'OpenLayers/Control/SelectFeature.js',
-		// 	'OpenLayers/Control/DrawFeature.js',
-		// 	'OpenLayers/Handler/Feature.js',
-		// 	'OpenLayers/Handler/RegularPolygon.js',
-		// 	'OpenLayers/Geometry.js',
-		// 	'OpenLayers/Geometry/Collection.js',
-		// 	'OpenLayers/Geometry/Polygon.js',
-		// 	'OpenLayers/Geometry/MultiPoint.js',
-		// 	'OpenLayers/Geometry/Curve.js',
-		// 	'OpenLayers/Geometry/LineString.js',
-		// 	'OpenLayers/Geometry/LinearRing.js',
-		// 	'OpenLayers/Geometry/Point.js',
-		// 	'OpenLayers/Feature.js',
-		// 	'OpenLayers/Feature/Vector.js',
-		// 	'OpenLayers/Layer/Vector.js',
-		// 	'OpenLayers/Renderer.js',
-		// 	'OpenLayers/Renderer/Elements.js',
-		// 	'OpenLayers/Renderer/SVG.js',
-		// 	'OpenLayers/Renderer/Canvas.js',
-		// 	'OpenLayers/StyleMap.js',
-		// 	'OpenLayers/Style.js',
-		// 	// XML Parser.
-		// 	'OpenLayers/Request.js',
-		// 	'OpenLayers/Request/XMLHttpRequest.js',
-		// 	'OpenLayers/Format.js',
-		// 	'OpenLayers/Format/XML.js',
-		// 	'../../../plugins/pageview/OpenLayers_Format_Alto.js',
-		// 	'OpenLayers/Popup.js',
-		// 	'OpenLayers/Popup/Anchored.js',
-		// 	'OpenLayers/Popup/Framed.js',
-		// 	'OpenLayers/Popup/FramedCloud.js',
-		// );
-
-		// // Add custom control features.
-		// foreach ($this->controls as $control) {
-
-		// 	$components = array_merge($components, array_diff($this->controlDependency[$control], $components));
-
-		// }
-
-		// // Add fulltext polygon features.
-		// if ($this->hasFulltexts) {
-		// 	$components = array_merge($components, $componentsFulltexts);
-		// }
-
-		// $output[] = '<script type="text/javascript">';
-
-		// $output[] = 'var openLayersFiles = ["'.implode('", "', $components).'"];';
-
-		// // concat files for syntax highlightning, if present in header
-		// if (! empty($GLOBALS['TSFE']->additionalHeaderData['tx-dlf-header-sru'])) {
-
-		// 	$output[] = 'window.OpenLayers = openLayersFiles.concat( openLayerFilesHighlightning );';
-
-		// } else {
-
-		// 	$output[] = 'window.OpenLayers = openLayersFiles;';
-
-		// }
-
-		// $output[] = '</script>';
-
-		// Add css
-		$GLOBALS['TSFE']->getPageRenderer()->addCssFile(t3lib_extMgm::siteRelPath('dlf') . 'lib/OpenLayers3/css/ol.css');
-		// Add OpenLayers library.
-		$output[] = '
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers3/build/ol-debug.js"></script>';
-
-		return implode("\n", $output);
-
-	}
 
 	/**
 	 * Adds Viewer javascript
@@ -270,15 +77,28 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		tx_dlf_helper::loadJQuery();
 
 		// Add OpenLayers library.
-		$output[] = $this->addOpenLayersJS();
+		$output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/glif.min.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3-dlf.js"></script>';
 
 		// Add viewer library.
-		$output[] = '
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>
-		<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3_styles.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3_source.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_altoparser.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>';
+
+		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
 		// Add viewer configuration.
 		$output[] = '
@@ -288,10 +108,10 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 					tx_dlf_viewer = new dlfViewer({
 						controls: ["' . implode('", "', $this->controls) . '"],
 						div: "' . $this->conf['elementId'] . '",
-						fulltexts: ["' . implode('", "', $this->fulltexts) . '"],
-						images: ["' . implode('", "', $this->images) . '"],
+						images: ' . json_encode($this->images) . ',
+						fulltexts: '. json_encode($this->fulltexts) . ',
 						cropping: "true"
-					});
+					})
 				}
 			}
 		</script>';
@@ -338,17 +158,17 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	}
 
 	/**
-	 * Get image's URL
+	 * Get image's URL and MIME type
 	 *
 	 * @access	protected
 	 *
 	 * @param	integer		$page: Page number
 	 *
-	 * @return	string		URL of image file
+	 * @return	array		URL and MIME type of image file
 	 */
-	protected function getImageUrl($page) {
+	protected function getImage($page) {
 
-		$imageUrl = '';
+		$image = array ();
 
 		// Get @USE value of METS fileGrp.
 		$fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrps']);
@@ -358,7 +178,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			// Get image link.
 			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
 
-				$imageUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+				$image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+
+				$image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
 				break;
 
@@ -366,7 +188,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				if (TYPO3_DLOG) {
 
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 				}
 
@@ -374,81 +196,45 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		}
 
-		return $imageUrl;
+		return $image;
 
 	}
 
 	/**
-	 * Get ALTO XML URL
+	 * Get fulltext URL and MIME type
 	 *
 	 * @access	protected
 	 *
 	 * @param	integer		$page: Page number
 	 *
-	 * @return	string		URL of image file
+	 * @return	array		URL and MIME type of fulltext file
 	 */
-	protected function getAltoUrl($page) {
+	protected function getFulltext($page) {
 
-		$imageUrl = '';
+		$fulltext = array ();
 
-		// Get @USE value of METS fileGrp.
+		// Get fulltext link.
+		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']])) {
 
-		// we need USE="FULLTEXT"
-		$fileGrpFulltext = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+			$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
-		while ($fileGrpFulltext = @array_pop($fileGrpFulltext)) {
+			// Build typolink configuration array.
+			// @TODO change hardcoded path to real typolink configuration
+			$fulltext['url'] = '/index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
 
-			// Get fulltext link.
-			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext])) {
+			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
-				$fulltextUrl = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrpFulltext]);
+		} else {
 
-				// Build typolink configuration array.
-				$fulltextUrl =  '/index.php?eID=tx_dlf_fulltext_eid&url='. $fulltextUrl;
+			if (TYPO3_DLOG) {
 
-				$this->hasFulltexts = true;
-
-				break;
-
-			} else {
-
-				if (TYPO3_DLOG) {
-
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImageUrl('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-				}
+				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
 			}
 
 		}
 
-		return $fulltextUrl;
-
-	}
-
-	/**
-	 * Get map controls
-	 *
-	 * @access	protected
-	 *
-	 * @return	array		Array of control keywords
-	 */
-	protected function getMapControls() {
-
-		$controls = explode(',', $this->conf['features']);
-
-		// Sanitize input.
-		foreach ($controls as $key => $control) {
-
-			if (empty($this->controlDependency[$control])) {
-
-				unset ($controls[$key]);
-
-			}
-
-		}
-
-		return $controls;
+		return $fulltext;
 
 	}
 
@@ -504,18 +290,18 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		}
 
 		// Get image data.
-		$this->images[0] = $this->getImageUrl($this->piVars['page']);
-		$this->fulltexts[0] = $this->getAltoUrl($this->piVars['page']);
+		$this->images[0] = $this->getImage($this->piVars['page']);
+		$this->fulltexts[0] = $this->getFulltext($this->piVars['page']);
 
 		if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
 
-			$this->images[1] = $this->getImageUrl($this->piVars['page'] + 1);
-			$this->fulltexts[1] = $this->getAltoUrl($this->piVars['page'] + 1);
+			$this->images[1] = $this->getImage($this->piVars['page'] + 1);
+			$this->fulltexts[1] = $this->getFulltext($this->piVars['page'] + 1);
 
 		}
 
 		// Get the controls for the map.
-		$this->controls = $this->getMapControls();
+		$this->controls = explode(',', $this->conf['features']);
 
 		// Fill in the template markers.
 		$markerArray = array (

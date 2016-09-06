@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -107,9 +107,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 	 */
 	public function add(array $elements, $position = -1) {
 
-		// Save parameters for logging purposes.
-		$_position = $position;
-
 		$position = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($position, 0, $this->count, $this->count);
 
 		if (!empty($elements)) {
@@ -175,9 +172,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 	 */
 	protected function getRecord($element) {
 
-		$record = array ();
-
-		if (is_array($element) && array_keys($element) == array ('u', 's', 'p')) {
+		if (is_array($element) && array_keys($element) == array ('u', 'h', 's', 'p')) {
 
 			// Return already processed record if possible.
 			if (!empty($this->records[$element['u']])) {
@@ -189,6 +184,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 			$record = array (
 				'uid' => $element['u'],
 				'page' => 1,
+				'preview' => '',
 				'subparts' => $element['p']
 			);
 
@@ -244,13 +240,14 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 						$record['metadata'] = $metadata;
 
-					} elseif (($key = array_search($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
+					} elseif (($key = tx_dlf_helper::array_search_recursive($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
 
 						$record['subparts'][$key] = array (
 							'uid' => $resArray['uid'],
 							'page' => 1,
+							'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
 							'thumbnail' => $resArray['thumbnail'],
-							'metadata' => $metadata,
+							'metadata' => $metadata
 						);
 
 					}
@@ -287,11 +284,12 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 							$record['metadata'] = $metadata;
 
-						} elseif (($key = array_search($resArray->id, $record['subparts'], TRUE)) !== FALSE) {
+						} elseif (($key = tx_dlf_helper::array_search_recursive($resArray->id, $record['subparts'], TRUE)) !== FALSE) {
 
 							$record['subparts'][$key] = array (
 								'uid' => $resArray->uid,
 								'page' => $resArray->page,
+								'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
 								'thumbnail' => $resArray->thumbnail,
 								'metadata' => $metadata,
 								'sid' => $resArray->sid
@@ -300,17 +298,6 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 						}
 
 					}
-
-				}
-
-			}
-
-			// Unset subparts without any metadata.
-			foreach ($record['subparts'] as $id => $subpart) {
-
-				if (!is_array($subpart)) {
-
-					unset ($record['subparts'][$id]);
 
 				}
 
@@ -348,6 +335,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 		return $this->position;
 
 	}
+
+
 
 	/**
 	 * This moves the element at the given position up or down
@@ -649,6 +638,9 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 					$this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
 
 				}
+
+				// Add static fields.
+				$this->solrConfig['type'] = 'type';
 
 			} else {
 

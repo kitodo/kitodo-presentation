@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Goobi. Digitalisieren im Verein e.V. <contact@goobi.org>
+*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -141,6 +141,67 @@ class tx_dlf_solr {
 	}
 
 	/**
+	 * Escape all special characters in a query string while retaining valid field queries
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$query: The query string
+	 * @param	integer		$pid: The PID for the field configuration
+	 *
+	 * @return	string		The escaped query string
+	 */
+	public static function escapeQueryKeepField($query, $pid) {
+
+		// Is there a field query?
+		if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(.*\)$/', $query)) {
+
+			// Get all indexed fields.
+			$fields = array();
+
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'index_name,tokenized,stored',
+				'tx_dlf_metadata',
+				'indexed=1 AND pid=' . intval($pid) . ' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)' . tx_dlf_helper::whereClause('tx_dlf_metadata'),
+				'',
+				'',
+				''
+			);
+
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+
+				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+
+					$fields[] = $resArray[0].'_'.($resArray[1] ? 't' : 'u').($resArray[2] ? 's' : 'u').'i';
+
+				}
+
+			}
+
+			// Check if queried field is valid.
+			$splitQuery = explode(':', $query, 2);
+
+			if (in_array($splitQuery[0], $fields)) {
+
+				$query = $splitQuery[0].':('.self::escapeQuery(trim($splitQuery[1], '()')).')';
+
+			} else {
+
+				$query = self::escapeQuery($query);
+
+			}
+
+		} elseif (!empty($query) && $query !== '*') {
+
+			// Don't escape plain asterisk search.
+			$query = self::escapeQuery($query);
+
+		}
+
+		return $query;
+
+	}
+
+	/**
 	 * This is a singleton class, thus instances must be created by this method
 	 *
 	 * @access	public
@@ -208,6 +269,42 @@ class tx_dlf_solr {
 	}
 
 	/**
+	 * Returns the connection information a specific Solr core
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$core: Name of the core to load
+	 *
+	 * @return	string		The connection parameters for a specific Solr core
+	 */
+	public static function getSolrConnectionInfo($core = '') {
+
+		$solrInfo = array ();
+
+		// Extract extension configuration.
+		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+		// Derive Solr host name.
+		$solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
+
+		// Prepend username and password to hostname.
+		if ($conf['solrUser'] && $conf['solrPass']) {
+
+			$solrInfo['host'] = $conf['solrUser'].':'.$conf['solrPass'].'@'.$solrInfo['host'];
+
+		}
+
+		// Set port if not set.
+		$solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
+
+		// Append core name to path.
+		$solrInfo['path'] = trim($conf['solrPath'], '/').'/'.$core;
+
+		return $solrInfo;
+
+	}
+
+	/**
 	 * Returns the request URL for a specific Solr core
 	 *
 	 * @access	public
@@ -218,27 +315,11 @@ class tx_dlf_solr {
 	 */
 	public static function getSolrUrl($core = '') {
 
-		// Extract extension configuration.
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-
-		// Derive Solr host name.
-		$host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
-
-		// Prepend username and password to hostname.
-		if ($conf['solrUser'] && $conf['solrPass']) {
-
-			$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
-
-		}
-
-		// Set port if not set.
-		$port = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
-
-		// Append core name to path.
-		$path = trim($conf['solrPath'], '/').'/'.$core;
+		// Get Solr connection information.
+		$solrInfo = self::getSolrConnectionInfo($core);
 
 		// Return entire request URL.
-		return 'http://'.$host.':'.$port.'/'.$path;
+		return 'http://'.$solrInfo['host'].':'.$solrInfo['port'].'/'.$solrInfo['path'];
 
 	}
 
@@ -341,13 +422,17 @@ class tx_dlf_solr {
 
 				$toplevel[$doc->uid] = array (
 					'u' => $doc->uid,
+					'h' => '',
 					's' => $docSorting,
 					'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : array ())
 				);
 
 			} else {
 
-				$toplevel[$doc->uid]['p'][] = $doc->id;
+				$toplevel[$doc->uid]['p'][] = array (
+					'u' => $doc->id,
+					'h' => (!empty($results->highlighting->{$doc->id}->fulltext) ? $results->highlighting->{$doc->id}->fulltext[0] : '')
+				);
 
 				if (!in_array($doc->uid, $checks)) {
 
@@ -418,6 +503,7 @@ class tx_dlf_solr {
 
 					$toplevel[$check] = array (
 						'u' => $resArray['uid'],
+						'h' => '',
 						's' => $sorting,
 						'p' => $toplevel[$check]['p']
 					);
@@ -446,6 +532,7 @@ class tx_dlf_solr {
 			'description' => '',
 			'options' => array (
 				'source' => 'search',
+				'engine' => 'solr',
 				'select' => $query,
 				'userid' => 0,
 				'params' => $this->params,
@@ -636,26 +723,10 @@ class tx_dlf_solr {
 
 		}
 
-		// Get Solr credentials.
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-
-		$host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
-
-		// Prepend username and password to hostname.
-		if ($conf['solrUser'] && $conf['solrPass']) {
-
-			$host = $conf['solrUser'].':'.$conf['solrPass'].'@'.$host;
-
-		}
-
-		// Set port if not set.
-		$port = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
-
-		// Append core name to path.
-		$path = trim($conf['solrPath'], '/').'/'.$core;
+		$solrInfo = self::getSolrConnectionInfo($core);
 
 		// Instantiate Apache_Solr_Service class.
-		$this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Apache_Solr_Service', $host, $port, $path);
+		$this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
 
 		// Check if connection is established.
 		if ($this->service->ping() !== FALSE) {
