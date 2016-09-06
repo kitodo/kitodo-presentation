@@ -90,7 +90,6 @@ class tx_dlf_interaction extends tx_dlf_plugin {
             }
 
             $basketConf = array (
-                // 'useCacheHash' => 1,
                 'parameter' => $this->conf['targetBasket'],
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', TRUE, FALSE),
                 'title' => $label
@@ -115,7 +114,7 @@ class tx_dlf_interaction extends tx_dlf_plugin {
             });';
             $output .= '</script>';
 
-            $markerArray['###BASKETBUTTON###'] = $output;//$this->cObj->typoLink($label, $basketConf);//'<a href="">add to basket</a>';
+            $markerArray['###BASKETBUTTON###'] = $output;
             $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">'.$this->pi_getLL('editMode', '', TRUE).'</a>';
             $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">'.$this->pi_getLL('editRemove', '', TRUE).'</a>';
             $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">'.$this->pi_getLL('magnifier', '', TRUE).'</a>';
