@@ -182,7 +182,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			// Build typolink configuration array.
 			// @TODO change hardcoded path to real typolink configuration
-			$fulltext['url'] = '/index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
+			$fulltext['url'] = 'index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
 
 			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
