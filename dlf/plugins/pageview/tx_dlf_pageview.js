@@ -97,10 +97,7 @@ var dlfViewer = function(settings){
 dlfViewer.prototype.addCustomControls = function(controlNames) {
 	var fulltextControl = undefined,
 		imageManipulationControl = undefined,
-		images = this.images,
-        controls = controlNames.length > 0 || controlNames[0] === ""
-            ? this.createControls_(controlNames, layers)
-            : [];
+		images = this.images;
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
