@@ -219,7 +219,9 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 							$dayLinkDiv = '<div class="issues"><h4>' . strftime('%d', $currentDayTime) . '</h4><div>'.$dayLinksList.'</div></div>';
 						}
 
-						switch (strftime('%u', strtotime('+ '.$k.' Day', $firstDayOfWeek))) {
+						switch (strftime('%w', strtotime('+ '.$k.' Day', $firstDayOfWeek))) {
+							case '0': $weekArray['###DAYSUN###'] = ((int)$dayLinks === (int)date('j', $currentDayTime)) ? $dayLinkDiv : strftime('%d', $currentDayTime);
+								break;
 							case '1': $weekArray['###DAYMON###'] = ((int)$dayLinks === (int)date('j', $currentDayTime)) ? $dayLinkDiv : strftime('%d', $currentDayTime);
 								break;
 							case '2': $weekArray['###DAYTUE###'] = ((int)$dayLinks === (int)date('j', $currentDayTime)) ? $dayLinkDiv : strftime('%d', $currentDayTime);
@@ -231,8 +233,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 							case '5': $weekArray['###DAYFRI###'] = ((int)$dayLinks === (int)date('j', $currentDayTime)) ? $dayLinkDiv : strftime('%d', $currentDayTime);
 								break;
 							case '6': $weekArray['###DAYSAT###'] = ((int)$dayLinks === (int)date('j', $currentDayTime)) ? $dayLinkDiv : strftime('%d', $currentDayTime);
-								break;
-							case '7': $weekArray['###DAYSUN###'] = ((int)$dayLinks === (int)date('j', $currentDayTime)) ? $dayLinkDiv : strftime('%d', $currentDayTime);
 								break;
 						}
 					}
