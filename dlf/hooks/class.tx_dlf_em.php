@@ -173,6 +173,7 @@ class tx_dlf_em {
 					$usergroup = array_unique(array_merge(array ($groupUid), $resArray['usergroup']));
 
 					// Try to configure user.
+					$data = array();
 					$data['be_users'][$resArray['uid']] = array (
 						'admin' => 0,
 						'usergroup' => implode(',', $usergroup),
@@ -229,6 +230,7 @@ class tx_dlf_em {
 				// Try to create user.
 				$tempUid = uniqid('NEW');
 
+				$data = array();
 				$data['be_users'][$tempUid] = array (
 					'pid' => 0,
 					'username' => '_cli_dlf',
@@ -386,6 +388,7 @@ class tx_dlf_em {
 					$tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
 
 					// Try to configure usergroup.
+					$data = array();
 					$data['be_groups'][$resArray['uid']] = array(
 						'non_exclude_fields' => implode(',', $non_exclude_fields),
 						'tables_select' => implode(',', $tables_select),
@@ -441,6 +444,7 @@ class tx_dlf_em {
 				// Try to create usergroup.
 				$tempUid = uniqid('NEW');
 
+				$data = array();
 				$data['be_groups'][$tempUid] = array(
 					'pid' => 0,
 					'title' => '_cli_dlf',
