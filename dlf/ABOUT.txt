@@ -15,7 +15,7 @@ About Kitodo.Presentation
 ------------------------
 
 Kitodo.Presentation is a feature-rich framework for building a METS-based digital
-library. It is highly customizable through an user-friendly backend and flexible
+library. It is highly customizable through a user-friendly backend and flexible
 design templates. Since it is based on the great free and open source Content
 Management System TYPO3 (http://typo3.org), it integrates perfectly with your
 website and can easily be managed by editors. Kitodo.Presentation provides a
