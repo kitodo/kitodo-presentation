@@ -1,1 +1,9 @@
-See https://github.com/kitodo/kitodo-presentation
+For more information on the Kitodo project, please visit the
+following websites:
+ - https://www.kitodo.org/
+ - https://github.com/kitodo
+
+For more information on the TYPO3 project, please visit the
+following websites:
+ - https://typo3.org/
+ - https://github.com/typo3

@@ -1,29 +1,12 @@
 <?php
-/***************************************************************
-*  Copyright notice
-*
-*  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-
 /**
- * [CLASS/FUNCTION INDEX of SCRIPT]
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  */
 
 /**
@@ -190,6 +173,7 @@ class tx_dlf_em {
 					$usergroup = array_unique(array_merge(array ($groupUid), $resArray['usergroup']));
 
 					// Try to configure user.
+					$data = array();
 					$data['be_users'][$resArray['uid']] = array (
 						'admin' => 0,
 						'usergroup' => implode(',', $usergroup),
@@ -246,6 +230,7 @@ class tx_dlf_em {
 				// Try to create user.
 				$tempUid = uniqid('NEW');
 
+				$data = array();
 				$data['be_users'][$tempUid] = array (
 					'pid' => 0,
 					'username' => '_cli_dlf',
@@ -403,6 +388,7 @@ class tx_dlf_em {
 					$tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
 
 					// Try to configure usergroup.
+					$data = array();
 					$data['be_groups'][$resArray['uid']] = array(
 						'non_exclude_fields' => implode(',', $non_exclude_fields),
 						'tables_select' => implode(',', $tables_select),
@@ -458,6 +444,7 @@ class tx_dlf_em {
 				// Try to create usergroup.
 				$tempUid = uniqid('NEW');
 
+				$data = array();
 				$data['be_groups'][$tempUid] = array(
 					'pid' => 0,
 					'title' => '_cli_dlf',

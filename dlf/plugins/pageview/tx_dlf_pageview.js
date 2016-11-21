@@ -1,25 +1,12 @@
-/***************************************************************
- *  Copyright notice
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
- *  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
- *  All rights reserved
+ * This file is part of the Kitodo and TYPO3 projects.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
 
 /**
  * @TODO Trigger resize map event after fullscreen is toggled
@@ -128,12 +115,9 @@ var dlfViewer = function(settings){
  * @param {Array.<string>} controlNames
  */
 dlfViewer.prototype.addCustomControls = function(controlNames) {
-    var fulltextControl = undefined,
-        imageManipulationControl = undefined,
-        images = this.images,
-        controls = controlNames.length > 0 || controlNames[0] === ""
-            ? this.createControls_(controlNames, layers)
-            : [];
+	var fulltextControl = undefined,
+		imageManipulationControl = undefined,
+		images = this.images;
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
@@ -186,7 +170,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
  * @param {number} width
  * @param {number} height
  *
- * @return  void
+ * @return	void
  */
 dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, width, height) {
 
@@ -472,7 +456,7 @@ dlfViewer.prototype.rotate = function (direction) {
             this.ov_view.rotate(newRotation);
         }
     }
-    
+
 };
 
 /**
@@ -482,7 +466,7 @@ dlfViewer.prototype.activateSelection = function () {
     var viewerObject = this;
     // remove all features
     viewerObject.resetCropSelection();
-    
+
     // add selection layer and crop interaction
     this.map.addLayer(this.selectionLayer);
     this.map.addInteraction(this.draw);
@@ -592,7 +576,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
       interactions: []
     });
 
-    this.ov_map.addLayer(this.map.getLayers().getArray()[0]);    
+    this.ov_map.addLayer(this.map.getLayers().getArray()[0]);
 
     var mousePosition = null;
     var dlfViewer = this;
@@ -629,7 +613,7 @@ dlfViewer.prototype.activateMagnifier = function () {
         var rotation = this.map.getView().getRotation();
         this.addMagnifier(rotation);
     }
-    
+
     if (!this.magnifierEnabled) {
         $('#ov_map').show();
         this.magnifierEnabled = true;
