@@ -102,39 +102,57 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 	}
 
-	protected function addInteraction()
-	{
-        $markerArray = array();
+	protected function addInteraction() {
+
+		$markerArray = array();
+
 		if ($this->piVars['id']) {
-            $label = $this->pi_getLL('addBasket', '', TRUE);
 
-            if (empty($this->piVars['page'])) {
-                $params['page'] = 1;
-            }
+			if (empty($this->piVars['page'])) {
 
-            if ($this->conf['crop']) {
-            	$markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">'.$this->pi_getLL('editMode', '', TRUE).'</a>';
-            	$markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">'.$this->pi_getLL('editRemove', '', TRUE).'</a>';
-            } else {
-            	$markerArray['###EDITBUTTON###'] = '';
-            	$markerArray['###EDITREMOVE###'] = '';
-            }
+				$params['page'] = 1;
 
-            if ($this->conf['magnifier']) {
-            	$markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">'.$this->pi_getLL('magnifier', '', TRUE).'</a>';
-            } else {
-            	$markerArray['###MAGNIFIER###'] = '';
-            }
+			}
 
-            if ($this->conf['rotation']) {
-            	$markerArray['###ROTATELEFT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(-90);">'.$this->pi_getLL('rotateleft', '', TRUE).'</a>';
-            	$markerArray['###ROTATERIGHT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(90);">'.$this->pi_getLL('rotateright', '', TRUE).'</a>';
-            } else {
-            	$markerArray['###ROTATELEFT###'] = '';
-            	$markerArray['###ROTATERIGHT###'] = '';
-            }
+			if ($this->conf['crop']) {
 
-        }
+				$markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">'.$this->pi_getLL('editMode', '', TRUE).'</a>';
+
+				$markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">'.$this->pi_getLL('editRemove', '', TRUE).'</a>';
+
+			} else {
+
+				$markerArray['###EDITBUTTON###'] = '';
+
+				$markerArray['###EDITREMOVE###'] = '';
+
+			}
+
+			if ($this->conf['magnifier']) {
+
+				$markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">'.$this->pi_getLL('magnifier', '', TRUE).'</a>';
+
+			} else {
+
+				$markerArray['###MAGNIFIER###'] = '';
+
+			}
+
+			if ($this->conf['rotation']) {
+
+				$markerArray['###ROTATELEFT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(-90);">'.$this->pi_getLL('rotateleft', '', TRUE).'</a>';
+
+				$markerArray['###ROTATERIGHT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(90);">'.$this->pi_getLL('rotateright', '', TRUE).'</a>';
+
+			} else {
+
+				$markerArray['###ROTATELEFT###'] = '';
+
+				$markerArray['###ROTATERIGHT###'] = '';
+
+			}
+
+		}
 
         return $markerArray;
 	}

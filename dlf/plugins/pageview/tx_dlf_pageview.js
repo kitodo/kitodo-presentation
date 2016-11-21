@@ -464,6 +464,7 @@ dlfViewer.prototype.rotate = function (direction) {
  */
 dlfViewer.prototype.activateSelection = function () {
     var viewerObject = this;
+
     // remove all features
     viewerObject.resetCropSelection();
 
@@ -518,7 +519,6 @@ dlfViewer.prototype.initCropping = function () {
         $('#addToBasketForm #endX').val(Math.round(pixel[2]));
         $('#addToBasketForm #endY').val(Math.round(pixel[3]));
         $('#addToBasketForm #rotation').val(Math.round(viewerObject.radianToDegree(rotation)));
-        //
 
         return geometry;
     };

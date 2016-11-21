@@ -230,7 +230,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 							'page' => 1,
 							'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
 							'thumbnail' => $resArray['thumbnail'],
-							'metadata' => $metadata
+							'metadata' => $metadata,
+							'sid' => ''
 						);
 
 					}

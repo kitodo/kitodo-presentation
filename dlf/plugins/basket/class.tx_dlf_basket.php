@@ -1,35 +1,17 @@
 <?php
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 /**
- * [CLASS/FUNCTION INDEX of SCRIPT]
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  */
 
 /**
  * Plugin 'DLF: Basket' for the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Christopher Timm <timm@effective-webwork.de>
  * @package	TYPO3
  * @subpackage	tx_dlf
@@ -72,23 +54,28 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		$markerArray['###JS###'] = '';
 
 		// get user session
-		$sessionId = $GLOBALS["TSFE"]->fe_user->id;
+		$sessionId = $GLOBALS['TSFE']->fe_user->id;
 
-		if ($GLOBALS["TSFE"]->loginUser) {
-			$insertArray['fe_user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
+		if ($GLOBALS['TSFE']->loginUser) {
+
+			$insertArray['fe_user_id'] = $GLOBALS['TSFE']->fe_user->user['uid'];
 
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
 				'tx_dlf_basket',
-				'tx_dlf_basket.fe_user_id="'.$insertArray['fe_user_id'].'"',
+				'tx_dlf_basket.fe_user_id='.intval($insertArray['fe_user_id']),
 				'',
 				'',
 				'1'
 			);
+
 		} else {
-			$GLOBALS["TSFE"]->fe_user->setKey("ses","tx_dlf_basket", "");
-			$GLOBALS["TSFE"]->fe_user->sesData_change = true;
-			$GLOBALS["TSFE"]->fe_user->storeSessionData();
+
+			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
+
+			$GLOBALS['TSFE']->fe_user->sesData_change = true;
+
+			$GLOBALS['TSFE']->fe_user->storeSessionData();
 
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
@@ -103,15 +90,18 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 		// session already exists
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
+
 			// basket found get data
 			$basketData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 		} else {
+
 			// create new basket in db
 			$insertArray['session_id'] = $sessionId;
 
-			$query  = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_basket', $insertArray);
-			$res    = $GLOBALS['TYPO3_DB']->sql_query($query);
+			$query = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_basket', $insertArray);
+
+			$res = $GLOBALS['TYPO3_DB']->sql_query($query);
 
 			$basketData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 
@@ -121,45 +111,70 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 		// action add to basket
 		if (!empty($this->piVars['id']) && $this->piVars['addToBasket']) {
+
 			$returnData = $this->addToBasket($this->piVars, $basketData);
+
 			$basketData = $returnData['basketData'];
+
 			$markerArray['###JS###'] = $returnData['jsOutput'];
+
 		} else {
+
 			$basketData['doc_ids'] = json_decode($basketData['doc_ids']);
+
 		}
 
 		// action remove from basket
 		if ($this->piVars['basket_action'] == 'remove') {
+
 			// remove entry from list
 			unset($piVars['basket_action']);
+
 			if (isset($this->piVars['selected'])) {
+
 				$basketData = $this->removeFromBasket($piVars, $basketData);
+
 			}
+
 		}
 
 		// action remove from basket
 		if ($this->piVars['basket_action'] == 'open') {
+
 			// open selected documents
 			unset($piVars['basket_action']);
+
 			if (isset($this->piVars['selected'])) {
+
 				$basketData = $this->openFromBasket($piVars, $basketData);
+
 			}
+
 		}
 
 		// action print from basket
 		if ($this->piVars['print_action']) {
+
 			// open selected documents
 			unset($piVars['print_action']);
+
 			if (isset($this->piVars['selected'])) {
+
 				$basketData = $this->printDocument($piVars, $basketData);
+
 			}
+
 		}
 
 		// action send mail
 		if ($this->piVars['mail_action']) {
+
 			if (isset($this->piVars['selected'])) {
+
 				$this->sendMail($this->piVars);
+
 			}
+
 		}
 
 		// set marker
@@ -170,12 +185,17 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		if ($basketData['doc_ids']) {
 
 			if (is_object($basketData['doc_ids'])) {
+
 				$basketData['doc_ids'] = get_object_vars($basketData['doc_ids']);
+
 			}
 
 			$markerArray['###COUNT###'] = sprintf($this->pi_getLL('count'), count($basketData['doc_ids']));
+
 		} else {
+
 			$markerArray['###COUNT###'] = sprintf($this->pi_getLL('count'), 0);
+
 		}
 
 		// get mail addresses
@@ -189,14 +209,23 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultMail) > 0) {
+
 			$mails = array();
+
 			$mailForm = '<select name="tx_dlf[mail_action]">';
+
 			$mailForm .= '<option value="">'.$this->pi_getLL('chooseMail', '', TRUE).'</option>';
+
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail)){
+
 				$mails[] = $row;
+
 				$mailForm .= '<option value="'.$row['uid'].'">'.$row['name'].' ('.$row['mail'].')</option>';
+
   			}
+
   			$mailForm .= '</select><input type="submit">';
+
 		}
 
 		// mail action form
@@ -222,33 +251,47 @@ class tx_dlf_basket extends tx_dlf_plugin {
 			''
 		);
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultPrinter) > 0) {
-			$printers = array();
-			$printForm = '<select name="tx_dlf[print_action]">';
-			$printForm .= '<option value="">'.$this->pi_getLL('choosePrinter', '', TRUE).'</option>';
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter)){
-				$printers[] = $row;
-				$printForm .= '<option value="'.$row['uid'].'">'.$row['label'].'</option>';
-  			}
-  			$printForm .= '</select><input type="submit">';
-		}
+		$printForm = '';
 
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultPrinter) > 0) {
+
+			$printers = array();
+
+			$printForm = '<select name="tx_dlf[print_action]">';
+
+			$printForm .= '<option value="">'.$this->pi_getLL('choosePrinter', '', TRUE).'</option>';
+
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter)){
+
+				$printers[] = $row;
+
+				$printForm .= '<option value="'.$row['uid'].'">'.$row['label'].'</option>';
+
+  			}
+
+  			$printForm .= '</select><input type="submit" />';
+
+		}
 
 		// print action form
 		$markerArray['###PRINTACTION###'] = $printForm;
-		
 
 		$entries = '';
 
 		if (isset($basketData['doc_ids'])) {
+
 			// get each entry
 			foreach ($basketData['doc_ids'] as $key => $value) {
+
 				$entries .= $this->getEntry($value, $subpartArray);
+
 			}
+
 		} else {
+
 			$entries = '';
+
 		}
-		
 
 		$content = $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($this->template, '###ENTRY###', $entries, TRUE), $markerArray);
 
@@ -262,46 +305,67 @@ class tx_dlf_basket extends tx_dlf_plugin {
 	 * @param  array $template Template information
 	 * @return Template
 	 */
-	public function getEntry($data, $template)
-	{
+	public function getEntry($data, $template) {
+
 		if (is_object($data)) {
+
 			$data = get_object_vars($data);
+
 		}
 
 		$id = $data['id'];
+
 		$startpage = $data['startpage'];
+
 		$endpage = $data['endpage'];
+
 		$startX = $data['startX'];
+
 		$startY = $data['startY'];
+
 		$endX = $data['endX'];
+
 		$endY = $data['endY'];
+
 		$rotation = $data['rotation'];
 
 		$docData = $this->getDocumentData($id, $data);
+
 		$markerArray['###BASKETDATA###'] = $docData['downloadLink'];
 
 		$arrayKey = $id.'_'.$startpage;
 
 		if (isset($startX)) {
+
 			$arrayKey .= '_'.$startX;
+
 		}
 
 		if (isset($endX)) {
+
 			$arrayKey .= '_'.$endX;
+
 		}
-		
 
 		$controlMark = '<input value="'.$id.'" name="tx_dlf[selected]['.$arrayKey.'][id]" type="checkbox">';
+
 		$controlMark .= '<input value="'.$startpage.'" name="tx_dlf[selected]['.$arrayKey.'][startpage]" type="hidden">';
+
 		$controlMark .= '<input value="'.$endpage.'" name="tx_dlf[selected]['.$arrayKey.'][endpage]" type="hidden">';
 
 		// add hidden fields for detail information
 		if ($startX) {
+
 			$controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][startX]" value="'.$startX.'">';
+
 			$controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][startY]"  value="'.$startY.'">';
+
 			$controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][endX]"  value="'.$endX.'">';
+
 			$controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][endY]"  value="'.$endY.'">';
+
 			$controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][rotation]"  value="'.$rotation.'">';
+
 		}
 
 		// return one entry
@@ -310,6 +374,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		$markerArray['###NUMBER###'] = $docData['record_id'];
 
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###ENTRY###', $subpart, TRUE), $markerArray);
+
 	}
 
 	/**
@@ -317,12 +382,16 @@ class tx_dlf_basket extends tx_dlf_plugin {
 	 * @param array $_piVars    piVars
 	 * @param array $basketData basket data
 	 */
-	public function addToBasket($_piVars, $basketData)
-	{
+	public function addToBasket($_piVars, $basketData) {
+
 		if (!$_piVars['startpage']) {
+
 			$page = 0;
+
 		} else {
+
 			$page = $_piVars['startpage'];
+
 		}
 
 		if ($page != null || $_piVars['addToBasket'] == 'list') {
@@ -340,10 +409,15 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 			// update basket
 			if (!empty($basketData['doc_ids'])) {
+
 				$items = json_decode($basketData['doc_ids']);
+
 				$items = get_object_vars($items);
+
 			} else {
+
 				$items = array();
+
 			}
 
 			// get document instance to load further information
@@ -351,49 +425,71 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 			// set endpage for toc and subentry based on logid
 			if (($_piVars['addToBasket'] == 'subentry') OR ($_piVars['addToBasket'] == 'toc')) {
+
 				$smLinks = $document->smLinks;
+
 				$pageCounter = sizeof($smLinks['l2p'][$_piVars['logId']]);
+
 				$documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
+
 			}
 
 			// add whole document
 			if ($_piVars['addToBasket'] == 'list') {
+
 				$documentItem['endpage'] = $document->numPages;
+
 			}
 
 			$arrayKey = $_piVars['id'].'_'.$page;
 
 			if (!empty($_piVars['startX'])) {
+
 				$arrayKey .= '_'.$_piVars['startX'];
+
 			}
 
 			if (!empty($_piVars['endX'])) {
+
 				$arrayKey .= '_'.$_piVars['endX'];
+
 			}
-		
+
 			// do not add more than one identical object
 			if (!in_array($arrayKey, $items)) {
+
 				$items[$arrayKey] = $documentItem;
 
 				// replace url param placeholder
 				$pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->conf['pdfparams']);
+
 				$pdfParams = str_replace("##docId##", $document->recordId, $pdfParams);
+
 				$pdfParams = str_replace("##startx##", $documentItem['startX'], $pdfParams);
+
 				$pdfParams = str_replace("##starty##", $documentItem['startY'], $pdfParams);
+
 				$pdfParams = str_replace("##endx##", $documentItem['endX'], $pdfParams);
+
 				$pdfParams = str_replace("##endy##", $documentItem['endY'], $pdfParams);
+
 				$pdfParams = str_replace("##rotation##", $documentItem['rotation'], $pdfParams);
 
 				if ($documentItem['startpage'] != $documentItem['endpage']) {
+
 					$pdfParams = str_replace("##endpage##", $documentItem['endpage'], $pdfParams);
+
 				} else {
+
 					// remove parameter endpage
 					$pdfParams = str_replace(",##endpage##", '', $pdfParams);
+
 				}
 
 				$pdfGenerateUrl = $this->conf['pdfgenerate'].$pdfParams;
 
 				if ($this->conf['pregeneration']) {
+
 					// send ajax request to webapp
 					$output .= '
 					<script>
@@ -404,18 +500,21 @@ class tx_dlf_basket extends tx_dlf_plugin {
 							});
 						});
 					</script>';
+
 				}
-				
+
 			}
 
 			$update = array('doc_ids' => json_encode($items));
-			$result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
+
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
 
 			$basketData['doc_ids'] = $items;
 
 		}
-			return array('basketData' => $basketData, 'jsOutput' => $output);
-		
+
+		return array('basketData' => $basketData, 'jsOutput' => $output);
+
 	}
 
 	/**
@@ -424,40 +523,55 @@ class tx_dlf_basket extends tx_dlf_plugin {
 	 * @param  array $basketData array with document information
 	 * @return array             basket data
 	 */
-	public function removeFromBasket($_piVars, $basketData)
-	{
+	public function removeFromBasket($_piVars, $basketData) {
+
 		if (!empty($basketData['doc_ids'])) {
+
 			$items = $basketData['doc_ids'];
+
 			$items = get_object_vars($items);
+
 		}
 
 		foreach ($_piVars['selected'] as $key => $value) {
+
 			if (isset($value['id'])) {
 
 				$arrayKey = $value['id'].'_'.$value['startpage'];
 
 				if (isset($value['startX'])) {
+
 					$arrayKey .= '_'.$value['startX'];
+
 				}
 
 				if (isset($value['endX'])) {
+
 					$arrayKey .= '_'.$value['endX'];
+
 				}
 
 				if (isset($items[$arrayKey])) {
-					unset($items[$arrayKey]);
-				}
-			}
-		}
 
+					unset($items[$arrayKey]);
+
+				}
+
+			}
+
+		}
 
 		if (empty($items)) {
+
 			$update = array('doc_ids' => '');
+
 		} else {
+
 			$update = array('doc_ids' => json_encode($items));
+
 		}
 
-		$result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
 
 		$basketData['doc_ids'] = $items;
 
@@ -465,25 +579,34 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 	}
 
-
 	/**
 	 * Open selected documents from basket
 	 * @param  array $_piVars    plugin variables
 	 * @param  array $basketData array with document information
 	 * @return array             basket data
 	 */
-	public function openFromBasket($_piVars, $basketData)
-	{
+	public function openFromBasket($_piVars, $basketData) {
+
 		$pdfUrl = $this->conf['pdfgenerate'];
+
 		foreach ($this->piVars['selected'] as $docId => $docValue) {
+
 			if ($docValue['id']) {
+
 				$filename .= $docValue['id'].'_';
+
 				$docData = $this->getDocumentData($docValue['id'], $docValue);
+
 				$pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+
 				$numberOfPages += $docData['pageNums'];
+
 			}
+
 		}
-		header("Location:".$pdfUrl);
+
+		header('Location: '.$pdfUrl);
+
 		exit;
 
 	}
@@ -493,62 +616,87 @@ class tx_dlf_basket extends tx_dlf_plugin {
 	 * @param  integer $id Document id
 	 * @return mixed     download url or false
 	 */
-	public function getDocumentData($id, $data)
-	{
+	public function getDocumentData($id, $data) {
 
 		// get document instance to load further information
 		$document = tx_dlf_document::getInstance($id,0);
 
 		if ($document) {
+
 			// replace url param placeholder
 			$urlParams = str_replace("##page##", $data['page'], $this->conf['pdfparams']);
+
 			$urlParams = str_replace("##docId##", $document->recordId, $urlParams);
+
 			$urlParams = str_replace("##startpage##", $data['startpage'], $urlParams);
 
 			if ($data['startpage'] != $data['endpage']) {
+
 				$urlParams = str_replace("##endpage##", $data['endpage'], $urlParams);
+
 			} else {
+
 				// remove parameter endpage
 				$urlParams = str_replace(",##endpage##", '', $urlParams);
+
 			}
 
 			$urlParams = str_replace("##startx##", $data['startX'], $urlParams);
+
 			$urlParams = str_replace("##starty##", $data['startY'], $urlParams);
+
 			$urlParams = str_replace("##endx##", $data['endX'], $urlParams);
+
 			$urlParams = str_replace("##endy##", $data['endY'], $urlParams);
+
 			$urlParams = str_replace("##rotation##", $data['rotation'], $urlParams);
 
 			// TODO check if ? is already set
 			$downloadUrl = $this->conf['pdfgenerate'].$urlParams;
 
 			$title = $document->getTitle($id);
+
 			if (!empty($title)) {
+
 				$title = $document->getTitle($id);
+
 			} else {
+
 				$title = '[No title]'; // TODO translation
+
 			}
 
-			// Set page and cutout information 
+			// Set page and cutout information
 			$info = '';
+
 			if ($data['startX'] != '' && $data['endX'] != '') {
+
 				// cutout
 				$info .= $this->pi_getLL('cutout', '', TRUE).' ';
 
 			}
 
 			if ($data['startpage'] == $data['endpage']) {
+
 				// One page
 				$info .= $this->pi_getLL('page', '', TRUE).' '.$data['startpage'];
+
 			} else {
+
 				$info .= $this->pi_getLL('page', '', TRUE).' '.$data['startpage'].'-'.$data['endpage'];
+
 			}
 
 			$downloadLink = '<a href="'.$downloadUrl.'" target="_new">'.$title.'</a> ('.$info.')';
 
 			if ($data['startpage'] == $data['endpage']) {
+
 				$pageNums = 1;
+
 			} else {
+
 				$pageNums = $data['endpage'] - $data['startpage'];
+
 			}
 
 			return array(
@@ -558,17 +706,18 @@ class tx_dlf_basket extends tx_dlf_plugin {
 				'urlParams' => $urlParams,
 				'record_id' => $document->recordId,
 			);
+
 		}
 
 		return false;
-		
+
 	}
 
 	/**
 	 * Send mail
 	 */
-	public function sendMail()
-	{
+	public function sendMail() {
+
 		// send mail
 		$mailId = $this->piVars['mail_action'];
 
@@ -585,38 +734,57 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		$mailData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail);
 
 		$body = $this->pi_getLL('mailBody', '', TRUE)."\n";
+
 		$numberOfPages = 0;
-		$filesProtocol = '';
 
 		$pdfUrl = $this->conf['pdfdownload'];
+
 		$i = 0;
+
 		// prepare links
 		foreach ($this->piVars['selected'] as $docId => $docValue) {
+
 			if ($docValue['id']) {
+
 				$explodeId = explode("_", $docValue['id']);
+
 				$docData = $this->getDocumentData($explodeId[0], $docValue);
 
 				if ($i === 0) {
+
 					$pdfUrl .= $docData['urlParams'];
+
 				} else {
+
 					$pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+
 				}
 
 				$pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
+
 				if ($pages === 0) {
+
 					$numberOfPages = $numberOfPages + 1;
+
 				} else {
+
 					$numberOfPages = $numberOfPages + $pages;
+
 				}
+
 				$i++;
+
 			}
+
 		}
+
 		$body .= $pdfUrl;
 
 		$from = t3lib_utility_Mail::getSystemFrom();
 
 		// send mail
 		$mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
+
 		// Prepare and send the message
 		$mail
 			// subject
@@ -642,32 +810,46 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		);
 
 		if ($GLOBALS["TSFE"]->loginUser) {
+
 			// internal user
 			$insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
+
 			$insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
+
 			$insertArray['label'] = 'Mail: '.$mailData['mail'];
+
 		} else {
+
 			// external user
 			$insertArray['user_id'] = 0;
+
 			$insertArray['name'] = 'n/a';
+
 			$insertArray['label'] = 'Mail: '.$mailData['mail'];
+
 		}
 
 		// add action to protocol
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_actionlog', $insertArray);
-		
+
 	}
 
+	public function printDocument($_piVars, $basketData) {
 
-	public function printDocument($_piVars, $basketData)
-	{
 		$pdfUrl = $this->conf['pdfprint'];
+
 		foreach ($this->piVars['selected'] as $docId => $docValue) {
+
 			if ($docValue['id']) {
+
 				$docData = $this->getDocumentData($docValue['id'], $docValue);
+
 				$pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+
 				$numberOfPages += $docData['pageNums'];
+
 			}
+
 		}
 
 		// get printer data
@@ -689,18 +871,31 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		if ($printerData) {
 
 			$pdfUrl = $printerData['print'];
+
 			$filename = 'Document_';
+
 			$numberOfPages = 0;
+
 			foreach ($this->piVars['selected'] as $docId => $docValue) {
+
 				if ($docValue['id']) {
+
 					$filename .= $docValue['id'].'_';
+
 					$explodeId = explode("_", $docId);
+
 					$docData = $this->getDocumentData($explodeId[0], $docValue);
+
 					$pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+
 					$numberOfPages += $docData['pageNums'];
+
 				}
+
 			}
+
 			$pdfUrl = trim($pdfUrl, '*');
+
 		}
 
 		// protocol
@@ -712,28 +907,34 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		);
 
 		if ($GLOBALS["TSFE"]->loginUser) {
+
 			// internal user
 			$insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
+
 			$insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
+
 			$insertArray['label'] = 'Print: '.$printerData['label'];
+
 		} else {
+
 			// external user
 			$insertArray['user_id'] = 0;
+
 			$insertArray['name'] = 'n/a';
+
 			$insertArray['label'] = 'Print: '.$printerData['label'];
+
 		}
 
 		// add action to protocol
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_actionlog', $insertArray);
 
-		header("Location:".$pdfUrl);
-	}
+		header('Location: '.$pdfUrl);
 
+	}
 
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/basket/class.tx_dlf_basket.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/basket/class.tx_dlf_basket.php']);
 }
-
-?>

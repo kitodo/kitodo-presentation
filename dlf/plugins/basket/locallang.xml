@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <!--
-  Copyright notice
-
-  (c) 2011 Kitodo. Key to digital objects e.V. <contact@kitodo.org>
-  All rights reserved
-
-  This script is part of the TYPO3 project. The TYPO3 project is
-  free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  The GNU General Public License can be found at
-  http://www.gnu.org/copyleft/gpl.html.
-
-  This script is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  This copyright notice MUST APPEAR in all copies of the script!
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
 -->
 <T3locallang>
 	<meta type="array">
@@ -29,45 +16,45 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
-      <label index="tt_content.pi_flexform.pdfGenerate">PDF generate URL (without parameters)</label>
-      <label index="tt_content.pi_flexform.pdfDownload">PDF download URL (without parameters)</label>
-      <label index="tt_content.pi_flexform.pdfPrint">PDF print URL (without parameters)</label>
-      <label index="tt_content.pi_flexform.pdfParams">Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)</label>
-      <label index="tt_content.pi_flexform.pdfParamSeparator">Parameter separator (for multiple documents)</label>
-      <label index="tt_content.pi_flexform.preGeneration">Send ajax request for pdf pre generation</label>
-      <label index="mailSubject">Goobi Presentation - Document</label>
-      <label index="mailBody">The following documents are sent to you by Kitodo.Presentation:</label>
-      <label index="basket">Basket</label>
-      <label index="remove">Remove</label>
-      <label index="cutout">Cutout</label>
-      <label index="page">Page</label>
-      <label index="open">Open</label>
-      <label index="download">Download</label>
-      <label index="print">Print</label>
-      <label index="chooseAction">Choose an action</label>
-      <label index="choosePrinter">Choose a printer</label>
-      <label index="chooseMail">Choose a mail</label>
+			<label index="tt_content.pi_flexform.pdfGenerate">PDF generate URL (without parameters)</label>
+			<label index="tt_content.pi_flexform.pdfDownload">PDF download URL (without parameters)</label>
+			<label index="tt_content.pi_flexform.pdfPrint">PDF print URL (without parameters)</label>
+			<label index="tt_content.pi_flexform.pdfParams">Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)</label>
+			<label index="tt_content.pi_flexform.pdfParamSeparator">Parameter separator (for multiple documents)</label>
+			<label index="tt_content.pi_flexform.preGeneration">Send ajax request for pdf pre generation</label>
+			<label index="mailSubject">Kitodo.Presentation - Document</label>
+			<label index="mailBody">The following documents are sent to you by Kitodo.Presentation:</label>
+			<label index="basket">Basket</label>
+			<label index="remove">Remove</label>
+			<label index="cutout">Cutout</label>
+			<label index="page">Page</label>
+			<label index="open">Open</label>
+			<label index="download">Download</label>
+			<label index="print">Print</label>
+			<label index="chooseAction">Choose an action</label>
+			<label index="choosePrinter">Choose a printer</label>
+			<label index="chooseMail">Choose a mail</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
-      <label index="tt_content.pi_flexform.pdfGenerate">URL zum Generieren der PDF Dokumente (ohne Parameter)</label>
-      <label index="tt_content.pi_flexform.pdfDownload">URL zum Download der PDF Dokumente (ohne Parameter) </label>
-      <label index="tt_content.pi_flexform.pdfPrint">URL zum Drucken der PDF Dokumente (ohne Parameter) </label>
-      <label index="tt_content.pi_flexform.pdfParams">Parameter zu den genannten URLs (mit Platzhalter für die Parameter z.B. ##startX##,##startY##)</label>
-      <label index="tt_content.pi_flexform.pdfParamSeparator">Zeichen zum Separieren der Parameter eines Dokuments</label>
-      <label index="tt_content.pi_flexform.preGeneration">Ajax Request verschicken, um PDF vorzeitig zu generieren</label>
-      <label index="mailSubject">Goobi Presentation - Dokument</label>
-      <label index="mailBody">Folgendes Dokumente wurde über die Kitodo.Presentation Extension an Sie verschickt:</label>
-      <label index="basket">Warenkorb</label>
-      <label index="remove">Entfernen</label>
-      <label index="cutout">Ausschnitt</label>
-      <label index="page">Seite</label>
-      <label index="open">Öffnen</label>
-      <label index="download">Herunterladen</label>
-      <label index="print">Drucken</label>
-      <label index="chooseAction">Aktion auswählen</label>
-      <label index="choosePrinter">Drucker auswählen</label>
-      <label index="chooseMail">E-Mail Empfänger auswählen</label>
+			<label index="tt_content.pi_flexform.pdfGenerate">URL zum Generieren der PDF Dokumente (ohne Parameter)</label>
+			<label index="tt_content.pi_flexform.pdfDownload">URL zum Download der PDF Dokumente (ohne Parameter) </label>
+			<label index="tt_content.pi_flexform.pdfPrint">URL zum Drucken der PDF Dokumente (ohne Parameter) </label>
+			<label index="tt_content.pi_flexform.pdfParams">Parameter zu den genannten URLs (mit Platzhalter für die Parameter z.B. ##startX##,##startY##)</label>
+			<label index="tt_content.pi_flexform.pdfParamSeparator">Zeichen zum Separieren der Parameter eines Dokuments</label>
+			<label index="tt_content.pi_flexform.preGeneration">Ajax Request verschicken, um PDF vorzeitig zu generieren</label>
+			<label index="mailSubject">Kitodo.Presentation - Dokument</label>
+			<label index="mailBody">Folgendes Dokumente wurde über die Kitodo.Presentation Extension an Sie verschickt:</label>
+			<label index="basket">Warenkorb</label>
+			<label index="remove">Entfernen</label>
+			<label index="cutout">Ausschnitt</label>
+			<label index="page">Seite</label>
+			<label index="open">Öffnen</label>
+			<label index="download">Herunterladen</label>
+			<label index="print">Drucken</label>
+			<label index="chooseAction">Aktion auswählen</label>
+			<label index="choosePrinter">Drucker auswählen</label>
+			<label index="chooseMail">E-Mail Empfänger auswählen</label>
 		</languageKey>
 	</data>
 </T3locallang>

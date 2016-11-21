@@ -56,7 +56,6 @@
     "ol.layer.Layer#setSaturation",
     "ol.layer.Layer#un",
     "ol.layer.Tile",
-
     "ol.layer.Vector",
     "ol.layer.Vector#getSource",
     "ol.Map",

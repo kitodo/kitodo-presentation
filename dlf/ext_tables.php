@@ -209,9 +209,7 @@ $TCA['tx_dlf_basket'] = array (
 		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket',
 		'label'     => 'label',
 		'tstamp'    => 'tstamp',
-		'fe_user_id' => 'user_id',
-		'session_id' => 'session_id',
-		'doc_ids' => 'doc_ids',
+		'fe_cruser_id' => 'user_id',
 		'languageField' => 'sys_language_uid',
 		'transOrigPointerField' => 'l18n_parent',
 		'transOrigDiffSourceField' => 'l18n_diffsource',
@@ -232,7 +230,6 @@ $TCA['tx_dlf_printer'] = array (
 	'ctrl' => array (
 		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer',
 		'label'     => 'label',
-		'print' 	=> 'print',
 		'default_sortby' => 'ORDER BY label',
 		'delete'	=> 'deleted',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'tca.php',
@@ -250,8 +247,6 @@ $TCA['tx_dlf_mail'] = array (
 	'ctrl' => array (
 		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail',
 		'label'     => 'label',
-		'name'		=> 'name',
-		'mail'		=> 'mail',
 		'default_sortby' => 'ORDER BY label',
 		'delete'	=> 'deleted',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'tca.php',
@@ -270,10 +265,7 @@ $TCA['tx_dlf_actionlog'] = array (
 		'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog',
 		'label'     => 'label',
 		'crdate'    => 'crdate',
-		'user_id'    => 'user_id',
-		'file_name'    => 'file_name',
-		'count_pages'    => 'count_pages',
-		'name'		=> 'name',
+		'cruser_id' => 'user_id',
 		'default_sortby' => 'ORDER BY label',
 		'delete'	=> 'deleted',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'tca.php',
@@ -308,15 +300,6 @@ t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_basket',
 
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_basket', 'FILE:EXT:'.$_EXTKEY.'/plugins/basket/flexform.xml');
 
-// Plugin "interaction".
-$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_interaction'] = 'layout,select_key,pages,recursive';
-
-$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_interaction'] = 'pi_flexform';
-
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_interaction', $_EXTKEY.'_interaction'), 'list_type');
-
-t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_interaction', 'FILE:EXT:'.$_EXTKEY.'/plugins/interaction/flexform.xml');
-
 // Plugin "collection".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collection'] = 'layout,select_key,pages,recursive';
 
@@ -334,6 +317,15 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_feeds'] = 'pi
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_feeds', $_EXTKEY.'_feeds'), 'list_type');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_feeds', 'FILE:EXT:'.$_EXTKEY.'/plugins/feeds/flexform.xml');
+
+// Plugin "interaction".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_interaction'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_interaction'] = 'pi_flexform';
+
+t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_interaction', $_EXTKEY.'_interaction'), 'list_type');
+
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_interaction', 'FILE:EXT:'.$_EXTKEY.'/plugins/interaction/flexform.xml');
 
 // Plugin "listview".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_listview'] = 'layout,select_key,pages,recursive';
