@@ -392,7 +392,7 @@ dlfUtils.getCookie = function(name) {
  * @returns {Object|undefined}
  */
 dlfUtils.getUrlParams = function() {
-    if (location.hasOwnProperty('search')) {
+    if (Object.prototype.hasOwnProperty.call(location, 'search')) {
         var search = decodeURIComponent(location.search).slice(1).split('&'),
             params = {};
 

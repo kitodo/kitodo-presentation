@@ -240,7 +240,7 @@ dlfViewer.prototype.displayHighlightWord = function() {
     var key = 'tx_dlf[highlight_word]',
         urlParams = dlfUtils.getUrlParams();
 
-    if (urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
+    if (urlParams != undefined && urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
         var value = urlParams[key],
             values = value.split(';'),
             fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0].url, this.images[0]),
