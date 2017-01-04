@@ -20,8 +20,6 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/feeds/class.tx_dlf_feeds.php', '_feeds', 'list_type', FALSE);
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/interaction/class.tx_dlf_interaction.php', '_interaction', 'list_type', TRUE);
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/listview/class.tx_dlf_listview.php', '_listview', 'list_type', FALSE);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/metadata/class.tx_dlf_metadata.php', '_metadata', 'list_type', TRUE);

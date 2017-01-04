@@ -318,15 +318,6 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_feeds'] = 'pi
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_feeds', 'FILE:EXT:'.$_EXTKEY.'/plugins/feeds/flexform.xml');
 
-// Plugin "interaction".
-$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_interaction'] = 'layout,select_key,pages,recursive';
-
-$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_interaction'] = 'pi_flexform';
-
-t3lib_extMgm::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_interaction', $_EXTKEY.'_interaction'), 'list_type');
-
-t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_interaction', 'FILE:EXT:'.$_EXTKEY.'/plugins/interaction/flexform.xml');
-
 // Plugin "listview".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_listview'] = 'layout,select_key,pages,recursive';
 

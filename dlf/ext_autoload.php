@@ -36,7 +36,6 @@ return array (
 	'tx_dlf_basket' => $extensionPath.'plugins/basket/class.tx_dlf_basket.php',
 	'tx_dlf_collection' => $extensionPath.'plugins/collection/class.tx_dlf_collection.php',
 	'tx_dlf_feeds' => $extensionPath.'plugins/feeds/class.tx_dlf_feeds.php',
-	'tx_dlf_interaction' => $extensionPath.'plugins/interaction/class.tx_dlf_interaction.php',
 	'tx_dlf_listview' => $extensionPath.'plugins/listview/class.tx_dlf_listview.php',
 	'tx_dlf_metadata' => $extensionPath.'plugins/metadata/class.tx_dlf_metadata.php',
 	'tx_dlf_navigation' => $extensionPath.'plugins/navigation/class.tx_dlf_navigation.php',
