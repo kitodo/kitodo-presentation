@@ -673,13 +673,9 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 			$downloadUrl = $this->conf['pdfgenerate'].$urlParams;
 
-			$title = $document->getTitle($id);
+			$title = $document->getTitle($id, TRUE);
 
-			if (!empty($title)) {
-
-				$title = $document->getTitle($id);
-
-			} else {
+			if (empty($title)) {
 
 				$title = $this->pi_getLL('noTitle', '', TRUE);
 
