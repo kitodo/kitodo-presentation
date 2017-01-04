@@ -91,18 +91,46 @@ var dlfViewer = function(settings){
      */
     this.source = undefined;
 
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
     this.selectionLayer = undefined;
 
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
     this.draw = undefined;
 
+    /**
+     * @type {Object|null}
+     * @private
+     */
     this.source = null;
 
+    /**
+     * @type {Object|null}
+     * @private
+     */
     this.view = null;
 
+    /**
+     * @type {Object|null}
+     * @private
+     */
     this.ov_view = null;
 
+    /**
+     * @type {Boolean|false}
+     * @private
+     */
     this.magnifierEnabled = false;
 
+    /**
+     * @type {Boolean|false}
+     * @private
+     */
     this.initMagnifier = false;
 
     this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
