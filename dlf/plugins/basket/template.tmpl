@@ -8,38 +8,37 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 <!-- ###TEMPLATE### -->
-<h2 class="tx-dlf-listview-label">###LISTTITLE###</h2>
+<h2 class="tx-dlf-basket-label">###LISTTITLE###</h2>
 <!--###LISTDESCRIPTION###-->
-<p class="tx-dlf-listview-counts">###COUNT###</p>
+<p class="tx-dlf-basket-counts">###COUNT###</p>
 <!--###SORTING###-->
-<!-- <p class="tx-dlf-listview-pagebrowser">###PAGEBROWSER###</p> -->
 <form action="###ACTION###" name="tx_dlf" method="post">
-    <ol class="tx-dlf-listview-list">
-    	<!-- ###ENTRY### -->
-    	<li value="###NUMBER###">
-    		<!--<div class="tx-dlf-listview-thumbnail">###THUMBNAIL###</div>-->
-    		<dl>
-                <dt>
-                    ###BASKETDATA###
-                </dt>
-                <dd>
-                    <div>###CONTROLS###</div>
-                </dd>
-    		</dl>
-    	</li>
-    	<!-- ###ENTRY### -->
-    </ol>
-<div>
-<div>
-  ###REMOVEACTION###
-</div>
-<div>
-  ###MAILACTION###
-</div>
-<div>
-  ###PRINTACTION###
-</div>
-</div>
+	<ol class="tx-dlf-basket-list">
+		<!-- ###ENTRY### -->
+		<li value="###NUMBER###">
+			<dl>
+				<dt>
+					###BASKETDATA###
+				</dt>
+				<dd>
+					<div>###CONTROLS###</div>
+				</dd>
+			</dl>
+		</li>
+		<!-- ###ENTRY### -->
+	</ol>
+	<div>
+		<div>
+			###REMOVEACTION###
+		</div>
+		<div>
+			###MAILACTION###
+		</div>
+		<div>
+			###PRINTACTION###
+		</div>
+	</div>
 </form>
 ###JS###
+<div class="tx-dlf-goto-basket">###BASKET###</div>
 <!-- ###TEMPLATE### -->

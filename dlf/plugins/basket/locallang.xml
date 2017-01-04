@@ -34,6 +34,9 @@
 			<label index="chooseAction">Choose an action</label>
 			<label index="choosePrinter">Choose a printer</label>
 			<label index="chooseMail">Choose a mail</label>
+			<label index="noTitle">No title</label>
+			<label index="count">%d Entries</label>
+			<label index="goBasket">Go to basket</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
@@ -44,7 +47,7 @@
 			<label index="tt_content.pi_flexform.pdfParamSeparator">Zeichen zum Separieren der Parameter eines Dokuments</label>
 			<label index="tt_content.pi_flexform.preGeneration">Ajax Request verschicken, um PDF vorzeitig zu generieren</label>
 			<label index="mailSubject">Kitodo.Presentation - Dokument</label>
-			<label index="mailBody">Folgendes Dokumente wurde über die Kitodo.Presentation Extension an Sie verschickt:</label>
+			<label index="mailBody">Folgende Dokumente wurden über die Kitodo.Presentation Extension an Sie verschickt:</label>
 			<label index="basket">Warenkorb</label>
 			<label index="remove">Entfernen</label>
 			<label index="cutout">Ausschnitt</label>
@@ -55,6 +58,9 @@
 			<label index="chooseAction">Aktion auswählen</label>
 			<label index="choosePrinter">Drucker auswählen</label>
 			<label index="chooseMail">E-Mail Empfänger auswählen</label>
+			<label index="noTitle">Kein Titel vorhanden</label>
+			<label index="count">%d Einträge</label>
+			<label index="goBasket">Zum Warenkorb</label>
 		</languageKey>
 	</data>
 </T3locallang>
