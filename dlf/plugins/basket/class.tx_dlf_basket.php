@@ -644,15 +644,15 @@ class tx_dlf_basket extends tx_dlf_plugin {
 		if ($document) {
 
 			// replace url param placeholder
-			$urlParams = str_replace("##page##", $data['page'], $this->conf['pdfparams']);
+			$urlParams = str_replace("##page##", intval($data['page']), $this->conf['pdfparams']);
 
 			$urlParams = str_replace("##docId##", $document->recordId, $urlParams);
 
-			$urlParams = str_replace("##startpage##", $data['startpage'], $urlParams);
+			$urlParams = str_replace("##startpage##", intval($data['startpage']), $urlParams);
 
 			if ($data['startpage'] != $data['endpage']) {
 
-				$urlParams = str_replace("##endpage##", $data['endpage'], $urlParams);
+				$urlParams = str_replace("##endpage##", intval($data['endpage']), $urlParams);
 
 			} else {
 
@@ -661,15 +661,15 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
 			}
 
-			$urlParams = str_replace("##startx##", $data['startX'], $urlParams);
+			$urlParams = str_replace("##startx##", intval($data['startX']), $urlParams);
 
-			$urlParams = str_replace("##starty##", $data['startY'], $urlParams);
+			$urlParams = str_replace("##starty##", intval($data['startY']), $urlParams);
 
-			$urlParams = str_replace("##endx##", $data['endX'], $urlParams);
+			$urlParams = str_replace("##endx##", intval($data['endX']), $urlParams);
 
-			$urlParams = str_replace("##endy##", $data['endY'], $urlParams);
+			$urlParams = str_replace("##endy##", intval($data['endY']), $urlParams);
 
-			$urlParams = str_replace("##rotation##", $data['rotation'], $urlParams);
+			$urlParams = str_replace("##rotation##", intval($data['rotation']), $urlParams);
 
 			$downloadUrl = $this->conf['pdfgenerate'].$urlParams;
 
