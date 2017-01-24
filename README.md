@@ -3,6 +3,10 @@ Kitodo.Presentation
 
 Kitodo.Presentation is a feature-rich framework for building a METS-based digital library. Kitodo.Presentation is part of the Kitodo Digital Library Suite.
 
+<a href="https://scan.coverity.com/projects/kitodo-presentation">
+  <img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/11566/badge.svg"/>
+</a>
+
 Kitodo. Digital Library Modules
 ------------------------------
 
