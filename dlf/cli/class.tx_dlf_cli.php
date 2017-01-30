@@ -40,7 +40,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 			case 'index':
 
 				// Add command line arguments.
-				$this->cli_options[] = array ('-doc UID/URL', 'UID or URL of the document.');
+				$this->cli_options[] = array ('-doc UID/URL', 'UID or (properly encoded) URL of the document.');
 
 				$this->cli_options[] = array ('-pid UID', 'UID of the page the document should be added to.');
 
@@ -48,6 +48,15 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 				// Check the command line arguments.
 				$this->cli_validateArgs();
+
+				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-doc'][0])
+					&& !\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->cli_args['-doc'][0])) {
+
+					$this->cli_echo('ERROR: '.$this->cli_args['-doc'][0].' is not a valid UID oder URL.'.LF, TRUE);
+
+					exit (1);
+
+				}
 
 				// Get the document...
 				$doc =& tx_dlf_document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
