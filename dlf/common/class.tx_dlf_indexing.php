@@ -728,7 +728,7 @@ class tx_dlf_indexing {
 				$previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
 
 				// Load XML from file.
-				$xml = simplexml_load_string(file_get_contents($file));
+				$xml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
 
 				// reset entity loader setting
 				libxml_disable_entity_loader($previousValueOfEntityLoader);
