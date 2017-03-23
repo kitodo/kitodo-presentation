@@ -88,7 +88,7 @@ CREATE TABLE tx_dlf_metadata (
     default_value text NOT NULL,
     wrap text NOT NULL,
     tokenized tinyint(4) DEFAULT '0' NOT NULL,
-    stored tinyint(4) DEFAULT '0' NOT NULL,
+    `stored` tinyint(4) DEFAULT '0' NOT NULL,
     indexed tinyint(4) DEFAULT '0' NOT NULL,
     boost float(4,2) DEFAULT '1.00' NOT NULL,
     is_sortable tinyint(4) DEFAULT '0' NOT NULL,
