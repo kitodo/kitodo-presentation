@@ -263,13 +263,15 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 */
 	public function pi_wrapInBaseClass($content) {
 
-		// Use get_class($this) instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
-		$content = '<div class="'.str_replace('_', '-', get_class($this)).'">'.$content.'</div>';
+		if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass']) {
+			// Use get_class($this) instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
+			$content = '<div class="'.str_replace('_', '-', get_class($this)).'">'.$content.'</div>';
 
-		if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
+			if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
 
-			$content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n";
+				$content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n";
 
+			}
 		}
 
 		return $content;
