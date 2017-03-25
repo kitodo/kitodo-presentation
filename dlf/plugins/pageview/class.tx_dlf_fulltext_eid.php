@@ -53,7 +53,7 @@ class tx_dlf_fulltext_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 		$url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
 
-		$fulltextData = file_get_contents(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url);
+		$fulltextData = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url);
 
 		header('Last-Modified: ' . gmdate( "D, d M Y H:i:s" ) . 'GMT');
 		header('Cache-Control: no-cache, must-revalidate');
