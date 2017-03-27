@@ -913,14 +913,14 @@ class tx_dlf_helper {
 		// Ensure extension "t3jquery" is available.
 		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3jquery')) {
 
-			require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3jquery').'class.tx_t3jquery.php');
+			require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3jquery').'/Classes/Utility/T3jqueryUtility.php');
 
 		}
 
 		// Is "t3jquery" loaded?
 		if (T3JQUERY === TRUE) {
 
-			tx_t3jquery::addJqJS();
+			\T3Ext\T3jquery\Utility\T3jqueryUtility::addJqJS();
 
 			return TRUE;
 
