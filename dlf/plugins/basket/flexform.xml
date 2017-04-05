@@ -16,7 +16,7 @@
 		<sDEF>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+					<sheetTitle>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -34,90 +34,80 @@
 							</config>
 						</TCEforms>
 					</pages>
-					<excludeOther>
+					<pregeneration>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.preGeneration</label>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </pregeneration>
+					<pdfgenerate>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.excludeOther</label>
-							<config>
-								<type>check</type>
-								<default>1</default>
-							</config>
-						</TCEforms>
-					</excludeOther>
-					<features>
-						<TCEforms>
-							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features</label>
-							<config>
-								<type>select</type>
-								<items type="array">
-									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.overviewmap</numIndex>
-										<numIndex index="1">OverviewMap</numIndex>
-									</numIndex>
-									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.zoompanel</numIndex>
-										<numIndex index="1">ZoomPanel</numIndex>
-									</numIndex>
-								</items>
-								<size>5</size>
-								<autoSizeMax>15</autoSizeMax>
-								<maxitems>25</maxitems>
-								<minitems>0</minitems>
-							</config>
-						</TCEforms>
-					</features>
-					<elementId>
-						<TCEforms>
-							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.elementId</label>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfGenerate</label>
 							<config>
 								<type>input</type>
-								<eval>required,alphanum_x,nospace</eval>
-								<default>tx-dlf-map</default>
+								<eval>required</eval>
 							</config>
 						</TCEforms>
-					</elementId>
-					<crop>
+					</pdfgenerate>
+					<pdfdownload>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.crop</label>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfDownload</label>
+							<config>
+								<type>input</type>
+								<eval>required</eval>
+								<default></default>
+							</config>
+						</TCEforms>
+					</pdfdownload>
+					<pdfprint>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfPrint</label>
+							<config>
+								<type>input</type>
+								<eval>required</eval>
+								<default></default>
+							</config>
+						</TCEforms>
+					</pdfprint>
+					<pdfparams>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfParams</label>
+							<config>
+								<type>input</type>
+								<eval>required</eval>
+								<default>##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##</default>
+							</config>
+						</TCEforms>
+					</pdfparams>
+					<pdfparamseparator>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.pdfParamSeparator</label>
+							<config>
+								<type>input</type>
+								<eval>required</eval>
+								<default>*</default>
+							</config>
+						</TCEforms>
+					</pdfparamseparator>
+					<basketGoToButton>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/interaction/locallang.xml:tt_content.pi_flexform.basketGoToButton</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
 							</config>
 						</TCEforms>
-					</crop>
-					<rotation>
-						<TCEforms>
-							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.rotation</label>
-							<config>
-								<type>check</type>
-								<default>0</default>
-							</config>
-						</TCEforms>
-					</rotation>
-					<magnifier>
-						<TCEforms>
-							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.magnifier</label>
-							<config>
-								<type>check</type>
-								<default>0</default>
-							</config>
-						</TCEforms>
-					</magnifier>
-					<basketButton>
-						<TCEforms>
-							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/interaction/locallang.xml:tt_content.pi_flexform.basketButton</label>
-							<config>
-								<type>check</type>
-								<default>0</default>
-							</config>
-						</TCEforms>
-					</basketButton>
+					</basketGoToButton>
 					<targetBasket>
 						<TCEforms>
 							<exclude>1</exclude>
@@ -135,7 +125,7 @@
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.templateFile</label>
+							<label>LLL:EXT:dlf/plugins/basket/locallang.xml:tt_content.pi_flexform.templateFile</label>
 							<config>
 								<type>group</type>
 								<internal_type>file_reference</internal_type>
