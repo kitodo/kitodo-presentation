@@ -19,12 +19,18 @@
 			<label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected page</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="tt_content.pi_flexform.basketButton">Show basket add button</label>
+			<label index="tt_content.pi_flexform.targetBasket">Target page (with "DLF: Basket" plugin)</label>
+			<label index="basketButton">Add to basket</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Seite anzeigen</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="tt_content.pi_flexform.basketButton">Zeige Warenkorb Button an</label>
+			<label index="tt_content.pi_flexform.targetBasket">Zielseite (mit Plugin "DLF: Warenkorb")</label>
+			<label index="basketButton">Zum Warenkorb hinzufügen</label>
 		</languageKey>
 	</data>
 </T3locallang>
