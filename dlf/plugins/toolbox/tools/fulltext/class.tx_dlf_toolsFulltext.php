@@ -84,7 +84,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 					.$this->pi_getLL('fulltext-on', '', TRUE).';fulltext-off:'
 					.$this->pi_getLL('fulltext-off', '', TRUE).'"></a>';
 		} else {
-			$markerArray['###FULLTEXT_SELECT###'] = $this->pi_getLL('fulltext-not-available', '', TRUE);
+			$markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . $this->pi_getLL('fulltext-not-available', '', TRUE) . '</span>';
 		}
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
