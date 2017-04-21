@@ -55,6 +55,7 @@ $TCA['tx_dlf_documents'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.fe_group',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectMultipleSideBySide',
 				'items' => array (
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
@@ -211,6 +212,7 @@ $TCA['tx_dlf_documents'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.structure',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'tx_dlf_structures',
 				'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) AND tx_dlf_structures.toplevel=1 ORDER BY tx_dlf_structures.label',
 				'size' => 1,
@@ -259,6 +261,7 @@ $TCA['tx_dlf_documents'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.collections',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectMultipleSideBySide',
 				'foreign_table' => 'tx_dlf_collections',
 				'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0) ORDER BY tx_dlf_collections.label',
 				'size' => 5,
@@ -276,6 +279,7 @@ $TCA['tx_dlf_documents'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.owner',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'tx_dlf_libraries',
 				'foreign_table_where' => 'AND tx_dlf_libraries.sys_language_uid IN (-1,0) ORDER BY tx_dlf_libraries.label',
 				'size' => 1,
@@ -293,6 +297,7 @@ $TCA['tx_dlf_documents'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.status',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_documents.status.default', 0),
 				),
@@ -325,6 +330,7 @@ $TCA['tx_dlf_structures'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.language',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
 				'items' => array (
@@ -339,6 +345,7 @@ $TCA['tx_dlf_structures'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.l18n_parent',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('', 0),
 				),
@@ -403,6 +410,7 @@ $TCA['tx_dlf_structures'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail.self', 0),
 				),
@@ -419,6 +427,7 @@ $TCA['tx_dlf_structures'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.status',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_structures.status.default', 0),
 				),
@@ -449,6 +458,7 @@ $TCA['tx_dlf_metadata'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.language',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
 				'items' => array (
@@ -463,6 +473,7 @@ $TCA['tx_dlf_metadata'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.l18n_parent',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('', 0),
 				),
@@ -621,6 +632,7 @@ $TCA['tx_dlf_metadata'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.status',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.status.default', 0),
 				),
@@ -656,6 +668,7 @@ $TCA['tx_dlf_metadataformat'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.encoded',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'tx_dlf_formats',
 				'foreign_table_where' => 'ORDER BY tx_dlf_formats.type',
 				'size' => 1,
@@ -799,6 +812,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.language',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
 				'items' => array (
@@ -813,6 +827,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.l18n_parent',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('', 0),
 				),
@@ -838,6 +853,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.fe_group',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectMultipleSideBySide',
 				'items' => array (
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1),
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2),
@@ -910,6 +926,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.priority',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('1', 1),
 					array ('2', 2),
@@ -928,6 +945,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.documents',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingleBox',
 				'foreign_table' => 'tx_dlf_documents',
 				'foreign_table_where' => 'AND tx_dlf_documents.pid=###CURRENT_PID### ORDER BY tx_dlf_documents.title_sorting',
 				'size' => 5,
@@ -946,6 +964,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.owner',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.owner.none', 0),
 				),
@@ -961,6 +980,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_cruser_id',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_cruser_id.none', 0),
 				),
@@ -984,6 +1004,7 @@ $TCA['tx_dlf_collections'] = array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.status',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.status.default', 0),
 				),
@@ -1016,6 +1037,7 @@ $TCA['tx_dlf_libraries'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.language',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
 				'items' => array (
@@ -1030,6 +1052,7 @@ $TCA['tx_dlf_libraries'] = array (
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.l18n_parent',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array ('', 0),
 				),
