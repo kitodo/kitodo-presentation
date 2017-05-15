@@ -40,16 +40,9 @@ class tx_dlf_fulltext_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
-		// Load translation files.
-		$LANG = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
-
 		$this->extKey = 'dlf';
 
 		$this->scriptRelPath = 'plugins/pageview/class.tx_dlf_fulltext_eid.php';
-
-		$this->LLkey = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('L') ? \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('L') : 'default';
-
-		$this->pi_loadLL();
 
 		$url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
 
