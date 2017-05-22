@@ -460,9 +460,7 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
             };
         })
         .error(function(data, type) {
-            if (type === 'error') {
-                response = false;
-            }
+            response = false;
         });
     });
 
