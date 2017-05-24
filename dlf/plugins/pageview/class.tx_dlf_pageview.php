@@ -163,9 +163,13 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
-			// Build typolink configuration array.
-			// @TODO change hardcoded path to real typolink configuration
-			$fulltext['url'] = '/index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
+			// Configure @action URL for form.
+			$linkConf = array (
+				'parameter' => $GLOBALS['TSFE']->id,
+				'additionalParams' => '&eID=tx_dlf_fulltext_eid&url='.urlencode($fulltext['url']),
+			);
+
+			$fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
 
 			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
