@@ -449,21 +449,14 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
                 ? dlfViewerSource.IIP.getMetdadataURL(imageObj.url)
                 : imageObj.url;
 
-        $.ajax({
-            url: url,
-            async: false
-        }).done(function(data, type) {
-            if (type === 'success') {
-                response = true && response;
-            } else {
-                response = false;
-            };
-        })
-        .error(function(data, type) {
-            if (type === 'error') {
-                response = false;
+        $.get( url, function( data, textStatus, request) {
+            var header = request.getResponseHeader('access-control-allow-origin');
+
+            if(typeof header !== 'undefined') {
+                 response = false;
             }
         });
+
     });
 
 
@@ -595,32 +588,4 @@ dlfUtils.searchFeatureCollectionForText = function(featureCollection, text) {
         }
     });
     return features.length > 0 ? features : undefined;
-};
-
-/**
- * @param {string} url
- * @param {Function=} opt_callback_ifEnabled Should be called if CORS is enabled
- * @param {Function=} opt_callback_ifNotEnabled Should be called if CORS is not enabled
- * @return {boolean}
- */
-dlfUtils.testIfCORSEnabled = function(url, opt_callback_ifEnabled, opt_callback_ifNotEnabled) {
-	// fix for proper working with ie
-	if (!window.location.origin) {
-		window.location.origin = window.location.protocol + '//' + window.location.hostname +
-			(window.location.port ? ':' + window.location.port: '');
-	}
-
-	// fetch data from server
-	// with access control allowed
-    var request = $.ajax({
-        url: url
-    })
-    .done(function() {
-    	if (opt_callback_ifEnabled !== undefined)
-    		opt_callback_ifEnabled();
-    })
-    .fail(function() {
-    	if (opt_callback_ifNotEnabled !== undefined)
-    		opt_callback_ifNotEnabled();
-    });
 };
