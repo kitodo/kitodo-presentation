@@ -237,7 +237,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 		if (!empty($this->piVars['page'])) {
 
-			$this->piVars['pointer'] = intval(floor($this->piVars['page'] / $this->conf['limit']));
+			$this->piVars['pointer'] = intval(floor(($this->piVars['page'] - 1) / $this->conf['limit']));
 
 		}
 
