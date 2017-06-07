@@ -166,7 +166,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			// Configure @action URL for form.
 			$linkConf = array (
 				'parameter' => $GLOBALS['TSFE']->id,
-				'additionalParams' => '&eID=tx_dlf_fulltext_eid&url='.urlencode($fulltext['url']),
+				'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($fulltext['url']),
 			);
 
 			$fulltext['url'] = $this->cObj->typoLink_URL($linkConf);

@@ -9,8 +9,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- * Plugin 'DFG-Viewer: SRU Client eID script' for the 'dfgviewer' extension.
+ * eID-script helper to fetch data from Javascript via server
  *
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @copyright	Copyright (c) 2015, Alexander Bigga, SLUB Dresden
@@ -18,7 +20,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_fulltext_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	/**
 	 *
@@ -38,32 +40,34 @@ class tx_dlf_fulltext_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 */
 	public function main($content = '', $conf = array ()) {
 
-		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		$this->extKey = 'dlf';
 
 		$this->scriptRelPath = 'plugins/pageview/class.tx_dlf_fulltext_eid.php';
 
-		$url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
+		$url = GeneralUtility::_GP('url');
+    $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(GeneralUtility::_GP('header'), 0, 2, 0);
 
-		$fulltextData = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url);
+    $report = array();
+		$fetchedData = GeneralUtility::getUrl($url, $includeHeader, false, $report);
 
 		header('Last-Modified: ' . gmdate( "D, d M Y H:i:s" ) . 'GMT');
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Pragma: no-cache');
-		header('Content-Length: '.strlen($fulltextData));
-		header('Content-Type: text/xml');
+		header('Content-Length: '.strlen($fetchedData));
+		header('Content-Type: ' . $report['content_type']);
 
-		echo $fulltextData;
+		echo $fetchedData;
 
 	}
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/pageview/class.tx_dlf_fulltext_eid.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/pageview/class.tx_dlf_fulltext_eid.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/pageview/class.tx_dlf_geturl_eid.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/pageview/class.tx_dlf_geturl_eid.php']);
 }
 
-$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_fulltext_eid');
+$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_geturl_eid');
 
 $cObj->main();
