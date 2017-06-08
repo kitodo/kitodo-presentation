@@ -33,7 +33,7 @@ class tx_dlf_alto implements tx_dlf_fulltext {
 		$xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
 
 		// Get all (presumed) words of the text.
-		$words = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace/alto:TextBlock/alto:TextLine/alto:String/@CONTENT');
+		$words = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String/@CONTENT');
 
 		return implode(' ', $words);
 
