@@ -53,8 +53,8 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		$fetchedData = GeneralUtility::getUrl($url, $includeHeader, false, $report);
 
 		header('Last-Modified: ' . gmdate( "D, d M Y H:i:s" ) . 'GMT');
-		header('Cache-Control: no-cache, must-revalidate');
-		header('Pragma: no-cache');
+	//	header('Cache-Control: no-cache, must-revalidate');
+	//	header('Pragma: no-cache');
 		header('Content-Length: '.strlen($fetchedData));
 		header('Content-Type: ' . $report['content_type']);
 
