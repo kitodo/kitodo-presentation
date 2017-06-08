@@ -125,6 +125,16 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				$image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
+				if ($this->conf['useInternalProxy']) {
+					// Configure @action URL for form.
+					$linkConf = array (
+						'parameter' => $GLOBALS['TSFE']->id,
+						'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($image['url']),
+					);
+
+					$image['url'] = $this->cObj->typoLink_URL($linkConf);
+				}
+
 				$image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
 				break;
