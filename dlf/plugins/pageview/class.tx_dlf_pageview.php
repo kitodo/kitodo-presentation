@@ -92,7 +92,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 						controls: ["' . implode('", "', $this->controls) . '"],
 						div: "' . $this->conf['elementId'] . '",
 						images: ' . json_encode($this->images) . ',
-						fulltexts: '. json_encode($this->fulltexts) . '
+						fulltexts: '. json_encode($this->fulltexts) . ',
+						useInternalProxy: ' . $this->conf['useInternalProxy'] .'
 					})
 				}
 			}
