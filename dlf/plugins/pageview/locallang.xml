@@ -29,8 +29,6 @@
             <label index="editMode">Set cutout</label>
             <label index="editRemove">Remove cutout</label>
             <label index="magnifier">Magnifier</label>
-            <label index="rotateleft">Rotate left</label>
-            <label index="rotateright">Rotate right</label>
             <label index="addBasket">Add to basket</label>
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -48,8 +46,6 @@
             <label index="editMode">Ausschnitt auswählen</label>
             <label index="editRemove">Ausschnitt entfernen</label>
             <label index="magnifier">Lupe</label>
-            <label index="rotateleft">Links drehen</label>
-            <label index="rotateright">Rechts drehen</label>
             <label index="addBasket">Zum Warenkorb hinzufügen</label>
 		</languageKey>
 	</data>

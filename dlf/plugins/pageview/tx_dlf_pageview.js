@@ -468,25 +468,6 @@ dlfViewer.prototype.radianToDegree = function (radian) {
     return radian * (180 / Math.PI);
 };
 
-dlfViewer.prototype.rotate = function (direction) {
-    if (direction == 'left') {
-        var rotation = this.radianToDegree(this.view.getRotation());
-        newRotation = this.degreeToRadian(rotation - 90);
-        this.view.rotate(newRotation);
-        if (this.ov_view != null) {
-            this.ov_view.rotate(newRotation);
-        }
-    } else {
-        var rotation = this.radianToDegree(this.view.getRotation());
-        newRotation = this.degreeToRadian(rotation + 90);
-        this.view.rotate(newRotation);
-        if (this.ov_view != null) {
-            this.ov_view.rotate(newRotation);
-        }
-    }
-
-};
-
 /**
  * activates the crop selection
  */

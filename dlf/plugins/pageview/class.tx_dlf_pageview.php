@@ -145,20 +145,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			}
 
-			if ($this->conf['rotation']) {
-
-				$markerArray['###ROTATELEFT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(-90);">'.$this->pi_getLL('rotateleft', '', TRUE).'</a>';
-
-				$markerArray['###ROTATERIGHT###'] = '<a href="javascript: tx_dlf_viewer.map.rotate(90);">'.$this->pi_getLL('rotateright', '', TRUE).'</a>';
-
-			} else {
-
-				$markerArray['###ROTATELEFT###'] = '';
-
-				$markerArray['###ROTATERIGHT###'] = '';
-
-			}
-
 		}
 
         return $markerArray;
