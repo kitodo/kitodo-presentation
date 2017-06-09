@@ -49,14 +49,31 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		$url = GeneralUtility::_GP('url');
     $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(GeneralUtility::_GP('header'), 0, 2, 0);
 
-    $report = array();
-		$fetchedData = GeneralUtility::getUrl($url, $includeHeader, false, $report);
+		// first we fetch header separately
+		$fetchedHeader = GeneralUtility::getUrl($url, 2);
 
-		header('Last-Modified: ' . gmdate( "D, d M Y H:i:s" ) . 'GMT');
-	//	header('Cache-Control: no-cache, must-revalidate');
-	//	header('Pragma: no-cache');
+		if ($includeHeader == 0) {
+
+			$fetchedData = GeneralUtility::getUrl($url, $includeHeader);
+
+		} else {
+
+			$fetchedData = $fetchedHeader;
+
+		}
+
+		// take some tags from request header.
+		$fetchedHeader = explode("\n", GeneralUtility::getUrl($url, 2));
+		foreach ($fetchedHeader as $headerline) {
+			if (stripos($headerline, 'Last-Modified:') !== FALSE) {
+				header($headerline);
+			}
+			if (stripos($headerline, 'Content-Type:') !== FALSE) {
+				header($headerline);
+			}
+		}
+		// add some self calculated header tags
 		header('Content-Length: '.strlen($fetchedData));
-		header('Content-Type: ' . $report['content_type']);
 
 		echo $fetchedData;
 
