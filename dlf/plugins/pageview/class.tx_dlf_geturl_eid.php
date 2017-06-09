@@ -62,7 +62,12 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 		}
 
-		// take some tags from request header.
+		// add some self calculated header tags
+		header('Last-Modified: ' . gmdate( "D, d M Y H:i:s" ) . 'GMT');
+		header('Cache-Control: max-age=3600, must-revalidate');
+		header('Content-Length: '.strlen($fetchedData));
+
+		// take some tags from request header and overwrite in case already set
 		$fetchedHeader = explode("\n", GeneralUtility::getUrl($url, 2));
 		foreach ($fetchedHeader as $headerline) {
 			if (stripos($headerline, 'Last-Modified:') !== FALSE) {
@@ -72,8 +77,6 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 				header($headerline);
 			}
 		}
-		// add some self calculated header tags
-		header('Content-Length: '.strlen($fetchedData));
 
 		echo $fetchedData;
 
