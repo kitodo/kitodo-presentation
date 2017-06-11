@@ -337,7 +337,7 @@ $TCA['tx_dlf_structures'] = array (
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.allLanguages', -1),
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.default_value', 0),
 				),
-				'default' => -1
+				'default' => 0
 			),
 		),
 		'l18n_parent' => array (
@@ -466,7 +466,7 @@ $TCA['tx_dlf_metadata'] = array (
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.allLanguages', -1),
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.default_value', 0),
 				),
-				'default' => -1
+				'default' => 0
 			),
 		),
 		'l18n_parent' => array (
@@ -820,6 +820,7 @@ $TCA['tx_dlf_collections'] = array (
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.allLanguages', -1),
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.default_value', 0),
 				),
+				'default' => 0,
 			),
 		),
 		'l18n_parent' => array (
@@ -1044,7 +1045,7 @@ $TCA['tx_dlf_libraries'] = array (
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.allLanguages', -1),
 					array ('LLL:EXT:lang/locallang_general.xml:LGL.default_value', 0),
 				),
-				'default' => -1
+				'default' => 0
 			),
 		),
 		'l18n_parent' => array (
