@@ -455,7 +455,7 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
             url: url,
             async: false
         }).done(function(data, type) {
-            if (type === 'success' && data.includes('Access-Control-Allow-Origin')) {
+            if (type === 'success' && data.indexOf('Access-Control-Allow-Origin') != -1) {
                 response = true && response;
             } else {
                 response = false;
