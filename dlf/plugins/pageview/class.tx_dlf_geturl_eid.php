@@ -44,7 +44,7 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 		$this->extKey = 'dlf';
 
-		$this->scriptRelPath = 'plugins/pageview/class.tx_dlf_fulltext_eid.php';
+		$this->scriptRelPath = 'plugins/pageview/class.tx_dlf_geturl_eid.php';
 
 		$url = GeneralUtility::_GP('url');
     $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(GeneralUtility::_GP('header'), 0, 2, 0);
@@ -66,14 +66,14 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		header('Last-Modified: ' . gmdate( "D, d M Y H:i:s" ) . 'GMT');
 		header('Cache-Control: max-age=3600, must-revalidate');
 		header('Content-Length: '.strlen($fetchedData));
+		$fi = finfo_open(FILEINFO_MIME);
+		header('Content-Type: ' . finfo_buffer($fi, $fetchedData));
 
 		// take some tags from request header and overwrite in case already set
 		$fetchedHeader = explode("\n", GeneralUtility::getUrl($url, 2));
+
 		foreach ($fetchedHeader as $headerline) {
 			if (stripos($headerline, 'Last-Modified:') !== FALSE) {
-				header($headerline);
-			}
-			if (stripos($headerline, 'Content-Type:') !== FALSE) {
 				header($headerline);
 			}
 		}
