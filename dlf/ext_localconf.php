@@ -65,7 +65,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array
 // Register AJAX eID handlers.
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = 'EXT:'.$_EXTKEY.'/plugins/search/class.tx_dlf_search_suggest.php';
 
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_fulltext_eid'] = 'EXT:'.$_EXTKEY.'/plugins/pageview/class.tx_dlf_fulltext_eid.php';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_geturl_eid'] = 'EXT:'.$_EXTKEY.'/plugins/pageview/class.tx_dlf_geturl_eid.php';
 
 if (TYPO3_MODE === 'FE') {
 

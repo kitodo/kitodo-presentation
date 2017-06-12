@@ -92,7 +92,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 						controls: ["' . implode('", "', $this->controls) . '"],
 						div: "' . $this->conf['elementId'] . '",
 						images: ' . json_encode($this->images) . ',
-						fulltexts: '. json_encode($this->fulltexts) . '
+						fulltexts: '. json_encode($this->fulltexts) . ',
+						useInternalProxy: ' . $this->conf['useInternalProxy'] .'
 					})
 				}
 			}
@@ -124,6 +125,16 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
 
 				$image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+
+				if ($this->conf['useInternalProxy']) {
+					// Configure @action URL for form.
+					$linkConf = array (
+						'parameter' => $GLOBALS['TSFE']->id,
+						'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($image['url']),
+					);
+
+					$image['url'] = $this->cObj->typoLink_URL($linkConf);
+				}
 
 				$image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
@@ -166,7 +177,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			// Configure @action URL for form.
 			$linkConf = array (
 				'parameter' => $GLOBALS['TSFE']->id,
-				'additionalParams' => '&eID=tx_dlf_fulltext_eid&url='.urlencode($fulltext['url']),
+				'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($fulltext['url']),
 			);
 
 			$fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
