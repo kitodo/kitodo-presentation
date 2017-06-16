@@ -62,7 +62,7 @@ return array (
 					array ('', 0),
 				),
 				'foreign_table' => 'tx_dlf_metadata',
-				'foreign_table_where' => 'AND tx_dlf_metadata.pid=###CURRENT_PID### AND tx_dlf_metadata.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => 'AND tx_dlf_metadata.pid=###CURRENT_PID### AND tx_dlf_metadata.sys_language_uid IN (-1,0) ORDER BY label ASC',
 			),
 		),
 		'l18n_diffsource' => array (
