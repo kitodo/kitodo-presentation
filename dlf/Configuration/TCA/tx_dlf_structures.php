@@ -63,7 +63,7 @@ return array (
 					array ('', 0),
 				),
 				'foreign_table' => 'tx_dlf_structures',
-				'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY label ASC',
 			),
 		),
 		'l18n_diffsource' => array (
@@ -81,6 +81,7 @@ return array (
 		),
 		'toplevel' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.toplevel',
 			'config' => array (
 				'type' => 'check',
@@ -99,6 +100,7 @@ return array (
 		),
 		'index_name' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.index_name',
 			'config' => array (
 				'type' => 'input',
@@ -109,6 +111,7 @@ return array (
 		),
 		'oai_name' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.oai_name',
 			'config' => array (
 				'type' => 'input',
@@ -119,6 +122,7 @@ return array (
 		),
 		'thumbnail' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'displayCond' => 'FIELD:toplevel:REQ:true',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail',
 			'config' => array (

@@ -62,7 +62,7 @@ return array (
 					array ('', 0),
 				),
 				'foreign_table' => 'tx_dlf_metadata',
-				'foreign_table_where' => 'AND tx_dlf_metadata.pid=###CURRENT_PID### AND tx_dlf_metadata.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => 'AND tx_dlf_metadata.pid=###CURRENT_PID### AND tx_dlf_metadata.sys_language_uid IN (-1,0) ORDER BY label ASC',
 			),
 		),
 		'l18n_diffsource' => array (
@@ -90,6 +90,7 @@ return array (
 		),
 		'index_name' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.index_name',
 			'config' => array (
 				'type' => 'input',
@@ -100,6 +101,7 @@ return array (
 		),
 		'format' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.format',
 			'config' => array (
 				'type' => 'inline',
@@ -133,6 +135,7 @@ return array (
 		),
 		'wrap' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'mergeIfNotBlank',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.wrap',
 			'config' => array (
 				'type' => 'text',
@@ -146,6 +149,7 @@ return array (
 		),
 		'tokenized' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tokenized',
 			'config' => array (
 				'type' => 'check',
@@ -154,6 +158,7 @@ return array (
 		),
 		'stored' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.stored',
 			'config' => array (
 				'type' => 'check',
@@ -162,6 +167,7 @@ return array (
 		),
 		'indexed' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.indexed',
 			'config' => array (
 				'type' => 'check',
@@ -170,6 +176,7 @@ return array (
 		),
 		'boost' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.boost',
 			'config' => array (
 				'type' => 'input',
@@ -181,6 +188,7 @@ return array (
 		),
 		'is_sortable' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.is_sortable',
 			'config' => array (
 				'type' => 'check',
@@ -189,6 +197,7 @@ return array (
 		),
 		'is_facet' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.is_facet',
 			'config' => array (
 				'type' => 'check',
@@ -197,6 +206,7 @@ return array (
 		),
 		'is_listed' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.is_listed',
 			'config' => array (
 				'type' => 'check',
@@ -205,6 +215,7 @@ return array (
 		),
 		'autocomplete' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.autocomplete',
 			'config' => array (
 				'type' => 'check',
@@ -213,6 +224,7 @@ return array (
 		),
 		'status' => array (
 			'exclude' => 1,
+			'l10n_mode' => 'exclude',
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.status',
 			'config' => array (
 				'type' => 'select',
