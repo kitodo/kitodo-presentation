@@ -1191,7 +1191,7 @@ class tx_dlf_helper {
 
 		// First fetch the uid of the received index_name
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid',
+				'uid, l18n_parent',
 				$table,
 				'pid='.$pid.' AND index_name="'.$index_name.'"'.self::whereClause($table, TRUE),
 				'',
@@ -1207,7 +1207,7 @@ class tx_dlf_helper {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'index_name',
 					$table,
-					'pid='.$pid.' AND l18n_parent='.$resArray['uid'].' AND sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content).self::whereClause($table, TRUE),
+					'pid='.$pid.' AND uid='.$resArray['l18n_parent'].' AND sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content).self::whereClause($table, TRUE),
 					'',
 					'',
 					''
@@ -1255,7 +1255,7 @@ class tx_dlf_helper {
 						// Overlay localized labels if available.
 						if ($GLOBALS['TSFE']->sys_language_content > 0) {
 
-							$resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray, $GLOBALS['TSFE']->sys_language_content, ($GLOBALS['TSFE']->sys_language_mode == 'strict' ? 'hideNonTranslated' : ''));
+							$resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray,$GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
 
 						}
 
