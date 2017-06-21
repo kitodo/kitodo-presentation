@@ -68,7 +68,7 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin) {
 
             tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
                 ? imageSourceObj.tilesize[0]
-                    : 256,
+                : 256,
                 format = $.inArray('jpg', imageSourceObj.formats) || $.inArray('jpeg', imageSourceObj.formats)
                     ? 'jpg'
                     : imageSourceObj.formats.length > 0
@@ -573,7 +573,7 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
                 : imageObj.url;
 
         url =
-            window.location.origin + window.location.pathname + '?url=' + encodeURIComponent(
+            window.location.origin + window.location.pathname + '?eID=tx_dlf_geturl_eid&url=' + encodeURIComponent(
                 url) + '&header=2';
 
         $.ajax({
@@ -581,14 +581,10 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
             async: false
         }).done(function(data, type) {
             response = type === 'success' && data.indexOf('Access-Control-Allow-Origin') !== -1;
-        })
-            .error(function(data, type) {
+        }).error(function(data, type) {
                 response = false;
             });
-
     });
-
-
     return response;
 };
 
