@@ -30,6 +30,7 @@
             <label index="editRemove">Remove cutout</label>
             <label index="magnifier">Magnifier</label>
             <label index="addBasket">Add to basket</label>
+			<label index="tt_content.pi_flexform.useInternalProxy">Use Internal Proxy</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -47,6 +48,7 @@
             <label index="editRemove">Ausschnitt entfernen</label>
             <label index="magnifier">Lupe</label>
             <label index="addBasket">Zum Warenkorb hinzufügen</label>
+			<label index="tt_content.pi_flexform.useInternalProxy">Internen Proxy verwenden</label>
 		</languageKey>
 	</data>
 </T3locallang>

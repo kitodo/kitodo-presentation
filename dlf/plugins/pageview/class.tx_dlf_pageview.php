@@ -92,7 +92,8 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 						controls: ["' . implode('", "', $this->controls) . '"],
 						div: "' . $this->conf['elementId'] . '",
 						images: ' . json_encode($this->images) . ',
-						fulltexts: '. json_encode($this->fulltexts) . '
+						fulltexts: '. json_encode($this->fulltexts) . ',
+						useInternalProxy: ' . ($this->conf['useInternalProxy'] ? 1 : 0) .'
 					})
 				}
 			}
@@ -248,6 +249,16 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 				$image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
+				if ($this->conf['useInternalProxy']) {
+					// Configure @action URL for form.
+					$linkConf = array (
+						'parameter' => $GLOBALS['TSFE']->id,
+						'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($image['url']),
+					);
+
+					$image['url'] = $this->cObj->typoLink_URL($linkConf);
+				}
+
 				$image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
 
 				break;
@@ -286,9 +297,13 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
-			// Build typolink configuration array.
-			// @TODO change hardcoded path to real typolink configuration
-			$fulltext['url'] = '/index.php?eID=tx_dlf_fulltext_eid&url='.$fulltext['url'];
+			// Configure @action URL for form.
+			$linkConf = array (
+				'parameter' => $GLOBALS['TSFE']->id,
+				'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($fulltext['url']),
+			);
+
+			$fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
 
 			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
 

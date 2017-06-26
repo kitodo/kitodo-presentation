@@ -115,7 +115,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		// Add link to previous page.
 		if ($this->piVars['pointer'] > 0) {
 
-			$output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), array ('pointer' => $this->piVars['pointer'] - 1, 'page' => NULL), TRUE).$separator;
+			$output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), array ('pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1), TRUE).$separator;
 
 		} else {
 
@@ -132,7 +132,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
 				if ($this->piVars['pointer'] != $i) {
 
-					$output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), array ('pointer' => $i, 'page' => NULL), TRUE).$separator;
+					$output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), array ('pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1), TRUE).$separator;
 
 				} else {
 
@@ -157,7 +157,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		// Add link to next page.
 		if ($this->piVars['pointer'] < $maxPages - 1) {
 
-			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), array ('pointer' => $this->piVars['pointer'] + 1, 'page' => NULL), TRUE);
+			$output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), array ('pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1), TRUE);
 
 		} else {
 
@@ -224,11 +224,20 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		}
 
 		// Set some variable defaults.
+		// page may be integer or string (physical page attribute)
+		if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+
+			$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+
+		} else {
+
+			$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+
+		}
+
 		if (!empty($this->piVars['page'])) {
 
-			$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['page'], 1, $this->doc->numPages, 1);
-
-			$this->piVars['pointer'] = intval(floor($this->piVars['page'] / $this->conf['limit']));
+			$this->piVars['pointer'] = intval(floor(($this->piVars['page'] - 1) / $this->conf['limit']));
 
 		}
 

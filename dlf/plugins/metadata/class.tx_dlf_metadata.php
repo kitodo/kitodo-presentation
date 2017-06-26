@@ -213,7 +213,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.wrap AS wrap',
 			'tx_dlf_metadata',
-			'tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata').' AND (sys_language_uid IN (-1,0) OR (sys_language_uid = ' .$GLOBALS['TSFE']->sys_language_uid. ' AND l18n_parent = 0))',
 			'',
 			'tx_dlf_metadata.sorting',
 			''
@@ -221,14 +221,27 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
 		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-			if ($this->conf['showFull'] || $resArray['is_listed']) {
+			if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
 
-				$metaList[$resArray['index_name']] = array (
-					'wrap' => $resArray['wrap'],
-					'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
-				);
+					$resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
 
-			}
+				}
+
+				if ($resArray) {
+					// get correct language uid for translated realurl link
+					$link_uid = ($resArray['_LOCALIZED_UID']) ? $resArray['_LOCALIZED_UID'] : $resArray['uid'];
+
+					// do stuff with the row entry data	like built HTML or prepare further usage
+					if ($this->conf['showFull'] || $resArray['is_listed']) {
+
+						$metaList[$resArray['index_name']] = array (
+							'wrap' => $resArray['wrap'],
+							'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+						);
+
+					}
+
+				}
 
 		}
 

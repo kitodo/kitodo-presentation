@@ -133,6 +133,13 @@ var dlfViewer = function(settings){
      */
     this.initMagnifier = false;
 
+    /**
+     * use internal proxy setting
+     * @type {boolean}
+     * @private
+     */
+    this.useInternalProxy = dlfUtils.exists(settings.useInternalProxy) ? settings.useInternalProxy : false;
+
     this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
 };
 
@@ -342,7 +349,11 @@ dlfViewer.prototype.init = function(controlNames) {
      * Is cors enabled. Important information for correct renderer and layer initialization
      * @type {boolean}
      */
-    this.isCorsEnabled = dlfUtils.isCorsEnabled(this.imageUrls);
+     if (this.useInternalProxy) {
+       this.isCorsEnabled = true;
+     } else {
+       this.isCorsEnabled = dlfUtils.isCorsEnabled(this.imageUrls);
+     }
 
     this.initLayer(this.imageUrls, this.isCorsEnabled)
         .done($.proxy(function(layers){
