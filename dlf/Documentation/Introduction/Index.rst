@@ -98,13 +98,36 @@ contains 12 plugins.
 Screenshots
 -----------
 
-This chapter should help people figure how the extension works. Remove it
-if not relevant.
+Some examples of Kitodo.Presentation in action on the `digital collection of SLUB Dresden <http://digital.slub-dresden.de/>`_:
 
-.. figure:: ../Images/IntroductionPackage.png
+.. figure:: ../Images/Introduction/KitodoPresentaion-SLUB1.PNG
    :width: 500px
-   :alt: Introduction Package
+   :alt: Mscr.Dresd.A.180.d
 
-   Introduction Package just after installation (caption of the image)
+   Mscr.Dresd.A.180.d
 
-   How the Frontend of the Introduction Package looks like just after installation (legend of the image)
+   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/162147/7/>`_
+
+.. figure:: ../Images/Introduction/KitodoPresentation-SLUB-DresdenDaily.PNG
+   :width: 500px
+   :alt: Newspaper an other periodicals
+
+   Newspaper an Other Periodicals
+
+   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/120620/1/>`_
+
+.. figure:: ../Images/Introduction/KitodoPresentation-SLUB-Kalenderansicht.PNG
+   :width: 500px
+   :alt: Calendar for Digitised Newspapers
+
+   Calendar for Digitised Newspapers
+
+   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/120676/1/>`_
+
+.. figure:: ../Images/Introduction/KitodoPresentation-SLUB-Volltexte.PNG
+   :width: 500px
+   :alt: Full Text and OCR Presentation
+
+   Full Text and OCR Presentation
+
+   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/120676/1/>`_
