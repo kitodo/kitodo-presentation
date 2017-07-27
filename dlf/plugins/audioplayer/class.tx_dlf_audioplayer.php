@@ -90,14 +90,6 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 
 			$this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']]);
 
-		} else {
-
-			if (TYPO3_DLOG) {
-
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_audioplayer->getAudio('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpAudio'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-			}
-
 		}
 
 		return $this->audio;
@@ -158,12 +150,16 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 		// Get audio data.
 		$this->audio = $this->getAudio($this->piVars['page']);
 
-		// Fill in the template markers.
-		$markerArray = array (
-			'###PLAYER_JS###' => $this->addPlayerJS()
-		);
+		if (isset($this->audio['url']) && isset($this->audio['mimetype'])) {
 
-		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+			// Fill in the template markers.
+			$markerArray = array (
+				'###PLAYER_JS###' => $this->addPlayerJS()
+			);
+
+			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+
+		}
 
 		return $this->pi_wrapInBaseClass($content);
 
