@@ -68,7 +68,17 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
 
-            tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0 ? imageSourceObj.tilesize[0] : 256, format = $.inArray('jpg', imageSourceObj.formats) || $.inArray('jpeg', imageSourceObj.formats) ? 'jpg' : imageSourceObj.formats.length > 0 ? imageSourceObj.formats[0] : 'jpg', quality = imageSourceObj.qualities !== undefined && imageSourceObj.qualities.length > 0 ? imageSourceObj.qualities[0] : 'native';
+            tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
+                ? imageSourceObj.tilesize[0]
+                    : 256,
+                format = $.inArray('jpg', imageSourceObj.formats) || $.inArray('jpeg', imageSourceObj.formats)
+                    ? 'jpg'
+                    : imageSourceObj.formats.length > 0
+                        ? imageSourceObj.formats[0]
+                        : 'jpg',
+                quality = imageSourceObj.qualities !== undefined && imageSourceObj.qualities.length > 0
+                    ? imageSourceObj.qualities[0]
+                    : 'native';
 
             layer = new ol.layer.Tile({
                 source: new dlfViewerSource.IIIF({
@@ -88,7 +98,9 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                 })
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
-            tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0 ? imageSourceObj.tilesize[0] : 256;
+            tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
+                ? imageSourceObj.tilesize[0]
+                : 256;
 
             layer = new ol.layer.Tile({
                 source: new dlfViewerSource.IIP({
@@ -139,7 +151,11 @@ dlfUtils.createOl3View = function (images) {
         maxLatY = images.reduce(function (prev, curr) {
         return Math.max(prev, curr.height);
     }, 0),
-        extent = images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY && images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF && images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIP ? [0, 0, maxLonX, maxLatY] : [0, -maxLatY, maxLonX, 0];
+        extent = images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY &&
+        images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF &&
+        images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIP
+            ? [0, 0, maxLonX, maxLatY]
+            : [0, -maxLatY, maxLonX, 0];
 
     // globally define max zoom
     window.OL3_MAX_ZOOM = 8;
@@ -192,36 +208,42 @@ dlfUtils.fetchImageData = function (imageSourceObjs) {
         finishLoading = function finishLoading() {
         loadCount += 1;
 
-        if (loadCount === imageSourceObjs.length) deferredResponse.resolve(imageSourceData);
+        if (loadCount === imageSourceObjs.length)
+            deferredResponse.resolve(imageSourceData);
     };
 
     imageSourceObjs.forEach(function (imageSourceObj, index) {
         if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
-            dlfUtils.fetchZoomifyData(imageSourceObj).done(function (imageSourceDataObj) {
-                imageSourceData[index] = imageSourceDataObj;
-                finishLoading();
+            dlfUtils.fetchZoomifyData(imageSourceObj)
+                .done(function (imageSourceDataObj) {
+                    imageSourceData[index] = imageSourceDataObj;
+                    finishLoading();
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
-            dlfUtils.getIIIFResource(imageSourceObj).done(function (imageSourceDataObj) {
-                imageSourceData[index] = imageSourceDataObj;
-                finishLoading();
+            dlfUtils.getIIIFResource(imageSourceObj)
+                .done(function (imageSourceDataObj) {
+                    imageSourceData[index] = imageSourceDataObj;
+                      finishLoading();
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
-            dlfUtils.fetchIIPData(imageSourceObj).done(function (imageSourceDataObj) {
-                imageSourceData[index] = imageSourceDataObj;
-                finishLoading();
+            dlfUtils.fetchIIPData(imageSourceObj)
+                .done(function (imageSourceDataObj) {
+                    imageSourceData[index] = imageSourceDataObj;
+                    finishLoading();
             });
         } else {
             // In the worse case expect static image file
-            dlfUtils.fetchStaticImageData(imageSourceObj).done(function (imageSourceDataObj) {
-                imageSourceData[index] = imageSourceDataObj;
-                finishLoading();
+            dlfUtils.fetchStaticImageData(imageSourceObj)
+                .done(function (imageSourceDataObj) {
+                    imageSourceData[index] = imageSourceDataObj;
+                    finishLoading();
             });
         }
     });
 
     return deferredResponse;
 };
+
 
 /**
  * Fetches the image data for static images source.
@@ -322,14 +344,18 @@ dlfUtils.supportsIIIF = function supportsIIIF(data) {
     if (data.protocol && data.protocol === 'http://iiif.io/api/image') {
         return true;
         // Version 1.1
-    } else if (data['@context'] && (data['@context'] === "http://library.stanford.edu/iiif/image-api/1.1/context.json" || data['@context'] === "http://iiif.io/api/image/1/context.json")) {
+    } else if (data['@context'] && (
+        data['@context'] === "http://library.stanford.edu/iiif/image-api/1.1/context.json" ||
+        data['@context'] === "http://iiif.io/api/image/1/context.json")) {
         return true;
         // Version 1.0
-    } else if (data.profile && data.profile.indexOf("http://library.stanford.edu/iiif/image-api/compliance.html") === 0) {
+    } else if (data.profile &&
+        data.profile.indexOf("http://library.stanford.edu/iiif/image-api/compliance.html") === 0) {
         return true;
     } else if (data.identifier && data.width && data.height) {
         return true;
-    } else return data.documentElement && "info" === data.documentElement.tagName && "http://library.stanford.edu/iiif/image-api/ns/" === data.documentElement.namespaceURI;
+    } else return data.documentElement && "info" === data.documentElement.tagName &&
+    "http://library.stanford.edu/iiif/image-api/ns/" === data.documentElement.namespaceURI;
 };
 
 /**
@@ -443,7 +469,8 @@ dlfUtils.fetchZoomifyData = function (imageSourceObj) {
         url: imageSourceObj.url
     }).done(cb);
     function cb(response, type) {
-        if (type !== 'success') throw new Error('Problems while fetching ImageProperties.xml');
+        if (type !== 'success')
+            throw new Error('Problems while fetching ImageProperties.xml');
 
         var properties = $(response).find('IMAGE_PROPERTIES');
 
@@ -523,7 +550,8 @@ dlfUtils.isNullEmptyUndefinedOrNoNumber = function (val) {
 dlfUtils.isCorsEnabled = function (imageObjs) {
     // fix for proper working with ie
     if (!window.location.origin) {
-        window.location.origin = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+        window.location.origin = window.location.protocol + '//' + window.location.hostname +
+            (window.location.port ? ':' + window.location.port : '');
     }
 
     // fetch data from server
@@ -531,7 +559,14 @@ dlfUtils.isCorsEnabled = function (imageObjs) {
     var response = true;
 
     imageObjs.forEach(function (imageObj) {
-        var url = imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY ? imageObj.url.replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg') : imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF ? dlfViewerSource.IIIF.getMetdadataURL(imageObj.url) : imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP ? dlfViewerSource.IIP.getMetdadataURL(imageObj.url) : imageObj.url;
+        var url = imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
+            ? imageObj.url.replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg')
+            :
+            imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF
+                ? dlfViewerSource.IIIF.getMetdadataURL(imageObj.url)
+                : imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
+                ? dlfViewerSource.IIP.getMetdadataURL(imageObj.url)
+                : imageObj.url;
 
         url = window.location.origin + window.location.pathname + '?eID=tx_dlf_geturl_eid&url=' + encodeURIComponent(url) + '&header=2';
 
@@ -640,7 +675,8 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
             newCoordinates = [];
 
         for (var j = 0; j < oldCoordinates.length; j++) {
-            newCoordinates.push([offset + scale * oldCoordinates[j][0], displayImageHeight - scale * oldCoordinates[j][1]]);
+            newCoordinates.push(
+              [offset + scale * oldCoordinates[j][0], displayImageHeight - scale * oldCoordinates[j][1]]);
         }
 
         features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
