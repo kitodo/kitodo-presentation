@@ -34,6 +34,13 @@ var dlfViewer = function(settings){
     this.map = null;
 
     /**
+     * Openlayers map object (magnifier)
+     * @type {ol.Map|null}
+     * @private
+     */
+    this.ov_map = null;
+
+    /**
      * Contains image information (e.g. URL, width, height)
      * @type {Array.<string>}
      * @private
@@ -71,6 +78,60 @@ var dlfViewer = function(settings){
      * @private
      */
     this.imageManipulationControl = undefined;
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.selection = undefined;
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.source = undefined;
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.selectionLayer = undefined;
+
+    /**
+     * @type {Object|undefined}
+     * @private
+     */
+    this.draw = undefined;
+
+    /**
+     * @type {Object|null}
+     * @private
+     */
+    this.source = null;
+
+    /**
+     * @type {Object|null}
+     * @private
+     */
+    this.view = null;
+
+    /**
+     * @type {Object|null}
+     * @private
+     */
+    this.ov_view = null;
+
+    /**
+     * @type {Boolean|false}
+     * @private
+     */
+    this.magnifierEnabled = false;
+
+    /**
+     * @type {Boolean|false}
+     * @private
+     */
+    this.initMagnifier = false;
 
     /**
      * use internal proxy setting
@@ -365,6 +426,19 @@ dlfViewer.prototype.init = function(controlNames) {
             }, this));
         }, this));
 
+        this.source = new ol.source.Vector();
+        // crop selection style
+        this.selection = new ol.interaction.DragBox({
+            condition: ol.events.condition.noModifierKeys,
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [0, 0, 255, 1]
+                })
+            })
+        });
+
+        this.initCropping();
+
 };
 
 /**
@@ -395,4 +469,215 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs, isCorsEnabled) {
       });
 
     return deferredResponse;
+};
+
+dlfViewer.prototype.degreeToRadian = function (degree) {
+    return degree * (Math.PI / 180);
+};
+
+dlfViewer.prototype.radianToDegree = function (radian) {
+    return radian * (180 / Math.PI);
+};
+
+/**
+ * activates the crop selection
+ */
+dlfViewer.prototype.activateSelection = function () {
+    var viewerObject = this;
+
+    // remove all features
+    viewerObject.resetCropSelection();
+
+    // add selection layer and crop interaction
+    this.map.addLayer(this.selectionLayer);
+    this.map.addInteraction(this.draw);
+};
+
+/**
+ * reset the crop selection
+ */
+dlfViewer.prototype.resetCropSelection = function () {
+    this.map.removeLayer(this.selectionLayer);
+    this.source.clear();
+    this.setNewCropDrawer(this.source);
+};
+
+/**
+ * initialise crop selection
+ */
+dlfViewer.prototype.initCropping = function () {
+    var viewerObject = this;
+
+    var source = new ol.source.Vector({wrapX: false});
+
+    this.selectionLayer = new ol.layer.Vector({
+        source: source
+    });
+
+    value = 'LineString';
+    maxPoints = 2;
+    geometryFunction = function(coordinates, geometry) {
+        if (!geometry) {
+            geometry = new ol.geom.Polygon(null);
+        }
+        var start = coordinates[0];
+        var end = coordinates[1];
+        geometry.setCoordinates([
+            [start, [start[0], end[1]], end, [end[0], start[1]], start]
+        ]);
+
+        // add to basket button
+        var extent = geometry.getExtent();
+        var imageExtent = viewerObject.map.getLayers().item(0).getSource().getProjection().getExtent();
+
+        var pixel = ol.extent.getIntersection(imageExtent, extent);
+        var rotation = viewerObject.map.getView().getRotation();
+
+        // fill form with coordinates
+        $('#addToBasketForm #startX').val(Math.round(pixel[0]));
+        $('#addToBasketForm #startY').val(Math.round(pixel[1]));
+        $('#addToBasketForm #endX').val(Math.round(pixel[2]));
+        $('#addToBasketForm #endY').val(Math.round(pixel[3]));
+        $('#addToBasketForm #rotation').val(Math.round(viewerObject.radianToDegree(rotation)));
+
+        return geometry;
+    };
+
+    this.setNewCropDrawer(source);
+};
+
+/**
+ * set the draw interaction for crop selection
+ */
+dlfViewer.prototype.setNewCropDrawer = function (source) {
+    viewerObject = this;
+    this.draw = new ol.interaction.Draw({
+        source: source,
+        type: /** @type {ol.geom.GeometryType} */ (value),
+        geometryFunction: geometryFunction,
+        maxPoints: maxPoints
+    });
+
+    // reset crop interaction
+    this.draw.on('drawend', function (event) {
+        viewerObject.map.removeInteraction(viewerObject.draw);
+    });
+
+    this.selectionLayer = new ol.layer.Vector({
+        source: source
+    });
+};
+
+/**
+ * add magnifier map
+ */
+dlfViewer.prototype.addMagnifier = function (rotation) {
+
+    //magnifier map
+    var extent = [0, 0, 1000, 1000];
+
+    layerProj = new ol.proj.Projection({
+        code: 'goobi-image',
+        units: 'pixels',
+        extent: extent
+    });
+
+    this.ov_view = new ol.View({
+        projection: layerProj,
+        center: ol.extent.getCenter(extent),
+        zoom: 3,
+        rotation: rotation,
+    });
+
+    this.ov_map = new ol.Map({
+      target: 'ov_map',
+      view: this.ov_view,
+      controls: [],
+      interactions: []
+    });
+
+    this.ov_map.addLayer(this.map.getLayers().getArray()[0]);
+
+    var mousePosition = null;
+    var dlfViewer = this;
+    var ov_map = this.ov_map;
+
+    this.map.on('pointermove', function (evt) {
+        mousePosition = dlfViewer.map.getEventCoordinate(evt.originalEvent);
+        dlfViewer.ov_view.setCenter(mousePosition);
+    });
+
+    var adjustViews = function(sourceView, destMap) {
+        var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
+        var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
+
+        if (rotateDiff || centerDiff) {
+            destMap.getView().rotate(sourceView.getRotation());
+        }
+    },
+    adjustViewHandler = function(event) {
+        adjustViews(event.target, ov_map);
+    };
+
+    this.map.getView().on('change:rotation', adjustViewHandler, this.map);
+    adjustViews(this.map.getView(), this.ov_map);
+
+    this.initMagnifier = true;
+};
+
+/**
+ * activates the magnifier map
+ */
+dlfViewer.prototype.activateMagnifier = function () {
+    if (!this.initMagnifier) {
+        var rotation = this.map.getView().getRotation();
+        this.addMagnifier(rotation);
+    }
+
+    if (!this.magnifierEnabled) {
+        $('#ov_map').show();
+        this.magnifierEnabled = true;
+    } else {
+        $('#ov_map').hide();
+        this.magnifierEnabled = false;
+    }
+};
+
+/**
+ * @constructor
+ * @extends {ol.interaction.Pointer}
+ */
+function Drag() {
+
+  ol.interaction.Pointer.call(this, {
+    handleDownEvent: Drag.prototype.handleDownEvent,
+    handleDragEvent: Drag.prototype.handleDragEvent,
+    handleMoveEvent: Drag.prototype.handleMoveEvent,
+    handleUpEvent: Drag.prototype.handleUpEvent
+  });
+
+  /**
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.coordinate_ = null;
+
+  /**
+   * @type {string|undefined}
+   * @private
+   */
+  this.cursor_ = 'pointer';
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.feature_ = null;
+
+  /**
+   * @type {string|undefined}
+   * @private
+   */
+  this.previousCursor_ = undefined;
+
 };

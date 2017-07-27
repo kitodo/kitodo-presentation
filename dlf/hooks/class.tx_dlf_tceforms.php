@@ -60,11 +60,24 @@ class tx_dlf_tceforms {
 	 */
 	public function itemsProcFunc_collectionList(&$params, &$pObj) {
 
-		if ($params['row']['pi_flexform']) {
+		// the access to pi_flexform data has changed in TYPO3 7.6
+		if (version_compare(TYPO3_version, '7.6', '<')) {
 
-			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+			if ($params['row']['pi_flexform']) {
 
-			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+				$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+
+				$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+
+			}
+
+		} else {
+
+			$pages = $params['row']['pages'];
+
+		}
+
+		if (!empty($pages)) {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
@@ -115,11 +128,24 @@ class tx_dlf_tceforms {
 	 */
 	public function itemsProcFunc_extendedSearchList(&$params, &$pObj) {
 
-		if ($params['row']['pi_flexform']) {
+		// the access to pi_flexform data has changed in TYPO3 7.6
+		if (version_compare(TYPO3_version, '7.6', '<')) {
 
-			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+			if ($params['row']['pi_flexform']) {
 
-			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+				$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+
+				$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+
+			}
+
+		} else {
+
+			$pages = $params['row']['pages'];
+
+		}
+
+		if (!empty($pages)) {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
@@ -170,11 +196,24 @@ class tx_dlf_tceforms {
 	 */
 	public function itemsProcFunc_facetsList(&$params, &$pObj) {
 
-		if ($params['row']['pi_flexform']) {
+		// the access to pi_flexform data has changed in TYPO3 7.6
+		if (version_compare(TYPO3_version, '7.6', '<')) {
 
-			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+			if ($params['row']['pi_flexform']) {
 
-			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+				$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+
+				$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+
+			}
+
+		} else {
+
+			$pages = $params['row']['pages'];
+
+		}
+
+		if (!empty($pages)) {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
@@ -225,11 +264,24 @@ class tx_dlf_tceforms {
 	 */
 	public function itemsProcFunc_libraryList(&$params, &$pObj) {
 
-		if ($params['row']['pi_flexform']) {
+		// the access to pi_flexform data has changed in TYPO3 7.6
+		if (version_compare(TYPO3_version, '7.6', '<')) {
 
-			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+			if ($params['row']['pi_flexform']) {
 
-			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+				$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+
+				$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+
+			}
+
+		} else {
+
+			$pages = $params['row']['pages'];
+
+		}
+
+		if (!empty($pages)) {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
@@ -280,11 +332,24 @@ class tx_dlf_tceforms {
 	 */
 	public function itemsProcFunc_solrList(&$params, &$pObj) {
 
-		if ($params['row']['pi_flexform']) {
+		// the access to pi_flexform data has changed in TYPO3 7.6
+		if (version_compare(TYPO3_version, '7.6', '<')) {
 
-			$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+			if ($params['row']['pi_flexform']) {
 
-			$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+				$pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
+
+				$pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
+
+			}
+
+		} else {
+
+			$pages = $params['row']['pages'];
+
+		}
+
+		if (!empty($pages)) {
 
 			// There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
 			// i.e. instead of "18" it reads "pages_18|Title"
