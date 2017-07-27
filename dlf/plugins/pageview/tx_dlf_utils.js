@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -34,15 +36,15 @@ dlfUtils.RUNNING_INDEX = 99999999;
  * @param {string} opt_origin
  * @return {Array.<ol.layer.Layer>}
  */
-dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin) {
+dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
 
-    let origin = opt_origin !== undefined ? opt_origin : null,
+    var origin = opt_origin !== undefined ? opt_origin : null,
         widthSum = 0,
         offsetWidth = 0,
         layers = [];
 
-    imageSourceObjs.forEach(function(imageSourceObj) {
-        let tileSize;
+    imageSourceObjs.forEach(function (imageSourceObj) {
+        var tileSize = void 0;
         if (widthSum > 0) {
             // set offset width in case of multiple images
             offsetWidth = widthSum;
@@ -51,8 +53,8 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin) {
         //
         // Create layer
         //
-        let extent = [offsetWidth, 0, imageSourceObj.width + offsetWidth, imageSourceObj.height],
-            layer;
+        var extent = [offsetWidth, 0, imageSourceObj.width + offsetWidth, imageSourceObj.height],
+            layer = void 0;
 
         if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
             // create zoomify layer
@@ -68,7 +70,7 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin) {
 
             tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
                 ? imageSourceObj.tilesize[0]
-                : 256,
+                    : 256,
                 format = $.inArray('jpg', imageSourceObj.formats) || $.inArray('jpeg', imageSourceObj.formats)
                     ? 'jpg'
                     : imageSourceObj.formats.length > 0
@@ -138,17 +140,17 @@ dlfUtils.createOl3Layers = function(imageSourceObjs, opt_origin) {
  * @param {Array.<{src: *, width: *, height: *}>} images
  * @return {ol.View}
  */
-dlfUtils.createOl3View = function(images) {
+dlfUtils.createOl3View = function (images) {
 
     //
     // Calculate map extent
     //
-    let maxLonX = images.reduce(function(prev, curr) {
-            return prev + curr.width;
-        }, 0),
-        maxLatY = images.reduce(function(prev, curr) {
-            return Math.max(prev, curr.height);
-        }, 0),
+    var maxLonX = images.reduce(function (prev, curr) {
+        return prev + curr.width;
+    }, 0),
+        maxLatY = images.reduce(function (prev, curr) {
+        return Math.max(prev, curr.height);
+    }, 0),
         extent = images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY &&
         images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF &&
         images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIP
@@ -159,14 +161,14 @@ dlfUtils.createOl3View = function(images) {
     window.OL3_MAX_ZOOM = 8;
 
     // define map projection
-    const proj = new ol.proj.Projection({
+    var proj = new ol.proj.Projection({
         code: 'goobi-image',
         units: 'pixels',
         extent: extent
     });
 
     // define view
-    const viewParams = {
+    var viewParams = {
         projection: proj,
         center: ol.extent.getCenter(extent),
         zoom: 1,
@@ -182,7 +184,7 @@ dlfUtils.createOl3View = function(images) {
  * @param {?} val
  * @return {boolean}
  */
-dlfUtils.exists = function(val) {
+dlfUtils.exists = function (val) {
     return val !== undefined;
 };
 
@@ -192,50 +194,50 @@ dlfUtils.exists = function(val) {
  * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
  * @return {JQueryStatic.Deferred}
  */
-dlfUtils.fetchImageData = function(imageSourceObjs) {
+dlfUtils.fetchImageData = function (imageSourceObjs) {
 
     // use deferred for async behavior
-    const deferredResponse = new $.Deferred();
+    var deferredResponse = new $.Deferred();
 
     /**
      * This holds information about the loading state of the images
      * @type {Array.<number>}
      */
-    let imageSourceData = [],
+    var imageSourceData = [],
         loadCount = 0,
-        finishLoading = function() {
-            loadCount += 1;
+        finishLoading = function finishLoading() {
+        loadCount += 1;
 
-            if (loadCount === imageSourceObjs.length)
-                deferredResponse.resolve(imageSourceData);
-        };
+        if (loadCount === imageSourceObjs.length)
+            deferredResponse.resolve(imageSourceData);
+    };
 
-    imageSourceObjs.forEach(function(imageSourceObj, index) {
+    imageSourceObjs.forEach(function (imageSourceObj, index) {
         if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
             dlfUtils.fetchZoomifyData(imageSourceObj)
-                .done(function(imageSourceDataObj) {
+                .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
-                });
+            });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
             dlfUtils.getIIIFResource(imageSourceObj)
-                .done(function(imageSourceDataObj) {
+                .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
-                    finishLoading();
-                });
+                      finishLoading();
+            });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
             dlfUtils.fetchIIPData(imageSourceObj)
-                .done(function(imageSourceDataObj) {
+                .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
-                });
+            });
         } else {
             // In the worse case expect static image file
             dlfUtils.fetchStaticImageData(imageSourceObj)
-                .done(function(imageSourceDataObj) {
+                .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
-                });
+            });
         }
     });
 
@@ -249,18 +251,18 @@ dlfUtils.fetchImageData = function(imageSourceObjs) {
  * @param {{url: *, mimetype: *}} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
-dlfUtils.fetchStaticImageData = function(imageSourceObj) {
+dlfUtils.fetchStaticImageData = function (imageSourceObj) {
 
     // use deferred for async behavior
-    const deferredResponse = new $.Deferred();
+    var deferredResponse = new $.Deferred();
 
     // Create new Image object.
-    const image = new Image();
+    var image = new Image();
 
     // Register onload handler.
-    image.onload = function() {
+    image.onload = function () {
 
-        const imageDataObj = {
+        var imageDataObj = {
             src: this.src,
             mimetype: imageSourceObj.mimetype,
             width: this.width,
@@ -282,8 +284,8 @@ dlfUtils.fetchStaticImageData = function(imageSourceObj) {
  */
 dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
 
-    const deferredResponse = new $.Deferred();
-    const type = 'GET';
+    var deferredResponse = new $.Deferred();
+    var type = 'GET';
     $.ajax({
         url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
         type: type,
@@ -291,18 +293,18 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
     }).done(cb).fail(error);
 
     function cb(data) {
-        const mimetype = imageSourceObj.mimetype;
+        var mimetype = imageSourceObj.mimetype;
         if (dlfUtils.supportsIIIF(data)) {
             if (data.protocol && data.protocol === 'http://iiif.io/api/image') {
-                let uri = decodeURI(data['@id']);
+                var uri = decodeURI(data['@id']);
                 uri = dlfUtils.removeInfoJson(uri);
-                const imageResource = dlfUtils.buildImageV2(mimetype, uri, data);
+                var imageResource = dlfUtils.buildImageV2(mimetype, uri, data);
                 deferredResponse.resolve(imageResource);
             } else {
-                let uri = imageSourceObj.url;
-                uri = dlfUtils.removeInfoJson(uri);
-                const imageResource = dlfUtils.buildImageV1(mimetype, uri, data);
-                deferredResponse.resolve(imageResource);
+                var _uri = imageSourceObj.url;
+                _uri = dlfUtils.removeInfoJson(_uri);
+                var _imageResource = dlfUtils.buildImageV1(mimetype, _uri, data);
+                deferredResponse.resolve(_imageResource);
             }
         }
     }
@@ -352,8 +354,8 @@ dlfUtils.supportsIIIF = function supportsIIIF(data) {
         return true;
     } else if (data.identifier && data.width && data.height) {
         return true;
-    } else return (data.documentElement && "info" === data.documentElement.tagName &&
-    "http://library.stanford.edu/iiif/image-api/ns/" === data.documentElement.namespaceURI);
+    } else return data.documentElement && "info" === data.documentElement.tagName &&
+    "http://library.stanford.edu/iiif/image-api/ns/" === data.documentElement.namespaceURI;
 };
 
 /**
@@ -374,22 +376,22 @@ dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
         src: uri,
         width: jsonld.width,
         height: jsonld.height,
-        tilesize: [jsonld.tiles.map(function(a) {
+        tilesize: [jsonld.tiles.map(function (a) {
             return a.width;
-        })[0], jsonld.tiles.map(function(a) {
+        })[0], jsonld.tiles.map(function (a) {
             return a.height;
         })[0]],
-        qualities: jsonld.profile.map(function(a) {
-            return a
-        }).map(function(b) {
+        qualities: jsonld.profile.map(function (a) {
+            return a;
+        }).map(function (b) {
             return b.qualities;
         })[1],
-        formats: jsonld.profile.map(function(a) {
-            return a
-        }).map(function(b) {
+        formats: jsonld.profile.map(function (a) {
+            return a;
+        }).map(function (b) {
             return b.formats;
         })[1],
-        resolutions: jsonld.tiles.map(function(a) {
+        resolutions: jsonld.tiles.map(function (a) {
             return a.scaleFactors;
         })[0],
         mimetype: mimetype
@@ -424,26 +426,24 @@ dlfUtils.buildImageV1 = function buildImageV1(mimetype, uri, jsonld) {
     };
 };
 
-
 /**
  * Fetches the image data for iip images source.
  *
  * @param {{url: *, mimetype: *}} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
-dlfUtils.fetchIIPData = function(imageSourceObj) {
+dlfUtils.fetchIIPData = function (imageSourceObj) {
 
     // use deferred for async behavior
-    const deferredResponse = new $.Deferred();
+    var deferredResponse = new $.Deferred();
 
     $.ajax({
-        url: dlfViewerSource.IIP.getMetdadataURL(imageSourceObj.url)//'http://localhost:8000/fcgi-bin/iipsrv.fcgi?FIF=F4713/HD7.tif&obj=IIP,1.0&obj=Max-size&obj=Tile-size&obj=Resolution-number',
+        url: dlfViewerSource.IIP.getMetdadataURL(imageSourceObj.url) //'http://localhost:8000/fcgi-bin/iipsrv.fcgi?FIF=F4713/HD7.tif&obj=IIP,1.0&obj=Max-size&obj=Tile-size&obj=Resolution-number',
     }).done(cb);
     function cb(response, type) {
-        if (type !== 'success')
-            throw new Error('Problems while fetching ImageProperties.xml');
+        if (type !== 'success') throw new Error('Problems while fetching ImageProperties.xml');
 
-        const imageDataObj = $.extend({
+        var imageDataObj = $.extend({
             src: imageSourceObj.url,
             mimetype: imageSourceObj.mimetype
         }, dlfViewerSource.IIP.parseMetadata(response));
@@ -460,10 +460,10 @@ dlfUtils.fetchIIPData = function(imageSourceObj) {
  * @param {{url: *, mimetype: *}} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
-dlfUtils.fetchZoomifyData = function(imageSourceObj) {
+dlfUtils.fetchZoomifyData = function (imageSourceObj) {
 
     // use deferred for async behavior
-    const deferredResponse = new $.Deferred();
+    var deferredResponse = new $.Deferred();
 
     $.ajax({
         url: imageSourceObj.url
@@ -472,9 +472,9 @@ dlfUtils.fetchZoomifyData = function(imageSourceObj) {
         if (type !== 'success')
             throw new Error('Problems while fetching ImageProperties.xml');
 
-        const properties = $(response).find('IMAGE_PROPERTIES');
+        var properties = $(response).find('IMAGE_PROPERTIES');
 
-        const imageDataObj = {
+        var imageDataObj = {
             src: response.URL.substring(0, response.URL.lastIndexOf("/") + 1),
             width: parseInt(properties.attr('WIDTH')),
             height: parseInt(properties.attr('HEIGHT')),
@@ -493,40 +493,36 @@ dlfUtils.fetchZoomifyData = function(imageSourceObj) {
  * @return {string|null} Value of the cookie
  * @TODO replace unescape function
  */
-dlfUtils.getCookie = function(name) {
+dlfUtils.getCookie = function (name) {
 
-    const results = document.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
+    var results = document.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
 
     if (results) {
 
         return decodeURI(results[2]);
-
     } else {
 
         return null;
-
     }
-
 };
 
 /**
  * Returns url parameters
  * @returns {Object|undefined}
  */
-dlfUtils.getUrlParams = function() {
+dlfUtils.getUrlParams = function () {
     if (Object.prototype.hasOwnProperty.call(location, 'search')) {
-        const search = decodeURIComponent(location.search).slice(1).split('&'),
+        var search = decodeURIComponent(location.search).slice(1).split('&'),
             params = {};
 
-        search.forEach(function(item) {
-            const s = item.split('=');
-            params[s[0]] = s[1]
+        search.forEach(function (item) {
+            var s = item.split('=');
+            params[s[0]] = s[1];
         });
 
         return params;
     }
     return undefined;
-
 };
 
 /**
@@ -534,7 +530,7 @@ dlfUtils.getUrlParams = function() {
  * @param {?} val
  * @return {boolean}
  */
-dlfUtils.isNull = function(val) {
+dlfUtils.isNull = function (val) {
     return val === null;
 };
 
@@ -543,7 +539,7 @@ dlfUtils.isNull = function(val) {
  * @param {?} val
  * @return {boolean}
  */
-dlfUtils.isNullEmptyUndefinedOrNoNumber = function(val) {
+dlfUtils.isNullEmptyUndefinedOrNoNumber = function (val) {
     return val === null || val === undefined || val === '' || isNaN(val);
 };
 
@@ -551,7 +547,7 @@ dlfUtils.isNullEmptyUndefinedOrNoNumber = function(val) {
  * @param {Array.<{url: *, mimetype: *}>} imageObjs
  * @return {boolean}
  */
-dlfUtils.isCorsEnabled = function(imageObjs) {
+dlfUtils.isCorsEnabled = function (imageObjs) {
     // fix for proper working with ie
     if (!window.location.origin) {
         window.location.origin = window.location.protocol + '//' + window.location.hostname +
@@ -560,10 +556,10 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
 
     // fetch data from server
     // with access control allowed
-    let response = true;
+    var response = true;
 
-    imageObjs.forEach(function(imageObj) {
-        let url = imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
+    imageObjs.forEach(function (imageObj) {
+        var url = imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
             ? imageObj.url.replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg')
             :
             imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF
@@ -572,18 +568,16 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
                 ? dlfViewerSource.IIP.getMetdadataURL(imageObj.url)
                 : imageObj.url;
 
-        url =
-            window.location.origin + window.location.pathname + '?eID=tx_dlf_geturl_eid&url=' + encodeURIComponent(
-                url) + '&header=2';
+        url = window.location.origin + window.location.pathname + '?eID=tx_dlf_geturl_eid&url=' + encodeURIComponent(url) + '&header=2';
 
         $.ajax({
             url: url,
             async: false
-        }).done(function(data, type) {
+        }).done(function (data, type) {
             response = type === 'success' && data.indexOf('Access-Control-Allow-Origin') !== -1;
-        }).error(function(data, type) {
-                response = false;
-            });
+        }).error(function (data, type) {
+            response = false;
+        });
     });
     return response;
 };
@@ -592,21 +586,20 @@ dlfUtils.isCorsEnabled = function(imageObjs) {
  * Functions checks if WebGL is enabled in the browser
  * @return {boolean}
  */
-dlfUtils.isWebGLEnabled = function() {
+dlfUtils.isWebGLEnabled = function () {
     if (!!window.WebGLRenderingContext) {
-        let canvas = document.createElement("canvas"),
+        var canvas = document.createElement("canvas"),
             rendererNames = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
             context = false;
 
-        for (let i = 0; i < rendererNames.length; i++) {
+        for (var i = 0; i < rendererNames.length; i++) {
             try {
                 context = canvas.getContext(rendererNames[i]);
                 if (context && typeof context.getParameter === "function") {
                     // WebGL is enabled;
                     return true;
                 }
-            } catch (e) {
-            }
+            } catch (e) {}
         }
         // WebGL not supported
         return false;
@@ -620,8 +613,8 @@ dlfUtils.isWebGLEnabled = function() {
  * @param {Element} element
  * @return {Object}
  */
-dlfUtils.parseDataDic = function(element) {
-    const dataDicString = $(element).attr('data-dic'),
+dlfUtils.parseDataDic = function (element) {
+    var dataDicString = $(element).attr('data-dic'),
         dataDicRecords = dataDicString.split(';'),
         dataDic = {};
 
@@ -640,10 +633,9 @@ dlfUtils.parseDataDic = function(element) {
  * @param {string} name The key of the value
  * @param {?} value The value to save
  */
-dlfUtils.setCookie = function(name, value) {
+dlfUtils.setCookie = function (name, value) {
 
     document.cookie = name + "=" + decodeURI(value) + "; path=/";
-
 };
 
 /**
@@ -657,36 +649,34 @@ dlfUtils.setCookie = function(name, value) {
  * @deprecated
  * @return {Array.<ol.Feature>}
  */
-dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offset) {
+dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_offset) {
 
     // update size / scale settings of imageObj
-    let image;
+    var image = void 0;
     if (width && height) {
 
         image = {
             'width': width,
             'height': height,
             'scale': imageObj.width / width
-        }
-
+        };
     }
 
-    if (image === undefined)
-        return [];
+    if (image === undefined) return [];
 
-    const scale = image.scale,
+    var scale = image.scale,
         displayImageHeight = imageObj.height,
         offset = opt_offset !== undefined ? opt_offset : 0;
 
     // do rescaling and set a id
-    for (const i in features) {
+    for (var i in features) {
 
-        const oldCoordinates = features[i].getGeometry().getCoordinates()[0],
+        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
             newCoordinates = [];
 
-        for (let j = 0; j < oldCoordinates.length; j++) {
+        for (var j = 0; j < oldCoordinates.length; j++) {
             newCoordinates.push(
-                [offset + (scale * oldCoordinates[j][0]), displayImageHeight - (scale * oldCoordinates[j][1])]);
+              [offset + scale * oldCoordinates[j][0], displayImageHeight - scale * oldCoordinates[j][1]]);
         }
 
         features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
@@ -697,7 +687,6 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offs
     }
 
     return features;
-
 };
 
 /**
@@ -706,12 +695,11 @@ dlfUtils.scaleToImageSize = function(features, imageObj, width, height, opt_offs
  * @param {string} text
  * @return {Array.<ol.Feature>|undefined}
  */
-dlfUtils.searchFeatureCollectionForText = function(featureCollection, text) {
-    const features = [];
-    featureCollection.forEach(function(ft) {
+dlfUtils.searchFeatureCollectionForText = function (featureCollection, text) {
+    var features = [];
+    featureCollection.forEach(function (ft) {
         if (ft.get('fulltext') !== undefined) {
-            if (ft.get('fulltext').toLowerCase().indexOf(text.toLowerCase()) > -1)
-                features.push(ft);
+            if (ft.get('fulltext').toLowerCase().indexOf(text.toLowerCase()) > -1) features.push(ft);
         }
     });
     return features.length > 0 ? features : undefined;
