@@ -1913,6 +1913,8 @@ final class tx_dlf_document {
 			// Does the document have a structMap node of type "PHYSICAL"?
 			$pageNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@TYPE="page"]');
 
+			$trackNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@TYPE="track"]');
+
 			if ($pageNodes) {
 
 				// Get file groups.
@@ -1967,6 +1969,25 @@ final class tx_dlf_document {
 						if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
 
 							$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+
+						}
+
+					}
+
+				}
+
+				// Build the physical pages' array from the physical structMap node.
+				foreach ($trackNodes as $trackNode) {
+
+					$page = $pages[(int) $trackNode['ORDER']];
+
+					// Get the file representations from fileSec node.
+					foreach ($trackNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+
+						// Check if file has valid @USE attribute.
+						if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
+
+							$this->physicalPagesInfo[$page]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
 
 						}
 
