@@ -244,19 +244,65 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	 */
 	protected function getEpicurData(array $metadata) {
 
-		// Create epicur element.
-		$epicur = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:epicur');
+		// Define all XML elements with or without qualified namespace.
+		if (empty($this->conf['unqualified_epicur'])) {
 
+			// Create epicur element.
+			$epicur = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:epicur');
+
+			// Add administrative data.
+			$admin = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:administrative_data');
+
+			$delivery = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:delivery');
+
+			$update = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:update_status');
+
+			$transfer = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:transfer');
+
+			$format = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:format', 'text/html');
+
+			// Add record data.
+			$record = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:record');
+
+			$identifier = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier', htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8'));
+
+			$resource = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:resource');
+
+			$ident = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier', htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8'));
+
+		} else {
+
+			// Create epicur element with unqualified namespace.
+			$epicur = $this->oai->createElement('epicur');
+
+			$epicur->setAttribute('xmlns', $this->formats['epicur']['namespace']);
+
+			// Add administrative data without qualified namespace.
+			$admin = $this->oai->createElement('administrative_data');
+
+			$delivery = $this->oai->createElement('delivery');
+
+			$update = $this->oai->createElement('update_status');
+
+			$transfer = $this->oai->createElement('transfer');
+
+			$format = $this->oai->createElement('format', 'text/html');
+
+			// Add record data without qualified namespace.
+			$record = $this->oai->createElement('record');
+
+			$identifier = $this->oai->createElement('identifier', htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8'));
+
+			$resource = $this->oai->createElement('resource');
+
+			$ident = $this->oai->createElement('identifier', htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8'));
+
+		}
+
+		// Add attributes and build XML tree.
 		$epicur->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
 
 		$epicur->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', $this->formats['epicur']['namespace'].' '.$this->formats['epicur']['schema']);
-
-		// Add administrative data.
-		$admin = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:administrative_data');
-
-		$delivery = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:delivery');
-
-		$update = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:update_status');
 
 		// Do we update an URN or register a new one?
 		if ($metadata['tstamp'] == $metadata['crdate']) {
@@ -271,8 +317,6 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$delivery->appendChild($update);
 
-		$transfer = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:transfer');
-
 		$transfer->setAttribute('type', 'http');
 
 		$delivery->appendChild($transfer);
@@ -281,18 +325,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$epicur->appendChild($admin);
 
-		// Add record data.
-		$record = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:record');
-
-		$identifier = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier', htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8'));
-
 		$identifier->setAttribute('scheme', 'urn:nbn:de');
 
 		$record->appendChild($identifier);
-
-		$resource = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:resource');
-
-		$ident = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier', htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8'));
 
 		$ident->setAttribute('scheme', 'url');
 
@@ -301,8 +336,6 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$ident->setAttribute('role', 'primary');
 
 		$resource->appendChild($ident);
-
-		$format = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:format', 'text/html');
 
 		$format->setAttribute('scheme', 'imt');
 
