@@ -264,25 +264,6 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		}
 
-		// basket button
-		$markerArray['###BASKETBUTTON###'] = '';
-
-		if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
-
-			$additionalParams = array ('id' => $this->list[$number]['uid'], 'startpage' => $this->list[$number]['page'], 'addToBasket' => 'list');
-
-			$conf = array (
-				'useCacheHash' => 1,
-				'parameter' => $this->conf['targetBasket'],
-				'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-			);
-
-			$link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
-
-			$markerArray['###BASKETBUTTON###'] = $link;
-
-		}
-
 		return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###SUBTEMPLATE###', $subpart, TRUE), $markerArray);
 
 	}
@@ -497,25 +478,6 @@ class tx_dlf_listview extends tx_dlf_plugin {
 			if (!empty($subpart['preview'])) {
 
 				$markerArray['###SUBPREVIEW###'] = $subpart['preview'];
-
-			}
-
-			// basket button
-			$markerArray['###SUBBASKETBUTTON###'] = '';
-
-			if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
-
-				$additionalParams = array ('id' => $this->list[$number]['uid'], 'startpage' => $subpart['page'], 'endpage' => $subpart['page'], 'logId' => $subpart['sid'], 'addToBasket' => 'subentry');
-
-				$conf = array (
-					'useCacheHash' => 1,
-					'parameter' => $this->conf['targetBasket'],
-					'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-				);
-
-				$link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
-
-				$markerArray['###SUBBASKETBUTTON###'] = $link;
 
 			}
 

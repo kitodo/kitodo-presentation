@@ -19,18 +19,6 @@ plugin.tx_dlf_toc.menuConf {
 				}
 				dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span>
 			}
-			allWrap.cObject = TEXT
-			allWrap.cObject {
-				insertData = 1
-				value = |
-				override.cObject = TEXT
-				override.cObject {
-					value = |<span class="tx-dlf-basket-button">{field:basketButtonHref}</span>
-					if {
-						isTrue.field = basketButtonHref
-					}
-				}
-			}
 			doNotLinkIt.field = doNotLinkIt
 			ATagTitle.field = type // orderlabel
 			wrapItemAndSub = <li class="tx-dlf-toc-no">|</li>
