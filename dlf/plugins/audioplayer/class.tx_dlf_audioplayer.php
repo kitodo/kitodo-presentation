@@ -54,8 +54,8 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 		<style>
 			#tx-dlf-audio { width: 100px; height: 100px };
 		</style>
-		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			window.onload = function() {
+		<script id="tx-dlf-audioplayer-initViewer" type="text/javascript">
+			$(document).ready(function(){
 				tx_dlf_audioplayer = new dlfAudioPlayer({
 					audio: {
 						mimeType: "' . $this->audio['mimetype'] . '",
@@ -65,7 +65,7 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 					parentElId: "tx-dlf-audio",
 					swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.swf"
 				});
-			}
+			});
 		</script>';
 
 		return implode("\n", $output);
@@ -89,14 +89,6 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 			$this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']]);
 
 			$this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']]);
-
-		} else {
-
-			if (TYPO3_DLOG) {
-
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_audioplayer->getAudio('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpAudio'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-			}
 
 		}
 
@@ -158,12 +150,16 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 		// Get audio data.
 		$this->audio = $this->getAudio($this->piVars['page']);
 
-		// Fill in the template markers.
-		$markerArray = array (
-			'###PLAYER_JS###' => $this->addPlayerJS()
-		);
+		if (isset($this->audio['url']) && isset($this->audio['mimetype'])) {
 
-		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+			// Fill in the template markers.
+			$markerArray = array (
+				'###PLAYER_JS###' => $this->addPlayerJS()
+			);
+
+			$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+
+		}
 
 		return $this->pi_wrapInBaseClass($content);
 
