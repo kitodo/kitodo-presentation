@@ -50,14 +50,14 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 		} else {
 
 			// Set default values if not set.
-			// page may be integer or string (physical page attribute)
+			// $this->piVars['page'] may be integer or string (physical structure @ID)
 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
 				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			} else {
 
-				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
 
 			}
 
@@ -77,7 +77,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 		}
 
 
-		$fullTextFile = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
+		$fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
 
 		if (!empty($fullTextFile)) {
 			$markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:'

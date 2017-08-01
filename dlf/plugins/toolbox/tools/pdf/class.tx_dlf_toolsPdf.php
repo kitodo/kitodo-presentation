@@ -50,14 +50,14 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		} else {
 
 			// Set default values if not set.
-			// page may be integer or string (physical page attribute)
+			// $this->piVars['page'] may be integer or string (physical structure @ID)
 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
 				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			} else {
 
-				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
 
 			}
 
@@ -102,7 +102,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		$pageNumber = $this->piVars['page'];
 
 		// Get image link.
-		$details = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$pageNumber]];
+		$details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]];
 		$file = $details['files'][$this->conf['fileGrpDownload']];
 		if (!empty($file)) {
 			$page1Link = $this->doc->getFileLocation($file);
@@ -110,7 +110,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
 		// Get second page, too, if double page view is activated.
 		if ($this->piVars['double'] && $pageNumber < $this->doc->numPages) {
-			$details = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$pageNumber + 1]];
+			$details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]];
 			$file = $details['files'][$this->conf['fileGrpDownload']];
 			if (!empty($file)) {
 				$page2Link = $this->doc->getFileLocation($file);
@@ -155,9 +155,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 		$workLink = '';
 
 		// Get work link.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[0]]['files'][$this->conf['fileGrpDownload']])) {
+		if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']])) {
 
-			$workLink = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[0]]['files'][$this->conf['fileGrpDownload']]);
+			$workLink = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']]);
 
 		} else {
 

@@ -22,7 +22,7 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 	public $scriptRelPath = 'plugins/audioplayer/class.tx_dlf_audioplayer.php';
 
 	/**
-	 * Holds the current audio file's URL and MIME type
+	 * Holds the current audio file's URL, MIME type and optional label
 	 *
 	 * @var	array
 	 * @access protected
@@ -54,53 +54,21 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 		<style>
 			#tx-dlf-audio { width: 100px; height: 100px };
 		</style>
-		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			window.onload = function() {
+		<script id="tx-dlf-audioplayer-initViewer" type="text/javascript">
+			$(document).ready(function() {
 				tx_dlf_audioplayer = new dlfAudioPlayer({
 					audio: {
 						mimeType: "' . $this->audio['mimetype'] . '",
-						title: "",
+						title: "' . $this->audio['label'] . '",
 						url:  "' . $this->audio['url'] . '"
 					},
 					parentElId: "tx-dlf-audio",
 					swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.swf"
 				});
-			}
+			});
 		</script>';
 
 		return implode("\n", $output);
-
-	}
-
-	/**
-	 * Get audio's URL and MIME type
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$page: Page number
-	 *
-	 * @return	array		URL and MIME type of audio file
-	 */
-	protected function getAudio($page) {
-
-		// Get audio link.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']])) {
-
-			$this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']]);
-
-			$this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpAudio']]);
-
-		} else {
-
-			if (TYPO3_DLOG) {
-
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_audioplayer->getAudio('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpAudio'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-			}
-
-		}
-
-		return $this->audio;
 
 	}
 
@@ -129,18 +97,35 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 		} else {
 
 			// Set default values if not set.
-			// page may be integer or string (physical page attribute)
-			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+			// $this->piVars['page'] may be integer or string (physical structure @ID)
+			if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
-				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			} else {
 
-				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
 
 			}
 
 			$this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+
+		}
+
+		// Check if there are any audio files available.
+		if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']])) {
+
+			// Get audio data.
+			$this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']]);
+
+			$this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
+
+			$this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']]);
+
+		} else {
+
+			// Quit without doing anything if required variables are not set.
+			return $content;
 
 		}
 
@@ -154,9 +139,6 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/audioplayer/template.tmpl'), '###TEMPLATE###');
 
 		}
-
-		// Get audio data.
-		$this->audio = $this->getAudio($this->piVars['page']);
 
 		// Fill in the template markers.
 		$markerArray = array (

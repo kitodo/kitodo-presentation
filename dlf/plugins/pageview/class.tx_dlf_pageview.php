@@ -122,9 +122,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		while ($fileGrp = @array_pop($fileGrps)) {
 
 			// Get image link.
-			if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp])) {
+			if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
 
-				$image['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+				$image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
 
 				if ($this->conf['useInternalProxy']) {
 					// Configure @action URL for form.
@@ -136,7 +136,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 					$image['url'] = $this->cObj->typoLink_URL($linkConf);
 				}
 
-				$image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$fileGrp]);
+				$image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
 
 				break;
 
@@ -170,9 +170,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		$fulltext = array ();
 
 		// Get fulltext link.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']])) {
+		if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']])) {
 
-			$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
+			$fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
 			// Configure @action URL for form.
 			$linkConf = array (
@@ -182,7 +182,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 			$fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
 
-			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalPagesInfo[$this->doc->physicalPages[$page]]['files'][$this->conf['fileGrpFulltext']]);
+			$fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
 		} else {
 
@@ -223,14 +223,14 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 		} else {
 
 			// Set default values if not set.
-			// page may be integer or string (physical page attribute)
+			// $this->piVars['page'] may be integer or string (physical structure @ID)
 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
 				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			} else {
 
-				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
 
 			}
 

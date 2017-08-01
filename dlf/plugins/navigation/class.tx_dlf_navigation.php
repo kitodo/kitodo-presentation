@@ -89,7 +89,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
 		for ($i = 1; $i <= $this->doc->numPages; $i++) {
 
-			$output .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label'] ? ' - '.htmlspecialchars($this->doc->physicalPagesInfo[$this->doc->physicalPages[$i]]['label']) : '').'</option>';
+			$output .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel'] ? ' - '.htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel']) : '').'</option>';
 
 		}
 
@@ -130,14 +130,14 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 			if ($this->doc->numPages > 0) {
 
 				// Set default values if not set.
-				// page may be integer or string (physical page attribute)
+				// $this->piVars['page'] may be integer or string (physical structure @ID)
 				if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
 					$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
 
 				} else {
 
-					$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+					$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
 
 				}
 

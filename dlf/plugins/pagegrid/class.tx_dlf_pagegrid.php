@@ -49,12 +49,12 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		$markerArray['###NUMBER###'] = $number;
 
 		// Set pagination.
-		$markerArray['###PAGINATION###'] = $this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['label'];
+		$markerArray['###PAGINATION###'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['orderlabel'];
 
 		// Get thumbnail or placeholder.
-		if (!empty($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][$this->conf['fileGrpThumbs']])) {
+		if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$this->conf['fileGrpThumbs']])) {
 
-			$thumbnailFile = $this->doc->getFileLocation($this->doc->physicalPagesInfo[$this->doc->physicalPages[$number]]['files'][$this->conf['fileGrpThumbs']]);
+			$thumbnailFile = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$this->conf['fileGrpThumbs']]);
 
 		} elseif (!empty($this->conf['placeholder'])) {
 
@@ -224,14 +224,14 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 		}
 
 		// Set some variable defaults.
-		// page may be integer or string (physical page attribute)
+		// $this->piVars['page'] may be integer or string (physical structure @ID)
 		if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
 			$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
 
 		} else {
 
-			$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+			$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
 
 		}
 

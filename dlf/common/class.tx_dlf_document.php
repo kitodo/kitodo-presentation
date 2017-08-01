@@ -173,29 +173,29 @@ final class tx_dlf_document {
 	protected $parentId = 0;
 
 	/**
-	 * This holds the physical pages
+	 * This holds the physical structure
 	 *
 	 * @var	array
 	 * @access protected
 	 */
-	protected $physicalPages = array ();
+	protected $physicalStructure = array ();
 
 	/**
-	 * This holds the physical pages' metadata
+	 * This holds the physical structure metadata
 	 *
 	 * @var	array
 	 * @access protected
 	 */
-	protected $physicalPagesInfo = array ();
+	protected $physicalStructureInfo = array ();
 
 	/**
-	 * Are the physical pages loaded?
-	 * @see $physicalPages
+	 * Is the physical structure loaded?
+	 * @see $physicalStructure
 	 *
 	 * @var	boolean
 	 * @access protected
 	 */
-	protected $physicalPagesLoaded = FALSE;
+	protected $physicalStructureLoaded = FALSE;
 
 	/**
 	 * This holds the PID of the document or zero if not in database
@@ -322,7 +322,7 @@ final class tx_dlf_document {
 	protected $xml;
 
 	/**
-	 * This gets the location of a file representing a physical page
+	 * This gets the location of a file representing a physical page or track
 	 *
 	 * @access	public
 	 *
@@ -351,7 +351,7 @@ final class tx_dlf_document {
 	}
 
 	/**
-	 * This gets the MIME type of a file representing a physical page
+	 * This gets the MIME type of a file representing a physical page or track
 	 *
 	 * @access	public
 	 *
@@ -578,8 +578,8 @@ final class tx_dlf_document {
 		// Load smLinks.
 		$this->_getSmLinks();
 
-		// Load physical pages.
-		$this->_getPhysicalPages();
+		// Load physical structure.
+		$this->_getPhysicalStructure();
 
 		// Get the physical page or external file this structure element is pointing at.
 		$details['points'] = '';
@@ -590,19 +590,19 @@ final class tx_dlf_document {
 			// Yes. Get the file reference.
 			$details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
-		// Are there any physical pages and is this logical unit linked to at least one of them?
-		} elseif (!empty($this->physicalPages) && array_key_exists($details['id'], $this->smLinks['l2p'])) {
+		// Are there any physical elements and is this logical unit linked to at least one of them?
+		} elseif (!empty($this->physicalStructure) && array_key_exists($details['id'], $this->smLinks['l2p'])) {
 
-			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalPages, TRUE)), 1);
+			$details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, TRUE)), 1);
 
-			if (!empty($this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
+			if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
 
-				$details['thumbnailId'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
+				$details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
 
 			}
 
-			// Get page number of the first page related to this structure element.
-			$details['pagination'] = $this->physicalPagesInfo[$this->smLinks['l2p'][$details['id']][0]]['label'];
+			// Get page/track number of the first page/track related to this structure element.
+			$details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
 
 		// Is this the toplevel structure element?
 		} elseif ($details['id'] == $this->_getToplevelId()) {
@@ -610,9 +610,9 @@ final class tx_dlf_document {
 			// Yes. Point to itself.
 			$details['points'] = 1;
 
-			if (!empty($this->physicalPages) && !empty($this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']])) {
+			if (!empty($this->physicalStructure) && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']])) {
 
-				$details['thumbnailId'] = $this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']];
+				$details['thumbnailId'] = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']];
 
 			}
 
@@ -1875,11 +1875,11 @@ final class tx_dlf_document {
 	 *
 	 * @access	protected
 	 *
-	 * @return	integer		The total number of pages
+	 * @return	integer		The total number of pages and/or tracks
 	 */
 	protected function _getNumPages() {
 
-		$this->_getPhysicalPages();
+		$this->_getPhysicalStructure();
 
 		return $this->numPages;
 
@@ -1899,21 +1899,21 @@ final class tx_dlf_document {
 	}
 
 	/**
-	 * This builds an array of the document's physical pages
+	 * This builds an array of the document's physical structure
 	 *
 	 * @access	protected
 	 *
-	 * @return	array		Array of pages' id, type, label and file representations ordered by @ORDER attribute
+	 * @return	array		Array of physical elements' id, type, label and file representations ordered by @ORDER attribute
 	 */
-	protected function _getPhysicalPages() {
+	protected function _getPhysicalStructure() {
 
-		// Is there no physical pages array yet?
-		if (!$this->physicalPagesLoaded) {
+		// Is there no physical structure array yet?
+		if (!$this->physicalStructureLoaded) {
 
 			// Does the document have a structMap node of type "PHYSICAL"?
-			$pageNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div[@TYPE="page"]');
+			$elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div');
 
-			if ($pageNodes) {
+			if ($elementNodes) {
 
 				// Get file groups.
 				$fileUse = $this->_getFileGrps();
@@ -1923,15 +1923,17 @@ final class tx_dlf_document {
 
 				$physSeq[0] = (string) $physNode[0]['ID'];
 
-				$this->physicalPagesInfo[$physSeq[0]]['id'] = $physNode[0]['ID'];
+				$this->physicalStructureInfo[$physSeq[0]]['id'] = $physNode[0]['ID'];
 
-				$this->physicalPagesInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
+				$this->physicalStructureInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
 
-				$this->physicalPagesInfo[$physSeq[0]]['label'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
+				$this->physicalStructureInfo[$physSeq[0]]['label'] = (isset($physNode[0]['LABEL']) ? (string) $physNode[0]['LABEL'] : '');
 
-				$this->physicalPagesInfo[$physSeq[0]]['type'] = (string) $physNode[0]['TYPE'];
+				$this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
 
-				$this->physicalPagesInfo[$physSeq[0]]['contentIds'] = (isset($physNode[0]['CONTENTIDS']) ? (string) $physNode[0]['CONTENTIDS'] : '');
+				$this->physicalStructureInfo[$physSeq[0]]['type'] = (string) $physNode[0]['TYPE'];
+
+				$this->physicalStructureInfo[$physSeq[0]]['contentIds'] = (isset($physNode[0]['CONTENTIDS']) ? (string) $physNode[0]['CONTENTIDS'] : '');
 
 				// Get the file representations from fileSec node.
 				foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
@@ -1939,34 +1941,36 @@ final class tx_dlf_document {
 					// Check if file has valid @USE attribute.
 					if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
 
-						$this->physicalPagesInfo[$physSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+						$this->physicalStructureInfo[$physSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
 
 					}
 
 				}
 
-				// Build the physical pages' array from the physical structMap node.
-				foreach ($pageNodes as $pageNode) {
+				// Build the physical elements' array from the physical structMap node.
+				foreach ($elementNodes as $elementNode) {
 
-					$pages[(int) $pageNode['ORDER']] = (string) $pageNode['ID'];
+					$elements[(int) $elementNode['ORDER']] = (string) $elementNode['ID'];
 
-					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['id'] = $pageNode['ID'];
+					$this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = $elementNode['ID'];
 
-					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['dmdId'] = (isset($pageNode['DMDID']) ? (string) $pageNode['DMDID'] : '');
+					$this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['dmdId'] = (isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '');
 
-					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['label'] = (isset($pageNode['ORDERLABEL']) ? (string) $pageNode['ORDERLABEL'] : '');
+					$this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['label'] = (isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '');
 
-					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['type'] = (string) $pageNode['TYPE'];
+					$this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['orderlabel'] = (isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '');
 
-					$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['contentIds'] = (isset($pageNode['CONTENTIDS']) ? (string) $pageNode['CONTENTIDS'] : '');
+					$this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['type'] = (string) $elementNode['TYPE'];
+
+					$this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['contentIds'] = (isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '');
 
 					// Get the file representations from fileSec node.
-					foreach ($pageNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+					foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
 
 						// Check if file has valid @USE attribute.
 						if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
 
-							$this->physicalPagesInfo[$pages[(int) $pageNode['ORDER']]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+							$this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
 
 						}
 
@@ -1975,44 +1979,44 @@ final class tx_dlf_document {
 				}
 
 				// Sort array by keys (= @ORDER).
-				if (ksort($pages)) {
+				if (ksort($elements)) {
 
-					// Set total number of pages.
-					$this->numPages = count($pages);
+					// Set total number of pages/tracks.
+					$this->numPages = count($elements);
 
 					// Merge and re-index the array to get nice numeric indexes.
-					$this->physicalPages = array_merge($physSeq, $pages);
+					$this->physicalStructure = array_merge($physSeq, $elements);
 
 				}
 
 			}
 
-			$this->physicalPagesLoaded = TRUE;
+			$this->physicalStructureLoaded = TRUE;
 
 		}
 
-		return $this->physicalPages;
+		return $this->physicalStructure;
 
 	}
 
 	/**
-	 * This gives an array of the document's physical pages metadata
+	 * This gives an array of the document's physical structure metadata
 	 *
 	 * @access	protected
 	 *
-	 * @return	array		Array of pages' type, label and file representations ordered by @ID attribute
+	 * @return	array		Array of elements' type, label and file representations ordered by @ID attribute
 	 */
-	protected function _getPhysicalPagesInfo() {
+	protected function _getPhysicalStructureInfo() {
 
-		// Is there no physical pages array yet?
-		if (!$this->physicalPagesLoaded) {
+		// Is there no physical structure array yet?
+		if (!$this->physicalStructureLoaded) {
 
-			// Build physical pages array.
-			$this->_getPhysicalPages();
+			// Build physical structure array.
+			$this->_getPhysicalStructure();
 
 		}
 
-		return $this->physicalPagesInfo;
+		return $this->physicalStructureInfo;
 
 	}
 
@@ -2219,13 +2223,13 @@ final class tx_dlf_document {
 				$this->_getSmLinks();
 
 				// Get thumbnail location.
-				if ($this->_getPhysicalPages() && !empty($this->smLinks['l2p'][$strctId])) {
+				if ($this->_getPhysicalStructure() && !empty($this->smLinks['l2p'][$strctId])) {
 
-					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
+					$this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
 
 				} else {
 
-					$this->thumbnail = $this->getFileLocation($this->physicalPagesInfo[$this->physicalPages[1]]['files'][$extConf['fileGrpThumbs']]);
+					$this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
 
 				}
 
