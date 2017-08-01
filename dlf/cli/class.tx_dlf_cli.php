@@ -52,7 +52,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-doc'][0])
 					&& !\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->cli_args['-doc'][0])) {
 
-					$this->cli_echo('ERROR: '.$this->cli_args['-doc'][0].' is not a valid UID oder URL.'.LF, TRUE);
+					$this->cli_echo('ERROR: "'.$this->cli_args['-doc'][0].'" is not a valid UID oder URL.'.LF, TRUE);
 
 					exit (1);
 
@@ -66,7 +66,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 					// ...and save it to the database...
 					if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0]))) {
 
-						$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' not saved and indexed.'.LF, TRUE);
+						$this->cli_echo('ERROR: Document "'.$this->cli_args['-doc'][0].'" not saved and indexed.'.LF, TRUE);
 
 						exit (1);
 
@@ -74,7 +74,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 				} else {
 
-					$this->cli_echo('ERROR: Document '.$this->cli_args['-doc'][0].' could not be loaded.'.LF, TRUE);
+					$this->cli_echo('ERROR: Document "'.$this->cli_args['-doc'][0].'" could not be loaded.'.LF, TRUE);
 
 					exit (1);
 
@@ -117,7 +117,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 						// ...and save it to the database...
 						if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0]))) {
 
-							$this->cli_echo('ERROR: Document '.$resArray['uid'].' not saved and indexed.'.LF, TRUE);
+							$this->cli_echo('ERROR: Document "'.$resArray['uid'].'" not saved and indexed.'.LF, TRUE);
 
 							exit (1);
 
@@ -125,7 +125,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 					} else {
 
-						$this->cli_echo('ERROR: Document '.$resArray['uid'].' could not be loaded.'.LF, TRUE);
+						$this->cli_echo('ERROR: Document "'.$resArray['uid'].'" could not be loaded.'.LF, TRUE);
 
 						exit (1);
 
