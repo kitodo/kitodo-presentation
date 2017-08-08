@@ -147,11 +147,11 @@ class tx_dlf_indexing {
 				// Index fulltext files if available.
 				if ($doc->hasFulltext) {
 
-					foreach ($doc->physicalPages as $pageNumber => $xmlId) {
+					foreach ($doc->physicalStructure as $pageNumber => $xmlId) {
 
 						if (!$errors) {
 
-							$errors = self::processPhysical($doc, $pageNumber, $doc->physicalPagesInfo[$xmlId]);
+							$errors = self::processPhysical($doc, $pageNumber, $doc->physicalStructureInfo[$xmlId]);
 
 						} else {
 

@@ -203,14 +203,14 @@ class tx_dlf_toc extends tx_dlf_plugin {
 		} else {
 
 			// Set default values for page if not set.
-			// page may be integer or string (physical page attribute)
+			// $this->piVars['page'] may be integer or string (physical structure @ID)
 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
 				$this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
 
 			} else {
 
-				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalPages);
+				$this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
 
 			}
 
@@ -220,17 +220,17 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
 		$menuArray = array ();
 
-		// Does the document have physical pages or is it an external file?
-		if ($this->doc->physicalPages || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->doc->uid)) {
+		// Does the document have physical elements or is it an external file?
+		if ($this->doc->physicalStructure || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->doc->uid)) {
 
-			// Get all logical units the current page is a part of.
-			if (!empty($this->piVars['page']) && $this->doc->physicalPages) {
+			// Get all logical units the current page or track is a part of.
+			if (!empty($this->piVars['page']) && $this->doc->physicalStructure) {
 
-				$this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[0]], (array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page']]]);
+				$this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]], (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page']]]);
 
 				if (!empty($this->piVars['double']) && $this->piVars['page'] < $this->doc->numPages) {
 
-					$this->activeEntries = array_merge($this->activeEntries, (array) $this->doc->smLinks['p2l'][$this->doc->physicalPages[$this->piVars['page'] + 1]]);
+					$this->activeEntries = array_merge($this->activeEntries, (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page'] + 1]]);
 
 				}
 
