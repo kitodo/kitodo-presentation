@@ -96,7 +96,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @type {ol.Feature}
      * @private
      */
-    this.selectedFeature_;
+    this.selectedFeature_ = undefined;
 
     /**
      * @type {Object}
@@ -122,7 +122,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                 };
 
                 // highlight features
-                if (this.selectedFeature_ ) {
+                if (this.selectedFeature_) {
 
                     // remove old clicks
                     this.layers_.select.getSource().removeFeature(this.selectedFeature_);
