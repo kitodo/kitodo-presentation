@@ -50,7 +50,7 @@ dlfViewerImageManipulationControl = function(options) {
 	 * @type {ol.Map|undefined}
 	 * @private
 	 */
-	this.map_;
+	this.map_ = undefined;
 
 	/**
 	 * @type {ol.View}
@@ -151,7 +151,7 @@ dlfViewerImageManipulationControl = function(options) {
 			if (this.filters_.hasOwnProperty('invert')) {
 				$('#invert-filter').click();
 			}
-			
+
 			// reset the slider filters
 			var sliderEls = $('.slider.slider-imagemanipulation');
 			for (var i = 0; i < sliderEls.length; i++) {
