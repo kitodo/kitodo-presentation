@@ -278,18 +278,18 @@ dlfViewerFullTextControl.prototype.activate = function() {
 	if (this.fulltextData_ === undefined)  {
 		this.fulltextData_ = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.url, this.image);
 
-		// add features to fulltext layer
-		this.layers_.textblock.getSource().addFeatures(this.fulltextData_.getTextblocks());
-        this.layers_.textline.getSource().addFeatures(this.fulltextData_.getTextlines());
+        if (this.fulltextData_ !== undefined) {
+            // add features to fulltext layer
+    		this.layers_.textblock.getSource().addFeatures(this.fulltextData_.getTextblocks());
+            this.layers_.textline.getSource().addFeatures(this.fulltextData_.getTextlines());
 
-	    // add first feature of textBlockFeatures to map
-	    if (this.fulltextData_ !== undefined && this.fulltextData_.getTextblocks().length > 0) {
-
-	        this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
-	        this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
-	        this.showFulltext(this.fulltextData_.getTextblocks());
-
-	    }
+    	    // add first feature of textBlockFeatures to map
+    	    if (this.fulltextData_.getTextblocks().length > 0) {
+    	        this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
+    	        this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
+    	        this.showFulltext(this.fulltextData_.getTextblocks());
+    	    }
+        }
 	}
 
 	// now activate the fulltext overlay and map behavior
