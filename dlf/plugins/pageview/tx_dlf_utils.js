@@ -68,6 +68,8 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
 
+            var format;
+            var quality;
             tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
                 ? imageSourceObj.tilesize[0]
                     : 256,
