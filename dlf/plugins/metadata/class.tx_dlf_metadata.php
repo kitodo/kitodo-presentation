@@ -359,6 +359,11 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 						// Translate ISO 639 language code.
 						$value = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
 
+					} elseif ($index_name == 'author' && !empty($value)) {
+
+						// As this may be already a valid a-tag to e.g. GND we don't touch it.
+						$value = $value;
+
 					} elseif (!empty($value)) {
 
 						// Sanitize value for output.
