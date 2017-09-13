@@ -19,7 +19,7 @@
  */
 class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
 
-	public $scriptRelPath = 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsImagedownload.php';
+	public $scriptRelPath = 'plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php';
 
 	/**
 	 * The main method of the PlugIn
@@ -75,10 +75,10 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
 
 		}
 
-		// Get single page downloads.
+		// Get left or single page download.
 		$markerArray['###IMAGE_LEFT###'] =  $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'], $this->pi_getLL('leftPage', '')) : $this->getImage($this->piVars['page'], $this->pi_getLL('singlePage', ''));
 
-		// Get work download.
+		// Get right page download.
 		$markerArray['###IMAGE_RIGHT###'] = $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'] + 1, $this->pi_getLL('rightPage', '')) : '';
 
 		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
@@ -149,6 +149,6 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/pdf/class.tx_dlf_toolsImagedownload.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/pdf/class.tx_dlf_toolsImagedownload.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php']);
 }
