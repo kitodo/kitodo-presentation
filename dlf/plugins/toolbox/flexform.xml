@@ -49,6 +49,18 @@
 							</config>
 						</TCEforms>
 					</tools>
+					<fileGrpsImageDownload>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/toolbox/locallang.xml:tt_content.pi_flexform.fileGrps</label>
+							<config>
+								<type>input</type>
+								<size>30</size>
+								<max>30</max>
+								<default>MIN,DEFAULT,MAX</default>
+							</config>
+						</TCEforms>
+					</fileGrpsImageDownload>
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>
