@@ -131,6 +131,9 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 					}
 
+					// Clear document registry to prevent memory exhaustion.
+					tx_dlf_document::clearRegistry();
+
 				}
 
 				break;
