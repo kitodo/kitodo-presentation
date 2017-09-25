@@ -15,6 +15,7 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="tt_content.pi_flexform.basketButton">Show basket button</label>
 			<label index="tt_content.pi_flexform.sheet_general">Options</label>
 			<label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected page</label>
 			<label index="tt_content.pi_flexform.features">Map features</label>
@@ -25,6 +26,7 @@
 			<label index="tt_content.pi_flexform.useInternalProxy">Use Internal Proxy</label>
 		</languageKey>
 		<languageKey index="de" type="array">
+			<label index="tt_content.pi_flexform.basketButton">Warenkorb Button anzeigen</label>
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
 			<label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Seite anzeigen</label>
 			<label index="tt_content.pi_flexform.features">Bedienelemente</label>

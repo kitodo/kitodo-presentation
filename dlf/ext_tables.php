@@ -23,6 +23,15 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_audioplayer']
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_audioplayer', 'FILE:EXT:'.$_EXTKEY.'/plugins/audioplayer/flexform.xml');
 
+// Plugin "basket".
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_basket'] = 'layout,select_key,pages,recursive';
+
+$TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_basket'] = 'pi_flexform';
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array('LLL:EXT:dlf/locallang.xml:tt_content.dlf_basket', $_EXTKEY.'_basket'), 'list_type');
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_basket', 'FILE:EXT:'.$_EXTKEY.'/plugins/basket/flexform.xml');
+
 // Plugin "collection".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_collection'] = 'layout,select_key,pages,recursive';
 
