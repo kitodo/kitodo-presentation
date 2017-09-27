@@ -91,14 +91,7 @@ class tx_dlf_mods implements tx_dlf_format {
 
 					ksort($name);
 
-					$metadata['author'][$i] = htmlspecialchars(trim(implode(', ', $name)));
-
-				}
-
-				// if we have a GND-URI, we link the found author to valueURI
-				if (!empty($authors[$i]['valueURI']) && \TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl((string) $authors[$i]['valueURI'])) {
-
-					$metadata['author'][$i] = '<a target="_blank" class="external" href="'.(string) $authors[$i]['valueURI'].'">'.$metadata['author'][$i].'</a>';
+					$metadata['author'][$i] = trim(implode(', ', $name));
 
 				}
 
