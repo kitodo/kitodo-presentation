@@ -26,6 +26,14 @@ if (!defined('TYPO3_cliMode')) {
 class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 	/**
+	 * This is the return code.
+	 *
+	 * @var	integer
+	 * @access protected
+	 */
+	protected $return = 0;
+
+	/**
 	 * Main function of the script.
 	 *
 	 * @access	public
@@ -52,9 +60,31 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-doc'][0])
 					&& !\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->cli_args['-doc'][0])) {
 
-					$this->cli_echo('ERROR: "'.$this->cli_args['-doc'][0].'" is not a valid UID oder URL.'.LF, TRUE);
+					$this->cli_echo('ERROR: "'.$this->cli_args['-doc'][0].'" is not a valid document UID or URL.'.LF, TRUE);
 
-					exit (1);
+					$this->return = 1;
+
+				}
+
+				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-pid'][0])) {
+
+					$this->cli_echo('ERROR: "'.$this->cli_args['-pid'][0].'" is not a valid page UID.'.LF, TRUE);
+
+					$this->return = 1;
+
+				}
+
+				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-core'][0])) {
+
+					$this->cli_echo('ERROR: "'.$this->cli_args['-core'][0].'" is not a valid core UID.'.LF, TRUE);
+
+					$this->return = 1;
+
+				}
+
+				if ($this->return > 0) {
+
+					break;
 
 				}
 
@@ -68,7 +98,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 						$this->cli_echo('ERROR: Document "'.$this->cli_args['-doc'][0].'" not saved and indexed.'.LF, TRUE);
 
-						exit (1);
+						$this->return = 1;
 
 					}
 
@@ -76,7 +106,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 					$this->cli_echo('ERROR: Document "'.$this->cli_args['-doc'][0].'" could not be loaded.'.LF, TRUE);
 
-					exit (1);
+					$this->return = 1;
 
 				}
 
@@ -94,6 +124,36 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 				// Check the command line arguments.
 				$this->cli_validateArgs();
+
+				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-coll'][0])) {
+
+					$this->cli_echo('ERROR: "'.$this->cli_args['-coll'][0].'" is not a valid collection UID.'.LF, TRUE);
+
+					$this->return = 1;
+
+				}
+
+				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-pid'][0])) {
+
+					$this->cli_echo('ERROR: "'.$this->cli_args['-pid'][0].'" is not a valid page UID.'.LF, TRUE);
+
+					$this->return = 1;
+
+				}
+
+				if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-core'][0])) {
+
+					$this->cli_echo('ERROR: "'.$this->cli_args['-core'][0].'" is not a valid core UID.'.LF, TRUE);
+
+					$this->return = 1;
+
+				}
+
+				if ($this->return > 0) {
+
+					break;
+
+				}
 
 				// Get the collection.
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
@@ -119,7 +179,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 							$this->cli_echo('ERROR: Document "'.$resArray['uid'].'" not saved and indexed.'.LF, TRUE);
 
-							exit (1);
+							$this->return = 1;
 
 						}
 
@@ -127,9 +187,12 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 						$this->cli_echo('ERROR: Document "'.$resArray['uid'].'" could not be loaded.'.LF, TRUE);
 
-						exit (1);
+						$this->return = 1;
 
 					}
+
+					// Clear document registry to prevent memory exhaustion.
+					tx_dlf_document::clearRegistry();
 
 				}
 
@@ -143,7 +206,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
 		}
 
-		exit (0);
+		exit ($this->return);
 
 	}
 

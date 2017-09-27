@@ -227,7 +227,7 @@ final class tx_dlf_document {
 	 * @var	array (tx_dlf_document)
 	 * @access protected
 	 */
-	protected static $registry;
+	protected static $registry = array ();
 
 	/**
 	 * This holds the UID of the root document or zero if not multi-volumed
@@ -320,6 +320,20 @@ final class tx_dlf_document {
 	 * @access protected
 	 */
 	protected $xml;
+
+	/**
+	 * This clears the static registry to prevent memory exhaustion
+	 *
+	 * @access	public
+	 *
+	 * @return	void
+	 */
+	public static function clearRegistry() {
+
+		// Reset registry array.
+		self::$registry = array ();
+
+	}
 
 	/**
 	 * This gets the location of a file representing a physical page or track
