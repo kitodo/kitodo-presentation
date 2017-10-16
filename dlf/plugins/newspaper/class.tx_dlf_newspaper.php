@@ -133,6 +133,9 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 				'###MONTHNAME###' 	=> strftime('%B', strtotime($year . '-' . ($i + 1) . '-1'))
 			);
 
+			// Reset week content of new month.
+			$subWeekPartContent = '';
+
 			$firstOfMonth = strtotime($year . '-' . ($i + 1) . '-1');
 			$lastOfMonth = strtotime('last day of', ($firstOfMonth));
 			$firstOfMonthStart = strtotime('last Monday', $firstOfMonth);
