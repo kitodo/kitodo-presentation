@@ -293,7 +293,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
 		$this->template = $this->cObj->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
 
-		if (count($issues) < 6) {
+		if (count($allIssues) < 6) {
 
 			$listViewActive = TRUE;
 
