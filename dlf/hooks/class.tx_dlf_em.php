@@ -65,7 +65,7 @@ class tx_dlf_em {
 		$path = (!empty($this->conf['solrPath']) ? trim($this->conf['solrPath'], '/').'/' : '');
 
 		// Build request URI.
-		$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores';
+		$url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml';
 
 		$context = stream_context_create(array (
 			'http' => array (
