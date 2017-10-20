@@ -12,23 +12,28 @@ application in the conf/ directoy.
 Installation instructions
 -------------------------
 
+See also: https://wiki.apache.org/solr/SolrTomcat
+
 1. Make sure you have Apache Tomcat 6 up and running. Download Solr 3.6.1
-	from http://lucene.apache.org/solr/. Using later versions may be
-	possible, but is not tested.
+	from http://lucene.apache.org/solr/. Other versions up until Solr 5.0 might be possible but are not tested.
+
+	As of Solr 5.0, Solr is no longer distributed as a "war" and has to be deployed as a standalone java server application.
 
 2. Apply the patches in patches/* to the respective files and build Solr.
 
-3. Copy solr.xml and conf/* to /home/solr and confirm overwriting the
-	existing files. Then move the Solr WAR file to /home/solr and rename it
-	to "apache-solr-for-kitodo.war" or change the "docBase" value in
-	conf/context.xml accordingly.
+3. Create a working directory for your solr installation ($SOLR_HOME)
 
-4. Add the roles "dlfSolrUpdate" and "dlfSolrAdmin" and at least one user
+3. Copy the solr.xml and conf/* to $SOLR_HOME. Move the compiled Solr WAR file to $SOLR_HOME as well.
+
+4. Adjust $SOLR_HOME and the name of your .war in conf/solr.xml accordingly.
+	Defaults are `$SOLR_HOME = home/solr` and `apache-solr-for-kitodo.war`
+
+5. Add the roles "dlfSolrUpdate" and "dlfSolrAdmin" and at least one user
 	with both roles to Tomcat's tomcat-users.xml file.
 
-5. Load the application by using conf/context.xml as Tomcat's context file.
+6. Symlink or place the file conf/solr.xml in $CATALINA_HOME/conf/Catalina/localhost/.
 
-6. Restart Tomcat and go for it!
+7. Restart Tomcat and the solr installation should be available at http://localhost:8080/solr
 
 
 Update instructions
