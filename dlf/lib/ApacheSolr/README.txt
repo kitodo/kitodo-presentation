@@ -21,19 +21,19 @@ See also: https://wiki.apache.org/solr/SolrTomcat
 
 2. Apply the patches in patches/* to the respective files and build Solr.
 
-3. Create a working directory for your solr installation ($SOLR_HOME)
+3. Create a working directory for your Solr installation ($SOLR_HOME)
 
-3. Copy the solr.xml and conf/* to $SOLR_HOME. Move the compiled Solr WAR file to $SOLR_HOME as well.
+4. Copy the solr.xml and conf/* to $SOLR_HOME. Move the compiled Solr WAR file to $SOLR_HOME as well.
 
-4. Adjust $SOLR_HOME and the name of your .war in conf/solr.xml accordingly.
+5. Adjust $SOLR_HOME and the name of your .war in conf/solr.xml accordingly.
 	Defaults are `$SOLR_HOME = home/solr` and `apache-solr-for-kitodo.war`
 
-5. Add the roles "dlfSolrUpdate" and "dlfSolrAdmin" and at least one user
+6. Add the roles "dlfSolrUpdate" and "dlfSolrAdmin" and at least one user
 	with both roles to Tomcat's tomcat-users.xml file.
 
-6. Symlink or place the file conf/solr.xml in $CATALINA_HOME/conf/Catalina/localhost/.
+7. Symlink or place the file conf/solr.xml in $CATALINA_HOME/conf/Catalina/localhost/.
 
-7. Restart Tomcat and the solr installation should be available at http://localhost:8080/solr
+8. Restart Tomcat and the Solr installation should be available at http://localhost:8080/solr
 
 
 Update instructions
