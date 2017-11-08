@@ -33,6 +33,12 @@
 								<size>1</size>
 								<maxitems>1</maxitems>
 								<minitems>1</minitems>
+								<show_thumbs>1</show_thumbs>
+								<wizards>
+									<suggest>
+										<type>suggest</type>
+									</suggest>
+								</wizards>
 							</config>
 						</TCEforms>
 					</pages>
@@ -154,7 +160,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"/>
-								<itemsProcFunc>tx_dlf_tceforms-&gt;itemsProcFunc_collectionList</itemsProcFunc>
+								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_collectionList</itemsProcFunc>
 								<size>5</size>
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>1024</maxitems>
@@ -225,6 +231,12 @@
 								<size>1</size>
 								<maxitems>1</maxitems>
 								<minitems>1</minitems>
+								<show_thumbs>1</show_thumbs>
+								<wizards>
+									<suggest>
+										<type>suggest</type>
+									</suggest>
+								</wizards>
 							</config>
 						</TCEforms>
 					</targetPid>
