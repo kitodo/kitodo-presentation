@@ -505,10 +505,6 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/modules/newclient/index.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/modules/newclient/index.php']);
-}
-
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_modNewclient');
 
 $SOBE->main();

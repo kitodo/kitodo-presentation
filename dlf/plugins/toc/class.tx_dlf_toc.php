@@ -300,7 +300,3 @@ class tx_dlf_toc extends tx_dlf_plugin {
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toc/class.tx_dlf_toc.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toc/class.tx_dlf_toc.php']);
-}

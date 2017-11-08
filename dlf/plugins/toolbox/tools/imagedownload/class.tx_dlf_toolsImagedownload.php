@@ -148,7 +148,3 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php']);
-}

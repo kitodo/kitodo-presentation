@@ -32,9 +32,3 @@ interface tx_dlf_fulltext {
 	public static function getRawText(SimpleXMLElement $xml);
 
 }
-
-/* No xclasses for interfaces!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_fulltext.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_fulltext.php']);
-}
-*/
