@@ -337,9 +337,3 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 
 }
-
-/* No xclasses for abstract classes!
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_plugin.php']);
-}
-*/

@@ -60,10 +60,6 @@ class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/search/class.tx_dlf_search_suggest.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/search/class.tx_dlf_search_suggest.php']);
-}
-
 $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_search_suggest');
 
 $cObj->main();

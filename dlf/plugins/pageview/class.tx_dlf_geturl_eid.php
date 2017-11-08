@@ -84,10 +84,6 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/pageview/class.tx_dlf_geturl_eid.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/plugins/pageview/class.tx_dlf_geturl_eid.php']);
-}
-
 $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_geturl_eid');
 
 $cObj->main();

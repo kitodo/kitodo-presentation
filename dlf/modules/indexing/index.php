@@ -384,10 +384,6 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/modules/indexing/index.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/modules/indexing/index.php']);
-}
-
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_modIndexing');
 
 $SOBE->main();
