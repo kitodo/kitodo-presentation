@@ -12,8 +12,6 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
   <img alt="Coverity Status" src="https://scan.coverity.com/projects/11566/badge.svg"/>
 </a>
 
-Older releases can be found on [Launchpad](https://launchpad.net/goobi-presentation).
-
 Kitodo. Digital Library Modules
 -------------------------------
 
@@ -21,4 +19,4 @@ Kitodo. Digital Library Modules
 
 To get more information, visit the [Kitodo homepage](https://www.kitodo.org). You can also follow Kitodo News on [Twitter](https://twitter.com/kitodo_org).
 
-Kitodo was formerly known as Goobi.
+Kitodo was formerly known as Goobi. Older releases can be found on [Launchpad](https://launchpad.net/goobi-presentation).
