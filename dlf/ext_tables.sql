@@ -179,6 +179,7 @@ CREATE TABLE tx_dlf_collections (
     fe_group varchar(100) DEFAULT '' NOT NULL,
     label text NOT NULL,
     index_name tinytext NOT NULL,
+    index_search text NOT NULL,
     oai_name tinytext NOT NULL,
     description text NOT NULL,
     thumbnail text NOT NULL,
