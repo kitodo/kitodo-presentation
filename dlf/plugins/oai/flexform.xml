@@ -49,6 +49,7 @@
 							<label>LLL:EXT:dlf/plugins/oai/locallang.xml:tt_content.pi_flexform.library</label>
 							<config>
 								<type>select</type>
+								<renderType>selectSingle</renderType>
 								<items type="array"></items>
 								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_libraryList</itemsProcFunc>
 								<size>1</size>
