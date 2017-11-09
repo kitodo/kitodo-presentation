@@ -42,7 +42,7 @@ return array (
 		'index_name' => array (
 			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.index_name',
 			'config' => array (
-				'type' => 'none',
+				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'eval' => 'alphanum,unique',
