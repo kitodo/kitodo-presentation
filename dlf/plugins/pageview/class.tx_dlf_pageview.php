@@ -104,7 +104,130 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 	}
 
 	/**
-	 * Get image's URL and MIME type
+     * Adds pageview interaction (crop, magnifier and rotation)
+     *
+     * @access	protected
+     *
+     * @return	array		Marker array
+     */
+    protected function addInteraction() {
+
+        $markerArray = array();
+
+        if ($this->piVars['id']) {
+
+            if (empty($this->piVars['page'])) {
+
+                $params['page'] = 1;
+
+            }
+
+            if ($this->conf['crop']) {
+
+                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">'.$this->pi_getLL('editMode', '', TRUE).'</a>';
+
+                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">'.$this->pi_getLL('editRemove', '', TRUE).'</a>';
+
+            } else {
+
+                $markerArray['###EDITBUTTON###'] = '';
+
+                $markerArray['###EDITREMOVE###'] = '';
+
+            }
+
+            if ($this->conf['magnifier']) {
+
+                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">'.$this->pi_getLL('magnifier', '', TRUE).'</a>';
+
+            } else {
+
+                $markerArray['###MAGNIFIER###'] = '';
+
+            }
+
+        }
+
+        return $markerArray;
+    }
+
+    /**
+     * Adds form to save cropping data to basket
+     *
+     * @access	protected
+     *
+     * @return	array		Marker array
+     */
+    protected function addBasketForm() {
+
+        $markerArray = array();
+
+        // Add basket button
+        if ($this->conf['basketButton'] && $this->conf['targetBasket'] && $this->piVars['id']) {
+
+            $label = $this->pi_getLL('addBasket', '', TRUE);
+
+            $params = array(
+                'id' => $this->piVars['id'],
+                'addToBasket' => true
+            );
+
+            if (empty($this->piVars['page'])) {
+
+                $params['page'] = 1;
+
+            }
+
+            $basketConf = array (
+                'parameter' => $this->conf['targetBasket'],
+                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', TRUE, FALSE),
+                'title' => $label
+            );
+
+            $output = '<form id="addToBasketForm" action="'.$this->cObj->typoLink_URL($basketConf).'" method="post">';
+
+            $output .= '<input type="hidden" name="tx_dlf[startpage]" id="startpage" value="'.$this->piVars['page'].'">';
+
+            $output .= '<input type="hidden" name="tx_dlf[endpage]" id="endpage" value="'.$this->piVars['page'].'">';
+
+            $output .= '<input type="hidden" name="tx_dlf[startX]" id="startX">';
+
+            $output .= '<input type="hidden" name="tx_dlf[startY]" id="startY">';
+
+            $output .= '<input type="hidden" name="tx_dlf[endX]" id="endX">';
+
+            $output .= '<input type="hidden" name="tx_dlf[endY]" id="endY">';
+
+            $output .= '<input type="hidden" name="tx_dlf[rotation]" id="rotation">';
+
+            $output .= '<button id="submitBasketForm" onclick="this.form.submit()">'.$label.'</button>';
+
+            $output .= '</form>';
+
+            $output .= '<script>';
+
+            $output .= '
+			$(document).ready(function() {
+				$("#submitBasketForm").click(function() {
+					$("#addToBasketForm").submit();
+				});
+			});';
+
+            $output .= '</script>';
+
+            $markerArray['###BASKETBUTTON###'] = $output;
+
+        } else {
+
+            $markerArray['###BASKETBUTTON###'] = '';
+
+        }
+
+        return $markerArray;
+    }
+
+    /**
+     * Get image's URL and MIME type
 	 *
 	 * @access	protected
 	 *
@@ -268,7 +391,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			'###VIEWER_JS###' => $this->addViewerJS()
 		);
 
-		$content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+		$markerArray = array_merge($markerArray, $this->addInteraction(), $this->addBasketForm());
+
+        $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
 		return $this->pi_wrapInBaseClass($content);
 

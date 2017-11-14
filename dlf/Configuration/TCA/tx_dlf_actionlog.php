@@ -23,7 +23,7 @@ return array (
         'searchFields' => 'label,name,crdate',
     ),
     'interface' => array (
-        'showRecordFieldList' => 'label,name,creation_date',
+        'showRecordFieldList' => 'label,name,crdate',
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,
     ),
@@ -78,7 +78,7 @@ return array (
         )
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, creation_date;;;;2-2-2, count_pages;;;;2-2-2'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, crdate;;;;2-2-2, count_pages;;;;2-2-2'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => ''),
