@@ -654,16 +654,31 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Clean output buffer.
 			\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
-			// Keep some plugin variables.
-			$linkConf['parameter'] = $this->conf['targetPid'];
+			// Jump directly to the page view, if there is only one result and it is configured
+			if($results->count() == 1 && !empty($this->conf['showSingleResult'])) {
 
-			if (!empty($this->piVars['order'])) {
+				$linkConf['parameter'] = $this->conf['targetPidPageView'];
 
 				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,
-						array (
-							'order' => $this->piVars['order'],
-							'asc' => (!empty($this->piVars['asc']) ? '1' : '0')
-						), '', TRUE, FALSE);
+					array (
+						'id' => $results->current()['uid'],
+						'page' => 1
+					), '', TRUE, FALSE);
+
+			} else {
+
+				// Keep some plugin variables.
+				$linkConf['parameter'] = $this->conf['targetPid'];
+
+				if (!empty($this->piVars['order'])) {
+
+					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,
+							array (
+								'order' => $this->piVars['order'],
+								'asc' => (!empty($this->piVars['asc']) ? '1' : '0')
+							), '', TRUE, FALSE);
+
+				}
 
 			}
 
