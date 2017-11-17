@@ -220,6 +220,16 @@
 							</config>
 						</TCEforms>
 					</suggest>
+					<showLogicalPageField>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.showLogicalPageField</label>
+							<config>
+								<type>check</type>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</showLogicalPageField>
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>
@@ -240,6 +250,20 @@
 							</config>
 						</TCEforms>
 					</targetPid>
+					<targetPidPageView>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.targetPidPageView</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>1</minitems>
+							</config>
+						</TCEforms>
+					</targetPidPageView>
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>

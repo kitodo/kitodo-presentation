@@ -48,6 +48,13 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
 
 		} else {
 
+			if (!empty($this->piVars['logicalPage'])) {
+
+				$this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
+				unset($this->piVars['logicalPage']);
+
+			}
+
 			// Set default values if not set.
 			// $this->piVars['page'] may be integer or string (physical structure @ID)
 			if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {

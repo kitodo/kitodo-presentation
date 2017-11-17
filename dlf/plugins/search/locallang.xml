@@ -36,10 +36,12 @@
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
 			<label index="tt_content.pi_flexform.separator">Separator for metadata in TS array</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="tt_content.pi_flexform.showLogicalPageField">Show field for logical page?</label>
 			<label index="label.query">Search for:</label>
 			<label index="label.submit">Search</label>
 			<label index="label.inFulltext">in fulltext</label>
 			<label index="label.inMetadata">in metadata</label>
+			<label index="label.logicalPage">Page</label>
 			<label index="search">Search</label>
 			<label index="for"> for "%s"</label>
 			<label index="in"> in "%s"</label>
@@ -71,10 +73,12 @@
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
 			<label index="tt_content.pi_flexform.separator">Trennzeichen für Metadaten im TS-Array</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="tt_content.pi_flexform.showLogicalPageField">Feld für logische Seite anzeigen?</label>
 			<label index="label.query">Suchen nach:</label>
 			<label index="label.submit">Suchen</label>
 			<label index="label.inFulltext">im Volltext</label>
 			<label index="label.inMetadata">in Metadaten</label>
+			<label index="label.logicalPage">Seite</label>
 			<label index="search">Suche</label>
 			<label index="for"> nach "%s"</label>
 			<label index="in"> in "%s"</label>
