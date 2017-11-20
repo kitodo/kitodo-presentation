@@ -662,7 +662,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,
 					array (
 						'id' => $results->current()['uid'],
-						'page' => 1
+						'highlight_word' => preg_replace('/\s\s+/', ';', $results->metadata['searchString']),
+						'page' => count($results[0]['subparts']) == 1?$results[0]['subparts'][0]['page']:1
 					), '', TRUE, FALSE);
 
 			} else {
