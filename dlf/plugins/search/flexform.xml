@@ -253,7 +253,7 @@
 					</targetPid>
 					<targetPidPageView>
 						<TCEforms>
-							<displayCond>FIELD:showSingleResult:=:1</displayCond>
+							<displayCond>FIELD:showSingleResult:=:0</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.targetPidPageView</label>
 							<config>
