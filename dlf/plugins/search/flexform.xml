@@ -230,6 +230,17 @@
 							</config>
 						</TCEforms>
 					</showLogicalPageField>
+					<showSingleResult>
+						<TCEforms>
+							<onChange>reload</onChange>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.showSingleResult</label>
+							<config>
+								<type>check</type>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</showSingleResult>
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>
@@ -252,6 +263,7 @@
 					</targetPid>
 					<targetPidPageView>
 						<TCEforms>
+							<displayCond>FIELD:showSingleResult:=:1</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.targetPidPageView</label>
 							<config>
