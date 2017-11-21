@@ -679,9 +679,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Clean output buffer.
 			\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
-			// Keep some plugin variables.
-			$linkConf['parameter'] = $this->conf['targetPid'];
-
 			$additionalParams = array();
 
 			if(!empty($this->piVars['logicalPage'])) {
@@ -690,16 +687,30 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 			}
 
-			if (!empty($this->piVars['order'])) {
+			// Jump directly to the page view, if there is only one result and it is configured
+			if($results->count() == 1 && !empty($this->conf['showSingleResult'])) {
 
-				$additionalParams['order'] = $this->piVars['order'];
-				$additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
+				$linkConf['parameter'] = $this->conf['targetPidPageView'];
 
-			}
+				$additionalParams['id'] = $results->current()['uid'];
+				$additionalParams['highlight_word'] = $results->current()['uid'];
+				$additionalParams['page'] = $results->current()['uid'];
 
-			if(count($additionalParams)) {
+				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
 
-				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,$additionalParams, '', TRUE, FALSE);
+			} else {
+
+				// Keep some plugin variables.
+				$linkConf['parameter'] = $this->conf['targetPid'];
+
+				if (!empty($this->piVars['order'])) {
+
+					$additionalParams['order'] = $this->piVars['order'];
+					$additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
+
+					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
+
+				}
 
 			}
 

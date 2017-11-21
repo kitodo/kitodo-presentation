@@ -34,9 +34,11 @@
 			<label index="tt_content.pi_flexform.resetFacets">Allow to reset facets</label>
 			<label index="tt_content.pi_flexform.suggest">Show search suggestions</label>
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
+			<label index="tt_content.pi_flexform.targetPidPageView">Target page (with "DLF: Page View" plugin)</label>
 			<label index="tt_content.pi_flexform.separator">Separator for metadata in TS array</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
 			<label index="tt_content.pi_flexform.showLogicalPageField">Show field for logical page?</label>
+			<label index="tt_content.pi_flexform.showSingleResult">Show single result in Page View?</label>
 			<label index="label.query">Search for:</label>
 			<label index="label.submit">Search</label>
 			<label index="label.inFulltext">in fulltext</label>
@@ -71,9 +73,11 @@
 			<label index="tt_content.pi_flexform.resetFacets">Facetten zurücksetzen erlauben</label>
 			<label index="tt_content.pi_flexform.suggest">Suchvorschläge anzeigen</label>
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
+			<label index="tt_content.pi_flexform.targetPidPageView">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
 			<label index="tt_content.pi_flexform.separator">Trennzeichen für Metadaten im TS-Array</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
 			<label index="tt_content.pi_flexform.showLogicalPageField">Feld für logische Seite anzeigen?</label>
+			<label index="tt_content.pi_flexform.showSingleResult">Einzelnes Ergebnis in Seitenansicht anzeigen?</label>
 			<label index="label.query">Suchen nach:</label>
 			<label index="label.submit">Suchen</label>
 			<label index="label.inFulltext">im Volltext</label>

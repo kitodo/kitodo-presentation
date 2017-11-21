@@ -205,6 +205,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 			if (!empty($this->piVars['logicalPage'])) {
 
 				$this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
+				// The logical page parameter should not appear again
 				unset($this->piVars['logicalPage']);
 
 				}
