@@ -157,6 +157,7 @@
 			<label index="config.solrPath">Solr Server Path: (default is "/solr/")</label>
 			<label index="config.solrUser">Solr Server User: (default is "")</label>
 			<label index="config.solrPass">Solr Server Password: (default is "")</label>
+			<label index="config.solrUseFastVectorHighlighter">Use FastVectorHighlighter (To activate this within Solr, you have to use schema_FastVectorHighlighter.xml as schema.xml. After the changes you have to rebuild the index.)</label>
 			<label index="solr.connected">Connection established!</label>
 			<label index="solr.status">The status code returned by Apache Solr is &lt;strong&gt;%s&lt;/strong&gt;.</label>
 			<label index="solr.notConnected">Connection failed!</label>
@@ -340,6 +341,7 @@
 			<label index="config.solrPath">Solr Server Pfad: (Standard ist "/solr/")</label>
 			<label index="config.solrUser">Solr Server Benutzername: (Standard ist "")</label>
 			<label index="config.solrPass">Solr Server Kennwort: (Standard ist "")</label>
+			<label index="config.solrUseFastVectorHighlighter">FastVectorHighlighter verwende (Um diese Funktion in Solr zu aktivieren müssen Sie schema_FastVectorHighlighter.xml als schema.xml verwenden. Nach den Änderungen muss der Index neu aufgebaut werden.)</label>
 			<label index="solr.connected">Verbindung hergestellt!</label>
 			<label index="solr.status">Apache Solr gibt den Statuscode &lt;strong&gt;%s&lt;/strong&gt; zurück.</label>
 			<label index="solr.notConnected">Verbindung fehlgeschlagen!</label>

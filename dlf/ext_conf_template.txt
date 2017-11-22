@@ -51,3 +51,6 @@ solrUser =
 
 # cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrPass
 solrPass =
+
+# cat=Solr; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.solrUseFastVectorHighlighter
+solrUseFastVectorHighlighter = 0
