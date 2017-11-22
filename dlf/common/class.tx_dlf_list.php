@@ -38,6 +38,14 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 	protected $elements = array ();
 
 	/**
+	 * The extension key
+	 *
+	 * @var	string
+	 * @access public
+	 */
+	public static $extKey = 'dlf';
+	
+	/**
 	 * This holds the list's metadata
 	 *
 	 * @var	array
@@ -257,6 +265,15 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 					if($this->metadata['fulltextSearch']) {
 
 						$params = array();
+
+						// Extract extension configuration.
+						$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+						if(!empty($conf['solrUseFastVectorHighlighter'])) {
+
+							$params['hl.useFastVectorHighlighter'] = 'true';
+
+						}
 
 						$params['hl'] = 'true';
 						$params['hl.fl'] = 'fulltext';
