@@ -412,7 +412,7 @@ class tx_dlf_solr {
 
 			} else {
 
-				$toplevel[$doc->uid]['p'][] = array (
+				$toplevel[$doc->uid]['p'][$doc->id] = array (
 					'u' => $doc->id,
 					'h' => (!empty($results->highlighting->{$doc->id}->fulltext) ? $results->highlighting->{$doc->id}->fulltext[0] : '')
 				);
