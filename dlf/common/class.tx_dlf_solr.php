@@ -343,36 +343,38 @@ class tx_dlf_solr {
 	 */
 	public function search($query = '') {
 
-		// Perform search.
-		$results = $this->service->search((string) $query, 0, $this->limit, $this->params);
-
-		$this->numberOfHits = count($results->response->docs);
-
 		$toplevel = array ();
 
 		$checks = array ();
 
+		// Restrict the fields to the required ones
+		$this->params['fl'] = "uid,id,toplevel";
+
 		// Get metadata configuration.
-		if ($this->numberOfHits > 0) {
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_dlf_metadata.index_name AS index_name',
+			'tx_dlf_metadata',
+			'tx_dlf_metadata.is_sortable=1 AND tx_dlf_metadata.pid='.intval($this->cPid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'',
+			'',
+			''
+		);
 
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_metadata.index_name AS index_name',
-				'tx_dlf_metadata',
-				'tx_dlf_metadata.is_sortable=1 AND tx_dlf_metadata.pid='.intval($this->cPid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
-				'',
-				'',
-				''
-			);
+		$sorting = array ();
 
-			$sorting = array ();
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
 
-				$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
-
-			}
+			// Add *_sorting fields to the required fields list
+			empty($this->params['fl']) ? $this->params['fl'] = $sorting[$resArray['index_name']].',' : $this->params['fl'] .= ','.$sorting[$resArray['index_name']];
 
 		}
+
+		// Perform search.
+		$results = $this->service->search((string) $query, 0, $this->limit, $this->params);
+		
+		$this->numberOfHits = count($results->response->docs);
 
 		// Keep track of relevance.
 		$i = 0;
