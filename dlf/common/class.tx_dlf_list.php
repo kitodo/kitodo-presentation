@@ -223,7 +223,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 						$record['metadata'] = $metadata;
 
-					} elseif (($key = tx_dlf_helper::array_search_recursive($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
+					} elseif (($key = array_search($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
 
 						$record['subparts'][$key] = array (
 							'uid' => $resArray['uid'],
@@ -267,12 +267,12 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 							$record['metadata'] = $metadata;
 
-						} elseif (($key = tx_dlf_helper::array_search_recursive($resArray->id, $record['subparts'], TRUE)) !== FALSE) {
+						} elseif (isset($record['subparts'][$resArray->id])) {
 
-							$record['subparts'][$key] = array (
+							$record['subparts'][$resArray->id] = array (
 								'uid' => $resArray->uid,
 								'page' => $resArray->page,
-								'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
+								'preview' => (!empty($record['subparts'][$resArray->id]['h']) ? $record['subparts'][$resArray->id]['h'] : ''),
 								'thumbnail' => $resArray->thumbnail,
 								'metadata' => $metadata
 							);
