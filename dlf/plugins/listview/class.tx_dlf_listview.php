@@ -151,6 +151,8 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$imgAlt = '';
 
+		$noTitle = $this->pi_getLL('noTitle');
+
 		$metadata = $this->list[$number]['metadata'];
 
 		foreach ($this->metadata as $index_name => $metaConf) {
@@ -182,7 +184,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 					// Set fake title if still not present.
 					if (empty($value)) {
 
-						$value = $this->pi_getLL('noTitle');
+						$value = $noTitle;
 
 					}
 
@@ -192,6 +194,12 @@ class tx_dlf_listview extends tx_dlf_plugin {
 						'id' => $this->list[$number]['uid'],
 						'page' => $this->list[$number]['page']
 					);
+
+					if(!empty($this->piVars['logicalPage'])) {
+
+						$additionalParams['logicalPage'] = $this->piVars['logicalPage'];
+
+					}
 
 					$conf = array (
 						'useCacheHash' => 1,
@@ -312,6 +320,12 @@ class tx_dlf_listview extends tx_dlf_plugin {
 			'forceAbsoluteUrl' => 1
 		);
 
+		if(!empty($this->piVars['logicalPage'])) {
+
+			$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,array('logicalPage' => $this->piVars['logicalPage']), '', TRUE, FALSE);
+
+		}
+
 		// Build HTML form.
 		$sorting = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
 
@@ -374,6 +388,10 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
 		$content = '';
 
+		$noTitle = $this->pi_getLL('noTitle');
+
+		$highlight_word = preg_replace('/\s\s+/', ';', $this->list->metadata['searchString']);
+
 		foreach ($this->list[$number]['subparts'] as $subpart) {
 
 			$markerArray['###SUBMETADATA###'] = '';
@@ -413,7 +431,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 						// Set fake title if still not present.
 						if (empty($value)) {
 
-							$value = $this->pi_getLL('noTitle');
+							$value = $noTitle;
 
 						}
 
@@ -422,8 +440,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 						$additionalParams = array (
 							'id' => $subpart['uid'],
 							'page' => $subpart['page'],
-							'highlight_word' => preg_replace('/\s\s+/', ';', $this->list->metadata['searchString'])
+							'highlight_word' => $highlight_word
 						);
+
+						if(!empty($this->piVars['logicalPage'])) {
+
+							$additionalParams['logicalPage'] = $this->piVars['logicalPage'];
+
+						}
 
 						$conf = array (
 							// we don't want cHash in case of search parameters
@@ -639,7 +663,10 @@ class tx_dlf_listview extends tx_dlf_plugin {
 		// Load metadata configuration.
 		$this->loadConfig();
 
-		for ($i = $this->piVars['pointer'] * $this->conf['limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i < $j; $i++) {
+		$i = $this->piVars['pointer'] * $this->conf['limit'];
+		$j = ($this->piVars['pointer'] + 1) * $this->conf['limit'];
+
+		for ($i, $j; $i < $j; $i++) {
 
 			if (empty($this->list[$i])) {
 
