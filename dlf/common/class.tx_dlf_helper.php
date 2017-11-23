@@ -902,43 +902,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Adds "t3jquery" extension's library to page header.
-	 *
-	 * @access	public
-	 *
-	 * @return	boolean		TRUE on success or FALSE on error
-	 */
-	public static function loadJQuery() {
-
-		// Ensure extension "t3jquery" is available.
-		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('t3jquery')) {
-
-			require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3jquery').'/Classes/Utility/T3jqueryUtility.php');
-
-		}
-
-		// Is "t3jquery" loaded?
-		if (T3JQUERY === TRUE) {
-
-			\T3Ext\T3jquery\Utility\T3jqueryUtility::addJqJS();
-
-			return TRUE;
-
-		} else {
-
-			if (TYPO3_DLOG) {
-
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_helper->loadJQuery()] JQuery not available', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-			}
-
-			return FALSE;
-
-		}
-
-	}
-
-	/**
 	 * Process a data and/or command map with TYPO3 core engine.
 	 *
 	 * @access	public

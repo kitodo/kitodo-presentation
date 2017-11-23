@@ -44,12 +44,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-			// Add javascript to page header.
-			if (tx_dlf_helper::loadJQuery()) {
-
-				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
-
-			}
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
 
 		} else {
 

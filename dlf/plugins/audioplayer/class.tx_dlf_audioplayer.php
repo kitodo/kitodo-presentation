@@ -40,9 +40,6 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 
 		$output = array ();
 
-		// Add jQuery library.
-		tx_dlf_helper::loadJQuery();
-
 		$output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/blue.monday/css/jplayer.blue.monday.min.css">';
 
 		$output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.min.js"></script>';
