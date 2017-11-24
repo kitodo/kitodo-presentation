@@ -795,7 +795,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         $body .= $pdfUrl;
 
-        $from = t3lib_utility_Mail::getSystemFrom();
+        $from = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
 
         // send mail
         $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
