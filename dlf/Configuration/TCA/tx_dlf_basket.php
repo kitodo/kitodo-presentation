@@ -14,7 +14,7 @@ return array (
         'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
-        'fe_cruser_id' => 'user_id',
+        'fe_user_id' => 'fe_user_id',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
