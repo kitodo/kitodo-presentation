@@ -12,7 +12,7 @@
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 // Register static typoscript.
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'typoscript/', 'Basic Configuration');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'Basic Configuration');
 
 // Plugin "audioplayer".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_audioplayer'] = 'layout,select_key,pages,recursive';

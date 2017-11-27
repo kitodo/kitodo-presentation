@@ -56,9 +56,6 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
 		$output = array ();
 
-		// Add jQuery library.
-		tx_dlf_helper::loadJQuery();
-
 		// Add OpenLayers library.
 		$output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">';
 
