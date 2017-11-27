@@ -78,9 +78,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) === -1) {
 			// Deletion failed.
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens', $this->extKey, SYSLOG_SEVERITY_WARNING);
-			}
+            $this->devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens',SYSLOG_SEVERITY_WARNING);
 		}
 	}
 
@@ -323,14 +321,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				// Import node into DOMDocument.
 				$mets = $this->oai->importNode($root->item(0), TRUE);
 			} else {
-				if (TYPO3_DLOG) {
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
-				}
+			    $this->devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 			}
 		} else {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$location.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $metadata);
-			}
+            $this->devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 		}
 
 		if ($mets === NULL) {
@@ -604,10 +598,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 				$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
 			} else {
-				if (TYPO3_DLOG) {
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->resume()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
-				}
-			}
+                $this->devLog('[tx_dlf_oai->resume()] Could not create resumption token',  SYSLOG_SEVERITY_ERROR);
+            }
 
 		} else {
 			// Result set complete. No more resumption token needed.
@@ -752,10 +744,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			$repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
 
 		} else {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration',
-						  $this->extKey, SYSLOG_SEVERITY_NOTICE);
-			}
+            $this->devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
 		}
 
 		// Get earliest datestamp. Use a default value if that fails.
@@ -775,10 +764,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			list ($timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 			$earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
 		} else {
-			if (TYPO3_DLOG) {
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' .
-						  $this->conf['pages'] . '"', $this->extKey, SYSLOG_SEVERITY_NOTICE);
-			}
+            $this->devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' . $this->conf['pages'] . '"',SYSLOG_SEVERITY_NOTICE);
 		}
 
 		$linkConf = array (
@@ -998,9 +984,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
                 $ListIdentifiers->appendChild($resumptionToken);
 
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbListIdentifiers()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                $this->devLog('[tx_dlf_oai->verbListIdentifiers()] Could not create resumption token',SYSLOG_SEVERITY_ERROR);
             }
         }
 
@@ -1303,9 +1287,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
                 $ListRecords->appendChild($resumptionToken);
 
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbListRecords()] Could not create resumption token', $this->extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                $this->devLog('[tx_dlf_oai->verbListRecords()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
             }
         }
 
@@ -1363,4 +1345,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		return $ListSets;
 	}
+
+    private function devLog($message, $severity, $data = null) {
+        if (TYPO3_DLOG) {
+            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($message, $this->extKey, $severity, $data);
+        }
+    }
 }
