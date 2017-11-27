@@ -130,6 +130,16 @@
 							</config>
 						</TCEforms>
 					</unqualified_epicur>
+					<solrusage>
+						<TCEforms>
+							<exclude>1</exclude>
+							<label>LLL:EXT:dlf/plugins/oai/locallang.xml:tt_content.pi_flexform.solr</label>
+							<config>
+								<type>check</type>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</solrusage>
 				</el>
 			</ROOT>
 		</sDEF>
