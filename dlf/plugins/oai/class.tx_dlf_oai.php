@@ -488,10 +488,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$documentSet = unserialize($resArray['options']);
 
-		$verb =  $this->piVars['verb'];
-
         list($complete, $output) = $this->generateListForRecordsForVerbWithConditions($documentSet, $this->piVars['verb']);
-
 
         if (!$complete) {
             $resumptionToken = $this->generateResumptionTokenForDocuments($documentSet);
@@ -1060,15 +1057,6 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	}
 
 
-
-
-
-
-    /**
-     * @param $documentSet
-     * @param $where
-     * @return array
-     */
     private function generateListForRecordsForVerbWithConditions($documentSet, $verb, $where = "") {
         $complete = FALSE;
         $todo = array();
@@ -1172,22 +1160,31 @@ class tx_dlf_oai extends tx_dlf_plugin {
         return array($complete, $output);
     }
 
-    /**
-     * @param $documents
-     * @param $output
-     */
-    private function generateResumptionTokenForDocuments($documents) {
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-        $resultSet->reset();
-        $resultSet->add($documents);
+    private function generateResumptionTokenForDocuments($documents)
+    {
+        $resultSet = null;
+        if ($documents instanceof tx_dlf_list) {
+            $resultSet = $documents;
+
+            $resultSet->metadata = array (
+                'offset' => intval($resultSet->metadata['offset'] + $this->conf['limit']),
+                'metadataPrefix' =>$resultSet->metadata['metadataPrefix'],
+            );
+            
+        } else {
+            $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+
+            $resultSet->reset();
+            $resultSet->add($documents);
+            $resultSet->metadata = array (
+                'offset' => intval($this->conf['limit']),
+                'metadataPrefix' => $this->piVars['metadataPrefix'],
+            );
+        }
 
         $token = uniqid();
 
-        $resultSet->metadata = array(
-            'offset' => intval($this->conf['limit']),
-            'metadataPrefix' => $this->piVars['metadataPrefix'],
-        );
 
         $result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
             'tx_dlf_tokens',
