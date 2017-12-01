@@ -522,8 +522,13 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Prepare query parameters.
 			$params = array ();
 
+			$matches = array ();
+
 			// Set search query.
-			if (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) {
+			if ((!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) || preg_match('/fulltext:\((.*)\)/', $this->piVars['query'], $matches)) {
+
+				// If the query already is a fulltext query e.g using the facets
+				$this->piVars['query'] = empty($matches[1])?$this->piVars['query']:$matches[1];
 
 				// Search in fulltext field if applicable. query must not be empty!
 				if (!empty($this->piVars['query'])) {
