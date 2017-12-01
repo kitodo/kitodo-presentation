@@ -346,6 +346,14 @@ class tx_dlf_solr {
 		// Perform search.
 		$results = $this->service->search((string) $query, 0, $this->limit, $this->params);
 
+		// In rare unclear cases $result can be an empty string instead of an Apache_Solr_Response.
+		// Repeating the search once in this case bypasses the problem.
+		if(empty($result)) {
+
+			$results = $this->service->search((string) $query, 0, $this->limit, $this->params);
+
+		}
+
 		$this->numberOfHits = count($results->response->docs);
 
 		$toplevel = array ();
