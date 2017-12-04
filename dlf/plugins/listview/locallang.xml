@@ -20,6 +20,8 @@
 			<label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
 			<label index="tt_content.pi_flexform.getTitle">Show title of parent document if document has no title itself</label>
 			<label index="tt_content.pi_flexform.templateFile">Template file</label>
+			<label index="tt_content.pi_flexform.basketButton">Show basket add button</label>
+			<label index="tt_content.pi_flexform.targetBasket">Target page (with "DLF: Basket" plugin)</label>
 			<label index="nohits">Nothing found.</label>
 			<label index="count">Entries %d to %d of %d.</label>
 			<label index="prevPage">&lt;</label>
@@ -33,6 +35,7 @@
 			<label index="direction.asc">ascending</label>
 			<label index="direction.desc">descending</label>
 			<label index="noTitle">[no title]</label>
+			<label index="addBasket">Add to basket</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -40,6 +43,8 @@
 			<label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
 			<label index="tt_content.pi_flexform.getTitle">Bei Bedarf Titel des übergeordneten Dokuments anzeigen</label>
 			<label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+			<label index="tt_content.pi_flexform.basketButton">Zeige Warenkorb Button an</label>
+			<label index="tt_content.pi_flexform.targetBasket">Zielseite (mit Plugin "DLF: Warenkorb")</label>
 			<label index="nohits">Keine Treffer.</label>
 			<label index="count">Einträge %d bis %d von %d.</label>
 			<label index="prevPage">&lt;</label>
@@ -53,6 +58,7 @@
 			<label index="direction.asc">aufsteigend</label>
 			<label index="direction.desc">absteigend</label>
 			<label index="noTitle">[kein Titel]</label>
+			<label index="addBasket">Zum Warenkorb hinzufügen</label>
 		</languageKey>
 	</data>
 </T3locallang>
