@@ -33,7 +33,6 @@
 			<label index="zoom-in">Zoom In</label>
 			<label index="zoom-out">Zoom Out</label>
 			<label index="zoom-fullscreen">Fullscreen Mode</label>
-			<label index="addBasket">Add to basket</label>
 			<label index="rotate-left">Rotate Left</label>
 			<label index="rotate-right">Rotate Right</label>
 			<label index="rotate-reset">Reset Rotation</label>
@@ -57,7 +56,6 @@
 			<label index="zoom-in">Ansicht vergrößern</label>
 			<label index="zoom-out">Ansicht verkleinern</label>
 			<label index="zoom-fullscreen">Vollansicht</label>
-			<label index="addBasket">Zum Warenkorb hinzufügen</label>
 			<label index="rotate-left">Ansicht nach links drehen</label>
 			<label index="rotate-right">Ansicht nach rechts drehen</label>
 			<label index="rotate-reset">Drehung zurücksetzen</label>
