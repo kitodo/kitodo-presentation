@@ -488,19 +488,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$documentSet = unserialize($resArray['options']);
 
-        list($complete, $output) = $this->generateListForRecordsForVerbWithConditions($documentSet, $this->piVars['verb']);
+        return $this->generateListForRecordsForVerbWithConditions($documentSet, $this->piVars['verb']);
 
-        if (!$complete) {
-            $resumptionToken = $this->generateResumptionTokenForDocuments($documentSet);
-
-            if($resumptionToken) {
-                $output->appendChild($resumptionToken);
-            } else {
-                $this->devLog('[tx_dlf_oai->resume()] Could not create resumption token',  SYSLOG_SEVERITY_ERROR);
-            }
-        }
-
-		return $output;
 	}
 
 	/**
@@ -791,21 +780,17 @@ class tx_dlf_oai extends tx_dlf_plugin {
             return $this->error('noRecordsMatch');
         }
 
+        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-        list($complete, $output) = $this->generateListForRecordsForVerbWithConditions($documentSet, $this->piVars['verb'], $where);
+        $resultSet->reset();
+        $resultSet->add($documentSet);
+        $resultSet->metadata = array (
+            'completeListSize' => count($documentSet),
+            'metadataPrefix' => $this->piVars['metadataPrefix'],
+        );
 
+        return $this->generateListForRecordsForVerbWithConditions($resultSet, $this->piVars['verb'], $where);
 
-        if (!$complete) {
-            $resumptionToken = $this->generateResumptionTokenForDocuments($documentSet);
-
-            if($resumptionToken) {
-                $output->appendChild($resumptionToken);
-            } else {
-                $this->devLog('[tx_dlf_oai->verbListIdentifiers()] Could not create resumption token',SYSLOG_SEVERITY_ERROR);
-            }
-        }
-
-        return $output;
 	}
 
 	/**
@@ -989,19 +974,16 @@ class tx_dlf_oai extends tx_dlf_plugin {
             $documentSet[] = $resArray['uid'];
         }
 
-        list($complete, $output) = $this->generateListForRecordsForVerbWithConditions($documentSet, $this->piVars['verb'], $where);
+        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-        if (!$complete) {
-            $resumptionToken = $this->generateResumptionTokenForDocuments($documentSet);
+        $resultSet->reset();
+        $resultSet->add($documentSet);
+        $resultSet->metadata = array (
+            'completeListSize' => count($documentSet),
+            'metadataPrefix' => $this->piVars['metadataPrefix'],
+        );
 
-            if($resumptionToken) {
-                $output->appendChild($resumptionToken);
-            } else {
-                $this->devLog('[tx_dlf_oai->verbListRecords()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
-            }
-        }
-
-        return $output;
+        return $this->generateListForRecordsForVerbWithConditions($resultSet, $this->piVars['verb'], $where);
 	}
 
 	/**
@@ -1056,32 +1038,16 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		return $ListSets;
 	}
 
+    private function generateListForRecordsForVerbWithConditions($documentListSet, $verb, $where = "") {
 
-    private function generateListForRecordsForVerbWithConditions($documentSet, $verb, $where = "") {
-        $complete = FALSE;
-        $todo = array();
-
-
-        $offset = 0;
-        if($documentSet->metadata['offset']) {
-            // If we resume an action the we can skip a bunch of documents
-            $offset = $documentSet->metadata['offset'];
-        }
-
-        for ($i = $offset, $j = intval($offset + $this->conf['limit']); $i < $j; $i++) {
-            $todo[] = $documentSet[$i];
-            if (empty($documentSet[$i + 1])) {
-                $complete = TRUE;
-                break;
-            }
-        }
+	    $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
 
         $documents = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
             'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
-            'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($todo)) . ') AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)) . ') AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
             'tx_dlf_documents.uid',
             'tx_dlf_documents.tstamp',
             $this->conf['limit']
@@ -1131,7 +1097,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
                     $metadataPrefix = $this->piVars['metadataPrefix'];
                     if(!$metadataPrefix) {
                         // If we resume an action the metadataPrefix is stored with the documentSet
-                        $metadataPrefix = $documentSet->metadata['metadataPrefix'];
+                        $metadataPrefix = $documentListSet->metadata['metadataPrefix'];
                     }
 
                     switch ($metadataPrefix) {
@@ -1157,41 +1123,28 @@ class tx_dlf_oai extends tx_dlf_plugin {
             }
         }
 
-        return array($complete, $output);
-    }
+        if($documentListSet->count() != 0) {
+            $resumptionToken = $this->generateResumptionTokenForDocumentListSet($documentListSet);
 
-
-    private function generateResumptionTokenForDocuments($documents)
-    {
-        $resultSet = null;
-        if ($documents instanceof tx_dlf_list) {
-            $resultSet = $documents;
-
-            $resultSet->metadata = array (
-                'offset' => intval($resultSet->metadata['offset'] + $this->conf['limit']),
-                'metadataPrefix' =>$resultSet->metadata['metadataPrefix'],
-            );
-
-        } else {
-            $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
-
-            $resultSet->reset();
-            $resultSet->add($documents);
-            $resultSet->metadata = array (
-                'offset' => intval($this->conf['limit']),
-                'metadataPrefix' => $this->piVars['metadataPrefix'],
-            );
+            if ($resumptionToken) {
+                $output->appendChild($resumptionToken);
+            }
         }
 
-        $token = uniqid();
+        return $output;
+    }
 
+    private function generateResumptionTokenForDocumentListSet($documentListSet)
+    {
+
+        $token = uniqid();
 
         $result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
             'tx_dlf_tokens',
             array(
                 'tstamp' => $GLOBALS['EXEC_TIME'],
                 'token' => $token,
-                'options' => serialize($resultSet),
+                'options' => serialize($documentListSet),
                 'ident' => 'oai',
             )
         );
@@ -1199,12 +1152,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
         if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 
             $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
-            $resumptionToken->setAttribute('cursor', $resultSet->metadata['offset']);
-            $resumptionToken->setAttribute('completeListSize', count($resultSet));
+            $resumptionToken->setAttribute('cursor', intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
+            $resumptionToken->setAttribute('completeListSize',  $documentListSet->metadata['completeListSize']);
             $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
             return $resumptionToken;
-
+        } else {
+            $this->devLog('[tx_dlf_oai->verb'.$verb.'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
         }
 
         return null;
