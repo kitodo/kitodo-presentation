@@ -1171,7 +1171,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
                 'offset' => intval($resultSet->metadata['offset'] + $this->conf['limit']),
                 'metadataPrefix' =>$resultSet->metadata['metadataPrefix'],
             );
-            
+
         } else {
             $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
@@ -1199,7 +1199,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
         if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
 
             $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
-            $resumptionToken->setAttribute('cursor', '0');
+            $resumptionToken->setAttribute('cursor', $resultSet->metadata['offset']);
             $resumptionToken->setAttribute('completeListSize', count($resultSet));
             $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
 
