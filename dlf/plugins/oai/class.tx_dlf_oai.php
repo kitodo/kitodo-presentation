@@ -486,9 +486,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-		$documentSet = unserialize($resArray['options']);
+		$resultSet = unserialize($resArray['options']);
 
-        return $this->generateListForRecordsForVerb($documentSet);
+        return $this->generateListForRecordsForVerb($resultSet);
 
 	}
 
