@@ -38,6 +38,14 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 	protected $elements = array ();
 
 	/**
+	 * The extension key
+	 *
+	 * @var	string
+	 * @access public
+	 */
+	public static $extKey = 'dlf';
+	
+	/**
 	 * This holds the list's metadata
 	 *
 	 * @var	array
@@ -223,7 +231,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 						$record['metadata'] = $metadata;
 
-					} elseif (($key = tx_dlf_helper::array_search_recursive($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
+					} elseif (($key = array_search($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
 
 						$record['subparts'][$key] = array (
 							'uid' => $resArray['uid'],
@@ -241,8 +249,41 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 				if ($this->solrConnect()) {
 
+					// Restrict the fields to the required ones
+					$params['fl'] = "uid,id,toplevel,thumbnail,page";
+
+					foreach ($this->solrConfig as $solr_name) {
+
+						$params['fl'] .= ",".$solr_name;
+
+					}
+
 					// Get document's thumbnail and metadata from Solr index.
-					$result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']), 0, $this->solr->limit);
+					$result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']), 0, $this->solr->limit, $params);
+
+					// If it is a fulltext search, enable highlighting and fetch the results
+					if($this->metadata['fulltextSearch']) {
+
+						$params = array();
+
+						// Extract extension configuration.
+						$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+						if(!empty($conf['solrUseFastVectorHighlighter'])) {
+
+							$params['hl.useFastVectorHighlighter'] = 'true';
+
+						}
+
+						$params['hl'] = 'true';
+						$params['hl.fl'] = 'fulltext';
+						$params['fl'] = 'id';
+
+						$query_highlights = 'uid:'.tx_dlf_solr::escapeQuery($record['uid']).' AND fulltext:('.tx_dlf_solr::escapeQuery($this->metadata['searchString']).')';
+
+						$result_highlights = $this->solr->service->search($query_highlights, 0, $this->solr->limit, $params);
+
+					}
 
 					// Process results.
 					foreach ($result->response->docs as $resArray) {
@@ -267,12 +308,12 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 							$record['metadata'] = $metadata;
 
-						} elseif (($key = tx_dlf_helper::array_search_recursive($resArray->id, $record['subparts'], TRUE)) !== FALSE) {
+						} elseif (isset($record['subparts'][$resArray->id])) {
 
-							$record['subparts'][$key] = array (
+							$record['subparts'][$resArray->id] = array (
 								'uid' => $resArray->uid,
 								'page' => $resArray->page,
-								'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
+								'preview' => (!empty($result_highlights->highlighting->{$resArray->id}->fulltext[0])?$result_highlights->highlighting->{$resArray->id}->fulltext[0]:""),
 								'thumbnail' => $resArray->thumbnail,
 								'metadata' => $metadata
 							);
