@@ -367,7 +367,7 @@ class tx_dlf_solr {
 			$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
 
 			// Add *_sorting fields to the required fields list
-			empty($this->params['fl']) ? $this->params['fl'] = $sorting[$resArray['index_name']].',' : $this->params['fl'] .= ','.$sorting[$resArray['index_name']];
+			$this->params['fl'] .= ','.$sorting[$resArray['index_name']];
 
 		}
 
