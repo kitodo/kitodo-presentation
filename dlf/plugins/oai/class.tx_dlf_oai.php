@@ -488,7 +488,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$documentSet = unserialize($resArray['options']);
 
-        return $this->generateListForRecordsForVerbWithConditions($documentSet, $this->piVars['verb']);
+        return $this->generateListForRecordsForVerb($documentSet, $this->piVars['verb']);
 
 	}
 
@@ -706,7 +706,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             'metadataPrefix' => $this->piVars['metadataPrefix'],
         );
 
-        return $this->generateListForRecordsForVerbWithConditions($resultSet, $this->piVars['verb'], $where);
+        return $this->generateListForRecordsForVerb($resultSet, $this->piVars['verb'], $where);
 
 	}
 
@@ -815,7 +815,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             'metadataPrefix' => $this->piVars['metadataPrefix'],
         );
 
-        return $this->generateListForRecordsForVerbWithConditions($resultSet, $this->piVars['verb'], $where);
+        return $this->generateListForRecordsForVerb($resultSet, $this->piVars['verb'], $where);
 	}
 
 	/**
@@ -998,7 +998,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
         return $documentSet;
     }
 
-    private function generateListForRecordsForVerbWithConditions($documentListSet, $verb, $where = "") {
+    private function generateListForRecordsForVerb($documentListSet, $verb) {
 
 	    $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
 
@@ -1007,7 +1007,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
-            'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)) . ') AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)) . ') AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations') . tx_dlf_helper::whereClause('tx_dlf_collections'),
             'tx_dlf_documents.uid',
             'tx_dlf_documents.tstamp',
             $this->conf['limit']
