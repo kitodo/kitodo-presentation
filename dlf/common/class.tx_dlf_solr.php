@@ -531,6 +531,28 @@ class tx_dlf_solr {
 	}
 
 	/**
+	 * Processes a search request and returns the raw Apache Solr Documents.
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$query: The search query
+	 *
+	 * @return	array		The Apache Solr Documents that were fetched
+	 */
+	public function search_raw($query = '')
+	{
+		$solr_response =  $this->service->search((string)$query, 0, $this->limit, $this->params);
+
+		$searchresult = array();
+
+		foreach ($solr_response->response->docs as $doc) {
+			$searchresult[] = $doc;
+		}
+
+		return $searchresult;
+	}
+
+	/**
 	 * This returns $this->limit via __get()
 	 *
 	 * @access	protected
@@ -728,3 +750,9 @@ class tx_dlf_solr {
 	}
 
 }
+
+/* No xclasses allowed for singleton classes!
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dlf/common/class.tx_dlf_solr.php']);
+}
+*/
