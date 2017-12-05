@@ -869,11 +869,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		return $ListSets;
 	}
-
-    /**
-     * @param $documentSet
-     * @return array
-     */
+	
     private function fetchDocumentUIDs()
     {
         $where = $solr_query = '';
