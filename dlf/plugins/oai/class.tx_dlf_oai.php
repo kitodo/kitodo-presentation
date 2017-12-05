@@ -691,93 +691,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
             return $this->error('cannotDisseminateFormat');
         }
 
-        $where = '';
-        if (!$this->conf['show_userdefined']) {
-            $where = ' AND tx_dlf_collections.fe_cruser_id=0';
-        }
-
-        // Check "set" for valid value.
-        if (!empty($this->piVars['set'])) {
-            $records = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_collections.uid AS uid',
-                'tx_dlf_collections',
-                'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'], 'tx_dlf_collections').$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
-                '',
-                '',
-                '1'
-            );
-
-            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($records)) {
-                return $this->error('noSetHierarchy');
-            }
-
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($records);
-
-            $where .= ' AND tx_dlf_collections.uid='.intval($resArray['uid']);
-        }
-
-        foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-            $where .= ' AND NOT tx_dlf_documents.'.$required.'=\'\'';
-        }
-
-        // Check "from" for valid value.
-        if (!empty($this->piVars['from'])) {
-            if (is_array($from = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
-                $from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1, $from['tm_mday'], $from['tm_year'] + 1900);
-            } else {
-                return $this->error('badArgument');
-            }
-
-            $where .= ' AND tx_dlf_documents.tstamp>='.intval($from);
-        }
-
-        // Check "until" for valid value.
-        if (!empty($this->piVars['until'])) {
-            if (is_array($until = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
-                $until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1, $until['tm_mday'], $until['tm_year'] + 1900);
-            } else {
-                return $this->error('badArgument');
-            }
-
-            if (!empty($from) && $from > $until) {
-                return $this->error('badArgument');
-            }
-
-            $where .= ' AND tx_dlf_documents.tstamp<='.intval($until);
-        }
-
-        // Check "from" and "until" for same granularity.
-        if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
-            if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
-                return $this->error('badArgument');
-            }
-        }
-
-		$records = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_documents.uid',
-			'tx_dlf_documents',
-			'tx_dlf_relations',
-			'tx_dlf_collections',
-			'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
-			'tx_dlf_documents.uid',
-			'tx_dlf_documents.tstamp',
-			''
-		);
-
-		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($records)) {
-			return $this->error('noRecordsMatch');
-		}
-
-        // Build result set.
-        $documentSet = array ();
-
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($records)) {
-            // Save only UIDs for resumption token.
-            $documentSet[] = $resArray['uid'];
-        }
-
-        if (empty($documentSet)) {
-            return $this->error('noRecordsMatch');
+        try {
+            $documentSet = $this->fetchDocumentUIDs();
+        } catch (Exception $exception) {
+            return $this->error($exception->getMessage());
         }
 
         $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
@@ -883,95 +800,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
             return $this->error('cannotDisseminateFormat');
         }
 
-        $where = '';
-        if (!$this->conf['show_userdefined']) {
-            $where = ' AND tx_dlf_collections.fe_cruser_id=0';
-        }
-
-        // Check "set" for valid value.
-        if (!empty($this->piVars['set'])) {
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_collections.uid AS uid',
-                'tx_dlf_collections',
-                'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'], 'tx_dlf_collections').$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
-                '',
-                '',
-                '1'
-            );
-
-            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                return $this->error('noSetHierarchy');
-            }
-
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-            $where .= ' AND tx_dlf_collections.uid='.intval($resArray['uid']);
-        }
-
-        // Check for required fields.
-        foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-            $where .= ' AND NOT tx_dlf_documents.'.$required.'=\'\'';
-        }
-
-        // Check "from" for valid value.
-        if (!empty($this->piVars['from'])) {
-            if (is_array($from = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
-                $from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1, $from['tm_mday'], $from['tm_year'] + 1900);
-            } else {
-                return $this->error('badArgument');
-            }
-
-            $where .= ' AND tx_dlf_documents.tstamp>='.intval($from);
-        }
-
-        // Check "until" for valid value.
-        if (!empty($this->piVars['until'])) {
-            if (is_array($until = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
-                $until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1, $until['tm_mday'], $until['tm_year'] + 1900);
-            } else {
-                return $this->error('badArgument');
-            }
-
-            if (!empty($from) && $from > $until) {
-                return $this->error('badArgument');
-            }
-
-            $where .= ' AND tx_dlf_documents.tstamp<='.intval($until);
-        }
-
-        // Check "from" and "until" for same granularity.
-        if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
-            if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
-                return $this->error('badArgument');
-            }
-        }
-
-		// Select records from database.
-		if (!$this->conf['show_userdefined']) {
-			$where .= ' AND tx_dlf_collections.fe_cruser_id=0';
-		}
-
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_documents.uid',
-			'tx_dlf_documents',
-			'tx_dlf_relations',
-			'tx_dlf_collections',
-			'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
-			'tx_dlf_documents.uid',
-			'tx_dlf_documents.tstamp',
-			''
-		);
-
-		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-			return $this->error('noRecordsMatch');
-		}
-
-        // Build result set.
-        $documentSet = array ();
-
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            // Save only UIDs for resumption token.
-            $documentSet[] = $resArray['uid'];
+        try {
+            $documentSet = $this->fetchDocumentUIDs();
+        } catch (Exception $exception) {
+            return $this->error($exception->getMessage());
         }
 
         $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
@@ -1037,6 +869,138 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		return $ListSets;
 	}
+
+    /**
+     * @param $documentSet
+     * @return array
+     */
+    private function fetchDocumentUIDs()
+    {
+        $where = $solr_query = '';
+
+        if (!$this->conf['show_userdefined']) {
+            $where = ' AND tx_dlf_collections.fe_cruser_id=0';
+        }
+
+        // Check "set" for valid value.
+        if (!empty($this->piVars['set'])) {
+
+            // For SOLR we need the index_name of the collection,
+            // For DB Query we need the UID of the collection
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.uid AS uid ',
+                'tx_dlf_collections',
+                'tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.oai_name=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'],
+                    'tx_dlf_collections') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
+                '',
+                '',
+                '1'
+            );
+
+            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+                throw new Exception('noSetHierarchy');
+            }
+
+            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+            if (empty($this->conf['solrusage'])) {
+                $where .= ' AND tx_dlf_collections.uid=' . intval($resArray['uid']);
+            } else {
+                $solr_query .= 'collection_tui:' . '"' . $resArray['index_name'] . '"';
+            }
+
+        } else {
+            // If no set is specified we have to query for all collections
+            if (!empty($this->conf['solrusage'])) {
+                $solr_query .= 'collection_tui:*';
+            }
+        }
+
+        // TODO: Check if we can do this with a SOLR Query
+        // Check for required fields.
+        foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
+            $where .= ' AND NOT tx_dlf_documents.' . $required . '=\'\'';
+        }
+
+
+        // TODO: Use from and until in SOLRQuery
+        // Check "from" for valid value.
+        if (!empty($this->piVars['from'])) {
+            if (is_array($from = strptime($this->piVars['from'],
+                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+                $from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1,
+                    $from['tm_mday'], $from['tm_year'] + 1900);
+            } else {
+                throw new Exception('badArgument');
+            }
+
+            $where .= ' AND tx_dlf_documents.tstamp>=' . intval($from);
+        }
+
+        // Check "until" for valid value.
+        if (!empty($this->piVars['until'])) {
+            if (is_array($until = strptime($this->piVars['until'],
+                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+                $until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1,
+                    $until['tm_mday'], $until['tm_year'] + 1900);
+            } else {
+                throw new Exception('badArgument');
+            }
+
+            if (!empty($from) && $from > $until) {
+                throw new Exception('badArgument');
+            }
+
+            $where .= ' AND tx_dlf_documents.tstamp<=' . intval($until);
+        }
+
+        // Check "from" and "until" for same granularity.
+        if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
+            if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
+                throw new Exception('badArgument');
+            }
+        }
+
+        $documentSet = array();
+
+        if (empty($this->conf['solrusage'])) {
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+                'tx_dlf_documents.uid',
+                'tx_dlf_documents',
+                'tx_dlf_relations',
+                'tx_dlf_collections',
+                'AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls',
+                    'tx_dlf_relations') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
+                'tx_dlf_documents.uid',
+                'tx_dlf_documents.tstamp',
+                ''
+            );
+
+            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+                throw new Exception('noRecordsMatch');
+            }
+
+            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                $documentSet[] = $resArray['uid'];
+            }
+
+        } else {
+
+            $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+
+            $result = $solr->search_raw(preg_replace('/\s+/', '+', $solr_query));
+
+            if (empty($result)) {
+                throw new Exception('noRecordsMatch');
+            }
+
+            foreach ($result as $doc) {
+                $documentSet[] = $doc->uid;
+            }
+        }
+
+        return $documentSet;
+    }
 
     private function generateListForRecordsForVerbWithConditions($documentListSet, $verb, $where = "") {
 
