@@ -304,10 +304,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 	}
 
 	/**
-	 * Returns the fieldwrap of a metadatum
+	 * Returns the parsed fieldwrap of a metadata
 	 *
 	 * @access	private
+	 * 
+	 * @param	string		$index_name: The index name of a metadata
+	 * @param	string		$wrap: The configured metadata wrap
 	 *
+	 * @return	array		The parsed fieldwrap
 	 * @return	array		The parsed fildwrap
 	 */
 	private function getFieldWrap($index_name, $wrap) {
