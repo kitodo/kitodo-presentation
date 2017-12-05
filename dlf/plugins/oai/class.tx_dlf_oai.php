@@ -488,7 +488,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$documentSet = unserialize($resArray['options']);
 
-        return $this->generateListForRecordsForVerb($documentSet, $this->piVars['verb']);
+        return $this->generateListForRecordsForVerb($documentSet);
 
 	}
 
@@ -706,7 +706,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             'metadataPrefix' => $this->piVars['metadataPrefix'],
         );
 
-        return $this->generateListForRecordsForVerb($resultSet, $this->piVars['verb'], $where);
+        return $this->generateListForRecordsForVerb($resultSet);
 
 	}
 
@@ -815,7 +815,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             'metadataPrefix' => $this->piVars['metadataPrefix'],
         );
 
-        return $this->generateListForRecordsForVerb($resultSet, $this->piVars['verb'], $where);
+        return $this->generateListForRecordsForVerb($resultSet);
 	}
 
 	/**
@@ -998,9 +998,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
         return $documentSet;
     }
 
-    private function generateListForRecordsForVerb($documentListSet, $verb) {
+    private function generateListForRecordsForVerb($documentListSet) {
 
 	    $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
+	    $verb = $this->piVars['verb'];
 
         $documents = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
             'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
