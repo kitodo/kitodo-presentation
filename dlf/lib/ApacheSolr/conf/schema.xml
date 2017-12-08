@@ -127,6 +127,12 @@ limitations under the License.
 		<!-- Fulltext field for OCR results. -->
 		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" />
 
+		<field name="record_id" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<field name="purl" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<field name="location" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<field name="urn" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<field name="collection" type="string" indexed="true" stored="true" required="true" multiValued="true" default="" />
+
 		<!--
 			The following dynamic fields define all possible field variants.
 			The mapping between metadata fields and index fields is defined in TYPO3.

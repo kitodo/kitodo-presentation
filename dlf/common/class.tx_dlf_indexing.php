@@ -591,6 +591,16 @@ class tx_dlf_indexing {
 
 			$solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
 
+			$solrDoc->setField('record_id', $metadata['record_id'][0]);
+
+			$solrDoc->setField('purl', $metadata['purl'][0]);
+
+			$solrDoc->setField('location',$doc->location);
+
+			$solrDoc->setField('urn', $metadata['urn']);
+
+			$solrDoc->setField('collection', $metadata['collection']);
+
 			$autocomplete = array ();
 
 			foreach ($metadata as $index_name => $data) {
