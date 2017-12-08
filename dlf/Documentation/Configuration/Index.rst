@@ -11,14 +11,41 @@
 Configuration Reference
 =======================
 
-Technical information: Installation, Reference of TypoScript options,
-configuration options on system level, how to extend it, the technical
-details, how to debug it and so on.
+.. _system_setup:
 
-Language should be technical, assuming developer knowledge of TYPO3.
-Small examples/visuals are always encouraged.
+TYPO3 Setup
+-----------
 
-Target group: **Developers**
+The navigation plugin provides a page selection dropdown input field. The
+resulting action url cannot contain a valid cHash value.
+
+The default behaviour of TYPO3 is to call the pageNotFound handler and/or to show an exception:
+
+.. figure:: ../Images/Configuration/typo3_pagenotfoundonchasherror.png
+   :width: 800px
+   :alt: TYPO3 Error-Message "Reason: Request parameters could not be validated (&cHash empty)"
+
+   TYPO3 Error-Message "Reason: Request parameters could not be validated (&cHash empty)"
+
+
+
+This is not the desired behaviour. You should configure in the TYPO3 install tool
+$TYPO3_CONF_VARS['FE'][pageNotFoundOnCHashError]=0 to show the requested page
+instead. The caching will be disabled in this case. This was the default
+behaviour of TYPO3 4.x.
+
+.. figure:: ../Images/Configuration/typo3_install_pagenotfoundonchasherror.png
+   :width: 800px
+   :alt: TYPO3 Configuration of pageNotFoundOnCHashError in Install Tool
+
+   TYPO3 Configuration of pageNotFoundOnCHashError in Install Tool
+
+The install tool writes this configuration to typo3conf/LocalConfiguration.php::
+
+	'FE' => [
+	        'pageNotFoundOnCHashError' => '0',
+	        'pageNotFound_handling' => '',
+	    ],
 
 
 .. _configuration-typoscript:

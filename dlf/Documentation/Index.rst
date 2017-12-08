@@ -27,10 +27,10 @@ Kitodo.Presentation
 		It is highly customizable through a user-friendly backend and flexible design templates.
 
 	:Keywords:
-		comma,separated,list,of,keywords
+		kitodo,digital framework,digitization,viewer
 
 	:Copyright:
-		2015
+		2017
 
 	:Author:
 		Kitodo. Key to digital objects e.V.
