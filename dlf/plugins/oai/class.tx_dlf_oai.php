@@ -908,13 +908,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
             if (empty($this->conf['solrusage'])) {
                 $where .= ' AND tx_dlf_collections.uid=' . intval($resArray['uid']);
             } else {
-                $solr_query .= 'collection_tui:' . '"' . $resArray['index_name'] . '"';
+                $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
             }
 
         } else {
             // If no set is specified we have to query for all collections
             if (!empty($this->conf['solrusage'])) {
-                $solr_query .= 'collection_tui:*';
+                $solr_query .= 'collection:*';
             }
         }
 
