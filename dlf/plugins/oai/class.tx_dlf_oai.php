@@ -870,6 +870,12 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		return $ListSets;
 	}
 	
+
+
+    /**
+     * @return array
+     * @throws Exception
+     */
     private function fetchDocumentUIDs()
     {
         $where = $solr_query = '';
@@ -998,6 +1004,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
         return $documentSet;
     }
 
+    /**
+     * @param tx_dlf_list $documentListSet
+     * @return DOMElement
+     */
     private function generateListForRecordsForVerb($documentListSet) {
 
 	    $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
@@ -1095,6 +1105,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
         return $output;
     }
 
+    /**
+     * @param tx_dlf_list $documentListSet
+     * @return DOMElement|null
+     */
     private function generateResumptionTokenForDocumentListSet($documentListSet)
     {
 
