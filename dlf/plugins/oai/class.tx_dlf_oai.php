@@ -1119,7 +1119,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
             return $resumptionToken;
         } else {
-            $this->devLog('[tx_dlf_oai->verb'.$verb.'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+            $this->devLog('[tx_dlf_oai->verb'. $this->piVars['verb'] .'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
         }
 
         return null;
