@@ -76,7 +76,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.tstamp<'.intval($GLOBALS['EXEC_TIME'] - $this->conf['expired'])
 		);
 
-		if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) === -1) {
+		if ($GLOBALS['TYPO3_DB']->sql_affected_rows() === -1) {
 			// Deletion failed.
             $this->devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens',SYSLOG_SEVERITY_WARNING);
 		}
@@ -1124,7 +1124,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
                 )
             );
 
-            if($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
+            if($GLOBALS['TYPO3_DB']->sql_affected_rows() == 1) {
                 $resumptionToken->setAttribute('resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
             } else {
                 $this->devLog('[tx_dlf_oai->verb'. $this->piVars['verb'] .'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
