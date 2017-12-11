@@ -914,7 +914,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
         } else {
             // If no set is specified we have to query for all collections
             if (!empty($this->conf['solrusage'])) {
-                $solr_query .= 'collection:*';
+                $solr_query .= 'collection:* NOT collection:""';
             }
         }
 
