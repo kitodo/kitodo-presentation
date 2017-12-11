@@ -1097,49 +1097,45 @@ class tx_dlf_oai extends tx_dlf_plugin {
             }
         }
 
-        if($documentListSet->count() != 0) {
-            $resumptionToken = $this->generateResumptionTokenForDocumentListSet($documentListSet);
-
-            if ($resumptionToken) {
-                $output->appendChild($resumptionToken);
-            }
-        }
+        $output->appendChild($this->generateResumptionTokenForDocumentListSet($documentListSet));
 
         return $output;
     }
 
     /**
      * @param tx_dlf_list $documentListSet
-     * @return DOMElement|null
+     * @return DOMElement
      */
     private function generateResumptionTokenForDocumentListSet($documentListSet)
     {
+        $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
 
-        $token = uniqid();
+        if ($documentListSet->count() != 0) {
 
-        $result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
-            'tx_dlf_tokens',
-            array(
-                'tstamp' => $GLOBALS['EXEC_TIME'],
-                'token' => $token,
-                'options' => serialize($documentListSet),
-                'ident' => 'oai',
-            )
-        );
+            $token = uniqid();
 
-        if ($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
+            $result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+                'tx_dlf_tokens',
+                array(
+                    'tstamp' => $GLOBALS['EXEC_TIME'],
+                    'token' => $token,
+                    'options' => serialize($documentListSet),
+                    'ident' => 'oai',
+                )
+            );
 
-            $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
-            $resumptionToken->setAttribute('cursor', intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
-            $resumptionToken->setAttribute('completeListSize',  $documentListSet->metadata['completeListSize']);
-            $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
-
-            return $resumptionToken;
-        } else {
-            $this->devLog('[tx_dlf_oai->verb'. $this->piVars['verb'] .'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+            if($GLOBALS['TYPO3_DB']->sql_affected_rows($result) == 1) {
+                $resumptionToken->setAttribute('resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
+            } else {
+                $this->devLog('[tx_dlf_oai->verb'. $this->piVars['verb'] .'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+            }
         }
 
-        return null;
+        $resumptionToken->setAttribute('cursor', intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
+        $resumptionToken->setAttribute('completeListSize',  $documentListSet->metadata['completeListSize']);
+        $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
+
+        return $resumptionToken;
     }
 
     private function devLog($message, $severity, $data = null) {
