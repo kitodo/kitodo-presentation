@@ -927,36 +927,77 @@ class tx_dlf_oai extends tx_dlf_plugin {
             }
         }
 
-
-        // TODO: Use from and until in SOLRQuery
+        $from = "*";
         // Check "from" for valid value.
         if (!empty($this->piVars['from'])) {
-            if (is_array($from = strptime($this->piVars['from'],
-                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
-                $from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1,
-                    $from['tm_mday'], $from['tm_year'] + 1900);
-            } else {
-                throw new Exception('badArgument');
-            }
 
-            $where .= ' AND tx_dlf_documents.tstamp>=' . intval($from);
+            if (!empty($this->conf['solrusage'])) {
+
+                // Is valid format?
+                if (is_array($date_array = strptime($this->piVars['from'],
+                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+
+                    $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+                        $date_array['tm_mday'], $date_array['tm_year'] + 1900);
+
+                   $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) .'.000Z';
+
+                } else {
+                    throw new Exception('badArgument');
+                }
+
+
+            } else {
+                if (is_array($from = strptime($this->piVars['from'],
+                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+                    $from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1,
+                        $from['tm_mday'], $from['tm_year'] + 1900);
+                } else {
+                    throw new Exception('badArgument');
+                }
+                $where .= ' AND tx_dlf_documents.tstamp>=' . intval($from);
+            }
         }
 
+        $until = "*";
         // Check "until" for valid value.
         if (!empty($this->piVars['until'])) {
-            if (is_array($until = strptime($this->piVars['until'],
-                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
-                $until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1,
-                    $until['tm_mday'], $until['tm_year'] + 1900);
+
+            if (!empty($this->conf['solrusage'])) {
+
+                // Is valid format?
+                if (is_array($date_array = strptime($this->piVars['until'],
+                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+
+                    $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+                        $date_array['tm_mday'], $date_array['tm_year'] + 1900);
+
+                    $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
+
+                    if ($from != "*" && $from > $until) {
+                        throw new Exception('badArgument');
+                    }
+
+                } else {
+                    throw new Exception('badArgument');
+                }
+
             } else {
-                throw new Exception('badArgument');
-            }
 
-            if (!empty($from) && $from > $until) {
-                throw new Exception('badArgument');
-            }
+                if (is_array($until = strptime($this->piVars['until'],
+                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+                    $until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1,
+                        $until['tm_mday'], $until['tm_year'] + 1900);
+                } else {
+                    throw new Exception('badArgument');
+                }
 
-            $where .= ' AND tx_dlf_documents.tstamp<=' . intval($until);
+                if (!empty($from) && $from > $until) {
+                    throw new Exception('badArgument');
+                }
+
+                $where .= ' AND tx_dlf_documents.tstamp<=' . intval($until);
+            }
         }
 
         // Check "from" and "until" for same granularity.
@@ -965,6 +1006,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
                 throw new Exception('badArgument');
             }
         }
+
+        $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until .']';
 
         $documentSet = array();
 
