@@ -918,10 +918,13 @@ class tx_dlf_oai extends tx_dlf_plugin {
             }
         }
 
-        // TODO: Check if we can do this with a SOLR Query
         // Check for required fields.
         foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-            $where .= ' AND NOT tx_dlf_documents.' . $required . '=\'\'';
+            if (!empty($this->conf['solrusage'])) {
+                $solr_query .= ' NOT ' . $required . ':""';
+            } else {
+                $where .= ' AND NOT tx_dlf_documents.' . $required . '=\'\'';
+            }
         }
 
 
