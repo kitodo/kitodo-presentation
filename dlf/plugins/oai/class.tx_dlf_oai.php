@@ -994,9 +994,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
             $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
             // We only care about the UID in the results and want them sorted
-            $paramaters = array("fl" => "uid", "sort" => "uid asc");
+            $parameters = array("fl" => "uid", "sort" => "uid asc");
 
-            $result = $solr->search_raw($solr_query, $paramaters);
+            $result = $solr->search_raw($solr_query, $parameters);
 
             if (empty($result)) {
                 throw new Exception('noRecordsMatch');
