@@ -702,7 +702,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             }
 
-            $downloadLink = '<a href="'.$downloadUrl.'" target="_new">'.$title.'</a> ('.$info.')';
+            $downloadLink = '<a href="'.$downloadUrl.'" target="_blank">'.$title.'</a> ('.$info.')';
 
             if ($data['startpage'] == $data['endpage']) {
 
