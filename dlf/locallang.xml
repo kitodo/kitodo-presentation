@@ -102,7 +102,7 @@
 			<label index="tx_dlf_collections">Collections</label>
 			<label index="tx_dlf_collections.label">Display Label</label>
 			<label index="tx_dlf_collections.index_name">Index Name</label>
-			<label index="tx_dlf_collections.index_search">Index Search</label>
+			<label index="tx_dlf_collections.index_search">Define (virtual) collection via Solr Query</label>
 			<label index="tx_dlf_collections.oai_name">OAI Mapping</label>
 			<label index="tx_dlf_collections.description">Description</label>
 			<label index="tx_dlf_collections.thumbnail">Thumbnail</label>
@@ -309,6 +309,7 @@
 			<label index="tx_dlf_collections.index_name">Index-Bezeichnung</label>
 			<label index="tx_dlf_collections.index_search">Suche im Index</label>
 			<label index="tx_dlf_collections.oai_name">OAI-Mapping</label>
+			<label index="tx_dlf_collections.index_search">(Virtuelle) Kollektion über Solr Anfrage definieren</label>
 			<label index="tx_dlf_collections.description">Beschreibung</label>
 			<label index="tx_dlf_collections.thumbnail">Vorschaubild</label>
 			<label index="tx_dlf_collections.priority">Priorität</label>
