@@ -60,7 +60,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             $insertArray['fe_user_id'] = $GLOBALS['TSFE']->fe_user->user['uid'];
 
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            $query = $GLOBALS['TYPO3_DB']->SELECTquery(
                 '*',
                 'tx_dlf_basket',
                 'tx_dlf_basket.fe_user_id='.intval($insertArray['fe_user_id']).tx_dlf_helper::whereClause('tx_dlf_basket'),
@@ -77,7 +77,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            $query = $GLOBALS['TYPO3_DB']->SELECTquery(
                 '*',
                 'tx_dlf_basket',
                 'tx_dlf_basket.session_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($sessionId, 'tx_dlf_basket').tx_dlf_helper::whereClause('tx_dlf_basket'),
@@ -88,24 +88,24 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         }
 
+        $result = $GLOBALS['TYPO3_DB']->sql_query($query);
+
         // session already exists
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
-
-            // basket found get data
-            $basketData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-        } else {
+        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 0) {
 
             // create new basket in db
             $insertArray['session_id'] = $sessionId;
+            $insertArray['doc_ids'] = '';
+            $insertArray['label'] = '';
+            $insertArray['l18n_diffsource'] = '';
 
-            $query = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_basket', $insertArray);
+            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_basket', $insertArray);
 
-            $res = $GLOBALS['TYPO3_DB']->sql_query($query);
-
-            $basketData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+            $result = $GLOBALS['TYPO3_DB']->sql_query($query);
 
         }
+
+        $basketData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
         $piVars = $this->piVars;
 
