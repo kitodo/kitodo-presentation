@@ -912,7 +912,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             }
 
-            $pdfUrl = trim($pdfUrl, '*');
+            $pdfUrl = trim($pdfUrl, $this->conf['pdfparamseparator']);
 
         }
 
