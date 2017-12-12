@@ -890,7 +890,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             // For SOLR we need the index_name of the collection,
             // For DB Query we need the UID of the collection
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.uid AS uid ',
+                'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.uid AS uid, tx_dlf_collections.index_search as index_query ',
                 'tx_dlf_collections',
                 'tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.oai_name=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'],
                     'tx_dlf_collections') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
@@ -908,7 +908,14 @@ class tx_dlf_oai extends tx_dlf_plugin {
             if (empty($this->conf['solrusage'])) {
                 $where .= ' AND tx_dlf_collections.uid=' . intval($resArray['uid']);
             } else {
-                $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
+
+                if($resArray['index_query'] != "") {
+                    $solr_query .= '(' . $resArray['index_query'] . ')';
+                } else {
+                    $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
+                }
+
+
             }
 
         } else {
