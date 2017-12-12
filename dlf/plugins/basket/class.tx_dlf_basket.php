@@ -754,8 +754,6 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         $pdfUrl = $this->conf['pdfdownload'];
 
-        $i = 0;
-
         // prepare links
         foreach ($this->piVars['selected'] as $docId => $docValue) {
 
@@ -765,15 +763,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
                 $docData = $this->getDocumentData($explodeId[0], $docValue);
 
-                if ($i === 0) {
-
-                    $pdfUrl .= $docData['urlParams'];
-
-                } else {
-
-                    $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
-
-                }
+                $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
 
                 $pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
 
@@ -787,11 +777,12 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
                 }
 
-                $i++;
-
             }
 
         }
+
+        // Remove leading/tailing pdfparamseperator
+        $pdfUrl = trim($pdfUrl, $this->conf['pdfparamseparator']);
 
         $body .= $pdfUrl;
 
