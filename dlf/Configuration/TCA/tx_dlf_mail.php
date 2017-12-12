@@ -13,7 +13,7 @@ return array (
     'ctrl' => array (
         'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail',
         'label'     => 'label',
-        'default_sortby' => 'ORDER BY label',
+    	'sortby' => 'sorting',
         'delete'	=> 'deleted',
         'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('dlf').'res/icons/txdlfemail.png',
         'rootLevel'	=> 0,
