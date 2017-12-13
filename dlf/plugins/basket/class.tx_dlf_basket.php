@@ -204,7 +204,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
             'tx_dlf_mail',
             '1'.tx_dlf_helper::whereClause('tx_dlf_mail'),
             '',
-            '',
+            'tx_dlf_mail.sorting',
             ''
         );
 

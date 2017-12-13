@@ -299,6 +299,7 @@ CREATE TABLE tx_dlf_mail (
     name varchar(100) DEFAULT '' NOT NULL,
     label text NOT NULL,
     deleted tinyint(4) DEFAULT '0' NOT NULL,
+    sorting int(11) DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid)
