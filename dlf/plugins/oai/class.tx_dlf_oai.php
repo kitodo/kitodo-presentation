@@ -78,7 +78,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		if ($GLOBALS['TYPO3_DB']->sql_affected_rows() === -1) {
 			// Deletion failed.
-            $this->devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens',SYSLOG_SEVERITY_WARNING);
+			$this->devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens',SYSLOG_SEVERITY_WARNING);
 		}
 	}
 
@@ -321,10 +321,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				// Import node into DOMDocument.
 				$mets = $this->oai->importNode($root->item(0), TRUE);
 			} else {
-			    $this->devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+				   $this->devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 			}
 		} else {
-            $this->devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+			$this->devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 		}
 
 		if ($mets === NULL) {
@@ -488,7 +488,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$resultSet = unserialize($resArray['options']);
 
-        return $this->generateListForRecordsForVerb($resultSet);
+		return $this->generateListForRecordsForVerb($resultSet);
 
 	}
 
@@ -621,7 +621,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			$repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
 
 		} else {
-            $this->devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
+			$this->devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
 		}
 
 		// Get earliest datestamp. Use a default value if that fails.
@@ -641,7 +641,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			list ($timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 			$earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
 		} else {
-            $this->devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' . $this->conf['pages'] . '"',SYSLOG_SEVERITY_NOTICE);
+			$this->devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' . $this->conf['pages'] . '"',SYSLOG_SEVERITY_NOTICE);
 		}
 
 		$linkConf = array (
@@ -673,40 +673,40 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	protected function verbListIdentifiers() {
 
 		// If we have a resumption token we can continue our work
-        if (!empty($this->piVars['resumptionToken'])) {
-            // "resumptionToken" is an exclusive argument.
-            if (count($this->piVars) > 2) {
-                return $this->error('badArgument');
-            } else {
-                return $this->resume();
-            }
-        }
+		if (!empty($this->piVars['resumptionToken'])) {
+			// "resumptionToken" is an exclusive argument.
+			if (count($this->piVars) > 2) {
+				return $this->error('badArgument');
+			} else {
+				return $this->resume();
+			}
+		}
 
-        // "metadataPrefix" is required and "identifier" is not allowed.
+		// "metadataPrefix" is required and "identifier" is not allowed.
 		if (empty($this->piVars['metadataPrefix']) || !empty($this->piVars['identifier'])) {
 			return $this->error('badArgument');
 		}
 
-        if (!in_array($this->piVars['metadataPrefix'], array_keys($this->formats))) {
-            return $this->error('cannotDisseminateFormat');
-        }
+		if (!in_array($this->piVars['metadataPrefix'], array_keys($this->formats))) {
+			return $this->error('cannotDisseminateFormat');
+		}
 
-        try {
-            $documentSet = $this->fetchDocumentUIDs();
-        } catch (Exception $exception) {
-            return $this->error($exception->getMessage());
-        }
+		try {
+			$documentSet = $this->fetchDocumentUIDs();
+		} catch (Exception $exception) {
+			return $this->error($exception->getMessage());
+		}
 
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+		$resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-        $resultSet->reset();
-        $resultSet->add($documentSet);
-        $resultSet->metadata = array (
-            'completeListSize' => count($documentSet),
-            'metadataPrefix' => $this->piVars['metadataPrefix'],
-        );
+		$resultSet->reset();
+		$resultSet->add($documentSet);
+		$resultSet->metadata = array (
+			'completeListSize' => count($documentSet),
+			'metadataPrefix' => $this->piVars['metadataPrefix'],
+		);
 
-        return $this->generateListForRecordsForVerb($resultSet);
+		return $this->generateListForRecordsForVerb($resultSet);
 
 	}
 
@@ -727,21 +727,21 @@ class tx_dlf_oai extends tx_dlf_plugin {
 				return $this->error('badArgument');
 			}
 
-            // Check given identifier.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.*',
-                'tx_dlf_documents',
-                'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents'),
-                '',
-                '',
-                '1'
-            );
+			// Check given identifier.
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_documents.*',
+				'tx_dlf_documents',
+				'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents'),
+				'',
+				'',
+				'1'
+			);
 
-            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                return $this->error('idDoesNotExist');
-            }
+			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+				return $this->error('idDoesNotExist');
+			}
 
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 		}
 
 		// Add metadata formats node.
@@ -795,27 +795,27 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			return $this->error('badArgument');
 		}
 
-        // Check "metadataPrefix" for valid value.
-        if (!in_array($this->piVars['metadataPrefix'], array_keys($this->formats))) {
-            return $this->error('cannotDisseminateFormat');
-        }
+		// Check "metadataPrefix" for valid value.
+		if (!in_array($this->piVars['metadataPrefix'], array_keys($this->formats))) {
+			return $this->error('cannotDisseminateFormat');
+		}
 
-        try {
-            $documentSet = $this->fetchDocumentUIDs();
-        } catch (Exception $exception) {
-            return $this->error($exception->getMessage());
-        }
+		try {
+			$documentSet = $this->fetchDocumentUIDs();
+		} catch (Exception $exception) {
+			return $this->error($exception->getMessage());
+		}
 
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+		$resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-        $resultSet->reset();
-        $resultSet->add($documentSet);
-        $resultSet->metadata = array (
-            'completeListSize' => count($documentSet),
-            'metadataPrefix' => $this->piVars['metadataPrefix'],
-        );
+		$resultSet->reset();
+		$resultSet->add($documentSet);
+		$resultSet->metadata = array (
+			'completeListSize' => count($documentSet),
+			'metadataPrefix' => $this->piVars['metadataPrefix'],
+		);
 
-        return $this->generateListForRecordsForVerb($resultSet);
+		return $this->generateListForRecordsForVerb($resultSet);
 	}
 
 	/**
@@ -839,7 +839,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 		$where = '';
 
 		if (!$this->conf['show_userdefined']) {
-            $where = ' AND tx_dlf_collections.fe_cruser_id=0';
+			$where = ' AND tx_dlf_collections.fe_cruser_id=0';
 		}
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -872,330 +872,330 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	
 
 
-    /**
-     * @return array
-     * @throws Exception
-     */
-    private function fetchDocumentUIDs()
-    {
-        $where = $solr_query = '';
-
-        if (!$this->conf['show_userdefined']) {
-            $where = ' AND tx_dlf_collections.fe_cruser_id=0';
-        }
-
-        // Check "set" for valid value.
-        if (!empty($this->piVars['set'])) {
-
-            // For SOLR we need the index_name of the collection,
-            // For DB Query we need the UID of the collection
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.uid AS uid, tx_dlf_collections.index_search as index_query ',
-                'tx_dlf_collections',
-                'tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.oai_name=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'],
-                    'tx_dlf_collections') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
-                '',
-                '',
-                '1'
-            );
-
-            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                throw new Exception('noSetHierarchy');
-            }
-
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-
-            if (empty($this->conf['solrusage'])) {
-                $where .= ' AND tx_dlf_collections.uid=' . intval($resArray['uid']);
-            } else {
-
-                if($resArray['index_query'] != "") {
-                    $solr_query .= '(' . $resArray['index_query'] . ')';
-                } else {
-                    $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
-                }
-
-
-            }
-
-        } else {
-            // If no set is specified we have to query for all collections
-            if (!empty($this->conf['solrusage'])) {
-                $solr_query .= 'collection:* NOT collection:""';
-            }
-        }
-
-        // Check for required fields.
-        foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-            if (!empty($this->conf['solrusage'])) {
-                $solr_query .= ' NOT ' . $required . ':""';
-            } else {
-                $where .= ' AND NOT tx_dlf_documents.' . $required . '=\'\'';
-            }
-        }
-
-        $from = "*";
-        // Check "from" for valid value.
-        if (!empty($this->piVars['from'])) {
-
-            if (!empty($this->conf['solrusage'])) {
-
-                // Is valid format?
-                if (is_array($date_array = strptime($this->piVars['from'],
-                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
-
-                    $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
-                        $date_array['tm_mday'], $date_array['tm_year'] + 1900);
-
-                   $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) .'.000Z';
-
-                } else {
-                    throw new Exception('badArgument');
-                }
-
-
-            } else {
-                if (is_array($from = strptime($this->piVars['from'],
-                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
-                    $from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1,
-                        $from['tm_mday'], $from['tm_year'] + 1900);
-                } else {
-                    throw new Exception('badArgument');
-                }
-                $where .= ' AND tx_dlf_documents.tstamp>=' . intval($from);
-            }
-        }
-
-        $until = "*";
-        // Check "until" for valid value.
-        if (!empty($this->piVars['until'])) {
-
-            if (!empty($this->conf['solrusage'])) {
-
-                // Is valid format?
-                if (is_array($date_array = strptime($this->piVars['until'],
-                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
-
-                    $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
-                        $date_array['tm_mday'], $date_array['tm_year'] + 1900);
-
-                    $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
-
-                    if ($from != "*" && $from > $until) {
-                        throw new Exception('badArgument');
-                    }
-
-                } else {
-                    throw new Exception('badArgument');
-                }
-
-            } else {
-
-                if (is_array($until = strptime($this->piVars['until'],
-                        '%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
-                    $until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1,
-                        $until['tm_mday'], $until['tm_year'] + 1900);
-                } else {
-                    throw new Exception('badArgument');
-                }
-
-                if (!empty($from) && $from > $until) {
-                    throw new Exception('badArgument');
-                }
-
-                $where .= ' AND tx_dlf_documents.tstamp<=' . intval($until);
-            }
-        }
-
-        // Check "from" and "until" for same granularity.
-        if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
-            if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
-                throw new Exception('badArgument');
-            }
-        }
-
-        $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until .']';
-
-        $documentSet = array();
-
-        if (empty($this->conf['solrusage'])) {
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-                'tx_dlf_documents.uid',
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_collections',
-                'AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls',
-                    'tx_dlf_relations') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
-                'tx_dlf_documents.uid',
-                'tx_dlf_documents.tstamp',
-                ''
-            );
-
-            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                throw new Exception('noRecordsMatch');
-            }
-
-            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-                $documentSet[] = $resArray['uid'];
-            }
-
-        } else {
-
-            $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
-
-            // We only care about the UID in the results and want them sorted
-            $parameters = array("fl" => "uid", "sort" => "uid asc");
-
-            $result = $solr->search_raw($solr_query, $parameters);
-
-            if (empty($result)) {
-                throw new Exception('noRecordsMatch');
-            }
-
-            foreach ($result as $doc) {
-                $documentSet[] = $doc->uid;
-            }
-        }
-
-        return $documentSet;
-    }
-
-    /**
-     * @param tx_dlf_list $documentListSet
-     * @return DOMElement
-     */
-    private function generateListForRecordsForVerb($documentListSet) {
-
-	    $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
-	    $verb = $this->piVars['verb'];
-
-        $documents = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-            'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
-            'tx_dlf_documents',
-            'tx_dlf_relations',
-            'tx_dlf_collections',
-            'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)) . ') AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations') . tx_dlf_helper::whereClause('tx_dlf_collections'),
-            'tx_dlf_documents.uid',
-            'tx_dlf_documents.tstamp',
-            $this->conf['limit']
-        );
-
-        $output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
-
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($documents)) {
-            // Add header node.
-            $header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
-
-            $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
-            $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
-
-            // Check if document is deleted or hidden.
-            // TODO: Use TYPO3 API functions here!
-            if ($resArray['deleted'] || $resArray['hidden']) {
-                // Add "deleted" status.
-                $header->setAttribute('status', 'deleted');
-
-                if ($verb == 'ListRecords') {
-                    // Add record node.
-                    $record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
-
-                    $record->appendChild($header);
-                    $output->appendChild($record);
-
-                } elseif ($verb == 'ListIdentifiers') {
-                    $output->appendChild($header);
-                }
-
-            } else {
-                // Add sets.
-                foreach (explode(' ', $resArray['collections']) as $spec) {
-                    $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
-                }
-
-                if ($verb == 'ListRecords') {
-                    // Add record node.
-                    $record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
-
-                    $record->appendChild($header);
-
-                    // Add metadata node.
-                    $metadata = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
-
-                    $metadataPrefix = $this->piVars['metadataPrefix'];
-                    if(!$metadataPrefix) {
-                        // If we resume an action the metadataPrefix is stored with the documentSet
-                        $metadataPrefix = $documentListSet->metadata['metadataPrefix'];
-                    }
-
-                    switch ($metadataPrefix) {
-                        case 'oai_dc':
-                            $metadata->appendChild($this->getDcData($resArray));
-                            break;
-
-                        case 'epicur':
-                            $metadata->appendChild($this->getEpicurData($resArray));
-                            break;
-
-                        case 'mets':
-                            $metadata->appendChild($this->getMetsData($resArray));
-                            break;
-                    }
-
-                    $record->appendChild($metadata);
-                    $output->appendChild($record);
-
-                } elseif ($verb == 'ListIdentifiers') {
-                    $output->appendChild($header);
-                }
-            }
-        }
-
-        $output->appendChild($this->generateResumptionTokenForDocumentListSet($documentListSet));
-
-        return $output;
-    }
-
-    /**
-     * @param tx_dlf_list $documentListSet
-     * @return DOMElement
-     */
-    private function generateResumptionTokenForDocumentListSet($documentListSet)
-    {
-        $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
-
-        if ($documentListSet->count() != 0) {
-
-            $token = uniqid();
-
-            $result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
-                'tx_dlf_tokens',
-                array(
-                    'tstamp' => $GLOBALS['EXEC_TIME'],
-                    'token' => $token,
-                    'options' => serialize($documentListSet),
-                    'ident' => 'oai',
-                )
-            );
-
-            if($GLOBALS['TYPO3_DB']->sql_affected_rows() == 1) {
-                $resumptionToken->setAttribute('resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
-            } else {
-                $this->devLog('[tx_dlf_oai->verb'. $this->piVars['verb'] .'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
-            }
-        }
-
-        $resumptionToken->setAttribute('cursor', intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
-        $resumptionToken->setAttribute('completeListSize',  $documentListSet->metadata['completeListSize']);
-        $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
-
-        return $resumptionToken;
-    }
-
-    private function devLog($message, $severity, $data = null) {
-        if (TYPO3_DLOG) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($message, $this->extKey, $severity, $data);
-        }
-    }
+	/**
+	 * @return array
+	 * @throws Exception
+	 */
+	private function fetchDocumentUIDs()
+	{
+		$where = $solr_query = '';
+
+		if (!$this->conf['show_userdefined']) {
+			$where = ' AND tx_dlf_collections.fe_cruser_id=0';
+		}
+
+		// Check "set" for valid value.
+		if (!empty($this->piVars['set'])) {
+
+			// For SOLR we need the index_name of the collection,
+			// For DB Query we need the UID of the collection
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.uid AS uid, tx_dlf_collections.index_search as index_query ',
+				'tx_dlf_collections',
+				'tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.oai_name=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'],
+					'tx_dlf_collections') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'',
+				'',
+				'1'
+			);
+
+			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+				throw new Exception('noSetHierarchy');
+			}
+
+			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+			if (empty($this->conf['solrusage'])) {
+				$where .= ' AND tx_dlf_collections.uid=' . intval($resArray['uid']);
+			} else {
+
+				if($resArray['index_query'] != "") {
+					$solr_query .= '(' . $resArray['index_query'] . ')';
+				} else {
+					$solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
+				}
+
+
+			}
+
+		} else {
+			// If no set is specified we have to query for all collections
+			if (!empty($this->conf['solrusage'])) {
+				$solr_query .= 'collection:* NOT collection:""';
+			}
+		}
+
+		// Check for required fields.
+		foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
+			if (!empty($this->conf['solrusage'])) {
+				$solr_query .= ' NOT ' . $required . ':""';
+			} else {
+				$where .= ' AND NOT tx_dlf_documents.' . $required . '=\'\'';
+			}
+		}
+
+		$from = "*";
+		// Check "from" for valid value.
+		if (!empty($this->piVars['from'])) {
+
+			if (!empty($this->conf['solrusage'])) {
+
+				// Is valid format?
+				if (is_array($date_array = strptime($this->piVars['from'],
+						'%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+
+					$timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+						$date_array['tm_mday'], $date_array['tm_year'] + 1900);
+
+				   $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) .'.000Z';
+
+				} else {
+					throw new Exception('badArgument');
+				}
+
+
+			} else {
+				if (is_array($from = strptime($this->piVars['from'],
+						'%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+					$from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1,
+						$from['tm_mday'], $from['tm_year'] + 1900);
+				} else {
+					throw new Exception('badArgument');
+				}
+				$where .= ' AND tx_dlf_documents.tstamp>=' . intval($from);
+			}
+		}
+
+		$until = "*";
+		// Check "until" for valid value.
+		if (!empty($this->piVars['until'])) {
+
+			if (!empty($this->conf['solrusage'])) {
+
+				// Is valid format?
+				if (is_array($date_array = strptime($this->piVars['until'],
+						'%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+
+					$timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+						$date_array['tm_mday'], $date_array['tm_year'] + 1900);
+
+					$until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
+
+					if ($from != "*" && $from > $until) {
+						throw new Exception('badArgument');
+					}
+
+				} else {
+					throw new Exception('badArgument');
+				}
+
+			} else {
+
+				if (is_array($until = strptime($this->piVars['until'],
+						'%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+					$until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1,
+						$until['tm_mday'], $until['tm_year'] + 1900);
+				} else {
+					throw new Exception('badArgument');
+				}
+
+				if (!empty($from) && $from > $until) {
+					throw new Exception('badArgument');
+				}
+
+				$where .= ' AND tx_dlf_documents.tstamp<=' . intval($until);
+			}
+		}
+
+		// Check "from" and "until" for same granularity.
+		if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
+			if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
+				throw new Exception('badArgument');
+			}
+		}
+
+		$solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until .']';
+
+		$documentSet = array();
+
+		if (empty($this->conf['solrusage'])) {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_dlf_documents.uid',
+				'tx_dlf_documents',
+				'tx_dlf_relations',
+				'tx_dlf_collections',
+				'AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls',
+					'tx_dlf_relations') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
+				'tx_dlf_documents.uid',
+				'tx_dlf_documents.tstamp',
+				''
+			);
+
+			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+				throw new Exception('noRecordsMatch');
+			}
+
+			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+				$documentSet[] = $resArray['uid'];
+			}
+
+		} else {
+
+			$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+
+			// We only care about the UID in the results and want them sorted
+			$parameters = array("fl" => "uid", "sort" => "uid asc");
+
+			$result = $solr->search_raw($solr_query, $parameters);
+
+			if (empty($result)) {
+				throw new Exception('noRecordsMatch');
+			}
+
+			foreach ($result as $doc) {
+				$documentSet[] = $doc->uid;
+			}
+		}
+
+		return $documentSet;
+	}
+
+	/**
+	 * @param tx_dlf_list $documentListSet
+	 * @return DOMElement
+	 */
+	private function generateListForRecordsForVerb($documentListSet) {
+
+		 $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
+		 $verb = $this->piVars['verb'];
+
+		$documents = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
+			'tx_dlf_documents',
+			'tx_dlf_relations',
+			'tx_dlf_collections',
+			'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)) . ') AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations') . tx_dlf_helper::whereClause('tx_dlf_collections'),
+			'tx_dlf_documents.uid',
+			'tx_dlf_documents.tstamp',
+			$this->conf['limit']
+		);
+
+		$output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
+
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($documents)) {
+			// Add header node.
+			$header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
+
+			$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
+			$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
+
+			// Check if document is deleted or hidden.
+			// TODO: Use TYPO3 API functions here!
+			if ($resArray['deleted'] || $resArray['hidden']) {
+				// Add "deleted" status.
+				$header->setAttribute('status', 'deleted');
+
+				if ($verb == 'ListRecords') {
+					// Add record node.
+					$record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
+
+					$record->appendChild($header);
+					$output->appendChild($record);
+
+				} elseif ($verb == 'ListIdentifiers') {
+					$output->appendChild($header);
+				}
+
+			} else {
+				// Add sets.
+				foreach (explode(' ', $resArray['collections']) as $spec) {
+					$header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
+				}
+
+				if ($verb == 'ListRecords') {
+					// Add record node.
+					$record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
+
+					$record->appendChild($header);
+
+					// Add metadata node.
+					$metadata = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
+
+					$metadataPrefix = $this->piVars['metadataPrefix'];
+					if(!$metadataPrefix) {
+						// If we resume an action the metadataPrefix is stored with the documentSet
+						$metadataPrefix = $documentListSet->metadata['metadataPrefix'];
+					}
+
+					switch ($metadataPrefix) {
+						case 'oai_dc':
+							$metadata->appendChild($this->getDcData($resArray));
+							break;
+
+						case 'epicur':
+							$metadata->appendChild($this->getEpicurData($resArray));
+							break;
+
+						case 'mets':
+							$metadata->appendChild($this->getMetsData($resArray));
+							break;
+					}
+
+					$record->appendChild($metadata);
+					$output->appendChild($record);
+
+				} elseif ($verb == 'ListIdentifiers') {
+					$output->appendChild($header);
+				}
+			}
+		}
+
+		$output->appendChild($this->generateResumptionTokenForDocumentListSet($documentListSet));
+
+		return $output;
+	}
+
+	/**
+	 * @param tx_dlf_list $documentListSet
+	 * @return DOMElement
+	 */
+	private function generateResumptionTokenForDocumentListSet($documentListSet)
+	{
+		$resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
+
+		if ($documentListSet->count() != 0) {
+
+			$token = uniqid();
+
+			$result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				'tx_dlf_tokens',
+				array(
+					'tstamp' => $GLOBALS['EXEC_TIME'],
+					'token' => $token,
+					'options' => serialize($documentListSet),
+					'ident' => 'oai',
+				)
+			);
+
+			if($GLOBALS['TYPO3_DB']->sql_affected_rows() == 1) {
+				$resumptionToken->setAttribute('resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
+			} else {
+				$this->devLog('[tx_dlf_oai->verb'. $this->piVars['verb'] .'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+			}
+		}
+
+		$resumptionToken->setAttribute('cursor', intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
+		$resumptionToken->setAttribute('completeListSize',	$documentListSet->metadata['completeListSize']);
+		$resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
+
+		return $resumptionToken;
+	}
+
+	private function devLog($message, $severity, $data = null) {
+		if (TYPO3_DLOG) {
+			\TYPO3\CMS\Core\Utility\GeneralUtility::devLog($message, $this->extKey, $severity, $data);
+		}
+	}
 
 }
 

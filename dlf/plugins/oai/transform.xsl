@@ -411,7 +411,7 @@ p.intro {
 <!--
 	DublinCore Metadata
 -->
-<xsl:template match="oai_dc:dc"  xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" >
+<xsl:template match="oai_dc:dc" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" >
 	<div class="dcdata">
 		<h3>DublinCore Metadata</h3>
 		<table class="dcdata">
