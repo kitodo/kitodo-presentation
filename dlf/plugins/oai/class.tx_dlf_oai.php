@@ -488,7 +488,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$resultSet = unserialize($resArray['options']);
 
-		return $this->generateListForRecordsForVerb($resultSet);
+		return $this->generateOutputForDocumentList($resultSet);
 
 	}
 
@@ -706,7 +706,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			'metadataPrefix' => $this->piVars['metadataPrefix'],
 		);
 
-		return $this->generateListForRecordsForVerb($resultSet);
+		return $this->generateOutputForDocumentList($resultSet);
 
 	}
 
@@ -815,7 +815,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 			'metadataPrefix' => $this->piVars['metadataPrefix'],
 		);
 
-		return $this->generateListForRecordsForVerb($resultSet);
+		return $this->generateOutputForDocumentList($resultSet);
 	}
 
 	/**
@@ -1064,7 +1064,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	 * @param tx_dlf_list $documentListSet
 	 * @return DOMElement
 	 */
-	private function generateListForRecordsForVerb($documentListSet) {
+	private function generateOutputForDocumentList($documentListSet) {
 
 		 $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
 		 $verb = $this->piVars['verb'];
