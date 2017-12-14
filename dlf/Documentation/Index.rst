@@ -27,10 +27,10 @@ Kitodo.Presentation
 		It is highly customizable through a user-friendly backend and flexible design templates.
 
 	:Keywords:
-		kitodo,digital framework,digitization,viewer
+		kitodo,digital framework,digitization,viewer,library,METS,OAI-PMH
 
 	:Copyright:
-		2017
+		###YEAR###
 
 	:Author:
 		Kitodo. Key to digital objects e.V.
@@ -60,7 +60,7 @@ Kitodo.Presentation
 	Administrator/Index
 	Configuration/Index
 	Developer/Index
-	KnownProblems/Index
+	Community/Index
 	ToDoList/Index
 	ChangeLog/Index
 	Targets
