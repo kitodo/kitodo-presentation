@@ -126,11 +126,15 @@ limitations under the License.
 		<field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
 		<!-- Fulltext field for OCR results. -->
 		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" />
-
+		<!-- Record ID of the document (required for OAI_DC output). -->
 		<field name="record_id" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<!-- Permanent URL of the document (required for EPICUR output). -->
 		<field name="purl" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<!-- URN of the Document (required for EPICUR output). -->
+                <field name="urn" type="string" indexed="true" stored="true" requi$
+		<!-- Location of METS XML (required for METS output). -->
 		<field name="location" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
-		<field name="urn" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<!-- Associated collection(s) of the document. -->
 		<field name="collection" type="string" indexed="true" stored="true" required="true" multiValued="true" default="" />
 
 		<!--
