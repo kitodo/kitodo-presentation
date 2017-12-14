@@ -53,6 +53,54 @@ The install tool writes this configuration to typo3conf/LocalConfiguration.php::
 TypoScript Reference
 --------------------
 
+Plugin Reference
+----------------
+
+.. contents::
+	:local:
+	:depth: 1
+
+Audioplayer
+^^^^^^^^^^^
+
+Basket
+^^^^^^
+
+Collection
+^^^^^^^^^^
+
+Feeds
+^^^^^
+
+Listview
+^^^^^^^^
+
+Metadata
+^^^^^^^^
+
+Newspaper
+^^^^^^^^^
+
+OAI
+^^^
+
+Pageview
+^^^^^^^^
+
+Search
+^^^^^^
+
+Statistics
+^^^^^^^^^^
+
+TOC
+^^^
+
+Toolbox
+^^^^^^^
+
+
+
 Possible subsections: Reference of TypoScript options.
 The construct below show the recommended structure for
 TypoScript properties listing and description.
