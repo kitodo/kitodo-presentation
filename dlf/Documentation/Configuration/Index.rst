@@ -14,7 +14,7 @@ Configuration Reference
 
 .. contents::
 	:local:
-	:depth: 2
+	:depth: 3
 
 
 .. _system_setup:
@@ -39,7 +39,7 @@ The default behaviour of TYPO3 is to call the pageNotFound handler and/or to sho
 This is not the desired behaviour. You should configure in the TYPO3 install tool
 $TYPO3_CONF_VARS['FE'][pageNotFoundOnCHashError]=0 to show the requested page
 instead. The caching will be disabled in this case. This was the default
-behaviour of TYPO3 4.x.
+behaviour before TYPO3 6.x.
 
 .. figure:: ../Images/Configuration/typo3_install_pagenotfoundonchasherror.png
    :width: 800px
@@ -122,14 +122,92 @@ Please include the Template "Basic Configuration (dlf)". This template includes 
 Plugin Reference
 ================
 
+Common Settings
+---------------
+pages
+^^^^^
+Startingpoint of this plugin. This is the Kitodo.Presentation data folder.
+
+templateFile
+^^^^^^^^^^^^
+The used template file of this plugin.
+
+
+
 Audioplayer
 -----------
+
+The audioplayer plugin is only active if the selected document has a valid audio filegroup (fileGrpAudio).
+
+Properties
+^^^^^^^^^^
+
+.. container:: ts-properties-tx-dlf-audioplayer
+
+:typoscript:`plugin.tx_dlf_audioplayer.`
+
+	=========================== ===================================== ====================
+	Property                    Data type                             Default
+	=========================== ===================================== ====================
+	pages_                      :ref:`t3tsref:data-type-page-id`
+	excludeOther_               :ref:`t3tsref:data-type-boolean`      1
+	elementId_                  :ref:`t3tsref:data-type-string`       tx-dlf-audio
+	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	=========================== ===================================== ====================
+
+excludeOther
+""""""""""""
+Show only documents from the selected page.
+
+elementId
+"""""""""
+ID value of the HTML element for the audio player.
 
 Basket
 ------
 
+.. container:: ts-properties-tx-dlf-basket
+
+:typoscript:`plugin.tx_dlf_basket.`
+
+	=========================== ===================================== ====================
+	Property                    Data type                             Default
+	=========================== ===================================== ====================
+	pages_                      :ref:`t3tsref:data-type-page-id`
+	pregeneration               :ref:`t3tsref:data-type-boolean`      0
+	pdfgenerate                 :ref:`t3tsref:data-type-string`
+	pdfdownload                 :ref:`t3tsref:data-type-string`
+	pdfprint                    :ref:`t3tsref:data-type-string`
+	pdfparams                   :ref:`t3tsref:data-type-string`       ##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##
+	pdfparamseparator           :ref:`t3tsref:data-type-string`       `*`
+	basketGoToButton            :ref:`t3tsref:data-type-boolean`      0
+	targetBasket                :ref:`t3tsref:data-type-page-id`
+	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	=========================== ===================================== ====================
+
+
 Collection
 ----------
+
+The collection plugin shows one collection, all collections or selected collections.
+
+.. container:: ts-properties-tx-dlf-collection
+
+:typoscript:`plugin.tx_dlf_collection.`
+
+	=========================== ===================================== ====================
+	Property                    Data type                             Default
+	=========================== ===================================== ====================
+	pages_                      :ref:`t3tsref:data-type-page-id`
+	collections                 :ref:`t3tsref:data-type-integer`
+	show_userdefined            :ref:`t3tsref:data-type-integer`
+	dont_show_single            :ref:`t3tsref:data-type-boolean`      0
+	randomize                   :ref:`t3tsref:data-type-boolean`      0
+	targetPid                   :ref:`t3tsref:data-type-page-id`
+	targetFeed                  :ref:`t3tsref:data-type-page-id`
+	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	=========================== ===================================== ====================
+
 
 Feeds
 -----
@@ -163,6 +241,8 @@ Toolbox
 
 
 
+
+
 When detailing data types or standard TypoScript
 features, don't hesitate to cross-link to the TypoScript
 Reference as shown below. See the :file:`Settings.yml`
@@ -179,7 +259,7 @@ Properties
 	=========================== ===================================== ======================= ====================
 	allWrap_                    :ref:`t3tsref:data-type-wrap`         yes                     :code:`<div>|</div>`
 	`subst\_elementUid`_        :ref:`t3tsref:data-type-boolean`      no                      0
-	wrapItemAndSub_             :ref:`t3tsref:data-type-wrap`
+	wrapItemAndSub_             :ref:`t3tsref:data-type-string`
 	=========================== ===================================== ======================= ====================
 
 
