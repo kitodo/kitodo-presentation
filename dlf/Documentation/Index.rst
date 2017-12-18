@@ -56,11 +56,10 @@ Kitodo.Presentation
 	:glob:
 
 	Introduction/Index
-	User/Index
-	Administrator/Index
 	Configuration/Index
-	Developer/Index
 	Community/Index
-	ToDoList/Index
 	ChangeLog/Index
-	Targets
+
+	.. Administrator/Index
+	.. Developer/Index
+	.. Targets

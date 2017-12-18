@@ -8,10 +8,10 @@
 
 ---
 conf.py:
-  copyright: 2015
+  copyright: 2017
   project: Kitodo.Presentation
-  version: 1.3
-  release: 1.3.1
+  version: 2.2
+  release: 2.2.0
   intersphinx_mapping:
     t3tsref:
     - http://docs.typo3.org/typo3cms/TyposcriptReference/

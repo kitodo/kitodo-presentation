@@ -13,9 +13,26 @@ Community
 
 GitHub Repository
 -----------------
-All sources of Kitodo.Presentation and other Kitodo software is hosted at `GitHub <https://github.com/kitodo/kitodo-presentation>`_.
+All sources of Kitodo.Presentation and other Kitodo software is hosted at
+`GitHub <https://github.com/kitodo/kitodo-presentation>`_.
 
 If you find a bug, please report it to the Kitodo.Presentation
-`GitHub issue tracker <https://github.com/kitodo/kitodo-presentation/issues>`_.
+`issue tracker on GitHub <https://github.com/kitodo/kitodo-presentation/issues>`_.
 
 Pull-requests are greatly appreciated ;-)
+
+Mailing Lists
+-------------
+
+If you have questions about this extensions or about other
+`Kitodo <https://www.kitodo.org/en/>`_ components you may check the mailing
+lists of Kitodo:
+
+* Community mailing list helps on any question about installation and usage of
+  the software. Email-address is kitodo-community@kitodo.org. The list archive
+  can be found at https://maillist.slub-dresden.de/pipermail/kitodo-community/
+* Developer mailing list discusses implementation details. Email-address is
+  kitodo-developer@kitodo.org. The list archive can be found at
+  https://maillist.slub-dresden.de/pipermail/kitodo-developer/
+
+Please write to the lists in English or German.
