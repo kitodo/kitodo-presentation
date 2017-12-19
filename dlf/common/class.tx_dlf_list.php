@@ -607,7 +607,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 				// Load index configuration.
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.indexed AS indexed',
+						'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_indexed AS index_indexed',
 						'tx_dlf_metadata',
 						'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 						'',
@@ -617,7 +617,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
 				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-					$this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['index_tokenized'] ? 't' : 'u').'s'.($resArray['indexed'] ? 'i' : 'u');
+					$this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['index_tokenized'] ? 't' : 'u').'s'.($resArray['index_indexed'] ? 'i' : 'u');
 
 				}
 

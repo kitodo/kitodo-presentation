@@ -115,7 +115,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'wrap' => (!empty($values['wrap']) ? $values['wrap'] : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']),
 				'index_tokenized' => $values['tokenized'],
 				'index_stored' => $values['index_stored'],
-				'indexed' => $values['indexed'],
+				'index_indexed' => $values['index_indexed'],
 				'boost' => $values['boost'],
 				'is_sortable' => $values['is_sortable'],
 				'is_facet' => $values['is_facet'],

@@ -38,7 +38,7 @@ class tx_dlf_indexing {
 		'autocompleted' => array (),
 		'facets' => array (),
 		'sortables' => array (),
-		'indexed' => array (),
+		'index_indexed' => array (),
 		'stored' => array (),
 		'tokenized' => array (),
 		'fieldboost' => array ()
@@ -422,7 +422,7 @@ class tx_dlf_indexing {
 
 		$suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
 
-		$suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
+		$suffix .= (in_array($index_name, self::$fields['index_indexed']) ? 'i' : 'u');
 
 		$index_name .= '_'.$suffix;
 
@@ -461,7 +461,7 @@ class tx_dlf_indexing {
 
 			// Get the metadata indexing options.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.indexed AS indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.autocomplete AS autocomplete,tx_dlf_metadata.boost AS boost',
+				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.index_indexed AS index_indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.autocomplete AS autocomplete,tx_dlf_metadata.boost AS boost',
 				'tx_dlf_metadata',
 				'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 				'',
@@ -483,9 +483,9 @@ class tx_dlf_indexing {
 
 				}
 
-				if ($indexing['indexed'] || $indexing['autocomplete']) {
+				if ($indexing['index_indexed'] || $indexing['autocomplete']) {
 
-					self::$fields['indexed'][] = $indexing['index_name'];
+					self::$fields['index_indexed'][] = $indexing['index_name'];
 
 				}
 

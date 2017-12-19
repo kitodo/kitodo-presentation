@@ -144,7 +144,7 @@ class tx_dlf_solr {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
 				'tx_dlf_metadata',
-				'tx_dlf_metadata.indexed=1 AND tx_dlf_metadata.pid=' . intval($pid) . ' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)' . tx_dlf_helper::whereClause('tx_dlf_metadata'),
+				'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid=' . intval($pid) . ' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)' . tx_dlf_helper::whereClause('tx_dlf_metadata'),
 				'',
 				'',
 				''

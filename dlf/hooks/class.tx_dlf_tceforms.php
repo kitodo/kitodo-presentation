@@ -162,7 +162,7 @@ class tx_dlf_tceforms {
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'label,index_name',
 					'tx_dlf_metadata',
-					'indexed=1 AND pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+					'index_indexed=1 AND pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
 					'',
 					'sorting',
 					''
