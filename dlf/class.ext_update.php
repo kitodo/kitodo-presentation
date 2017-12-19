@@ -40,6 +40,10 @@ class ext_update {
 
 			return TRUE;
 
+		} else if ($this->oldIndexRelatedTableNames()) {
+
+			return TRUE;
+
 		}
 
 		return FALSE;
@@ -103,9 +107,95 @@ class ext_update {
 		$GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
 
 		// Update the metadata configuration.
-		$this->updateMetadataConfig();
+		if (count($this->getMetadataConfig())) {
+			$this->updateMetadataConfig();
+		}
+
+		if ($this->oldIndexRelatedTableNames()) {
+
+			$this->renameIndexRelatedColumns();
+
+		}
 
 		return $this->content;
+
+	}
+
+	/**
+	 * Check for old index related colums
+	 *
+	 * @access	protected
+	 *
+	 * @return	boolean		true if old index related columns exist
+	 */
+	protected function oldIndexRelatedTableNames() {
+
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'column_name',
+			'INFORMATION_SCHEMA.COLUMNS',
+			'TABLE_NAME = "tx_dlf_metadata"',
+			'',
+			'',
+			''
+			);
+
+		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+			
+			if($resArray['column_name'] == 'tokenized' 
+				|| $resArray['column_name'] == 'stored'
+				|| $resArray['column_name'] == 'indexed'
+				|| $resArray['column_name'] == 'boost'
+				|| $resArray['column_name'] == 'autocomplete') {
+
+					return TRUE;
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Copy the data of the old index related columns to the new columns
+	 *
+	 * @access	protected
+	 *
+	 * @return	void
+	 */
+	protected function renameIndexRelatedColumns() {
+
+		$sqlQuery = "UPDATE tx_dlf_metadata SET `index_tokenized` = `tokenized`
+											, `index_stored` = `stored`
+											, `index_indexed` = `indexed`
+											, `index_boost` = `boost`
+											, `index_autocomplete` = `autocomplete`";
+
+		// Copy the content of the old tables to the new ones
+		$result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+
+		if($result) {
+
+			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+				$GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsOkay', TRUE),
+				$GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
+				\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+				FALSE
+				);
+
+		} else {
+
+			$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+				$GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsNotOkay', TRUE),
+				$GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
+				\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
+				FALSE
+				);
+
+		}
+
+		$this->content .= $message->render();
 
 	}
 

@@ -217,6 +217,9 @@
 			<label index="update.metadataConfig">Updating metadata configuration...</label>
 			<label index="update.metadataConfigOkay">...successfully completed!</label>
 			<label index="update.metadataConfigNotOkay">...incomplete! Please check your configuration manually.</label>
+			<label index="update.copyIndexRelatedColumns">Copy index related columns...</label>
+			<label index="update.copyIndexRelatedColumnsOkay">...successfully completed!</label>
+			<label index="update.copyIndexRelatedColumnsNotOkay">...incomplete! The index related columns (tokenized, stored, indexed, boost, autocomplete) of table tx_dlf_metadata have to be copied manually.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -421,6 +424,9 @@
 			<label index="update.metadataConfig">Aktualisierung der Metadatenkonfiguration...</label>
 			<label index="update.metadataConfigOkay">...erfolgreich beendet! Alle Datensätze wurden ins IRRE-Schema konvertiert.</label>
 			<label index="update.metadataConfigNotOkay">...abgebrochen! Die Überführung der Datensätze ins IRRE-Schema muss manuell erfolgen.</label>
+			<label index="update.copyIndexRelatedColumns">Kopieren der Index bezogenen Tabellenspalten...</label>
+			<label index="update.copyIndexRelatedColumnsOkay">...erfolgreich beendet! Tabellen wurden erfolgreich kopiert.</label>
+			<label index="update.copyIndexRelatedColumnsNotOkay">...abgebrochen! Das Kopieren der Index bezogenen Tabellenspalten (tokenized, stored, indexed, boost, autocomplete) der Tabelle tx_dlf_metadata muss manuell erfolgen.</label>
 		</languageKey>
 	</data>
 </T3locallang>
