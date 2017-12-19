@@ -56,14 +56,14 @@ class tx_dlf_tcemain {
 					// Store field in index if it should appear in lists.
 					if (!empty($fieldArray['is_listed'])) {
 
-						$fieldArray['stored'] = 1;
+						$fieldArray['index_stored'] = 1;
 
 					}
 
 					// Index field in index if it should be used for auto-completion.
-					if (!empty($fieldArray['autocomplete'])) {
+					if (!empty($fieldArray['index_autocomplete'])) {
 
-						$fieldArray['indexed'] = 1;
+						$fieldArray['index_indexed'] = 1;
 
 					}
 
@@ -182,11 +182,11 @@ class tx_dlf_tcemain {
 					// Store field in index if it should appear in lists.
 					if (!empty($fieldArray['is_listed'])) {
 
-						$fieldArray['stored'] = 1;
+						$fieldArray['index_stored'] = 1;
 
 					}
 
-					if (isset($fieldArray['stored']) && $fieldArray['stored'] == 0 && !isset($fieldArray['is_listed'])) {
+					if (isset($fieldArray['index_stored']) && $fieldArray['index_stored'] == 0 && !isset($fieldArray['is_listed'])) {
 
 						// Get current configuration.
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -201,24 +201,24 @@ class tx_dlf_tcemain {
 						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 							// Reset storing to current.
-							list ($fieldArray['stored']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+							list ($fieldArray['index_stored']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 						}
 
 					}
 
 					// Index field in index if it should be used for auto-completion.
-					if (!empty($fieldArray['autocomplete'])) {
+					if (!empty($fieldArray['index_autocomplete'])) {
 
-						$fieldArray['indexed'] = 1;
+						$fieldArray['index_indexed'] = 1;
 
 					}
 
-					if (isset($fieldArray['indexed']) && $fieldArray['indexed'] == 0 && !isset($fieldArray['autocomplete'])) {
+					if (isset($fieldArray['index_indexed']) && $fieldArray['index_indexed'] == 0 && !isset($fieldArray['index_autocomplete'])) {
 
 						// Get current configuration.
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-							$table.'.autocomplete AS autocomplete',
+							$table.'.index_autocomplete AS index_autocomplete',
 							$table,
 							$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
 							'',
@@ -229,7 +229,7 @@ class tx_dlf_tcemain {
 						if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
 							// Reset indexing to current.
-							list ($fieldArray['indexed']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+							list ($fieldArray['index_indexed']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 						}
 

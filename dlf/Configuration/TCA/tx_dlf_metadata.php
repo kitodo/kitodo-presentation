@@ -33,7 +33,7 @@ return array (
 		'fe_admin_fieldList' => '',
 	),
   'interface' => array (
-		'showRecordFieldList' => 'label,index_name,is_sortable,is_facet,is_listed,autocomplete',
+		'showRecordFieldList' => 'label,index_name,is_sortable,is_facet,is_listed,index_autocomplete',
 	),
 	'columns' => array (
 		'sys_language_uid' => array (
@@ -147,37 +147,37 @@ return array (
 			),
 			'defaultExtras' => 'nowrap:fixed-font:enable-tab',
 		),
-		'tokenized' => array (
+		'index_tokenized' => array (
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tokenized',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.index_tokenized',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
 			),
 		),
-		'stored' => array (
+		'index_stored' => array (
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.stored',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.index_stored',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
 			),
 		),
-		'indexed' => array (
+		'index_indexed' => array (
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.indexed',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.index_indexed',
 			'config' => array (
 				'type' => 'check',
 				'default' => 1,
 			),
 		),
-		'boost' => array (
+		'index_boost' => array (
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.boost',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.index_boost',
 			'config' => array (
 				'type' => 'input',
 				'size' => 5,
@@ -213,10 +213,10 @@ return array (
 				'default' => 0,
 			),
 		),
-		'autocomplete' => array (
+		'index_autocomplete' => array (
 			'exclude' => 1,
 			'l10n_mode' => 'exclude',
-			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.autocomplete',
+			'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.index_autocomplete',
 			'config' => array (
 				'type' => 'check',
 				'default' => 0,
@@ -243,6 +243,6 @@ return array (
 		'0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab1, label,--palette--;;1;;1-1-1, format;;;;2-2-2, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
 	),
 	'palettes' => array (
-		'1' => array ('showitem' => 'index_name, --linebreak--, tokenized, stored, indexed, boost, --linebreak--, is_sortable, is_facet, is_listed, autocomplete', 'canNotCollapse' => 1),
+		'1' => array ('showitem' => 'index_name, --linebreak--, index_tokenized, index_stored, index_indexed, index_boost, --linebreak--, is_sortable, is_facet, is_listed, index_autocomplete', 'canNotCollapse' => 1),
 	),
 );

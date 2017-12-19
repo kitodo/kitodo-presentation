@@ -113,14 +113,14 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'format' => implode(',', $formatIds),
 				'default_value' => $values['default_value'],
 				'wrap' => (!empty($values['wrap']) ? $values['wrap'] : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']),
-				'tokenized' => $values['tokenized'],
-				'stored' => $values['stored'],
-				'indexed' => $values['indexed'],
-				'boost' => $values['boost'],
+				'index_tokenized' => $values['index_tokenized'],
+				'index_stored' => $values['index_stored'],
+				'index_indexed' => $values['index_indexed'],
+				'index_boost' => $values['index_boost'],
 				'is_sortable' => $values['is_sortable'],
 				'is_facet' => $values['is_facet'],
 				'is_listed' => $values['is_listed'],
-				'autocomplete' => $values['autocomplete'],
+				'index_autocomplete' => $values['index_autocomplete'],
 			);
 
 			$i++;
