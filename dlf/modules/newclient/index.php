@@ -113,7 +113,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 				'format' => implode(',', $formatIds),
 				'default_value' => $values['default_value'],
 				'wrap' => (!empty($values['wrap']) ? $values['wrap'] : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']),
-				'tokenized' => $values['tokenized'],
+				'index_tokenized' => $values['tokenized'],
 				'stored' => $values['stored'],
 				'indexed' => $values['indexed'],
 				'boost' => $values['boost'],

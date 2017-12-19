@@ -70,7 +70,7 @@
 			<label index="tx_dlf_metadata.format">Data Format</label>
 			<label index="tx_dlf_metadata.default_value">Default Value</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
-			<label index="tx_dlf_metadata.tokenized">Tokenize in Search Index?</label>
+			<label index="tx_dlf_metadata.index_tokenized">Tokenize in Search Index?</label>
 			<label index="tx_dlf_metadata.stored">Store in Search Index?</label>
 			<label index="tx_dlf_metadata.indexed">Index in Search Index?</label>
 			<label index="tx_dlf_metadata.boost">Field boost</label>
@@ -277,7 +277,7 @@
 			<label index="tx_dlf_metadata.format">Datenformat</label>
 			<label index="tx_dlf_metadata.default_value">Standardwert</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
-			<label index="tx_dlf_metadata.tokenized">Im Suchindex in Tokens zerlegen?</label>
+			<label index="tx_dlf_metadata.index_tokenized">Im Suchindex in Tokens zerlegen?</label>
 			<label index="tx_dlf_metadata.stored">Im Suchindex speichern?</label>
 			<label index="tx_dlf_metadata.indexed">Im Suchindex indizieren?</label>
 			<label index="tx_dlf_metadata.boost">Feldwertigkeit</label>
