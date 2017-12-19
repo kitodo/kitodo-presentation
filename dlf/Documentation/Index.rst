@@ -57,8 +57,8 @@ Kitodo.Presentation
 
 	Introduction/Index
 	Configuration/Index
+	Plugins/Index
 	Community/Index
-	ChangeLog/Index
 
 	.. Administrator/Index
 	.. Developer/Index

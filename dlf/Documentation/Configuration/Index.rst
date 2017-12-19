@@ -6,18 +6,17 @@
 .. include:: ../Includes.txt
 
 
-.. _configuration:
+.. _system_setup:
 
-=======================
-Configuration Reference
-=======================
+============
+System Setup
+============
 
 .. contents::
 	:local:
-	:depth: 3
+	:depth: 2
 
 
-.. _system_setup:
 
 ***********
 TYPO3 Setup
@@ -113,193 +112,11 @@ these indexes.
 .. _configuration-typoscript:
 
 
-********************
-TypoScript Reference
-********************
+******************************
+TypoScript Basic Configuration
+******************************
 
-Please include the Template "Basic Configuration (dlf)". This template includes jQuery to your page.
+Please include the Template "Basic Configuration (dlf)". This template adds
+jQuery 2.2.1 to your page by setting the following typoscript:
 
-Plugin Reference
-================
-
-Common Settings
----------------
-pages
-^^^^^
-Startingpoint of this plugin. This is the Kitodo.Presentation data folder.
-
-templateFile
-^^^^^^^^^^^^
-The used template file of this plugin.
-
-
-
-Audioplayer
------------
-
-The audioplayer plugin is only active if the selected document has a valid audio filegroup (fileGrpAudio).
-
-Properties
-^^^^^^^^^^
-
-.. container:: ts-properties-tx-dlf-audioplayer
-
-:typoscript:`plugin.tx_dlf_audioplayer.`
-
-	=========================== ===================================== ====================
-	Property                    Data type                             Default
-	=========================== ===================================== ====================
-	pages_                      :ref:`t3tsref:data-type-page-id`
-	excludeOther_               :ref:`t3tsref:data-type-boolean`      1
-	elementId_                  :ref:`t3tsref:data-type-string`       tx-dlf-audio
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
-	=========================== ===================================== ====================
-
-excludeOther
-""""""""""""
-Show only documents from the selected page.
-
-elementId
-"""""""""
-ID value of the HTML element for the audio player.
-
-Basket
-------
-
-.. container:: ts-properties-tx-dlf-basket
-
-:typoscript:`plugin.tx_dlf_basket.`
-
-	=========================== ===================================== ====================
-	Property                    Data type                             Default
-	=========================== ===================================== ====================
-	pages_                      :ref:`t3tsref:data-type-page-id`
-	pregeneration               :ref:`t3tsref:data-type-boolean`      0
-	pdfgenerate                 :ref:`t3tsref:data-type-string`
-	pdfdownload                 :ref:`t3tsref:data-type-string`
-	pdfprint                    :ref:`t3tsref:data-type-string`
-	pdfparams                   :ref:`t3tsref:data-type-string`       ##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##
-	pdfparamseparator           :ref:`t3tsref:data-type-string`       `*`
-	basketGoToButton            :ref:`t3tsref:data-type-boolean`      0
-	targetBasket                :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
-	=========================== ===================================== ====================
-
-
-Collection
-----------
-
-The collection plugin shows one collection, all collections or selected collections.
-
-.. container:: ts-properties-tx-dlf-collection
-
-:typoscript:`plugin.tx_dlf_collection.`
-
-	=========================== ===================================== ====================
-	Property                    Data type                             Default
-	=========================== ===================================== ====================
-	pages_                      :ref:`t3tsref:data-type-page-id`
-	collections                 :ref:`t3tsref:data-type-integer`
-	show_userdefined            :ref:`t3tsref:data-type-integer`
-	dont_show_single            :ref:`t3tsref:data-type-boolean`      0
-	randomize                   :ref:`t3tsref:data-type-boolean`      0
-	targetPid                   :ref:`t3tsref:data-type-page-id`
-	targetFeed                  :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
-	=========================== ===================================== ====================
-
-
-Feeds
------
-
-Listview
---------
-
-Metadata
---------
-
-Newspaper
----------
-
-OAI
----
-
-Pageview
---------
-
-Search
-------
-
-Statistics
-----------
-
-TOC
----
-
-Toolbox
--------
-
-
-
-
-
-When detailing data types or standard TypoScript
-features, don't hesitate to cross-link to the TypoScript
-Reference as shown below. See the :file:`Settings.yml`
-file for the declaration of cross-linking keys.
-
-
-Properties
-^^^^^^^^^^
-
-.. container:: ts-properties
-
-	=========================== ===================================== ======================= ====================
-	Property                    Data type                             :ref:`t3tsref:stdwrap`  Default
-	=========================== ===================================== ======================= ====================
-	allWrap_                    :ref:`t3tsref:data-type-wrap`         yes                     :code:`<div>|</div>`
-	`subst\_elementUid`_        :ref:`t3tsref:data-type-boolean`      no                      0
-	wrapItemAndSub_             :ref:`t3tsref:data-type-string`
-	=========================== ===================================== ======================= ====================
-
-
-Property details
-^^^^^^^^^^^^^^^^
-
-.. only:: html
-
-	.. contents::
-		:local:
-		:depth: 1
-
-
-.. _ts-plugin-tx-extensionkey-stdwrap:
-
-allWrap
-"""""""
-
-:typoscript:`plugin.tx_extensionkey.allWrap =` :ref:`t3tsref:data-type-wrap`
-
-Wraps the whole item.
-
-
-.. _ts-plugin-tx-extensionkey-wrapitemandsub:
-
-wrapItemAndSub
-""""""""""""""
-
-:typoscript:`plugin.tx_extensionkey.wrapItemAndSub =` :ref:`t3tsref:data-type-wrap`
-
-Wraps the whole item and any submenu concatenated to it.
-
-
-.. _ts-plugin-tx-extensionkey-substelementUid:
-
-subst_elementUid
-""""""""""""""""
-
-:typoscript:`plugin.tx_extensionkey.subst_elementUid =` :ref:`t3tsref:data-type-boolean`
-
-If set, all appearances of the string ``{elementUid}`` in the total element html-code (after wrapped in allWrap_)
-is substituted with the uid number of the menu item. This is useful if you want to insert an identification code
-in the HTML in order to manipulate properties with JavaScript.
+:typoscript:`page.includeJSlibs.jQuery`

@@ -36,3 +36,10 @@ lists of Kitodo:
   https://maillist.slub-dresden.de/pipermail/kitodo-developer/
 
 Please write to the lists in English or German.
+
+Kitodo Consulting
+-----------------
+
+For all other questions about Kitodo, please check the
+`website of Kitodo <https://www.kitodo.org/en/>`_ or contact the Kitodo office
+by mail to contact@kitodo.org.
