@@ -35,10 +35,10 @@ class tx_dlf_indexing {
 	 * @access protected
 	 */
 	protected static $fields = array (
-		'autocompleted' => array (),
+		'autocomplete' => array (),
 		'facets' => array (),
 		'sortables' => array (),
-		'index_indexed' => array (),
+		'indexed' => array (),
 		'stored' => array (),
 		'tokenized' => array (),
 		'fieldboost' => array ()
@@ -422,7 +422,7 @@ class tx_dlf_indexing {
 
 		$suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
 
-		$suffix .= (in_array($index_name, self::$fields['index_indexed']) ? 'i' : 'u');
+		$suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
 
 		$index_name .= '_'.$suffix;
 
@@ -485,7 +485,7 @@ class tx_dlf_indexing {
 
 				if ($indexing['index_indexed'] || $indexing['index_autocomplete']) {
 
-					self::$fields['index_indexed'][] = $indexing['index_name'];
+					self::$fields['indexed'][] = $indexing['index_name'];
 
 				}
 
@@ -503,7 +503,7 @@ class tx_dlf_indexing {
 
 				if ($indexing['index_autocomplete']) {
 
-					self::$fields['autocompleted'][] = $indexing['index_name'];
+					self::$fields['autocomplete'][] = $indexing['index_name'];
 
 				}
 
@@ -613,7 +613,7 @@ class tx_dlf_indexing {
 
 					}
 
-					if (in_array($index_name, self::$fields['autocompleted'])) {
+					if (in_array($index_name, self::$fields['autocomplete'])) {
 
 						$autocomplete = array_merge($autocomplete, $data);
 

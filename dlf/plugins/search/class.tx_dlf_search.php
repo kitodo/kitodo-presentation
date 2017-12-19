@@ -35,7 +35,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_metadata.*',
 			'tx_dlf_metadata',
-			'tx_dlf_metadata.autocomplete=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+			'tx_dlf_metadata.index_autocomplete=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 			'',
 			'',
 			'1'

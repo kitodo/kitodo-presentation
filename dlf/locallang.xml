@@ -71,7 +71,7 @@
 			<label index="tx_dlf_metadata.default_value">Default Value</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
 			<label index="tx_dlf_metadata.index_tokenized">Tokenize in Search Index?</label>
-			<label index="tx_dlf_metadata.stored">Store in Search Index?</label>
+			<label index="tx_dlf_metadata.index_stored">Store in Search Index?</label>
 			<label index="tx_dlf_metadata.index_indexed">Index in Search Index?</label>
 			<label index="tx_dlf_metadata.index_boost">Field boost</label>
 			<label index="tx_dlf_metadata.is_sortable">Prepare for sorting?</label>
@@ -278,7 +278,7 @@
 			<label index="tx_dlf_metadata.default_value">Standardwert</label>
 			<label index="tx_dlf_metadata.wrap">TypoScript-Wrap</label>
 			<label index="tx_dlf_metadata.index_tokenized">Im Suchindex in Tokens zerlegen?</label>
-			<label index="tx_dlf_metadata.stored">Im Suchindex speichern?</label>
+			<label index="tx_dlf_metadata.index_stored">Im Suchindex speichern?</label>
 			<label index="tx_dlf_metadata.index_indexed">Im Suchindex indizieren?</label>
 			<label index="tx_dlf_metadata.index_boost">Feldwertigkeit</label>
 			<label index="tx_dlf_metadata.is_sortable">Sortierbar machen?</label>
