@@ -269,15 +269,10 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 						// Extract extension configuration.
 						$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
-						if(!empty($conf['solrUseFastVectorHighlighter'])) {
-
-							$params['hl.useFastVectorHighlighter'] = 'true';
-
-						}
-
 						$params['hl'] = 'true';
 						$params['hl.fl'] = 'fulltext';
 						$params['fl'] = 'id';
+						$params['hl.useFastVectorHighlighter'] = 'true';
 
 						$query_highlights = 'uid:'.tx_dlf_solr::escapeQuery($record['uid']).' AND fulltext:('.tx_dlf_solr::escapeQuery($this->metadata['searchString']).')';
 
