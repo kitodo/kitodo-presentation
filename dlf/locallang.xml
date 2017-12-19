@@ -77,7 +77,7 @@
 			<label index="tx_dlf_metadata.is_sortable">Prepare for sorting?</label>
 			<label index="tx_dlf_metadata.is_facet">Prepare for faceting?</label>
 			<label index="tx_dlf_metadata.is_listed">Show in titledata/listview?</label>
-			<label index="tx_dlf_metadata.autocomplete">Use for search suggestion?</label>
+			<label index="tx_dlf_metadata.index_autocomplete">Use for search suggestion?</label>
 			<label index="tx_dlf_metadata.status">Status</label>
 			<label index="tx_dlf_metadata.status.default">default</label>
 			<label index="tx_dlf_metadata.tab1">General</label>
@@ -284,7 +284,7 @@
 			<label index="tx_dlf_metadata.is_sortable">Sortierbar machen?</label>
 			<label index="tx_dlf_metadata.is_facet">Facettierbar machen?</label>
 			<label index="tx_dlf_metadata.is_listed">In Titeldaten/Listenansicht anzeigen?</label>
-			<label index="tx_dlf_metadata.autocomplete">Für Suchvorschläge verwenden?</label>
+			<label index="tx_dlf_metadata.index_autocomplete">Für Suchvorschläge verwenden?</label>
 			<label index="tx_dlf_metadata.status">Status</label>
 			<label index="tx_dlf_metadata.status.default">Standard</label>
 			<label index="tx_dlf_metadata.tab1">Allgemein</label>

@@ -61,7 +61,7 @@ class tx_dlf_tcemain {
 					}
 
 					// Index field in index if it should be used for auto-completion.
-					if (!empty($fieldArray['autocomplete'])) {
+					if (!empty($fieldArray['index_autocomplete'])) {
 
 						$fieldArray['index_indexed'] = 1;
 
@@ -208,17 +208,17 @@ class tx_dlf_tcemain {
 					}
 
 					// Index field in index if it should be used for auto-completion.
-					if (!empty($fieldArray['autocomplete'])) {
+					if (!empty($fieldArray['index_autocomplete'])) {
 
 						$fieldArray['index_indexed'] = 1;
 
 					}
 
-					if (isset($fieldArray['index_indexed']) && $fieldArray['index_indexed'] == 0 && !isset($fieldArray['autocomplete'])) {
+					if (isset($fieldArray['index_indexed']) && $fieldArray['index_indexed'] == 0 && !isset($fieldArray['index_autocomplete'])) {
 
 						// Get current configuration.
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-							$table.'.autocomplete AS autocomplete',
+							$table.'.index_autocomplete AS index_autocomplete',
 							$table,
 							$table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
 							'',

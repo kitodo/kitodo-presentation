@@ -23,7 +23,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'title' => array (
 		'format' => array (
@@ -47,7 +47,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 0,
 		'is_listed' => 1,
-		'autocomplete' => 1,
+		'index_autocomplete' => 1,
 	),
 	'volume' => array (
 		'format' => array (
@@ -66,7 +66,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 0,
 		'is_listed' => 1,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'author' => array (
 		'format' => array (
@@ -85,7 +85,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
-		'autocomplete' => 1,
+		'index_autocomplete' => 1,
 	),
 	'place' => array (
 		'format' => array (
@@ -104,7 +104,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'year' => array (
 		'format' => array (
@@ -123,7 +123,7 @@ $metadata = array (
 		'is_sortable' => 1,
 		'is_facet' => 1,
 		'is_listed' => 1,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'language' => array (
 		'format' => array (
@@ -142,7 +142,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 1,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'collection' => array (
 		'format' => array (
@@ -166,7 +166,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 1,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'owner' => array (
 		'format' => array (
@@ -190,7 +190,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 1,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'purl' => array (
 		'format' => array (
@@ -214,7 +214,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'urn' => array (
 		'format' => array (
@@ -238,7 +238,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'opac_id' => array (
 		'format' => array (
@@ -262,7 +262,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'union_id' => array (
 		'format' => array (
@@ -286,7 +286,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'record_id' => array (
 		'format' => array (
@@ -310,7 +310,7 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	),
 	'prod_id' => array (
 		'format' => array (
@@ -334,6 +334,6 @@ $metadata = array (
 		'is_sortable' => 0,
 		'is_facet' => 0,
 		'is_listed' => 0,
-		'autocomplete' => 0,
+		'index_autocomplete' => 0,
 	)
 );

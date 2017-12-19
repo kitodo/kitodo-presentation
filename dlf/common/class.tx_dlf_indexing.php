@@ -461,7 +461,7 @@ class tx_dlf_indexing {
 
 			// Get the metadata indexing options.
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.index_indexed AS index_indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.autocomplete AS autocomplete,tx_dlf_metadata.index_boost AS index_boost',
+				'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.index_indexed AS index_indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.index_autocomplete AS index_autocomplete,tx_dlf_metadata.index_boost AS index_boost',
 				'tx_dlf_metadata',
 				'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
 				'',
@@ -483,7 +483,7 @@ class tx_dlf_indexing {
 
 				}
 
-				if ($indexing['index_indexed'] || $indexing['autocomplete']) {
+				if ($indexing['index_indexed'] || $indexing['index_autocomplete']) {
 
 					self::$fields['index_indexed'][] = $indexing['index_name'];
 
@@ -501,7 +501,7 @@ class tx_dlf_indexing {
 
 				}
 
-				if ($indexing['autocomplete']) {
+				if ($indexing['index_autocomplete']) {
 
 					self::$fields['autocompleted'][] = $indexing['index_name'];
 
