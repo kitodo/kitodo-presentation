@@ -73,7 +73,7 @@
 			<label index="tx_dlf_metadata.index_tokenized">Tokenize in Search Index?</label>
 			<label index="tx_dlf_metadata.stored">Store in Search Index?</label>
 			<label index="tx_dlf_metadata.index_indexed">Index in Search Index?</label>
-			<label index="tx_dlf_metadata.boost">Field boost</label>
+			<label index="tx_dlf_metadata.index_boost">Field boost</label>
 			<label index="tx_dlf_metadata.is_sortable">Prepare for sorting?</label>
 			<label index="tx_dlf_metadata.is_facet">Prepare for faceting?</label>
 			<label index="tx_dlf_metadata.is_listed">Show in titledata/listview?</label>
@@ -280,7 +280,7 @@
 			<label index="tx_dlf_metadata.index_tokenized">Im Suchindex in Tokens zerlegen?</label>
 			<label index="tx_dlf_metadata.stored">Im Suchindex speichern?</label>
 			<label index="tx_dlf_metadata.index_indexed">Im Suchindex indizieren?</label>
-			<label index="tx_dlf_metadata.boost">Feldwertigkeit</label>
+			<label index="tx_dlf_metadata.index_boost">Feldwertigkeit</label>
 			<label index="tx_dlf_metadata.is_sortable">Sortierbar machen?</label>
 			<label index="tx_dlf_metadata.is_facet">Facettierbar machen?</label>
 			<label index="tx_dlf_metadata.is_listed">In Titeldaten/Listenansicht anzeigen?</label>
