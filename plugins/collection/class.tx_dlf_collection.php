@@ -19,414 +19,414 @@
  */
 class tx_dlf_collection extends tx_dlf_plugin {
 
-	public $scriptRelPath = 'plugins/collection/class.tx_dlf_collection.php';
+    public $scriptRelPath = 'plugins/collection/class.tx_dlf_collection.php';
 
-	/**
-	 * This holds the hook objects
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $hookObjects = array ();
+    /**
+     * This holds the hook objects
+     *
+     * @var	array
+     * @access protected
+     */
+    protected $hookObjects = array ();
 
-	/**
-	 * The main method of the PlugIn
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
-	 *
-	 * @return	string		The content that is displayed on the website
-	 */
-	public function main($content, $conf) {
+    /**
+     * The main method of the PlugIn
+     *
+     * @access	public
+     *
+     * @param	string		$content: The PlugIn content
+     * @param	array		$conf: The PlugIn configuration
+     *
+     * @return	string		The content that is displayed on the website
+     */
+    public function main($content, $conf) {
 
-		$this->init($conf);
+        $this->init($conf);
 
-		// Turn cache on.
-		$this->setCache(TRUE);
+        // Turn cache on.
+        $this->setCache(TRUE);
 
-		// Quit without doing anything if required configuration variables are not set.
-		if (empty($this->conf['pages'])) {
+        // Quit without doing anything if required configuration variables are not set.
+        if (empty($this->conf['pages'])) {
 
-			if (TYPO3_DLOG) {
+            if (TYPO3_DLOG) {
 
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_collection->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_collection->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
 
-			}
+            }
 
-			return $content;
+            return $content;
 
-		}
+        }
 
-		// Load template file.
-		if (!empty($this->conf['templateFile'])) {
+        // Load template file.
+        if (!empty($this->conf['templateFile'])) {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
 
-		} else {
+        } else {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/collection/template.tmpl'), '###TEMPLATE###');
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/collection/template.tmpl'), '###TEMPLATE###');
 
-		}
+        }
 
-		// Get hook objects.
-		$this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
+        // Get hook objects.
+        $this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
 
-		if (!empty($this->piVars['collection'])) {
+        if (!empty($this->piVars['collection'])) {
 
-			$this->showSingleCollection(intval($this->piVars['collection']));
+            $this->showSingleCollection(intval($this->piVars['collection']));
 
-		} else {
+        } else {
 
-			$content .= $this->showCollectionList();
+            $content .= $this->showCollectionList();
 
-		}
+        }
 
-		return $this->pi_wrapInBaseClass($content);
+        return $this->pi_wrapInBaseClass($content);
 
-	}
+    }
 
-	/**
-	 * Builds a collection list
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		The list of collections ready to output
-	 */
-	protected function showCollectionList() {
+    /**
+     * Builds a collection list
+     *
+     * @access	protected
+     *
+     * @return	string		The list of collections ready to output
+     */
+    protected function showCollectionList() {
 
-		$additionalWhere = '';
+        $additionalWhere = '';
 
-		$orderBy = 'tx_dlf_collections.label';
+        $orderBy = 'tx_dlf_collections.label';
 
-		// Handle collections set by configuration.
-		if ($this->conf['collections']) {
+        // Handle collections set by configuration.
+        if ($this->conf['collections']) {
 
-			if (count(explode(',', $this->conf['collections'])) == 1 && empty($this->conf['dont_show_single'])) {
+            if (count(explode(',', $this->conf['collections'])) == 1 && empty($this->conf['dont_show_single'])) {
 
-				$this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
+                $this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
 
-			}
+            }
 
-			$additionalWhere .= ' AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+            $additionalWhere .= ' AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
 
-			$orderBy = 'FIELD(tx_dlf_collections.uid, '.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+            $orderBy = 'FIELD(tx_dlf_collections.uid, '.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
 
-		}
+        }
 
-		// Should user-defined collections be shown?
-		if (empty($this->conf['show_userdefined'])) {
+        // Should user-defined collections be shown?
+        if (empty($this->conf['show_userdefined'])) {
 
-			$additionalWhere .= ' AND tx_dlf_collections.fe_cruser_id=0';
+            $additionalWhere .= ' AND tx_dlf_collections.fe_cruser_id=0';
 
-		} elseif ($this->conf['show_userdefined'] > 0) {
+        } elseif ($this->conf['show_userdefined'] > 0) {
 
-			if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
+            if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
 
-				$additionalWhere .= ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
+                $additionalWhere .= ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
 
-			} else {
+            } else {
 
-				$additionalWhere .= ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+                $additionalWhere .= ' AND NOT tx_dlf_collections.fe_cruser_id=0';
 
-			}
+            }
 
-		}
+        }
 
-		// Get collections.
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority,COUNT(tx_dlf_documents.uid) AS titles',
-			'tx_dlf_documents',
-			'tx_dlf_relations',
-			'tx_dlf_collections',
-			'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-			'tx_dlf_collections.uid',
-			$orderBy,
-			''
-		);
+        // Get collections.
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+            'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority,COUNT(tx_dlf_documents.uid) AS titles',
+            'tx_dlf_documents',
+            'tx_dlf_relations',
+            'tx_dlf_collections',
+            'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'tx_dlf_collections.uid',
+            $orderBy,
+            ''
+        );
 
-		$count = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
+        $count = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
 
-		$content = '';
+        $content = '';
 
-		if ($count == 1 && empty($this->conf['dont_show_single'])) {
+        if ($count == 1 && empty($this->conf['dont_show_single'])) {
 
-			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-			$this->showSingleCollection(intval($resArray['uid']));
+            $this->showSingleCollection(intval($resArray['uid']));
 
-		} elseif ($count > 0) {
+        } elseif ($count > 0) {
 
-			// Get number of volumes per collection.
-			$resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_dlf_collections.uid AS uid,COUNT(tx_dlf_documents.uid) AS volumes',
-				'tx_dlf_documents',
-				'tx_dlf_relations',
-				'tx_dlf_collections',
-				'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-				'tx_dlf_collections.uid',
-				'',
-				''
-			);
+            // Get number of volumes per collection.
+            $resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+                'tx_dlf_collections.uid AS uid,COUNT(tx_dlf_documents.uid) AS volumes',
+                'tx_dlf_documents',
+                'tx_dlf_relations',
+                'tx_dlf_collections',
+                'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                'tx_dlf_collections.uid',
+                '',
+                ''
+            );
 
-			$volumes = array ();
+            $volumes = array ();
 
-			while ($resArrayVolumes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultVolumes)) {
+            while ($resArrayVolumes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultVolumes)) {
 
-				$volumes[$resArrayVolumes['uid']] = $resArrayVolumes['volumes'];
+                $volumes[$resArrayVolumes['uid']] = $resArrayVolumes['volumes'];
 
-			}
+            }
 
-			// Process results.
-			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            // Process results.
+            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-				// Generate random but unique array key taking priority into account.
-				do {
+                // Generate random but unique array key taking priority into account.
+                do {
 
-					$_key = ($resArray['priority'] * 1000) + mt_rand(0, 1000);
+                    $_key = ($resArray['priority'] * 1000) + mt_rand(0, 1000);
 
-				} while (!empty($markerArray[$_key]));
+                } while (!empty($markerArray[$_key]));
 
-				// Merge plugin variables with new set of values.
-				$additionalParams = array ('collection' => $resArray['uid']);
+                // Merge plugin variables with new set of values.
+                $additionalParams = array ('collection' => $resArray['uid']);
 
-				if (is_array($this->piVars)) {
+                if (is_array($this->piVars)) {
 
-					$piVars = $this->piVars;
+                    $piVars = $this->piVars;
 
-					unset($piVars['DATA']);
+                    unset($piVars['DATA']);
 
-					$additionalParams = tx_dlf_helper::array_merge_recursive_overrule($piVars, $additionalParams);
+                    $additionalParams = tx_dlf_helper::array_merge_recursive_overrule($piVars, $additionalParams);
 
-				}
+                }
 
-				// Build typolink configuration array.
-				$conf = array (
-					'useCacheHash' => 1,
-					'parameter' => $GLOBALS['TSFE']->id,
-					'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-				);
+                // Build typolink configuration array.
+                $conf = array (
+                    'useCacheHash' => 1,
+                    'parameter' => $GLOBALS['TSFE']->id,
+                    'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+                );
 
-				// Link collection's title to list view.
-				$markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);
+                // Link collection's title to list view.
+                $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($resArray['label']), $conf);
 
-				// Add feed link if applicable.
-				if (!empty($this->conf['targetFeed'])) {
+                // Add feed link if applicable.
+                if (!empty($this->conf['targetFeed'])) {
 
-					$img = '<img src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'res/icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
+                    $img = '<img src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'res/icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
 
-					$markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, array ($this->prefixId => array ('collection' => $resArray['uid'])), FALSE, $this->conf['targetFeed']);
+                    $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, array ($this->prefixId => array ('collection' => $resArray['uid'])), FALSE, $this->conf['targetFeed']);
 
-				} else {
+                } else {
 
-					$markerArray[$_key]['###FEED###'] = '';
+                    $markerArray[$_key]['###FEED###'] = '';
 
-				}
+                }
 
-				// Add thumbnail.
-				if (!empty($resArray['thumbnail'])) {
+                // Add thumbnail.
+                if (!empty($resArray['thumbnail'])) {
 
-					$markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($resArray['label']).'" src="'.$resArray['thumbnail'].'" />';
+                    $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($resArray['label']).'" src="'.$resArray['thumbnail'].'" />';
 
-				} else {
+                } else {
 
-					$markerArray[$_key]['###THUMBNAIL###'] = '';
+                    $markerArray[$_key]['###THUMBNAIL###'] = '';
 
-				}
+                }
 
-				// Add description.
-				$markerArray[$_key]['###DESCRIPTION###'] = $this->pi_RTEcssText($resArray['description']);
+                // Add description.
+                $markerArray[$_key]['###DESCRIPTION###'] = $this->pi_RTEcssText($resArray['description']);
 
-				// Build statistic's output.
-				$labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
+                // Build statistic's output.
+                $labelTitles = $this->pi_getLL(($resArray['titles'] > 1 ? 'titles' : 'title'), '', FALSE);
 
-				$markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$labelTitles);
+                $markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars($resArray['titles'].$labelTitles);
 
-				$labelVolumes = $this->pi_getLL(($volumes[$resArray['uid']] > 1 ? 'volumes' : 'volume'), '', FALSE);
+                $labelVolumes = $this->pi_getLL(($volumes[$resArray['uid']] > 1 ? 'volumes' : 'volume'), '', FALSE);
 
-				$markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$labelVolumes);
+                $markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars($volumes[$resArray['uid']].$labelVolumes);
 
-			}
+            }
 
-			// Randomize sorting?
-			if (!empty($this->conf['randomize'])) {
+            // Randomize sorting?
+            if (!empty($this->conf['randomize'])) {
 
-				ksort($markerArray, SORT_NUMERIC);
+                ksort($markerArray, SORT_NUMERIC);
 
-				// Don't cache the output.
-				$this->setCache(FALSE);
+                // Don't cache the output.
+                $this->setCache(FALSE);
 
-			}
+            }
 
-			$entry = $this->cObj->getSubpart($this->template, '###ENTRY###');
+            $entry = $this->cObj->getSubpart($this->template, '###ENTRY###');
 
-			foreach ($markerArray as $marker) {
+            foreach ($markerArray as $marker) {
 
-				$content .= $this->cObj->substituteMarkerArray($entry, $marker);
+                $content .= $this->cObj->substituteMarkerArray($entry, $marker);
 
-			}
+            }
 
-			// Hook for getting custom collection hierarchies/subentries (requested by SBB).
-			foreach ($this->hookObjects as $hookObj) {
+            // Hook for getting custom collection hierarchies/subentries (requested by SBB).
+            foreach ($this->hookObjects as $hookObj) {
 
-				if (method_exists($hookObj, 'showCollectionList_getCustomCollectionList')) {
+                if (method_exists($hookObj, 'showCollectionList_getCustomCollectionList')) {
 
-					$hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['templateFile'], $content, $markerArray);
+                    $hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['templateFile'], $content, $markerArray);
 
-				}
+                }
 
-			}
+            }
 
-			return $this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE);
+            return $this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE);
 
-		}
+        }
 
-		return $content;
+        return $content;
 
-	}
+    }
 
-	/**
-	 * Builds a collection's list
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$id: The collection's UID
-	 *
-	 * @return	void
-	 */
-	protected function showSingleCollection($id) {
+    /**
+     * Builds a collection's list
+     *
+     * @access	protected
+     *
+     * @param	integer		$id: The collection's UID
+     *
+     * @return	void
+     */
+    protected function showSingleCollection($id) {
 
-		// Should user-defined collections be shown?
-		if (empty($this->conf['show_userdefined'])) {
+        // Should user-defined collections be shown?
+        if (empty($this->conf['show_userdefined'])) {
 
-			$additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
+            $additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
 
-		} elseif ($this->conf['show_userdefined'] > 0) {
+        } elseif ($this->conf['show_userdefined'] > 0) {
 
-			$additionalWhere = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+            $additionalWhere = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
 
-		}
+        }
 
-		// Get all documents in collection.
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_collections.thumbnail AS collThumb,tx_dlf_collections.fe_cruser_id AS userid,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
-			'tx_dlf_documents',
-			'tx_dlf_relations',
-			'tx_dlf_collections',
-			'AND tx_dlf_collections.uid='.intval($id).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-			'',
-			'tx_dlf_documents.title_sorting ASC',
-			''
-		);
+        // Get all documents in collection.
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+            'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_collections.thumbnail AS collThumb,tx_dlf_collections.fe_cruser_id AS userid,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
+            'tx_dlf_documents',
+            'tx_dlf_relations',
+            'tx_dlf_collections',
+            'AND tx_dlf_collections.uid='.intval($id).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+            '',
+            'tx_dlf_documents.title_sorting ASC',
+            ''
+        );
 
-		$toplevel = array ();
+        $toplevel = array ();
 
-		$subparts = array ();
+        $subparts = array ();
 
-		$listMetadata = array ();
+        $listMetadata = array ();
 
-		// Process results.
-		while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        // Process results.
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-			if (empty($listMetadata)) {
+            if (empty($listMetadata)) {
 
-				$listMetadata = array (
-					'label' => htmlspecialchars($resArray['collLabel']),
-					'description' => $this->pi_RTEcssText($resArray['collDesc']),
-					'thumbnail' => htmlspecialchars($resArray['collThumb']),
-					'options' => array (
-						'source' => 'collection',
-						'select' => $id,
-						'userid' => $resArray['userid'],
-						'params' => array ('fq' => array ('collection_faceting:("'.$resArray['index_name'].'")')),
-						'core' => '',
-						'pid' => $this->conf['pages'],
-						'order' => 'title',
-						'order.asc' => TRUE
-					)
-				);
+                $listMetadata = array (
+                    'label' => htmlspecialchars($resArray['collLabel']),
+                    'description' => $this->pi_RTEcssText($resArray['collDesc']),
+                    'thumbnail' => htmlspecialchars($resArray['collThumb']),
+                    'options' => array (
+                        'source' => 'collection',
+                        'select' => $id,
+                        'userid' => $resArray['userid'],
+                        'params' => array ('fq' => array ('collection_faceting:("'.$resArray['index_name'].'")')),
+                        'core' => '',
+                        'pid' => $this->conf['pages'],
+                        'order' => 'title',
+                        'order.asc' => TRUE
+                    )
+                );
 
-			}
+            }
 
-			// Split toplevel documents from volumes.
-			if ($resArray['partof'] == 0) {
+            // Split toplevel documents from volumes.
+            if ($resArray['partof'] == 0) {
 
-				// Prepare document's metadata for sorting.
-				$sorting = unserialize($resArray['metadata_sorting']);
+                // Prepare document's metadata for sorting.
+                $sorting = unserialize($resArray['metadata_sorting']);
 
-				if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
+                if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
 
-					$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+                    $sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
 
-				}
+                }
 
-				if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
+                if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
 
-					$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+                    $sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
 
-				}
+                }
 
-				if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
+                if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
 
-					$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
+                    $sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
-				}
+                }
 
-				$toplevel[$resArray['uid']] = array (
-					'u' => $resArray['uid'],
-					'h' => '',
-					's' => $sorting,
-					'p' => array ()
-				);
+                $toplevel[$resArray['uid']] = array (
+                    'u' => $resArray['uid'],
+                    'h' => '',
+                    's' => $sorting,
+                    'p' => array ()
+                );
 
-			} else {
+            } else {
 
-				$subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
+                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
 
-			}
+            }
 
-		}
+        }
 
-		// Add volumes to the corresponding toplevel documents.
-		foreach ($subparts as $partof => $parts) {
+        // Add volumes to the corresponding toplevel documents.
+        foreach ($subparts as $partof => $parts) {
 
-			if (!empty($toplevel[$partof])) {
+            if (!empty($toplevel[$partof])) {
 
-				ksort($parts);
+                ksort($parts);
 
-				foreach ($parts as $part) {
+                foreach ($parts as $part) {
 
-					$toplevel[$partof]['p'][] = array ('u' => $part);
+                    $toplevel[$partof]['p'][] = array ('u' => $part);
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
-		// Save list of documents.
-		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        // Save list of documents.
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-		$list->reset();
+        $list->reset();
 
-		$list->add(array_values($toplevel));
+        $list->add(array_values($toplevel));
 
-		$list->metadata = $listMetadata;
+        $list->metadata = $listMetadata;
 
-		$list->save();
+        $list->save();
 
-		// Clean output buffer.
-		\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+        // Clean output buffer.
+        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
-		// Send headers.
-		header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
+        // Send headers.
+        header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
 
-		// Flush output buffer and end script processing.
-		ob_end_flush();
+        // Flush output buffer and end script processing.
+        ob_end_flush();
 
-		exit;
+        exit;
 
-	}
+    }
 
 }
