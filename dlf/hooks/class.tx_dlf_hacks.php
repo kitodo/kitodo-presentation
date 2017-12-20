@@ -38,7 +38,7 @@ class tx_dlf_hacks {
 			$xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
 			// Get all logical structure nodes with metadata, but without associated METS-Pointers.
-			if (($divs = $xml->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
+			if (($divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
 
 				$smLinks = $xml->xpath('//mets:structLink/mets:smLink');
 

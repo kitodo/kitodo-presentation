@@ -215,7 +215,8 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
 				case 'indexFile':
 
-					if (!empty($this->data['id']) && isset($this->data['core'])) {
+					if (!empty($this->data['id']) && isset($this->data['core'])
+						&& \TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->data['id'])) {
 
 						// Save document to database and index.
 						$doc =& tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
@@ -335,12 +336,6 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 				case 'indexFile':
 
 					$this->markerArray['CONTENT'] .= $this->getFileForm();
-
-					break;
-
-				case 'reindexDoc':
-
-					$this->markerArray['CONTENT'] .= $this->getDocList();
 
 					break;
 

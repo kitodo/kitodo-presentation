@@ -88,6 +88,10 @@ final class tx_dlf_document {
 	 * @access protected
 	 */
 	protected $formats = array (
+		'OAI' => array (
+			'rootElement' => 'OAI-PMH',
+			'namespaceURI' => 'http://www.openarchives.org/OAI/2.0/',
+		),
 		'METS' => array (
 			'rootElement' => 'mets',
 			'namespaceURI' => 'http://www.loc.gov/METS/',
@@ -853,7 +857,7 @@ final class tx_dlf_document {
 				}
 
 				// Set default value if applicable.
-				if (empty($metadata[$resArray['index_name']][0]) && $resArray['default_value']) {
+				if (empty($metadata[$resArray['index_name']][0])) {
 
 					$metadata[$resArray['index_name']] = array ($resArray['default_value']);
 
@@ -945,7 +949,7 @@ final class tx_dlf_document {
 		return 1;
 
 	}
-	
+
 	/**
 	 * This determines a title for the given document
 	 *
@@ -1029,7 +1033,7 @@ final class tx_dlf_document {
 		// Set record identifier for METS file if not present.
 		if (is_array($titledata) && array_key_exists('record_id', $titledata)) {
 
-			if (!in_array($this->recordId, $titledata['record_id'])) {
+			if (!empty($this->recordId) && !in_array($this->recordId, $titledata['record_id'])) {
 
 				array_unshift($titledata['record_id'], $this->recordId);
 
@@ -2418,7 +2422,7 @@ final class tx_dlf_document {
 			$location = (string) $uid;
 
 			// Try to load METS file.
-			if ($this->load($location)) {
+			if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location) && $this->load($location)) {
 
 				// Initialize core METS object.
 				$this->init();
