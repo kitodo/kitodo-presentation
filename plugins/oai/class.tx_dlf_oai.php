@@ -955,7 +955,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.tstamp AS tstamp',
             'tx_dlf_documents',
-            'tx_dlf_documents.pid=' . intval($this->conf['pages']),
+            'tx_dlf_documents.pid='.intval($this->conf['pages']),
             '',
             'tx_dlf_documents.tstamp ASC',
             '1'
@@ -970,8 +970,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "' .
-                            $this->conf['pages'] . '"', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "'.
+                            $this->conf['pages'].'"', $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
             }
 

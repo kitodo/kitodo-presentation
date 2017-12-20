@@ -139,9 +139,9 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
                 // Set default values if not set.
                 // $this->piVars['page'] may be integer or string (physical structure @ID)
-                if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+                if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
-                    $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+                    $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
                 } else {
 
@@ -279,11 +279,11 @@ class tx_dlf_navigation extends tx_dlf_plugin {
         $markerArray['###LINKLISTVIEW###'] = $this->getLinkToListview();
 
         // fill some language labels if available
-        $markerArray['###ZOOM_IN###'] =  $this->pi_getLL('zoom-in', '', TRUE);
+        $markerArray['###ZOOM_IN###'] = $this->pi_getLL('zoom-in', '', TRUE);
         $markerArray['###ZOOM_OUT###'] = $this->pi_getLL('zoom-out', '', TRUE);
         $markerArray['###ZOOM_FULLSCREEN###'] = $this->pi_getLL('zoom-fullscreen', '', TRUE);
 
-        $markerArray['###ROTATE_LEFT###'] =  $this->pi_getLL('rotate-left', '', TRUE);
+        $markerArray['###ROTATE_LEFT###'] = $this->pi_getLL('rotate-left', '', TRUE);
         $markerArray['###ROTATE_RIGHT###'] = $this->pi_getLL('rotate-right', '', TRUE);
         $markerArray['###ROTATE_RESET###'] = $this->pi_getLL('rotate-reset', '', TRUE);
 

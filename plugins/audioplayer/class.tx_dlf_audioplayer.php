@@ -55,9 +55,9 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 			$(document).ready(function() {
 				tx_dlf_audioplayer = new dlfAudioPlayer({
 					audio: {
-						mimeType: "' . $this->audio['mimetype'] . '",
-						title: "' . $this->audio['label'] . '",
-						url:  "' . $this->audio['url'] . '"
+						mimeType: "' . $this->audio['mimetype'].'",
+						title: "' . $this->audio['label'].'",
+						url:  "' . $this->audio['url'].'"
 					},
 					parentElId: "tx-dlf-audio",
 					swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.swf"

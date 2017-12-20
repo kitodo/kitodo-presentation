@@ -193,7 +193,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                         'page' => $this->list[$number]['page']
                     );
 
-                    if(!empty($this->piVars['logicalPage'])) {
+                    if (!empty($this->piVars['logicalPage'])) {
 
                         $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
 
@@ -318,9 +318,9 @@ class tx_dlf_listview extends tx_dlf_plugin {
             'forceAbsoluteUrl' => 1
         );
 
-        if(!empty($this->piVars['logicalPage'])) {
+        if (!empty($this->piVars['logicalPage'])) {
 
-            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,array('logicalPage' => $this->piVars['logicalPage']), '', TRUE, FALSE);
+            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('logicalPage' => $this->piVars['logicalPage']), '', TRUE, FALSE);
 
         }
 
@@ -437,7 +437,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                             'highlight_word' => preg_replace('/\s\s+/', ';', $this->list->metadata['searchString'])
                         );
 
-                        if(!empty($this->piVars['logicalPage'])) {
+                        if (!empty($this->piVars['logicalPage'])) {
 
                             $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
 

@@ -572,7 +572,7 @@ final class tx_dlf_document {
 
         $details['id'] = $attributes['ID'];
 
-        $details['dmdId'] = (isset($attributes['DMDID']) ?  $attributes['DMDID'] : '');
+        $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
 
         $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
 
@@ -921,7 +921,7 @@ final class tx_dlf_document {
      */
     public function getPhysicalPage($logicalPage) {
 
-        if(!empty( $this->lastSearchedPhysicalPage['logicalPage']) &&  $this->lastSearchedPhysicalPage['logicalPage'] == $logicalPage) {
+        if (!empty($this->lastSearchedPhysicalPage['logicalPage']) && $this->lastSearchedPhysicalPage['logicalPage'] == $logicalPage) {
 
             return $this->lastSearchedPhysicalPage['physicalPage'];
 
@@ -929,9 +929,9 @@ final class tx_dlf_document {
 
             $physicalPage = 0;
 
-            foreach($this->physicalStructureInfo as $page) {
+            foreach ($this->physicalStructureInfo as $page) {
 
-                if(strpos($page['orderlabel'], $logicalPage) !== FALSE) {
+                if (strpos($page['orderlabel'], $logicalPage) !== FALSE) {
 
                     $this->lastSearchedPhysicalPage['logicalPage'] = $logicalPage;
                     $this->lastSearchedPhysicalPage['physicalPage'] = $physicalPage;
@@ -1355,7 +1355,7 @@ final class tx_dlf_document {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures'),
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type '.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures'),
                                             self::$extKey, SYSLOG_SEVERITY_ERROR);
 
             }
@@ -2440,7 +2440,7 @@ final class tx_dlf_document {
                     $hookObjects = tx_dlf_helper::getHookObjects('common/class.tx_dlf_document.php');
 
                     // Apply hooks.
-                    foreach($hookObjects as $hookObj) {
+                    foreach ($hookObjects as $hookObj) {
 
                         if (method_exists($hookObj, 'construct_postProcessRecordId')) {
 

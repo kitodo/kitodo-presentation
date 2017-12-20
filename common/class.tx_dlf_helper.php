@@ -1028,7 +1028,7 @@ class tx_dlf_helper {
 
                     if ($flashMessage->getTitle() !== '') {
 
-                        $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($flashMessage->getTitle())) . $messageContent;
+                        $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($flashMessage->getTitle())).$messageContent;
 
                     }
 
@@ -1218,7 +1218,7 @@ class tx_dlf_helper {
                         // Overlay localized labels if available.
                         if ($GLOBALS['TSFE']->sys_language_content > 0) {
 
-                            $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray,$GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                            $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
 
                         }
 

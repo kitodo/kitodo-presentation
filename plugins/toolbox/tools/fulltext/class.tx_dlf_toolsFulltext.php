@@ -59,7 +59,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+            if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
@@ -92,7 +92,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
                     .$this->pi_getLL('fulltext-on', '', TRUE).';fulltext-off:'
                     .$this->pi_getLL('fulltext-off', '', TRUE).'">&nbsp;</a>';
         } else {
-            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . $this->pi_getLL('fulltext-not-available', '', TRUE) . '</span>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">'.$this->pi_getLL('fulltext-not-available', '', TRUE).'</span>';
         }
 
         $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);

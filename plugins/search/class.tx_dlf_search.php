@@ -302,13 +302,13 @@ class tx_dlf_search extends tx_dlf_plugin {
         // Check for plugin configuration.
         if (!empty($this->conf['fulltext'])) {
 
-            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" ' . ($isFulltextSearch == 0 ? 'checked="checked"' : '') .' />';
+            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0" '.($isFulltextSearch == 0 ? 'checked="checked"' : '').' />';
 
-            $output .= ' <label for="tx-dlf-search-fulltext-no">' . $this->pi_getLL('label.inMetadata', '') . '</label>';
+            $output .= ' <label for="tx-dlf-search-fulltext-no">'.$this->pi_getLL('label.inMetadata', '').'</label>';
 
-            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" ' . ($isFulltextSearch == 1 ? 'checked="checked"' : '') .'/>';
+            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1" '.($isFulltextSearch == 1 ? 'checked="checked"' : '').'/>';
 
-            $output .= ' <label for="tx-dlf-search-fulltext-yes">' . $this->pi_getLL('label.inFulltext', '') . '</label>';
+            $output .= ' <label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('label.inFulltext', '').'</label>';
 
         }
 
@@ -330,9 +330,9 @@ class tx_dlf_search extends tx_dlf_plugin {
         // Check for plugin configuration.
         if (!empty($this->conf['showLogicalPageField'])) {
 			
-            $output .= ' <label for="tx-dlf-search-logical-page">' . $this->pi_getLL('label.logicalPage', '') . ': </label>';
+            $output .= ' <label for="tx-dlf-search-logical-page">'.$this->pi_getLL('label.logicalPage', '').': </label>';
 			
-            $output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="' . $this->prefixId . '[logicalPage]" />';
+            $output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="'.$this->prefixId.'[logicalPage]" />';
 			
         }
 
@@ -353,7 +353,7 @@ class tx_dlf_search extends tx_dlf_plugin {
      */
     protected function getFacetsMenuEntry($field, $value, $count, $search, &$state) {
 
-        $entryArray = array();
+        $entryArray = array ();
 
         // Translate value.
         if ($field == 'owner_faceting') {
@@ -553,7 +553,7 @@ class tx_dlf_search extends tx_dlf_plugin {
             if ((!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) || preg_match('/fulltext:\((.*)\)/', $this->piVars['query'], $matches)) {
 
                 // If the query already is a fulltext query e.g using the facets
-                $this->piVars['query'] = empty($matches[1])?$this->piVars['query']:$matches[1];
+                $this->piVars['query'] = empty($matches[1]) ? $this->piVars['query'] : $matches[1];
 
                 // Search in fulltext field if applicable. query must not be empty!
                 if (!empty($this->piVars['query'])) {
@@ -576,7 +576,7 @@ class tx_dlf_search extends tx_dlf_plugin {
             // Add extended search query.
             if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
 
-                $allowedOperators = array('AND', 'OR', 'NOT');
+                $allowedOperators = array ('AND', 'OR', 'NOT');
 
                 $allowedFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
 
@@ -679,22 +679,22 @@ class tx_dlf_search extends tx_dlf_plugin {
             // Clean output buffer.
             \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
-            $additionalParams = array();
+            $additionalParams = array ();
 
-            if(!empty($this->piVars['logicalPage'])) {
+            if (!empty($this->piVars['logicalPage'])) {
 
                 $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
 
             }
 
             // Jump directly to the page view, if there is only one result and it is configured
-            if($results->count() == 1 && !empty($this->conf['showSingleResult'])) {
+            if ($results->count() == 1 && !empty($this->conf['showSingleResult'])) {
 
                 $linkConf['parameter'] = $this->conf['targetPidPageView'];
 
                 $additionalParams['id'] = $results->current()['uid'];
                 $additionalParams['highlight_word'] = preg_replace('/\s\s+/', ';', $results->metadata['searchString']);
-                $additionalParams['page'] = count($results[0]['subparts']) == 1?$results[0]['subparts'][0]['page']:1;
+                $additionalParams['page'] = count($results[0]['subparts']) == 1 ? $results[0]['subparts'][0]['page'] : 1;
 
             } else {
 

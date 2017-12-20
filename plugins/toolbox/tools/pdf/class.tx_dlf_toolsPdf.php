@@ -59,9 +59,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
 
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+            if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
-                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
             } else {
 
@@ -126,9 +126,9 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
         }
 
         if (TYPO3_DLOG && empty($page1Link) && empty($page2Link)) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_toolsPdf->getPageLink()] ' .
-                        'File not found in fileGrp "' .
-                        $this->conf['fileGrpDownload'] . '"',
+            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_toolsPdf->getPageLink()] '.
+                        'File not found in fileGrp "'.
+                        $this->conf['fileGrpDownload'].'"',
                         $this->extKey,
                         SYSLOG_SEVERITY_WARNING);
         }
@@ -137,18 +137,18 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
         if (!empty($page1Link)) {
             if ($this->piVars['double']) {
                 $page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''),
-                    array('parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')));
+                    array ('parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')));
             } else {
                 $page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''),
-                    array('parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')));
+                    array ('parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')));
             }
         }
         if (!empty($page2Link)) {
             $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''),
-                array('parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')));
+                array ('parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')));
         }
 
-        return $page1Link . $page2Link;
+        return $page1Link.$page2Link;
     }
 
     /**
