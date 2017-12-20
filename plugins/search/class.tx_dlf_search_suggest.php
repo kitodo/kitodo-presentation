@@ -20,43 +20,43 @@
  */
 class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
-	public $scriptRelPath = 'plugins/search/class.tx_dlf_search_suggest.php';
+    public $scriptRelPath = 'plugins/search/class.tx_dlf_search_suggest.php';
 
-	/**
-	 * The main method of the PlugIn
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
-	 *
-	 * @return	void
-	 */
-	public function main($content = '', $conf = array ()) {
+    /**
+     * The main method of the PlugIn
+     *
+     * @access	public
+     *
+     * @param	string		$content: The PlugIn content
+     * @param	array		$conf: The PlugIn configuration
+     *
+     * @return	void
+     */
+    public function main($content = '', $conf = array ()) {
 
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted') != '' && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '') {
+        if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted') != '' && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '') {
 
-			$core = tx_dlf_helper::decrypt(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted'), \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed'));
+            $core = tx_dlf_helper::decrypt(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted'), \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed'));
 
-		}
+        }
 
-		if (!empty($core)) {
+        if (!empty($core)) {
 
-			$url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.tx_dlf_solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
+            $url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.tx_dlf_solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
 
-			if ($stream = fopen($url, 'r')) {
+            if ($stream = fopen($url, 'r')) {
 
-				$content .= stream_get_contents($stream);
+                $content .= stream_get_contents($stream);
 
-				fclose($stream);
+                fclose($stream);
 
-			}
+            }
 
-		}
+        }
 
-		echo $content;
+        echo $content;
 
-	}
+    }
 
 }
 

@@ -20,16 +20,16 @@
  */
 interface tx_dlf_format {
 
-	/**
-	 * This extracts metadata from XML
-	 *
-	 * @access	public
-	 *
-	 * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
-	 * @param	array		&$metadata: The metadata array to fill
-	 *
-	 * @return	void
-	 */
-	public function extractMetadata(SimpleXMLElement $xml, array &$metadata);
+    /**
+     * This extracts metadata from XML
+     *
+     * @access	public
+     *
+     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param	array		&$metadata: The metadata array to fill
+     *
+     * @return	void
+     */
+    public function extractMetadata(SimpleXMLElement $xml, array &$metadata);
 
 }

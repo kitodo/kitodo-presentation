@@ -19,20 +19,20 @@
  */
 class tx_dlf_teihdr implements tx_dlf_format {
 
-	/**
-	 * This extracts the essential TEIHDR metadata from XML
-	 *
-	 * @access	public
-	 *
-	 * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
-	 * @param	array		&$metadata: The metadata array to fill
-	 *
-	 * @return	void
-	 */
-	public function extractMetadata(SimpleXMLElement $xml, array &$metadata) {
+    /**
+     * This extracts the essential TEIHDR metadata from XML
+     *
+     * @access	public
+     *
+     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param	array		&$metadata: The metadata array to fill
+     *
+     * @return	void
+     */
+    public function extractMetadata(SimpleXMLElement $xml, array &$metadata) {
 
-		$xml->registerXPathNamespace('teihdr', 'http://www.tei-c.org/ns/1.0');
+        $xml->registerXPathNamespace('teihdr', 'http://www.tei-c.org/ns/1.0');
 
-	}
+    }
 
 }
