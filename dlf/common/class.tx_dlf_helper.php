@@ -81,36 +81,6 @@ class tx_dlf_helper {
 	}
 
 	/**
-	 * Searches the array recursively for a given value and returns the corresponding key if successful
-	 * @see http://php.net/array_search
-	 *
-	 * @access	public
-	 *
-	 * @param	mixed		$needle: The searched value
-	 * @param	array		$haystack: The array to search in
-	 * @param	boolean		$strict: Check needle's type, too?
-	 *
-	 * @return	mixed		Returns the needle's key if found and FALSE otherwise
-	 *
-	 * @deprecated because of its inefficiency
-	 */
-	public static function array_search_recursive($needle, $haystack, $strict = FALSE) {
-
-		foreach ($haystack as $key => $value) {
-
-			if (($strict && $value === $needle) || (!$strict && $value == $needle) || (is_array($value) && self::array_search_recursive($needle, $value, $strict) !== FALSE)) {
-
-				return $key;
-
-			}
-
-		}
-
-		return FALSE;
-
-	}
-
-	/**
 	 * Check if given identifier is a valid identifier of the German National Library
 	 * @see	http://support.d-nb.de/iltis/onlineRoutinen/Pruefziffernberechnung.htm
 	 *

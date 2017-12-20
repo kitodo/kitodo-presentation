@@ -125,7 +125,7 @@ limitations under the License.
 		<!-- Autocomplete field for search form. -->
 		<field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
 		<!-- Fulltext field for OCR results. -->
-		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" />
+		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default=""  termVectors="true" termPositions="true" termOffsets="true"/>
 
 		<!--
 			The following dynamic fields define all possible field variants.
