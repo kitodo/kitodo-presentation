@@ -27,10 +27,10 @@ Kitodo.Presentation
 		It is highly customizable through a user-friendly backend and flexible design templates.
 
 	:Keywords:
-		comma,separated,list,of,keywords
+		kitodo,digital framework,digitization,viewer,library,METS,OAI-PMH
 
 	:Copyright:
-		2015
+		###YEAR###
 
 	:Author:
 		Kitodo. Key to digital objects e.V.
@@ -56,11 +56,10 @@ Kitodo.Presentation
 	:glob:
 
 	Introduction/Index
-	User/Index
-	Administrator/Index
 	Configuration/Index
-	Developer/Index
-	KnownProblems/Index
-	ToDoList/Index
-	ChangeLog/Index
-	Targets
+	Plugins/Index
+	Community/Index
+
+	.. Administrator/Index
+	.. Developer/Index
+	.. Targets
