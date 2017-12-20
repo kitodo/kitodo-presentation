@@ -173,7 +173,7 @@ class tx_dlf_em {
                     $usergroup = array_unique(array_merge(array ($groupUid), $resArray['usergroup']));
 
                     // Try to configure user.
-                    $data = array();
+                    $data = array ();
                     $data['be_users'][$resArray['uid']] = array (
                         'admin' => 0,
                         'usergroup' => implode(',', $usergroup),
@@ -230,7 +230,7 @@ class tx_dlf_em {
                 // Try to create user.
                 $tempUid = uniqid('NEW');
 
-                $data = array();
+                $data = array ();
                 $data['be_users'][$tempUid] = array (
                     'pid' => 0,
                     'username' => '_cli_dlf',
@@ -342,10 +342,10 @@ class tx_dlf_em {
 
         // Check if group "_cli_dlf" exists and is not disabled.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'uid,non_exclude_fields,tables_select,tables_modify,' .
+            'uid,non_exclude_fields,tables_select,tables_modify,'.
                 $GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'],
             'be_groups',
-            'title=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups') .
+            'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups').
                 \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
         );
 
@@ -388,8 +388,8 @@ class tx_dlf_em {
                     $tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
 
                     // Try to configure usergroup.
-                    $data = array();
-                    $data['be_groups'][$resArray['uid']] = array(
+                    $data = array ();
+                    $data['be_groups'][$resArray['uid']] = array (
                         'non_exclude_fields' => implode(',', $non_exclude_fields),
                         'tables_select' => implode(',', $tables_select),
                         'tables_modify' => implode(',', $tables_modify),
@@ -444,8 +444,8 @@ class tx_dlf_em {
                 // Try to create usergroup.
                 $tempUid = uniqid('NEW');
 
-                $data = array();
-                $data['be_groups'][$tempUid] = array(
+                $data = array ();
+                $data['be_groups'][$tempUid] = array (
                     'pid' => 0,
                     'title' => '_cli_dlf',
                     'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),

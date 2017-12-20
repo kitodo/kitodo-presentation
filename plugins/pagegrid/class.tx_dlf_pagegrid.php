@@ -233,9 +233,9 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
         // Set some variable defaults.
         // $this->piVars['page'] may be integer or string (physical structure @ID)
-        if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+        if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
-            $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+            $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
         } else {
 

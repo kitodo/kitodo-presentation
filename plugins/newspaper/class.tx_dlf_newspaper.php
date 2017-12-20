@@ -130,22 +130,22 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
                 '###DAYFRI_NAME###' => strftime('%a', strtotime('last Friday')),
                 '###DAYSAT_NAME###' => strftime('%a', strtotime('last Saturday')),
                 '###DAYSUN_NAME###' => strftime('%a', strtotime('last Sunday')),
-                '###MONTHNAME###' 	=> strftime('%B', strtotime($year . '-' . ($i + 1) . '-1'))
+                '###MONTHNAME###' 	=> strftime('%B', strtotime($year.'-'.($i + 1).'-1'))
             );
 
             // Reset week content of new month.
             $subWeekPartContent = '';
 
-            $firstOfMonth = strtotime($year . '-' . ($i + 1) . '-1');
+            $firstOfMonth = strtotime($year.'-'.($i + 1).'-1');
             $lastOfMonth = strtotime('last day of', ($firstOfMonth));
             $firstOfMonthStart = strtotime('last Monday', $firstOfMonth);
 
             // There are never more than 6 weeks in a month.
             for ($j = 0; $j <= 5; $j++) {
 
-                $firstDayOfWeek = strtotime('+ ' . $j . ' Week', $firstOfMonthStart);
+                $firstDayOfWeek = strtotime('+ '.$j.' Week', $firstOfMonthStart);
 
-                $weekArray = array(
+                $weekArray = array (
                     '###DAYMON###' => '&nbsp;',
                     '###DAYTUE###' => '&nbsp;',
                     '###DAYWED###' => '&nbsp;',
@@ -185,7 +185,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
                                         $linkConf = array (
                                             'useCacheHash' => 1,
                                             'parameter' => $this->conf['targetPid'],
-                                            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($issue['uid']),
+                                            'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($issue['uid']),
                                             'ATagParams' => ' class="title"',
                                         );
 
@@ -212,7 +212,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
                             }
 
-                            $dayLinkDiv = '<div class="issues"><h4>' . strftime('%d', $currentDayTime) . '</h4><div>'.$dayLinksList.'</div></div>';
+                            $dayLinkDiv = '<div class="issues"><h4>'.strftime('%d', $currentDayTime).'</h4><div>'.$dayLinksList.'</div></div>';
                         }
 
                         switch (strftime('%w', strtotime('+ '.$k.' Day', $firstDayOfWeek))) {
@@ -260,22 +260,22 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         $linkConf = array (
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
+            'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($this->doc->parentId),
         );
 
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
+        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE).' '.$this->doc->getTitle($this->doc->parentId), $linkConf);
 
         // Link to current year.
         $linkConf = array (
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->uid),
+            'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($this->doc->uid),
         );
 
         $yearLink = $this->cObj->typoLink($year, $linkConf);
 
         // Prepare list as alternative of the calendar view.
-        foreach($allIssues as $dayTime => $issues) {
+        foreach ($allIssues as $dayTime => $issues) {
 
             $markerArrayDay['###DATE_STRING###'] = strftime('%A, %x', $dayTime);
 
@@ -385,14 +385,14 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
             foreach ($years as $id => $year) {
 
-                $linkConf = array(
+                $linkConf = array (
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetPid'],
-                    'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($year['uid']),
-                    'title' => $titleAnchor . ': ' . $year['title']
+                    'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($year['uid']),
+                    'title' => $titleAnchor.': '.$year['title']
                 );
 
-                $yearArray = array(
+                $yearArray = array (
                     '###YEARNAME###' => $this->cObj->typoLink($year['title'], $linkConf),
                 );
 
@@ -405,9 +405,9 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         $linkConf = array (
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&' . $this->prefixId . '[id]=' . $this->doc->uid,
+            'additionalParams' => '&'.$this->prefixId.'[id]='.$this->doc->uid,
         );
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE) . ' ' .$this->doc->getTitle($this->doc->uid), $linkConf);
+        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE).' '.$this->doc->getTitle($this->doc->uid), $linkConf);
 
         // Fill markers.
         $markerArray = array (

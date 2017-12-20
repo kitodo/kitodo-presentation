@@ -63,11 +63,11 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         }
 
         // add some self calculated header tags
-        header('Last-Modified: ' . gmdate( "D, d M Y H:i:s" ) . 'GMT');
+        header('Last-Modified: '.gmdate("D, d M Y H:i:s").'GMT');
         header('Cache-Control: max-age=3600, must-revalidate');
         header('Content-Length: '.strlen($fetchedData));
         $fi = finfo_open(FILEINFO_MIME);
-        header('Content-Type: ' . finfo_buffer($fi, $fetchedData));
+        header('Content-Type: '.finfo_buffer($fi, $fetchedData));
 
         // take some tags from request header and overwrite in case already set
         $fetchedHeader = explode("\n", GeneralUtility::getUrl($url, 2));

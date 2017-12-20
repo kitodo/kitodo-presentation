@@ -228,7 +228,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
             foreach ($this->conf['_DEFAULT_PI_VARS.'] as $GPkey => $GPval) {
 
-                if (strpos($GPkey,'.')) {
+                if (strpos($GPkey, '.')) {
 
                     $GPkey = substr($GPkey, 0, -1);
 
@@ -246,7 +246,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
             }
 
-            $this->piVars = tx_dlf_helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array());
+            $this->piVars = tx_dlf_helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
 
         }
 

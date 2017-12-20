@@ -64,7 +64,7 @@ class ext_update {
         // check if tx_dlf_metadata.xpath exists anyhow
         $fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
 
-        if (! in_array('xpath', array_keys($fieldsInDatabase))) {
+        if (!in_array('xpath', array_keys($fieldsInDatabase))) {
 
             return $uids;
 
@@ -141,7 +141,7 @@ class ext_update {
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 			
-            if($resArray['column_name'] == 'tokenized' 
+            if ($resArray['column_name'] == 'tokenized' 
                 || $resArray['column_name'] == 'stored'
                 || $resArray['column_name'] == 'indexed'
                 || $resArray['column_name'] == 'boost'
@@ -173,7 +173,7 @@ class ext_update {
         // Copy the content of the old tables to the new ones
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
 
-        if($result) {
+        if ($result) {
 
             $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',

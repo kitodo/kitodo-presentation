@@ -58,9 +58,9 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
 
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ( (int)$this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+            if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
 
-                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int)$this->piVars['page'], 1, $this->doc->numPages, 1);
+                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
 
             } else {
 
@@ -84,7 +84,7 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
         }
 
         // Get left or single page download.
-        $markerArray['###IMAGE_LEFT###'] =  $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'], $this->pi_getLL('leftPage', '')) : $this->getImage($this->piVars['page'], $this->pi_getLL('singlePage', ''));
+        $markerArray['###IMAGE_LEFT###'] = $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'], $this->pi_getLL('leftPage', '')) : $this->getImage($this->piVars['page'], $this->pi_getLL('singlePage', ''));
 
         // Get right page download.
         $markerArray['###IMAGE_RIGHT###'] = $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'] + 1, $this->pi_getLL('rightPage', '')) : '';
@@ -131,11 +131,11 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
                 }
                 $linkConf = array (
                     'parameter' => $image['url'],
-                    'title' => $label . ' ' . $mimetypeLabel,
+                    'title' => $label.' '.$mimetypeLabel,
                     'additionalParams' => '',
                 );
 
-                $imageLink = $this->cObj->typoLink($label . ' ' . $mimetypeLabel, $linkConf);
+                $imageLink = $this->cObj->typoLink($label.' '.$mimetypeLabel, $linkConf);
 
                 break;
 
