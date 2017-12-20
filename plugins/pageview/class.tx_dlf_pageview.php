@@ -86,11 +86,11 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 			window.onload = function() {
 				if (dlfUtils.exists(dlfViewer)) {
 					tx_dlf_viewer = new dlfViewer({
-						controls: ["' . implode('", "', $this->controls).'"],
-						div: "' . $this->conf['elementId'].'",
-						images: ' . json_encode($this->images).',
-						fulltexts: '. json_encode($this->fulltexts).',
-						useInternalProxy: ' . ($this->conf['useInternalProxy'] ? 1 : 0).'
+						controls: ["'.implode('", "', $this->controls).'"],
+						div: "'.$this->conf['elementId'].'",
+						images: '.json_encode($this->images).',
+						fulltexts: '.json_encode($this->fulltexts).',
+						useInternalProxy: '.($this->conf['useInternalProxy'] ? 1 : 0).'
 					})
 				}
 			}
