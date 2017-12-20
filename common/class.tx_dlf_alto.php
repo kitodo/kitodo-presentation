@@ -19,24 +19,24 @@
  */
 class tx_dlf_alto implements tx_dlf_fulltext {
 
-	/**
-	 * This extracts the fulltext data from ALTO XML
-	 *
-	 * @access	public
-	 *
-	 * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
-	 *
-	 * @return	string			The raw unformatted fulltext
-	 */
-	public static function getRawText(SimpleXMLElement $xml) {
+    /**
+     * This extracts the fulltext data from ALTO XML
+     *
+     * @access	public
+     *
+     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     *
+     * @return	string			The raw unformatted fulltext
+     */
+    public static function getRawText(SimpleXMLElement $xml) {
 
-		$xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
+        $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
 
-		// Get all (presumed) words of the text.
-		$words = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String/@CONTENT');
+        // Get all (presumed) words of the text.
+        $words = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String/@CONTENT');
 
-		return implode(' ', $words);
+        return implode(' ', $words);
 
-	}
+    }
 
 }

@@ -19,363 +19,363 @@
  */
 class tx_dlf_modIndexing extends tx_dlf_module {
 
-	protected $modPath = 'indexing/';
-
-	protected $buttonArray = array (
-		'SHORTCUT' => '',
-	);
-
-	protected $markerArray = array (
-		'CSH' => '',
-		'MOD_MENU' => '',
-		'CONTENT' => '',
-	);
+    protected $modPath = 'indexing/';
+
+    protected $buttonArray = array (
+        'SHORTCUT' => '',
+    );
+
+    protected $markerArray = array (
+        'CSH' => '',
+        'MOD_MENU' => '',
+        'CONTENT' => '',
+    );
 
-	/**
-	 * This holds a list of documents to index
-	 *
-	 * @var	tx_dlf_list
-	 * @access protected
-	 */
-	protected $list;
+    /**
+     * This holds a list of documents to index
+     *
+     * @var	tx_dlf_list
+     * @access protected
+     */
+    protected $list;
 
-	/**
-	 * Builds HTML form for selecting a collection
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		The HTML output
-	 */
-	protected function getCollList() {
+    /**
+     * Builds HTML form for selecting a collection
+     *
+     * @access	protected
+     *
+     * @return	string		The HTML output
+     */
+    protected function getCollList() {
 
-		// Get all available Solr cores.
-		$_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
-			'tx_dlf_solrcores',
-			'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-			'',
-			'',
-			''
-		);
+        // Get all available Solr cores.
+        $_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
+            'tx_dlf_solrcores',
+            'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+            '',
+            '',
+            ''
+        );
 
-		// Get all available collections.
-		$_collections = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_collections.label AS label,tx_dlf_collections.uid AS uid',
-			'tx_dlf_collections',
-			'tx_dlf_collections.fe_cruser_id=0 AND tx_dlf_collections.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_collections'),
-			'',
-			'tx_dlf_collections.label ASC',
-			''
-		);
+        // Get all available collections.
+        $_collections = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'tx_dlf_collections.label AS label,tx_dlf_collections.uid AS uid',
+            'tx_dlf_collections',
+            'tx_dlf_collections.fe_cruser_id=0 AND tx_dlf_collections.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_collections'),
+            '',
+            'tx_dlf_collections.label ASC',
+            ''
+        );
 
-		// TODO: Ändern!
-		$form = '<label for="tx-dlf-modIndexing-id">Kollektion:</label>';
+        // TODO: Ändern!
+        $form = '<label for="tx-dlf-modIndexing-id">Kollektion:</label>';
 
-		$form .= '<select id="tx-dlf-modIndexing-collection" name="'.$this->prefixId.'[collection]">';
+        $form .= '<select id="tx-dlf-modIndexing-collection" name="'.$this->prefixId.'[collection]">';
 
-		$form .= '<option value="0">Alle</option>';
+        $form .= '<option value="0">Alle</option>';
 
-		while ($_collection = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_collections)) {
+        while ($_collection = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_collections)) {
 
-			$form .= '<option value="'.$_collection['uid'].'">'.htmlspecialchars($_collection['label']).'</option>';
+            $form .= '<option value="'.$_collection['uid'].'">'.htmlspecialchars($_collection['label']).'</option>';
 
-		}
+        }
 
-		$form .= '</select><br />';
+        $form .= '</select><br />';
 
-		$form .= '<select id="tx-dlf-modIndexing-core" name="'.$this->prefixId.'[core]">';
+        $form .= '<select id="tx-dlf-modIndexing-core" name="'.$this->prefixId.'[core]">';
 
-		$form .= '<option value="0">---</option>';
+        $form .= '<option value="0">---</option>';
 
-		while ($_core = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_cores)) {
+        while ($_core = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_cores)) {
 
-			$form .= '<option value="'.$_core['uid'].'">'.htmlspecialchars($_core['label']).'</option>';
+            $form .= '<option value="'.$_core['uid'].'">'.htmlspecialchars($_core['label']).'</option>';
 
-		}
+        }
 
-		$form .= '</select><br />';
+        $form .= '</select><br />';
 
-		$form .= '<input type="hidden" name="CMD" value="reindexDocs" />';
+        $form .= '<input type="hidden" name="CMD" value="reindexDocs" />';
 
-		$form .= '<input type="submit" name="'.$this->prefixId.'[submit]" value="'.$GLOBALS['LANG']->getLL('form.submit').'" />';
+        $form .= '<input type="submit" name="'.$this->prefixId.'[submit]" value="'.$GLOBALS['LANG']->getLL('form.submit').'" />';
 
-		return $form;
+        return $form;
 
-	}
+    }
 
-	/**
-	 * Builds HTML form for selecting a file
-	 *
-	 * @access	protected
-	 *
-	 * @return	string		The HTML output
-	 */
-	protected function getFileForm() {
+    /**
+     * Builds HTML form for selecting a file
+     *
+     * @access	protected
+     *
+     * @return	string		The HTML output
+     */
+    protected function getFileForm() {
 
-		// Get all available Solr cores.
-		$_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
-			'tx_dlf_solrcores',
-			'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
-			'',
-			'',
-			''
-		);
+        // Get all available Solr cores.
+        $_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
+            'tx_dlf_solrcores',
+            'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+            '',
+            '',
+            ''
+        );
 
-		// TODO: Ändern!
-		$form = '<label for="tx-dlf-modIndexing-id">METS-Datei:</label>';
+        // TODO: Ändern!
+        $form = '<label for="tx-dlf-modIndexing-id">METS-Datei:</label>';
 
-		$form .= '<input type="text" id="tx-dlf-modIndexing-id" name="'.$this->prefixId.'[id]" value="" /><br />';
+        $form .= '<input type="text" id="tx-dlf-modIndexing-id" name="'.$this->prefixId.'[id]" value="" /><br />';
 
-		$form .= '<select id="tx-dlf-modIndexing-core" name="'.$this->prefixId.'[core]">';
+        $form .= '<select id="tx-dlf-modIndexing-core" name="'.$this->prefixId.'[core]">';
 
-		$form .= '<option value="0">---</option>';
+        $form .= '<option value="0">---</option>';
 
-		while ($_core = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_cores)) {
+        while ($_core = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_cores)) {
 
-			$form .= '<option value="'.$_core['uid'].'">'.htmlspecialchars($_core['label']).'</option>';
+            $form .= '<option value="'.$_core['uid'].'">'.htmlspecialchars($_core['label']).'</option>';
 
-		}
+        }
 
-		$form .= '</select><br />';
+        $form .= '</select><br />';
 
-		$form .= '<input type="hidden" name="CMD" value="indexFile" />';
+        $form .= '<input type="hidden" name="CMD" value="indexFile" />';
 
-		$form .= '<input type="submit" name="'.$this->prefixId.'[submit]" value="'.$GLOBALS['LANG']->getLL('form.submit').'" />';
+        $form .= '<input type="submit" name="'.$this->prefixId.'[submit]" value="'.$GLOBALS['LANG']->getLL('form.submit').'" />';
 
-		return $form;
+        return $form;
 
-	}
+    }
 
-	/**
-	 * Iterates through list of documents and indexes them
-	 *
-	 * @access	protected
-	 *
-	 * @return	void
-	 */
-	protected function indexLoop() {
+    /**
+     * Iterates through list of documents and indexes them
+     *
+     * @access	protected
+     *
+     * @return	void
+     */
+    protected function indexLoop() {
 
-		// Get document from list.
-		list ($uid, $title) = $this->list->remove(0);
+        // Get document from list.
+        list ($uid, $title) = $this->list->remove(0);
 
-		$this->list->save();
+        $this->list->save();
 
-		// Save document to database and index.
-		$doc =& tx_dlf_document::getInstance($uid, 0, TRUE);
+        // Save document to database and index.
+        $doc =& tx_dlf_document::getInstance($uid, 0, TRUE);
 
-		if ($doc->ready) {
+        if ($doc->ready) {
 
-			$doc->save($doc->pid, $this->data['core']);
+            $doc->save($doc->pid, $this->data['core']);
 
-		}
+        }
 
-		// Give feedback about progress.
-		$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-			htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentsToGo'), count($this->list))),
-			tx_dlf_helper::getLL('flash.running', TRUE),
-			\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-			TRUE
-		);
+        // Give feedback about progress.
+        $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentsToGo'), count($this->list))),
+            tx_dlf_helper::getLL('flash.running', TRUE),
+            \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
+            TRUE
+        );
 
-		$this->markerArray['CONTENT'] .= $_message->render();
+        $this->markerArray['CONTENT'] .= $_message->render();
 
-		// Start next loop.
-		$this->markerArray['CONTENT'] .= '<script type="text/javascript">window.location.href=unescape("'.\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'indexLoop', $this->prefixId => array ('core' => $this->data['core']), 'random' => uniqid())))).'");</script>';
+        // Start next loop.
+        $this->markerArray['CONTENT'] .= '<script type="text/javascript">window.location.href=unescape("'.\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'indexLoop', $this->prefixId => array ('core' => $this->data['core']), 'random' => uniqid())))).'");</script>';
 
-		$this->printContent();
+        $this->printContent();
 
-	}
+    }
 
-	/**
-	 * Main function of the module
-	 *
-	 * @access	public
-	 *
-	 * @return	void
-	 */
-	public function main() {
+    /**
+     * Main function of the module
+     *
+     * @access	public
+     *
+     * @return	void
+     */
+    public function main() {
 
-		// Is the user allowed to access this page?
-		$access = is_array($this->pageInfo) || $GLOBALS['BE_USER']->isAdmin();
+        // Is the user allowed to access this page?
+        $access = is_array($this->pageInfo) || $GLOBALS['BE_USER']->isAdmin();
 
-		if ($this->id && $access) {
+        if ($this->id && $access) {
 
-			// Increase max_execution_time and max_input_time for large documents.
-			if (!ini_get('safe_mode')) {
+            // Increase max_execution_time and max_input_time for large documents.
+            if (!ini_get('safe_mode')) {
 
-				ini_set('max_execution_time', '0');
+                ini_set('max_execution_time', '0');
 
-				ini_set('max_input_time', '-1');
+                ini_set('max_input_time', '-1');
 
-			}
+            }
 
-			switch ($this->CMD) {
+            switch ($this->CMD) {
 
-				case 'indexFile':
+                case 'indexFile':
 
-					if (!empty($this->data['id']) && isset($this->data['core'])
-						&& \TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->data['id'])) {
+                    if (!empty($this->data['id']) && isset($this->data['core'])
+                        && \TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->data['id'])) {
 
-						// Save document to database and index.
-						$doc =& tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
+                        // Save document to database and index.
+                        $doc =& tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
 
-						if ($doc->ready) {
+                        if ($doc->ready) {
 
-							$doc->save($this->id, $this->data['core']);
+                            $doc->save($this->id, $this->data['core']);
 
-						} else {
+                        } else {
 
-							$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-								'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-								htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.fileNotLoaded'), $this->data['id'])),
-								tx_dlf_helper::getLL('flash.error', TRUE),
-								\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-								TRUE
-							);
+                            $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                                htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.fileNotLoaded'), $this->data['id'])),
+                                tx_dlf_helper::getLL('flash.error', TRUE),
+                                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
+                                TRUE
+                            );
 
-							tx_dlf_helper::addMessage($_message);
+                            tx_dlf_helper::addMessage($_message);
 
-						}
+                        }
 
-					}
+                    }
 
-					break;
+                    break;
 
-				case 'reindexDocs':
+                case 'reindexDocs':
 
-					if (isset($this->data['core'])) {
+                    if (isset($this->data['core'])) {
 
-						if (!empty($this->data['collection'])) {
+                        if (!empty($this->data['collection'])) {
 
-							// Get all documents in this collection.
-							$_result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-								'tx_dlf_documents.title AS title,tx_dlf_documents.uid AS uid',
-								'tx_dlf_documents',
-								'tx_dlf_relations',
-								'tx_dlf_collections',
-								'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
-								'tx_dlf_documents.uid',
-								'',
-								''
-							);
+                            // Get all documents in this collection.
+                            $_result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+                                'tx_dlf_documents.title AS title,tx_dlf_documents.uid AS uid',
+                                'tx_dlf_documents',
+                                'tx_dlf_relations',
+                                'tx_dlf_collections',
+                                'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                                'tx_dlf_documents.uid',
+                                '',
+                                ''
+                            );
 
-						} else {
+                        } else {
 
-							// Get all documents.
-							$_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'tx_dlf_documents.title AS title,tx_dlf_documents.uid AS uid',
-								'tx_dlf_documents',
-								'tx_dlf_documents.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_documents'),
-								'',
-								'',
-								''
-							);
+                            // Get all documents.
+                            $_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                                'tx_dlf_documents.title AS title,tx_dlf_documents.uid AS uid',
+                                'tx_dlf_documents',
+                                'tx_dlf_documents.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_documents'),
+                                '',
+                                '',
+                                ''
+                            );
 
-						}
+                        }
 
-						// Save them as a list object in user's session.
-						$elements = array ();
+                        // Save them as a list object in user's session.
+                        $elements = array ();
 
-						while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
+                        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
-							$elements[] = array ($resArray['uid'], $resArray['title']);
+                            $elements[] = array ($resArray['uid'], $resArray['title']);
 
-						}
+                        }
 
-						$this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list', $elements);
+                        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list', $elements);
 
-						// Start index looping.
-						if (count($this->list) > 0) {
+                        // Start index looping.
+                        if (count($this->list) > 0) {
 
-							$this->indexLoop();
+                            $this->indexLoop();
 
-						}
+                        }
 
-					}
+                    }
 
-					break;
+                    break;
 
-				case 'indexLoop':
+                case 'indexLoop':
 
-					// Refresh user's session to prevent session timeout.
-					$GLOBALS['BE_USER']->fetchUserSession();
+                    // Refresh user's session to prevent session timeout.
+                    $GLOBALS['BE_USER']->fetchUserSession();
 
-					// Get document list from user's session.
-					$this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+                    // Get document list from user's session.
+                    $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-					// Continue index looping.
-					if (count($this->list) > 0 && isset($this->data['core'])) {
+                    // Continue index looping.
+                    if (count($this->list) > 0 && isset($this->data['core'])) {
 
-						$this->indexLoop();
+                        $this->indexLoop();
 
-					} else {
+                    } else {
 
-						$_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-							'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-							tx_dlf_helper::getLL('flash.seeLog', TRUE),
-							tx_dlf_helper::getLL('flash.done', TRUE),
-							\TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-							TRUE
-						);
+                        $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                            tx_dlf_helper::getLL('flash.seeLog', TRUE),
+                            tx_dlf_helper::getLL('flash.done', TRUE),
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+                            TRUE
+                        );
 
-						tx_dlf_helper::addMessage($_message);
+                        tx_dlf_helper::addMessage($_message);
 
-					}
+                    }
 
-					break;
+                    break;
 
-			}
+            }
 
 
-			$this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
+            $this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
 
-			switch ($this->MOD_SETTINGS['function']) {
+            switch ($this->MOD_SETTINGS['function']) {
 
-				case 'indexFile':
+                case 'indexFile':
 
-					$this->markerArray['CONTENT'] .= $this->getFileForm();
+                    $this->markerArray['CONTENT'] .= $this->getFileForm();
 
-					break;
+                    break;
 
-				case 'reindexDocs':
+                case 'reindexDocs':
 
-					$this->markerArray['CONTENT'] .= $this->getCollList();
+                    $this->markerArray['CONTENT'] .= $this->getCollList();
 
-					break;
+                    break;
 
-			}
+            }
 
-		} else {
+        } else {
 
-			// TODO: Ändern!
-			$this->markerArray['CONTENT'] .= 'You are not allowed to access this page or have not selected a page, yet.';
+            // TODO: Ändern!
+            $this->markerArray['CONTENT'] .= 'You are not allowed to access this page or have not selected a page, yet.';
 
-		}
+        }
 
-		$this->printContent();
+        $this->printContent();
 
-	}
+    }
 
-	/**
-	 * Sets the module's MOD_MENU configuration
-	 *
-	 * @access	protected
-	 *
-	 * @return	void
-	 */
-	protected function setMOD_MENU() {
+    /**
+     * Sets the module's MOD_MENU configuration
+     *
+     * @access	protected
+     *
+     * @return	void
+     */
+    protected function setMOD_MENU() {
 
-		$this->MOD_MENU = array (
-			'function' => array (
-				'indexFile' => $GLOBALS['LANG']->getLL('function.indexFile'),
-				//'reindexDoc' => $GLOBALS['LANG']->getLL('function.reindexDoc'),
-				'reindexDocs' => $GLOBALS['LANG']->getLL('function.reindexDocs'),
-			)
-		);
+        $this->MOD_MENU = array (
+            'function' => array (
+                'indexFile' => $GLOBALS['LANG']->getLL('function.indexFile'),
+                //'reindexDoc' => $GLOBALS['LANG']->getLL('function.reindexDoc'),
+                'reindexDocs' => $GLOBALS['LANG']->getLL('function.reindexDocs'),
+            )
+        );
 
-	}
+    }
 
 }
 

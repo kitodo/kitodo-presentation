@@ -20,711 +20,711 @@
  */
 class tx_dlf_solr {
 
-	/**
-	 * This holds the core name
-	 *
-	 * @var	string
-	 * @access protected
-	 */
-	protected $core = '';
-
-	/**
-	 * This holds the PID for the configuration
-	 *
-	 * @var	integer
-	 * @access protected
-	 */
-	protected $cPid = 0;
-
-	/**
-	 * The extension key
-	 *
-	 * @var	string
-	 * @access public
-	 */
-	public static $extKey = 'dlf';
-
-	/**
-	 * This holds the max results
-	 *
-	 * @var	integer
-	 * @access protected
-	 */
-	protected $limit = 50000;
-
-	/**
-	 * This holds the number of hits for last search
-	 *
-	 * @var	integer
-	 * @access protected
-	 */
-	protected $numberOfHits = 0;
-
-	/**
-	 * This holds the additional query parameters
-	 *
-	 * @var	array
-	 * @access protected
-	 */
-	protected $params = array ();
-
-	/**
-	 * Is the search instantiated successfully?
-	 *
-	 * @var	boolean
-	 * @access protected
-	 */
-	protected $ready = FALSE;
-
-	/**
-	 * This holds the singleton search objects with their core as array key
-	 *
-	 * @var	array(tx_dlf_solr)
-	 * @access protected
-	 */
-	protected static $registry = array ();
-
-	/**
-	 * This holds the Solr service object
-	 *
-	 * @var	Apache_Solr_Service
-	 * @access protected
-	 */
-	protected $service;
-
-	/**
-	 * Escape all special characters in a query string
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$query: The query string
-	 *
-	 * @return	string		The escaped query string
-	 */
-	public static function escapeQuery($query) {
-
-		// Load class.
-		if (!class_exists('Apache_Solr_Service')) {
-
-			require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
-
-		}
-
-		// Escape query phrase or term.
-		if (preg_match('/^".*"$/', $query)) {
-
-			return '"'.Apache_Solr_Service::escapePhrase(trim($query, '"')).'"';
-
-		} else {
+    /**
+     * This holds the core name
+     *
+     * @var	string
+     * @access protected
+     */
+    protected $core = '';
+
+    /**
+     * This holds the PID for the configuration
+     *
+     * @var	integer
+     * @access protected
+     */
+    protected $cPid = 0;
+
+    /**
+     * The extension key
+     *
+     * @var	string
+     * @access public
+     */
+    public static $extKey = 'dlf';
+
+    /**
+     * This holds the max results
+     *
+     * @var	integer
+     * @access protected
+     */
+    protected $limit = 50000;
+
+    /**
+     * This holds the number of hits for last search
+     *
+     * @var	integer
+     * @access protected
+     */
+    protected $numberOfHits = 0;
+
+    /**
+     * This holds the additional query parameters
+     *
+     * @var	array
+     * @access protected
+     */
+    protected $params = array ();
+
+    /**
+     * Is the search instantiated successfully?
+     *
+     * @var	boolean
+     * @access protected
+     */
+    protected $ready = FALSE;
+
+    /**
+     * This holds the singleton search objects with their core as array key
+     *
+     * @var	array(tx_dlf_solr)
+     * @access protected
+     */
+    protected static $registry = array ();
+
+    /**
+     * This holds the Solr service object
+     *
+     * @var	Apache_Solr_Service
+     * @access protected
+     */
+    protected $service;
+
+    /**
+     * Escape all special characters in a query string
+     *
+     * @access	public
+     *
+     * @param	string		$query: The query string
+     *
+     * @return	string		The escaped query string
+     */
+    public static function escapeQuery($query) {
+
+        // Load class.
+        if (!class_exists('Apache_Solr_Service')) {
+
+            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+
+        }
+
+        // Escape query phrase or term.
+        if (preg_match('/^".*"$/', $query)) {
+
+            return '"'.Apache_Solr_Service::escapePhrase(trim($query, '"')).'"';
+
+        } else {
 
-			return Apache_Solr_Service::escape($query);
+            return Apache_Solr_Service::escape($query);
 
-		}
+        }
 
-	}
+    }
 
-	/**
-	 * Escape all special characters in a query string while retaining valid field queries
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$query: The query string
-	 * @param	integer		$pid: The PID for the field configuration
-	 *
-	 * @return	string		The escaped query string
-	 */
-	public static function escapeQueryKeepField($query, $pid) {
+    /**
+     * Escape all special characters in a query string while retaining valid field queries
+     *
+     * @access	public
+     *
+     * @param	string		$query: The query string
+     * @param	integer		$pid: The PID for the field configuration
+     *
+     * @return	string		The escaped query string
+     */
+    public static function escapeQueryKeepField($query, $pid) {
 
-		// Is there a field query?
-		if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(.*\)$/', $query)) {
+        // Is there a field query?
+        if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(.*\)$/', $query)) {
 
-			// Get all indexed fields.
-			$fields = array();
+            // Get all indexed fields.
+            $fields = array();
 
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
-				'tx_dlf_metadata',
-				'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid=' . intval($pid) . ' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)' . tx_dlf_helper::whereClause('tx_dlf_metadata'),
-				'',
-				'',
-				''
-			);
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
+                'tx_dlf_metadata',
+                'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid=' . intval($pid) . ' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)' . tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                '',
+                '',
+                ''
+            );
 
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 
-				while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
 
-					$fields[] = $resArray[0].'_'.($resArray[1] ? 't' : 'u').($resArray[2] ? 's' : 'u').'i';
+                    $fields[] = $resArray[0].'_'.($resArray[1] ? 't' : 'u').($resArray[2] ? 's' : 'u').'i';
 
-				}
+                }
 
-			}
+            }
 
-			// Check if queried field is valid.
-			$splitQuery = explode(':', $query, 2);
+            // Check if queried field is valid.
+            $splitQuery = explode(':', $query, 2);
 
-			if (in_array($splitQuery[0], $fields)) {
+            if (in_array($splitQuery[0], $fields)) {
 
-				$query = $splitQuery[0].':('.self::escapeQuery(trim($splitQuery[1], '()')).')';
+                $query = $splitQuery[0].':('.self::escapeQuery(trim($splitQuery[1], '()')).')';
 
-			} else {
+            } else {
 
-				$query = self::escapeQuery($query);
+                $query = self::escapeQuery($query);
 
-			}
+            }
 
-		} elseif (!empty($query) && $query !== '*') {
+        } elseif (!empty($query) && $query !== '*') {
 
-			// Don't escape plain asterisk search.
-			$query = self::escapeQuery($query);
+            // Don't escape plain asterisk search.
+            $query = self::escapeQuery($query);
 
-		}
+        }
 
-		return $query;
+        return $query;
 
-	}
+    }
 
-	/**
-	 * This is a singleton class, thus instances must be created by this method
-	 *
-	 * @access	public
-	 *
-	 * @param	mixed		$core: Name or UID of the core to load
-	 *
-	 * @return	tx_dlf_solr		Instance of this class
-	 */
-	public static function getInstance($core) {
+    /**
+     * This is a singleton class, thus instances must be created by this method
+     *
+     * @access	public
+     *
+     * @param	mixed		$core: Name or UID of the core to load
+     *
+     * @return	tx_dlf_solr		Instance of this class
+     */
+    public static function getInstance($core) {
 
-		// Save parameter for logging purposes.
-		$_core = $core;
+        // Save parameter for logging purposes.
+        $_core = $core;
 
-		// Get core name if UID is given.
-		if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
+        // Get core name if UID is given.
+        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
 
-			$core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+            $core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
 
-		}
+        }
 
-		// Check if core is set.
-		if (empty($core)) {
+        // Check if core is set.
+        if (empty($core)) {
 
-			if (TYPO3_DLOG) {
+            if (TYPO3_DLOG) {
 
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
-			}
+            }
 
-			return;
+            return;
 
-		}
+        }
 
-		// Check if there is an instance in the registry already.
-		if (is_object(self::$registry[$core]) && self::$registry[$core] instanceof self) {
+        // Check if there is an instance in the registry already.
+        if (is_object(self::$registry[$core]) && self::$registry[$core] instanceof self) {
 
-			// Return singleton instance if available.
-			return self::$registry[$core];
+            // Return singleton instance if available.
+            return self::$registry[$core];
 
-		}
+        }
 
-		// Create new instance...
-		$instance = new self($core);
+        // Create new instance...
+        $instance = new self($core);
 
-		// ...and save it to registry.
-		if ($instance->ready) {
+        // ...and save it to registry.
+        if ($instance->ready) {
 
-			self::$registry[$core] = $instance;
+            self::$registry[$core] = $instance;
 
-			// Return new instance.
-			return $instance;
+            // Return new instance.
+            return $instance;
 
-		} else {
+        } else {
 
-			if (TYPO3_DLOG) {
+            if (TYPO3_DLOG) {
 
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
-			}
+            }
 
-			return;
+            return;
 
-		}
+        }
 
-	}
+    }
 
-	/**
-	 * Returns the connection information a specific Solr core
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$core: Name of the core to load
-	 *
-	 * @return	string		The connection parameters for a specific Solr core
-	 */
-	public static function getSolrConnectionInfo($core = '') {
+    /**
+     * Returns the connection information a specific Solr core
+     *
+     * @access	public
+     *
+     * @param	string		$core: Name of the core to load
+     *
+     * @return	string		The connection parameters for a specific Solr core
+     */
+    public static function getSolrConnectionInfo($core = '') {
 
-		$solrInfo = array ();
+        $solrInfo = array ();
 
-		// Extract extension configuration.
-		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        // Extract extension configuration.
+        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
-		// Derive Solr host name.
-		$solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
+        // Derive Solr host name.
+        $solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
 
-		// Prepend username and password to hostname.
-		if ($conf['solrUser'] && $conf['solrPass']) {
+        // Prepend username and password to hostname.
+        if ($conf['solrUser'] && $conf['solrPass']) {
 
-			$solrInfo['host'] = $conf['solrUser'].':'.$conf['solrPass'].'@'.$solrInfo['host'];
+            $solrInfo['host'] = $conf['solrUser'].':'.$conf['solrPass'].'@'.$solrInfo['host'];
 
-		}
+        }
 
-		// Set port if not set.
-		$solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
+        // Set port if not set.
+        $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
 
-		// Append core name to path.
-		$solrInfo['path'] = trim($conf['solrPath'], '/').'/'.$core;
+        // Append core name to path.
+        $solrInfo['path'] = trim($conf['solrPath'], '/').'/'.$core;
 
-		return $solrInfo;
+        return $solrInfo;
 
-	}
+    }
 
-	/**
-	 * Returns the request URL for a specific Solr core
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$core: Name of the core to load
-	 *
-	 * @return	string		The request URL for a specific Solr core
-	 */
-	public static function getSolrUrl($core = '') {
+    /**
+     * Returns the request URL for a specific Solr core
+     *
+     * @access	public
+     *
+     * @param	string		$core: Name of the core to load
+     *
+     * @return	string		The request URL for a specific Solr core
+     */
+    public static function getSolrUrl($core = '') {
 
-		// Get Solr connection information.
-		$solrInfo = self::getSolrConnectionInfo($core);
+        // Get Solr connection information.
+        $solrInfo = self::getSolrConnectionInfo($core);
 
-		// Return entire request URL.
-		return 'http://'.$solrInfo['host'].':'.$solrInfo['port'].'/'.$solrInfo['path'];
+        // Return entire request URL.
+        return 'http://'.$solrInfo['host'].':'.$solrInfo['port'].'/'.$solrInfo['path'];
 
-	}
+    }
 
-	/**
-	 * Get next unused Solr core number
-	 *
-	 * @access	public
-	 *
-	 * @param	integer		$start: Number to start with
-	 *
-	 * @return	integer		First unused core number found
-	 */
-	public static function solrGetCoreNumber($start = 0) {
+    /**
+     * Get next unused Solr core number
+     *
+     * @access	public
+     *
+     * @param	integer		$start: Number to start with
+     *
+     * @return	integer		First unused core number found
+     */
+    public static function solrGetCoreNumber($start = 0) {
 
-		$start = max(intval($start), 0);
+        $start = max(intval($start), 0);
 
-		// Check if core already exists.
-		if (self::getInstance('dlfCore'.$start) === NULL) {
+        // Check if core already exists.
+        if (self::getInstance('dlfCore'.$start) === NULL) {
 
-			return $start;
+            return $start;
 
-		} else {
+        } else {
 
-			return self::solrGetCoreNumber($start + 1);
+            return self::solrGetCoreNumber($start + 1);
 
-		}
+        }
 
-	}
+    }
 
-	/**
-	 * Processes a search request.
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$query: The search query
-	 *
-	 * @return	tx_dlf_list		The result list
-	 */
-	public function search($query = '') {
+    /**
+     * Processes a search request.
+     *
+     * @access	public
+     *
+     * @param	string		$query: The search query
+     *
+     * @return	tx_dlf_list		The result list
+     */
+    public function search($query = '') {
 
-		// Perform search.
-		$results = $this->service->search((string) $query, 0, $this->limit, $this->params);
+        // Perform search.
+        $results = $this->service->search((string) $query, 0, $this->limit, $this->params);
 
-		$this->numberOfHits = count($results->response->docs);
+        $this->numberOfHits = count($results->response->docs);
 
-		$toplevel = array ();
+        $toplevel = array ();
 
-		$checks = array ();
+        $checks = array ();
 
-		// Get metadata configuration.
-		if ($this->numberOfHits > 0) {
+        // Get metadata configuration.
+        if ($this->numberOfHits > 0) {
 
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_dlf_metadata.index_name AS index_name',
-				'tx_dlf_metadata',
-				'tx_dlf_metadata.is_sortable=1 AND tx_dlf_metadata.pid='.intval($this->cPid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
-				'',
-				'',
-				''
-			);
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_dlf_metadata.index_name AS index_name',
+                'tx_dlf_metadata',
+                'tx_dlf_metadata.is_sortable=1 AND tx_dlf_metadata.pid='.intval($this->cPid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                '',
+                '',
+                ''
+            );
 
-			$sorting = array ();
+            $sorting = array ();
 
-			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-				$sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
+                $sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
 
-			}
+            }
 
-		}
+        }
 
-		// Keep track of relevance.
-		$i = 0;
+        // Keep track of relevance.
+        $i = 0;
 
-		// Process results.
-		foreach ($results->response->docs as $doc) {
+        // Process results.
+        foreach ($results->response->docs as $doc) {
 
-			// Split toplevel documents from subparts.
-			if ($doc->toplevel == 1) {
+            // Split toplevel documents from subparts.
+            if ($doc->toplevel == 1) {
 
-				// Prepare document's metadata for sorting.
-				$docSorting = array ();
+                // Prepare document's metadata for sorting.
+                $docSorting = array ();
 
-				foreach ($sorting as $index_name => $solr_name) {
+                foreach ($sorting as $index_name => $solr_name) {
 
-					if (!empty($doc->$solr_name)) {
+                    if (!empty($doc->$solr_name)) {
 
-						$docSorting[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name[0] : $doc->$solr_name);
+                        $docSorting[$index_name] = (is_array($doc->$solr_name) ? $doc->$solr_name[0] : $doc->$solr_name);
 
-					}
+                    }
 
-				}
+                }
 
-				// Preserve relevance ranking.
-				if (!empty($toplevel[$doc->uid]['s']['relevance'])) {
+                // Preserve relevance ranking.
+                if (!empty($toplevel[$doc->uid]['s']['relevance'])) {
 
-					$docSorting['relevance'] = $toplevel[$doc->uid]['s']['relevance'];
+                    $docSorting['relevance'] = $toplevel[$doc->uid]['s']['relevance'];
 
-				}
+                }
 
-				$toplevel[$doc->uid] = array (
-					'u' => $doc->uid,
-					'h' => '',
-					's' => $docSorting,
-					'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : array ())
-				);
+                $toplevel[$doc->uid] = array (
+                    'u' => $doc->uid,
+                    'h' => '',
+                    's' => $docSorting,
+                    'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : array ())
+                );
 
-			} else {
+            } else {
 
-				$toplevel[$doc->uid]['p'][] = array (
-					'u' => $doc->id,
-					'h' => (!empty($results->highlighting->{$doc->id}->fulltext) ? $results->highlighting->{$doc->id}->fulltext[0] : '')
-				);
+                $toplevel[$doc->uid]['p'][] = array (
+                    'u' => $doc->id,
+                    'h' => (!empty($results->highlighting->{$doc->id}->fulltext) ? $results->highlighting->{$doc->id}->fulltext[0] : '')
+                );
 
-				if (!in_array($doc->uid, $checks)) {
+                if (!in_array($doc->uid, $checks)) {
 
-					$checks[] = $doc->uid;
+                    $checks[] = $doc->uid;
 
-				}
+                }
 
-			}
+            }
 
-			// Add relevance to sorting values.
-			if (empty($toplevel[$doc->uid]['s']['relevance'])) {
+            // Add relevance to sorting values.
+            if (empty($toplevel[$doc->uid]['s']['relevance'])) {
 
-				$toplevel[$doc->uid]['s']['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
+                $toplevel[$doc->uid]['s']['relevance'] = str_pad($i, 6, '0', STR_PAD_LEFT);
 
-			}
+            }
 
-			$i++;
+            $i++;
 
-		}
+        }
 
-		// Check if the toplevel documents have metadata.
-		foreach ($checks as $check) {
+        // Check if the toplevel documents have metadata.
+        foreach ($checks as $check) {
 
-			if (empty($toplevel[$check]['u'])) {
+            if (empty($toplevel[$check]['u'])) {
 
-				// Get information for toplevel document.
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting',
-					'tx_dlf_documents',
-					'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
-					'',
-					'',
-					'1'
-				);
+                // Get information for toplevel document.
+                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                    'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting',
+                    'tx_dlf_documents',
+                    'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
+                    '',
+                    '',
+                    '1'
+                );
 
-				// Process results.
-				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+                // Process results.
+                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-					$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+                    $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-					// Prepare document's metadata for sorting.
-					$sorting = unserialize($resArray['metadata_sorting']);
+                    // Prepare document's metadata for sorting.
+                    $sorting = unserialize($resArray['metadata_sorting']);
 
-					if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
+                    if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
 
-						$sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->cPid);
+                        $sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->cPid);
 
-					}
+                    }
 
-					if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
+                    if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
 
-						$sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->cPid);
+                        $sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->cPid);
 
-					}
+                    }
 
-					if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
+                    if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
 
-						$sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->cPid);
+                        $sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->cPid);
 
-					}
+                    }
 
-					// Preserve relevance ranking.
-					if (!empty($toplevel[$check]['s']['relevance'])) {
+                    // Preserve relevance ranking.
+                    if (!empty($toplevel[$check]['s']['relevance'])) {
 
-						$sorting['relevance'] = $toplevel[$check]['s']['relevance'];
+                        $sorting['relevance'] = $toplevel[$check]['s']['relevance'];
 
-					}
+                    }
 
-					$toplevel[$check] = array (
-						'u' => $resArray['uid'],
-						'h' => '',
-						's' => $sorting,
-						'p' => $toplevel[$check]['p']
-					);
+                    $toplevel[$check] = array (
+                        'u' => $resArray['uid'],
+                        'h' => '',
+                        's' => $sorting,
+                        'p' => $toplevel[$check]['p']
+                    );
 
-				} else {
+                } else {
 
-					// Clear entry if there is no (accessible) toplevel document.
-					unset ($toplevel[$check]);
+                    // Clear entry if there is no (accessible) toplevel document.
+                    unset ($toplevel[$check]);
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
-		// Save list of documents.
-		$list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        // Save list of documents.
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
 
-		$list->reset();
+        $list->reset();
 
-		$list->add(array_values($toplevel));
+        $list->add(array_values($toplevel));
 
-		// Set metadata for search.
-		$list->metadata = array (
-			'label' => '',
-			'description' => '',
-			'options' => array (
-				'source' => 'search',
-				'engine' => 'solr',
-				'select' => $query,
-				'userid' => 0,
-				'params' => $this->params,
-				'core' => $this->core,
-				'pid' => $this->cPid,
-				'order' => 'relevance',
-				'order.asc' => TRUE,
-			)
-		);
+        // Set metadata for search.
+        $list->metadata = array (
+            'label' => '',
+            'description' => '',
+            'options' => array (
+                'source' => 'search',
+                'engine' => 'solr',
+                'select' => $query,
+                'userid' => 0,
+                'params' => $this->params,
+                'core' => $this->core,
+                'pid' => $this->cPid,
+                'order' => 'relevance',
+                'order.asc' => TRUE,
+            )
+        );
 
-		return $list;
+        return $list;
 
-	}
+    }
 
-	/**
-	 * This returns $this->limit via __get()
-	 *
-	 * @access	protected
-	 *
-	 * @return	integer		The max number of results
-	 */
-	protected function _getLimit() {
+    /**
+     * This returns $this->limit via __get()
+     *
+     * @access	protected
+     *
+     * @return	integer		The max number of results
+     */
+    protected function _getLimit() {
 
-		return $this->limit;
+        return $this->limit;
 
-	}
+    }
 
-	/**
-	 * This returns $this->numberOfHits via __get()
-	 *
-	 * @access	protected
-	 *
-	 * @return	integer		Total number of hits for last search
-	 */
-	protected function _getNumberOfHits() {
+    /**
+     * This returns $this->numberOfHits via __get()
+     *
+     * @access	protected
+     *
+     * @return	integer		Total number of hits for last search
+     */
+    protected function _getNumberOfHits() {
 
-		return $this->numberOfHits;
+        return $this->numberOfHits;
 
-	}
+    }
 
-	/**
-	 * This returns $this->ready via __get()
-	 *
-	 * @access	protected
-	 *
-	 * @return	boolean		Is the search instantiated successfully?
-	 */
-	protected function _getReady() {
+    /**
+     * This returns $this->ready via __get()
+     *
+     * @access	protected
+     *
+     * @return	boolean		Is the search instantiated successfully?
+     */
+    protected function _getReady() {
 
-		return $this->ready;
+        return $this->ready;
 
-	}
+    }
 
-	/**
-	 * This returns $this->service via __get()
-	 *
-	 * @access	protected
-	 *
-	 * @return	Apache_Solr_Service		Apache Solr service object
-	 */
-	protected function _getService() {
+    /**
+     * This returns $this->service via __get()
+     *
+     * @access	protected
+     *
+     * @return	Apache_Solr_Service		Apache Solr service object
+     */
+    protected function _getService() {
 
-		return $this->service;
+        return $this->service;
 
-	}
+    }
 
-	/**
-	 * This sets $this->cPid via __set()
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$value: The new PID for the metadata definitions
-	 *
-	 * @return	void
-	 */
-	protected function _setCPid($value) {
+    /**
+     * This sets $this->cPid via __set()
+     *
+     * @access	protected
+     *
+     * @param	integer		$value: The new PID for the metadata definitions
+     *
+     * @return	void
+     */
+    protected function _setCPid($value) {
 
-		$this->cPid = max(intval($value), 0);
+        $this->cPid = max(intval($value), 0);
 
-	}
+    }
 
-	/**
-	 * This sets $this->limit via __set()
-	 *
-	 * @access	protected
-	 *
-	 * @param	integer		$value: The max number of results
-	 *
-	 * @return	void
-	 */
-	protected function _setLimit($value) {
+    /**
+     * This sets $this->limit via __set()
+     *
+     * @access	protected
+     *
+     * @param	integer		$value: The max number of results
+     *
+     * @return	void
+     */
+    protected function _setLimit($value) {
 
-		$this->limit = max(intval($value), 0);
+        $this->limit = max(intval($value), 0);
 
-	}
+    }
 
-	/**
-	 * This sets $this->params via __set()
-	 *
-	 * @access	protected
-	 *
-	 * @param	array		$value: The query parameters
-	 *
-	 * @return	void
-	 */
-	protected function _setParams(array $value) {
+    /**
+     * This sets $this->params via __set()
+     *
+     * @access	protected
+     *
+     * @param	array		$value: The query parameters
+     *
+     * @return	void
+     */
+    protected function _setParams(array $value) {
 
-		$this->params = $value;
+        $this->params = $value;
 
-	}
+    }
 
-	/**
-	 * This magic method is called each time an invisible property is referenced from the object
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$var: Name of variable to get
-	 *
-	 * @return	mixed		Value of $this->$var
-	 */
-	public function __get($var) {
+    /**
+     * This magic method is called each time an invisible property is referenced from the object
+     *
+     * @access	public
+     *
+     * @param	string		$var: Name of variable to get
+     *
+     * @return	mixed		Value of $this->$var
+     */
+    public function __get($var) {
 
-		$method = '_get'.ucfirst($var);
+        $method = '_get'.ucfirst($var);
 
-		if (!property_exists($this, $var) || !method_exists($this, $method)) {
+        if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-			if (TYPO3_DLOG) {
+            if (TYPO3_DLOG) {
 
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
-			}
+            }
 
-			return;
+            return;
 
-		} else {
+        } else {
 
-			return $this->$method();
+            return $this->$method();
 
-		}
+        }
 
-	}
+    }
 
-	/**
-	 * This magic method is called each time an invisible property is referenced from the object
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$var: Name of variable to set
-	 * @param	mixed		$value: New value of variable
-	 *
-	 * @return	void
-	 */
-	public function __set($var, $value) {
+    /**
+     * This magic method is called each time an invisible property is referenced from the object
+     *
+     * @access	public
+     *
+     * @param	string		$var: Name of variable to set
+     * @param	mixed		$value: New value of variable
+     *
+     * @return	void
+     */
+    public function __set($var, $value) {
 
-		$method = '_set'.ucfirst($var);
+        $method = '_set'.ucfirst($var);
 
-		if (!property_exists($this, $var) || !method_exists($this, $method)) {
+        if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-			if (TYPO3_DLOG) {
+            if (TYPO3_DLOG) {
 
-				\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
 
-			}
+            }
 
-		} else {
+        } else {
 
-			$this->$method($value);
+            $this->$method($value);
 
-		}
+        }
 
-	}
+    }
 
-	/**
-	 * This is a singleton class, thus the constructor should be private/protected
-	 *
-	 * @access	protected
-	 *
-	 * @param	string		$core: The name of the core to use
-	 *
-	 * @return	void
-	 */
-	protected function __construct($core) {
+    /**
+     * This is a singleton class, thus the constructor should be private/protected
+     *
+     * @access	protected
+     *
+     * @param	string		$core: The name of the core to use
+     *
+     * @return	void
+     */
+    protected function __construct($core) {
 
-		// Load class.
-		if (!class_exists('Apache_Solr_Service')) {
+        // Load class.
+        if (!class_exists('Apache_Solr_Service')) {
 
-			require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
 
-		}
+        }
 
-		$solrInfo = self::getSolrConnectionInfo($core);
+        $solrInfo = self::getSolrConnectionInfo($core);
 
-		// Instantiate Apache_Solr_Service class.
-		$this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
+        // Instantiate Apache_Solr_Service class.
+        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
 
-		// Check if connection is established.
-		if ($this->service->ping() !== FALSE) {
+        // Check if connection is established.
+        if ($this->service->ping() !== FALSE) {
 
-			// Do not collapse single value arrays.
-			$this->service->setCollapseSingleValueArrays = FALSE;
+            // Do not collapse single value arrays.
+            $this->service->setCollapseSingleValueArrays = FALSE;
 
-			// Set core name.
-			$this->core = $core;
+            // Set core name.
+            $this->core = $core;
 
-			// Instantiation successful!
-			$this->ready = TRUE;
+            // Instantiation successful!
+            $this->ready = TRUE;
 
-		}
+        }
 
-	}
+    }
 
 }

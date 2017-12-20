@@ -19,66 +19,66 @@
  */
 class tx_dlf_toolbox extends tx_dlf_plugin {
 
-	public $scriptRelPath = 'plugins/toolbox/class.tx_dlf_toolbox.php';
+    public $scriptRelPath = 'plugins/toolbox/class.tx_dlf_toolbox.php';
 
-	/**
-	 * The main method of the PlugIn
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
-	 *
-	 * @return	string		The content that is displayed on the website
-	 */
-	public function main($content, $conf) {
+    /**
+     * The main method of the PlugIn
+     *
+     * @access	public
+     *
+     * @param	string		$content: The PlugIn content
+     * @param	array		$conf: The PlugIn configuration
+     *
+     * @return	string		The content that is displayed on the website
+     */
+    public function main($content, $conf) {
 
-		$this->init($conf);
+        $this->init($conf);
 
-		// Quit without doing anything if required variable is not set.
-		if (empty($this->piVars['id'])) {
+        // Quit without doing anything if required variable is not set.
+        if (empty($this->piVars['id'])) {
 
-			return $content;
+            return $content;
 
-		}
+        }
 
-		// Load template file.
-		if (!empty($this->conf['templateFile'])) {
+        // Load template file.
+        if (!empty($this->conf['templateFile'])) {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
 
-		} else {
+        } else {
 
-			$this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/template.tmpl'), '###TEMPLATE###');
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/template.tmpl'), '###TEMPLATE###');
 
-		}
+        }
 
-		// Build data array.
-		$data = array (
-			'conf' => $this->conf,
-			'piVars' => $this->piVars,
-		);
+        // Build data array.
+        $data = array (
+            'conf' => $this->conf,
+            'piVars' => $this->piVars,
+        );
 
-		// Get template subpart for tools.
-		$subpart = $this->cObj->getSubpart($this->template, '###TOOLS###');
+        // Get template subpart for tools.
+        $subpart = $this->cObj->getSubpart($this->template, '###TOOLS###');
 
-		$tools = explode(',', $this->conf['tools']);
+        $tools = explode(',', $this->conf['tools']);
 
-		// Add the tools to the toolbox.
-		foreach ($tools as $tool) {
+        // Add the tools to the toolbox.
+        foreach ($tools as $tool) {
 
-			$tool = trim($tool);
+            $tool = trim($tool);
 
-			$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
-			$cObj->data = $data;
+            $cObj->data = $data;
 
-			$content .= $this->cObj->substituteMarkerArray($subpart, array ('###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])));
+            $content .= $this->cObj->substituteMarkerArray($subpart, array ('###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])));
 
-		}
+        }
 
-		return $this->pi_wrapInBaseClass($this->cObj->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
+        return $this->pi_wrapInBaseClass($this->cObj->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
 
-	}
+    }
 
 }
