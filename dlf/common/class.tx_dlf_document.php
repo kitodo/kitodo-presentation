@@ -917,7 +917,7 @@ final class tx_dlf_document {
 	 */
 	public function getPhysicalPage($logicalPage) {
 
-		if(!empty( $this->lastSearchedPhysicalPage['logicalPage']) &&  $this->lastPhysicalPageSearch['logicalPage'] == $logicalPage) {
+		if(!empty( $this->lastSearchedPhysicalPage['logicalPage']) &&  $this->lastSearchedPhysicalPage['logicalPage'] == $logicalPage) {
 
 			return $this->lastSearchedPhysicalPage['physicalPage'];
 
