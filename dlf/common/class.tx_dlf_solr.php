@@ -136,7 +136,7 @@ class tx_dlf_solr {
 	public static function escapeQueryKeepField($query, $pid) {
 
 		// Is there a field query?
-		if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(.*\)$/', $query)) {
+		if (preg_match('/^[[:alnum:]]+_[tu][su]i:(.*)$/', $query)) {
 
 			// Get all indexed fields.
 			$fields = array();
@@ -528,6 +528,28 @@ class tx_dlf_solr {
 
 		return $list;
 
+	}
+
+	/**
+	 * Processes a search request and returns the raw Apache Solr Documents.
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$query: The search query
+	 *
+	 * @return	array		The Apache Solr Documents that were fetched
+	 */
+	public function search_raw($query = '', $parameters = array())
+	{
+		$solr_response =	$this->service->search((string)$query, 0, $this->limit, array_merge($this->params, $parameters));
+
+		$searchresult = array();
+
+		foreach ($solr_response->response->docs as $doc) {
+			$searchresult[] = $doc;
+		}
+
+		return $searchresult;
 	}
 
 	/**
