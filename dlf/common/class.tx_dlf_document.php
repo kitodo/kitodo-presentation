@@ -1404,10 +1404,12 @@ final class tx_dlf_document {
 		$metadata['collection'] = $collections;
 
 		// Get UID for owner.
+		$owner = !empty($metadata['owner'][0]) ? $metadata['owner'][0] : 'default';
+
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_dlf_libraries.uid AS uid',
 			'tx_dlf_libraries',
-			'tx_dlf_libraries.pid='.intval($pid).' AND tx_dlf_libraries.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['owner'][0], 'tx_dlf_libraries').tx_dlf_helper::whereClause('tx_dlf_libraries'),
+			'tx_dlf_libraries.pid='.intval($pid).' AND tx_dlf_libraries.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($owner, 'tx_dlf_libraries').tx_dlf_helper::whereClause('tx_dlf_libraries'),
 			'',
 			'',
 			'1'
@@ -1415,7 +1417,7 @@ final class tx_dlf_document {
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-			list ($owner) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+			list ($ownerUid) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
 		} else {
 
@@ -1424,8 +1426,8 @@ final class tx_dlf_document {
 
 			$libData['tx_dlf_libraries'][$libNewUid] = array (
 				'pid' => $pid,
-				'label' => $metadata['owner'][0],
-				'index_name' => $metadata['owner'][0],
+				'label' => $owner,
+				'index_name' => $owner,
 				'website' => '',
 				'contact' => '',
 				'image' => '',
@@ -1440,13 +1442,13 @@ final class tx_dlf_document {
 			$substUid = tx_dlf_helper::processDB($libData);
 
 			// Add new library's UID.
-			$owner = $substUid[$libNewUid];
+			$ownerUid = $substUid[$libNewUid];
 
 			if (!defined('TYPO3_cliMode')) {
 
 				$message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newLibrary'), $metadata['owner'][0], $owner)),
+					htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.newLibrary'), $owner, $ownerUid)),
 					tx_dlf_helper::getLL('flash.attention', TRUE),
 					\TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
 					TRUE
@@ -1458,7 +1460,7 @@ final class tx_dlf_document {
 
 		}
 
-		$metadata['owner'][0] = $owner;
+		$metadata['owner'][0] = $ownerUid;
 
 		// Get UID of parent document.
 		$partof = 0;
