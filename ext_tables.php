@@ -9,7 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
+if (!defined ('TYPO3_MODE')) {
+    die ('Access denied.');
+}
 
 // Register static typoscript.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'Basic Configuration');
@@ -163,16 +165,16 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_validator'] =
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_validator', 'FILE:EXT:'.$_EXTKEY.'/plugins/validator/flexform.xml');
 
 // Register modules.
-if (TYPO3_MODE == 'BE')	{
+if (TYPO3_MODE == 'BE') {
 
     // Add modules after "web".
-    if (!isset($TBE_MODULES['txdlfmodules']))	{
+    if (!isset($TBE_MODULES['txdlfmodules'])) {
 
         $modules = array();
 
-        foreach($TBE_MODULES as $key => $val)	{
+        foreach($TBE_MODULES as $key => $val) {
 
-            if ($key == 'web')	{
+            if ($key == 'web') {
 
                 $modules[$key] = $val;
 

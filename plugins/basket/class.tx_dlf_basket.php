@@ -216,7 +216,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             $mailForm .= '<option value="">'.$this->pi_getLL('chooseMail', '', TRUE).'</option>';
 
-            while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail)){
+            while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail)) {
 
                 $mails[] = $row;
 
@@ -261,7 +261,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             $printForm .= '<option value="">'.$this->pi_getLL('choosePrinter', '', TRUE).'</option>';
 
-            while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter)){
+            while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter)) {
 
                 $printers[] = $row;
 
