@@ -317,6 +317,30 @@ class tx_dlf_search extends tx_dlf_plugin {
 	}
 
 	/**
+	 * Adds the logical page field to the search form
+	 *
+	 * @access	protected
+	 *
+	 * @return	string		HTML output of logical page field
+	 */
+	protected function addLogicalPage() {
+		
+		$output = '';
+
+		// Check for plugin configuration.
+		if (!empty($this->conf['showLogicalPageField'])) {
+			
+			$output .= ' <label for="tx-dlf-search-logical-page">' . $this->pi_getLL('label.logicalPage', '') . ': </label>';
+			
+			$output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="' . $this->prefixId . '[logicalPage]" />';
+			
+		}
+
+		return $output;
+		
+	}
+
+	/**
 	 * Creates an array for a HMENU entry of a facet value.
 	 *
 	 * @param	string		$field: The facet's index_name
@@ -482,7 +506,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 				'###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
 				'###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
 				'###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
-				'###FACETS_MENU###' => $this->addFacetsMenu()
+				'###FACETS_MENU###' => $this->addFacetsMenu(),
+				'###LOGICAL_PAGE###' => $this->addLogicalPage()
 			);
 
 			// Get additional fields for extended search.
@@ -654,17 +679,22 @@ class tx_dlf_search extends tx_dlf_plugin {
 			// Clean output buffer.
 			\TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
+			$additionalParams = array();
+
+			if(!empty($this->piVars['logicalPage'])) {
+
+				$additionalParams['logicalPage'] = $this->piVars['logicalPage'];
+
+			}
+
 			// Jump directly to the page view, if there is only one result and it is configured
 			if($results->count() == 1 && !empty($this->conf['showSingleResult'])) {
 
 				$linkConf['parameter'] = $this->conf['targetPidPageView'];
 
-				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,
-					array (
-						'id' => $results->current()['uid'],
-						'highlight_word' => preg_replace('/\s\s+/', ';', $results->metadata['searchString']),
-						'page' => count($results[0]['subparts']) == 1?$results[0]['subparts'][0]['page']:1
-					), '', TRUE, FALSE);
+				$additionalParams['id'] = $results->current()['uid'];
+				$additionalParams['highlight_word'] = preg_replace('/\s\s+/', ';', $results->metadata['searchString']);
+				$additionalParams['page'] = count($results[0]['subparts']) == 1?$results[0]['subparts'][0]['page']:1;
 
 			} else {
 
@@ -673,15 +703,14 @@ class tx_dlf_search extends tx_dlf_plugin {
 
 				if (!empty($this->piVars['order'])) {
 
-					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId,
-							array (
-								'order' => $this->piVars['order'],
-								'asc' => (!empty($this->piVars['asc']) ? '1' : '0')
-							), '', TRUE, FALSE);
+					$additionalParams['order'] = $this->piVars['order'];
+					$additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
 
 				}
 
 			}
+
+			$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
 
 			// Send headers.
 			header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));

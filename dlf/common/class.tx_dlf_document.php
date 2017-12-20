@@ -116,6 +116,14 @@ final class tx_dlf_document {
 	protected $hasFulltext = FALSE;
 
 	/**
+	 * Last searched logical and physical page
+	 *
+	 * @var	array
+	 * @access protected
+	 */
+	protected $lastSearchedPhysicalPage = array ('logicalPage' => NULL, 'physicalPage' => NULL);
+
+	/**
 	 * This holds the documents location
 	 *
 	 * @var	string
@@ -898,6 +906,46 @@ final class tx_dlf_document {
 
 	}
 
+	/**
+	 * This returns the first corresponding physical page number of a given logical page label
+	 *
+	 * @access	public
+	 *
+	 * @param	string		$logicalPage: The label (or a part of the label) of the logical page
+	 *
+	 * @return	integer		The physical page number
+	 */
+	public function getPhysicalPage($logicalPage) {
+
+		if(!empty( $this->lastSearchedPhysicalPage['logicalPage']) &&  $this->lastPhysicalPageSearch['logicalPage'] == $logicalPage) {
+
+			return $this->lastSearchedPhysicalPage['physicalPage'];
+
+		} else {
+
+			$physicalPage = 0;
+
+			foreach($this->physicalStructureInfo as $page) {
+
+				if(strpos($page['orderlabel'], $logicalPage) !== false){
+
+					$this->lastSearchedPhysicalPage['logicalPage'] = $logicalPage;
+					$this->lastSearchedPhysicalPage['physicalPage'] = $physicalPage;
+
+					return $physicalPage;
+
+				}
+
+				$physicalPage++;
+
+			}
+
+		}
+
+		return 1;
+
+	}
+	
 	/**
 	 * This determines a title for the given document
 	 *
