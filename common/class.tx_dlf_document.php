@@ -931,7 +931,7 @@ final class tx_dlf_document {
 
             foreach($this->physicalStructureInfo as $page) {
 
-                if(strpos($page['orderlabel'], $logicalPage) !== false) {
+                if(strpos($page['orderlabel'], $logicalPage) !== FALSE) {
 
                     $this->lastSearchedPhysicalPage['logicalPage'] = $logicalPage;
                     $this->lastSearchedPhysicalPage['physicalPage'] = $physicalPage;

@@ -166,7 +166,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
             $params = array(
                 'id' => $this->piVars['id'],
-                'addToBasket' => true
+                'addToBasket' => TRUE
             );
 
             if (empty($this->piVars['page'])) {

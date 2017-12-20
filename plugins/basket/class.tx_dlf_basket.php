@@ -73,7 +73,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
 
-            $GLOBALS['TSFE']->fe_user->sesData_change = true;
+            $GLOBALS['TSFE']->fe_user->sesData_change = TRUE;
 
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
@@ -412,7 +412,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         }
 
-        if ($page != null || $_piVars['addToBasket'] == 'list') {
+        if ($page != NULL || $_piVars['addToBasket'] == 'list') {
 
             $documentItem = array(
                 'id' => intval($_piVars['id']),
@@ -442,7 +442,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
             $document = tx_dlf_document::getInstance($documentItem['id'],0);
 
             // set endpage for toc and subentry based on logid
-            if (($_piVars['addToBasket'] == 'subentry') OR ($_piVars['addToBasket'] == 'toc')) {
+            if (($_piVars['addToBasket'] == 'subentry') or ($_piVars['addToBasket'] == 'toc')) {
 
                 $smLinks = $document->smLinks;
 
@@ -724,7 +724,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         }
 
-        return false;
+        return FALSE;
 
     }
 
