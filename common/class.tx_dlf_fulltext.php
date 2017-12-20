@@ -20,15 +20,15 @@
  */
 interface tx_dlf_fulltext {
 
-	/**
-	 * This extracts raw fulltext data from XML
-	 *
-	 * @access	public
-	 *
-	 * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
-	 *
-	 * @return	string			The raw unformatted fulltext
-	 */
-	public static function getRawText(SimpleXMLElement $xml);
+    /**
+     * This extracts raw fulltext data from XML
+     *
+     * @access	public
+     *
+     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     *
+     * @return	string			The raw unformatted fulltext
+     */
+    public static function getRawText(SimpleXMLElement $xml);
 
 }
