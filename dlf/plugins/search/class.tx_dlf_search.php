@@ -693,10 +693,8 @@ class tx_dlf_search extends tx_dlf_plugin {
 				$linkConf['parameter'] = $this->conf['targetPidPageView'];
 
 				$additionalParams['id'] = $results->current()['uid'];
-				$additionalParams['highlight_word'] = $results->current()['uid'];
-				$additionalParams['page'] = $results->current()['uid'];
-
-				$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
+				$additionalParams['highlight_word'] = preg_replace('/\s\s+/', ';', $results->metadata['searchString']);
+				$additionalParams['page'] = count($results[0]['subparts']) == 1?$results[0]['subparts'][0]['page']:1;
 
 			} else {
 
@@ -708,11 +706,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 					$additionalParams['order'] = $this->piVars['order'];
 					$additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
 
-					$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
-
 				}
 
 			}
+
+			$linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
 
 			// Send headers.
 			header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
