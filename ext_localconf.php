@@ -9,7 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
+if (!defined ('TYPO3_MODE')) {
+    die ('Access denied.');
+}
 
 // Register plugins.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/audioplayer/class.tx_dlf_audioplayer.php', '_audioplayer', 'list_type', TRUE);
