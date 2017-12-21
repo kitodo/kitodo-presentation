@@ -561,11 +561,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                 }
 
-                // Add highlighting for fulltext.
-                $params['hl'] = 'true';
-
-                $params['hl.fl'] = 'fulltext';
-
             } else {
                 // Retain given search field if valid.
                 $query = tx_dlf_solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
