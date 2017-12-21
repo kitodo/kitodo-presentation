@@ -125,7 +125,7 @@ limitations under the License.
 		<!-- Autocomplete field for search form. -->
 		<field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
 		<!-- Fulltext field for OCR results. -->
-		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" />
+		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" termVectors="true" termPositions="true" termOffsets="true" />
 		<!-- Record ID of the document (required for OAI_DC output). -->
 		<field name="record_id" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
 		<!-- Permanent URL of the document (required for EPICUR output). -->

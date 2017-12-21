@@ -259,6 +259,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                         $params = array();
 
                         $params['hl'] = 'true';
+                        $params['hl.useFastVectorHighlighter'] = 'true';
                         $params['hl.fl'] = 'fulltext';
                         $params['fl'] = 'id';
 
