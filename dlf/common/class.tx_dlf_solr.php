@@ -541,7 +541,7 @@ class tx_dlf_solr {
 	 */
 	public function search_raw($query = '', $parameters = array())
 	{
-		$solr_response =	$this->service->search((string)$query, 0, $this->limit, array_merge($this->params, $parameters));
+		$solr_response = $this->service->search((string)$query, 0, $this->limit, array_merge($this->params, $parameters));
 
 		$searchresult = array();
 

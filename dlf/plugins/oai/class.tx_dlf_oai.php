@@ -913,53 +913,53 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		} else {
 			// If no set is specified we have to query for all collections
-            $solr_query .= 'collection:* NOT collection:""';
+			$solr_query .= 'collection:* NOT collection:""';
 
 		}
 
 		// Check for required fields.
 		foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-		    $solr_query .= ' NOT ' . $required . ':""';
+			$solr_query .= ' NOT ' . $required . ':""';
 		}
 
 		$from = "*";
 		// Check "from" for valid value.
 		if (!empty($this->piVars['from'])) {
 
-            // Is valid format?
-            if (is_array($date_array = strptime($this->piVars['from'],
-                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+			// Is valid format?
+			if (is_array($date_array = strptime($this->piVars['from'],
+					'%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
 
-                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
-                    $date_array['tm_mday'], $date_array['tm_year'] + 1900);
+				$timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+					$date_array['tm_mday'], $date_array['tm_year'] + 1900);
 
-               $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) .'.000Z';
+			   $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) .'.000Z';
 
-            } else {
-                throw new Exception('badArgument');
-            }
+			} else {
+				throw new Exception('badArgument');
+			}
 		}
 
 		$until = "*";
 		// Check "until" for valid value.
 		if (!empty($this->piVars['until'])) {
 
-            // Is valid format?
-            if (is_array($date_array = strptime($this->piVars['until'],
-                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+			// Is valid format?
+			if (is_array($date_array = strptime($this->piVars['until'],
+					'%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
 
-                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
-                    $date_array['tm_mday'], $date_array['tm_year'] + 1900);
+				$timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+					$date_array['tm_mday'], $date_array['tm_year'] + 1900);
 
-                $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
+				$until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
 
-                if ($from != "*" && $from > $until) {
-                    throw new Exception('badArgument');
-                }
+				if ($from != "*" && $from > $until) {
+					throw new Exception('badArgument');
+				}
 
-            } else {
-                throw new Exception('badArgument');
-            }
+			} else {
+				throw new Exception('badArgument');
+			}
 		}
 
 		// Check "from" and "until" for same granularity.
@@ -973,20 +973,20 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$documentSet = array();
 
-        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+		$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
-        // We only care about the UID in the results and want them sorted
-        $parameters = array("fl" => "uid", "sort" => "uid asc");
+		// We only care about the UID in the results and want them sorted
+		$parameters = array("fl" => "uid", "sort" => "uid asc");
 
-        $result = $solr->search_raw($solr_query, $parameters);
+		$result = $solr->search_raw($solr_query, $parameters);
 
-        if (empty($result)) {
-            throw new Exception('noRecordsMatch');
-        }
+		if (empty($result)) {
+			throw new Exception('noRecordsMatch');
+		}
 
-        foreach ($result as $doc) {
-            $documentSet[] = $doc->uid;
-        }
+		foreach ($result as $doc) {
+			$documentSet[] = $doc->uid;
+		}
 
 		return $documentSet;
 	}
