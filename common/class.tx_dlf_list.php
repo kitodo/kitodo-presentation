@@ -241,6 +241,8 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                 if ($this->solrConnect()) {
 
+                    $params = array();
+
                     // Restrict the fields to the required ones
                     $params['fl'] = "uid,id,toplevel,thumbnail,page";
 
@@ -251,7 +253,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     }
 
                     // Get document's thumbnail and metadata from Solr index.
-                    $result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']), 0, $this->solr->limit);
+                    $result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']), 0, $this->solr->limit, $params);
 
                     // If it is a fulltext search, enable highlighting and fetch the results
                     if($this->metadata['fulltextSearch']) {
