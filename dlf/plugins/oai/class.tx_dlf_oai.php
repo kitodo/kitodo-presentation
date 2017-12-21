@@ -1098,7 +1098,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$token = uniqid();
 
-			$result = $GLOBALS['TYPO3_DB']->exec_INSERTquery(
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				'tx_dlf_tokens',
 				array(
 					'tstamp' => $GLOBALS['EXEC_TIME'],
