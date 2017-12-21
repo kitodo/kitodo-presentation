@@ -241,7 +241,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                 if ($this->solrConnect()) {
 
-                    $params = array();
+                    $params = array ();
 
                     // Restrict the fields to the required ones
                     $params['fl'] = "uid,id,toplevel,thumbnail,page";
@@ -256,9 +256,9 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     $result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']), 0, $this->solr->limit, $params);
 
                     // If it is a fulltext search, enable highlighting and fetch the results
-                    if($this->metadata['fulltextSearch']) {
+                    if ($this->metadata['fulltextSearch']) {
 
-                        $params = array();
+                        $params = array ();
 
                         $params['hl'] = 'true';
                         $params['hl.useFastVectorHighlighter'] = 'true';
@@ -296,10 +296,10 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                         } elseif (isset($record['subparts'][$resArray->id])) {
 
-                        	$record['subparts'][$resArray->id] = array (
+                            $record['subparts'][$resArray->id] = array (
                                 'uid' => $resArray->uid,
                                 'page' => $resArray->page,
-                        	    'preview' => (!empty($result_highlights->highlighting->{$resArray->id}->fulltext[0])?$result_highlights->highlighting->{$resArray->id}->fulltext[0]:""),
+                                'preview' => (!empty($result_highlights->highlighting->{$resArray->id}->fulltext[0]) ? $result_highlights->highlighting->{$resArray->id}->fulltext[0] : ""),
                                 'thumbnail' => $resArray->thumbnail,
                                 'metadata' => $metadata
                             );

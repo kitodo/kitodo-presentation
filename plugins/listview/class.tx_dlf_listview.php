@@ -316,7 +316,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
      */
     private function getFieldWrap($index_name, $wrap) {
 
-        if(isset($this->fieldwrap[$index_name])) {
+        if (isset($this->fieldwrap[$index_name])) {
 
             return $this->fieldwrap[$index_name];
 
