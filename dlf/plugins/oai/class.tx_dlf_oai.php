@@ -869,7 +869,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		return $ListSets;
 	}
-	
+
 
 
 	/**
@@ -878,7 +878,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 	 */
 	private function fetchDocumentUIDs()
 	{
-		$where = $solr_query = '';
+		$solr_query = '';
 
 		if (!$this->conf['show_userdefined']) {
 			$where = ' AND tx_dlf_collections.fe_cruser_id=0';
@@ -905,106 +905,61 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 			$resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-			if (empty($this->conf['solrusage'])) {
-				$where .= ' AND tx_dlf_collections.uid=' . intval($resArray['uid']);
+			if($resArray['index_query'] != "") {
+				$solr_query .= '(' . $resArray['index_query'] . ')';
 			} else {
-
-				if($resArray['index_query'] != "") {
-					$solr_query .= '(' . $resArray['index_query'] . ')';
-				} else {
-					$solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
-				}
-
-
+				$solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
 			}
 
 		} else {
 			// If no set is specified we have to query for all collections
-			if (!empty($this->conf['solrusage'])) {
-				$solr_query .= 'collection:* NOT collection:""';
-			}
+            $solr_query .= 'collection:* NOT collection:""';
+
 		}
 
 		// Check for required fields.
 		foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-			if (!empty($this->conf['solrusage'])) {
-				$solr_query .= ' NOT ' . $required . ':""';
-			} else {
-				$where .= ' AND NOT tx_dlf_documents.' . $required . '=\'\'';
-			}
+		    $solr_query .= ' NOT ' . $required . ':""';
 		}
 
 		$from = "*";
 		// Check "from" for valid value.
 		if (!empty($this->piVars['from'])) {
 
-			if (!empty($this->conf['solrusage'])) {
+            // Is valid format?
+            if (is_array($date_array = strptime($this->piVars['from'],
+                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
 
-				// Is valid format?
-				if (is_array($date_array = strptime($this->piVars['from'],
-						'%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+                    $date_array['tm_mday'], $date_array['tm_year'] + 1900);
 
-					$timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
-						$date_array['tm_mday'], $date_array['tm_year'] + 1900);
+               $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) .'.000Z';
 
-				   $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) .'.000Z';
-
-				} else {
-					throw new Exception('badArgument');
-				}
-
-
-			} else {
-				if (is_array($from = strptime($this->piVars['from'],
-						'%Y-%m-%dT%H:%M:%SZ')) || is_array($from = strptime($this->piVars['from'], '%Y-%m-%d'))) {
-					$from = gmmktime($from['tm_hour'], $from['tm_min'], $from['tm_sec'], $from['tm_mon'] + 1,
-						$from['tm_mday'], $from['tm_year'] + 1900);
-				} else {
-					throw new Exception('badArgument');
-				}
-				$where .= ' AND tx_dlf_documents.tstamp>=' . intval($from);
-			}
+            } else {
+                throw new Exception('badArgument');
+            }
 		}
 
 		$until = "*";
 		// Check "until" for valid value.
 		if (!empty($this->piVars['until'])) {
 
-			if (!empty($this->conf['solrusage'])) {
+            // Is valid format?
+            if (is_array($date_array = strptime($this->piVars['until'],
+                    '%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
 
-				// Is valid format?
-				if (is_array($date_array = strptime($this->piVars['until'],
-						'%Y-%m-%dT%H:%M:%SZ')) || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
+                    $date_array['tm_mday'], $date_array['tm_year'] + 1900);
 
-					$timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1,
-						$date_array['tm_mday'], $date_array['tm_year'] + 1900);
+                $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
 
-					$until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
+                if ($from != "*" && $from > $until) {
+                    throw new Exception('badArgument');
+                }
 
-					if ($from != "*" && $from > $until) {
-						throw new Exception('badArgument');
-					}
-
-				} else {
-					throw new Exception('badArgument');
-				}
-
-			} else {
-
-				if (is_array($until = strptime($this->piVars['until'],
-						'%Y-%m-%dT%H:%M:%SZ')) || is_array($until = strptime($this->piVars['until'], '%Y-%m-%d'))) {
-					$until = gmmktime($until['tm_hour'], $until['tm_min'], $until['tm_sec'], $until['tm_mon'] + 1,
-						$until['tm_mday'], $until['tm_year'] + 1900);
-				} else {
-					throw new Exception('badArgument');
-				}
-
-				if (!empty($from) && $from > $until) {
-					throw new Exception('badArgument');
-				}
-
-				$where .= ' AND tx_dlf_documents.tstamp<=' . intval($until);
-			}
+            } else {
+                throw new Exception('badArgument');
+            }
 		}
 
 		// Check "from" and "until" for same granularity.
@@ -1018,44 +973,20 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
 		$documentSet = array();
 
-		if (empty($this->conf['solrusage'])) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_dlf_documents.uid',
-				'tx_dlf_documents',
-				'tx_dlf_relations',
-				'tx_dlf_collections',
-				'AND tx_dlf_documents.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages']) . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls',
-					'tx_dlf_relations') . $where . tx_dlf_helper::whereClause('tx_dlf_collections'),
-				'tx_dlf_documents.uid',
-				'tx_dlf_documents.tstamp',
-				''
-			);
+        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
-			if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-				throw new Exception('noRecordsMatch');
-			}
+        // We only care about the UID in the results and want them sorted
+        $parameters = array("fl" => "uid", "sort" => "uid asc");
 
-			while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-				$documentSet[] = $resArray['uid'];
-			}
+        $result = $solr->search_raw($solr_query, $parameters);
 
-		} else {
+        if (empty($result)) {
+            throw new Exception('noRecordsMatch');
+        }
 
-			$solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
-
-			// We only care about the UID in the results and want them sorted
-			$parameters = array("fl" => "uid", "sort" => "uid asc");
-
-			$result = $solr->search_raw($solr_query, $parameters);
-
-			if (empty($result)) {
-				throw new Exception('noRecordsMatch');
-			}
-
-			foreach ($result as $doc) {
-				$documentSet[] = $doc->uid;
-			}
-		}
+        foreach ($result as $doc) {
+            $documentSet[] = $doc->uid;
+        }
 
 		return $documentSet;
 	}
