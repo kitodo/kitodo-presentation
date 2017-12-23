@@ -41,7 +41,6 @@ class tx_dlf_search extends tx_dlf_plugin {
             '1'
         );
 
-
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
             $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/search/tx_dlf_search_suggest.js"></script>';
@@ -324,20 +323,20 @@ class tx_dlf_search extends tx_dlf_plugin {
      * @return	string		HTML output of logical page field
      */
     protected function addLogicalPage() {
-		
+
         $output = '';
 
         // Check for plugin configuration.
         if (!empty($this->conf['showLogicalPageField'])) {
-			
+
             $output .= ' <label for="tx-dlf-search-logical-page">'.$this->pi_getLL('label.logicalPage', '').': </label>';
-			
+
             $output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="'.$this->prefixId.'[logicalPage]" />';
-			
+
         }
 
         return $output;
-		
+
     }
 
     /**

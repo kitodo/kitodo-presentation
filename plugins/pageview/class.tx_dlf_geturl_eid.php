@@ -47,7 +47,8 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $this->scriptRelPath = 'plugins/pageview/class.tx_dlf_geturl_eid.php';
 
         $url = GeneralUtility::_GP('url');
-    $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(GeneralUtility::_GP('header'), 0, 2, 0);
+
+        $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(GeneralUtility::_GP('header'), 0, 2, 0);
 
         // first we fetch header separately
         $fetchedHeader = GeneralUtility::getUrl($url, 2);

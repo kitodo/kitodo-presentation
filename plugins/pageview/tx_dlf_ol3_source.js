@@ -59,9 +59,11 @@ dlfViewerSource.tileLoadFunction = function(tileSize, tile, url) {
             ctx.drawImage(img, 0, 0);
 
             var key = dlfViewerSource.findKey(tile, function(v) {return v == img;});
-            if (key) tile[key] = canvas;
+            if (key) {
+                tile[key] = canvas;
+            }
         }
-    })
+    });
     img.src = url;
 };
 

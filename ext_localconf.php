@@ -76,20 +76,16 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_geturl_eid'] = 'EXT:'.$
 
 if (TYPO3_MODE === 'FE') {
 
-    /*
-	 * docTypeCheck user function to use in Typoscript
-	 *
-	 * @access	public
-	 *
-	 * @param	string		$type: document type string to test for
-	 *
-	 * @usage:
-	 * [userFunc = user_dlf_docTypeCheck($type)]
-	 * ...
-	 * [global]
-	 *
-	 * @return	boolean		TRUE if document type matches, FALSE if not
-	 **/
+    /**
+     * docTypeCheck user function to use in Typoscript
+     * @example [userFunc = user_dlf_docTypeCheck($type)]
+     *
+     * @access	public
+     *
+     * @param	string		$type: document type string to test for
+     *
+     * @return	boolean		TRUE if document type matches, FALSE if not
+     */
     function user_dlf_docTypeCheck($type) {
 
         $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_doctype');

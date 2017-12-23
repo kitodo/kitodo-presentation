@@ -1149,8 +1149,8 @@ class tx_dlf_helper {
         }
 
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
-		 * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
-		 * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
+         * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
+         * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
 
         // First fetch the uid of the received index_name
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(

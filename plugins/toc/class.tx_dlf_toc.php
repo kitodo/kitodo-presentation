@@ -226,7 +226,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
                 // The logical page parameter should not appear again
                 unset($this->piVars['logicalPage']);
 
-                }
+            }
 
             // Set default values for page if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)

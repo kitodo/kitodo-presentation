@@ -129,13 +129,13 @@ abstract class tx_dlf_module extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
         // Set $this->MOD_MENU array here or leave empty.
 
         /* Example code:
-		$this->MOD_MENU = array (
-			'function' => array (
-				'1' => $GLOBALS['LANG']->getLL('function1'),
-				'2' => $GLOBALS['LANG']->getLL('function2'),
-				'3' => $GLOBALS['LANG']->getLL('function3'),
-			)
-		); */
+        $this->MOD_MENU = array (
+            'function' => array (
+                '1' => $GLOBALS['LANG']->getLL('function1'),
+                '2' => $GLOBALS['LANG']->getLL('function2'),
+                '3' => $GLOBALS['LANG']->getLL('function3'),
+            )
+        ); */
 
     }
 

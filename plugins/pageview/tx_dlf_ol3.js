@@ -26,17 +26,17 @@ ol.Map.prototype.getZoomRange = function() {
 
 /**
  * Zooms to given zoomLevel
- * 
+ *
  * @param {number} zoomLevel
  */
 ol.Map.prototype.zoom = function(zoomLevel) {
     var view = this.getView(),
-    	resolution = view.getResolution();
-	this.beforeRender(ol.animation.zoom({
-	    'resolution': resolution,
-	    'duration': 500
-	}));
-	view.setZoom(zoomLevel);
+        resolution = view.getResolution();
+    this.beforeRender(ol.animation.zoom({
+        'resolution': resolution,
+        'duration': 500
+    }));
+    view.setZoom(zoomLevel);
 };
 
 /**

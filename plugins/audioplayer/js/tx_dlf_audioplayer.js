@@ -19,8 +19,9 @@ var dlfAudioPlayer = function (settings) {
       solutions = swfPath !== undefined ? 'html, flash' : 'html',
       audioOptions = settings.audio !== undefined ? settings.audio : undefined;
 
-    if (audioOptions === undefined)
+    if (audioOptions === undefined) {
         throw new Error('Missing audio configurations.');
+    }
 
     var format = dlfAudioPlayer.JPLAYER_MIMETYPE_FORMAT_MAPPING[audioOptions.mimeType] !== undefined
             ? dlfAudioPlayer.JPLAYER_MIMETYPE_FORMAT_MAPPING[audioOptions.mimeType]
@@ -32,7 +33,7 @@ var dlfAudioPlayer = function (settings) {
     //
     var jPlayerOptions = {
         ready: function() {
-          $(this).jPlayer('setMedia', audioOptions)
+          $(this).jPlayer('setMedia', audioOptions);
         },
         solution: solutions,
         supplied: format,

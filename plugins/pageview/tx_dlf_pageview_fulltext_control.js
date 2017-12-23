@@ -56,8 +56,8 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @private
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
-    	dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-    	{'fulltext-on':'Activate Fulltext','fulltext-off':'Dectivate Fulltext'};
+        dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
+        {'fulltext-on':'Activate Fulltext','fulltext-off':'Dectivate Fulltext'};
 
     /**
      * @type {ol.Feature|undefined}
@@ -109,8 +109,9 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                 // effect on the map
 
                 var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                    if (feature.get('type') === 'textblock')
+                    if (feature.get('type') === 'textblock') {
                         return feature;
+                    }
                 });
 
                 // deselect all
@@ -142,8 +143,9 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                 this.selectedFeature_ = feature;
 
 
-                if (dlfUtils.exists(feature))
+                if (dlfUtils.exists(feature)) {
                     this.showFulltext([feature]);
+                }
 
             },
         this),
@@ -161,10 +163,12 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                     textlineFeature;
 
                 map_.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                    if (feature.get('type') === 'textblock')
+                    if (feature.get('type') === 'textblock') {
                         textblockFeature = feature;
-                    if (feature.get('type') === 'textline')
+                    }
+                    if (feature.get('type') === 'textline') {
                         textlineFeature = feature;
+                    }
                 });
 
                 //

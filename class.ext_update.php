@@ -140,8 +140,8 @@ class ext_update {
             );
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-			
-            if ($resArray['column_name'] == 'tokenized' 
+
+            if ($resArray['column_name'] == 'tokenized'
                 || $resArray['column_name'] == 'stored'
                 || $resArray['column_name'] == 'indexed'
                 || $resArray['column_name'] == 'boost'

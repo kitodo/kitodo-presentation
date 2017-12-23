@@ -84,7 +84,6 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
 
         }
 
-
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
 
         if (!empty($fullTextFile)) {

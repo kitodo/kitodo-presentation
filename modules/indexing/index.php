@@ -328,7 +328,6 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
             }
 
-
             $this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
 
             switch ($this->MOD_SETTINGS['function']) {

@@ -210,8 +210,9 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
         height: height
     };
 
-    if (this.map)
+    if (this.map) {
         this.displayHighlightWord();
+    }
 };
 
 /**

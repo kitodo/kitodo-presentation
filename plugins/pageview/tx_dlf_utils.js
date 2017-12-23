@@ -210,8 +210,9 @@ dlfUtils.fetchImageData = function (imageSourceObjs) {
         finishLoading = function finishLoading() {
         loadCount += 1;
 
-        if (loadCount === imageSourceObjs.length)
+        if (loadCount === imageSourceObjs.length) {
             deferredResponse.resolve(imageSourceData);
+        }
     };
 
     imageSourceObjs.forEach(function (imageSourceObj, index) {
@@ -471,8 +472,9 @@ dlfUtils.fetchZoomifyData = function (imageSourceObj) {
         url: imageSourceObj.url
     }).done(cb);
     function cb(response, type) {
-        if (type !== 'success')
+        if (type !== 'success') {
             throw new Error('Problems while fetching ImageProperties.xml');
+        }
 
         var properties = $(response).find('IMAGE_PROPERTIES');
 
