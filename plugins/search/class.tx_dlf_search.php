@@ -846,7 +846,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
         return $menuArray;
 
-
     }
 
 }
