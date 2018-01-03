@@ -530,6 +530,41 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
     }
 
     /**
+     * This removes elements at the given range from the list
+     *
+     * @access	public
+     *
+     * @param	integer		$position: Numeric position for start of range
+     *
+     * @param	integer		$length: Numeric position for length of range
+     *
+     * @return	array		The indizes of the removed elements
+     */
+    public function removeRange($position, $length) {
+
+        // Save parameter for logging purposes.
+        $_position = $position;
+
+        $position = intval($position);
+
+        if ($position < 0 || $position >= $this->count) {
+
+            if (TYPO3_DLOG) {
+
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
+            }
+
+            return;
+        }
+
+        $removed = array_splice($this->elements, $position, $length);
+
+        $this->count = count($this->elements);
+
+        return $removed;
+    }
+
+    /**
      * This clears the current list
      *
      * @access	public
