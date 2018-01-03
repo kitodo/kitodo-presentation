@@ -120,6 +120,16 @@ return array (
                 'eval' => 'required,uniqueInPid',
             ),
         ),
+        'index_search' => array (
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_search',
+            'config' => array (
+            'type' => 'text',
+                'cols' => 30,
+                'rows' => 5,
+                'eval' => '',
+            ),
+        ),
         'oai_name' => array (
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.oai_name',
@@ -251,7 +261,7 @@ return array (
         '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab1, label,--palette--;;1;;1-1-1, description,--palette--;;2;;2-2-2, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id,--palette--;;3'),
     ),
     'palettes' => array (
-        '1' => array ('showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1),
+        '1' => array ('showitem' => 'index_name, --linebreak--, index_search, --linebreak--, oai_name', 'canNotCollapse' => 1),
         '2' => array ('showitem' => 'thumbnail, priority', 'canNotCollapse' => 1),
         '3' => array ('showitem' => 'fe_admin_lock', 'canNotCollapse' => 1),
     ),
