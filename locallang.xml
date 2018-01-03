@@ -102,6 +102,7 @@
 			<label index="tx_dlf_collections">Collections</label>
 			<label index="tx_dlf_collections.label">Display Label</label>
 			<label index="tx_dlf_collections.index_name">Index Name</label>
+			<label index="tx_dlf_collections.index_search">Define (virtual) collection via Solr Query</label>
 			<label index="tx_dlf_collections.oai_name">OAI Mapping</label>
 			<label index="tx_dlf_collections.description">Description</label>
 			<label index="tx_dlf_collections.thumbnail">Thumbnail</label>
@@ -220,6 +221,7 @@
 			<label index="update.copyIndexRelatedColumns">Copy index related columns...</label>
 			<label index="update.copyIndexRelatedColumnsOkay">...successfully completed!</label>
 			<label index="update.copyIndexRelatedColumnsNotOkay">...incomplete! The index related columns (tokenized, stored, indexed, boost, autocomplete) of table tx_dlf_metadata have to be copied manually.</label>
+
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -310,6 +312,7 @@
 			<label index="tx_dlf_collections.label">Anzeigeform</label>
 			<label index="tx_dlf_collections.index_name">Index-Bezeichnung</label>
 			<label index="tx_dlf_collections.oai_name">OAI-Mapping</label>
+			<label index="tx_dlf_collections.index_search">(Virtuelle) Kollektion über Solr Anfrage definieren</label>
 			<label index="tx_dlf_collections.description">Beschreibung</label>
 			<label index="tx_dlf_collections.thumbnail">Vorschaubild</label>
 			<label index="tx_dlf_collections.priority">Priorität</label>
