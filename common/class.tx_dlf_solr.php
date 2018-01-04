@@ -136,7 +136,7 @@ class tx_dlf_solr {
     public static function escapeQueryKeepField($query, $pid) {
 
         // Is there a field query?
-        if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(.*\)$/', $query)) {
+        if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
 
             // Get all indexed fields.
             $fields = array ();
