@@ -696,18 +696,18 @@ class tx_dlf_listview extends tx_dlf_plugin {
         // Load metadata configuration.
         $this->loadConfig();
 
-        $i = $this->piVars['pointer'] * $this->conf['limit'];
-        $j = ($this->piVars['pointer'] + 1) * $this->conf['limit'];
+        $currentEntry = $this->piVars['pointer'] * $this->conf['limit'];
+        $lastEntry = ($this->piVars['pointer'] + 1) * $this->conf['limit'];
 
-        for ($i, $j; $i < $j; $i++) {
+        for ($currentEntry, $lastEntry; $currentEntry < $lastEntry; $currentEntry++) {
 
-            if (empty($this->list[$i])) {
+            if (empty($this->list[$currentEntry])) {
 
                 break;
 
             } else {
 
-                $content .= $this->getEntry($i, $subpartArray);
+                $content .= $this->getEntry($currentEntry, $subpartArray);
 
             }
 
@@ -727,9 +727,9 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
         }
 
-        if ($i) {
+        if ($currentEntry) {
 
-            $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), ($this->piVars['pointer'] * $this->conf['limit']) + 1, $i, count($this->list)));
+            $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), ($this->piVars['pointer'] * $this->conf['limit']) + 1, $currentEntry, count($this->list)));
 
         } else {
 
