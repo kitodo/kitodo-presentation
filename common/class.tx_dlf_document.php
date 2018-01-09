@@ -1526,7 +1526,7 @@ final class tx_dlf_document {
 
             if ($parentLocation != $this->location) {
 
-                $parentDoc =& tx_dlf_document::getInstance($parentLocation, $pid);
+                $parentDoc = & tx_dlf_document::getInstance($parentLocation, $pid);
 
                 if ($parentDoc->ready) {
 
