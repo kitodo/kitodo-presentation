@@ -337,7 +337,7 @@ class tx_dlf_tcemain {
                             } else {
 
                                 // Reindex document.
-                                $doc =& tx_dlf_document::getInstance($id);
+                                $doc = & tx_dlf_document::getInstance($id);
 
                                 if ($doc->ready) {
 
@@ -422,7 +422,7 @@ class tx_dlf_tcemain {
                     case 'undelete':
 
                         // Reindex document.
-                        $doc =& tx_dlf_document::getInstance($id);
+                        $doc = & tx_dlf_document::getInstance($id);
 
                         if ($doc->ready) {
 

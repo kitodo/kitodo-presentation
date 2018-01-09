@@ -89,7 +89,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
                 }
 
                 // Get the document...
-                $doc =& tx_dlf_document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
+                $doc = & tx_dlf_document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
 
                 if ($doc->ready) {
 
@@ -170,7 +170,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
                     // Get the document...
-                    $doc =& tx_dlf_document::getInstance($resArray['uid'], $this->cli_args['-pid'][0], TRUE);
+                    $doc = & tx_dlf_document::getInstance($resArray['uid'], $this->cli_args['-pid'][0], TRUE);
 
                     if ($doc->ready) {
 
