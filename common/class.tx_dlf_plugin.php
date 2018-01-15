@@ -132,7 +132,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
 
             // Get instance of tx_dlf_document.
-            $this->doc =& tx_dlf_document::getInstance($this->piVars['id'], $pid);
+            $this->doc = & tx_dlf_document::getInstance($this->piVars['id'], $pid);
 
             if (!$this->doc->ready) {
 

@@ -161,7 +161,7 @@ class tx_dlf_doctype {
         if (!empty($this->piVars['id'])) {
 
             // Get instance of tx_dlf_document.
-            $this->doc =& tx_dlf_document::getInstance($this->piVars['id']);
+            $this->doc = & tx_dlf_document::getInstance($this->piVars['id']);
 
             if (!$this->doc->ready) {
 

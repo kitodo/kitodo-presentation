@@ -101,7 +101,7 @@ class tx_dlf_indexing {
             // Handle multi-volume documents.
             if ($doc->parentId) {
 
-                $parent =& tx_dlf_document::getInstance($doc->parentId, 0, TRUE);
+                $parent = & tx_dlf_document::getInstance($doc->parentId, 0, TRUE);
 
                 if ($parent->ready) {
 
@@ -590,6 +590,16 @@ class tx_dlf_indexing {
             $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
 
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
+
+            $solrDoc->setField('record_id', $metadata['record_id'][0]);
+
+            $solrDoc->setField('purl', $metadata['purl'][0]);
+
+            $solrDoc->setField('location', $doc->location);
+
+            $solrDoc->setField('urn', $metadata['urn']);
+
+            $solrDoc->setField('collection', $metadata['collection']);
 
             $autocomplete = array ();
 
