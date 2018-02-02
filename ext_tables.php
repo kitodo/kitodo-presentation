@@ -13,9 +13,6 @@ if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
 
-// Register static typoscript.
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'Basic Configuration');
-
 // Plugin "audioplayer".
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_audioplayer'] = 'layout,select_key,pages,recursive';
 
@@ -122,7 +119,6 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_search'] = 'p
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_search', $_EXTKEY.'_search'), 'list_type');
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'plugins/search/', 'Search Facets');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_search', 'FILE:EXT:'.$_EXTKEY.'/plugins/search/flexform.xml');
 
@@ -141,8 +137,6 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_toc'] = '
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_toc'] = 'pi_flexform';
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_toc', $_EXTKEY.'_toc'), 'list_type');
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'plugins/toc/', 'Table of Contents');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($_EXTKEY.'_toc', 'FILE:EXT:'.$_EXTKEY.'/plugins/toc/flexform.xml');
 
