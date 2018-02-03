@@ -18,7 +18,7 @@ return array (
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY encoded',
         'delete'	=> 'deleted',
-        'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('dlf').'res/icons/txdlfmetadata.png',
+        'iconfile'	=> 'EXT:dlf/res/icons/txdlfmetadata.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'encoded',

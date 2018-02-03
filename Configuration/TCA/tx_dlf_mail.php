@@ -15,7 +15,7 @@ return array (
         'label'     => 'label',
         'sortby' => 'sorting',
         'delete'	=> 'deleted',
-        'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('dlf').'res/icons/txdlfemail.png',
+        'iconfile'	=> 'EXT:dlf/res/icons/txdlfemail.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,name,mail',

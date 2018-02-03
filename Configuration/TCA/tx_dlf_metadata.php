@@ -24,7 +24,7 @@ return array (
         'enablecolumns' => array (
             'disabled' => 'hidden',
         ),
-        'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('dlf').'res/icons/txdlfmetadata.png',
+        'iconfile'	=> 'EXT:dlf/res/icons/txdlfmetadata.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,index_name',

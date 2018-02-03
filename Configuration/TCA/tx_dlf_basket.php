@@ -20,7 +20,7 @@ return array (
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete'	=> 'deleted',
-        'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('dlf').'res/icons/txdlfbasket.png',
+        'iconfile'	=> 'EXT:dlf/res/icons/txdlfbasket.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => '',
