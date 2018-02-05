@@ -18,7 +18,7 @@ return array (
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY type',
         'delete'	=> 'deleted',
-        'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('dlf').'res/icons/txdlfformats.png',
+        'iconfile'	=> 'EXT:dlf/res/icons/txdlfformats.png',
         'rootLevel'	=> 1,
         'dividers2tabs' => 2,
         'searchFields' => 'type,class',

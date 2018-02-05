@@ -27,7 +27,7 @@ return array (
             'disabled' => 'hidden',
             'fe_group' => 'fe_group',
         ),
-        'iconfile'	=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('dlf').'res/icons/txdlfcollections.png',
+        'iconfile'	=> 'EXT:dlf/res/icons/txdlfcollections.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
