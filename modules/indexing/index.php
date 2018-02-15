@@ -157,7 +157,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
     protected function indexLoop() {
 
         // Get document from list.
-        list ($uid, ) = $this->list->remove(0);
+        list ($uid,) = $this->list->remove(0);
 
         $this->list->save();
 
