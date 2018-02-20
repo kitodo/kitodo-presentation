@@ -40,7 +40,7 @@ The following libraries use KITODO.Presentation for their digital collections:
 * `UB "Georgius Agricola" at the TU Bergakademie Freiberg <http://digital.ub.tu-freiberg.de/>`_
 * `SUB Hamburg <http://digitalisate.sub.uni-hamburg.de/>`_
 * `Gottfried Wilhelm Leibniz Library Hannover <http://digitale-sammlungen.gwlb.de/>`_
-* `UB Mannheim <http://digi.bib.uni-mannheim.de/>`_
+* `UB Mannheim <https://digi.bib.uni-mannheim.de/>`_
 * `Orff-Zentrum München <http://www.orff-zentrum.de/>`_
 * `Württembergische Landesbibliothek Stuttgart <http://digital.wlb-stuttgart.de/digitale-sammlungen/>`_
 
