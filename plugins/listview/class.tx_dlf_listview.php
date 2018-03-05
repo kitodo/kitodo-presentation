@@ -23,6 +23,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
     public $scriptRelPath = 'plugins/listview/class.tx_dlf_listview.php';
 
     /**
+     * This holds the field wrap of the metadata
+     *
+     * @var	array
+     * @access	private
+     */
+    private $fieldwrap = array ();
+
+    /**
      * This holds the list
      *
      * @var	tx_dlf_list
@@ -151,13 +159,15 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
         $imgAlt = '';
 
+        $noTitle = $this->pi_getLL('noTitle');
+
         $metadata = $this->list[$number]['metadata'];
 
         foreach ($this->metadata as $index_name => $metaConf) {
 
             $parsedValue = '';
 
-            $fieldwrap = $this->parseTS($metaConf['wrap']);
+            $fieldwrap = $this->getFieldWrap($index_name, $metaConf['wrap']);
 
             do {
 
@@ -182,7 +192,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                     // Set fake title if still not present.
                     if (empty($value)) {
 
-                        $value = $this->pi_getLL('noTitle');
+                        $value = $noTitle;
 
                     }
 
@@ -294,6 +304,30 @@ class tx_dlf_listview extends tx_dlf_plugin {
     }
 
     /**
+     * Returns the parsed fieldwrap of a metadata
+     *
+     * @access	private
+     *
+     * @param	string		$index_name: The index name of a metadata
+     * @param	string		$wrap: The configured metadata wrap
+     *
+     * @return	array		The parsed fieldwrap
+     */
+    private function getFieldWrap($index_name, $wrap) {
+
+        if (isset($this->fieldwrap[$index_name])) {
+
+            return $this->fieldwrap[$index_name];
+
+        } else {
+
+            return $this->fieldwrap[$index_name] = $this->parseTS($wrap);
+
+        }
+
+    }
+
+    /**
      * Renders sorting dialog
      *
      * @access	protected
@@ -386,6 +420,10 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
         $content = '';
 
+        $noTitle = $this->pi_getLL('noTitle');
+
+        $highlight_word = preg_replace('/\s\s+/', ';', $this->list->metadata['searchString']);
+
         foreach ($this->list[$number]['subparts'] as $subpart) {
 
             $markerArray['###SUBMETADATA###'] = '';
@@ -400,7 +438,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
                 $parsedValue = '';
 
-                $fieldwrap = $this->parseTS($metaConf['wrap']);
+                $fieldwrap = $this->getFieldWrap($index_name, $metaConf['wrap']);
 
                 do {
 
@@ -425,7 +463,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                         // Set fake title if still not present.
                         if (empty($value)) {
 
-                            $value = $this->pi_getLL('noTitle');
+                            $value = $noTitle;
 
                         }
 
@@ -434,7 +472,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                         $additionalParams = array (
                             'id' => $subpart['uid'],
                             'page' => $subpart['page'],
-                            'highlight_word' => preg_replace('/\s\s+/', ';', $this->list->metadata['searchString'])
+                            'highlight_word' => $highlight_word
                         );
 
                         if (!empty($this->piVars['logicalPage'])) {
@@ -657,15 +695,18 @@ class tx_dlf_listview extends tx_dlf_plugin {
         // Load metadata configuration.
         $this->loadConfig();
 
-        for ($i = $this->piVars['pointer'] * $this->conf['limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i < $j; $i++) {
+        $currentEntry = $this->piVars['pointer'] * $this->conf['limit'];
+        $lastEntry = ($this->piVars['pointer'] + 1) * $this->conf['limit'];
 
-            if (empty($this->list[$i])) {
+        for ($currentEntry, $lastEntry; $currentEntry < $lastEntry; $currentEntry++) {
+
+            if (empty($this->list[$currentEntry])) {
 
                 break;
 
             } else {
 
-                $content .= $this->getEntry($i, $subpartArray);
+                $content .= $this->getEntry($currentEntry, $subpartArray);
 
             }
 
@@ -685,9 +726,9 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
         }
 
-        if ($i) {
+        if ($currentEntry) {
 
-            $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), ($this->piVars['pointer'] * $this->conf['limit']) + 1, $i, count($this->list)));
+            $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), ($this->piVars['pointer'] * $this->conf['limit']) + 1, $currentEntry, count($this->list)));
 
         } else {
 
