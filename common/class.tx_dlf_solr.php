@@ -348,7 +348,7 @@ class tx_dlf_solr {
         $checks = array ();
 
         // Restrict the fields to the required ones
-        $this->params['fl'] = "uid,id,toplevel";
+        $this->params['fl'] = 'uid,id,toplevel';
 
         // Get metadata configuration.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
