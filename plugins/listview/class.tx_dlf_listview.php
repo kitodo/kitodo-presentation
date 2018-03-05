@@ -312,7 +312,6 @@ class tx_dlf_listview extends tx_dlf_plugin {
      * @param	string		$wrap: The configured metadata wrap
      *
      * @return	array		The parsed fieldwrap
-     * @return	array		The parsed fildwrap
      */
     private function getFieldWrap($index_name, $wrap) {
 
