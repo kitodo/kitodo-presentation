@@ -856,7 +856,7 @@ final class tx_dlf_document {
 
                 }
 
-                // Set default value if applicable, but only th the default value > 0.
+                // Set default value if applicable.
                 // '!empty($resArray['default_value'])' is not possible, because '0' is a valid default value.
                 // Setting an empty default value creates a lot of empty fields within the index.
                 // These empty fields are then shown within the search facets as 'empty'.
