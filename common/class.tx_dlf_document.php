@@ -857,7 +857,10 @@ final class tx_dlf_document {
                 }
 
                 // Set default value if applicable.
-                if (empty($metadata[$resArray['index_name']][0])) {
+                // '!empty($resArray['default_value'])' is not possible, because '0' is a valid default value.
+                // Setting an empty default value creates a lot of empty fields within the index.
+                // These empty fields are then shown within the search facets as 'empty'.
+                if (empty($metadata[$resArray['index_name']][0]) && strlen($resArray['default_value']) > 0) {
 
                     $metadata[$resArray['index_name']] = array ($resArray['default_value']);
 
