@@ -244,11 +244,11 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     $params = array ();
 
                     // Restrict the fields to the required ones
-                    $params['fl'] = "uid,id,toplevel,thumbnail,page";
+                    $params['fl'] = 'uid,id,toplevel,thumbnail,page';
 
                     foreach ($this->solrConfig as $solr_name) {
 
-                        $params['fl'] .= ",".$solr_name;
+                        $params['fl'] .= ','.$solr_name;
 
                     }
 
@@ -299,7 +299,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                             $record['subparts'][$resArray->id] = array (
                                 'uid' => $resArray->uid,
                                 'page' => $resArray->page,
-                                'preview' => (!empty($result_highlights->highlighting->{$resArray->id}->fulltext[0]) ? $result_highlights->highlighting->{$resArray->id}->fulltext[0] : ""),
+                                'preview' => (!empty($result_highlights->highlighting->{$resArray->id}->fulltext[0]) ? $result_highlights->highlighting->{$resArray->id}->fulltext[0] : ''),
                                 'thumbnail' => $resArray->thumbnail,
                                 'metadata' => $metadata
                             );
