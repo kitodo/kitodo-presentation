@@ -569,7 +569,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
     var extent = [0, 0, 1000, 1000];
 
     layerProj = new ol.proj.Projection({
-        code: 'goobi-image',
+        code: 'kitodo-image',
         units: 'pixels',
         extent: extent
     });

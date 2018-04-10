@@ -34,7 +34,7 @@ Download of current version is `avaiable on GitHub <https://github.com/kitodo/ki
 Libraries using Kitodo.Presentation
 -----------------------------------
 
-The following libraries use KITODO.Presentation for their digital collections:
+The following libraries use Kitodo.Presentation for their digital collections:
 
 * `SLUB Dresden <http://digital.slub-dresden.de/>`_
 * `UB "Georgius Agricola" at the TU Bergakademie Freiberg <http://digital.ub.tu-freiberg.de/>`_
@@ -66,7 +66,7 @@ The software primarily consists of three modules:
 Commons
 ^^^^^^^
 is a group of classes that build upon the TYPO3 API, adding
-Goobi-specific functions, such as handling METS structures and library metadata
+Kitodo-specific functions, such as handling METS structures and library metadata
 in various formats, or linking external resources, such as OAI interfaces or
 Solr search engines. The API extensions are available to all TYPO3 extensions,
 which means that they can not only be used by Kitodo.Presentation, but by other

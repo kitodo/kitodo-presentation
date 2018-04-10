@@ -316,12 +316,12 @@ $metadata = array (
         'format' => array (
             array (
                 'encoded' => 1,
-                'xpath' => './mods:identifier[@type="goobi"]',
+                'xpath' => './mods:identifier[@type="kitodo"]',
                 'xpath_sorting' => '',
             ),
             array (
                 'encoded' => 2,
-                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="goobi"]',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="kitodo"]',
                 'xpath_sorting' => '',
             ),
         ),

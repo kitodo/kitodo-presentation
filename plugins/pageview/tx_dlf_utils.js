@@ -93,7 +93,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                     quality: quality,
                     offset: [offsetWidth, 0],
                     projection: new ol.proj.Projection({
-                        code: 'goobi-image',
+                        code: 'kitodo-image',
                         units: 'pixels',
                         extent: extent
                     })
@@ -120,7 +120,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                 source: new ol.source.ImageStatic({
                     url: imageSourceObj.src,
                     projection: new ol.proj.Projection({
-                        code: 'goobi-image',
+                        code: 'kitodo-image',
                         units: 'pixels',
                         extent: extent
                     }),
@@ -164,7 +164,7 @@ dlfUtils.createOl3View = function (images) {
 
     // define map projection
     var proj = new ol.proj.Projection({
-        code: 'goobi-image',
+        code: 'kitodo-image',
         units: 'pixels',
         extent: extent
     });

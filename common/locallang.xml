@@ -56,7 +56,7 @@
 			<label index="flash.solrcoreOkay">Solr core found!</label>
 			<label index="flash.solrcoreOkayMsg">There are configuration records for Solr cores. They can be edited in the list module.</label>
 			<label index="flash.solrcoreDeprecated">Deprecated configuration found!</label>
-			<label index="flash.solrcoreDeprecatedMsg">A common Solr core was found in the root-page. This is deprecated since Goobi.Presentation 1.1. Solr cores should be stored in the client's SysFolder instead. Move a Solr core to this SysFolder (manually) or create a new one automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;</label>
+			<label index="flash.solrcoreDeprecatedMsg">A common Solr core was found in the root-page. This is deprecated since Kitodo.Presentation 1.1. Solr cores should be stored in the client's SysFolder instead. Move a Solr core to this SysFolder (manually) or create a new one automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;</label>
 			<label index="flash.solrcoreMissing">No Solr core found!</label>
 			<label index="flash.solrcoreMissingMsg">There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;</label>
 			<label index="flash.solrcoreAdded">Solr core created!</label>
@@ -109,7 +109,7 @@
 			<label index="flash.solrcoreOkay">Solr Kern gefunden!</label>
 			<label index="flash.solrcoreOkayMsg">Es wurde die Konfiguration für einen Solr Kern gefunden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.</label>
 			<label index="flash.solrcoreDeprecated">Veraltete Konfiguration gefunden!</label>
-			<label index="flash.solrcoreDeprecatedMsg">Es wurde ein allgemeiner Solr Kern in der Root-Page gefunden. Das entspricht dem Verhalten von Goobi.Presentation 1.0. Seit Version 1.1 sollten Solr Kerne im SysOrdner des jeweiligen Mandanten konfiguriert werden. Es sollte entweder einer der Solr Kerne aus der Root-Page in diesen SysOrdner verschoben werden (manuell) oder ein neuer Solr Kern angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Neuen Solr Kern jetzt anlegen!&lt;/a&gt;</label>
+			<label index="flash.solrcoreDeprecatedMsg">Es wurde ein allgemeiner Solr Kern in der Root-Page gefunden. Das entspricht dem Verhalten von Kitodo.Presentation 1.0. Seit Version 1.1 sollten Solr Kerne im SysOrdner des jeweiligen Mandanten konfiguriert werden. Es sollte entweder einer der Solr Kerne aus der Root-Page in diesen SysOrdner verschoben werden (manuell) oder ein neuer Solr Kern angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Neuen Solr Kern jetzt anlegen!&lt;/a&gt;</label>
 			<label index="flash.solrcoreMissing">Kein Solr Kern gefunden!</label>
 			<label index="flash.solrcoreMissingMsg">Es wurde kein Solr Kern gefunden. Ohne Solr Kern kann das Plugin zur Recherche in den Meta- und Strukturdaten nicht verwendet werden. Ein Solr Kern kann automatisch angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Solr Kern jetzt anlegen!&lt;/a&gt;</label>
 			<label index="flash.solrcoreAdded">Solr Kern angelegt!</label>
