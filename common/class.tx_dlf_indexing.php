@@ -599,7 +599,7 @@ class tx_dlf_indexing {
 
             $solrDoc->setField('urn', $metadata['urn']);
 
-            $solrDoc->setField('collection', $metadata['collection']);
+            $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
 
             $autocomplete = array ();
 
