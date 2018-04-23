@@ -136,11 +136,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         // Get collections.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-            'tx_dlf_collections.uid AS uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority,COUNT(tx_dlf_documents.uid) AS titles',
+            'tx_dlf_collections.uid AS uid,tx_dlf_collections.pid AS pid,tx_dlf_collections.sys_language_uid AS sys_language_uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority,COUNT(tx_dlf_documents.uid) AS titles',
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
-            'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections').' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))',
             'tx_dlf_collections.uid',
             $orderBy,
             ''
@@ -164,7 +164,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 'tx_dlf_documents',
                 'tx_dlf_relations',
                 'tx_dlf_collections',
-                'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                'AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections').' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))',
                 'tx_dlf_collections.uid',
                 '',
                 ''
@@ -174,12 +174,24 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             while ($resArrayVolumes = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultVolumes)) {
 
+                if (is_array($resArrayVolumes) && $resArrayVolumes['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
+
+                    $resArrayVolumes = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $resArrayVolumes, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+
+                }
+
                 $volumes[$resArrayVolumes['uid']] = $resArrayVolumes['volumes'];
 
             }
 
             // Process results.
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+                if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
+
+                    $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+
+                }
 
                 // Generate random but unique array key taking priority into account.
                 do {
@@ -310,7 +322,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         // Get all documents in collection.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-            'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.label AS collLabel,tx_dlf_collections.description AS collDesc,tx_dlf_collections.thumbnail AS collThumb,tx_dlf_collections.fe_cruser_id AS userid,tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
+            'tx_dlf_collections.uid AS uid,tx_dlf_collections.pid AS pid,tx_dlf_collections.sys_language_uid AS sys_language_uid,tx_dlf_collections.index_name AS index_name,tx_dlf_collections.label AS label,tx_dlf_collections.description AS description,tx_dlf_collections.thumbnail AS collThumb,tx_dlf_collections.fe_cruser_id AS userid,tx_dlf_documents.uid AS docUid,tx_dlf_documents.metadata_sorting AS metadata_sorting,tx_dlf_documents.volume_sorting AS volume_sorting,tx_dlf_documents.partof AS partof',
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
@@ -329,11 +341,18 @@ class tx_dlf_collection extends tx_dlf_plugin {
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
+            if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
+
+                $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                debug($resArray, '$resArray');
+
+            }
+
             if (empty($listMetadata)) {
 
                 $listMetadata = array (
-                    'label' => htmlspecialchars($resArray['collLabel']),
-                    'description' => $this->pi_RTEcssText($resArray['collDesc']),
+                    'label' => htmlspecialchars($resArray['label']),
+                    'description' => $this->pi_RTEcssText($resArray['description']),
                     'thumbnail' => htmlspecialchars($resArray['collThumb']),
                     'options' => array (
                         'source' => 'collection',
@@ -373,8 +392,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
                 }
 
-                $toplevel[$resArray['uid']] = array (
-                    'u' => $resArray['uid'],
+                $toplevel[$resArray['docUid']] = array (
+                    'u' => $resArray['docUid'],
                     'h' => '',
                     's' => $sorting,
                     'p' => array ()
@@ -382,7 +401,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             } else {
 
-                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
+                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['docUid'];
 
             }
 
