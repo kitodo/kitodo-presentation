@@ -27,6 +27,7 @@ return array (
             'disabled' => 'hidden',
             'fe_group' => 'fe_group',
         ),
+        'requestUpdate' => 'sys_language_uid',
         'iconfile'	=> 'EXT:dlf/res/icons/txdlfcollections.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
@@ -112,6 +113,7 @@ return array (
         ),
         'index_name' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_name',
             'config' => array (
                 'type' => 'none',
@@ -122,6 +124,7 @@ return array (
         ),
         'index_search' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_search',
             'config' => array (
             'type' => 'text',
@@ -132,6 +135,7 @@ return array (
         ),
         'oai_name' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.oai_name',
             'config' => array (
                 'type' => 'input',
@@ -142,6 +146,7 @@ return array (
         ),
         'description' => array (
             'exclude' => 1,
+            'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.description',
             'config' => array (
                 'type' => 'text',
@@ -153,6 +158,7 @@ return array (
         ),
         'thumbnail' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.thumbnail',
             'config' => array (
                 'type' => 'group',
@@ -165,6 +171,7 @@ return array (
         ),
         'priority' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.priority',
             'config' => array (
                 'type' => 'select',
@@ -184,6 +191,7 @@ return array (
         ),
         'documents' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.documents',
             'config' => array (
                 'type' => 'select',
@@ -203,6 +211,7 @@ return array (
         ),
         'owner' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.owner',
             'config' => array (
                 'type' => 'select',
@@ -219,6 +228,7 @@ return array (
         ),
         'fe_cruser_id' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_cruser_id',
             'config' => array (
                 'type' => 'select',
@@ -235,6 +245,7 @@ return array (
         ),
         'fe_admin_lock' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_admin_lock',
             'config' => array (
                 'type' => 'check',
@@ -243,6 +254,7 @@ return array (
         ),
         'status' => array (
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.status',
             'config' => array (
                 'type' => 'select',
