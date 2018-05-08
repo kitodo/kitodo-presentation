@@ -3,7 +3,7 @@ Kitodo.Presentation
 
 Kitodo.Presentation is a feature-rich framework for building a METS-based digital library. It is part of the Kitodo Digital Library Suite.
 
-Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://github.com/TYPO3/TYPO3.CMS), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media. It implements international standards such as [IIIF Image API](http://iiif.io/api/image), [OAI Protocol for Metadata Harvesting](http://www.openarchives.org/OAI/openarchivesprotocol.html), [METS](http://www.loc.gov/standards/mets), [MODS](http://www.loc.gov/standards/mods), [TEI](http://www.tei-c.org), [ALTO](http://www.loc.gov/standards/alto), and can be configured to support any other descriptive XML format using simple XPath expressions.
+Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://typo3.org), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media. It implements international standards such as [IIIF Image API](http://iiif.io/api/image), [OAI Protocol for Metadata Harvesting](http://www.openarchives.org/OAI/openarchivesprotocol.html), [METS](http://www.loc.gov/standards/mets), [MODS](http://www.loc.gov/standards/mods), [TEI](http://www.tei-c.org), [ALTO](http://www.loc.gov/standards/alto), and can be configured to support any other descriptive XML format using simple XPath expressions.
 
 <a href="https://www.codacy.com/app/kitodo/kitodo-presentation">
   <img alt="Codacy Grade" src="https://api.codacy.com/project/badge/Grade/1291eba67cb744c9ad04a74883d45d84"/>
@@ -14,6 +14,11 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 <a href="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master">
   <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master"/>
 </a>
+
+Requirements
+------------
+
+Kitodo.Presentation requires [TYPO3 7 LTS](https://get.typo3.org) which in turn needs at least [PHP 5.5](https://secure.php.net) and [MySQL 5.5](https://www.mysql.com) or [MariaDB 5.5](https://mariadb.com). [Apache Solr](https://lucene.apache.org/solr) must be available at least in version 3.6.2, but any version up to 7.0.1 should be working as well.
 
 Kitodo. Digital Library Modules
 -------------------------------
