@@ -335,17 +335,17 @@ class tx_dlf_collection extends tx_dlf_plugin {
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-            if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
+            if (empty($l10nOverlay)) {
 
-                $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                $l10nOverlay = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
 
             }
 
             if (empty($listMetadata)) {
 
                 $listMetadata = array (
-                    'label' => htmlspecialchars($resArray['label']),
-                    'description' => $this->pi_RTEcssText($resArray['description']),
+                    'label' => !empty($l10nOverlay['label']) ? htmlspecialchars($l10nOverlay['label']) : htmlspecialchars($resArray['label']),
+                    'description' => !empty($l10nOverlay['description']) ? $this->pi_RTEcssText($l10nOverlay['description']) : $this->pi_RTEcssText($resArray['description']),
                     'thumbnail' => htmlspecialchars($resArray['collThumb']),
                     'options' => array (
                         'source' => 'collection',
