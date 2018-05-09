@@ -2421,16 +2421,16 @@ final class tx_dlf_document {
 
         } else {
 
-            // Cast to string for safety reasons.
-            $location = (string) $uid;
-
             // Try to load METS file.
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location) && $this->load($location)) {
+            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($uid) && $this->load($uid)) {
 
                 // Initialize core METS object.
                 $this->init();
 
                 if ($this->mets !== NULL) {
+
+                    // Cast to string for safety reasons.
+                    $location = (string) $uid;
 
                     // Check for METS object @ID.
                     if (!empty($this->mets['OBJID'])) {
@@ -2469,11 +2469,17 @@ final class tx_dlf_document {
 
             if (!empty($this->recordId)) {
 
+                // Try to match record identifier first.
                 $whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordId, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
+
+            } elseif (!empty($location)) {
+
+                // There is no record identifier, try to match location instead.
+                $whereClause = 'tx_dlf_documents.location='.$GLOBALS['TYPO3_DB']->fullQuoteStr($location, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
 
             } else {
 
-                // There is no record identifier and there should be no hit in the database.
+                // Can't persistently identify document, don't try to match at all.
                 $whereClause = '1=-1';
 
             }
