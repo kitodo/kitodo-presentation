@@ -379,11 +379,11 @@ dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
         src: uri,
         width: jsonld.width,
         height: jsonld.height,
-        tilesize: [jsonld.tiles.map(function (a) {
+        tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function (a) {
             return a.width;
         })[0], jsonld.tiles.map(function (a) {
             return a.height;
-        })[0]],
+        })[0]] : [256,256],
         qualities: jsonld.profile.map(function (a) {
             return a;
         }).map(function (b) {
@@ -394,9 +394,9 @@ dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
         }).map(function (b) {
             return b.formats;
         })[1],
-        resolutions: jsonld.tiles.map(function (a) {
+        resolutions: jsonld.tiles !== undefined ? jsonld.tiles.map(function (a) {
             return a.scaleFactors;
-        })[0],
+        })[0] : [1,2,4,8,16],
         mimetype: mimetype
     };
 };
