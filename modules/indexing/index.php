@@ -62,7 +62,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
         $_collections = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.label AS label,tx_dlf_collections.uid AS uid',
             'tx_dlf_collections',
-            'tx_dlf_collections.fe_cruser_id=0 AND tx_dlf_collections.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_collections').' AND tx_dlf_collections.sys_language_uid IN (-1,0)',
+            'tx_dlf_collections.fe_cruser_id=0 AND tx_dlf_collections.pid='.intval($this->id).' AND tx_dlf_collections.sys_language_uid IN (-1,0)'.tx_dlf_helper::whereClause('tx_dlf_collections'),
             '',
             'tx_dlf_collections.label ASC',
             ''
