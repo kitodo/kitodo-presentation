@@ -793,6 +793,8 @@ class tx_dlf_indexing {
 
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
 
+            $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+
             $solrDoc->setField('fulltext', tx_dlf_alto::getRawText($xml));
 
             // Add faceting information to physical sub-elements if applicable.
@@ -808,6 +810,14 @@ class tx_dlf_indexing {
                     }
 
                 }
+
+            }
+
+            // Add collection information to physical sub-elements if applicable.
+            if (in_array('collection', self::$fields['facets'])
+                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])) {
+
+                $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
 
             }
 
