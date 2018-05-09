@@ -362,6 +362,33 @@ class tx_dlf_helper {
     }
 
     /**
+     * Clean up a string to use in an URL.
+     *
+     * @access	public
+     *
+     * @param	string		$string: The string to clean up
+     *
+     * @return	string		The cleaned up string
+     */
+    public static function getCleanString($string) {
+
+        // Convert to lowercase.
+        $string = strtolower($string);
+
+        // Remove non-alphanumeric characters.
+        $string = preg_replace('/[^a-z0-9_\s-]/', '', $string);
+
+        // Remove multiple dashes or whitespaces.
+        $string = preg_replace('/[\s-]+/', ' ', $string);
+
+        // Convert whitespaces and underscore to dash.
+        $string = preg_replace('/[\s_]/', '-', $string);
+
+        return $string;
+
+    }
+
+    /**
      * Get the current frontend user object
      *
      * @access	public
