@@ -223,7 +223,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                         $record['metadata'] = $metadata;
 
-                    } elseif (($key = array_search($resArray['uid'], $record['subparts'], TRUE)) !== FALSE) {
+                    } elseif (($key = array_search($resArray['uid'], array_column($record['subparts'], 'u'), TRUE)) !== FALSE) {
 
                         $record['subparts'][$key] = array (
                             'uid' => $resArray['uid'],
