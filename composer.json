@@ -2,7 +2,20 @@
   "name": "kitodo/presentation",
   "description": "Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.",
   "homepage": "https://www.kitodo.org/",
-  "authors": "Kitodo. Key to digital objects e.V.",
+  "authors": [
+    {
+      "name": "Kitodo. Key to digital objects e.V.",
+      "email": "contact@kitodo.org",
+      "homepage": "https://www.kitodo.org/",
+      "role": "provider"
+    },
+    {
+      "name": "Sebastian Meyer",
+      "email": "sebastian.meyer@slub-dresden.de",
+      "homepage": "https://www.slub-dresden.de/",
+      "role": "maintainer"
+    }
+  ],
   "license": "GPL-3.0-or-later",
   "type": "typo3-cms-extension",
   "version": "2.2.0",
