@@ -2404,6 +2404,7 @@ final class tx_dlf_document {
 
     /**
      * This is a singleton class, thus the constructor should be private/protected
+     * (Get an instance of this class by calling tx_dlf_document::getInstance())
      *
      * @access	protected
      *
@@ -2467,15 +2468,10 @@ final class tx_dlf_document {
 
             }
 
-            if (!empty($this->recordId)) {
+            if (!empty($location) && !empty($this->recordId)) {
 
-                // Try to match record identifier first.
-                $whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordId, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
-
-            } elseif (!empty($location)) {
-
-                // There is no record identifier, try to match location instead.
-                $whereClause = 'tx_dlf_documents.location='.$GLOBALS['TYPO3_DB']->fullQuoteStr($location, 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents');
+                // Try to match record identifier or location (both should be unique).
+                $whereClause = '(tx_dlf_documents.location='.$GLOBALS['TYPO3_DB']->fullQuoteStr($location, 'tx_dlf_documents').' OR tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordId, 'tx_dlf_documents').')'.tx_dlf_helper::whereClause('tx_dlf_documents');
 
             } else {
 
