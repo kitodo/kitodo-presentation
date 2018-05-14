@@ -218,6 +218,14 @@ final class tx_dlf_document {
     protected $pid = 0;
 
     /**
+     * This holds the documents' raw text pages with their corresponding structMap//div's ID as array key
+     *
+     * @var	array
+     * @access protected
+     */
+    protected $rawTextArray = array ();
+
+    /**
      * Is the document instantiated successfully?
      *
      * @var	boolean
@@ -950,6 +958,117 @@ final class tx_dlf_document {
         }
 
         return 1;
+
+    }
+
+    /**
+     * This extracts the raw text for a physical structure node
+     *
+     * @access	public
+     *
+     * @param	string		$id: The @ID attribute of the physical structure node
+     *
+     * @return	string		The physical structure node's raw text
+     */
+    public function getRawText($id) {
+
+        $rawText = '';
+
+        // Get text from raw text array if available.
+        if (!empty($this->rawTextArray[$id])) {
+
+            return $this->rawTextArray[$id];
+
+        }
+
+        // Load fileGrps and check for fulltext files.
+        $this->_getFileGrps();
+
+        if ($this->hasFulltext) {
+
+            // Load available text formats, ...
+            $this->loadFormats();
+
+            // ... physical structure ...
+            $this->_getPhysicalStructure();
+
+            // ... and extension configuration.
+            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+            if (!empty($this->physicalStructureInfo[$id])) {
+
+                // Get fulltext file.
+                $file = $this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]);
+
+                // Turn off libxml's error logging.
+                $libxmlErrors = libxml_use_internal_errors(TRUE);
+
+                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+
+                // Load XML from file.
+                $rawTextXml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
+
+                // Reset entity loader setting.
+                libxml_disable_entity_loader($previousValueOfEntityLoader);
+
+                // Reset libxml's error logging.
+                libxml_use_internal_errors($libxmlErrors);
+
+                // Get the root element's name as text format.
+                $textFormat = strtoupper($rawTextXml->getName());
+
+            } else {
+
+                if (TYPO3_DLOG) {
+
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"'. self::$extKey, SYSLOG_SEVERITY_WARNING);
+
+                }
+
+                return $rawText;
+
+            }
+
+            // Is this text format supported?
+            if (!empty($this->formats[$textFormat])) {
+
+                if (!empty($this->formats[$textFormat]['class'])) {
+
+                    $class = $this->formats[$textFormat]['class'];
+
+                    // Get the raw text from class.
+                    if (class_exists($class) && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof tx_dlf_fulltext) {
+
+                        $rawText = $obj->getRawText($rawTextXml);
+
+                        $this->rawTextArray[$id] = $rawText;
+
+                    } else {
+
+                        if (TYPO3_DLOG) {
+
+                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getRawText('.$id.')] Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+
+                        }
+
+                    }
+
+                }
+
+            } else {
+
+                if (TYPO3_DLOG) {
+
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getRawText('.$id.')] Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+
+                }
+
+            }
+
+        }
+
+        return $rawText;
 
     }
 

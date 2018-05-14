@@ -24,11 +24,11 @@ class tx_dlf_alto implements tx_dlf_fulltext {
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param	SimpleXMLElement		$xml: The XML to extract the raw text from
      *
      * @return	string			The raw unformatted fulltext
      */
-    public static function getRawText(SimpleXMLElement $xml) {
+    public function getRawText(SimpleXMLElement $xml) {
 
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
 
