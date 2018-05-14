@@ -910,7 +910,7 @@ final class tx_dlf_document {
                     'tx_dlf_documents',
                     'tx_dlf_relations',
                     'tx_dlf_collections',
-                    'AND tx_dlf_collections.pid='.intval($cPid).' AND tx_dlf_documents.uid='.intval($this->uid).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').' AND tx_dlf_collections.sys_language_uid IN (-1,0)'.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                    'AND tx_dlf_collections.pid='.intval($cPid).' AND tx_dlf_documents.uid='.intval($this->uid).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').' AND tx_dlf_collections.sys_language_uid IN (-1,0)'.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
                     'tx_dlf_collections.index_name',
                     '',
                     ''
