@@ -74,6 +74,25 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = 'EXT
 
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_geturl_eid'] = 'EXT:'.$_EXTKEY.'/plugins/pageview/class.tx_dlf_geturl_eid.php';
 
+// Register static typoscript.
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'Configuration/TypoScript/',
+    'Basic Configuration'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'plugins/search/',
+    'Search Facets'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'plugins/toc/',
+    'Table of Contents'
+);
+
 if (TYPO3_MODE === 'FE') {
 
     /**
