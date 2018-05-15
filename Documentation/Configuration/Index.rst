@@ -60,7 +60,7 @@ The install tool writes this configuration to typo3conf/LocalConfiguration.php::
 SOLR Installation
 *****************
 
-The following instructions are taken from `dlf/lib/ApacheSolr/README.txt`.
+The following instructions are taken from `dlf/Configuration/ApacheSolr/README.txt`.
 
 Apache Solr for Kitodo.Presentation
 ==================================
