@@ -666,7 +666,7 @@ class tx_dlf_helper {
         // Load common locallang file.
         if (empty(self::$locallang)) {
 
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'common/locallang.xml');
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Classes/Common/locallang.xml');
 
             if (TYPO3_MODE === 'FE') {
 
