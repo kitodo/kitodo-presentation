@@ -14,7 +14,7 @@ module.exports = function(config) {
         files: [
             // external libraries
             '../node_modules/jquery/dist/jquery.js',
-            '../../../lib/OpenLayers/ol3-dlf.js',
+            '../../../Resources/Public/Javascript/OpenLayers/ol3-dlf.js',
 
             // test specifications
             'spec/*.js',
