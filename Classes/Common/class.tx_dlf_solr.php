@@ -106,7 +106,7 @@ class tx_dlf_solr {
         // Load class.
         if (!class_exists('Apache_Solr_Service')) {
 
-            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/Resources/Private/PHP/SolrPhpClient/Apache/Solr/Service.php'));
 
         }
 
@@ -723,7 +723,7 @@ class tx_dlf_solr {
         // Load class.
         if (!class_exists('Apache_Solr_Service')) {
 
-            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/Resources/Private/PHP/SolrPhpClient/Apache/Solr/Service.php'));
 
         }
 
