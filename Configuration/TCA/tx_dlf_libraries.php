@@ -21,7 +21,7 @@ return array (
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete'	=> 'deleted',
-        'iconfile'	=> 'EXT:dlf/res/icons/txdlflibraries.png',
+        'iconfile'	=> 'EXT:dlf/Resources/Public/Icons/txdlflibraries.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,website,contact',

@@ -15,7 +15,7 @@ return array (
         'label'     => 'label',
         'default_sortby' => 'ORDER BY label',
         'delete'	=> 'deleted',
-        'iconfile'	=> 'EXT:dlf/res/icons/txdlfprinter.png',
+        'iconfile'	=> 'EXT:dlf/Resources/Public/Icons/txdlfprinter.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,print',

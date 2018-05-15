@@ -24,7 +24,7 @@ return array (
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'iconfile'	=> 'EXT:dlf/res/icons/txdlfdocuments.png',
+        'iconfile'	=> 'EXT:dlf/Resources/Public/Icons/txdlfdocuments.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
