@@ -568,7 +568,8 @@ class tx_dlf_em {
 
         $nsDefined = array (
             'MODS' => FALSE,
-            'TEIHDR' => FALSE
+            'TEIHDR' => FALSE,
+            'ALTO' => FALSE
         );
 
         // Check if formats "MODS" and "TEIHDR" exist.
@@ -609,6 +610,19 @@ class tx_dlf_em {
                 'root' => 'teiHeader',
                 'namespace' => 'http://www.tei-c.org/ns/1.0',
                 'class' => 'tx_dlf_teihdr'
+            );
+
+        }
+
+        // Add ALTO namespace.
+        if (!$nsDefined['ALTO']) {
+
+            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+                'pid' => 0,
+                'type' => 'ALTO',
+                'root' => 'alto',
+                'namespace' => 'http://www.loc.gov/standards/alto/ns-v2#',
+                'class' => 'tx_dlf_alto'
             );
 
         }
