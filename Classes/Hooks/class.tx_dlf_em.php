@@ -572,11 +572,11 @@ class tx_dlf_em {
             'ALTO' => FALSE
         );
 
-        // Check if formats "MODS" and "TEIHDR" exist.
+        // Check existing format specifications.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'type',
             'tx_dlf_formats',
-            '(type='.$GLOBALS['TYPO3_DB']->fullQuoteStr('MODS', 'tx_dlf_formats').' OR type='.$GLOBALS['TYPO3_DB']->fullQuoteStr('TEIHDR', 'tx_dlf_formats').')'.tx_dlf_helper::whereClause('tx_dlf_formats')
+            '1=1'.tx_dlf_helper::whereClause('tx_dlf_formats')
         );
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
