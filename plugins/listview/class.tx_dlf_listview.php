@@ -9,6 +9,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\List;
+
 /**
  * Plugin 'DLF: List View' for the 'dlf' extension.
  *
@@ -18,7 +22,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_listview extends tx_dlf_plugin {
+class tx_dlf_listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/listview/class.tx_dlf_listview.php';
 
@@ -33,7 +37,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
     /**
      * This holds the list
      *
-     * @var	tx_dlf_list
+     * @var	\Kitodo\Dlf\Common\List
      * @access	protected
      */
     protected $list;
@@ -179,7 +183,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                     // Get title of parent document if needed.
                     if (empty($value) && $this->conf['getTitle']) {
 
-                        $superiorTitle = tx_dlf_document::getTitle($this->list[$number]['uid'], TRUE);
+                        $superiorTitle = Document::getTitle($this->list[$number]['uid'], TRUE);
 
                         if (!empty($superiorTitle)) {
 
@@ -220,17 +224,17 @@ class tx_dlf_listview extends tx_dlf_plugin {
                 // Translate name of holding library.
                 } elseif ($index_name == 'owner' && !empty($value)) {
 
-                    $value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                    $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
 
                 // Translate document type.
                 } elseif ($index_name == 'type' && !empty($value)) {
 
-                    $value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                    $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
 
                 // Translate ISO 639 language code.
                 } elseif ($index_name == 'language' && !empty($value)) {
 
-                    $value = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
+                    $value = htmlspecialchars(Helper::getLanguageName($value));
 
                 } elseif (!empty($value)) {
 
@@ -450,7 +454,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->conf['getTitle']) {
 
-                            $superiorTitle = tx_dlf_document::getTitle($subpart['uid'], TRUE);
+                            $superiorTitle = Document::getTitle($subpart['uid'], TRUE);
 
                             if (!empty($superiorTitle)) {
 
@@ -493,14 +497,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
                     // Translate name of holding library.
                     } elseif ($index_name == 'owner' && !empty($value)) {
 
-                        $value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
 
                     // Translate document type.
                     } elseif ($index_name == 'type' && !empty($value)) {
 
                         $_value = $value;
 
-                        $value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
 
                         // Add page number for single pages.
                         if ($_value == 'page') {
@@ -512,7 +516,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
                     // Translate ISO 639 language code.
                     } elseif ($index_name == 'language' && !empty($value)) {
 
-                        $value = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
+                        $value = htmlspecialchars(Helper::getLanguageName($value));
 
                     } elseif (!empty($value)) {
 
@@ -595,7 +599,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.wrap AS wrap,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
             'tx_dlf_metadata',
-            '(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+            '(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1) AND tx_dlf_metadata.pid='.intval($this->conf['pages']).Helper::whereClause('tx_dlf_metadata'),
             '',
             'tx_dlf_metadata.sorting ASC',
             ''
@@ -607,14 +611,14 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
                 $this->metadata[$resArray['index_name']] = array (
                     'wrap' => $resArray['wrap'],
-                    'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+                    'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
                 );
 
             }
 
             if ($resArray['is_sortable']) {
 
-                $this->sortables[$resArray['index_name']] = tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages']);
+                $this->sortables[$resArray['index_name']] = Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages']);
 
             }
 
@@ -640,7 +644,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
         $this->setCache(FALSE);
 
         // Load the list.
-        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
 
         // Sort the list if applicable.
         if ((!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order'])

@@ -9,6 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Metadata' for the 'dlf' extension.
  *
@@ -18,7 +21,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_metadata extends tx_dlf_plugin {
+class tx_dlf_metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/metadata/class.tx_dlf_metadata.php';
 
@@ -149,11 +152,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
         if (empty($metadata)) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_metadata->main('.$content.', [data])] No metadata found for document with UID "'.$this->doc->uid.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-
-            }
+            Helper::devLog('[tx_dlf_metadata->main('.$content.', [data])] No metadata found for document with UID "'.$this->doc->uid.'"', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
@@ -162,7 +161,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
         ksort($metadata);
 
         // Get hook objects.
-        $this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
+        $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);
 
         // Hook for getting a customized title bar (requested by SBB).
         foreach ($this->hookObjects as $hookObj) {
@@ -213,7 +212,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.wrap AS wrap',
             'tx_dlf_metadata',
-            'tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata').' AND (sys_language_uid IN (-1,0) OR (sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND l18n_parent = 0))',
+            'tx_dlf_metadata.pid='.intval($this->conf['pages']).Helper::whereClause('tx_dlf_metadata').' AND (sys_language_uid IN (-1,0) OR (sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND l18n_parent = 0))',
             '',
             'tx_dlf_metadata.sorting',
             ''
@@ -236,7 +235,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
                     $metaList[$resArray['index_name']] = array (
                         'wrap' => $resArray['wrap'],
-                        'label' => tx_dlf_helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+                        'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
                     );
 
                 }
@@ -251,7 +250,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name',
             'tx_dlf_collections',
-            'tx_dlf_collections.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'tx_dlf_collections.pid='.intval($this->conf['pages']).Helper::whereClause('tx_dlf_collections'),
             '',
             '',
             ''
@@ -305,7 +304,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
 
-                            $superiorTitle = tx_dlf_document::getTitle($this->doc->parentId, TRUE);
+                            $superiorTitle = Document::getTitle($this->doc->parentId, TRUE);
 
                             if (!empty($superiorTitle)) {
 
@@ -333,12 +332,12 @@ class tx_dlf_metadata extends tx_dlf_plugin {
                     } elseif ($index_name == 'owner' && !empty($value)) {
 
                         // Translate name of holding library.
-                        $value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
 
                     } elseif ($index_name == 'type' && !empty($value)) {
 
                         // Translate document type.
-                        $value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
 
                     } elseif ($index_name == 'collection' && !empty($value)) {
 
@@ -346,7 +345,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
                         if (in_array($value, $collList)) {
 
                             // Translate collection.
-                            $value = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
 
                         } else {
 
@@ -357,7 +356,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
                     } elseif ($index_name == 'language' && !empty($value)) {
 
                         // Translate ISO 639 language code.
-                        $value = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
+                        $value = htmlspecialchars(Helper::getLanguageName($value));
 
                     } elseif (!empty($value)) {
 

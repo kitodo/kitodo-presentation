@@ -71,7 +71,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"></items>
-								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_solrList</itemsProcFunc>
+								<itemsProcFunc>\\Kitodo\\Dlf\\Hooks\\FormEngine->itemsProcFunc_solrList</itemsProcFunc>
 								<size>1</size>
 								<maxitems>1</maxitems>
 								<minitems>0</minitems>
@@ -114,7 +114,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"></items>
-								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_extendedSearchList</itemsProcFunc>
+								<itemsProcFunc>\\Kitodo\\Dlf\\Hooks\\FormEngine->itemsProcFunc_extendedSearchList</itemsProcFunc>
 								<size>5</size>
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>10</maxitems>
@@ -160,7 +160,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"/>
-								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_collectionList</itemsProcFunc>
+								<itemsProcFunc>\\Kitodo\\Dlf\\Hooks\\FormEngine->itemsProcFunc_collectionList</itemsProcFunc>
 								<size>5</size>
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>1024</maxitems>
@@ -176,7 +176,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"></items>
-								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_facetsList</itemsProcFunc>
+								<itemsProcFunc>\\Kitodo\\Dlf\\Hooks\\FormEngine->itemsProcFunc_facetsList</itemsProcFunc>
 								<size>5</size>
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>1024</maxitems>

@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Formats;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,25 +12,25 @@
  */
 
 /**
- * Fulltext format class 'tx_dlf_alto' for the 'dlf' extension.
+ * Fulltext format class 'Alto' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_alto implements tx_dlf_fulltext {
+class Alto implements \Kitodo\Dlf\Common\FulltextInterface {
 
     /**
      * This extracts the fulltext data from ALTO XML
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param	\SimpleXMLElement		$xml: The XML to extract the metadata from
      *
      * @return	string			The raw unformatted fulltext
      */
-    public static function getRawText(SimpleXMLElement $xml) {
+    public static function getRawText(\SimpleXMLElement $xml) {
 
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
 

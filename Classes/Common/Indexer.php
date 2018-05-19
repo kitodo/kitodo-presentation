@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -9,15 +11,17 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Formats\Alto;
+
 /**
- * Indexing class 'tx_dlf_indexing' for the 'dlf' extension.
+ * Class 'Indexer' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_indexing {
+class Indexer {
 
     /**
      * The extension key
@@ -64,7 +68,7 @@ class tx_dlf_indexing {
     /**
      * Instance of Apache_Solr_Service class
      *
-     * @var	Apache_Solr_Service
+     * @var	\Apache_Solr_Service
      * @access protected
      */
     protected static $solr;
@@ -83,12 +87,12 @@ class tx_dlf_indexing {
      *
      * @access	public
      *
-     * @param	tx_dlf_document		&$doc: The document to add
+     * @param	\Kitodo\Dlf\Common\Document		&$doc: The document to add
      * @param	integer		$core: UID of the Solr core to use
      *
      * @return	integer		0 on success or 1 on failure
      */
-    public static function add(tx_dlf_document &$doc, $core = 0) {
+    public static function add(Document &$doc, $core = 0) {
 
         if (in_array($doc->uid, self::$processedDocs)) {
 
@@ -101,7 +105,7 @@ class tx_dlf_indexing {
             // Handle multi-volume documents.
             if ($doc->parentId) {
 
-                $parent = & tx_dlf_document::getInstance($doc->parentId, 0, TRUE);
+                $parent = Document::getInstance($doc->parentId, 0, TRUE);
 
                 if ($parent->ready) {
 
@@ -109,11 +113,7 @@ class tx_dlf_indexing {
 
                 } else {
 
-                    if (TYPO3_DLOG) {
-
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-                    }
+                    Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', SYSLOG_SEVERITY_ERROR);
 
                     return 1;
 
@@ -169,7 +169,7 @@ class tx_dlf_indexing {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'tx_dlf_documents.title AS title',
                     'tx_dlf_documents',
-                    'tx_dlf_documents.uid='.intval($doc->uid).tx_dlf_helper::whereClause('tx_dlf_documents'),
+                    'tx_dlf_documents.uid='.intval($doc->uid).Helper::whereClause('tx_dlf_documents'),
                     '',
                     '',
                     '1'
@@ -183,8 +183,8 @@ class tx_dlf_indexing {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                            htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
-                            tx_dlf_helper::getLL('flash.done', TRUE),
+                            htmlspecialchars(sprintf(Helper::getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
+                            Helper::getLL('flash.done', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                             TRUE
                         );
@@ -193,15 +193,15 @@ class tx_dlf_indexing {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                            htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
-                            tx_dlf_helper::getLL('flash.error', TRUE),
+                            htmlspecialchars(sprintf(Helper::getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
+                            Helper::getLL('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                             TRUE
                         );
 
                     }
 
-                    tx_dlf_helper::addMessage($message);
+                    Helper::addMessage($message);
 
                 }
 
@@ -213,21 +213,17 @@ class tx_dlf_indexing {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                        tx_dlf_helper::getLL('flash.error', TRUE),
+                        Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
 
-                    tx_dlf_helper::addMessage($message);
+                    Helper::addMessage($message);
 
                 }
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-                }
+                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', SYSLOG_SEVERITY_ERROR);
 
                 return 1;
 
@@ -239,21 +235,17 @@ class tx_dlf_indexing {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
-                    tx_dlf_helper::getLL('flash.warning', TRUE),
+                    Helper::getLL('flash.solrNoConnection', TRUE),
+                    Helper::getLL('flash.warning', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
                     TRUE
                 );
 
-                tx_dlf_helper::addMessage($message);
+                Helper::addMessage($message);
 
             }
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
 
             return 1;
 
@@ -282,7 +274,7 @@ class tx_dlf_indexing {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_solrcores.uid AS uid,tx_dlf_documents.title AS title',
             'tx_dlf_solrcores,tx_dlf_documents',
-            'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.$uid.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+            'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.$uid.Helper::whereClause('tx_dlf_solrcores'),
             '',
             '',
             '1'
@@ -308,21 +300,17 @@ class tx_dlf_indexing {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                            tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                            tx_dlf_helper::getLL('flash.error', TRUE),
+                            Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                            Helper::getLL('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                             TRUE
                         );
 
-                        tx_dlf_helper::addMessage($message);
+                        Helper::addMessage($message);
 
                     }
 
-                    if (TYPO3_DLOG) {
-
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-                    }
+                    Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', SYSLOG_SEVERITY_ERROR);
 
                     return 1;
 
@@ -334,21 +322,17 @@ class tx_dlf_indexing {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        tx_dlf_helper::getLL('flash.solrNoConnection', TRUE),
-                        tx_dlf_helper::getLL('flash.error', TRUE),
+                        Helper::getLL('flash.solrNoConnection', TRUE),
+                        Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
 
-                    tx_dlf_helper::addMessage($message);
+                    Helper::addMessage($message);
 
                 }
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->delete('.$_uid.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-                }
+                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
 
                 return 1;
 
@@ -358,13 +342,13 @@ class tx_dlf_indexing {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentDeleted'), $title, $uid)),
-                    tx_dlf_helper::getLL('flash.done', TRUE),
+                    htmlspecialchars(sprintf(Helper::getLL('flash.documentDeleted'), $title, $uid)),
+                    Helper::getLL('flash.done', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                     TRUE
                 );
 
-                tx_dlf_helper::addMessage($message);
+                Helper::addMessage($message);
 
             }
 
@@ -372,11 +356,7 @@ class tx_dlf_indexing {
 
         } else {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', SYSLOG_SEVERITY_ERROR);
 
             return 1;
 
@@ -404,11 +384,7 @@ class tx_dlf_indexing {
 
         if (!$pid) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_indexing->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', SYSLOG_SEVERITY_ERROR);
 
             return '';
 
@@ -447,7 +423,7 @@ class tx_dlf_indexing {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_structures.index_name AS index_name',
                 'tx_dlf_structures',
-                'tx_dlf_structures.toplevel=1 AND tx_dlf_structures.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_structures'),
+                'tx_dlf_structures.toplevel=1 AND tx_dlf_structures.pid='.intval($pid).Helper::whereClause('tx_dlf_structures'),
                 '',
                 '',
                 ''
@@ -463,7 +439,7 @@ class tx_dlf_indexing {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.index_indexed AS index_indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.index_autocomplete AS index_autocomplete,tx_dlf_metadata.index_boost AS index_boost',
                 'tx_dlf_metadata',
-                'tx_dlf_metadata.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                'tx_dlf_metadata.pid='.intval($pid).Helper::whereClause('tx_dlf_metadata'),
                 '',
                 '',
                 ''
@@ -530,12 +506,12 @@ class tx_dlf_indexing {
      *
      * @access	protected
      *
-     * @param	tx_dlf_document		&$doc: The METS document
+     * @param	\Kitodo\Dlf\Common\Document		&$doc: The METS document
      * @param	array		$logicalUnit: Array of the logical unit to process
      *
      * @return	integer		0 on success or 1 on failure
      */
-    protected static function processLogical(tx_dlf_document &$doc, array $logicalUnit) {
+    protected static function processLogical(Document &$doc, array $logicalUnit) {
 
         $errors = 0;
 
@@ -545,14 +521,14 @@ class tx_dlf_indexing {
         if (!empty($metadata)) {
 
             // Load class.
-            if (!class_exists('Apache_Solr_Document')) {
+            if (!class_exists('\\Apache_Solr_Document')) {
 
                 require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/Resources/Private/PHP/SolrPhpClient/Apache/Solr/Document.php'));
 
             }
 
             // Create new Solr document.
-            $solrDoc = new Apache_Solr_Document();
+            $solrDoc = new \Apache_Solr_Document();
 
             // Create unique identifier from document's UID and unit's XML ID.
             $solrDoc->setField('id', $doc->uid.$logicalUnit['id']);
@@ -659,13 +635,13 @@ class tx_dlf_indexing {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                        tx_dlf_helper::getLL('flash.error', TRUE),
+                        Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
 
-                    tx_dlf_helper::addMessage($message);
+                    Helper::addMessage($message);
 
                 }
 
@@ -704,13 +680,13 @@ class tx_dlf_indexing {
      *
      * @access	protected
      *
-     * @param	tx_dlf_document		&$doc: The METS document
+     * @param	\Kitodo\Dlf\Common\Document		&$doc: The METS document
      * @param	integer		$page: The page number
      * @param	array		$physicalUnit: Array of the physical unit to process
      *
      * @return	integer		0 on success or 1 on failure
      */
-    protected static function processPhysical(tx_dlf_document &$doc, $page, array $physicalUnit) {
+    protected static function processPhysical(Document &$doc, $page, array $physicalUnit) {
 
         $errors = 0;
 
@@ -759,14 +735,14 @@ class tx_dlf_indexing {
             }
 
             // Load class.
-            if (!class_exists('Apache_Solr_Document')) {
+            if (!class_exists('\\Apache_Solr_Document')) {
 
                 require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/Resources/Private/PHP/SolrPhpClient/Apache/Solr/Document.php'));
 
             }
 
             // Create new Solr document.
-            $solrDoc = new Apache_Solr_Document();
+            $solrDoc = new \Apache_Solr_Document();
 
             // Create unique identifier from document's UID and unit's XML ID.
             $solrDoc->setField('id', $doc->uid.$physicalUnit['id']);
@@ -793,7 +769,7 @@ class tx_dlf_indexing {
 
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
 
-            $solrDoc->setField('fulltext', tx_dlf_alto::getRawText($xml));
+            $solrDoc->setField('fulltext', Alto::getRawText($xml));
 
             // Add faceting information to physical sub-elements if applicable.
             foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
@@ -821,13 +797,13 @@ class tx_dlf_indexing {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        tx_dlf_helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                        tx_dlf_helper::getLL('flash.error', TRUE),
+                        Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
 
-                    tx_dlf_helper::addMessage($message);
+                    Helper::addMessage($message);
 
                 }
 
@@ -857,7 +833,7 @@ class tx_dlf_indexing {
         if (!self::$solr) {
 
             // Connect to Solr server.
-            if (self::$solr = tx_dlf_solr::getInstance($core)) {
+            if (self::$solr = Solr::getInstance($core)) {
 
                 // Load indexing configuration if needed.
                 if ($pid) {

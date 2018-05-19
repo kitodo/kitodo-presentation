@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Pageview' for the 'dlf' extension.
  *
@@ -17,7 +19,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_pageview extends tx_dlf_plugin {
+class tx_dlf_pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/pageview/class.tx_dlf_pageview.php';
 
@@ -262,11 +264,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
             } else {
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-                }
+                Helper::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -306,11 +304,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
         } else {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-            }
+            Helper::devLog('[tx_dlf_pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', SYSLOG_SEVERITY_WARNING);
 
         }
 

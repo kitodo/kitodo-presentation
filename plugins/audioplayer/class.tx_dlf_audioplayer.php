@@ -17,7 +17,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_audioplayer extends tx_dlf_plugin {
+class tx_dlf_audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/audioplayer/class.tx_dlf_audioplayer.php';
 

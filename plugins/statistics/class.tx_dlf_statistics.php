@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Statistics' for the 'dlf' extension.
  *
@@ -17,7 +19,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_statistics extends tx_dlf_plugin {
+class tx_dlf_statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/statistics/class.tx_dlf_statistics.php';
 
@@ -41,11 +43,7 @@ class tx_dlf_statistics extends tx_dlf_plugin {
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_statistics->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-
-            }
+            Helper::devLog('[tx_dlf_statistics->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
@@ -63,7 +61,7 @@ class tx_dlf_statistics extends tx_dlf_plugin {
                 'tx_dlf_documents',
                 'tx_dlf_relations',
                 'tx_dlf_collections',
-                'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0 AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').Helper::whereClause('tx_dlf_documents').Helper::whereClause('tx_dlf_collections'),
                 'tx_dlf_documents.uid',
                 '',
                 ''
@@ -74,7 +72,7 @@ class tx_dlf_statistics extends tx_dlf_plugin {
                 'tx_dlf_documents',
                 'tx_dlf_relations',
                 'tx_dlf_collections',
-                'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').') AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.Helper::whereClause('tx_dlf_documents').') AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).') AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').Helper::whereClause('tx_dlf_documents').Helper::whereClause('tx_dlf_collections'),
                 'tx_dlf_documents.uid',
                 '',
                 ''
@@ -86,7 +84,7 @@ class tx_dlf_statistics extends tx_dlf_plugin {
             $resultTitles = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents',
-                'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+                'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.partof=0'.Helper::whereClause('tx_dlf_documents'),
                 '',
                 '',
                 ''
@@ -95,7 +93,7 @@ class tx_dlf_statistics extends tx_dlf_plugin {
             $resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents',
-                'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.tx_dlf_helper::whereClause('tx_dlf_documents').')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+                'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.Helper::whereClause('tx_dlf_documents').')'.Helper::whereClause('tx_dlf_documents'),
                 '',
                 '',
                 ''

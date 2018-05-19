@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,15 +12,15 @@
  */
 
 /**
- * Solr class 'tx_dlf_solr' for the 'dlf' extension.
+ * Class 'Solr' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_solr {
+class Solr {
 
     /**
      * This holds the core name
@@ -79,7 +81,7 @@ class tx_dlf_solr {
     /**
      * This holds the singleton search objects with their core as array key
      *
-     * @var	array(tx_dlf_solr)
+     * @var	array(\Kitodo\Dlf\Common\Solr)
      * @access protected
      */
     protected static $registry = array ();
@@ -87,7 +89,7 @@ class tx_dlf_solr {
     /**
      * This holds the Solr service object
      *
-     * @var	Apache_Solr_Service
+     * @var	\Apache_Solr_Service
      * @access protected
      */
     protected $service;
@@ -104,7 +106,7 @@ class tx_dlf_solr {
     public static function escapeQuery($query) {
 
         // Load class.
-        if (!class_exists('Apache_Solr_Service')) {
+        if (!class_exists('\\Apache_Solr_Service')) {
 
             require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/Resources/Private/PHP/SolrPhpClient/Apache/Solr/Service.php'));
 
@@ -113,11 +115,11 @@ class tx_dlf_solr {
         // Escape query phrase or term.
         if (preg_match('/^".*"$/', $query)) {
 
-            return '"'.Apache_Solr_Service::escapePhrase(trim($query, '"')).'"';
+            return '"'.\Apache_Solr_Service::escapePhrase(trim($query, '"')).'"';
 
         } else {
 
-            return Apache_Solr_Service::escape($query);
+            return \Apache_Solr_Service::escape($query);
 
         }
 
@@ -144,7 +146,7 @@ class tx_dlf_solr {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
                 'tx_dlf_metadata',
-                'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid='.intval($pid).' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid='.intval($pid).' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'.Helper::whereClause('tx_dlf_metadata'),
                 '',
                 '',
                 ''
@@ -191,7 +193,7 @@ class tx_dlf_solr {
      *
      * @param	mixed		$core: Name or UID of the core to load
      *
-     * @return	tx_dlf_solr		Instance of this class
+     * @return	\Kitodo\Dlf\Common\Solr		Instance of this class
      */
     public static function getInstance($core) {
 
@@ -201,18 +203,14 @@ class tx_dlf_solr {
         // Get core name if UID is given.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
 
-            $core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+            $core = Helper::getIndexName($core, 'tx_dlf_solrcores');
 
         }
 
         // Check if core is set.
         if (empty($core)) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', SYSLOG_SEVERITY_ERROR);
 
             return;
 
@@ -239,11 +237,7 @@ class tx_dlf_solr {
 
         } else {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->getInstance('.$_core.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
 
             return;
 
@@ -339,7 +333,7 @@ class tx_dlf_solr {
      *
      * @param	string		$query: The search query
      *
-     * @return	tx_dlf_list		The result list
+     * @return	\Kitodo\Dlf\Common\List		The result list
      */
     public function search($query = '') {
 
@@ -354,7 +348,7 @@ class tx_dlf_solr {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name',
             'tx_dlf_metadata',
-            'tx_dlf_metadata.is_sortable=1 AND tx_dlf_metadata.pid='.intval($this->cPid).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+            'tx_dlf_metadata.is_sortable=1 AND tx_dlf_metadata.pid='.intval($this->cPid).Helper::whereClause('tx_dlf_metadata'),
             '',
             '',
             ''
@@ -445,7 +439,7 @@ class tx_dlf_solr {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'tx_dlf_documents.uid AS uid,tx_dlf_documents.metadata_sorting AS metadata_sorting',
                     'tx_dlf_documents',
-                    'tx_dlf_documents.uid='.intval($check).tx_dlf_helper::whereClause('tx_dlf_documents'),
+                    'tx_dlf_documents.uid='.intval($check).Helper::whereClause('tx_dlf_documents'),
                     '',
                     '',
                     '1'
@@ -461,19 +455,19 @@ class tx_dlf_solr {
 
                     if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
 
-                        $sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->cPid);
+                        $sorting['type'] = Helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->cPid);
 
                     }
 
                     if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
 
-                        $sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->cPid);
+                        $sorting['owner'] = Helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->cPid);
 
                     }
 
                     if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
 
-                        $sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->cPid);
+                        $sorting['collection'] = Helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->cPid);
 
                     }
 
@@ -503,7 +497,7 @@ class tx_dlf_solr {
         }
 
         // Save list of documents.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
 
         $list->reset();
 
@@ -540,15 +534,19 @@ class tx_dlf_solr {
      * @return	array       The Apache Solr Documents that were fetched
      */
     public function search_raw($query = '', $parameters = array ()) {
+
         $solr_response = $this->service->search((string) $query, 0, $this->limit, array_merge($this->params, $parameters));
 
         $searchresult = array ();
 
         foreach ($solr_response->response->docs as $doc) {
+
             $searchresult[] = $doc;
+
         }
 
         return $searchresult;
+
     }
 
     /**
@@ -595,7 +593,7 @@ class tx_dlf_solr {
      *
      * @access	protected
      *
-     * @return	Apache_Solr_Service		Apache Solr service object
+     * @return	\Apache_Solr_Service		Apache Solr service object
      */
     protected function _getService() {
 
@@ -663,11 +661,7 @@ class tx_dlf_solr {
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->__get('.$var.')] There is no getter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
 
             return;
 
@@ -695,11 +689,7 @@ class tx_dlf_solr {
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING, $value);
 
         } else {
 
@@ -721,7 +711,7 @@ class tx_dlf_solr {
     protected function __construct($core) {
 
         // Load class.
-        if (!class_exists('Apache_Solr_Service')) {
+        if (!class_exists('\\Apache_Solr_Service')) {
 
             require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/Resources/Private/PHP/SolrPhpClient/Apache/Solr/Service.php'));
 
@@ -730,7 +720,7 @@ class tx_dlf_solr {
         $solrInfo = self::getSolrConnectionInfo($core);
 
         // Instantiate Apache_Solr_Service class.
-        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
+        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\\Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
 
         // Check if connection is established.
         if ($this->service->ping() !== FALSE) {

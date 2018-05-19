@@ -17,7 +17,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_validator extends tx_dlf_plugin {
+class tx_dlf_validator extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/validator/class.tx_dlf_validator.php';
 

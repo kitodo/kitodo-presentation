@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Newspaper' for the 'dlf' extension.
  *
@@ -18,7 +20,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_newspaper extends tx_dlf_plugin {
+class tx_dlf_newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $extKey = 'dlf';
 
@@ -80,7 +82,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.uid AS uid, tx_dlf_documents.title AS title, tx_dlf_documents.year AS year',
             'tx_dlf_documents',
-            '(tx_dlf_documents.structure='.tx_dlf_helper::getIdFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+            '(tx_dlf_documents.structure='.Helper::getIdFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.Helper::whereClause('tx_dlf_documents'),
             '',
             'title ASC',
             ''
@@ -363,7 +365,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.uid AS uid, tx_dlf_documents.title AS title',
             'tx_dlf_documents',
-            '(tx_dlf_documents.structure='.tx_dlf_helper::getIdFromIndexName('year', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+            '(tx_dlf_documents.structure='.Helper::getIdFromIndexName('year', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.Helper::whereClause('tx_dlf_documents'),
             '',
             'title ASC',
             ''

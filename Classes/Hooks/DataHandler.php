@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Hooks;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -9,15 +11,19 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
+
 /**
- * Hooks and helper for the '\TYPO3\CMS\Core\DataHandling\DataHandler' library.
+ * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_tcemain {
+class DataHandler {
 
     /**
      * Field post-processing hook for the process_datamap() method.
@@ -109,7 +115,7 @@ class tx_dlf_tcemain {
                     );
 
                     // Get first unused core number.
-                    $coreNumber = tx_dlf_solr::solrGetCoreNumber($GLOBALS['TYPO3_DB']->sql_num_rows($result));
+                    $coreNumber = Solr::solrGetCoreNumber($GLOBALS['TYPO3_DB']->sql_num_rows($result));
 
                     // Get Solr credentials.
                     $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
@@ -159,11 +165,7 @@ class tx_dlf_tcemain {
 
                     }
 
-                    if (TYPO3_DLOG) {
-
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
-
-                    }
+                    Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', SYSLOG_SEVERITY_ERROR, $fieldArray);
 
                     // Solr core could not be created, thus unset field array.
                     $fieldArray = array ();
@@ -192,7 +194,7 @@ class tx_dlf_tcemain {
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             $table.'.is_listed AS is_listed',
                             $table,
-                            $table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+                            $table.'.uid='.intval($id).Helper::whereClause($table),
                             '',
                             '',
                             '1'
@@ -220,7 +222,7 @@ class tx_dlf_tcemain {
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             $table.'.index_autocomplete AS index_autocomplete',
                             $table,
-                            $table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+                            $table.'.uid='.intval($id).Helper::whereClause($table),
                             '',
                             '',
                             '1'
@@ -252,7 +254,7 @@ class tx_dlf_tcemain {
                             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                                 $table.'.index_name AS index_name',
                                 $table,
-                                $table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+                                $table.'.uid='.intval($id).Helper::whereClause($table),
                                 '',
                                 '',
                                 '1'
@@ -267,11 +269,7 @@ class tx_dlf_tcemain {
 
                         }
 
-                        if (TYPO3_DLOG) {
-
-                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_NOTICE, $fieldArray);
-
-                        }
+                        Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', SYSLOG_SEVERITY_NOTICE, $fieldArray);
 
                     }
 
@@ -312,7 +310,7 @@ class tx_dlf_tcemain {
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             'tx_dlf_solrcores.uid',
                             'tx_dlf_solrcores,tx_dlf_documents',
-                            'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+                            'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).Helper::whereClause('tx_dlf_solrcores'),
                             '',
                             '',
                             '1'
@@ -325,7 +323,7 @@ class tx_dlf_tcemain {
                             if ($fieldArray['hidden']) {
 
                                 // Establish Solr connection.
-                                if ($solr = tx_dlf_solr::getInstance($core)) {
+                                if ($solr = Solr::getInstance($core)) {
 
                                     // Delete Solr document.
                                     $solr->service->deleteByQuery('uid:'.$id);
@@ -337,7 +335,7 @@ class tx_dlf_tcemain {
                             } else {
 
                                 // Reindex document.
-                                $doc = & tx_dlf_document::getInstance($id);
+                                $doc = Document::getInstance($id);
 
                                 if ($doc->ready) {
 
@@ -345,11 +343,7 @@ class tx_dlf_tcemain {
 
                                 } else {
 
-                                    if (TYPO3_DLOG) {
-
-                                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
-
-                                    }
+                                    Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', SYSLOG_SEVERITY_ERROR, $fieldArray);
 
                                 }
 
@@ -388,7 +382,7 @@ class tx_dlf_tcemain {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_solrcores.uid',
                 'tx_dlf_solrcores,tx_dlf_documents',
-                'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+                'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).Helper::whereClause('tx_dlf_solrcores'),
                 '',
                 '',
                 '1'
@@ -404,7 +398,7 @@ class tx_dlf_tcemain {
                     case 'delete':
 
                         // Establish Solr connection.
-                        if ($solr = tx_dlf_solr::getInstance($core)) {
+                        if ($solr = Solr::getInstance($core)) {
 
                             // Delete Solr document.
                             $solr->service->deleteByQuery('uid:'.$id);
@@ -422,7 +416,7 @@ class tx_dlf_tcemain {
                     case 'undelete':
 
                         // Reindex document.
-                        $doc = & tx_dlf_document::getInstance($id);
+                        $doc = Document::getInstance($id);
 
                         if ($doc->ready) {
 
@@ -430,11 +424,7 @@ class tx_dlf_tcemain {
 
                         } else {
 
-                            if (TYPO3_DLOG) {
-
-                                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
-
-                            }
+                            Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', SYSLOG_SEVERITY_ERROR);
 
                         }
 

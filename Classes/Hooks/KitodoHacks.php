@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Hooks;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -17,21 +19,21 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_hacks {
+class KitodoHacks {
 
     /**
-     * Hook for the __construct() method of dlf/Classes/Common/class.tx_dlf_document.php
+     * Hook for the __construct() method of \Kitodo\Dlf\Common\Document
      * When using Kitodo.Production the record identifier is saved only in MODS, but not
      * in METS. To get it anyway, we have to do some magic.
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		&$xml: The XML object
+     * @param	\SimpleXMLElement		&$xml: The XML object
      * @param	mixed		$record_id: The record identifier
      *
      * @return	void
      */
-    public function construct_postProcessRecordId(SimpleXMLElement &$xml, &$record_id) {
+    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$record_id) {
 
         if (!$record_id) {
 

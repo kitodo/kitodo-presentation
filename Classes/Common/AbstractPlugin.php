@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,21 +12,21 @@
  */
 
 /**
- * Base class 'tx_dlf_plugin' for the 'dlf' extension.
+ * Abstract class 'Plugin' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  * @abstract
  */
-abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
     public $extKey = 'dlf';
 
     public $prefixId = 'tx_dlf';
 
-    public $scriptRelPath = 'Classes/Common/class.tx_dlf_plugin.php';
+    public $scriptRelPath = 'Classes/Common/AbstractPlugin.php';
 
     // Plugins are cached by default (@see setCache()).
     public $pi_USER_INT_obj = FALSE;
@@ -34,7 +36,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     /**
      * This holds the current document
      *
-     * @var	tx_dlf_document
+     * @var	\Kitodo\Dlf\Common\Document
      * @access protected
      */
     protected $doc;
@@ -66,7 +68,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
         if (!empty($flexFormConf)) {
 
-            $conf = tx_dlf_helper::array_merge_recursive_overrule($flexFormConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($flexFormConf, $conf);
 
         }
 
@@ -75,7 +77,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
         if (is_array($pluginConf)) {
 
-            $conf = tx_dlf_helper::array_merge_recursive_overrule($pluginConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($pluginConf, $conf);
 
         }
 
@@ -84,7 +86,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
         if (is_array($generalConf)) {
 
-            $conf = tx_dlf_helper::array_merge_recursive_overrule($generalConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($generalConf, $conf);
 
         }
 
@@ -93,7 +95,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
         if (is_array($extConf)) {
 
-            $conf = tx_dlf_helper::array_merge_recursive_overrule($extConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($extConf, $conf);
 
         }
 
@@ -102,7 +104,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
         if (is_array($varsConf)) {
 
-            $conf = tx_dlf_helper::array_merge_recursive_overrule($varsConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($varsConf, $conf);
 
         }
 
@@ -131,19 +133,15 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             // Should we exclude documents from other pages than $this->conf['pages']?
             $pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
 
-            // Get instance of tx_dlf_document.
-            $this->doc = & tx_dlf_document::getInstance($this->piVars['id'], $pid);
+            // Get instance of \Kitodo\Dlf\Common\Document.
+            $this->doc = Document::getInstance($this->piVars['id'], $pid);
 
             if (!$this->doc->ready) {
 
                 // Destroy the incomplete object.
                 $this->doc = NULL;
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
-
-                }
+                Helper::devLog('[\\Kitodo\\Dlf\\Common\\AbstractPlugin:'.get_class($this).'->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', SYSLOG_SEVERITY_ERROR);
 
             } else {
 
@@ -158,7 +156,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid',
                 'tx_dlf_documents',
-                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
+                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').Helper::whereClause('tx_dlf_documents'),
                 '',
                 '',
                 '1'
@@ -179,21 +177,13 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
             } else {
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_plugin->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
-
-                }
+                Helper::devLog('[\\Kitodo\\Dlf\\Common\\AbstractPlugin:'.get_class($this).'->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', SYSLOG_SEVERITY_ERROR);
 
             }
 
         } else {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_plugin->loadDocument()] Invalid UID "'.$this->piVars['id'].'" or PID "'.$this->conf['pages'].'" for document loading', $this->extKey, SYSLOG_SEVERITY_ERROR);
-
-            }
+            Helper::devLog('[\\Kitodo\\Dlf\\Common\\AbstractPlugin:'.get_class($this).'->loadDocument()] Invalid UID "'.$this->piVars['id'].'" or PID "'.$this->conf['pages'].'" for document loading', SYSLOG_SEVERITY_ERROR);
 
         }
 
@@ -246,7 +236,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
             }
 
-            $this->piVars = tx_dlf_helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
+            $this->piVars = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
 
         }
 

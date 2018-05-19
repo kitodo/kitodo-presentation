@@ -18,7 +18,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_toolsFulltext extends tx_dlf_plugin {
+class tx_dlf_toolsFulltext extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php';
 
@@ -37,7 +37,7 @@ class tx_dlf_toolsFulltext extends tx_dlf_plugin {
         $this->init($conf);
 
         // Merge configuration with conf array of toolbox.
-        $this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+        $this->conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
 
         // Load current document.
         $this->loadDocument();

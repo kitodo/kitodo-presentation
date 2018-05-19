@@ -9,6 +9,12 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\List;
+use Kitodo\Dlf\Common\Solr;
+
 /**
  * Plugin 'DLF: Search' for the 'dlf' extension.
  *
@@ -18,7 +24,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_search extends tx_dlf_plugin {
+class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
 
@@ -35,7 +41,7 @@ class tx_dlf_search extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.*',
             'tx_dlf_metadata',
-            'tx_dlf_metadata.index_autocomplete=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+            'tx_dlf_metadata.index_autocomplete=1 AND tx_dlf_metadata.pid='.intval($this->conf['pages']).Helper::whereClause('tx_dlf_metadata'),
             '',
             '',
             '1'
@@ -47,11 +53,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
         } else {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->addAutocompleteJS()] No metadata fields configured for search suggestions', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-            }
+            Helper::devLog('[tx_dlf_search->addAutocompleteJS()] No metadata fields configured for search suggestions', SYSLOG_SEVERITY_WARNING);
 
         }
 
@@ -67,7 +69,7 @@ class tx_dlf_search extends tx_dlf_plugin {
     protected function addCurrentCollection() {
 
         // Load current collection.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
 
         if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'collection') {
 
@@ -83,7 +85,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                 if ($facetKeyVal[0] == 'collection_faceting' && !strpos($facetKeyVal[1], '" OR "')) {
 
-                    $collectionId = tx_dlf_helper::getIdFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
+                    $collectionId = Helper::getIdFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
 
                 }
 
@@ -107,7 +109,7 @@ class tx_dlf_search extends tx_dlf_plugin {
     protected function addCurrentDocument() {
 
         // Load current list object.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
 
         // Load current document.
         if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
@@ -154,12 +156,12 @@ class tx_dlf_search extends tx_dlf_plugin {
     protected function addEncryptedCoreName() {
 
         // Get core name.
-        $name = tx_dlf_helper::getIndexName($this->conf['solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexName($this->conf['solrcore'], 'tx_dlf_solrcores');
 
         // Encrypt core name.
         if (!empty($name)) {
 
-            $name = tx_dlf_helper::encrypt($name);
+            $name = Helper::encrypt($name);
 
         }
 
@@ -210,7 +212,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
         foreach ($searchFields as $searchField) {
 
-            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.tx_dlf_helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
+            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
 
         }
 
@@ -242,11 +244,7 @@ class tx_dlf_search extends tx_dlf_plugin {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['facetsConf.'])) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->addFacetsMenu()] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-            }
+            Helper::devLog('[tx_dlf_search->addFacetsMenu()] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING);
 
             return '';
 
@@ -264,7 +262,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
         foreach (\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
 
-            $facets[$facet.'_faceting'] = tx_dlf_helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
+            $facets[$facet.'_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
 
         }
 
@@ -279,7 +277,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
         $TSconfig['special.']['limit'] = max(intval($this->conf['limitFacets']), 1);
 
-        $TSconfig = tx_dlf_helper::array_merge_recursive_overrule($this->conf['facetsConf.'], $TSconfig);
+        $TSconfig = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['facetsConf.'], $TSconfig);
 
         return $this->cObj->HMENU($TSconfig);
 
@@ -358,22 +356,22 @@ class tx_dlf_search extends tx_dlf_plugin {
         if ($field == 'owner_faceting') {
 
             // Translate name of holding library.
-            $entryArray['title'] = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
 
         } elseif ($field == 'type_faceting') {
 
             // Translate document type.
-            $entryArray['title'] = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
 
         } elseif ($field == 'collection_faceting') {
 
             // Translate name of collection.
-            $entryArray['title'] = htmlspecialchars(tx_dlf_helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
 
         } elseif ($field == 'language_faceting') {
 
             // Translate ISO 639 language code.
-            $entryArray['title'] = htmlspecialchars(tx_dlf_helper::getLanguageName($value));
+            $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
 
         } else {
 
@@ -386,7 +384,7 @@ class tx_dlf_search extends tx_dlf_plugin {
         $entryArray['doNotLinkIt'] = 0;
 
         // Check if facet is already selected.
-        $index = array_search($field.':("'.tx_dlf_solr::escapeQuery($value).'")', $search['params']['fq']);
+        $index = array_search($field.':("'.Solr::escapeQuery($value).'")', $search['params']['fq']);
 
         if ($index !== FALSE) {
 
@@ -411,7 +409,7 @@ class tx_dlf_search extends tx_dlf_plugin {
         } else {
 
             // Facet is not selected, thus add it to filter.
-            $search['params']['fq'][] = $field.':("'.tx_dlf_solr::escapeQuery($value).'")';
+            $search['params']['fq'][] = $field.':("'.Solr::escapeQuery($value).'")';
 
             $entryArray['ITEM_STATE'] = 'NO';
 
@@ -443,11 +441,7 @@ class tx_dlf_search extends tx_dlf_plugin {
         // Quit without doing anything if required variables are not set.
         if (empty($this->conf['solrcore'])) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-
-            }
+            Helper::devLog('[tx_dlf_search->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
@@ -456,7 +450,7 @@ class tx_dlf_search extends tx_dlf_plugin {
         if (!isset($this->piVars['query']) && empty($this->piVars['extQuery'])) {
 
             // Extract query and filter from last search.
-            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
 
             if (!empty($list->metadata['searchString'])) {
 
@@ -520,15 +514,11 @@ class tx_dlf_search extends tx_dlf_plugin {
         } else {
 
             // Instantiate search object.
-            $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+            $solr = Solr::getInstance($this->conf['solrcore']);
 
             if (!$solr->ready) {
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
-
-                }
+                Helper::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
 
                 return $content;
 
@@ -557,13 +547,13 @@ class tx_dlf_search extends tx_dlf_plugin {
                 // Search in fulltext field if applicable. query must not be empty!
                 if (!empty($this->piVars['query'])) {
 
-                    $query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
+                    $query = 'fulltext:('.Solr::escapeQuery($this->piVars['query']).')';
 
                 }
 
             } else {
                 // Retain given search field if valid.
-                $query = tx_dlf_solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
+                $query = Solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
 
             }
 
@@ -586,7 +576,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                             }
 
-                            $query .= tx_dlf_indexing::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':('.tx_dlf_solr::escapeQuery($this->piVars['extQuery'][$i]).')';
+                            $query .= Indexer::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':('.Solr::escapeQuery($this->piVars['extQuery'][$i]).')';
 
                         }
 
@@ -610,7 +600,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                     $params['fq'][] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
 
-                    $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
+                    $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
 
                 }
 
@@ -621,11 +611,11 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                 if (!empty($this->piVars['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])) {
 
-                    $index_name = tx_dlf_helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
+                    $index_name = Helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
-                    $params['fq'][] = 'collection_faceting:("'.tx_dlf_solr::escapeQuery($index_name).'")';
+                    $params['fq'][] = 'collection_faceting:("'.Solr::escapeQuery($index_name).'")';
 
-                    $label .= sprintf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
+                    $label .= sprintf($this->pi_getLL('in', '', TRUE), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
 
                 }
 
@@ -640,7 +630,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                 foreach ($collIds as $collId) {
 
-                    $collIndexNames[] = tx_dlf_solr::escapeQuery(tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+                    $collIndexNames[] = Solr::escapeQuery(Helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
 
                 }
 
@@ -741,7 +731,7 @@ class tx_dlf_search extends tx_dlf_plugin {
         );
 
         // Extract query and filter from last search.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
 
         if (!empty($list->metadata['options']['source'])) {
 
@@ -756,15 +746,11 @@ class tx_dlf_search extends tx_dlf_plugin {
         }
 
         // Get applicable facets.
-        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+        $solr = Solr::getInstance($this->conf['solrcore']);
 
         if (!$solr->ready) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
-
-            }
+            Helper::devLog('[tx_dlf_search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
 
             return array ();
 

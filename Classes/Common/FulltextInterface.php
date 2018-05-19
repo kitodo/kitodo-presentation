@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,26 +12,25 @@
  */
 
 /**
- * Interface 'tx_dlf_format' for the 'dlf' extension.
+ * Interface 'Fulltext' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  * @abstract
  */
-interface tx_dlf_format {
+interface FulltextInterface {
 
     /**
-     * This extracts metadata from XML
+     * This extracts raw fulltext data from XML
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
-     * @param	array		&$metadata: The metadata array to fill
+     * @param	\SimpleXMLElement		$xml: The XML to extract the metadata from
      *
-     * @return	void
+     * @return	string			The raw unformatted fulltext
      */
-    public function extractMetadata(SimpleXMLElement $xml, array &$metadata);
+    public static function getRawText(\SimpleXMLElement $xml);
 
 }

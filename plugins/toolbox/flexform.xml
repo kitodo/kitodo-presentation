@@ -47,7 +47,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"></items>
-								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_toolList</itemsProcFunc>
+								<itemsProcFunc>\\Kitodo\\Dlf\\Hooks\\FormEngine->itemsProcFunc_toolList</itemsProcFunc>
 								<size>5</size>
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>1024</maxitems>

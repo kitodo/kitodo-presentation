@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,31 +12,23 @@
  */
 
 /**
- * Document Type Check for usage as Typoscript Condition.
+ * Document Type Checker for usage as Typoscript Condition.
  * @see dlf/ext_localconf.php->user_dlf_docTypeCheck()
  *
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_doctype {
+class DocumentTypeChecker {
 
     /**
      * This holds the current document
      *
-     * @var	tx_dlf_document
+     * @var	\Kitodo\Dlf\Common\Document
      * @access protected
      */
     protected $doc;
-
-    /**
-     * This holds the extension key
-     *
-     * @var	string
-     * @access protected
-     */
-    protected $extKey = 'dlf';
 
     /**
      * This holds the current DLF plugin parameters
@@ -77,7 +71,7 @@ class tx_dlf_doctype {
         /*
          * Get the document type
          *
-         * 1. newspaper
+         * Special cases for newspapers:
          *    case 1) - type=newspaper
          *            - children array([0], [1], [2], ...) -> type = year --> Newspaper Anchor File
          *    case 2) - type=newspaper
@@ -131,7 +125,7 @@ class tx_dlf_doctype {
 
                     } else {
 
-                        // In all other cases we assume it's newspaper's issue.
+                        // In all other cases we assume it's a newspaper's issue.
                         return 'issue';
 
                     }
@@ -160,19 +154,15 @@ class tx_dlf_doctype {
         // Check for required variable.
         if (!empty($this->piVars['id'])) {
 
-            // Get instance of tx_dlf_document.
-            $this->doc = & tx_dlf_document::getInstance($this->piVars['id']);
+            // Get instance of \Kitodo\Dlf\Common\Document.
+            $this->doc = Document::getInstance($this->piVars['id']);
 
             if (!$this->doc->ready) {
 
                 // Destroy the incomplete object.
                 $this->doc = NULL;
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_doctype->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-                }
+                Helper::devLog('[\\Kitodo\\Dlf\Common\\DocumentTypeChecker->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -182,7 +172,7 @@ class tx_dlf_doctype {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid',
                 'tx_dlf_documents',
-                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
+                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').Helper::whereClause('tx_dlf_documents'),
                 '',
                 '',
                 '1'
@@ -203,11 +193,7 @@ class tx_dlf_doctype {
 
             } else {
 
-                if (TYPO3_DLOG) {
-
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_doctype->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-
-                }
+                Helper::devLog('[\\Kitodo\\Dlf\Common\\DocumentTypeChecker->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', SYSLOG_SEVERITY_WARNING);
 
             }
 

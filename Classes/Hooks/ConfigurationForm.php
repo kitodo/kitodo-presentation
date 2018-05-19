@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Hooks;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -9,15 +11,17 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
- * Hooks and helper for the extension manager.
+ * Hooks and helper for \TYPO3\CMS\Core\TypoScript\ConfigurationForm
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_em {
+class ConfigurationForm {
 
     /**
      * This holds the current configuration
@@ -182,7 +186,7 @@ class tx_dlf_em {
                         $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['endtime'] => 0
                     );
 
-                    tx_dlf_helper::processDBasAdmin($data);
+                    Helper::processDBasAdmin($data);
 
                     // Check if configuration was successful.
                     if ($this->checkCliUser(TRUE, $groupUid)) {
@@ -239,7 +243,7 @@ class tx_dlf_em {
                     'usergroup' => intval($groupUid)
                 );
 
-                $substUid = tx_dlf_helper::processDBasAdmin($data);
+                $substUid = Helper::processDBasAdmin($data);
 
                 // Check if creation was successful.
                 if (!empty($substUid[$tempUid])) {
@@ -396,7 +400,7 @@ class tx_dlf_em {
                         $GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
                     );
 
-                    tx_dlf_helper::processDBasAdmin($data);
+                    Helper::processDBasAdmin($data);
 
                     // Check if configuration was successful.
                     if ($this->checkCliGroup(TRUE, $settings)) {
@@ -454,7 +458,7 @@ class tx_dlf_em {
                     'tables_modify' => implode(',', $settings['tables_modify'])
                 );
 
-                $substUid = tx_dlf_helper::processDBasAdmin($data);
+                $substUid = Helper::processDBasAdmin($data);
 
                 // Check if creation was successful.
                 if (!empty($substUid[$tempUid])) {
@@ -576,7 +580,7 @@ class tx_dlf_em {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'type',
             'tx_dlf_formats',
-            '1=1'.tx_dlf_helper::whereClause('tx_dlf_formats')
+            '1=1'.Helper::whereClause('tx_dlf_formats')
         );
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -596,7 +600,7 @@ class tx_dlf_em {
                 'type' => 'MODS',
                 'root' => 'mods',
                 'namespace' => 'http://www.loc.gov/mods/v3',
-                'class' => 'tx_dlf_mods'
+                'class' => '\\Kitodo\\Dlf\\Formats\\Mods'
             );
 
         }
@@ -609,7 +613,7 @@ class tx_dlf_em {
                 'type' => 'TEIHDR',
                 'root' => 'teiHeader',
                 'namespace' => 'http://www.tei-c.org/ns/1.0',
-                'class' => 'tx_dlf_teihdr'
+                'class' => '\\Kitodo\\Dlf\\Formats\\TeiHeader'
             );
 
         }
@@ -622,7 +626,7 @@ class tx_dlf_em {
                 'type' => 'ALTO',
                 'root' => 'alto',
                 'namespace' => 'http://www.loc.gov/standards/alto/ns-v2#',
-                'class' => 'tx_dlf_alto'
+                'class' => '\\Kitodo\\Dlf\\Formats\\Alto'
             );
 
         }
@@ -630,7 +634,7 @@ class tx_dlf_em {
         if (!empty($data)) {
 
             // Process changes.
-            $substUid = tx_dlf_helper::processDBasAdmin($data);
+            $substUid = Helper::processDBasAdmin($data);
 
             if (!empty($substUid)) {
 

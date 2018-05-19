@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Update class 'ext_update' for the 'dlf' extension.
  *
@@ -74,7 +76,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.uid AS uid',
             'tx_dlf_metadata',
-            'tx_dlf_metadata.format=0 AND NOT tx_dlf_metadata.xpath=\'\''.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+            'tx_dlf_metadata.format=0 AND NOT tx_dlf_metadata.xpath=""'.Helper::whereClause('tx_dlf_metadata'),
             '',
             '',
             ''
@@ -218,7 +220,7 @@ class ext_update {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.uid AS uid,tx_dlf_metadata.pid AS pid,tx_dlf_metadata.cruser_id AS cruser_id,tx_dlf_metadata.encoded AS encoded,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.xpath_sorting AS xpath_sorting',
                 'tx_dlf_metadata',
-                'tx_dlf_metadata.uid IN ('.implode(',', $metadataUids).')'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                'tx_dlf_metadata.uid IN ('.implode(',', $metadataUids).')'.Helper::whereClause('tx_dlf_metadata'),
                 '',
                 '',
                 ''
@@ -246,7 +248,7 @@ class ext_update {
             if (!empty($data)) {
 
                 // Process datamap.
-                $substUids = tx_dlf_helper::processDBasAdmin($data);
+                $substUids = Helper::processDBasAdmin($data);
 
                 unset ($data);
 

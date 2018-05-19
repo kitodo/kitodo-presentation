@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Page Preview' for the 'dlf' extension.
  *
@@ -18,7 +20,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_pagegrid extends tx_dlf_plugin {
+class tx_dlf_pagegrid extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/pagegrid/class.tx_dlf_pagegrid.php';
 
@@ -212,11 +214,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
 
         if (empty($entryTemplate)) {
 
-            if (TYPO3_DLOG) {
-
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_pagegrid->main('.$content.', [data])] No template subpart for list entry found', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-
-            }
+            Helper::devLog('[tx_dlf_pagegrid->main('.$content.', [data])] No template subpart for list entry found', SYSLOG_SEVERITY_WARNING, $conf);
 
             // Quit without doing anything if required variables are not set.
             return $content;

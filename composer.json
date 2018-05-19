@@ -1,4 +1,10 @@
 {
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://composer.typo3.org/"
+    }
+  ],
   "name": "kitodo/presentation",
   "description": "Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.",
   "homepage": "https://www.kitodo.org/",
@@ -16,36 +22,38 @@
       "role": "maintainer"
     }
   ],
+  "support": {
+    "source": "https://github.com/kitodo/kitodo-presentation",
+    "issues": "https://github.com/kitodo/kitodo-presentation/issues",
+    "docs": "https://docs.typo3.org/typo3cms/extensions/dlf/"
+  },
   "license": "GPL-3.0-or-later",
   "type": "typo3-cms-extension",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "require": {
-    "typo3/cms": ">=6.2.0 <7.9.99"
+    "php": ">=5.5.0",
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-mcrypt": "*",
+    "ext-simplexml": "*",
+    "typo3/cms": ">=7.6.0 <8.9.99"
   },
   "replace": {
     "dlf": "self.version",
     "typo3-ter/dlf": "self.version"
   },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "dlf"
+    }
+  },
   "autoload": {
+    "psr-4": {
+      "Kitodo\\Dlf\\": "Classes/",
+    },
     "classmap": [
-      "Classes/Cli/class.tx_dlf_cli.php",
-      "Classes/Common/class.tx_dlf_document.php",
-      "Classes/Common/class.tx_dlf_format.php",
-      "Classes/Common/class.tx_dlf_fulltext.php",
-      "Classes/Common/class.tx_dlf_helper.php",
-      "Classes/Common/class.tx_dlf_indexing.php",
-      "Classes/Common/class.tx_dlf_list.php",
-      "Classes/Common/class.tx_dlf_module.php",
-      "Classes/Common/class.tx_dlf_plugin.php",
-      "Classes/Common/class.tx_dlf_solr.php",
-      "Classes/Formats/class.tx_dlf_alto.php",
-      "Classes/Formats/class.tx_dlf_mods.php",
-      "Classes/Formats/class.tx_dlf_teihdr.php",
-      "Classes/Hooks/class.tx_dlf_doctype.php",
-      "Classes/Hooks/class.tx_dlf_em.php",
-      "Classes/Hooks/class.tx_dlf_hacks.php",
-      "Classes/Hooks/class.tx_dlf_tceforms.php",
-      "Classes/Hooks/class.tx_dlf_tcemain.php",
       "modules/indexing/index.php",
       "modules/newclient/index.php",
       "plugins/audioplayer/class.tx_dlf_audioplayer.php",

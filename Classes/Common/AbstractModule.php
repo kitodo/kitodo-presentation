@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,15 +12,15 @@
  */
 
 /**
- * Base class 'tx_dlf_module' for the 'dlf' extension.
+ * Abstract class 'Module' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  * @abstract
  */
-abstract class tx_dlf_module extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
     public $extKey = 'dlf';
 
