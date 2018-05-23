@@ -18,7 +18,7 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 Requirements
 ------------
 
-Kitodo.Presentation requires [TYPO3 7 LTS](https://get.typo3.org) which in turn needs at least [PHP 5.5](https://secure.php.net) and [MySQL 5.5](https://www.mysql.com) or [MariaDB 5.5](https://mariadb.com). [Apache Solr](https://lucene.apache.org/solr) must be available at least in version 3.6.2, but any version up to 7.0.1 should be working as well.
+Kitodo.Presentation requires [TYPO3 7 LTS](https://get.typo3.org/7) which in turn needs at least [PHP 5.5](https://secure.php.net) and [MySQL 5.5](https://www.mysql.com) or [MariaDB 5.5](https://mariadb.com). You can use [TYPO3 8 LTS](https://get.typo3.org/8) with [PHP 7](https://secure.php.net) as well. [Apache Solr](https://lucene.apache.org/solr) must be available at least in version 3.6.2, but any version up to 7.0.1 should be working as well.
 
 Kitodo. Digital Library Modules
 -------------------------------
