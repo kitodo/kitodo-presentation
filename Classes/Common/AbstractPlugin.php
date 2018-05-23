@@ -50,6 +50,31 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     protected $template = '';
 
     /**
+     * Read and parse the template file
+     *
+     * @access	protected
+     *
+     * @param	string		$part: Name of the subpart to load
+     *
+     * @return	void
+     */
+    protected function getTemplate($part = '###TEMPLATE###') {
+
+        if (!empty($this->conf['templateFile'])) {
+
+            // Load template file from configuration.
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
+
+        } else {
+
+            // Load default template file.
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/Resources/Private/Templates/'.get_class($this).'.tmpl'), $part);
+
+        }
+
+    }
+
+    /**
      * All the needed configuration values are stored in class variables
      * Priority: Flexforms > TS-Templates > Extension Configuration > ext_localconf.php
      *
@@ -141,7 +166,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
                 // Destroy the incomplete object.
                 $this->doc = NULL;
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\AbstractPlugin:'.get_class($this).'->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\'.get_class($this).'->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', SYSLOG_SEVERITY_ERROR);
 
             } else {
 
@@ -177,13 +202,13 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\AbstractPlugin:'.get_class($this).'->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\'.get_class($this).'->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', SYSLOG_SEVERITY_ERROR);
 
             }
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\AbstractPlugin:'.get_class($this).'->loadDocument()] Invalid UID "'.$this->piVars['id'].'" or PID "'.$this->conf['pages'].'" for document loading', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\'.get_class($this).'->loadDocument()] Invalid UID "'.$this->piVars['id'].'" or PID "'.$this->conf['pages'].'" for document loading', SYSLOG_SEVERITY_ERROR);
 
         }
 
