@@ -220,6 +220,14 @@ final class Document {
     protected $pid = 0;
 
     /**
+     * This holds the documents' raw text pages with their corresponding structMap//div's ID as array key
+     *
+     * @var	array
+     * @access protected
+     */
+    protected $rawTextArray = array ();
+
+    /**
      * Is the document instantiated successfully?
      *
      * @var	boolean
@@ -934,6 +942,107 @@ final class Document {
         }
 
         return 1;
+
+    }
+
+    /**
+     * This extracts the raw text for a physical structure node
+     *
+     * @access	public
+     *
+     * @param	string		$id: The @ID attribute of the physical structure node
+     *
+     * @return	string		The physical structure node's raw text
+     */
+    public function getRawText($id) {
+
+        $rawText = '';
+
+        // Get text from raw text array if available.
+        if (!empty($this->rawTextArray[$id])) {
+
+            return $this->rawTextArray[$id];
+
+        }
+
+        // Load fileGrps and check for fulltext files.
+        $this->_getFileGrps();
+
+        if ($this->hasFulltext) {
+
+            // Load available text formats, ...
+            $this->loadFormats();
+
+            // ... physical structure ...
+            $this->_getPhysicalStructure();
+
+            // ... and extension configuration.
+            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+            if (!empty($this->physicalStructureInfo[$id])) {
+
+                // Get fulltext file.
+                $file = $this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]);
+
+                // Turn off libxml's error logging.
+                $libxmlErrors = libxml_use_internal_errors(TRUE);
+
+                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+
+                // Load XML from file.
+                $rawTextXml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
+
+                // Reset entity loader setting.
+                libxml_disable_entity_loader($previousValueOfEntityLoader);
+
+                // Reset libxml's error logging.
+                libxml_use_internal_errors($libxmlErrors);
+
+                // Get the root element's name as text format.
+                $textFormat = strtoupper($rawTextXml->getName());
+
+            } else {
+
+                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
+
+                return $rawText;
+
+            }
+
+            // Is this text format supported?
+            if (!empty($this->formats[$textFormat])) {
+
+                if (!empty($this->formats[$textFormat]['class'])) {
+
+                    $class = $this->formats[$textFormat]['class'];
+
+                    // Get the raw text from class.
+                    if (class_exists($class)
+                        && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof FulltextInterface
+                        && method_exists($obj, 'getRawText')) {
+
+                        $rawText = $obj->getRawText($rawTextXml);
+
+                        $this->rawTextArray[$id] = $rawText;
+
+                    } else {
+
+                        Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', SYSLOG_SEVERITY_WARNING);
+
+                    }
+
+                }
+
+            } else {
+
+                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
+
+            }
+
+        }
+
+        return $rawText;
 
     }
 
@@ -2327,6 +2436,7 @@ final class Document {
 
     /**
      * This is a singleton class, thus the constructor should be private/protected
+     * (Get an instance of this class by calling tx_dlf_document::getInstance())
      *
      * @access	protected
      *
@@ -2344,16 +2454,16 @@ final class Document {
 
         } else {
 
-            // Cast to string for safety reasons.
-            $location = (string) $uid;
-
             // Try to load METS file.
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location) && $this->load($location)) {
+            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($uid) && $this->load($uid)) {
 
                 // Initialize core METS object.
                 $this->init();
 
                 if ($this->mets !== NULL) {
+
+                    // Cast to string for safety reasons.
+                    $location = (string) $uid;
 
                     // Check for METS object @ID.
                     if (!empty($this->mets['OBJID'])) {
@@ -2390,13 +2500,14 @@ final class Document {
 
             }
 
-            if (!empty($this->recordId)) {
+            if (!empty($location) && !empty($this->recordId)) {
 
-                $whereClause = 'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordId, 'tx_dlf_documents').Helper::whereClause('tx_dlf_documents');
+                // Try to match record identifier or location (both should be unique).
+                $whereClause = '(tx_dlf_documents.location='.$GLOBALS['TYPO3_DB']->fullQuoteStr($location, 'tx_dlf_documents').' OR tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordId, 'tx_dlf_documents').')'.Helper::whereClause('tx_dlf_documents');
 
             } else {
 
-                // There is no record identifier and there should be no hit in the database.
+                // Can't persistently identify document, don't try to match at all.
                 $whereClause = '1=-1';
 
             }
