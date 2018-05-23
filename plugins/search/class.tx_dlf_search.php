@@ -10,9 +10,9 @@
  */
 
 use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\List;
 use Kitodo\Dlf\Common\Solr;
 
 /**
@@ -69,7 +69,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function addCurrentCollection() {
 
         // Load current collection.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         if (!empty($list->metadata['options']['source']) && $list->metadata['options']['source'] == 'collection') {
 
@@ -109,7 +109,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function addCurrentDocument() {
 
         // Load current list object.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         // Load current document.
         if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
@@ -450,7 +450,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!isset($this->piVars['query']) && empty($this->piVars['extQuery'])) {
 
             // Extract query and filter from last search.
-            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
             if (!empty($list->metadata['searchString'])) {
 
@@ -731,7 +731,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
         );
 
         // Extract query and filter from last search.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         if (!empty($list->metadata['options']['source'])) {
 

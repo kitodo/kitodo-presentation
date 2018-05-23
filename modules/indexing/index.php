@@ -10,8 +10,8 @@
  */
 
 use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\List;
 
 /**
  * Module 'indexing' for the 'dlf' extension.
@@ -38,7 +38,7 @@ class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
     /**
      * This holds a list of documents to index
      *
-     * @var	\Kitodo\Dlf\Common\List
+     * @var	\Kitodo\Dlf\Common\DocumentList
      * @access protected
      */
     protected $list;
@@ -288,7 +288,7 @@ class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
 
                         }
 
-                        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class, $elements);
+                        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class, $elements);
 
                         // Start index looping.
                         if (count($this->list) > 0) {
@@ -307,7 +307,7 @@ class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
                     $GLOBALS['BE_USER']->fetchUserSession();
 
                     // Get document list from user's session.
-                    $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+                    $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
                     // Continue index looping.
                     if (count($this->list) > 0 && isset($this->data['core'])) {

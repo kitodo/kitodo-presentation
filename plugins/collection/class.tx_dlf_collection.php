@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\List;
 
 /**
  * Plugin 'DLF: Collection' for the 'dlf' extension.
@@ -417,7 +417,7 @@ class tx_dlf_collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Save list of documents.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $list->reset();
 

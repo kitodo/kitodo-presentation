@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\List;
 use Kitodo\Dlf\Common\Solr;
 
 /**
@@ -843,7 +843,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $resultSet->reset();
 
@@ -984,7 +984,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $resultSet->reset();
 
@@ -1218,11 +1218,11 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @access	protected
      *
-     * @param	\Kitodo\Dlf\Common\List		$documentListSet: List of documents
+     * @param	\Kitodo\Dlf\Common\DocumentList		$documentListSet: List of documents
      *
      * @return	\DOMElement		List of documents as DOM element.
      */
-    protected function generateOutputForDocumentList(List $documentListSet) {
+    protected function generateOutputForDocumentList(DocumentList $documentListSet) {
 
         $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
 
@@ -1347,11 +1347,11 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @access	protected
      *
-     * @param	\Kitodo\Dlf\Common\List		$documentListSet: List of documents
+     * @param	\Kitodo\Dlf\Common\DocumentList		$documentListSet: List of documents
      *
      * @return	\DOMElement		Resumption token as DOM element
      */
-    protected function generateResumptionTokenForDocumentListSet($documentListSet) {
+    protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet) {
 
         $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
 

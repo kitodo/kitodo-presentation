@@ -10,8 +10,8 @@
  */
 
 use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\List;
 
 /**
  * Plugin 'DLF: List View' for the 'dlf' extension.
@@ -37,7 +37,7 @@ class tx_dlf_listview extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * This holds the list
      *
-     * @var	\Kitodo\Dlf\Common\List
+     * @var	\Kitodo\Dlf\Common\DocumentList
      * @access	protected
      */
     protected $list;
@@ -644,7 +644,7 @@ class tx_dlf_listview extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(FALSE);
 
         // Load the list.
-        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         // Sort the list if applicable.
         if ((!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order'])

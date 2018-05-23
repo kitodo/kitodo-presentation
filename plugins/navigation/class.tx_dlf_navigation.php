@@ -9,7 +9,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Kitodo\Dlf\Common\List;
+use Kitodo\Dlf\Common\DocumentList;
 
 /**
  * Plugin 'DLF: Navigation' for the 'dlf' extension.
@@ -35,7 +35,7 @@ class tx_dlf_navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!empty($this->conf['targetPid'])) {
 
             // Load the list.
-            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
             if (count($list) > 0) {
 

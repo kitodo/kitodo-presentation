@@ -333,7 +333,7 @@ class Solr {
      *
      * @param	string		$query: The search query
      *
-     * @return	\Kitodo\Dlf\Common\List		The result list
+     * @return	\Kitodo\Dlf\Common\DocumentList		The result list
      */
     public function search($query = '') {
 
@@ -497,7 +497,7 @@ class Solr {
         }
 
         // Save list of documents.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(List::class);
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $list->reset();
 
