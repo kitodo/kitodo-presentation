@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,16 +15,16 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Collection' for the 'dlf' extension.
+ * Plugin 'Collection' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_collection extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/collection/class.tx_dlf_collection.php';
+    public $scriptRelPath = 'Classes/Plugins/Collection.php';
 
     /**
      * This holds the hook objects
@@ -52,22 +54,14 @@ class tx_dlf_collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
 
-            Helper::devLog('[tx_dlf_collection->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Collection->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/collection/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Get hook objects.
         $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);

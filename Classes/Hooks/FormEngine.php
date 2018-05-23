@@ -53,7 +53,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_collection"
+     * Helper to get flexform's items array for plugin "Collection"
      *
      * @access	public
      *
@@ -121,7 +121,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_search"
+     * Helper to get flexform's items array for plugin "Search"
      *
      * @access	public
      *
@@ -189,7 +189,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_search"
+     * Helper to get flexform's items array for plugin "Search"
      *
      * @access	public
      *
@@ -257,7 +257,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_oai"
+     * Helper to get flexform's items array for plugin "Oai"
      *
      * @access	public
      *
@@ -325,7 +325,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_search"
+     * Helper to get flexform's items array for plugin "Search"
      *
      * @access	public
      *
@@ -393,7 +393,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_toolbox"
+     * Helper to get flexform's items array for plugin "Toolbox"
      *
      * @access	public
      *

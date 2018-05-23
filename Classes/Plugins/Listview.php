@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -14,17 +16,17 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: List View' for the 'dlf' extension.
+ * Plugin 'Listview' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_listview extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/listview/class.tx_dlf_listview.php';
+    public $scriptRelPath = 'Classes/Plugins/Listview.php';
 
     /**
      * This holds the field wrap of the metadata
@@ -671,15 +673,7 @@ class tx_dlf_listview extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/listview/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         $subpartArray['entry'] = $this->cObj->getSubpart($this->template, '###ENTRY###');
 

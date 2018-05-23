@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,16 +14,16 @@
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Pageview' for the 'dlf' extension.
+ * Plugin 'Pageview' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/pageview/class.tx_dlf_pageview.php';
+    public $scriptRelPath = 'Classes/Plugins/Pageview.php';
 
     /**
      * Holds the controls to add to the map
@@ -264,7 +266,7 @@ class tx_dlf_pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                Helper::devLog('[tx_dlf_pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -304,7 +306,7 @@ class tx_dlf_pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            Helper::devLog('[tx_dlf_pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', SYSLOG_SEVERITY_WARNING);
 
         }
 
@@ -361,15 +363,7 @@ class tx_dlf_pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/pageview/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Get image data.
         $this->images[0] = $this->getImage($this->piVars['page']);

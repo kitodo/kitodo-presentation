@@ -106,6 +106,15 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 
         }
 
+        // Read old plugin TS configuration.
+        $oldPluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(get_class($this)).'.'];
+
+        if (is_array($oldPluginConf)) {
+
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiceWithOverrule($oldPluginConf, $conf);
+
+        }
+
         // Read general TS configuration.
         $generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
 

@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -16,17 +18,17 @@ use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 
 /**
- * Plugin 'DLF: Search' for the 'dlf' extension.
+ * Plugin 'Search' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/search/class.tx_dlf_search.php';
+    public $scriptRelPath = 'Classes/Plugins/Search.php';
 
     /**
      * Adds the JS files necessary for search suggestions
@@ -53,7 +55,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            Helper::devLog('[tx_dlf_search->addAutocompleteJS()] No metadata fields configured for search suggestions', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->addAutocompleteJS()] No metadata fields configured for search suggestions', SYSLOG_SEVERITY_WARNING);
 
         }
 
@@ -244,7 +246,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['facetsConf.'])) {
 
-            Helper::devLog('[tx_dlf_search->addFacetsMenu()] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->addFacetsMenu()] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING);
 
             return '';
 
@@ -271,7 +273,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $TSconfig['special'] = 'userfunction';
 
-        $TSconfig['special.']['userFunc'] = 'tx_dlf_search->makeFacetsMenuArray';
+        $TSconfig['special.']['userFunc'] = '\\Kitodo\\Dlf\\Plugins\\Search->makeFacetsMenuArray';
 
         $TSconfig['special.']['facets'] = $facets;
 
@@ -397,13 +399,17 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             $state = 'ACTIFSUB';
 
-            //Reset facets
+            // Reset facets
             if ($this->conf['resetFacets']) {
-                //remove ($count) for selected facet in template
+
+                // Remove ($count) for selected facet in template
                 $entryArray['count'] = FALSE;
-                //build link to delete selected facet
+
+                // Build link to delete selected facet
                 $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
+
                 $entryArray['title'] = sprintf($this->pi_getLL('resetFacet', ''), $entryArray['title']);
+
             }
 
         } else {
@@ -441,7 +447,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Quit without doing anything if required variables are not set.
         if (empty($this->conf['solrcore'])) {
 
-            Helper::devLog('[tx_dlf_search->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
@@ -472,15 +478,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
 
             // Load template file.
-            if (!empty($this->conf['templateFile'])) {
-
-                $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-            } else {
-
-                $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/search/template.tmpl'), '###TEMPLATE###');
-
-            }
+            $this->getTemplate();
 
             // Configure @action URL for form.
             $linkConf = array (
@@ -518,7 +516,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             if (!$solr->ready) {
 
-                Helper::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
+                Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->main('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
 
                 return $content;
 
@@ -750,7 +748,7 @@ class tx_dlf_search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if (!$solr->ready) {
 
-            Helper::devLog('[tx_dlf_search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
 
             return array ();
 

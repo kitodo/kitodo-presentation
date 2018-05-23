@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,17 +15,17 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Metadata' for the 'dlf' extension.
+ * Plugin 'Metadata' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Siegfried Schweizer <siegfried.schweizer@sbb.spk-berlin.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/metadata/class.tx_dlf_metadata.php';
+    public $scriptRelPath = 'Classes/Plugins/Metadata.php';
 
     /**
      * This holds the hook objects
@@ -152,7 +154,7 @@ class tx_dlf_metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if (empty($metadata)) {
 
-            Helper::devLog('[tx_dlf_metadata->main('.$content.', [data])] No metadata found for document with UID "'.$this->doc->uid.'"', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Metadata->main('.$content.', [data])] No metadata found for document with UID "'.$this->doc->uid.'"', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
@@ -192,15 +194,7 @@ class tx_dlf_metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function printMetadata(array $metadataArray) {
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/metadata/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         $output = '';
 

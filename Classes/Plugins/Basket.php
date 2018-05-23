@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,16 +15,16 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Basket' for the 'dlf' extension.
+ * Plugin 'Basket' for the 'dlf' extension.
  *
  * @author	Christopher Timm <timm@effective-webwork.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_basket extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/basket/class.tx_dlf_basket.php';
+    public $scriptRelPath = 'Classes/Plugins/Basket.php';
 
     /**
      * The main method of the PlugIn
@@ -42,15 +44,7 @@ class tx_dlf_basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(FALSE);
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/basket/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         $subpartArray['entry'] = $this->cObj->getSubpart($this->template, '###ENTRY###');
 
@@ -98,8 +92,11 @@ class tx_dlf_basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             // create new basket in db
             $insertArray['session_id'] = $sessionId;
+
             $insertArray['doc_ids'] = '';
+
             $insertArray['label'] = '';
+
             $insertArray['l18n_diffsource'] = '';
 
             $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_basket', $insertArray);

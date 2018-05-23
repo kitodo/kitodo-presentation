@@ -36,27 +36,10 @@ $EM_CONF[$_EXTKEY] = [
         'classmap' => [
             'modules/indexing/index.php',
             'modules/newclient/index.php',
-            'plugins/audioplayer/class.tx_dlf_audioplayer.php',
-            'plugins/basket/class.tx_dlf_basket.php',
-            'plugins/collection/class.tx_dlf_collection.php',
-            'plugins/feeds/class.tx_dlf_feeds.php',
-            'plugins/listview/class.tx_dlf_listview.php',
-            'plugins/metadata/class.tx_dlf_metadata.php',
-            'plugins/navigation/class.tx_dlf_navigation.php',
-            'plugins/newspaper/class.tx_dlf_newspaper.php',
-            'plugins/oai/class.tx_dlf_oai.php',
-            'plugins/pagegrid/class.tx_dlf_pagegrid.php',
-            'plugins/pageview/class.tx_dlf_pageview.php',
-            'plugins/search/class.tx_dlf_search.php',
-            'plugins/search/class.tx_dlf_search_suggest.php',
-            'plugins/statistics/class.tx_dlf_statistics.php',
-            'plugins/toc/class.tx_dlf_toc.php',
-            'plugins/toolbox/class.tx_dlf_toolbox.php',
             'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php',
             'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php',
             'plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php',
-            'plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php',
-            'plugins/validator/class.tx_dlf_validator.php'
+            'plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php'
         ]
     ]
 ];

@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,16 +14,16 @@
 use Kitodo\Dlf\Common\DocumentList;
 
 /**
- * Plugin 'DLF: Navigation' for the 'dlf' extension.
+ * Plugin 'Navigation' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/navigation/class.tx_dlf_navigation.php';
+    public $scriptRelPath = 'Classes/Plugins/Navigation.php';
 
     /**
      * Display a link to the list view
@@ -164,15 +166,7 @@ class tx_dlf_navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/navigation/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Steps for X pages backward / forward. Double page view uses double steps.
         $pageSteps = $this->conf['pageStep'] * ($this->piVars['double'] + 1);

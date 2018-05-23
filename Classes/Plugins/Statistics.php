@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,16 +14,16 @@
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Statistics' for the 'dlf' extension.
+ * Plugin 'Statistics' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/statistics/class.tx_dlf_statistics.php';
+    public $scriptRelPath = 'Classes/Plugins/Statistics.php';
 
     /**
      * The main method of the PlugIn
@@ -43,7 +45,7 @@ class tx_dlf_statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
 
-            Helper::devLog('[tx_dlf_statistics->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Statistics->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 

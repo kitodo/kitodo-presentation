@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,16 +15,16 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Viewer' for the 'dlf' extension.
+ * Plugin 'Table of Contents' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_toc extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/toc/class.tx_dlf_toc.php';
+    public $scriptRelPath = 'Classes/Plugins/Toc.php';
 
     /**
      * This holds the active entries according to the currently selected page
@@ -162,28 +164,20 @@ class tx_dlf_toc extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['menuConf.'])) {
 
-            Helper::devLog('[tx_dlf_toc->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Toc->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toc/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         $TSconfig = array ();
 
         $TSconfig['special'] = 'userfunction';
 
-        $TSconfig['special.']['userFunc'] = 'tx_dlf_toc->makeMenuArray';
+        $TSconfig['special.']['userFunc'] = '\\Kitodo\\Dlf\\Plugins\\Toc->makeMenuArray';
 
         $TSconfig = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['menuConf.'], $TSconfig);
 

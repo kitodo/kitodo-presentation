@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,16 +15,16 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Feeds' for the 'dlf' extension.
+ * Plugin 'Feeds' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/feeds/class.tx_dlf_feeds.php';
+    public $scriptRelPath = 'Classes/Plugins/Feeds.php';
 
     /**
      * The main method of the PlugIn

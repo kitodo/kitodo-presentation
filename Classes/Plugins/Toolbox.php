@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,16 +12,16 @@
  */
 
 /**
- * Plugin 'DLF: Toolbox' for the 'dlf' extension.
+ * Plugin 'Toolbox' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/toolbox/class.tx_dlf_toolbox.php';
+    public $scriptRelPath = 'Classes/Plugins/Toolbox.php';
 
     /**
      * The main method of the PlugIn
@@ -43,15 +45,7 @@ class tx_dlf_toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Build data array.
         $data = array (

@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,17 +14,17 @@
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Page Preview' for the 'dlf' extension.
+ * Plugin 'Pagegrid' for the 'dlf' extension.
  *
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_pagegrid extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Pagegrid extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/pagegrid/class.tx_dlf_pagegrid.php';
+    public $scriptRelPath = 'Classes/Plugins/Pagegrid.php';
 
     /**
      * Renders entry for one page of the current document.
@@ -200,21 +202,13 @@ class tx_dlf_pagegrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/pagegrid/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         $entryTemplate = $this->cObj->getSubpart($this->template, '###ENTRY###');
 
         if (empty($entryTemplate)) {
 
-            Helper::devLog('[tx_dlf_pagegrid->main('.$content.', [data])] No template subpart for list entry found', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Pagegrid->main('.$content.', [data])] No template subpart for list entry found', SYSLOG_SEVERITY_WARNING, $conf);
 
             // Quit without doing anything if required variables are not set.
             return $content;

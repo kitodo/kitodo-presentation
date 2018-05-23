@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,19 +14,17 @@
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Plugin 'DLF: Newspaper' for the 'dlf' extension.
+ * Plugin 'Newspaper' for the 'dlf' extension.
  *
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @copyright	Copyright (c) 2016, Alexander Bigga, SLUB Dresden
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $extKey = 'dlf';
-
-    public $scriptRelPath = 'plugins/newspaper/class.tx_dlf_newspaper.php';
+    public $scriptRelPath = 'Classes/Plugins/Newspaper.php';
 
     /**
      * The main method of the PlugIn
@@ -68,15 +68,7 @@ class tx_dlf_newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATECALENDAR###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/newspaper/template.tmpl'), '###TEMPLATECALENDAR###');
-
-        }
+        $this->getTemplate('###TEMPLATECALENDAR###');
 
         // Get all children of year anchor.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -345,15 +337,7 @@ class tx_dlf_newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATEYEAR###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/newspaper/template.tmpl'), '###TEMPLATEYEAR###');
-
-        }
+        $this->getTemplate('###TEMPLATEYEAR###');
 
         // Get subpart templates
         $subparts['year'] = $this->cObj->getSubpart($this->template, '###LISTYEAR###');

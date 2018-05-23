@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,16 +12,16 @@
  */
 
 /**
- * Plugin 'DLF: Audioplayer' for the 'dlf' extension.
+ * Plugin 'Audioplayer' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/audioplayer/class.tx_dlf_audioplayer.php';
+    public $scriptRelPath = 'Classes/Plugins/Audioplayer.php';
 
     /**
      * Holds the current audio file's URL, MIME type and optional label
@@ -44,7 +46,7 @@ class tx_dlf_audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/audioplayer/js/tx_dlf_audioplayer.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Audioplayer/Audioplayer.js"></script>';
 
         // Add player configuration.
         $output[] = '
@@ -127,15 +129,7 @@ class tx_dlf_audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/audioplayer/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Fill in the template markers.
         $markerArray = array (

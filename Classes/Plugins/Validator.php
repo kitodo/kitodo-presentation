@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,16 +12,16 @@
  */
 
 /**
- * Plugin 'DLF: Validator' for the 'dlf' extension.
+ * Plugin 'Validator' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_validator extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Validator extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/validator/class.tx_dlf_validator.php';
+    public $scriptRelPath = 'Classes/Plugins/Validator.php';
 
     /**
      * The main method of the PlugIn
@@ -39,15 +41,7 @@ class tx_dlf_validator extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(FALSE);
 
         // Load template file.
-        if (!empty($this->conf['templateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/validator/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Load current document.
         $this->loadDocument();

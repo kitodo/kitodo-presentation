@@ -11,7 +11,7 @@
 <T3locallang>
 	<meta type="array">
 		<type>module</type>
-		<description>Language labels for plugin tx_dlf_feeds</description>
+		<description>Language labels for plugin Feeds</description>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">

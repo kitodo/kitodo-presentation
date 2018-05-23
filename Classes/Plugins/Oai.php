@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -14,16 +16,16 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 
 /**
- * Plugin 'DLF: OAI-PMH Interface' for the 'dlf' extension.
+ * Plugin 'OAI-PMH Interface' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/oai/class.tx_dlf_oai.php';
+    public $scriptRelPath = 'Classes/Plugins/Oai.php';
 
     /**
      * Did an error occur?
@@ -82,7 +84,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_affected_rows() === -1) {
             // Deletion failed.
-            $this->devLog('[tx_dlf_oai->deleteExpiredTokens()] Could not delete expired resumption tokens', SYSLOG_SEVERITY_WARNING);
+            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->deleteExpiredTokens()] Could not delete expired resumption tokens', SYSLOG_SEVERITY_WARNING);
         }
 
     }
@@ -370,13 +372,13 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                    $this->devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+                    $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 
             }
 
         } else {
 
-            $this->devLog('[tx_dlf_oai->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 
         }
 
@@ -739,7 +741,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            $this->devLog('[tx_dlf_oai->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
+            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
 
         }
 
@@ -763,7 +765,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            $this->devLog('[tx_dlf_oai->verbIdentify()] No records found with PID "'.$this->conf['pages'].'"', SYSLOG_SEVERITY_NOTICE);
+            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->verbIdentify()] No records found with PID "'.$this->conf['pages'].'"', SYSLOG_SEVERITY_NOTICE);
 
         }
 
@@ -1375,7 +1377,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                $this->devLog('[tx_dlf_oai->verb'.$this->piVars['verb'].'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+                $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->verb'.$this->piVars['verb'].'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
 
             }
 
