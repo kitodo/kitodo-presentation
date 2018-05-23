@@ -374,7 +374,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
 
             return '';
 
@@ -399,7 +399,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getFileMimeType('.$id.')] There is no file node with @ID "'.$id.'" or no MIME type specified', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getFileMimeType('.$id.')] There is no file node with @ID "'.$id.'" or no MIME type specified', SYSLOG_SEVERITY_WARNING);
 
             return '';
 
@@ -711,7 +711,7 @@ final class Document {
 
         } elseif (!$cPid) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', SYSLOG_SEVERITY_ERROR);
 
             return array ();
 
@@ -780,7 +780,7 @@ final class Document {
 
                     } else {
 
-                        Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', SYSLOG_SEVERITY_WARNING);
+                        Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', SYSLOG_SEVERITY_WARNING);
 
                     }
 
@@ -788,7 +788,7 @@ final class Document {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', SYSLOG_SEVERITY_WARNING);
 
                 return array ();
 
@@ -1004,7 +1004,7 @@ final class Document {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
 
                 return $rawText;
 
@@ -1028,7 +1028,7 @@ final class Document {
 
                     } else {
 
-                        Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', SYSLOG_SEVERITY_WARNING);
+                        Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', SYSLOG_SEVERITY_WARNING);
 
                     }
 
@@ -1036,7 +1036,7 @@ final class Document {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getRawText('.$id.')] Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -1091,13 +1091,13 @@ final class Document {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', SYSLOG_SEVERITY_WARNING);
 
             }
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', SYSLOG_SEVERITY_ERROR);
 
         }
 
@@ -1156,7 +1156,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->init()] No METS part found in document with UID "'.$this->uid.'"', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->init()] No METS part found in document with UID "'.$this->uid.'"', SYSLOG_SEVERITY_ERROR);
 
         }
 
@@ -1210,13 +1210,13 @@ final class Document {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->load('.$location.')] Could not load XML file from "'.$location.'"', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->load('.$location.')] Could not load XML file from "'.$location.'"', SYSLOG_SEVERITY_ERROR);
 
             }
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->load('.$location.')] Invalid file location "'.$location.'" for document loading', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->load('.$location.')] Invalid file location "'.$location.'" for document loading', SYSLOG_SEVERITY_ERROR);
 
         }
 
@@ -1286,7 +1286,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', SYSLOG_SEVERITY_ERROR);
 
             return;
 
@@ -1320,7 +1320,7 @@ final class Document {
 
         if (TYPO3_MODE !== 'BE') {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', SYSLOG_SEVERITY_ERROR);
 
             return FALSE;
 
@@ -1340,7 +1340,7 @@ final class Document {
 
         } elseif (!$pid) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', SYSLOG_SEVERITY_ERROR);
 
             return FALSE;
 
@@ -1362,7 +1362,7 @@ final class Document {
         // Check for record identifier.
         if (empty($metadata['record_id'][0])) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', SYSLOG_SEVERITY_ERROR);
 
             return FALSE;
 
@@ -1387,7 +1387,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', SYSLOG_SEVERITY_ERROR);
 
             return FALSE;
 
@@ -1409,7 +1409,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Could not identify document/structure type '.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures'), SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Could not identify document/structure type '.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures'), SYSLOG_SEVERITY_ERROR);
 
             return FALSE;
 
@@ -1736,7 +1736,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', SYSLOG_SEVERITY_NOTICE);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', SYSLOG_SEVERITY_NOTICE);
 
         }
 
@@ -1938,7 +1938,7 @@ final class Document {
 
         if (!$cPid) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', SYSLOG_SEVERITY_ERROR);
 
             return array ();
 
@@ -2267,7 +2267,7 @@ final class Document {
 
             if (!$cPid) {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', SYSLOG_SEVERITY_ERROR);
 
                 $this->thumbnailLoaded = TRUE;
 
@@ -2280,7 +2280,7 @@ final class Document {
 
             if (empty($extConf['fileGrpThumbs'])) {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->_getThumbnail()] No fileGrp for thumbnails specified', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->_getThumbnail()] No fileGrp for thumbnails specified', SYSLOG_SEVERITY_WARNING);
 
                 $this->thumbnailLoaded = TRUE;
 
@@ -2338,7 +2338,7 @@ final class Document {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', SYSLOG_SEVERITY_ERROR);
 
             }
 
@@ -2572,7 +2572,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', SYSLOG_SEVERITY_ERROR);
 
         }
 
@@ -2593,7 +2593,7 @@ final class Document {
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->__get('.$var.')] There is no getter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->__get('.$var.')] There is no getter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
 
             return;
 
@@ -2621,7 +2621,7 @@ final class Document {
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
 
         } else {
 
@@ -2697,7 +2697,7 @@ final class Document {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Document->__wakeup()] Could not load XML after deserialization', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Document->__wakeup()] Could not load XML after deserialization', SYSLOG_SEVERITY_ERROR);
 
         }
 

@@ -154,7 +154,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if (empty($metadata)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Metadata->main('.$content.', [data])] No metadata found for document with UID "'.$this->doc->uid.'"', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Metadata->main('.$content.', [data])] No metadata found for document with UID "'.$this->doc->uid.'"', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 

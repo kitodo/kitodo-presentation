@@ -84,7 +84,7 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_affected_rows() === -1) {
             // Deletion failed.
-            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->deleteExpiredTokens()] Could not delete expired resumption tokens', SYSLOG_SEVERITY_WARNING);
+            $this->devLog('[Kitodo\\Dlf\\Plugins\\Oai->deleteExpiredTokens()] Could not delete expired resumption tokens', SYSLOG_SEVERITY_WARNING);
         }
 
     }
@@ -372,13 +372,13 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                    $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+                    $this->devLog('[Kitodo\\Dlf\\Plugins\\Oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 
             }
 
         } else {
 
-            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+            $this->devLog('[Kitodo\\Dlf\\Plugins\\Oai->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
 
         }
 
@@ -741,7 +741,7 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
+            $this->devLog('[Kitodo\\Dlf\\Plugins\\Oai->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
 
         }
 
@@ -765,7 +765,7 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->verbIdentify()] No records found with PID "'.$this->conf['pages'].'"', SYSLOG_SEVERITY_NOTICE);
+            $this->devLog('[Kitodo\\Dlf\\Plugins\\Oai->verbIdentify()] No records found with PID "'.$this->conf['pages'].'"', SYSLOG_SEVERITY_NOTICE);
 
         }
 
@@ -1377,7 +1377,7 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                $this->devLog('[\\Kitodo\\Dlf\\Plugins\\Oai->verb'.$this->piVars['verb'].'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+                $this->devLog('[Kitodo\\Dlf\\Plugins\\Oai->verb'.$this->piVars['verb'].'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
 
             }
 

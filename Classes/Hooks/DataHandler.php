@@ -165,7 +165,7 @@ class DataHandler {
 
                     }
 
-                    Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', SYSLOG_SEVERITY_ERROR, $fieldArray);
+                    Helper::devLog('[Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', SYSLOG_SEVERITY_ERROR, $fieldArray);
 
                     // Solr core could not be created, thus unset field array.
                     $fieldArray = array ();
@@ -269,7 +269,7 @@ class DataHandler {
 
                         }
 
-                        Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', SYSLOG_SEVERITY_NOTICE, $fieldArray);
+                        Helper::devLog('[Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', SYSLOG_SEVERITY_NOTICE, $fieldArray);
 
                     }
 
@@ -343,7 +343,7 @@ class DataHandler {
 
                                 } else {
 
-                                    Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', SYSLOG_SEVERITY_ERROR, $fieldArray);
+                                    Helper::devLog('[Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', SYSLOG_SEVERITY_ERROR, $fieldArray);
 
                                 }
 
@@ -424,7 +424,7 @@ class DataHandler {
 
                         } else {
 
-                            Helper::devLog('[\\Kitodo\\Dlf\\Hooks\\DataHandler->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', SYSLOG_SEVERITY_ERROR);
+                            Helper::devLog('[Kitodo\\Dlf\\Hooks\\DataHandler->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', SYSLOG_SEVERITY_ERROR);
 
                         }
 

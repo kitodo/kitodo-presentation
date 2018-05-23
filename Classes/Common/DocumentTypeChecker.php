@@ -162,7 +162,7 @@ class DocumentTypeChecker {
                 // Destroy the incomplete object.
                 $this->doc = NULL;
 
-                Helper::devLog('[\\Kitodo\\Dlf\Common\\DocumentTypeChecker->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\Common\\DocumentTypeChecker->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -193,7 +193,7 @@ class DocumentTypeChecker {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\Common\\DocumentTypeChecker->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\Common\\DocumentTypeChecker->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', SYSLOG_SEVERITY_WARNING);
 
             }
 

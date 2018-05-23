@@ -210,7 +210,7 @@ class Solr {
         // Check if core is set.
         if (empty($core)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', SYSLOG_SEVERITY_ERROR);
 
             return;
 
@@ -237,7 +237,7 @@ class Solr {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->getInstance('.$_core.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Solr->getInstance('.$_core.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
 
             return;
 
@@ -661,7 +661,7 @@ class Solr {
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->__get('.$var.')] There is no getter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Solr->__get('.$var.')] There is no getter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
 
             return;
 
@@ -689,7 +689,7 @@ class Solr {
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING, $value);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING, $value);
 
         } else {
 

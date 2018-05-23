@@ -266,7 +266,7 @@ class Pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\\Plugins\\Pageview->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -306,7 +306,7 @@ class Pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Pageview->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', SYSLOG_SEVERITY_WARNING);
 
         }
 

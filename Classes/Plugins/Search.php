@@ -55,7 +55,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->addAutocompleteJS()] No metadata fields configured for search suggestions', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Search->addAutocompleteJS()] No metadata fields configured for search suggestions', SYSLOG_SEVERITY_WARNING);
 
         }
 
@@ -246,7 +246,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['facetsConf.'])) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->addFacetsMenu()] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Search->addFacetsMenu()] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING);
 
             return '';
 
@@ -273,7 +273,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $TSconfig['special'] = 'userfunction';
 
-        $TSconfig['special.']['userFunc'] = '\\Kitodo\\Dlf\\Plugins\\Search->makeFacetsMenuArray';
+        $TSconfig['special.']['userFunc'] = 'Kitodo\\Dlf\\Plugins\\Search->makeFacetsMenuArray';
 
         $TSconfig['special.']['facets'] = $facets;
 
@@ -447,7 +447,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Quit without doing anything if required variables are not set.
         if (empty($this->conf['solrcore'])) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Search->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
@@ -516,7 +516,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             if (!$solr->ready) {
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->main('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
+                Helper::devLog('[Kitodo\\Dlf\\Plugins\\Search->main('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
 
                 return $content;
 
@@ -748,7 +748,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if (!$solr->ready) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
 
             return array ();
 

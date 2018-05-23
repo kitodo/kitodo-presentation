@@ -113,7 +113,7 @@ class Indexer {
 
                 } else {
 
-                    Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', SYSLOG_SEVERITY_ERROR);
+                    Helper::devLog('[Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', SYSLOG_SEVERITY_ERROR);
 
                     return 1;
 
@@ -223,7 +223,7 @@ class Indexer {
 
                 }
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', SYSLOG_SEVERITY_ERROR);
 
                 return 1;
 
@@ -245,7 +245,7 @@ class Indexer {
 
             }
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Indexer->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
 
             return 1;
 
@@ -310,7 +310,7 @@ class Indexer {
 
                     }
 
-                    Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', SYSLOG_SEVERITY_ERROR);
+                    Helper::devLog('[Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', SYSLOG_SEVERITY_ERROR);
 
                     return 1;
 
@@ -332,7 +332,7 @@ class Indexer {
 
                 }
 
-                Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('[Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Could not connect to Apache Solr server', SYSLOG_SEVERITY_ERROR);
 
                 return 1;
 
@@ -356,7 +356,7 @@ class Indexer {
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Indexer->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', SYSLOG_SEVERITY_ERROR);
 
             return 1;
 
@@ -384,7 +384,7 @@ class Indexer {
 
         if (!$pid) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\Indexer->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\Indexer->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', SYSLOG_SEVERITY_ERROR);
 
             return '';
 

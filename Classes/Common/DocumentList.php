@@ -134,7 +134,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->current()] Invalid position "'.$this->position.'" for list element', SYSLOG_SEVERITY_NOTICE);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->current()] Invalid position "'.$this->position.'" for list element', SYSLOG_SEVERITY_NOTICE);
 
             return;
 
@@ -315,7 +315,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->getRecord([data])] No UID of list element to fetch full record', SYSLOG_SEVERITY_NOTICE, $element);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->getRecord([data])] No UID of list element to fetch full record', SYSLOG_SEVERITY_NOTICE, $element);
 
             $record = $element;
 
@@ -363,7 +363,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         // Check if list position is valid.
         if ($position < 0 || $position >= $this->count) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', SYSLOG_SEVERITY_WARNING);
 
             return;
 
@@ -374,7 +374,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         // Check if moving given amount of steps is possible.
         if (($position + $steps) < 0 || ($position + $steps) >= $this->count) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', SYSLOG_SEVERITY_WARNING);
 
             return;
 
@@ -464,7 +464,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', SYSLOG_SEVERITY_NOTICE);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', SYSLOG_SEVERITY_NOTICE);
 
             return;
 
@@ -520,7 +520,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         if ($position < 0 || $position >= $this->count) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', SYSLOG_SEVERITY_WARNING);
 
             return;
 
@@ -554,7 +554,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         if ($position < 0 || $position >= $this->count) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', SYSLOG_SEVERITY_WARNING);
 
             return;
         }
@@ -725,7 +725,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         } else {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', SYSLOG_SEVERITY_ERROR);
 
         }
 
@@ -867,7 +867,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->__get('.$var.')] There is no getter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->__get('.$var.')] There is no getter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING);
 
             return;
 
@@ -895,7 +895,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         if (!property_exists($this, $var) || !method_exists($this, $method)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Common\\DocumentList->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING, $value);
+            Helper::devLog('[Kitodo\\Dlf\\Common\\DocumentList->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', SYSLOG_SEVERITY_WARNING, $value);
 
         } else {
 

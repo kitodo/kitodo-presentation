@@ -164,7 +164,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['menuConf.'])) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Toc->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Toc->main('.$content.', [data])] Incomplete plugin configuration', SYSLOG_SEVERITY_WARNING, $conf);
 
             return $content;
 
@@ -177,7 +177,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $TSconfig['special'] = 'userfunction';
 
-        $TSconfig['special.']['userFunc'] = '\\Kitodo\\Dlf\\Plugins\\Toc->makeMenuArray';
+        $TSconfig['special.']['userFunc'] = 'Kitodo\\Dlf\\Plugins\\Toc->makeMenuArray';
 
         $TSconfig = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['menuConf.'], $TSconfig);
 

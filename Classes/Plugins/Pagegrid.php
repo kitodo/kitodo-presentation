@@ -208,7 +208,7 @@ class Pagegrid extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if (empty($entryTemplate)) {
 
-            Helper::devLog('[\\Kitodo\\Dlf\\Plugins\\Pagegrid->main('.$content.', [data])] No template subpart for list entry found', SYSLOG_SEVERITY_WARNING, $conf);
+            Helper::devLog('[Kitodo\\Dlf\\Plugins\\Pagegrid->main('.$content.', [data])] No template subpart for list entry found', SYSLOG_SEVERITY_WARNING, $conf);
 
             // Quit without doing anything if required variables are not set.
             return $content;
