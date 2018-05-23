@@ -63,7 +63,7 @@ class ext_update {
 
         $uids = array ();
 
-        // check if tx_dlf_metadata.xpath exists anyhow
+        // Check if tx_dlf_metadata.xpath exists.
         $fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
 
         if (!in_array('xpath', array_keys($fieldsInDatabase))) {
@@ -110,9 +110,12 @@ class ext_update {
 
         // Update the metadata configuration.
         if (count($this->getMetadataConfig())) {
+
             $this->updateMetadataConfig();
+
         }
 
+        // Update database column names to avoid reserved keywords.
         if ($this->oldIndexRelatedTableNames()) {
 
             $this->renameIndexRelatedColumns();
@@ -139,7 +142,7 @@ class ext_update {
             '',
             '',
             ''
-            );
+        );
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
@@ -183,7 +186,7 @@ class ext_update {
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                 FALSE
-                );
+            );
 
         } else {
 
@@ -193,7 +196,7 @@ class ext_update {
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
                 FALSE
-                );
+            );
 
         }
 
