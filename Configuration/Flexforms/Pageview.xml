@@ -16,7 +16,7 @@
 		<sDEF>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+					<sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -43,7 +43,7 @@
 					<excludeOther>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.excludeOther</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.excludeOther</label>
 							<config>
 								<type>check</type>
 								<default>1</default>
@@ -53,16 +53,16 @@
 					<features>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.features</label>
 							<config>
 								<type>select</type>
 								<items type="array">
 									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.overviewmap</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.features.overviewmap</numIndex>
 										<numIndex index="1">OverviewMap</numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.features.zoompanel</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.features.zoompanel</numIndex>
 										<numIndex index="1">ZoomPanel</numIndex>
 									</numIndex>
 								</items>
@@ -76,7 +76,7 @@
 					<elementId>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.elementId</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.elementId</label>
 							<config>
 								<type>input</type>
 								<eval>required,alphanum_x,nospace</eval>
@@ -87,7 +87,7 @@
 					<crop>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.crop</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.crop</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -97,7 +97,7 @@
 					<useInternalProxy>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.useInternalProxy</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.useInternalProxy</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -107,7 +107,7 @@
 					<magnifier>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.magnifier</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.magnifier</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -117,7 +117,7 @@
 					<basketButton>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.basketButton</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.basketButton</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -127,7 +127,7 @@
 					<targetBasket>
 						<TCEforms>
 							<exclude>1</exclude>
-								<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.targetBasket</label>
+								<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.targetBasket</label>
 								<config>
 									<type>group</type>
 									<internal_type>db</internal_type>
@@ -147,7 +147,7 @@
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/pageview/locallang.xml:tt_content.pi_flexform.templateFile</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Pageview.xml:tt_content.pi_flexform.templateFile</label>
 							<config>
 								<type>group</type>
 								<internal_type>file_reference</internal_type>

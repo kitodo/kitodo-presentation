@@ -16,7 +16,7 @@
 		<sDEF>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:dlf/plugins/listview/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+					<sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Listview.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -43,7 +43,7 @@
 					<limit>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/listview/locallang.xml:tt_content.pi_flexform.limit</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Listview.xml:tt_content.pi_flexform.limit</label>
 							<config>
 								<type>input</type>
 								<eval>required,num,int</eval>
@@ -54,7 +54,7 @@
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/listview/locallang.xml:tt_content.pi_flexform.targetPid</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Listview.xml:tt_content.pi_flexform.targetPid</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -74,7 +74,7 @@
 					<getTitle>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/listview/locallang.xml:tt_content.pi_flexform.getTitle</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Listview.xml:tt_content.pi_flexform.getTitle</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -84,7 +84,7 @@
 					<basketButton>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/listview/locallang.xml:tt_content.pi_flexform.basketButton</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Listview.xml:tt_content.pi_flexform.basketButton</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -94,7 +94,7 @@
 					<targetBasket>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/listview/locallang.xml:tt_content.pi_flexform.targetBasket</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Listview.xml:tt_content.pi_flexform.targetBasket</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -108,7 +108,7 @@
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/listview/locallang.xml:tt_content.pi_flexform.templateFile</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Listview.xml:tt_content.pi_flexform.templateFile</label>
 							<config>
 								<type>group</type>
 								<internal_type>file_reference</internal_type>

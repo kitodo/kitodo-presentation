@@ -16,7 +16,7 @@
 		<sDEF>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:dlf/plugins/toc/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+					<sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Toc.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -43,7 +43,7 @@
 					<excludeOther>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/toc/locallang.xml:tt_content.pi_flexform.excludeOther</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Toc.xml:tt_content.pi_flexform.excludeOther</label>
 							<config>
 								<type>check</type>
 								<default>1</default>
@@ -53,7 +53,7 @@
 					<basketButton>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/toc/locallang.xml:tt_content.pi_flexform.basketButton</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Toc.xml:tt_content.pi_flexform.basketButton</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -63,7 +63,7 @@
 					<targetBasket>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/toc/locallang.xml:tt_content.pi_flexform.targetBasket</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Toc.xml:tt_content.pi_flexform.targetBasket</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -83,7 +83,7 @@
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/toc/locallang.xml:tt_content.pi_flexform.targetPid</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Toc.xml:tt_content.pi_flexform.targetPid</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -103,7 +103,7 @@
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/toc/locallang.xml:tt_content.pi_flexform.templateFile</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Toc.xml:tt_content.pi_flexform.templateFile</label>
 							<config>
 								<type>group</type>
 								<internal_type>file_reference</internal_type>

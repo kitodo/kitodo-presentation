@@ -148,7 +148,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         $this->pi_setPiVarDefaults();
 
         // Load translation files.
-        $this->pi_loadLL();
+        $this->pi_loadLL('EXT:'.$this->extKey.'/Resources/Private/Language/'.get_class($this).'.xml');
 
     }
 
@@ -236,45 +236,6 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      * @return	string		The content that is displayed on the website
      */
     abstract public function main($content, $conf);
-
-    /**
-     * Sets default plugin variables from Typoscript
-     * (stdWrap backport from TYPO3 6.2)
-     * @see http://forge.typo3.org/issues/22045
-     *
-     * @access	public
-     *
-     * @return	void
-     */
-    public function pi_setPiVarDefaults() {
-
-        if (is_array($this->conf['_DEFAULT_PI_VARS.'])) {
-
-            foreach ($this->conf['_DEFAULT_PI_VARS.'] as $GPkey => $GPval) {
-
-                if (strpos($GPkey, '.')) {
-
-                    $GPkey = substr($GPkey, 0, -1);
-
-                }
-
-                if (is_array($this->conf['_DEFAULT_PI_VARS.'][$GPkey.'.']['stdWrap.'])) {
-
-                    $GPval = $GPval ? $GPval : '';
-
-                    $this->conf['_DEFAULT_PI_VARS.'][$GPkey] = $this->cObj->stdWrap($GPval, $this->conf['_DEFAULT_PI_VARS.'][$GPkey.'.']['stdWrap.']);
-
-                    unset ($this->conf['_DEFAULT_PI_VARS.'][$GPkey.'.']['stdWrap.']);
-
-                }
-
-            }
-
-            $this->piVars = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
-
-        }
-
-    }
 
     /**
      * Wraps the input string in a tag with the class attribute set to the class name

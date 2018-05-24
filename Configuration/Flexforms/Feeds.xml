@@ -16,7 +16,7 @@
 		<sDEF>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+					<sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -45,7 +45,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.collections</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.collections</label>
 							<config>
 								<type>select</type>
 								<items type="array"></items>
@@ -60,7 +60,7 @@
 					<excludeOther>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.excludeOther</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.excludeOther</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -71,7 +71,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.library</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.library</label>
 							<config>
 								<type>select</type>
 								<items type="array"></items>
@@ -85,7 +85,7 @@
 					<limit>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.limit</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.limit</label>
 							<config>
 								<type>input</type>
 								<eval>required,num,int</eval>
@@ -96,7 +96,7 @@
 					<prependSuperiorTitle>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.prependSuperiorTitle</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.prependSuperiorTitle</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -106,7 +106,7 @@
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.targetPid</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.targetPid</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -126,7 +126,7 @@
 					<title>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.title</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.title</label>
 							<config>
 								<type>input</type>
 								<eval>required,trim</eval>
@@ -136,7 +136,7 @@
 					<description>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/feeds/locallang.xml:tt_content.pi_flexform.description</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.description</label>
 							<config>
 								<type>input</type>
 								<eval>trim</eval>

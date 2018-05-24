@@ -16,7 +16,7 @@
 		<sDEF>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:dlf/plugins/statistics/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+					<sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -45,7 +45,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/statistics/locallang.xml:tt_content.pi_flexform.collections</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.pi_flexform.collections</label>
 							<config>
 								<type>select</type>
 								<items type="array"></items>
@@ -60,7 +60,7 @@
 					<description>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/statistics/locallang.xml:tt_content.pi_flexform.description</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.pi_flexform.description</label>
 							<config>
 								<type>text</type>
 								<cols>30</cols>

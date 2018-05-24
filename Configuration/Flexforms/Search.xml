@@ -16,7 +16,7 @@
 		<sDEF>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+					<sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
@@ -45,16 +45,16 @@
 					<fulltext>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.fulltext</label>
 							<config>
 								<type>radio</type>
 								<items type="array">
 									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.yes</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.fulltext.yes</numIndex>
 										<numIndex index="1">1</numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.fulltext.no</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.fulltext.no</numIndex>
 										<numIndex index="1">0</numIndex>
 									</numIndex>
 								</items>
@@ -67,7 +67,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.solrcore</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.solrcore</label>
 							<config>
 								<type>select</type>
 								<items type="array"></items>
@@ -82,7 +82,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.limit</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.limit</label>
 							<config>
 								<type>input</type>
 								<eval>num,int</eval>
@@ -94,7 +94,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.extSearch.slotCount</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.extSearch.slotCount</label>
 							<config>
 								<type>input</type>
 								<eval>num,int</eval>
@@ -110,7 +110,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.extSearch.fields</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.extSearch.fields</label>
 							<config>
 								<type>select</type>
 								<items type="array"></items>
@@ -125,24 +125,24 @@
 					<searchIn>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.searchIn</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn</label>
 							<config>
 								<type>select</type>
 								<items type="array">
 									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.searchIn.none</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.none</numIndex>
 										<numIndex index="1">none</numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.searchIn.document</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.document</numIndex>
 										<numIndex index="1">document</numIndex>
 									</numIndex>
 									<numIndex index="2" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.searchIn.collection</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.collection</numIndex>
 										<numIndex index="1">collection</numIndex>
 									</numIndex>
 									<numIndex index="3" type="array">
-										<numIndex index="0">LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.searchIn.all</numIndex>
+										<numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.all</numIndex>
 										<numIndex index="1">all</numIndex>
 									</numIndex>
 								</items>
@@ -156,7 +156,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.collections</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.collections</label>
 							<config>
 								<type>select</type>
 								<items type="array"/>
@@ -172,7 +172,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.facets</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.facets</label>
 							<config>
 								<type>select</type>
 								<items type="array"></items>
@@ -188,7 +188,7 @@
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.limitFacets</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.limitFacets</label>
 							<config>
 								<type>input</type>
 								<eval>num,int</eval>
@@ -203,7 +203,7 @@
 					<resetFacets>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.resetFacets</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.resetFacets</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -213,7 +213,7 @@
 					<suggest>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.suggest</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.suggest</label>
 							<config>
 								<type>check</type>
 								<default>1</default>
@@ -223,7 +223,7 @@
 					<showLogicalPageField>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.showLogicalPageField</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.showLogicalPageField</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -234,7 +234,7 @@
 						<TCEforms>
 							<onChange>reload</onChange>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.showSingleResult</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.showSingleResult</label>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -244,7 +244,7 @@
 					<targetPid>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.targetPid</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.targetPid</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -265,7 +265,7 @@
 						<TCEforms>
 							<displayCond>FIELD:showSingleResult:=:1</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.targetPidPageView</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.targetPidPageView</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -279,7 +279,7 @@
 					<templateFile>
 						<TCEforms>
 							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.templateFile</label>
+							<label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.templateFile</label>
 							<config>
 								<type>group</type>
 								<internal_type>file_reference</internal_type>
