@@ -439,7 +439,7 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
         } else {
 
             // Use default stylesheet if no custom stylesheet is given.
-            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/oai/transform.xsl');
+            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Stylesheets/transform.xsl');
 
         }
 

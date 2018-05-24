@@ -66,7 +66,7 @@ class Pagegrid extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            $thumbnailFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pagegrid/placeholder.jpg';
+            $thumbnailFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Images/placeholder.jpg';
 
         }
 
