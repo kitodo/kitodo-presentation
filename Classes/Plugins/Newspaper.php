@@ -83,16 +83,16 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-            $issues[] = array (
+            $issues[] = [
                 'uid' => $resArray['uid'],
                 'title' => $resArray['title'],
                 'year' => $resArray['year']
-            );
+            ];
 
         }
 
         // 	We need an array of issues with month number as key.
-        $calendarIssues = array ();
+        $calendarIssues = [];
 
         foreach ($issues as $issue) {
 
@@ -100,7 +100,7 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $allIssues = array ();
+        $allIssues = [];
 
         // Get subpart templates.
         $subparts['list'] = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
@@ -116,7 +116,7 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         for ($i = 0; $i <= 11; $i++) {
 
-            $markerArray = array (
+            $markerArray = [
                 '###DAYMON_NAME###' => strftime('%a', strtotime('last Monday')),
                 '###DAYTUE_NAME###' => strftime('%a', strtotime('last Tuesday')),
                 '###DAYWED_NAME###' => strftime('%a', strtotime('last Wednesday')),
@@ -125,7 +125,7 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
                 '###DAYSAT_NAME###' => strftime('%a', strtotime('last Saturday')),
                 '###DAYSUN_NAME###' => strftime('%a', strtotime('last Sunday')),
                 '###MONTHNAME###' 	=> strftime('%B', strtotime($year.'-'.($i + 1).'-1'))
-            );
+            ];
 
             // Reset week content of new month.
             $subWeekPartContent = '';
@@ -139,7 +139,7 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 $firstDayOfWeek = strtotime('+ '.$j.' Week', $firstOfMonthStart);
 
-                $weekArray = array (
+                $weekArray = [
                     '###DAYMON###' => '&nbsp;',
                     '###DAYTUE###' => '&nbsp;',
                     '###DAYWED###' => '&nbsp;',
@@ -147,7 +147,7 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
                     '###DAYFRI###' => '&nbsp;',
                     '###DAYSAT###' => '&nbsp;',
                     '###DAYSUN###' => '&nbsp;',
-                );
+                ];
 
                 // Every week has seven days. ;-)
                 for ($k = 0; $k <= 6; $k++) {
@@ -158,7 +158,7 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                         $dayLinks = '';
 
-                        $dayLinksText = array ();
+                        $dayLinksText = [];
 
                         $dayLinksList = '';
 
@@ -176,12 +176,12 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                                         $dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
 
-                                        $linkConf = array (
+                                        $linkConf = [
                                             'useCacheHash' => 1,
                                             'parameter' => $this->conf['targetPid'],
                                             'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($issue['uid']),
                                             'ATagParams' => ' class="title"',
-                                        );
+                                        ];
 
                                         $dayLinksText[] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
 
@@ -251,20 +251,20 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Link to years overview
-        $linkConf = array (
+        $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
             'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($this->doc->parentId),
-        );
+        ];
 
         $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE).' '.$this->doc->getTitle($this->doc->parentId), $linkConf);
 
         // Link to current year.
-        $linkConf = array (
+        $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
             'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($this->doc->uid),
-        );
+        ];
 
         $yearLink = $this->cObj->typoLink($year, $linkConf);
 
@@ -297,14 +297,14 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $markerArray = array (
+        $markerArray = [
             '###CALENDARVIEWACTIVE###' => $listViewActive ? '' : 'active',
             '###LISTVIEWACTIVE###' => $listViewActive ? 'active' : '',
             '###CALYEAR###' => $yearLink,
             '###CALALLYEARS###' => $allYearsLink,
             '###LABEL_CALENDAR###' => $this->pi_getLL('label.view_calendar'),
             '###LABEL_LIST_VIEW###' => $this->pi_getLL('label.view_list'),
-        );
+        ];
 
         $this->template = $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
@@ -358,10 +358,10 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-            $years[] = array (
+            $years[] = [
                 'title' => $resArray['title'],
                 'uid' => $resArray['uid']
-            );
+            ];
 
         }
 
@@ -371,16 +371,16 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             foreach ($years as $id => $year) {
 
-                $linkConf = array (
+                $linkConf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetPid'],
                     'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($year['uid']),
                     'title' => $titleAnchor.': '.$year['title']
-                );
+                ];
 
-                $yearArray = array (
+                $yearArray = [
                     '###YEARNAME###' => $this->cObj->typoLink($year['title'], $linkConf),
-                );
+                ];
 
                 $subYearPartContent .= $this->cObj->substituteMarkerArray($subparts['year'], $yearArray);
 
@@ -388,18 +388,19 @@ class Newspaper extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // link to years overview (should be itself here)
-        $linkConf = array (
+        $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
             'additionalParams' => '&'.$this->prefixId.'[id]='.$this->doc->uid,
-        );
+        ];
+
         $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE).' '.$this->doc->getTitle($this->doc->uid), $linkConf);
 
         // Fill markers.
-        $markerArray = array (
+        $markerArray = [
             '###LABEL_CHOOSE_YEAR###' => $this->pi_getLL('label.please_choose_year'),
             '###CALALLYEARS###' => $allYearsLink
-        );
+        ];
 
         $this->template = $this->cObj->substituteMarkerArray($this->template, $markerArray);
 

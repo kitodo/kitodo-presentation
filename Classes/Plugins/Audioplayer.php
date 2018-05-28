@@ -29,7 +29,7 @@ class Audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $audio = array ();
+    protected $audio = [];
 
     /**
      * Adds Player javascript
@@ -40,7 +40,7 @@ class Audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function addPlayerJS() {
 
-        $output = array ();
+        $output = [];
 
         $output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css">';
 
@@ -132,9 +132,9 @@ class Audioplayer extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->getTemplate();
 
         // Fill in the template markers.
-        $markerArray = array (
+        $markerArray = [
             '###PLAYER_JS###' => $this->addPlayerJS()
-        );
+        ];
 
         $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 

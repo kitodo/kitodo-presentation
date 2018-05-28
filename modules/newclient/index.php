@@ -23,15 +23,15 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
 
     protected $modPath = 'newclient/';
 
-    protected $buttonArray = array (
+    protected $buttonArray = [
         'SHORTCUT' => '',
-    );
+    ];
 
-    protected $markerArray = array (
+    protected $markerArray = [
         'CSH' => '',
         'MOD_MENU' => '',
         'CONTENT' => '',
-    );
+    ];
 
     /**
      * Add access rights
@@ -94,7 +94,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
         // Build data array.
         foreach ($metadata as $index_name => $values) {
 
-            $formatIds = array ();
+            $formatIds = [];
 
             foreach ($values['format'] as $format) {
 
@@ -108,7 +108,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
 
             }
 
-            $data['tx_dlf_metadata'][uniqid('NEW')] = array (
+            $data['tx_dlf_metadata'][uniqid('NEW')] = [
                 'pid' => intval($this->id),
                 'label' => $GLOBALS['LANG']->getLL($index_name),
                 'index_name' => $index_name,
@@ -123,7 +123,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
                 'is_facet' => $values['is_facet'],
                 'is_listed' => $values['is_listed'],
                 'index_autocomplete' => $values['index_autocomplete'],
-            );
+            ];
 
             $i++;
 
@@ -170,11 +170,11 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
     protected function cmdAddSolrCore() {
 
         // Build data array.
-        $data['tx_dlf_solrcores'][uniqid('NEW')] = array (
+        $data['tx_dlf_solrcores'][uniqid('NEW')] = [
             'pid' => intval($this->id),
             'label' => $GLOBALS['LANG']->getLL('solrcore').' (PID '.$this->id.')',
             'index_name' => '',
-        );
+        ];
 
         $_ids = Helper::processDBasAdmin($data);
 
@@ -222,14 +222,14 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
         // Build data array.
         foreach ($structures as $index_name => $values) {
 
-            $data['tx_dlf_structures'][uniqid('NEW')] = array (
+            $data['tx_dlf_structures'][uniqid('NEW')] = [
                 'pid' => intval($this->id),
                 'toplevel' => $values['toplevel'],
                 'label' => $GLOBALS['LANG']->getLL($index_name),
                 'index_name' => $index_name,
                 'oai_name' => $values['oai_name'],
                 'thumbnail' => 0,
-            );
+            ];
 
         }
 
@@ -337,7 +337,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
             } else {
 
                 // Configuration missing.
-                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addStructure')));
+                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
 
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
@@ -372,7 +372,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
             } else {
 
                 // Configuration missing.
-                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addMetadata')));
+                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
 
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
@@ -411,7 +411,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
                 } else {
 
                     // Configuration missing.
-                    $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addAccessRights')));
+                    $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addAccessRights']));
 
                     $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
@@ -463,7 +463,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
                 } else {
 
                     // Default core available, but this is deprecated.
-                    $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addSolrcore')));
+                    $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
 
                     $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
@@ -478,7 +478,7 @@ class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
             } else {
 
                 // Solr core missing.
-                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'addSolrcore')));
+                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
 
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',

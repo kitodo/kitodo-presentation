@@ -49,23 +49,23 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $formats = array (
-        'oai_dc' => array (
+    protected $formats = [
+        'oai_dc' => [
             'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
             'namespace' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-            'requiredFields' => array ('record_id'),
-        ),
-        'epicur' => array (
+            'requiredFields' => ['record_id']
+        ],
+        'epicur' => [
             'schema' => 'http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd',
             'namespace' => 'urn:nbn:de:1111-2004033116',
-            'requiredFields' => array ('purl', 'urn'),
-        ),
-        'mets' => array (
+            'requiredFields' => ['purl', 'urn']
+        ],
+        'mets' => [
             'schema' => 'http://www.loc.gov/standards/mets/version17/mets.v1-7.xsd',
             'namespace' => 'http://www.loc.gov/METS/',
-            'requiredFields' => array ('location'),
-        )
-    );
+            'requiredFields' => ['location']
+        ]
+    ];
 
     /**
      * Delete expired resumption tokens
@@ -119,7 +119,7 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function getUrlParams() {
 
-        $allowedParams = array (
+        $allowedParams = [
             'verb',
             'identifier',
             'metadataPrefix',
@@ -127,10 +127,10 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
             'until',
             'set',
             'resumptionToken'
-        );
+        ];
 
         // Clear plugin variables.
-        $this->piVars = array ();
+        $this->piVars = [];
 
         // Set only allowed parameters.
         foreach ($allowedParams as $param) {
@@ -501,10 +501,10 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Add request.
-        $linkConf = array (
+        $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1
-        );
+        ];
 
         $request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8'));
 
@@ -769,10 +769,10 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $linkConf = array (
+        $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1
-        );
+        ];
 
         $baseURL = htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES);
 
@@ -851,10 +851,10 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $resultSet->add($documentSet);
 
-        $resultSet->metadata = array (
+        $resultSet->metadata = [
             'completeListSize' => count($documentSet),
             'metadataPrefix' => $this->piVars['metadataPrefix'],
-        );
+        ];
 
         return $this->generateOutputForDocumentList($resultSet);
 
@@ -869,7 +869,7 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function verbListMetadataFormats() {
 
-        $resArray = array ();
+        $resArray = [];
 
         // Check for invalid arguments.
         if (count($this->piVars) > 1) {
@@ -992,10 +992,10 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $resultSet->add($documentSet);
 
-        $resultSet->metadata = array (
+        $resultSet->metadata = [
             'completeListSize' => count($documentSet),
             'metadataPrefix' => $this->piVars['metadataPrefix'],
-        );
+        ];
 
         return $this->generateOutputForDocumentList($resultSet);
 
@@ -1190,12 +1190,12 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $solr_query .= ' AND timestamp:['.$from.' TO '.$until.']';
 
-        $documentSet = array ();
+        $documentSet = [];
 
         $solr = Solr::getInstance($this->conf['solrcore']);
 
         // We only care about the UID in the results and want them sorted.
-        $parameters = array ("fl" => "uid", "sort" => "uid asc");
+        $parameters = ["fl" => "uid", "sort" => "uid asc"];
 
         $result = $solr->search_raw($solr_query, $parameters);
 
@@ -1363,12 +1363,12 @@ class Oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             $GLOBALS['TYPO3_DB']->exec_INSERTquery(
                 'tx_dlf_tokens',
-                array (
+                [
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                     'token' => $token,
                     'options' => serialize($documentListSet),
                     'ident' => 'oai',
-                )
+                ]
             );
 
             if ($GLOBALS['TYPO3_DB']->sql_affected_rows() == 1) {

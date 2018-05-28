@@ -59,7 +59,7 @@ class Mods implements \Kitodo\Dlf\Common\FormatInterface {
 
                 } elseif (($nameParts = $authors[$i]->xpath('./mods:namePart'))) {
 
-                    $name = array ();
+                    $name = [];
 
                     $k = 4;
 

@@ -37,7 +37,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @var	array
      * @access protected
      */
-    protected $elements = array ();
+    protected $elements = [];
 
     /**
      * This holds the list's metadata
@@ -45,7 +45,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @var	array
      * @access protected
      */
-    protected $metadata = array ();
+    protected $metadata = [];
 
     /**
      * This holds the current list position
@@ -62,7 +62,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @var	array
      * @access protected
      */
-    protected $records = array ();
+    protected $records = [];
 
     /**
      * Instance of Apache_Solr_Service class
@@ -78,7 +78,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @var	array
      * @access protected
      */
-    protected $solrConfig = array ();
+    protected $solrConfig = [];
 
     /**
      * This adds an array of elements at the given position to the list
@@ -153,7 +153,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      */
     protected function getRecord($element) {
 
-        if (is_array($element) && array_keys($element) == array ('u', 'h', 's', 'p')) {
+        if (is_array($element) && array_keys($element) == ['u', 'h', 's', 'p']) {
 
             // Return already processed record if possible.
             if (!empty($this->records[$element['u']])) {
@@ -162,12 +162,12 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
             }
 
-            $record = array (
+            $record = [
                 'uid' => $element['u'],
                 'page' => 1,
                 'preview' => '',
                 'subparts' => $element['p']
-            );
+            ];
 
             // Check if it's a list of database records or Solr documents.
             if (!empty($this->metadata['options']['source']) && $this->metadata['options']['source'] == 'collection') {
@@ -221,15 +221,15 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
                         $record['metadata'] = $metadata;
 
-                    } elseif (($key = array_search(array('u' => $resArray['uid']), $record['subparts'], TRUE)) !== FALSE) {
+                    } elseif (($key = array_search(['u' => $resArray['uid']], $record['subparts'], TRUE)) !== FALSE) {
 
-                        $record['subparts'][$key] = array (
+                        $record['subparts'][$key] = [
                             'uid' => $resArray['uid'],
                             'page' => 1,
                             'preview' => (!empty($record['subparts'][$key]['h']) ? $record['subparts'][$key]['h'] : ''),
                             'thumbnail' => $resArray['thumbnail'],
                             'metadata' => $metadata
-                        );
+                        ];
 
                     }
 
@@ -239,7 +239,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
                 if ($this->solrConnect()) {
 
-                    $params = array ();
+                    $params = [];
 
                     // Restrict the fields to the required ones
                     $params['fl'] = 'uid,id,toplevel,thumbnail,page';
@@ -256,7 +256,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     // If it is a fulltext search, enable highlighting and fetch the results
                     if ($this->metadata['fulltextSearch']) {
 
-                        $params = array ();
+                        $params = [];
 
                         $params['hl'] = 'true';
                         $params['hl.useFastVectorHighlighter'] = 'true';
@@ -273,13 +273,13 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     foreach ($result->response->docs as $resArray) {
 
                         // Prepare document's metadata.
-                        $metadata = array ();
+                        $metadata = [];
 
                         foreach ($this->solrConfig as $index_name => $solr_name) {
 
                             if (!empty($resArray->$solr_name)) {
 
-                                $metadata[$index_name] = (is_array($resArray->$solr_name) ? $resArray->$solr_name : array ($resArray->$solr_name));
+                                $metadata[$index_name] = is_array($resArray->$solr_name) ? $resArray->$solr_name : [$resArray->$solr_name];
 
                             }
 
@@ -294,13 +294,13 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
                         } elseif (isset($record['subparts'][$resArray->id])) {
 
-                            $record['subparts'][$resArray->id] = array (
+                            $record['subparts'][$resArray->id] = [
                                 'uid' => $resArray->uid,
                                 'page' => $resArray->page,
                                 'preview' => (!empty($result_highlights->highlighting->{$resArray->id}->fulltext[0]) ? $result_highlights->highlighting->{$resArray->id}->fulltext[0] : ''),
                                 'thumbnail' => $resArray->thumbnail,
                                 'metadata' => $metadata
-                            );
+                            ];
 
                         }
 
@@ -382,7 +382,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         $element = $this->remove($position);
 
-        $this->add(array ($element), $position + $steps);
+        $this->add([$element], $position + $steps);
 
     }
 
@@ -575,11 +575,11 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      */
     public function reset() {
 
-        $this->elements = array ();
+        $this->elements = [];
 
-        $this->records = array ();
+        $this->records = [];
 
-        $this->metadata = array ();
+        $this->metadata = [];
 
         $this->count = 0;
 
@@ -621,7 +621,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
         } else {
 
-            Helper::saveToSession(array ($this->elements, $this->metadata), get_class($this));
+            Helper::saveToSession([$this->elements, $this->metadata], get_class($this));
 
         }
 
@@ -685,9 +685,9 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      */
     public function sort($by, $asc = TRUE) {
 
-        $newOrder = array ();
+        $newOrder = [];
 
-        $nonSortable = array ();
+        $nonSortable = [];
 
         foreach ($this->elements as $num => $element) {
 
@@ -788,7 +788,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return	void
      */
-    protected function _setMetadata(array $metadata = array ()) {
+    protected function _setMetadata(array $metadata = []) {
 
         $this->metadata = $metadata;
 
@@ -804,7 +804,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return	void
      */
-    public function __construct(array $elements = array (), array $metadata = array ()) {
+    public function __construct(array $elements = [], array $metadata = []) {
 
         if (empty($elements) && empty($metadata)) {
 
@@ -915,7 +915,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      */
     public function __sleep() {
 
-        return array ('elements', 'metadata');
+        return ['elements', 'metadata'];
 
     }
 

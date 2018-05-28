@@ -137,12 +137,12 @@ class DataHandler {
                     // Trim path and append trailing slash.
                     $path = (trim($conf['solrPath'], '/') ? trim($conf['solrPath'], '/').'/' : '');
 
-                    $context = stream_context_create(array (
-                        'http' => array (
+                    $context = stream_context_create([
+                        'http' => [
                             'method' => 'GET',
                             'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-                        )
-                    ));
+                        ]
+                    ]);
 
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
@@ -168,7 +168,7 @@ class DataHandler {
                     Helper::devLog('[Kitodo\\Dlf\\Hooks\\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', SYSLOG_SEVERITY_ERROR, $fieldArray);
 
                     // Solr core could not be created, thus unset field array.
-                    $fieldArray = array ();
+                    $fieldArray = [];
 
                     break;
 
@@ -246,7 +246,7 @@ class DataHandler {
                         if (count($fieldArray) < 2) {
 
                             // Unset the whole field array.
-                            $fieldArray = array ();
+                            $fieldArray = [];
 
                         } else {
 
@@ -376,7 +376,7 @@ class DataHandler {
      */
     public function processCmdmap_postProcess($command, $table, $id, $value, $pObj) {
 
-        if (in_array($command, array ('move', 'delete', 'undelete')) && $table == 'tx_dlf_documents') {
+        if (in_array($command, ['move', 'delete', 'undelete']) && $table == 'tx_dlf_documents') {
 
             // Get Solr core.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(

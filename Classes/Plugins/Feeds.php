@@ -169,11 +169,11 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
                     $item->appendChild($rss->createElement('title', htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8')));
 
                     // Add link.
-                    $linkConf = array (
+                    $linkConf = [
                         'parameter' => $this->conf['targetPid'],
                         'forceAbsoluteUrl' => 1,
-                        'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('id' => $resArray['uid']), '', TRUE, FALSE)
-                    );
+                        'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', TRUE, FALSE)
+                    ];
 
                     $item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
 

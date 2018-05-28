@@ -18,7 +18,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_audi
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_audioplayer'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_audioplayer', 'dlf_audioplayer'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_audioplayer', 'dlf_audioplayer'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_audioplayer', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Audioplayer.xml');
 
@@ -27,7 +27,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_bask
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_basket'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_basket', 'dlf_basket'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_basket', 'dlf_basket'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_basket', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Basket.xml');
 
@@ -36,7 +36,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_coll
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_collection'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_collection', 'dlf_collection'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_collection', 'dlf_collection'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_collection', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Collection.xml');
 
@@ -45,7 +45,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_feed
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_feeds'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_feeds', 'dlf_feeds'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_feeds', 'dlf_feeds'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_feeds', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Feeds.xml');
 
@@ -54,7 +54,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_list
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_listview'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_listview', 'dlf_listview'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_listview', 'dlf_listview'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_listview', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Listview.xml');
 
@@ -63,7 +63,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_meta
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_metadata'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_metadata', 'dlf_metadata'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_metadata', 'dlf_metadata'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_metadata', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Metadata.xml');
 
@@ -72,7 +72,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_navi
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_navigation'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_navigation', 'dlf_navigation'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_navigation', 'dlf_navigation'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_navigation', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Navigation.xml');
 
@@ -81,7 +81,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_news
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_newspaper'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_newspaper', 'dlf_newspaper'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_newspaper', 'dlf_newspaper'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_newspaper', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Newspaper.xml');
 
@@ -90,7 +90,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_oai'
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_oai'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_oai', 'dlf_oai'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_oai', 'dlf_oai'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_oai', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Oai.xml');
 
@@ -99,7 +99,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_page
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_pagegrid'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_pagegrid', 'dlf_pagegrid'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_pagegrid', 'dlf_pagegrid'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_pagegrid', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Pagegrid.xml');
 
@@ -108,7 +108,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_page
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_pageview'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_pageview', 'dlf_pageview'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_pageview', 'dlf_pageview'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_pageview', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Pageview.xml');
 
@@ -117,7 +117,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_sear
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_search'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_search', 'dlf_search'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_search', 'dlf_search'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_search', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Search.xml');
 
@@ -126,7 +126,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_stat
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_statistics'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_statistics', 'dlf_statistics'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_statistics', 'dlf_statistics'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_statistics', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Statistics.xml');
 
@@ -135,7 +135,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_toc'
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_toc'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_toc', 'dlf_toc'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_toc', 'dlf_toc'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_toc', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Toc.xml');
 
@@ -144,7 +144,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_tool
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_toolbox'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_toolbox', 'dlf_toolbox'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_toolbox', 'dlf_toolbox'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_toolbox', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Toolbox.xml');
 
@@ -153,6 +153,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_vali
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validator'] = 'pi_flexform';
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/locallang.xml:tt_content.dlf_validator', 'dlf_validator'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/locallang.xml:tt_content.dlf_validator', 'dlf_validator'], 'list_type', 'dlf');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_validator', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Validator.xml');

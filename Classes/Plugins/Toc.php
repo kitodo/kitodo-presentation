@@ -32,7 +32,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $activeEntries = array ();
+    protected $activeEntries = [];
 
     /**
      * This builds an array for one menu entry
@@ -46,7 +46,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function getMenuEntry(array $entry, $recursive = FALSE) {
 
-        $entryArray = array ();
+        $entryArray = [];
 
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = $entry['label'];
@@ -68,37 +68,37 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Build menu links based on the $entry['points'] array.
         if (!empty($entry['points']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($entry['points'])) {
 
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('page' => $entry['points']), TRUE, FALSE, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['page' => $entry['points']], TRUE, FALSE, $this->conf['targetPid']);
 
             $entryArray['doNotLinkIt'] = 0;
 
             if ($this->conf['basketButton']) {
 
-                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
+                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
 
             }
 
         } elseif (!empty($entry['points']) && is_string($entry['points'])) {
 
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => $entry['points'], 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['points'], 'page' => 1], TRUE, FALSE, $this->conf['targetPid']);
 
             $entryArray['doNotLinkIt'] = 0;
 
             if ($this->conf['basketButton']) {
 
-                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
+                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
 
             }
 
         } elseif (!empty($entry['targetUid'])) {
 
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('id' => $entry['targetUid'], 'page' => 1), TRUE, FALSE, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['targetUid'], 'page' => 1], TRUE, FALSE, $this->conf['targetPid']);
 
             $entryArray['doNotLinkIt'] = 0;
 
             if ($this->conf['basketButton']) {
 
-                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(array ('addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']), TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
+                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
 
             }
 
@@ -121,7 +121,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
             // 4. Current menu node has no corresponding images
             if (!empty($this->conf['menuConf.']['expAll']) || $entryArray['ITEM_STATE'] == 'CUR' || is_string($entry['points']) || empty($this->doc->smLinks['l2p'][$entry['id']])) {
 
-                $entryArray['_SUB_MENU'] = array ();
+                $entryArray['_SUB_MENU'] = [];
 
                 foreach ($entry['children'] as $child) {
 
@@ -173,7 +173,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Load template file.
         $this->getTemplate();
 
-        $TSconfig = array ();
+        $TSconfig = [];
 
         $TSconfig['special'] = 'userfunction';
 
@@ -209,7 +209,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($this->doc === NULL) {
 
             // Quit without doing anything if required variables are not set.
-            return array ();
+            return [];
 
         } else {
 
@@ -237,7 +237,7 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $menuArray = array ();
+        $menuArray = [];
 
         // Does the document have physical elements or is it an external file?
         if ($this->doc->physicalStructure || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->doc->uid)) {
@@ -294,17 +294,17 @@ class Toc extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 $menuArray[0]['ITEM_STATE'] = 'CURIFSUB';
 
-                $menuArray[0]['_SUB_MENU'] = array ();
+                $menuArray[0]['_SUB_MENU'] = [];
 
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
-                    $entry = array (
+                    $entry = [
                         'label' => $resArray['title'],
                         'type' => $resArray['type'],
                         'volume' => $resArray['volume'],
                         'pagination' => '',
                         'targetUid' => $resArray['uid']
-                    );
+                    ];
 
                     $menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($entry, FALSE);
 

@@ -33,7 +33,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $hookObjects = array ();
+    protected $hookObjects = [];
 
     /**
      * The main method of the PlugIn
@@ -71,12 +71,12 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $metadata = array ();
+        $metadata = [];
 
         if ($this->conf['rootline'] < 2) {
 
             // Get current structure's @ID.
-            $ids = array ();
+            $ids = [];
 
             if (!empty($this->doc->physicalStructure[$this->piVars['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page']]])) {
 
@@ -201,7 +201,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
         $subpart['block'] = $this->cObj->getSubpart($this->template, '###BLOCK###');
 
         // Get list of metadata to show.
-        $metaList = array ();
+        $metaList = [];
 
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.wrap AS wrap',
@@ -227,10 +227,10 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                 // do stuff with the row entry data	like built HTML or prepare further usage
                 if ($this->conf['showFull'] || $resArray['is_listed']) {
 
-                    $metaList[$resArray['index_name']] = array (
+                    $metaList[$resArray['index_name']] = [
                         'wrap' => $resArray['wrap'],
                         'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
-                    );
+                    ];
 
                 }
 
@@ -239,7 +239,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Get list of collections to show.
-        $collList = array ();
+        $collList = [];
 
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name',
@@ -317,7 +317,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                                 $details = $this->doc->getLogicalStructure($metadata['_id']);
 
-                                $value = $this->pi_linkTP($value, array ($this->prefixId => array ('id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1))), TRUE, $this->conf['targetPid']);
+                                $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], TRUE, $this->conf['targetPid']);
 
                             }
 

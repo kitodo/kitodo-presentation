@@ -48,7 +48,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      * @var	array
      * @access protected
      */
-    protected $buttonArray = array ();
+    protected $buttonArray = [];
 
     /**
      * Holds the module's marker array
@@ -56,7 +56,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      * @var	array
      * @access protected
      */
-    protected $markerArray = array ();
+    protected $markerArray = [];
 
     /**
      * Holds the module's subpart array
@@ -64,7 +64,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      * @var	array
      * @access protected
      */
-    protected $subpartArray = array ();
+    protected $subpartArray = [];
 
     /**
      * Holds the TYPO3_CONF_VARS array of this extension
@@ -72,7 +72,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      * @var	array
      * @access protected
      */
-    protected $conf = array ();
+    protected $conf = [];
 
     /**
      * Holds the submitted form's data
@@ -131,13 +131,13 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
         // Set $this->MOD_MENU array here or leave empty.
 
         /* Example code:
-        $this->MOD_MENU = array (
-            'function' => array (
+        $this->MOD_MENU = [
+            'function' => [
                 '1' => $GLOBALS['LANG']->getLL('function1'),
                 '2' => $GLOBALS['LANG']->getLL('function2'),
                 '3' => $GLOBALS['LANG']->getLL('function3'),
-            )
-        ); */
+            ]
+        ]; */
 
     }
 

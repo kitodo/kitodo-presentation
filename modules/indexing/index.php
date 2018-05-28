@@ -25,15 +25,15 @@ class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
 
     protected $modPath = 'indexing/';
 
-    protected $buttonArray = array (
+    protected $buttonArray = [
         'SHORTCUT' => '',
-    );
+    ];
 
-    protected $markerArray = array (
+    protected $markerArray = [
         'CSH' => '',
         'MOD_MENU' => '',
         'CONTENT' => '',
-    );
+    ];
 
     /**
      * This holds a list of documents to index
@@ -186,7 +186,7 @@ class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
         $this->markerArray['CONTENT'] .= $_message->render();
 
         // Start next loop.
-        $this->markerArray['CONTENT'] .= '<script type="text/javascript">window.location.href=unescape("'.\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array ('id' => $this->id, 'CMD' => 'indexLoop', $this->prefixId => array ('core' => $this->data['core']), 'random' => uniqid())))).'");</script>';
+        $this->markerArray['CONTENT'] .= '<script type="text/javascript">window.location.href=unescape("'.\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'indexLoop', $this->prefixId => ['core' => $this->data['core']], 'random' => uniqid()]))).'");</script>';
 
         $this->printContent();
 
@@ -280,11 +280,11 @@ class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
                         }
 
                         // Save them as a list object in user's session.
-                        $elements = array ();
+                        $elements = [];
 
                         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($_result)) {
 
-                            $elements[] = array ($resArray['uid'], $resArray['title']);
+                            $elements[] = [$resArray['uid'], $resArray['title']];
 
                         }
 
@@ -370,13 +370,13 @@ class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
      */
     protected function setMOD_MENU() {
 
-        $this->MOD_MENU = array (
-            'function' => array (
+        $this->MOD_MENU = [
+            'function' => [
                 'indexFile' => $GLOBALS['LANG']->getLL('function.indexFile'),
                 //'reindexDoc' => $GLOBALS['LANG']->getLL('function.reindexDoc'),
                 'reindexDocs' => $GLOBALS['LANG']->getLL('function.reindexDocs'),
-            )
-        );
+            ]
+        ];
 
     }
 

@@ -29,7 +29,7 @@ class ConfigurationForm {
      * @var	array
      * @access protected
      */
-    protected $conf = array ();
+    protected $conf = [];
 
     /**
      * This holds the output ready to return
@@ -71,12 +71,12 @@ class ConfigurationForm {
         // Build request URI.
         $url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml';
 
-        $context = stream_context_create(array (
-            'http' => array (
+        $context = stream_context_create([
+            'http' => [
                 'method' => 'GET',
                 'user_agent' => (!empty($this->conf['useragent']) ? $this->conf['useragent'] : ini_get('user_agent'))
-            )
-        ));
+            ]
+        ]);
 
         // Try to connect to Solr server.
         $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
@@ -155,7 +155,7 @@ class ConfigurationForm {
             );
 
             // Check if user is configured properly.
-            if (count(array_diff(array ($groupUid), $resArray['usergroup'])) == 0
+            if (count(array_diff([$groupUid], $resArray['usergroup'])) == 0
                     && !$resArray['admin']
                     && $GLOBALS['TYPO3_DB']->sql_num_rows($result2) > 0) {
 
@@ -174,17 +174,18 @@ class ConfigurationForm {
                 if (!$checkOnly && $groupUid) {
 
                     // Keep exisiting values and add the new ones.
-                    $usergroup = array_unique(array_merge(array ($groupUid), $resArray['usergroup']));
+                    $usergroup = array_unique(array_merge([$groupUid], $resArray['usergroup']));
 
                     // Try to configure user.
-                    $data = array ();
-                    $data['be_users'][$resArray['uid']] = array (
+                    $data = [];
+
+                    $data['be_users'][$resArray['uid']] = [
                         'admin' => 0,
                         'usergroup' => implode(',', $usergroup),
                         $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['disabled'] => 0,
                         $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['starttime'] => 0,
                         $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['endtime'] => 0
-                    );
+                    ];
 
                     Helper::processDBasAdmin($data);
 
@@ -234,14 +235,15 @@ class ConfigurationForm {
                 // Try to create user.
                 $tempUid = uniqid('NEW');
 
-                $data = array ();
-                $data['be_users'][$tempUid] = array (
+                $data = [];
+
+                $data['be_users'][$tempUid] = [
                     'pid' => 0,
                     'username' => '_cli_dlf',
                     'password' => md5($tempUid),
                     'realName' => $GLOBALS['LANG']->getLL('cliUserGroup.usrRealName'),
                     'usergroup' => intval($groupUid)
-                );
+                ];
 
                 $substUid = Helper::processDBasAdmin($data);
 
@@ -300,7 +302,7 @@ class ConfigurationForm {
      *
      * @return	integer		UID of usergroup or 0 if something is wrong
      */
-    protected function checkCliGroup($checkOnly, $settings = array ()) {
+    protected function checkCliGroup($checkOnly, $settings = []) {
 
         // Set default return value.
         $grpUid = 0;
@@ -308,9 +310,9 @@ class ConfigurationForm {
         // Set default configuration for usergroup.
         if (empty($settings)) {
 
-            $settings = array (
-                'non_exclude_fields' => array (),
-                'tables_select' => array (
+            $settings = [
+                'non_exclude_fields' => [],
+                'tables_select' => [
                     'tx_dlf_documents',
                     'tx_dlf_collections',
                     'tx_dlf_libraries',
@@ -319,13 +321,13 @@ class ConfigurationForm {
                     'tx_dlf_metadataformat',
                     'tx_dlf_formats',
                     'tx_dlf_solrcores'
-                ),
-                'tables_modify' => array (
+                ],
+                'tables_modify' => [
                     'tx_dlf_documents',
                     'tx_dlf_collections',
                     'tx_dlf_libraries'
-                )
-            );
+                ]
+            ];
 
             // Set allowed exclude fields.
             foreach ($settings['tables_modify'] as $table) {
@@ -392,13 +394,13 @@ class ConfigurationForm {
                     $tables_modify = array_unique(array_merge($settings['tables_modify'], $resArray['tables_modify']));
 
                     // Try to configure usergroup.
-                    $data = array ();
-                    $data['be_groups'][$resArray['uid']] = array (
+                    $data = [];
+                    $data['be_groups'][$resArray['uid']] = [
                         'non_exclude_fields' => implode(',', $non_exclude_fields),
                         'tables_select' => implode(',', $tables_select),
                         'tables_modify' => implode(',', $tables_modify),
                         $GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
-                    );
+                    ];
 
                     Helper::processDBasAdmin($data);
 
@@ -448,15 +450,15 @@ class ConfigurationForm {
                 // Try to create usergroup.
                 $tempUid = uniqid('NEW');
 
-                $data = array ();
-                $data['be_groups'][$tempUid] = array (
+                $data = [];
+                $data['be_groups'][$tempUid] = [
                     'pid' => 0,
                     'title' => '_cli_dlf',
                     'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
                     'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
                     'tables_select' => implode(',', $settings['tables_select']),
                     'tables_modify' => implode(',', $settings['tables_modify'])
-                );
+                ];
 
                 $substUid = Helper::processDBasAdmin($data);
 
@@ -570,11 +572,11 @@ class ConfigurationForm {
      */
     public function checkMetadataFormats(&$params, &$pObj) {
 
-        $nsDefined = array (
+        $nsDefined = [
             'MODS' => FALSE,
             'TEIHDR' => FALSE,
             'ALTO' => FALSE
-        );
+        ];
 
         // Check existing format specifications.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -590,44 +592,44 @@ class ConfigurationForm {
         }
 
         // Build data array.
-        $data = array ();
+        $data = [];
 
         // Add MODS namespace.
         if (!$nsDefined['MODS']) {
 
-            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+            $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'MODS',
                 'root' => 'mods',
                 'namespace' => 'http://www.loc.gov/mods/v3',
                 'class' => 'Kitodo\\Dlf\\Formats\\Mods'
-            );
+            ];
 
         }
 
         // Add TEIHDR namespace.
         if (!$nsDefined['TEIHDR']) {
 
-            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+            $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'TEIHDR',
                 'root' => 'teiHeader',
                 'namespace' => 'http://www.tei-c.org/ns/1.0',
                 'class' => 'Kitodo\\Dlf\\Formats\\TeiHeader'
-            );
+            ];
 
         }
 
         // Add ALTO namespace.
         if (!$nsDefined['ALTO']) {
 
-            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+            $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'ALTO',
                 'root' => 'alto',
                 'namespace' => 'http://www.loc.gov/standards/alto/ns-v2#',
                 'class' => 'Kitodo\\Dlf\\Formats\\Alto'
-            );
+            ];
 
         }
 

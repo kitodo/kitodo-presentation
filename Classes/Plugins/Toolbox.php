@@ -48,10 +48,10 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->getTemplate();
 
         // Build data array.
-        $data = array (
+        $data = [
             'conf' => $this->conf,
             'piVars' => $this->piVars,
-        );
+        ];
 
         // Get template subpart for tools.
         $subpart = $this->cObj->getSubpart($this->template, '###TOOLS###');
@@ -67,7 +67,7 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             $cObj->data = $data;
 
-            $content .= $this->cObj->substituteMarkerArray($subpart, array ('###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])));
+            $content .= $this->cObj->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])]);
 
         }
 

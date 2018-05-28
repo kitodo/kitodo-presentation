@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-return array (
-    'ctrl' => array (
+return [
+    'ctrl' => [
         'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats',
         'label'     => 'type',
         'tstamp'    => 'tstamp',
@@ -22,55 +22,55 @@ return array (
         'rootLevel'	=> 1,
         'dividers2tabs' => 2,
         'searchFields' => 'type,class',
-    ),
-    'feInterface' => array (
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => '',
-    ),
-    'interface' => array (
+    ],
+    'interface' => [
         'showRecordFieldList' => 'type,class',
-    ),
-    'columns' => array (
-        'type' => array (
+    ],
+    'columns' => [
+        'type' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.type',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,unique',
-            ),
-        ),
-        'root' => array (
+            ],
+        ],
+        'root' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.root',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,unique',
-            ),
-        ),
-        'namespace' => array (
+            ],
+        ],
+        'namespace' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.namespace',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'required,nospace,unique',
-            ),
-        ),
-        'class' => array (
+            ],
+        ],
+        'class' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.class',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'nospace,alphanum_x,unique',
-            ),
-        ),
-    ),
-    'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'),
-    ),
-    'palettes' => array (
-        '1' => array ('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

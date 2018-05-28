@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-return array (
-    'ctrl' => array (
+return [
+    'ctrl' => [
         'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
@@ -24,53 +24,53 @@ return array (
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => '',
-    ),
-    'interface' => array (
+    ],
+    'interface' => [
         'showRecordFieldList' => 'label,doc_ids,session_id',
-    ),
-    'feInterface' => array (
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => '',
-    ),
-    'columns' => array (
-        'label' => array (
+    ],
+    'columns' => [
+        'label' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.label',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
-            ),
-        ),
-        'session_id' => array (
+            ],
+        ],
+        'session_id' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.sessionId',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'alphanum,unique',
-            ),
-        ),
-        'doc_ids' => array (
+            ],
+        ],
+        'doc_ids' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.docIds',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'alphanum_x',
-            ),
-        ),
-        'fe_user_id' => array (
+            ],
+        ],
+        'fe_user_id' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.feUser',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'eval' => 'int,unique',
-            ),
-        ),
-    ),
-    'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'),
-    ),
-    'palettes' => array (
-        '1' => array ('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

@@ -201,7 +201,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Get operator options.
         $operatorOptions = '';
 
-        foreach (array ('AND', 'OR', 'NOT') as $operator) {
+        foreach (['AND', 'OR', 'NOT'] as $operator) {
 
             $operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
 
@@ -220,11 +220,11 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
 
-            $markerArray = array (
+            $markerArray = [
                 '###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator tx-dlf-search-operator-'.$i.'" name="'.$this->prefixId.'[extOperator]['.$i.']">'.$operatorOptions.'</select>',
                 '###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field tx-dlf-search-field-'.$i.'" name="'.$this->prefixId.'[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
                 '###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query tx-dlf-search-query-'.$i.'" type="text" name="'.$this->prefixId.'[extQuery]['.$i.']" />'
-            );
+            ];
 
             $extendedSearch .= $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
 
@@ -260,7 +260,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Get facets from plugin configuration.
-        $facets = array ();
+        $facets = [];
 
         foreach (\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
 
@@ -269,7 +269,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Render facets menu.
-        $TSconfig = array ();
+        $TSconfig = [];
 
         $TSconfig['special'] = 'userfunction';
 
@@ -352,7 +352,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function getFacetsMenuEntry($field, $value, $count, $search, &$state) {
 
-        $entryArray = array ();
+        $entryArray = [];
 
         // Translate value.
         if ($field == 'owner_faceting') {
@@ -406,7 +406,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $entryArray['count'] = FALSE;
 
                 // Build link to delete selected facet
-                $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
+                $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['query' => $search['query'], 'fq' => $search['params']['fq']]);
 
                 $entryArray['title'] = sprintf($this->pi_getLL('resetFacet', ''), $entryArray['title']);
 
@@ -421,7 +421,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
+        $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['query' => $search['query'], 'fq' => $search['params']['fq']]);
 
         return $entryArray;
 
@@ -481,13 +481,13 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             $this->getTemplate();
 
             // Configure @action URL for form.
-            $linkConf = array (
+            $linkConf = [
                 'parameter' => $GLOBALS['TSFE']->id,
                 'forceAbsoluteUrl' => 1
-            );
+            ];
 
             // Fill markers.
-            $markerArray = array (
+            $markerArray = [
                 '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
                 '###LABEL_QUERY###' => (!empty($search['query']) ? $search['query'] : $this->pi_getLL('label.query')),
                 '###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
@@ -499,7 +499,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 '###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
                 '###FACETS_MENU###' => $this->addFacetsMenu(),
                 '###LOGICAL_PAGE###' => $this->addLogicalPage()
-            );
+            ];
 
             // Get additional fields for extended search.
             $extendedSearch = $this->addExtendedSearch();
@@ -532,9 +532,9 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
 
             // Prepare query parameters.
-            $params = array ();
+            $params = [];
 
-            $matches = array ();
+            $matches = [];
 
             // Set search query.
             if ((!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext'])) || preg_match('/fulltext:\((.*)\)/', $this->piVars['query'], $matches)) {
@@ -558,7 +558,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Add extended search query.
             if (!empty($this->piVars['extQuery']) && is_array($this->piVars['extQuery'])) {
 
-                $allowedOperators = array ('AND', 'OR', 'NOT');
+                $allowedOperators = ['AND', 'OR', 'NOT'];
 
                 $allowedFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
 
@@ -624,7 +624,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 $collIds = explode(',', $this->conf['collections']);
 
-                $collIndexNames = array ();
+                $collIndexNames = [];
 
                 foreach ($collIds as $collId) {
 
@@ -647,21 +647,21 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Perform search.
             $results = $solr->search($query);
 
-            $results->metadata = array (
+            $results->metadata = [
                 'label' => $label,
                 'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
                 'thumbnail' => '',
                 'searchString' => $this->piVars['query'],
                 'fulltextSearch' => (!empty($this->piVars['fulltext']) ? '1' : '0'),
                 'options' => $results->metadata['options']
-            );
+            ];
 
             $results->save();
 
             // Clean output buffer.
             \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
-            $additionalParams = array ();
+            $additionalParams = [];
 
             if (!empty($this->piVars['logicalPage'])) {
 
@@ -720,13 +720,13 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $this->init($conf);
 
-        $menuArray = array ();
+        $menuArray = [];
 
         // Set default value for facet search.
-        $search = array (
+        $search = [
             'query' => '*',
-            'params' => array ()
-        );
+            'params' => []
+        ];
 
         // Extract query and filter from last search.
         $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
@@ -750,14 +750,14 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             Helper::devLog('[Kitodo\\Dlf\\Plugins\\Search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', SYSLOG_SEVERITY_ERROR, $conf);
 
-            return array ();
+            return [];
 
         }
 
         // Set needed parameters for facet search.
         if (empty($search['params']['fq'])) {
 
-            $search['params']['fq'] = array ();
+            $search['params']['fq'] = [];
 
         }
 
@@ -774,7 +774,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Process results.
         foreach ($results->facet_counts->facet_fields as $field => $values) {
 
-            $entryArray = array ();
+            $entryArray = [];
 
             $entryArray['title'] = htmlspecialchars($this->conf['facets'][$field]);
 

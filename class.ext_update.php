@@ -61,7 +61,7 @@ class ext_update {
      */
     protected function getMetadataConfig() {
 
-        $uids = array ();
+        $uids = [];
 
         // Check if tx_dlf_metadata.xpath exists.
         $fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
@@ -217,7 +217,7 @@ class ext_update {
 
         if (!empty($metadataUids)) {
 
-            $data = array ();
+            $data = [];
 
             // Get all old metadata configuration records.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -234,14 +234,14 @@ class ext_update {
                 $newId = uniqid('NEW');
 
                 // Copy record to new table.
-                $data['tx_dlf_metadataformat'][$newId] = array (
+                $data['tx_dlf_metadataformat'][$newId] = [
                     'pid' => $resArray['pid'],
                     'cruser_id' => $resArray['cruser_id'],
                     'parent_id' => $resArray['uid'],
                     'encoded' => $resArray['encoded'],
                     'xpath' => $resArray['xpath'],
                     'xpath_sorting' => $resArray['xpath_sorting']
-                );
+                ];
 
                 // Add reference to old table.
                 $data['tx_dlf_metadata'][$resArray['uid']]['format'] = $newId;

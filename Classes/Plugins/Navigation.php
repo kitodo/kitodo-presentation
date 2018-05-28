@@ -42,11 +42,11 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
             if (count($list) > 0) {
 
                 // Build typolink configuration array.
-                $conf = array (
+                $conf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetPid'],
                     'title' => $this->pi_getLL('linkToList', '', TRUE)
-                );
+                ];
 
                 return $this->cObj->typoLink($this->pi_getLL('linkToList', '', TRUE), $conf);
 
@@ -68,10 +68,10 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function getPageSelector() {
 
         // Configure @action URL for form.
-        $linkConf = array (
+        $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1
-        );
+        ];
 
         $output = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
 
@@ -174,7 +174,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Link to first page.
         if ($this->piVars['page'] > 1) {
 
-            $markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', TRUE), array ('page' => 1));
+            $markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', TRUE), ['page' => 1]);
 
         } else {
 
@@ -185,7 +185,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Link back X pages.
         if ($this->piVars['page'] > $pageSteps) {
 
-            $markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps), array ('page' => $this->piVars['page'] - $pageSteps));
+            $markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps), ['page' => $this->piVars['page'] - $pageSteps]);
 
         } else {
 
@@ -196,7 +196,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Link to previous page.
         if ($this->piVars['page'] > (1 + $this->piVars['double'])) {
 
-            $markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', TRUE), array ('page' => $this->piVars['page'] - (1 + $this->piVars['double'])));
+            $markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', TRUE), ['page' => $this->piVars['page'] - (1 + $this->piVars['double'])]);
 
         } else {
 
@@ -207,7 +207,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Link to next page.
         if ($this->piVars['page'] < ($this->doc->numPages - $this->piVars['double'])) {
 
-            $markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', TRUE), array ('page' => $this->piVars['page'] + (1 + $this->piVars['double'])));
+            $markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', TRUE), ['page' => $this->piVars['page'] + (1 + $this->piVars['double'])]);
 
         } else {
 
@@ -218,7 +218,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Link forward X pages.
         if ($this->piVars['page'] <= ($this->doc->numPages - $pageSteps)) {
 
-            $markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps), array ('page' => $this->piVars['page'] + $pageSteps));
+            $markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps), ['page' => $this->piVars['page'] + $pageSteps]);
 
         } else {
 
@@ -229,7 +229,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Link to last page.
         if ($this->piVars['page'] < $this->doc->numPages) {
 
-            $markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', TRUE), array ('page' => $this->doc->numPages));
+            $markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', TRUE), ['page' => $this->doc->numPages]);
 
         } else {
 
@@ -242,17 +242,17 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             if (!$this->piVars['double']) {
 
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', TRUE), array ('double' => 1), 'class="tx-dlf-navigation-doubleOn"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', TRUE), ['double' => 1], 'class="tx-dlf-navigation-doubleOn"');
 
             } else {
 
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', TRUE), array ('double' => 0), 'class="tx-dlf-navigation-doubleOff"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', TRUE), ['double' => 0], 'class="tx-dlf-navigation-doubleOff"');
 
             }
 
             if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
 
-                $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', TRUE), array ('page' => $this->piVars['page'] + 1));
+                $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', TRUE), ['page' => $this->piVars['page'] + 1]);
 
             } else {
 
@@ -300,7 +300,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return	string		Typolink ready to output
      */
-    protected function makeLink($label, array $overrulePIvars = array (), $aTagParams = '') {
+    protected function makeLink($label, array $overrulePIvars = [], $aTagParams = '') {
 
         // Merge plugin variables with new set of values.
         if (is_array($this->piVars)) {
@@ -314,13 +314,13 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Build typolink configuration array.
-        $conf = array (
+        $conf = [
             'useCacheHash' => 1,
             'parameter' => $GLOBALS['TSFE']->id,
             'ATagParams' => $aTagParams,
             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE),
             'title' => $label
-        );
+        ];
 
         return $this->cObj->typoLink($label, $conf);
 

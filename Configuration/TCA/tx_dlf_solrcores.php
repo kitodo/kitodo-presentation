@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-return array (
-    'ctrl' => array (
+return [
+    'ctrl' => [
         'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
@@ -22,37 +22,37 @@ return array (
         'rootLevel'	=> -1,
         'dividers2tabs' => 2,
         'searchFields' => 'label,index_name',
-    ),
-    'feInterface' => array (
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => '',
-    ),
-    'interface' => array (
+    ],
+    'interface' => [
         'showRecordFieldList' => 'label,index_name',
-    ),
-    'columns' => array (
-        'label' => array (
+    ],
+    'columns' => [
+        'label' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.label',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
-            ),
-        ),
-        'index_name' => array (
+            ],
+        ],
+        'index_name' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.index_name',
-            'config' => array (
+            'config' => [
                 'type' => 'none',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'alphanum,unique',
-            ),
-        ),
-    ),
-    'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.tab1, label;;;;1-1-1, index_name;;;;2-2-2'),
-    ),
-    'palettes' => array (
-        '1' => array ('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.tab1, label;;;;1-1-1, index_name;;;;2-2-2'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

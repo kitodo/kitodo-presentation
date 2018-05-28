@@ -35,7 +35,7 @@ class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      *
      * @return	void
      */
-    public function main($content = '', $conf = array ()) {
+    public function main($content = '', $conf = []) {
 
         if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted') != '' && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '') {
 

@@ -36,7 +36,7 @@ class Helper {
      * @var	array
      * @access protected
      */
-    protected static $locallang = array ();
+    protected static $locallang = [];
 
     /**
      * Adds a message to the message queue.
@@ -291,7 +291,7 @@ class Helper {
 
         $hash = $salt.substr(sha1($salt.$string), -10);
 
-        return array ('encrypted' => $encrypted, 'hash' => $hash);
+        return ['encrypted' => $encrypted, 'hash' => $hash];
 
     }
 
@@ -372,7 +372,7 @@ class Helper {
      */
     public static function getHookObjects($scriptRelPath) {
 
-        $hookObjects = array ();
+        $hookObjects = [];
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey.'/'.$scriptRelPath]['hookClass'])) {
 
@@ -409,7 +409,7 @@ class Helper {
         // Sanitize input.
         $uid = max(intval($uid), 0);
 
-        if (!$uid || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'))) {
+        if (!$uid || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
 
             self::devLog('[Kitodo\\Dlf\\Common\\Helper->getIndexName('.$_uid.', '.$table.', '.$_pid.')] Invalid UID "'.$uid.'" or table "'.$table.'"', SYSLOG_SEVERITY_ERROR);
 
@@ -472,7 +472,7 @@ class Helper {
 
         $_pid = $pid;
 
-        if (!$index_name || !in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'))) {
+        if (!$index_name || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
 
             self::devLog('[Kitodo\\Dlf\\Common\\Helper->getIdFromIndexName('.$_index_name.', '.$table.', '.$_pid.')] Invalid UID "'.$index_name.'" or table "'.$table.'"', SYSLOG_SEVERITY_ERROR);
 
@@ -667,7 +667,7 @@ class Helper {
      */
     public static function getURN($base, $id) {
 
-        $concordance = array (
+        $concordance = [
             '0' => 1,
             '1' => 2,
             '2' => 3,
@@ -706,7 +706,7 @@ class Helper {
             'z' => 38,
             '-' => 39,
             ':' => 17,
-        );
+        ];
 
         $urn = strtolower($base.$id);
 
@@ -811,7 +811,7 @@ class Helper {
      *
      * @return	array		Array of substituted "NEW..." identifiers and their actual UIDs.
      */
-    public static function processDB(array $data = array (), array $cmd = array (), $reverseOrder = FALSE, $be_user = FALSE) {
+    public static function processDB(array $data = [], array $cmd = [], $reverseOrder = FALSE, $be_user = FALSE) {
 
         // Instantiate TYPO3 core engine.
         $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
@@ -869,7 +869,7 @@ class Helper {
      *
      * @return	array		Array of substituted "NEW..." identifiers and their actual UIDs.
      */
-    public static function processDBasAdmin(array $data = array (), array $cmd = array (), $reverseOrder = FALSE) {
+    public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = FALSE) {
 
         if (TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->isAdmin()) {
 
@@ -877,9 +877,9 @@ class Helper {
 
         } else {
 
-            self::devLog('[Kitodo\\Dlf\\Common\\Helper->processDBasAdmin([data->data], [data->cmd], ['.($reverseOrder ? 'TRUE' : 'FALSE').'])] Current backend user has no admin privileges', SYSLOG_SEVERITY_ERROR, array ('data' => $data, 'cmd' => $cmd));
+            self::devLog('[Kitodo\\Dlf\\Common\\Helper->processDBasAdmin([data->data], [data->cmd], ['.($reverseOrder ? 'TRUE' : 'FALSE').'])] Current backend user has no admin privileges', SYSLOG_SEVERITY_ERROR, ['data' => $data, 'cmd' => $cmd]);
 
-            return array ();
+            return [];
 
         }
 
@@ -1001,7 +1001,7 @@ class Helper {
         $_pid = $pid;
 
         // Load labels into static variable for future use.
-        static $labels = array ();
+        static $labels = [];
 
         // Sanitize input.
         $pid = max(intval($pid), 0);
@@ -1064,7 +1064,7 @@ class Helper {
         if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
 
             // Check if this table is allowed for translation.
-            if (in_array($table, array ('tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'))) {
+            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
 
                 $additionalWhere = ' AND sys_language_uid IN (-1,0)';
 

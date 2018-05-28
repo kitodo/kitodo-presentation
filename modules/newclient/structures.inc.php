@@ -11,353 +11,353 @@
 
 // Define structure elements.
 // @see http://dfg-viewer.de/en/structural-data-set/
-$structures = array (
-    'act' => array (
+$structures = [
+    'act' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'additional' => array (
+    ],
+    'additional' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'address' => array (
+    ],
+    'address' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'album' => array (
+    ],
+    'album' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'annotation' => array (
+    ],
+    'annotation' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'article' => array (
+    ],
+    'article' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'atlas' => array (
+    ],
+    'atlas' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'bachelor_thesis' => array (
+    ],
+    'bachelor_thesis' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'binding' => array (
+    ],
+    'binding' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'bookplate' => array (
+    ],
+    'bookplate' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'cartulary' => array (
+    ],
+    'cartulary' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'chapter' => array (
+    ],
+    'chapter' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'collation' => array (
+    ],
+    'collation' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'colophon' => array (
+    ],
+    'colophon' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'contained_work' => array (
+    ],
+    'contained_work' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'contents' => array (
+    ],
+    'contents' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'corrigenda' => array (
+    ],
+    'corrigenda' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'cover' => array (
+    ],
+    'cover' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'cover_front' => array (
+    ],
+    'cover_front' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'cover_back' => array (
+    ],
+    'cover_back' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'day' => array (
+    ],
+    'day' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'dedication' => array (
+    ],
+    'dedication' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'diploma_thesis' => array (
+    ],
+    'diploma_thesis' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'doctoral_thesis' => array (
+    ],
+    'doctoral_thesis' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'document' => array (
+    ],
+    'document' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'dossier' => array (
+    ],
+    'dossier' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'edge' => array (
+    ],
+    'edge' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'endsheet' => array (
+    ],
+    'endsheet' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'engraved_titlepage' => array (
+    ],
+    'engraved_titlepage' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'entry' => array (
+    ],
+    'entry' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'fascicle' => array (
+    ],
+    'fascicle' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'file' => array (
+    ],
+    'file' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'folder' => array (
+    ],
+    'folder' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'fragment' => array (
+    ],
+    'fragment' => [
         'toplevel' => 1,
         'oai_name' => ''
-    ),
-    'ground_plan' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'habilitation_thesis' => array (
+    ],
+    'ground_plan' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'illustration' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'image' => array (
+    ],
+    'habilitation_thesis' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'imprint' => array (
+    ],
+    'illustration' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'index' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'initial_decoration' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'issue' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'judgement' => array (
+    ],
+    'image' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'land_register' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'leaflet' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'lecture' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'letter' => array (
-        'toplevel' => 0,
-        'oai_name' => '',
-    ),
-    'magister_thesis' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'master_thesis' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'manuscript' => array (
-        'toplevel' => 1,
-        'oai_name' => ''
-    ),
-    'map' => array (
+    ],
+    'imprint' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'monograph' => array (
-        'toplevel' => 1,
-        'oai_name' => ''
-    ),
-    'month' => array (
+    ],
+    'index' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'multivolume_work' => array (
-        'toplevel' => 1,
-        'oai_name' => ''
-    ),
-    'musical_notation' => array (
+    ],
+    'initial_decoration' => [
         'toplevel' => 0,
         'oai_name' => ''
-    ),
-    'newspaper' => array (
-        'toplevel' => 1,
-        'oai_name' => ''
-    ),
-    'note' => array (
+    ],
+    'issue' => [
         'toplevel' => 0,
-        'oai_name' => '',
-    ),
-    'official_notification' => array (
+        'oai_name' => ''
+    ],
+    'judgement' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'ornament' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'paper' => array (
+    ],
+    'land_register' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'paste_down' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'periodical' => array (
-        'toplevel' => 1,
-        'oai_name' => ''
-    ),
-    'photograph' => array (
+    ],
+    'leaflet' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'plan' => array (
+    ],
+    'lecture' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'poster' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'preface' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'preprint' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'printed_archives' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'printers_mark' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'privileges' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'proceeding' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'provenance' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'register' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'report' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'research_paper' => array (
-        'toplevel' => 1,
-        'oai_name' => '',
-    ),
-    'scheme' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'seal' => array (
+    ],
+    'letter' => [
         'toplevel' => 0,
         'oai_name' => '',
-    ),
-    'section' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'spine' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'stamp' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'study' => array (
+    ],
+    'magister_thesis' => [
         'toplevel' => 1,
         'oai_name' => '',
-    ),
-    'table' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'text' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'title_page' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'verse' => array (
-        'toplevel' => 0,
-        'oai_name' => ''
-    ),
-    'volume' => array (
+    ],
+    'master_thesis' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'manuscript' => [
         'toplevel' => 1,
         'oai_name' => ''
-    ),
-    'year' => array (
+    ],
+    'map' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'monograph' => [
         'toplevel' => 1,
         'oai_name' => ''
-    )
-);
+    ],
+    'month' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'multivolume_work' => [
+        'toplevel' => 1,
+        'oai_name' => ''
+    ],
+    'musical_notation' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'newspaper' => [
+        'toplevel' => 1,
+        'oai_name' => ''
+    ],
+    'note' => [
+        'toplevel' => 0,
+        'oai_name' => '',
+    ],
+    'official_notification' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'ornament' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'paper' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'paste_down' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'periodical' => [
+        'toplevel' => 1,
+        'oai_name' => ''
+    ],
+    'photograph' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'plan' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'poster' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'preface' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'preprint' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'printed_archives' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'printers_mark' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'privileges' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'proceeding' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'provenance' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'register' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'report' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'research_paper' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'scheme' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'seal' => [
+        'toplevel' => 0,
+        'oai_name' => '',
+    ],
+    'section' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'spine' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'stamp' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'study' => [
+        'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'table' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'text' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'title_page' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'verse' => [
+        'toplevel' => 0,
+        'oai_name' => ''
+    ],
+    'volume' => [
+        'toplevel' => 1,
+        'oai_name' => ''
+    ],
+    'year' => [
+        'toplevel' => 1,
+        'oai_name' => ''
+    ]
+];

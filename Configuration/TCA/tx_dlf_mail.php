@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-return array (
-    'ctrl' => array (
+return [
+    'ctrl' => [
         'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail',
         'label'     => 'label',
         'sortby' => 'sorting',
@@ -19,46 +19,46 @@ return array (
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,name,mail',
-    ),
-    'interface' => array (
+    ],
+    'interface' => [
         'showRecordFieldList' => 'label,name,mail',
-    ),
-    'feInterface' => array (
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => '',
-    ),
-    'columns' => array (
-        'label' => array (
+    ],
+    'columns' => [
+        'label' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required',
-            ),
-        ),
-        'name' => array (
+            ],
+        ],
+        'name' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail.name',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => '',
-            ),
-        ),
-        'mail' => array (
+            ],
+        ],
+        'mail' => [
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail.mail',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'unique',
-            ),
-        ),
-    ),
-    'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_mail.tab1, label;;;;1-1-1, name;;;;2-2-2, mail;;;;2-2-2'),
-    ),
-    'palettes' => array (
-        '1' => array ('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_mail.tab1, label;;;;1-1-1, name;;;;2-2-2, mail;;;;2-2-2'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

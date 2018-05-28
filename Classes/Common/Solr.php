@@ -68,7 +68,7 @@ class Solr {
      * @var	array
      * @access protected
      */
-    protected $params = array ();
+    protected $params = [];
 
     /**
      * Is the search instantiated successfully?
@@ -81,10 +81,10 @@ class Solr {
     /**
      * This holds the singleton search objects with their core as array key
      *
-     * @var	array(\Kitodo\Dlf\Common\Solr)
+     * @var	array (\Kitodo\Dlf\Common\Solr)
      * @access protected
      */
-    protected static $registry = array ();
+    protected static $registry = [];
 
     /**
      * This holds the Solr service object
@@ -141,7 +141,7 @@ class Solr {
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
 
             // Get all indexed fields.
-            $fields = array ();
+            $fields = [];
 
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
@@ -256,7 +256,7 @@ class Solr {
      */
     public static function getSolrConnectionInfo($core = '') {
 
-        $solrInfo = array ();
+        $solrInfo = [];
 
         // Extract extension configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
@@ -337,9 +337,9 @@ class Solr {
      */
     public function search($query = '') {
 
-        $toplevel = array ();
+        $toplevel = [];
 
-        $checks = array ();
+        $checks = [];
 
         // Restrict the fields to the required ones
         $this->params['fl'] = 'uid,id,toplevel';
@@ -354,7 +354,7 @@ class Solr {
             ''
         );
 
-        $sorting = array ();
+        $sorting = [];
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
@@ -378,7 +378,7 @@ class Solr {
             if ($doc->toplevel == 1) {
 
                 // Prepare document's metadata for sorting.
-                $docSorting = array ();
+                $docSorting = [];
 
                 foreach ($sorting as $index_name => $solr_name) {
 
@@ -397,19 +397,19 @@ class Solr {
 
                 }
 
-                $toplevel[$doc->uid] = array (
+                $toplevel[$doc->uid] = [
                     'u' => $doc->uid,
                     'h' => '',
                     's' => $docSorting,
-                    'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : array ())
-                );
+                    'p' => (!empty($toplevel[$doc->uid]['p']) ? $toplevel[$doc->uid]['p'] : [])
+                ];
 
             } else {
 
-                $toplevel[$doc->uid]['p'][$doc->id] = array (
+                $toplevel[$doc->uid]['p'][$doc->id] = [
                     'u' => $doc->id,
                     'h' => (!empty($results->highlighting->{$doc->id}->fulltext) ? $results->highlighting->{$doc->id}->fulltext[0] : '')
-                );
+                ];
 
                 if (!in_array($doc->uid, $checks)) {
 
@@ -478,12 +478,12 @@ class Solr {
 
                     }
 
-                    $toplevel[$check] = array (
+                    $toplevel[$check] = [
                         'u' => $resArray['uid'],
                         'h' => '',
                         's' => $sorting,
                         'p' => $toplevel[$check]['p']
-                    );
+                    ];
 
                 } else {
 
@@ -504,10 +504,10 @@ class Solr {
         $list->add(array_values($toplevel));
 
         // Set metadata for search.
-        $list->metadata = array (
+        $list->metadata = [
             'label' => '',
             'description' => '',
-            'options' => array (
+            'options' => [
                 'source' => 'search',
                 'engine' => 'solr',
                 'select' => $query,
@@ -517,8 +517,8 @@ class Solr {
                 'pid' => $this->cPid,
                 'order' => 'relevance',
                 'order.asc' => TRUE,
-            )
-        );
+            ]
+        ];
 
         return $list;
 
@@ -533,11 +533,11 @@ class Solr {
      *
      * @return	array       The Apache Solr Documents that were fetched
      */
-    public function search_raw($query = '', $parameters = array ()) {
+    public function search_raw($query = '', $parameters = []) {
 
         $solr_response = $this->service->search((string) $query, 0, $this->limit, array_merge($this->params, $parameters));
 
-        $searchresult = array ();
+        $searchresult = [];
 
         foreach ($solr_response->response->docs as $doc) {
 

@@ -210,7 +210,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultMail) > 0) {
 
-            $mails = array ();
+            $mails = [];
 
             $mailForm = '<select name="tx_dlf[mail_action]">';
 
@@ -255,7 +255,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultPrinter) > 0) {
 
-            $printers = array ();
+            $printers = [];
 
             $printForm = '<select name="tx_dlf[print_action]">';
 
@@ -298,10 +298,10 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             $label = $this->pi_getLL('goBasket', '', TRUE);
 
-            $basketConf = array (
+            $basketConf = [
                 'parameter' => $this->conf['targetBasket'],
                 'title' => $label
-            );
+            ];
 
             $markerArray['###BASKET###'] = $this->cObj->typoLink($label, $basketConf);
 
@@ -414,7 +414,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($page != NULL || $_piVars['addToBasket'] == 'list') {
 
-            $documentItem = array (
+            $documentItem = [
                 'id' => intval($_piVars['id']),
                 'startpage' => intval($_piVars['startpage']),
                 'endpage' => intval($_piVars['endpage']),
@@ -423,7 +423,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'endX' => intval($_piVars['endX']),
                 'endY' => intval($_piVars['endY']),
                 'rotation' => intval($_piVars['rotation'])
-            );
+            ];
 
             // update basket
             if (!empty($basketData['doc_ids'])) {
@@ -434,7 +434,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                $items = array ();
+                $items = [];
 
             }
 
@@ -523,7 +523,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             }
 
-            $update = array ('doc_ids' => json_encode($items));
+            $update = ['doc_ids' => json_encode($items)];
 
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
 
@@ -531,7 +531,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        return array ('basketData' => $basketData, 'jsOutput' => $output);
+        return ['basketData' => $basketData, 'jsOutput' => $output];
 
     }
 
@@ -581,11 +581,11 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if (empty($items)) {
 
-            $update = array ('doc_ids' => '');
+            $update = ['doc_ids' => ''];
 
         } else {
 
-            $update = array ('doc_ids' => json_encode($items));
+            $update = ['doc_ids' => json_encode($items)];
 
         }
 
@@ -714,13 +714,13 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             }
 
-            return array (
+            return [
                 'downloadUrl' => $downloadUrl,
                 'downloadLink' => $downloadLink,
                 'pageNums'	=> $pageNums,
                 'urlParams' => $urlParams,
                 'record_id' => $document->recordId,
-            );
+            ];
 
         }
 
@@ -800,7 +800,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             ->setFrom($from)
 
             // Set the To addresses with an associative array
-            ->setTo(array ($mailData['mail'] => $mailData['name']))
+            ->setTo([$mailData['mail'] => $mailData['name']])
 
             ->setBody($body, 'text/html')
 
@@ -808,12 +808,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         ;
 
         // protocol
-        $insertArray = array (
+        $insertArray = [
             'pid' => $this->conf['pages'],
             'file_name' => $pdfUrl,
             'count_pages' => $numberOfPages,
             'crdate' => time(),
-        );
+        ];
 
         if ($GLOBALS["TSFE"]->loginUser) {
 
@@ -908,12 +908,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // protocol
-        $insertArray = array (
+        $insertArray = [
             'pid' => $this->conf['pages'],
             'file_name' => $pdfUrl,
             'count_pages' => $numberOfPages,
             'crdate' => time(),
-        );
+        ];
 
         if ($GLOBALS["TSFE"]->loginUser) {
 

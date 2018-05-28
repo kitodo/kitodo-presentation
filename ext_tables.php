@@ -19,7 +19,7 @@ if (TYPO3_MODE == 'BE') {
     // Add modules after "web".
     if (!isset($TBE_MODULES['txdlfmodules'])) {
 
-        $modules = array ();
+        $modules = [];
 
         foreach ($TBE_MODULES as $key => $val) {
 

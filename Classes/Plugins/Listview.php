@@ -34,7 +34,7 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access	private
      */
-    private $fieldwrap = array ();
+    private $fieldwrap = [];
 
     /**
      * This holds the list
@@ -50,7 +50,7 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access	protected
      */
-    protected $metadata = array ();
+    protected $metadata = [];
 
     /**
      * Array of sortable metadata
@@ -58,7 +58,7 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access	protected
      */
-    protected $sortables = array ();
+    protected $sortables = [];
 
     /**
      * Renders the page browser
@@ -85,7 +85,7 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
 
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), array ('pointer' => $this->piVars['pointer'] - 1), TRUE).$separator;
+            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1], TRUE).$separator;
 
         } else {
 
@@ -104,7 +104,7 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 if ($this->piVars['pointer'] != $i) {
 
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), array ('pointer' => $i), TRUE).$separator;
+                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i], TRUE).$separator;
 
                 } else {
 
@@ -129,7 +129,7 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Add link to next page.
         if ($this->piVars['pointer'] < $maxPages - 1) {
 
-            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), array ('pointer' => $this->piVars['pointer'] + 1), TRUE);
+            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), ['pointer' => $this->piVars['pointer'] + 1], TRUE);
 
         } else {
 
@@ -204,10 +204,10 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                     $imgAlt = htmlspecialchars($value);
 
-                    $additionalParams = array (
+                    $additionalParams = [
                         'id' => $this->list[$number]['uid'],
                         'page' => $this->list[$number]['page']
-                    );
+                    ];
 
                     if (!empty($this->piVars['logicalPage'])) {
 
@@ -215,11 +215,11 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                     }
 
-                    $conf = array (
+                    $conf = [
                         'useCacheHash' => 1,
                         'parameter' => $this->conf['targetPid'],
                         'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-                    );
+                    ];
 
                     $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
 
@@ -291,13 +291,13 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
 
-            $additionalParams = array ('id' => $this->list[$number]['uid'], 'startpage' => $this->list[$number]['page'], 'addToBasket' => 'list');
+            $additionalParams = ['id' => $this->list[$number]['uid'], 'startpage' => $this->list[$number]['page'], 'addToBasket' => 'list'];
 
-            $conf = array (
+            $conf = [
                 'useCacheHash' => 1,
                 'parameter' => $this->conf['targetBasket'],
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-            );
+            ];
 
             $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
 
@@ -353,14 +353,14 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
         $prefix = str_replace('_', '-', get_class($this));
 
         // Configure @action URL for form.
-        $linkConf = array (
+        $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1
-        );
+        ];
 
         if (!empty($this->piVars['logicalPage'])) {
 
-            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, array ('logicalPage' => $this->piVars['logicalPage']), '', TRUE, FALSE);
+            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['logicalPage' => $this->piVars['logicalPage']], '', TRUE, FALSE);
 
         }
 
@@ -475,11 +475,11 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                         $imgAlt = htmlspecialchars($value);
 
-                        $additionalParams = array (
+                        $additionalParams = [
                             'id' => $subpart['uid'],
                             'page' => $subpart['page'],
                             'highlight_word' => $highlight_word
-                        );
+                        ];
 
                         if (!empty($this->piVars['logicalPage'])) {
 
@@ -487,12 +487,12 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                         }
 
-                        $conf = array (
+                        $conf = [
                             // we don't want cHash in case of search parameters
                             'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
                             'parameter' => $this->conf['targetPid'],
                             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-                        );
+                        ];
 
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
 
@@ -567,13 +567,13 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
 
-                $additionalParams = array ('id' => $this->list[$number]['uid'], 'startpage' => $subpart['page'], 'endpage' => $subpart['page'], 'logId' => $subpart['sid'], 'addToBasket' => 'subentry');
+                $additionalParams = ['id' => $this->list[$number]['uid'], 'startpage' => $subpart['page'], 'endpage' => $subpart['page'], 'logId' => $subpart['sid'], 'addToBasket' => 'subentry'];
 
-                $conf = array (
+                $conf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetBasket'],
                     'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-                );
+                ];
 
                 $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
 
@@ -611,10 +611,10 @@ class Listview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             if ($resArray['is_listed']) {
 
-                $this->metadata[$resArray['index_name']] = array (
+                $this->metadata[$resArray['index_name']] = [
                     'wrap' => $resArray['wrap'],
                     'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
-                );
+                ];
 
             }
 
