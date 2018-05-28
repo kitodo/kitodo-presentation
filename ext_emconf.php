@@ -35,11 +35,7 @@ $EM_CONF[$_EXTKEY] = [
         ],
         'classmap' => [
             'modules/indexing/index.php',
-            'modules/newclient/index.php',
-            'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php',
-            'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php',
-            'plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php',
-            'plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php'
+            'modules/newclient/index.php'
         ]
     ]
 ];

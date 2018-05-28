@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Tools;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,17 +12,17 @@
  */
 
 /**
- * Tool 'Fulltext selection' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
+ * Tool 'Fulltext selection' for the plugin 'Toolbox' of the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_toolsFulltext extends \Kitodo\Dlf\Common\AbstractPlugin {
+class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php';
+    public $scriptRelPath = 'Classes/Tools/FulltextTool.php';
 
     /**
      * The main method of the PlugIn
@@ -74,15 +76,7 @@ class tx_dlf_toolsFulltext extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['toolTemplateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/fulltext/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
 

@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Tools;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,16 +14,16 @@
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Tool 'Image Download' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
+ * Tool 'Image Download' for the plugin 'Toolbox' of the 'dlf' extension.
  *
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_toolsImagedownload extends \Kitodo\Dlf\Common\AbstractPlugin {
+class ImagedownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php';
+    public $scriptRelPath = 'Classes/Tools/ImagedownloadTool.php';
 
     /**
      * The main method of the PlugIn
@@ -75,15 +77,7 @@ class tx_dlf_toolsImagedownload extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['toolTemplateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/imagedownload/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Get left or single page download.
         $markerArray['###IMAGE_LEFT###'] = $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'], $this->pi_getLL('leftPage', '')) : $this->getImage($this->piVars['page'], $this->pi_getLL('singlePage', ''));
@@ -125,12 +119,24 @@ class tx_dlf_toolsImagedownload extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
 
                 switch ($image['mimetype']) {
-                    case 'image/jpeg': 	$mimetypeLabel = '(JPG)';
+
+                    case 'image/jpeg':
+
+                    	$mimetypeLabel = '(JPG)';
+
                         break;
-                    case 'image/tiff': 	$mimetypeLabel = '(TIFF)';
-                            break;
-                    default:	$mimetypeLabel = '';
+
+                    case 'image/tiff':
+
+                        $mimetypeLabel = '(TIFF)';
+
+                        break;
+
+                    default:
+                    	$mimetypeLabel = '('.$image['mimetype'].')';
+
                 }
+
                 $linkConf = array (
                     'parameter' => $image['url'],
                     'title' => $label.' '.$mimetypeLabel,
@@ -143,7 +149,7 @@ class tx_dlf_toolsImagedownload extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             } else {
 
-                Helper::devLog('[tx_dlf_toolsImagedownload->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', SYSLOG_SEVERITY_WARNING);
+                Helper::devLog('[Kitodo\\Dlf\\Tools\\ImagedownloadTool->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', SYSLOG_SEVERITY_WARNING);
 
             }
 

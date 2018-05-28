@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Tools;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,16 +12,16 @@
  */
 
 /**
- * Tool 'Image manipulation' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
+ * Tool 'Image manipulation' for the plugin 'Toolbox' of the 'dlf' extension.
  *
  * @author	Jacob Mendt <Jacob.Mendt@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_toolsImagemanipulation extends \Kitodo\Dlf\Common\AbstractPlugin {
+class ImagemanipulationTools extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php';
+    public $scriptRelPath = 'Classes/Tools/ImagemanipulationTool.php';
 
     /**
      * The main method of the PlugIn
@@ -42,15 +44,7 @@ class tx_dlf_toolsImagemanipulation extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->loadDocument();
 
         // Load template file.
-        if (!empty($this->conf['toolTemplateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/imagemanipulation/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:'
             .$this->pi_getLL('imagemanipulation-on', '', TRUE).';imagemanipulation-off:'

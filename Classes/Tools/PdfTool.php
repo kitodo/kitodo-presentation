@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Tools;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,17 +14,17 @@
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Tool 'PDF Download' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
+ * Tool 'PDF Download' for the plugin 'Toolbox' of the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_toolsPdf extends \Kitodo\Dlf\Common\AbstractPlugin {
+class PdfTool extends \Kitodo\Dlf\Common\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php';
+    public $scriptRelPath = 'Classes/Tools/PdfTool.php';
 
     /**
      * The main method of the PlugIn
@@ -76,15 +78,7 @@ class tx_dlf_toolsPdf extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        if (!empty($this->conf['toolTemplateFile'])) {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
-
-        } else {
-
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/pdf/template.tmpl'), '###TEMPLATE###');
-
-        }
+        $this->getTemplate();
 
         // Get single page downloads.
         $markerArray['###PAGE###'] = $this->getPageLink();
@@ -108,47 +102,66 @@ class tx_dlf_toolsPdf extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function getPageLink() {
 
         $page1Link = '';
+
         $page2Link = '';
+
         $pageNumber = $this->piVars['page'];
 
         // Get image link.
         $details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]];
+
         $file = $details['files'][$this->conf['fileGrpDownload']];
+
         if (!empty($file)) {
+
             $page1Link = $this->doc->getFileLocation($file);
+
         }
 
         // Get second page, too, if double page view is activated.
         if ($this->piVars['double'] && $pageNumber < $this->doc->numPages) {
+
             $details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]];
+
             $file = $details['files'][$this->conf['fileGrpDownload']];
+
             if (!empty($file)) {
+
                 $page2Link = $this->doc->getFileLocation($file);
+
             }
+
         }
 
         if (empty($page1Link) && empty($page2Link)) {
 
-            Helper::devLog('[tx_dlf_toolsPdf->getPageLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Tools\\PdfTool->getPageLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', SYSLOG_SEVERITY_WARNING);
 
         }
 
         // Wrap URLs with HTML.
         if (!empty($page1Link)) {
+
             if ($this->piVars['double']) {
-                $page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''),
-                    array ('parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')));
+
+                $page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), array ('parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')));
+
             } else {
-                $page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''),
-                    array ('parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')));
+
+                $page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''), array ('parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')));
+
             }
+
         }
+
         if (!empty($page2Link)) {
-            $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''),
-                array ('parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')));
+
+            $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''), array ('parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')));
+
         }
 
         return $page1Link.$page2Link;
+
     }
 
     /**
@@ -186,7 +199,7 @@ class tx_dlf_toolsPdf extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         } else {
 
-            Helper::devLog('[tx_dlf_toolsPdf->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('[Kitodo\\Dlf\\Tools\\PdfTool->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', SYSLOG_SEVERITY_WARNING);
 
         }
 
