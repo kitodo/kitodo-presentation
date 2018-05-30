@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -9,24 +11,18 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
- * eID-script helper to fetch data from Javascript via server
+ * eID to fetch data from server for the plugin 'Pageview' of the 'dlf' extension.
  *
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @copyright	Copyright (c) 2015, Alexander Bigga, SLUB Dresden
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+class PageviewGeturlEid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
-    /**
-     *
-     */
-    public $cObj;
-
+    public $scriptRelPath = 'Classes/Plugins/PageviewGeturlEid.php';
 
     /**
      * The main method of the eID-Script
@@ -40,22 +36,16 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      */
     public function main($content = '', $conf = []) {
 
-        $this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
 
-        $this->extKey = 'dlf';
+        $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('header'), 0, 2, 0);
 
-        $this->scriptRelPath = 'plugins/pageview/class.tx_dlf_geturl_eid.php';
-
-        $url = GeneralUtility::_GP('url');
-
-        $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(GeneralUtility::_GP('header'), 0, 2, 0);
-
-        // first we fetch header separately
-        $fetchedHeader = GeneralUtility::getUrl($url, 2);
+        // First we fetch header separately.
+        $fetchedHeader = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, 2);
 
         if ($includeHeader == 0) {
 
-            $fetchedData = GeneralUtility::getUrl($url, $includeHeader);
+            $fetchedData = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, $includeHeader);
 
         } else {
 
@@ -63,20 +53,28 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
         }
 
-        // add some self calculated header tags
+        // Add some self calculated header tags.
         header('Last-Modified: '.gmdate("D, d M Y H:i:s").'GMT');
+
         header('Cache-Control: max-age=3600, must-revalidate');
+
         header('Content-Length: '.strlen($fetchedData));
+
         $fi = finfo_open(FILEINFO_MIME);
+
         header('Content-Type: '.finfo_buffer($fi, $fetchedData));
 
-        // take some tags from request header and overwrite in case already set
-        $fetchedHeader = explode("\n", GeneralUtility::getUrl($url, 2));
+        // Overwrite tags in case already set
+        $fetchedHeader = explode("\n", \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, 2));
 
         foreach ($fetchedHeader as $headerline) {
+
             if (stripos($headerline, 'Last-Modified:') !== FALSE) {
+
                 header($headerline);
+
             }
+
         }
 
         echo $fetchedData;
@@ -85,6 +83,6 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 }
 
-$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_geturl_eid');
+$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PageviewGeturlEid::class);
 
 $cObj->main();

@@ -572,7 +572,7 @@ dlfUtils.isCorsEnabled = function (imageObjs) {
                 ? dlfViewerSource.IIP.getMetdadataURL(imageObj.url)
                 : imageObj.url;
 
-        url = window.location.origin + window.location.pathname + '?eID=tx_dlf_geturl_eid&url=' + encodeURIComponent(url) + '&header=2';
+        url = window.location.origin + window.location.pathname + '?eID=tx_dlf_pageview_geturl&url=' + encodeURIComponent(url) + '&header=2';
 
         $.ajax({
             url: url,

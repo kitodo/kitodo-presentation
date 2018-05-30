@@ -68,21 +68,21 @@ class Pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3-dlf.js"></script>';
 
         // Add viewer library.
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_utils.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/Utility.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/OL3.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3_styles.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/OL3Styles.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3_source.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/OL3Source.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_altoparser.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/AltoParser.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/ImagemanipulationControl.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/FulltextControl.js"></script>';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Pageview/Pageview.js"></script>';
 
         // Add viewer configuration.
         $output[] = '
@@ -254,7 +254,7 @@ class Pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
                     // Configure @action URL for form.
                     $linkConf = [
                         'parameter' => $GLOBALS['TSFE']->id,
-                        'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($image['url']),
+                        'additionalParams' => '&eID=tx_dlf_pageview_geturl&url='.urlencode($image['url']),
                     ];
 
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
@@ -297,7 +297,7 @@ class Pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Configure @action URL for form.
             $linkConf = [
                 'parameter' => $GLOBALS['TSFE']->id,
-                'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($fulltext['url']),
+                'additionalParams' => '&eID=tx_dlf_pageview_geturl&url='.urlencode($fulltext['url']),
             ];
 
             $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);

@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugins;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,17 +15,17 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 
 /**
- * Search suggestions for the plugin 'DLF: Search' of the 'dlf' extension.
+ * eID for search suggestions for the plugin 'Search' of the 'dlf' extension.
  *
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+class SearchSuggestEid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
-    public $scriptRelPath = 'plugins/search/class.tx_dlf_search_suggest.php';
+    public $scriptRelPath = 'Classes/Plugins/SearchSuggestEid.php';
 
     /**
      * The main method of the PlugIn
@@ -63,6 +65,6 @@ class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 }
 
-$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_search_suggest');
+$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(SearchSuggestEid::class);
 
 $cObj->main();
