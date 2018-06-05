@@ -11,7 +11,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_formats',
         'label'     => 'type',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -31,7 +31,7 @@ return [
     ],
     'columns' => [
         'type' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.type',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_formats.type',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -40,7 +40,7 @@ return [
             ],
         ],
         'root' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.root',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_formats.root',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -49,7 +49,7 @@ return [
             ],
         ],
         'namespace' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.namespace',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_formats.namespace',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -58,7 +58,7 @@ return [
             ],
         ],
         'class' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.class',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_formats.class',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -68,7 +68,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

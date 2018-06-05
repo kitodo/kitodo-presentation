@@ -688,7 +688,7 @@ class ConfigurationForm {
     public function __construct() {
 
         // Load localization file.
-        $GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
+        $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/Common.xml');
 
         // Get current configuration.
         $this->conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));

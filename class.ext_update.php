@@ -106,7 +106,7 @@ class ext_update {
     public function main() {
 
         // Load localization file.
-        $GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
+        $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/Common.xml');
 
         // Update the metadata configuration.
         if (count($this->getMetadataConfig())) {

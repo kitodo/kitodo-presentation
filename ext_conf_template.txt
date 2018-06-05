@@ -1,53 +1,53 @@
-# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkMetadataFormats]; label=LLL:EXT:dlf/locallang.xml:config.metadataFormats
+# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkMetadataFormats]; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.metadataFormats
 metadataFormats = 0
 
-# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkCliUserGroup]; label=LLL:EXT:dlf/locallang.xml:config.cliUserGroup
+# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkCliUserGroup]; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.cliUserGroup
 cliUserGroup = 0
 
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.makeCliUserGroup
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.makeCliUserGroup
 makeCliUserGroup = 0
 
-# cat=Basic; type=string; label=LLL:EXT:dlf/locallang.xml:config.useragent
+# cat=Basic; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.useragent
 useragent = Kitodo.Presentation
 
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.caching
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.caching
 caching = 0
 
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.publishNewCollections
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.publishNewCollections
 publishNewCollections = 1
 
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/locallang.xml:config.unhideOnIndex
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.unhideOnIndex
 unhideOnIndex = 0
 
-# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrps
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.fileGrps
 fileGrps = MIN,DEFAULT,MAX
 
-# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpThumbs
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.fileGrpThumbs
 fileGrpThumbs = THUMBS
 
-# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpDownload
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.fileGrpDownload
 fileGrpDownload = DOWNLOAD
 
-# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpFulltext
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.fileGrpFulltext
 fileGrpFulltext = FULLTEXT
 
-# cat=Files; type=string; label=LLL:EXT:dlf/locallang.xml:config.fileGrpAudio
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.fileGrpAudio
 fileGrpAudio = AUDIO
 
-# cat=Solr; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkSolrConnection]; label=LLL:EXT:dlf/locallang.xml:config.solrConnect
+# cat=Solr; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkSolrConnection]; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.solrConnect
 solrConnect = 0
 
-# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrHost
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.solrHost
 solrHost = localhost
 
-# cat=Solr; type=int[0-65535]; label=LLL:EXT:dlf/locallang.xml:config.solrPort
+# cat=Solr; type=int[0-65535]; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.solrPort
 solrPort = 8180
 
-# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrPath
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.solrPath
 solrPath = /solr/
 
-# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrUser
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.solrUser
 solrUser =
 
-# cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrPass
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Common.xml:config.solrPass
 solrPass =

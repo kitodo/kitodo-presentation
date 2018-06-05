@@ -11,7 +11,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_basket',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'fe_user_id' => 'fe_user_id',
@@ -33,7 +33,7 @@ return [
     ],
     'columns' => [
         'label' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_basket.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -42,7 +42,7 @@ return [
             ],
         ],
         'session_id' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.sessionId',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_basket.sessionId',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -51,7 +51,7 @@ return [
             ],
         ],
         'doc_ids' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.docIds',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_basket.docIds',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -60,7 +60,7 @@ return [
             ],
         ],
         'fe_user_id' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.feUser',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_basket.feUser',
             'config' => [
                 'type' => 'input',
                 'eval' => 'int,unique',
@@ -68,7 +68,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

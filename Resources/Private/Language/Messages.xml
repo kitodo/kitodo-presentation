@@ -11,7 +11,7 @@
 <T3locallang>
 	<meta type="array">
 		<type>module</type>
-		<description>Common language labels for extension 'dlf'</description>
+		<description>Messages for extension 'dlf'</description>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">

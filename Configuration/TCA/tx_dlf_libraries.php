@@ -11,7 +11,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -69,7 +69,7 @@ return [
         ],
         'label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -79,7 +79,7 @@ return [
         ],
         'index_name' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.index_name',
             'config' => [
                 'type' => 'none',
                 'size' => 30,
@@ -89,7 +89,7 @@ return [
         ],
         'website' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.website',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.website',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -99,7 +99,7 @@ return [
         ],
         'contact' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.contact',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.contact',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -109,7 +109,7 @@ return [
         ],
         'image' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.image',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.image',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'file',
@@ -124,7 +124,7 @@ return [
         ],
         'oai_label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.oai_label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.oai_label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -133,7 +133,7 @@ return [
         ],
         'oai_base' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.oai_base',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.oai_base',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -145,7 +145,7 @@ return [
         ],
         'opac_label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.opac_label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.opac_label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -154,7 +154,7 @@ return [
         ],
         'opac_base' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.opac_base',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.opac_base',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -164,7 +164,7 @@ return [
         ],
         'union_label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.union_label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.union_label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -173,7 +173,7 @@ return [
         ],
         'union_base' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.union_base',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.union_base',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -183,7 +183,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.tab1, label,--palette--;;1;;1-1-1, website;;;;2-2-2, contact, image;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_libraries.tab3, oai_label,--palette--;;2;;1-1-1, opac_label,--palette--;;3;;2-2-2, union_label,--palette--;;4;;3-3-3'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.tab1, label,--palette--;;1;;1-1-1, website;;;;2-2-2, contact, image;;;;3-3-3, --div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_libraries.tab3, oai_label,--palette--;;2;;1-1-1, opac_label,--palette--;;3;;2-2-2, union_label,--palette--;;4;;3-3-3'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'index_name', 'canNotCollapse' => 1],

@@ -11,7 +11,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_actionlog',
         'label'     => 'label',
         'crdate'    => 'crdate',
         'cruser_id' => 'user_id',
@@ -32,7 +32,7 @@ return [
     ],
     'columns' => [
         'label' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_actionlog.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -41,7 +41,7 @@ return [
             ],
         ],
         'user_id' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.user_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_actionlog.user_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -50,7 +50,7 @@ return [
             ],
         ],
         'file_name' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.file_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_actionlog.file_name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -59,7 +59,7 @@ return [
             ],
         ],
         'count_pages' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.count_pages',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_actionlog.count_pages',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -68,7 +68,7 @@ return [
             ],
         ],
         'name' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_actionlog.name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -78,7 +78,7 @@ return [
         ]
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, crdate;;;;2-2-2, count_pages;;;;2-2-2'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, crdate;;;;2-2-2, count_pages;;;;2-2-2'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

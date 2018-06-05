@@ -606,7 +606,7 @@ class Helper {
         // Load common locallang file.
         if (empty(self::$locallang)) {
 
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Classes/Common/locallang.xml');
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/Messages.xml');
 
             if (TYPO3_MODE === 'FE') {
 

@@ -11,7 +11,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_metadataformat',
         'label'     => 'encoded',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -38,7 +38,7 @@ return [
         ],
         'encoded' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.encoded',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_metadataformat.encoded',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -51,7 +51,7 @@ return [
         ],
         'xpath' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.xpath',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_metadataformat.xpath',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -61,7 +61,7 @@ return [
         ],
         'xpath_sorting' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.xpath_sorting',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_metadataformat.xpath_sorting',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -71,7 +71,7 @@ return [
         ],
         'mandatory' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.mandatory',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_metadataformat.mandatory',
             'config' => [
                 'type' => 'check',
                 'default' => 0,
@@ -79,7 +79,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_metadataformat.tab1, encoded;;;;1-1-1, xpath;;;;2-2-2, xpath_sorting, mandatory;;;;3-3-3'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_metadataformat.tab1, encoded;;;;1-1-1, xpath;;;;2-2-2, xpath_sorting, mandatory;;;;3-3-3'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

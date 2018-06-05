@@ -11,7 +11,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents',
         'label'     => 'title',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -89,7 +89,7 @@ return [
         ],
         'prod_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.prod_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.prod_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -99,7 +99,7 @@ return [
         ],
         'location' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.location',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.location',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -109,7 +109,7 @@ return [
         ],
         'record_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.record_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.record_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -119,7 +119,7 @@ return [
         ],
         'opac_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.opac_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.opac_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -129,7 +129,7 @@ return [
         ],
         'union_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.union_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.union_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -139,7 +139,7 @@ return [
         ],
         'urn' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.urn',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.urn',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -149,7 +149,7 @@ return [
         ],
         'purl' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.purl',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.purl',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -159,7 +159,7 @@ return [
         ],
         'title' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.title',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.title',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -169,7 +169,7 @@ return [
         ],
         'title_sorting' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.title_sorting',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.title_sorting',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -179,7 +179,7 @@ return [
         ],
         'author' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.author',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.author',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -189,7 +189,7 @@ return [
         ],
         'year' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.year',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.year',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -199,7 +199,7 @@ return [
         ],
         'place' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.place',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.place',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -209,7 +209,7 @@ return [
         ],
         'thumbnail' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.thumbnail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.thumbnail',
             'config' => [
                 'type' => 'user',
                 'userFunc' => 'EXT:dlf/Classes/Hooks/FormEngine.php:FormEngine->displayThumbnail',
@@ -227,7 +227,7 @@ return [
         ],
         'structure' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.structure',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.structure',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -239,7 +239,7 @@ return [
             ],
         ],
         'partof' => [
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.partof',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.partof',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
@@ -256,7 +256,7 @@ return [
         ],
         'volume' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.volume',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.volume',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -266,7 +266,7 @@ return [
         ],
         'volume_sorting' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.volume_sorting',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.volume_sorting',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -276,7 +276,7 @@ return [
         ],
         'collections' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.collections',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.collections',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
@@ -294,7 +294,7 @@ return [
         ],
         'owner' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.owner',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.owner',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -312,12 +312,12 @@ return [
         ],
         'status' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.status',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.status',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/locallang.xml:tx_dlf_documents.status.default', 0],
+                    ['LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.status.default', 0],
                 ],
                 'size' => 1,
                 'minitems' => 1,
@@ -327,7 +327,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab1, title,--palette--;;1;;1-1-1, author, year, place, structure,--palette--;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_documents.tab3, hidden,--palette--;;3;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.tab1, title,--palette--;;1;;1-1-1, author, year, place, structure,--palette--;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/Resources/Private/Language/Common.xml:tx_dlf_documents.tab3, hidden,--palette--;;3;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'title_sorting', 'canNotCollapse' => 1],
