@@ -22,12 +22,12 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
-    'plugins/search/',
+    'Configuraton/TypoScript/Search/',
     'Search Facets'
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
-    'plugins/toc/',
+    'Configuration/TypoScript/Toc/',
     'Table of Contents'
 );
