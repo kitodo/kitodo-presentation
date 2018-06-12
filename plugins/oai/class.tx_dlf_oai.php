@@ -921,6 +921,9 @@ class tx_dlf_oai extends tx_dlf_plugin {
             $solr_query .= ' NOT '.$required.':""';
         }
 
+        // toplevel="true" is always required
+        $solr_query .= ' AND toplevel:"true"';
+
         $from = "*";
         // Check "from" for valid value.
         if (!empty($this->piVars['from'])) {
