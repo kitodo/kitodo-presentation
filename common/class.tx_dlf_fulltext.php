@@ -29,6 +29,6 @@ interface tx_dlf_fulltext {
      *
      * @return	string			The raw unformatted fulltext
      */
-    public static function getRawText(SimpleXMLElement $xml);
+    public function getRawText(SimpleXMLElement $xml);
 
 }

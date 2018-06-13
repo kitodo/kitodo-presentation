@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array (
     'category' => 'fe',
     'author' => 'Kitodo. Key to digital objects e.V.',
     'author_email' => 'contact@kitodo.org',
-    'author_company' => '<br /><a href="http://www.kitodo.org/" target="_blank">Kitodo.org</a><br /><a href="https://github.com/kitodo" target="_blank">Kitodo on GitHub</a>',
+    'author_company' => 'http://www.kitodo.org/',
     'shy' => '',
     'priority' => '',
     'module' => '',

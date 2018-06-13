@@ -795,7 +795,7 @@ class tx_dlf_indexing {
 
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
 
-            $solrDoc->setField('fulltext', tx_dlf_alto::getRawText($xml));
+            $solrDoc->setField('fulltext', $doc->getRawText($physicalUnit['id']));
 
             // Add faceting information to physical sub-elements if applicable.
             foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
