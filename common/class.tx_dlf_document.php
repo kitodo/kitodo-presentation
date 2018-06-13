@@ -910,6 +910,32 @@ final class tx_dlf_document {
 
             }
 
+            // Add collections from database to toplevel element if document is already saved.
+            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid) && $id == $this->_getToplevelId()) {
+
+                $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+                    'tx_dlf_collections.index_name AS index_name',
+                    'tx_dlf_documents',
+                    'tx_dlf_relations',
+                    'tx_dlf_collections',
+                    'AND tx_dlf_collections.pid='.intval($cPid).' AND tx_dlf_documents.uid='.intval($this->uid).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').' AND tx_dlf_collections.sys_language_uid IN (-1,0)'.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                    'tx_dlf_collections.index_name',
+                    '',
+                    ''
+                );
+
+                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+                    if (!in_array($resArray['index_name'], $metadata['collection'])) {
+
+                        $metadata['collection'][] = $resArray['index_name'];
+
+                    }
+
+                }
+
+            }
+
         } else {
 
             // There is no dmdSec for this structure node.
@@ -1500,9 +1526,7 @@ final class tx_dlf_document {
             ''
         );
 
-        for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
-
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
             $collUid[$resArray['index_name']] = $resArray['uid'];
 
@@ -1524,7 +1548,7 @@ final class tx_dlf_document {
                     'pid' => $pid,
                     'label' => $collection,
                     'index_name' => $collection,
-                    'oai_name' => (!empty($conf['publishNewCollections']) ? $collection : ''),
+                    'oai_name' => (!empty($conf['publishNewCollections']) ? tx_dlf_helper::getCleanString($collection) : ''),
                     'description' => '',
                     'documents' => 0,
                     'owner' => 0,
@@ -1554,24 +1578,6 @@ final class tx_dlf_document {
                 }
 
             }
-
-        }
-
-        // Preserve user-defined collections.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-            'tx_dlf_collections.uid AS uid',
-            'tx_dlf_documents',
-            'tx_dlf_relations',
-            'tx_dlf_collections',
-            'AND tx_dlf_documents.pid='.intval($pid).' AND tx_dlf_collections.pid='.intval($pid).' AND tx_dlf_documents.uid='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->uid, 'tx_dlf_documents').' AND NOT (tx_dlf_collections.cruser_id='.intval($be_user).' AND tx_dlf_collections.fe_cruser_id=0) AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations'),
-            '',
-            '',
-            ''
-        );
-
-        for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
-
-            list ($collections[]) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
         }
 
