@@ -977,6 +977,10 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
+        if (intval($this->conf['solr_limit']) > 0) {
+            $solr->limit = intval($this->conf['solr_limit']);
+        }
+
         // We only care about the UID in the results and want them sorted
         $parameters = array ("fl" => "uid", "sort" => "uid asc");
 
