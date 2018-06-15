@@ -42,7 +42,7 @@
 			<label index="tt_content.pi_flexform.expired">Gültigkeitsdauer des Resumption Tokens (Sekunden)</label>
 			<label index="tt_content.pi_flexform.show_userdefined">Benutzerdefinierte Kollektionen anzeigen?</label>
 			<label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
-			<label index="tt_content.pi_flexform.solr_limit">Maximale Solr-Ergebnissen</label>
+			<label index="tt_content.pi_flexform.solr_limit">Maximale Solr-Ergebnisse</label>
 			<label index="tt_content.pi_flexform.stylesheet">XSL-Stylesheet</label>
 			<label index="tt_content.pi_flexform.unqualified_epicur">Unqualifiziertes Epicur verwenden?</label>
 			<label index="badArgument">Die Anfrage enthält ungültige Parameter, es fehlen benötigte Parameter oder Parameter haben ungültige Werte.</label>
