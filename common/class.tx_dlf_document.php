@@ -2119,7 +2119,7 @@ final class tx_dlf_document {
 
                 $physSeq[0] = (string) $physNode[0]['ID'];
 
-                $this->physicalStructureInfo[$physSeq[0]]['id'] = $physNode[0]['ID'];
+                $this->physicalStructureInfo[$physSeq[0]]['id'] = (string) $physNode[0]['ID'];
 
                 $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
 
@@ -2148,7 +2148,7 @@ final class tx_dlf_document {
 
                     $elements[(int) $elementNode['ORDER']] = (string) $elementNode['ID'];
 
-                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = $elementNode['ID'];
+                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = (string) $elementNode['ID'];
 
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['dmdId'] = (isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '');
 
