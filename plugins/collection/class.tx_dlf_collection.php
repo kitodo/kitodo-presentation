@@ -184,7 +184,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $parameters);
 
             // Titles are all documents that are "root"-elements i.e. partof == 0;
-            $titles = array();
+            $titles = array ();
 
             foreach ($partOfNothing as $doc) {
 
@@ -396,7 +396,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
             if (empty($listMetadata)) {
 
                 $listMetadata = array (
-                    'label' => !empty($l10nOverlay['label'])? htmlspecialchars($l10nOverlay['label']) : htmlspecialchars($collectionData['collLabel']),
+                    'label' => !empty($l10nOverlay['label']) ? htmlspecialchars($l10nOverlay['label']) : htmlspecialchars($collectionData['collLabel']),
                     'description' => !empty($l10nOverlay['description']) ? $this->pi_RTEcssText($l10nOverlay['description']) : $this->pi_RTEcssText($collectionData['collDesc']),
                     'thumbnail' => htmlspecialchars($collectionData['collThumb']),
                     'options' => array (
