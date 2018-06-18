@@ -95,17 +95,22 @@ class tx_dlf_collection extends tx_dlf_plugin {
      * @return	string		The list of collections ready to output
      */
     protected function showCollectionList() {
+
         $selectedCollections = 'tx_dlf_collections.uid != 0';
+
         $orderBy = 'tx_dlf_collections.label';
 
         // Handle collections set by configuration.
         if ($this->conf['collections']) {
 
             if (count(explode(',', $this->conf['collections'])) == 1 && empty($this->conf['dont_show_single'])) {
+
                 $this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
+
             }
 
             $selectedCollections = 'tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+
             $orderBy = 'FIELD(tx_dlf_collections.uid, '.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
         }
 
@@ -115,9 +120,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
         if (!empty($this->conf['show_userdefined']) && $this->conf['show_userdefined'] > 0) {
 
             if(!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
+
                 $showUserDefinedCollections = ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
+
             } else {
+
                 $showUserDefinedCollections = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+
             }
         }
 
@@ -143,6 +152,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         }
 
         $collections = array ();
+
         while ($collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
             if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
@@ -158,7 +168,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
         }
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
-        // We only care about the UID in the results and want them sorted
+
+        // We only care about the UID and partOf in the results and want them sorted
         $parameters = array ("fl" => "uid, partof", "sort" => "uid asc");
 
         // Process results.
@@ -167,18 +178,26 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $solr_query = '';
 
             if ($collection['index_query'] != "") {
+
                 $solr_query .= '('.$collection['index_query'].')';
+
             } else {
+
                 $solr_query .= 'collection:'.'"'.$collection['index_name'].'"';
+
             }
 
             $partOfNothing = $solr->search_raw($solr_query.' partof:0', $parameters);
+
             $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $parameters);
 
             // Titles are all documents that are "root"-elements i.e. partof == 0;
             $titles = array();
+
             foreach ($partOfNothing as $doc) {
+
                 $titles[] = $doc->uid;
+
             }
 
             // Volumes are documents that are both
@@ -186,13 +205,18 @@ class tx_dlf_collection extends tx_dlf_plugin {
             // b) "root"-elements that are not referenced by other documents ("root"-elements that have no descendants)
 
             $volumes = $titles;
+
             foreach ($partOfSomething as $doc) {
+
                 $volumes[] = $doc->uid;
+
                 // if a document is referenced via partof, it’s not a volume anymore
                 unset($volumes[$doc->partof]);
+
             }
 
             $collection['titles'] = $titles;
+
             $collection['volumes'] = $volumes;
 
             // Generate random but unique array key taking priority into account.
@@ -226,17 +250,26 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             // Add feed link if applicable.
             if (!empty($this->conf['targetFeed'])) {
+
                 $img = '<img src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'res/icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
+
                 $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, array ($this->prefixId => array ('collection' => $collection['uid'])), FALSE, $this->conf['targetFeed']);
+
             } else {
+
                 $markerArray[$_key]['###FEED###'] = '';
+
             }
 
             // Add thumbnail.
             if (!empty($resArray['thumbnail'])) {
+
                 $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($resArray['label']).'" src="'.$collection['thumbnail'].'" />';
+
             } else {
+
                 $markerArray[$_key]['###THUMBNAIL###'] = '';
+
             }
 
             // Add description.
@@ -265,14 +298,18 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $entry = $this->cObj->getSubpart($this->template, '###ENTRY###');
 
         foreach ($markerArray as $marker) {
+
             $content .= $this->cObj->substituteMarkerArray($entry, $marker);
+
         }
 
         // Hook for getting custom collection hierarchies/subentries (requested by SBB).
         foreach ($this->hookObjects as $hookObj) {
 
             if (method_exists($hookObj, 'showCollectionList_getCustomCollectionList')) {
+
                 $hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['templateFile'], $content, $markerArray);
+
             }
         }
 
@@ -293,9 +330,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
+
             $additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
+
         } elseif ($this->conf['show_userdefined'] > 0) {
+
             $additionalWhere = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+
         }
 
         // Get collection information from DB
@@ -310,21 +351,30 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         // Fetch corresponding document UIDs from Solr
         $solr_query = "";
+
         while ($collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection)) {
+
             if ($collectionData['index_query'] != "") {
+
                 $solr_query .= '('.$collectionData['index_query'].')';
+
             } else {
+
                 $solr_query .= 'collection:'.'"'.$collectionData['index_name'].'"';
+
             }
         }
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+
         $parameters = array ("fl" => "uid", "sort" => "uid asc");
 
         $solrResult = $solr->search_raw($solr_query, $parameters);
 
         foreach ($solrResult as $doc) {
+
             $documentSet[] = $doc->uid;
+
         }
 
         //Fetch document info for UIDs in $documentSet from DB
@@ -338,7 +388,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
         );
 
         $toplevel = array ();
+
         $subparts = array ();
+
         $listMetadata = array ();
 
         // Process results.
@@ -401,7 +453,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 );
 
             } else {
+
                 $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['docUid'];
+
             }
         }
 
@@ -413,7 +467,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 ksort($parts);
 
                 foreach ($parts as $part) {
+
                     $toplevel[$partof]['p'][] = array ('u' => $part);
+
                 }
             }
         }
