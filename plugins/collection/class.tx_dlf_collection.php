@@ -334,6 +334,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
      */
     protected function showSingleCollection($id) {
 
+        $additionalWhere = '';
+
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
 
@@ -349,7 +351,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $collection = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.index_search as index_query, tx_dlf_collections.label AS collLabel, tx_dlf_collections.description AS collDesc, tx_dlf_collections.thumbnail AS collThumb, tx_dlf_collections.fe_cruser_id',
             'tx_dlf_collections',
-            'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.uid='.intval($id).' '.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.uid='.intval($id).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
             '',
             '',
             '1'
