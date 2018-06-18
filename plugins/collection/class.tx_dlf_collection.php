@@ -112,6 +112,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $selectedCollections = 'tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
 
             $orderBy = 'FIELD(tx_dlf_collections.uid, '.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+
         }
 
         $showUserDefinedColls = ' AND tx_dlf_collections.fe_cruser_id=0';
@@ -128,6 +129,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 $showUserDefinedColls = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
 
             }
+ 
         }
 
         // Get collections.
@@ -149,6 +151,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
             return $this->showSingleCollection(intval($resArray['uid']));
+
         }
 
         $collections = array ();
@@ -162,24 +165,24 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
         // We only care about the UID and partOf in the results and want them sorted
-        $parameters = array ("fl" => "uid, partof", "sort" => "uid asc");
+        $parameters = array ("fl" => "uid,partof", "sort" => "uid asc");
 
         // Process results.
         foreach ($collections as $collection) {
 
             $solr_query = '';
 
-            if ($collection['index_query'] != "") {
+            if ($collection['index_query'] != '') {
 
                 $solr_query .= '('.$collection['index_query'].')';
 
             } else {
 
-                $solr_query .= 'collection:'.'"'.$collection['index_name'].'"';
+                $solr_query .= 'collection:"'.$collection['index_name'].'"';
 
             }
 
-            $partOfNothing = $solr->search_raw($solr_query.' partof:0', $parameters);
+            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0', $parameters);
 
             $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $parameters);
 
@@ -228,6 +231,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 unset($piVars['DATA']);
 
                 $additionalParams = tx_dlf_helper::array_merge_recursive_overrule($piVars, $additionalParams);
+
             }
 
             // Build typolink configuration array.
@@ -285,6 +289,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             // Don't cache the output.
             $this->setCache(FALSE);
+
         }
 
         $entry = $this->cObj->getSubpart($this->template, '###ENTRY###');
@@ -303,6 +308,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 $hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['templateFile'], $content, $markerArray);
 
             }
+
         }
 
         return $this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE);
@@ -410,6 +416,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                         'order.asc' => TRUE
                     )
                 );
+
             }
 
             // Split toplevel documents from volumes.
@@ -448,6 +455,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
 
             }
+
         }
 
         // Add volumes to the corresponding toplevel documents.
@@ -462,7 +470,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
                     $toplevel[$partof]['p'][] = array ('u' => $part);
 
                 }
+
             }
+
         }
 
         // Save list of documents.
@@ -486,5 +496,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         ob_end_flush();
 
         exit;
+
     }
+
 }
