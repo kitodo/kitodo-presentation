@@ -112,8 +112,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $showUserDefinedCollections = ' AND tx_dlf_collections.fe_cruser_id=0';
 
         // Should user-defined collections be shown?
-        if (!empty($this->conf['show_userdefined']) && $this->conf['show_userdefined'] > 0 && !empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
-            $showUserDefinedCollections = ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
+        if (!empty($this->conf['show_userdefined']) && $this->conf['show_userdefined'] > 0) {
+
+            if(!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
+                $showUserDefinedCollections = ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
+            } else {
+                $showUserDefinedCollections = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+            }
         }
 
         // Get collections.
