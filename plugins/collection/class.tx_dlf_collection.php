@@ -149,7 +149,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
         // We only care about the UID in the results and want them sorted
-        $parameters = array ("fl" => "uid", "sort" => "uid asc");
+        $parameters = array ("fl" => "uid, partof", "sort" => "uid asc");
 
         // Process results.
         foreach ($collections as $collection) {
@@ -165,17 +165,21 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $partOfNothing = $solr->search_raw($solr_query.' partof:0', $parameters);
             $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $parameters);
 
-            $titles = array ();
-
+            // Titles are all documents that are "root"-elements i.e. partof == 0;
+            $titles = array();
             foreach ($partOfNothing as $doc) {
                 $titles[] = $doc->uid;
             }
 
-            $volumes = $titles;
+            // Volumes are documents that are both
+            // a) "leaf"-elements i.e. partof != 0
+            // b) "root"-elements that are not referenced by other documents ("root"-elements that have no descendants)
 
-            // All titles except those that are part of something
+            $volumes = $titles;
             foreach ($partOfSomething as $doc) {
-                unset($volumes[$doc->uid]);
+                $volumes[] = $doc->uid;
+                // if a document is referenced via partof, it’s not a volume anymore
+                unset($volumes[$doc->partof]);
             }
 
             $collection['titles'] = $titles;
