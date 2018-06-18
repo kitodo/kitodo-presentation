@@ -352,18 +352,18 @@ class tx_dlf_collection extends tx_dlf_plugin {
         // Fetch corresponding document UIDs from Solr
         $solr_query = "";
 
-        while ($collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection)) {
+       $collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection);
 
-            if ($collectionData['index_query'] != "") {
+        if ($collectionData['index_query'] != "") {
 
-                $solr_query .= '('.$collectionData['index_query'].')';
+            $solr_query .= '('.$collectionData['index_query'].')';
 
-            } else {
+        } else {
 
-                $solr_query .= 'collection:'.'"'.$collectionData['index_name'].'"';
+            $solr_query .= 'collection:'.'"'.$collectionData['index_name'].'"';
 
-            }
         }
+
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
@@ -445,8 +445,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
                 }
 
-                $toplevel[$resArray['docUid']] = array (
-                    'u' => $resArray['docUid'],
+                $toplevel[$resArray['uid']] = array (
+                    'u' => $resArray['uid'],
                     'h' => '',
                     's' => $sorting,
                     'p' => array ()
@@ -454,7 +454,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             } else {
 
-                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['docUid'];
+                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
 
             }
         }
