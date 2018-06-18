@@ -129,7 +129,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                 $showUserDefinedColls = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
 
             }
- 
+
         }
 
         // Get collections.
