@@ -343,8 +343,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
             if (empty($listMetadata)) {
 
                 $listMetadata = array (
-                    'label' => htmlspecialchars($collectionData['collLabel']),
-                    'description' => $this->pi_RTEcssText($collectionData['collDesc']),
+                    'label' => !empty($l10nOverlay['label'])? htmlspecialchars($l10nOverlay['label']) : htmlspecialchars($collectionData['collLabel']),
+                    'description' => !empty($l10nOverlay['description']) ? $this->pi_RTEcssText($l10nOverlay['description']) : $this->pi_RTEcssText($collectionData['collDesc']),
                     'thumbnail' => htmlspecialchars($collectionData['collThumb']),
                     'options' => array (
                         'source' => 'collection',
