@@ -1048,7 +1048,7 @@ final class tx_dlf_document {
 
                 if (TYPO3_DLOG) {
 
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"'.self::$extKey, SYSLOG_SEVERITY_WARNING);
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
                 }
 
