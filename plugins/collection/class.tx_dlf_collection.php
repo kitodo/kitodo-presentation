@@ -114,18 +114,18 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $orderBy = 'FIELD(tx_dlf_collections.uid, '.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
         }
 
-        $showUserDefinedCollections = ' AND tx_dlf_collections.fe_cruser_id=0';
+        $showUserDefinedColls = ' AND tx_dlf_collections.fe_cruser_id=0';
 
         // Should user-defined collections be shown?
         if (!empty($this->conf['show_userdefined']) && $this->conf['show_userdefined'] > 0) {
 
-            if(!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
+            if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
 
-                $showUserDefinedCollections = ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
+                $showUserDefinedColls = ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
 
             } else {
 
-                $showUserDefinedCollections = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+                $showUserDefinedColls = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
 
             }
         }
@@ -134,7 +134,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.index_search as index_query,tx_dlf_collections.uid AS uid,tx_dlf_collections.sys_language_uid AS sys_language_uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority',
             'tx_dlf_collections',
-            $selectedCollections.$showUserDefinedCollections.' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))'.tx_dlf_helper::whereClause('tx_dlf_collections'),
+            $selectedCollections.$showUserDefinedColls.' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))'.tx_dlf_helper::whereClause('tx_dlf_collections'),
             '',
             $orderBy,
             ''
@@ -352,7 +352,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         // Fetch corresponding document UIDs from Solr
         $solr_query = "";
 
-       $collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection);
+        $collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection);
 
         if ($collectionData['index_query'] != "") {
 
@@ -363,7 +363,6 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $solr_query .= 'collection:'.'"'.$collectionData['index_name'].'"';
 
         }
-
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
