@@ -8,9 +8,6 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 <a href="https://www.codacy.com/app/kitodo/kitodo-presentation">
   <img alt="Codacy Grade" src="https://api.codacy.com/project/badge/Grade/1291eba67cb744c9ad04a74883d45d84"/>
 </a>
-<a href="https://scan.coverity.com/projects/kitodo-presentation">
-  <img alt="Coverity Status" src="https://scan.coverity.com/projects/11566/badge.svg"/>
-</a>
 <a href="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master">
   <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master"/>
 </a>
