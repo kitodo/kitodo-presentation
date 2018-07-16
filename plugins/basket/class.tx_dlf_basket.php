@@ -417,12 +417,12 @@ class tx_dlf_basket extends tx_dlf_plugin {
             $documentItem = array (
                 'id' => intval($_piVars['id']),
                 'startpage' => intval($_piVars['startpage']),
-                'endpage' => intval($_piVars['endpage']),
-                'startX' => intval($_piVars['startX']),
-                'startY' => intval($_piVars['startY']),
-                'endX' => intval($_piVars['endX']),
-                'endY' => intval($_piVars['endY']),
-                'rotation' => intval($_piVars['rotation'])
+                'endpage' => !isset($_piVars['endpage']) || $_piVars['endpage'] === "" ? "" : intval($_piVars['endpage']),
+                'startX' => !isset($_piVars['startX']) || $_piVars['startX'] === "" ? "" : intval($_piVars['startX']),
+                'startY' => !isset($_piVars['startY']) || $_piVars['startY'] === "" ? "" : intval($_piVars['startY']),
+                'endX' => !isset($_piVars['endX']) || $_piVars['endX'] === "" ? "" : intval($_piVars['endX']),
+                'endY' => !isset($_piVars['endY']) || $_piVars['endY'] === "" ? "" : intval($_piVars['endY']),
+                'rotation' => !isset($_piVars['rotation']) || $_piVars['rotation'] === "" ? "" : intval($_piVars['rotation'])
             );
 
             // update basket
@@ -652,7 +652,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             if ($data['startpage'] != $data['endpage']) {
 
-                $urlParams = str_replace("##endpage##", intval($data['endpage']), $urlParams);
+                $urlParams = str_replace("##endpage##", $data['endpage'] === "" ? "" : intval($data['endpage']), $urlParams);
 
             } else {
 
@@ -661,15 +661,15 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             }
 
-            $urlParams = str_replace("##startx##", intval($data['startX']), $urlParams);
+            $urlParams = str_replace("##startx##", $data['startX'] === "" ? "" : intval($data['startX']), $urlParams);
 
-            $urlParams = str_replace("##starty##", intval($data['startY']), $urlParams);
+            $urlParams = str_replace("##starty##", $data['startY'] === "" ? "" : intval($data['startY']), $urlParams);
 
-            $urlParams = str_replace("##endx##", intval($data['endX']), $urlParams);
+            $urlParams = str_replace("##endx##", $data['endX'] === "" ? "" : intval($data['endX']), $urlParams);
 
-            $urlParams = str_replace("##endy##", intval($data['endY']), $urlParams);
+            $urlParams = str_replace("##endy##", $data['endY'] === "" ? "" : intval($data['endY']), $urlParams);
 
-            $urlParams = str_replace("##rotation##", intval($data['rotation']), $urlParams);
+            $urlParams = str_replace("##rotation##", $data['rotation'] === "" ? "" : intval($data['rotation']), $urlParams);
 
             $downloadUrl = $this->conf['pdfgenerate'].$urlParams;
 
