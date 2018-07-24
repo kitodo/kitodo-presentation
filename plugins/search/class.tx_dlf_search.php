@@ -490,8 +490,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
             // Configure @action URL for form.
             $linkConf = array (
-                'parameter' => $GLOBALS['TSFE']->id,
-                'forceAbsoluteUrl' => 1
+                'parameter' => $GLOBALS['TSFE']->id
             );
 
             // Fill markers.
