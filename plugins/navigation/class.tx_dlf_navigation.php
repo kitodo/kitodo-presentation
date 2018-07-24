@@ -65,8 +65,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
         // Configure @action URL for form.
         $linkConf = array (
-            'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1
+            'parameter' => $GLOBALS['TSFE']->id
         );
 
         $output = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
