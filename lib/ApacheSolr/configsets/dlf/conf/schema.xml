@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<schema name="dlf" version="3.0">
+	<types>
+		<fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+		<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" />
+		<fieldType name="int" class="solr.IntPointField" positionIncrementGap="0"/>
+		<!-- Use dates of the form 1995-12-31Z23:59:49Z for this field. -->
+		<fieldType name="date" class="solr.DatePointField" positionIncrementGap="0"/>
+		<fieldType name="standard" class="solr.TextField" positionIncrementGap="100">
+			<analyzer>
+				<tokenizer class="solr.StandardTokenizerFactory" />
+				<filter class="solr.StandardFilterFactory" />
+				<filter class="solr.LowerCaseFilterFactory" />
+			</analyzer>
+		</fieldType>
+		<fieldType name="autocomplete" class="solr.TextField" positionIncrementGap="100">
+			<analyzer type="index">
+				<tokenizer class="solr.KeywordTokenizerFactory" />
+				<filter class="solr.LowerCaseFilterFactory" />
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+				<filter class="solr.LowerCaseFilterFactory" />
+			</analyzer>
+		</fieldType>
+		<fieldType name="fulltext" class="solr.TextField" positionIncrementGap="100">
+			<analyzer type="index">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+				<filter class="solr.FlattenGraphFilterFactory"/>
+				<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
+				<!-- For more precise, but less flexible matching, set generateWordParts="0" and generateNumberParts="0". -->
+				<filter class="solr.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1" />
+				<filter class="solr.ReversedWildcardFilterFactory" withOriginal="true" maxPosAsterisk="3" maxPosQuestion="2" maxFractionAsterisk="0.33" />
+				<filter class="solr.LowerCaseFilterFactory" />
+				<filter class="solr.TrimFilterFactory" />
+				<filter class="solr.SnowballPorterFilterFactory" language="German" protected="protwords.txt" />
+				<!-- <filter class="solr.GermanStemFilterFactory" /> -->
+				<filter class="solr.RemoveDuplicatesTokenFilterFactory" />
+				<!-- <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replacement="" replace="all" /> -->
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+				<filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true" />
+				<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
+				<!-- For more precise, but less flexible matching, set generateWordParts="0" and generateNumberParts="0". -->
+				<filter class="solr.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1" />
+				<filter class="solr.LowerCaseFilterFactory" />
+				<filter class="solr.TrimFilterFactory" />
+				<filter class="solr.SnowballPorterFilterFactory" language="German" protected="protwords.txt" />
+				<!-- <filter class="solr.GermanStemFilterFactory" /> -->
+				<filter class="solr.RemoveDuplicatesTokenFilterFactory" />
+				<!-- <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replacement="" replace="all" /> -->
+			</analyzer>
+		</fieldType>
+	</types>
+
+	<fields>
+		<!--
+			Valid attributes for fields:
+			name: mandatory - the name for the field
+			type: mandatory - the name of a previously defined type from the
+				<types> section
+			indexed: true if this field should be indexed (searchable or sortable)
+			stored: true if this field should be retrievable
+			multiValued: true if this field may contain multiple values per document
+			omitNorms: (expert) set to true to omit the norms associated with
+				this field (this disables length normalization and index-time
+				boosting for the field, and saves some memory). Only full-text
+				fields or fields that need an index-time boost need norms.
+				omitNorms defaults to true for primitive field types since Solr 1.2.
+			termVectors: [false] set to true to store the term vector for a given field.
+				When using MoreLikeThis, fields used for similarity should be
+				stored for best performance.
+			termPositions: Store position information with the term vector.
+				This will increase storage costs.
+			termOffsets: Store offset information with the term vector. This
+				will increase storage costs.
+			default: a value that should be used if no value is specified
+				when adding a document.
+			required: true if this field is mandatory
+		-->
+
+		<!-- The mandatory and special fields are defined here, all other fields are dynamic fields. -->
+		<!-- Unique identifier for the document in the index. -->
+		<field name="id" type="string" indexed="true" stored="true" required="true" />
+		<!-- Unique identifier for the document (or its top-level parent) in the TYPO3 database. -->
+		<field name="uid" type="int" indexed="true" stored="true" required="true" default="0" />
+		<!-- PageID for the document (or its top-level parent) in the TYPO3 database. -->
+		<field name="pid" type="int" indexed="true" stored="false" required="true" default="0" />
+		<!-- Image number where this document starts. -->
+		<field name="page" type="int" indexed="false" stored="true" required="true" default="0" />
+		<!-- Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! -->
+		<field name="partof" type="int" indexed="true" stored="true" required="true" default="0" />
+		<!-- Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! -->
+		<field name="root" type="int" indexed="true" stored="true" required="true" default="0" />
+		<!-- XML ID of this document in the METS file. This is only unique within the METS file! -->
+		<field name="sid" type="string" indexed="false" stored="true" required="true" default="" />
+		<!-- If it is a top-level document, leave this as default "true". -->
+		<field name="toplevel" type="boolean" indexed="true" stored="true" required="true" default="true" />
+		<!-- Type of document (eg. monograph, chapter, etc.) -->
+		<field name="type" type="string" indexed="true" stored="true" required="true" default="" />
+		<!-- Next two fields are mandatory for identifying documents. -->
+		<field name="title" type="standard" indexed="true" stored="true" multiValued="false" default="" />
+		<field name="volume" type="standard" indexed="true" stored="true" multiValued="false" default="" />
+		<!-- URL of thumbnail image for the document. -->
+		<field name="thumbnail" type="string" indexed="false" stored="true" multiValued="false" default="" />
+		<!-- CatchAll field. See <copyField> below. -->
+		<field name="default" type="standard" indexed="true" stored="false" required="true" multiValued="true" default="" />
+		<field name="timestamp" type="date" indexed="true" stored="true" required="true" multiValued="false" default="NOW" />
+		<!-- Autocomplete field for search form. -->
+		<field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
+		<!-- Fulltext field for OCR results. -->
+		<field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" termVectors="true" termPositions="true" termOffsets="true" />
+		<!-- Record ID of the document (required for OAI_DC output). -->
+		<field name="record_id" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<!-- Permanent URL of the document (required for EPICUR output). -->
+		<field name="purl" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<!-- URN of the Document (required for EPICUR output). -->
+		<field name="urn" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<!-- Location of METS XML (required for METS output). -->
+		<field name="location" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
+		<!-- Associated collection(s) of the document. -->
+		<field name="collection" type="string" indexed="true" stored="true" required="true" multiValued="true" default="" />
+
+		<!--
+			The following dynamic fields define all possible field variants.
+			The mapping between metadata fields and index fields is defined in TYPO3.
+		-->
+		<!-- tokenized, stored, indexed -->
+		<dynamicField name="*_tsi" type="standard" stored="true" indexed="true" multiValued="true" />
+		<!-- tokenized, stored, unindexed -->
+		<dynamicField name="*_tsu" type="standard" stored="true" indexed="false" multiValued="true" />
+		<!-- tokenized, unstored, indexed -->
+		<dynamicField name="*_tui" type="standard" stored="false" indexed="true" multiValued="true" />
+		<!-- tokenized, unstored, unindexed (this is ignored by Lucene) -->
+		<dynamicField name="*_tuu" type="standard" stored="false" indexed="false" multiValued="true" />
+		<!-- untokenized, stored, indexed -->
+		<dynamicField name="*_usi" type="string" stored="true" indexed="true" multiValued="true" />
+		<!-- untokenized, stored, unindexed -->
+		<dynamicField name="*_usu" type="string" stored="true" indexed="false" multiValued="true" />
+		<!-- untokenized, unstored, indexed -->
+		<dynamicField name="*_uui" type="string" stored="false" indexed="true" multiValued="true" />
+		<!-- untokenized, unstored, unindexed (this is ignored by Lucene) -->
+		<dynamicField name="*_uuu" type="string" stored="false" indexed="false" multiValued="true" />
+		<!-- "*_faceting" and "*_sorting" should always be used in addition to one of the other fields. -->
+		<dynamicField name="*_faceting" type="string" stored="false" indexed="true" multiValued="true" />
+		<dynamicField name="*_sorting" type="standard" stored="true" indexed="true" multiValued="false" />
+	</fields>
+
+	<uniqueKey>id</uniqueKey>
+
+	<copyField source="*_tsi" dest="default" />
+	<copyField source="*_tui" dest="default" />
+	<copyField source="*_usi" dest="default" />
+	<copyField source="*_uui" dest="default" />
+</schema>

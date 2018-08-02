@@ -74,12 +74,12 @@ class tx_dlf_search extends tx_dlf_plugin {
             // Get collection's UID.
             return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$list->metadata['options']['select'].'" />';
 
-        } elseif (!empty($list->metadata['options']['params']['fq'])) {
+        } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
 
             // Get collection's UID from search metadata.
-            foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
+            foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
 
-                $facetKeyVal = explode(':', $facet, 2);
+                $facetKeyVal = explode(':', $facet['query'], 2);
 
                 if ($facetKeyVal[0] == 'collection_faceting' && !strpos($facetKeyVal[1], '" OR "')) {
 
@@ -121,12 +121,12 @@ class tx_dlf_search extends tx_dlf_plugin {
 
             }
 
-        } elseif (!empty($list->metadata['options']['params']['fq'])) {
+        } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
 
             // Get document's UID from search metadata.
-            foreach ($list->metadata['options']['params']['fq'] as $id => $facet) {
+            foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
 
-                $facetKeyVal = explode(':', $facet);
+                $facetKeyVal = explode(':', $facet['query']);
 
                 if ($facetKeyVal[0] == 'uid') {
 
@@ -386,14 +386,15 @@ class tx_dlf_search extends tx_dlf_plugin {
         $entryArray['doNotLinkIt'] = 0;
 
         // Check if facet is already selected.
-        $index = array_search($field.':("'.tx_dlf_solr::escapeQuery($value).'")', $search['params']['fq']);
+        $queryColumn = array_column($search['params']['filterquery'], 'query');
+        $index = array_search($field.':("'.tx_dlf_solr::escapeQuery($value).'")', $queryColumn);
 
         if ($index !== FALSE) {
 
             // Facet is selected, thus remove it from filter.
-            unset($search['params']['fq'][$index]);
+            unset($queryColumn[$index]);
 
-            $search['params']['fq'] = array_values($search['params']['fq']);
+            $queryColumn = array_values($queryColumn);
 
             $entryArray['ITEM_STATE'] = 'CUR';
 
@@ -404,20 +405,20 @@ class tx_dlf_search extends tx_dlf_plugin {
                 //remove ($count) for selected facet in template
                 $entryArray['count'] = FALSE;
                 //build link to delete selected facet
-                $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
+                $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $queryColumn));
                 $entryArray['title'] = sprintf($this->pi_getLL('resetFacet', ''), $entryArray['title']);
             }
 
         } else {
 
             // Facet is not selected, thus add it to filter.
-            $search['params']['fq'][] = $field.':("'.tx_dlf_solr::escapeQuery($value).'")';
+            $queryColumn[] = $field.':("'.tx_dlf_solr::escapeQuery($value).'")';
 
             $entryArray['ITEM_STATE'] = 'NO';
 
         }
 
-        $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $search['params']['fq']));
+        $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(array ('query' => $search['query'], 'fq' => $queryColumn));
 
         return $entryArray;
 
@@ -598,7 +599,11 @@ class tx_dlf_search extends tx_dlf_plugin {
             // Add filter query for faceting.
             if (!empty($this->piVars['fq'])) {
 
-                $params['fq'] = $this->piVars['fq'];
+                foreach ($this->piVars['fq'] as $filterQuery) {
+
+                    $params['filterquery'][]['query'] = $filterQuery;
+
+                }
 
             }
 
@@ -607,7 +612,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                 if (!empty($this->piVars['id']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
 
-                    $params['fq'][] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
+                    $params['filterquery'][]['query'] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
 
                     $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), tx_dlf_document::getTitle($this->piVars['id'])));
 
@@ -622,7 +627,7 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                     $index_name = tx_dlf_helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
-                    $params['fq'][] = 'collection_faceting:("'.tx_dlf_solr::escapeQuery($index_name).'")';
+                    $params['filterquery'][]['query'] = 'collection_faceting:("'.tx_dlf_solr::escapeQuery($index_name).'")';
 
                     $label .= sprintf($this->pi_getLL('in', '', TRUE), tx_dlf_helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
 
@@ -644,7 +649,7 @@ class tx_dlf_search extends tx_dlf_plugin {
                 }
 
                 // Last value is fake and used for distinction in $this->addCurrentCollection()
-                $params['fq'][] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
+                $params['filterquery'][]['query'] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
 
             }
 
@@ -736,7 +741,13 @@ class tx_dlf_search extends tx_dlf_plugin {
         // Set default value for facet search.
         $search = array (
             'query' => '*',
-            'params' => array ()
+            'params' => array (
+                'component' => array (
+                    'facetset' => array (
+                        'facet' => array ()
+                    )
+                )
+            )
         );
 
         // Extract query and filter from last search.
@@ -770,24 +781,37 @@ class tx_dlf_search extends tx_dlf_plugin {
         }
 
         // Set needed parameters for facet search.
-        if (empty($search['params']['fq'])) {
+        if (empty($search['params']['filterquery'])) {
 
-            $search['params']['fq'] = array ();
+            $search['params']['filterquery'] = array ();
 
         }
 
-        $search['params']['facet'] = 'true';
+        foreach ($this->conf['facets'] as $field => $name) {
 
-        $search['params']['facet.field'] = array_keys($this->conf['facets']);
+            $search['params']['component']['facetset']['facet'][] = array (
+                'type' => 'field',
+                'key' => $field,
+                'field' => $field,
+                'limit' => $this->conf['limitFacets']
 
-        //override SOLR default value for facet.limit of 100
-        $search['params']['facet.limit'] = $this->conf['limitFacets'];
+            );
+        }
+
+        // Set additional query parameters.
+        $search['params']['start'] = 0;
+        $search['params']['rows'] = 0;
+
+        // Set query.
+        $search['params']['query'] = $search['query'];
 
         // Perform search.
-        $results = $solr->service->search($search['query'], 0, 0, $search['params']);
+        $selectQuery = $solr->service->createSelect($search['params']);
+        $results = $solr->service->select($selectQuery);
+        $facet = $results->getFacetSet();
 
         // Process results.
-        foreach ($results->facet_counts->facet_fields as $field => $values) {
+        foreach ($facet as $field => $values) {
 
             $entryArray = array ();
 

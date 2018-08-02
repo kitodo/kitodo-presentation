@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<solr persistent="true">
-	<cores adminPath="/admin/cores" defaultCoreName="dlfCore0" shareSchema="true">
-		<core name="dlfCore0" instanceDir="." dataDir="dlfCore0" />
-	</cores>
-</solr>

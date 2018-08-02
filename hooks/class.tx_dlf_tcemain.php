@@ -140,7 +140,7 @@ class tx_dlf_tcemain {
 
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
-                    $url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=.&dataDir=dlfCore'.$coreNumber;
+                    $url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=dlfCore'.$coreNumber.'&dataDir=data&configSet=dlf';
 
                     $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
 
@@ -328,9 +328,10 @@ class tx_dlf_tcemain {
                                 if ($solr = tx_dlf_solr::getInstance($core)) {
 
                                     // Delete Solr document.
-                                    $solr->service->deleteByQuery('uid:'.$id);
-
-                                    $solr->service->commit();
+                                    $updateQuery = $solr->service->createUpdate();
+                                    $updateQuery->addDeleteQuery('uid:'.$id);
+                                    $updateQuery->addCommit();
+                                    $solr->service->update($updateQuery);
 
                                 }
 
@@ -407,9 +408,10 @@ class tx_dlf_tcemain {
                         if ($solr = tx_dlf_solr::getInstance($core)) {
 
                             // Delete Solr document.
-                            $solr->service->deleteByQuery('uid:'.$id);
-
-                            $solr->service->commit();
+                            $updateQuery = $solr->service->createUpdate();
+                            $updateQuery->addDeleteQuery('uid:'.$id);
+                            $updateQuery->addCommit();
+                            $solr->service->update($updateQuery);
 
                             if ($command == 'delete') {
 

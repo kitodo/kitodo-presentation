@@ -63,9 +63,9 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
     protected $records = array ();
 
     /**
-     * Instance of Apache_Solr_Service class
+     * Instance of tx_dlf_solr class
      *
-     * @var	Apache_Solr_Service
+     * @var	tx_dlf_solr
      * @access protected
      */
     protected $solr;
@@ -244,35 +244,47 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     $params = array ();
 
                     // Restrict the fields to the required ones
-                    $params['fl'] = 'uid,id,toplevel,thumbnail,page';
+                    $params['fields'] = array ('uid','id','toplevel','thumbnail','page');
 
                     foreach ($this->solrConfig as $solr_name) {
 
-                        $params['fl'] .= ','.$solr_name;
+                        $params['fields'][] = $solr_name;
 
                     }
-
-                    // Get document's thumbnail and metadata from Solr index.
-                    $result = $this->solr->service->search('uid:'.tx_dlf_solr::escapeQuery($record['uid']), 0, $this->solr->limit, $params);
 
                     // If it is a fulltext search, enable highlighting and fetch the results
                     if ($this->metadata['fulltextSearch']) {
 
-                        $params = array ();
+                        $params['component'] = array (
+                            'highlighting' => array (
+                                'query' => tx_dlf_solr::escapeQuery($this->metadata['searchString']),
+                                'field' => 'fulltext',
+                                'usefastvectrohighlighter' => true
+                            )
+                        );
 
-                        $params['hl'] = 'true';
-                        $params['hl.useFastVectorHighlighter'] = 'true';
-                        $params['hl.fl'] = 'fulltext';
-                        $params['fl'] = 'id';
+                    }
 
-                        $query_highlights = 'uid:'.tx_dlf_solr::escapeQuery($record['uid']).' AND fulltext:('.tx_dlf_solr::escapeQuery($this->metadata['searchString']).')';
+                    // Set additional query parameters.
+                    $params['start'] = 0;
+                    $params['rows'] = $this->solr->limit;
 
-                        $result_highlights = $this->solr->service->search($query_highlights, 0, $this->solr->limit, $params);
+                    // Set query.
+                    $params['query'] = 'uid:'.tx_dlf_solr::escapeQuery($record['uid']);
+
+                    // Perform search.
+                    $selectQuery = $this->solr->service->createSelect($params);
+                    $result = $this->solr->service->select($selectQuery);
+
+                    // If it is a fulltext search, fetch the highlighting results.
+                    if ($this->metadata['fulltextSearch']) {
+
+                        $highlighting = $result->getHighlighting();
 
                     }
 
                     // Process results.
-                    foreach ($result->response->docs as $resArray) {
+                    foreach ($result as $resArray) {
 
                         // Prepare document's metadata.
                         $metadata = array ();
@@ -296,10 +308,13 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                         } elseif (isset($record['subparts'][$resArray->id])) {
 
+                            $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : NULL;
+                            $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField('fulltext')[0] : "";
+
                             $record['subparts'][$resArray->id] = array (
                                 'uid' => $resArray->uid,
                                 'page' => $resArray->page,
-                                'preview' => (!empty($result_highlights->highlighting->{$resArray->id}->fulltext[0]) ? $result_highlights->highlighting->{$resArray->id}->fulltext[0] : ''),
+                                'preview' => $highlight,
                                 'thumbnail' => $resArray->thumbnail,
                                 'metadata' => $metadata
                             );

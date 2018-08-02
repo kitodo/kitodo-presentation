@@ -1,0 +1,45 @@
+{
+	"name" : "solarium/solarium",
+	"type" : "library",
+	"description" : "PHP Solr client",
+	"keywords" : [
+		"solr",
+		"search",
+		"php"
+	],
+	"homepage" : "http://www.solarium-project.org",
+	"license" : "BSD-3-Clause",
+	"authors" : [{
+			"name" : "See GitHub contributors",
+			"homepage" : "https://github.com/basdenooijer/solarium/contributors"
+		}
+	],
+	"require" : {
+		"php" : "^7.0",
+		"symfony/event-dispatcher" : "^2.7 || ^3.0 || ^4.0"
+	},
+	"require-dev" : {
+		"guzzlehttp/guzzle" : "^3.8 || ^6.2",
+		"phpunit/phpunit" : "^6.5",
+		"satooshi/php-coveralls" : "^1.0",
+		"squizlabs/php_codesniffer" : "^1.4",
+		"zendframework/zendframework1" : "^1.12"
+	},
+	"suggest" : {
+		"minimalcode/search" : "Query builder compatible with Solarium, allows simplified solr-query handling"
+	},
+	"config" : {
+		"sort-packages" : true
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Solarium\\" : "src/",
+			"Symfony\\Component\\EventDispatcher\\" : ""
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Solarium\\Tests\\" : "tests/"
+		}
+	}
+}
