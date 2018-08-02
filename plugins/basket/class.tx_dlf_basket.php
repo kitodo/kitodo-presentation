@@ -321,7 +321,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
      * Return one basket entry
      * @param  array $data     DocumentData
      * @param  array $template Template information
-     * @return Template
+     * @return string
      */
     public function getEntry($data, $template) {
 
