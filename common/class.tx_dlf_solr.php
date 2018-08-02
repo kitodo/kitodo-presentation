@@ -18,7 +18,7 @@
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
- * @property-read Solarium\Client $service
+ * @property Solarium\Client $service
  * @property integer $limit
  */
 class tx_dlf_solr {
@@ -777,6 +777,8 @@ class tx_dlf_solr {
             $this->ready = TRUE;
 
         } catch (Exception $e) {
+
+            // Nothing to do here.
 
         }
 
