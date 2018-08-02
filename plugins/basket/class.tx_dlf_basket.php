@@ -210,15 +210,11 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultMail) > 0) {
 
-            $mails = array ();
-
             $mailForm = '<select name="tx_dlf[mail_action]">';
 
             $mailForm .= '<option value="">'.$this->pi_getLL('chooseMail', '', TRUE).'</option>';
 
             while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail)) {
-
-                $mails[] = $row;
 
                 $mailForm .= '<option value="'.$row['uid'].'">'.$row['name'].' ('.$row['mail'].')</option>';
 
@@ -255,15 +251,11 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultPrinter) > 0) {
 
-            $printers = array ();
-
             $printForm = '<select name="tx_dlf[print_action]">';
 
             $printForm .= '<option value="">'.$this->pi_getLL('choosePrinter', '', TRUE).'</option>';
 
             while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter)) {
-
-                $printers[] = $row;
 
                 $printForm .= '<option value="'.$row['uid'].'">'.$row['label'].'</option>';
 
@@ -281,7 +273,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         if (isset($basketData['doc_ids'])) {
 
             // get each entry
-            foreach ($basketData['doc_ids'] as $key => $value) {
+            foreach ($basketData['doc_ids'] as $value) {
 
                 $entries .= $this->getEntry($value, $subpartArray);
 
@@ -551,7 +543,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         }
 
-        foreach ($_piVars['selected'] as $key => $value) {
+        foreach ($_piVars['selected'] as $value) {
 
             if (isset($value['id'])) {
 
@@ -607,17 +599,13 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         $pdfUrl = $this->conf['pdfgenerate'];
 
-        foreach ($this->piVars['selected'] as $docId => $docValue) {
+        foreach ($this->piVars['selected'] as $docValue) {
 
             if ($docValue['id']) {
-
-                $filename .= $docValue['id'].'_';
 
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
 
                 $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
-
-                $numberOfPages += $docData['pageNums'];
 
             }
 
@@ -755,7 +743,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         $pdfUrl = $this->conf['pdfdownload'];
 
         // prepare links
-        foreach ($this->piVars['selected'] as $docId => $docValue) {
+        foreach ($this->piVars['selected'] as $docValue) {
 
             if ($docValue['id']) {
 
@@ -881,15 +869,11 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             $pdfUrl = $printerData['print'];
 
-            $filename = 'Document_';
-
             $numberOfPages = 0;
 
             foreach ($this->piVars['selected'] as $docId => $docValue) {
 
                 if ($docValue['id']) {
-
-                    $filename .= $docValue['id'].'_';
 
                     $explodeId = explode("_", $docId);
 

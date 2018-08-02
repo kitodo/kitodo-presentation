@@ -808,8 +808,6 @@ class tx_dlf_search extends tx_dlf_plugin {
 
                 if ($count > 0) {
 
-                    $hasValue = TRUE;
-
                     $entryArray['count']++;
 
                     if ($entryArray['ITEM_STATE'] == 'NO') {

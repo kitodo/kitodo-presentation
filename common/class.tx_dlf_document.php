@@ -1469,11 +1469,7 @@ final class tx_dlf_document {
             '1'
         );
 
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-
-            list ($be_user) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-
-        } else {
+        if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
             if (TYPO3_DLOG) {
 
