@@ -383,7 +383,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         $markerArray['###NUMBER###'] = $docData['record_id'];
 
-        return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###ENTRY###', $subpart, TRUE), $markerArray);
+        return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###ENTRY###', '', TRUE), $markerArray);
 
     }
 
