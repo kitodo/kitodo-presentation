@@ -377,7 +377,7 @@ p.intro {
 	Resumption Token
 -->
 <xsl:template match="oai:resumptionToken">
-	<xsl:if test="@resumptionToken">
+	<xsl:if test=". != ''">
 		<p>There are more results.</p>
 	</xsl:if>
 	<table class="values">
@@ -389,10 +389,8 @@ p.intro {
 		<td class="value"><xsl:value-of select="@expirationDate"/></td></tr>
 		<tr><td class="key">Resumption Token</td>
 		<td class="value">
-			<xsl:if test="@resumptionToken">
-				<xsl:value-of select="@resumptionToken"/>
-				<xsl:text> </xsl:text>
-				<a class="link" href="?verb={/oai:OAI-PMH/oai:request/@verb}&amp;resumptionToken={@resumptionToken}">Resume</a>
+			<xsl:if test=". != ''">
+				<a class="link" href="?verb={/oai:OAI-PMH/oai:request/@verb}&amp;resumptionToken={.}">Resume</a>
 			</xsl:if>
 		</td></tr>
 	</table>
