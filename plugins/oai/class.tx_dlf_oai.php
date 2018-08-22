@@ -1097,7 +1097,6 @@ class tx_dlf_oai extends tx_dlf_plugin {
      * @return DOMElement
      */
     private function generateResumptionTokenForDocumentListSet($documentListSet) {
-        $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
 
         if ($documentListSet->count() != 0) {
 
@@ -1114,10 +1113,16 @@ class tx_dlf_oai extends tx_dlf_plugin {
             );
 
             if ($GLOBALS['TYPO3_DB']->sql_affected_rows() == 1) {
-                $resumptionToken->setAttribute('resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
+
+                $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
+
             } else {
                 $this->devLog('[tx_dlf_oai->verb'.$this->piVars['verb'].'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+
             }
+        } else {
+            // Result set complete. We don't need a token.
+            $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
         }
 
         $resumptionToken->setAttribute('cursor', intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
