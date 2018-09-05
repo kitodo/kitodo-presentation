@@ -253,7 +253,7 @@ dlfViewerSource.IIP = function(options) {
                 tileIndex = tileCoordY * tierSizeInTiles[resolution][0] + tileCoordX;
             return url + '&JTL=' + resolution + ',' + tileIndex;
         }
-    }
+    };
 
     var tileImageParams = {
         crossOrigin: origin,
