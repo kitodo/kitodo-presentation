@@ -143,9 +143,9 @@ var dlfViewer = function(settings){
  * @param {Array.<string>} controlNames
  */
 dlfViewer.prototype.addCustomControls = function(controlNames) {
-	var fulltextControl = undefined,
-		imageManipulationControl = undefined,
-		images = this.images;
+    var fulltextControl = undefined,
+        imageManipulationControl = undefined,
+        images = this.images;
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
@@ -198,7 +198,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
  * @param {number} width
  * @param {number} height
  *
- * @return	void
+ * @return void
  */
 dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, width, height) {
 
