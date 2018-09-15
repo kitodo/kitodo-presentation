@@ -266,9 +266,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
             }
 
             // Add thumbnail.
-            if (!empty($resArray['thumbnail'])) {
+            if (!empty($collection['thumbnail'])) {
 
-                $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($resArray['label']).'" src="'.$collection['thumbnail'].'" />';
+                $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($collection['label']).'" src="'.$collection['thumbnail'].'" />';
 
             } else {
 
