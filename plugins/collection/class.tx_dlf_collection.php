@@ -374,9 +374,24 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
+        if (!$solr->ready) {
+
+            if (TYPO3_DLOG) {
+
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_collection->showSingleCollection('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+
+            }
+
+            return $content;
+
+        }
+
         $parameters = array ("fl" => "uid", "sort" => "uid asc");
 
         $solrResult = $solr->search_raw($solr_query, $parameters);
+
+        // initialize array
+        $documentSet = [];
 
         foreach ($solrResult as $doc) {
 
