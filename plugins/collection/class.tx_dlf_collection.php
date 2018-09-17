@@ -218,11 +218,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             }
 
-            $collection['titles'] = $titles;
+            $collection['titles'] = array_unique($titles);
 
-            $volumes = array_unique($volumes);
-
-            $collection['volumes'] = $volumes;
+            $collection['volumes'] = array_unique($volumes);
 
             // Generate random but unique array key taking priority into account.
             do {
