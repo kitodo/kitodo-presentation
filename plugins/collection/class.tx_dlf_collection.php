@@ -399,7 +399,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $documents = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.uid AS uid, tx_dlf_documents.metadata_sorting AS metadata_sorting, tx_dlf_documents.volume_sorting AS volume_sorting, tx_dlf_documents.partof AS partof',
             'tx_dlf_documents',
-            'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents'),
+            'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
             '',
             '',
             ''
