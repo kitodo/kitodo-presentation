@@ -212,6 +212,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             $collection['titles'] = $titles;
 
+            $volumes = array_unique($volumes);
+
             $collection['volumes'] = $volumes;
 
             // Generate random but unique array key taking priority into account.
@@ -390,6 +392,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $documentSet[] = $doc->uid;
 
         }
+
+        $documentSet = array_unique($documentSet);
 
         //Fetch document info for UIDs in $documentSet from DB
         $documents = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
