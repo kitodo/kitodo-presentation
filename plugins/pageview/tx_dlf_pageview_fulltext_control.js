@@ -242,15 +242,15 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     var anchorEl = $('#tx-dlf-tools-fulltext');
     if (anchorEl.length > 0){
         var toogleFulltext = $.proxy(function(event) {
-        	  event.preventDefault();
+            event.preventDefault();
 
-        	  if ($(event.target).hasClass('active')){
-        		  this.deactivate();
-        		  return;
-        	  }
+            if ($(event.target).hasClass('active')) {
+                this.deactivate();
+                return;
+            }
 
-        	  this.activate();
-          }, this);
+            this.activate();
+        }, this);
 
 
         anchorEl.on('click', toogleFulltext);
@@ -259,13 +259,13 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
     // set initial title of fulltext element
     $("#tx-dlf-tools-fulltext")
-    	.text(this.dic['fulltext-on'])
-    	.attr('title', this.dic['fulltext-on']);
+        .text(this.dic['fulltext-on'])
+        .attr('title', this.dic['fulltext-on']);
 
     // if fulltext is activated via cookie than run activation methode
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") == 'enabled') {
-    	// activate the fulltext behavior
-    	this.activate(anchorEl);
+        // activate the fulltext behavior
+        this.activate(anchorEl);
     }
 
 };
@@ -275,28 +275,28 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
  */
 dlfViewerFullTextControl.prototype.activate = function() {
 
-	var controlEl = $('#tx-dlf-tools-fulltext');
+    var controlEl = $('#tx-dlf-tools-fulltext');
 
-	// if the activate method is called for the first time fetch
-	// fulltext data from server
-	if (this.fulltextData_ === undefined)  {
-		this.fulltextData_ = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.url, this.image);
+    // if the activate method is called for the first time fetch
+    // fulltext data from server
+    if (this.fulltextData_ === undefined)  {
+        this.fulltextData_ = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.url, this.image);
 
         if (this.fulltextData_ !== undefined) {
             // add features to fulltext layer
-    		this.layers_.textblock.getSource().addFeatures(this.fulltextData_.getTextblocks());
+            this.layers_.textblock.getSource().addFeatures(this.fulltextData_.getTextblocks());
             this.layers_.textline.getSource().addFeatures(this.fulltextData_.getTextlines());
 
-    	    // add first feature of textBlockFeatures to map
-    	    if (this.fulltextData_.getTextblocks().length > 0) {
-    	        this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
-    	        this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
-    	        this.showFulltext(this.fulltextData_.getTextblocks());
-    	    }
+            // add first feature of textBlockFeatures to map
+            if (this.fulltextData_.getTextblocks().length > 0) {
+                this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
+                this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
+                this.showFulltext(this.fulltextData_.getTextblocks());
+            }
         }
-	}
+    }
 
-	// now activate the fulltext overlay and map behavior
+    // now activate the fulltext overlay and map behavior
     this.enableFulltextSelect();
     dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
     $(controlEl).addClass('active');
@@ -310,10 +310,10 @@ dlfViewerFullTextControl.prototype.activate = function() {
  */
 dlfViewerFullTextControl.prototype.deactivate = function() {
 
-	var controlEl = $('#tx-dlf-tools-fulltext');
+    var controlEl = $('#tx-dlf-tools-fulltext');
 
-	// deactivate fulltext
-	this.disableFulltextSelect();
+    // deactivate fulltext
+    this.disableFulltextSelect();
     dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
     $(controlEl).removeClass('active');
 
@@ -324,7 +324,7 @@ dlfViewerFullTextControl.prototype.deactivate = function() {
 /**
  * Disable Fulltext Features
  *
- * @return	void
+ * @return void
  */
 dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
@@ -388,7 +388,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
  * @static
  */
 dlfViewerFullTextControl.fetchFulltextDataFromServer = function(url, image, opt_offset){
-	  // fetch data from server
+    // fetch data from server
     var request = $.ajax({
         url: url,
         async: false
@@ -397,7 +397,7 @@ dlfViewerFullTextControl.fetchFulltextDataFromServer = function(url, image, opt_
     // parse alto data
     var offset = dlfUtils.exists(opt_offset) ? opt_offset : undefined,
       parser = new dlfAltoParser(image, undefined, undefined, offset),
-    	fulltextCoordinates = request.responseXML ? parser.parseFeatures(request.responseXML) :
+      fulltextCoordinates = request.responseXML ? parser.parseFeatures(request.responseXML) :
             request.responseText ? parser.parseFeatures(request.responseText) : [];
 
     if (fulltextCoordinates.length > 0) {
