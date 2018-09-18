@@ -210,9 +210,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             }
 
-            $collection['titles'] = $titles;
+            $collection['titles'] = array_unique($titles);
 
-            $collection['volumes'] = $volumes;
+            $collection['volumes'] = array_unique($volumes);
 
             // Generate random but unique array key taking priority into account.
             do {
@@ -258,9 +258,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
             }
 
             // Add thumbnail.
-            if (!empty($resArray['thumbnail'])) {
+            if (!empty($collection['thumbnail'])) {
 
-                $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($resArray['label']).'" src="'.$collection['thumbnail'].'" />';
+                $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($collection['label']).'" src="'.$collection['thumbnail'].'" />';
 
             } else {
 
@@ -366,9 +366,24 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
 
+        if (!$solr->ready) {
+
+            if (TYPO3_DLOG) {
+
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_collection->showSingleCollection('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+
+            }
+
+            return $content;
+
+        }
+
         $parameters = array ("fl" => "uid", "sort" => "uid asc");
 
         $solrResult = $solr->search_raw($solr_query, $parameters);
+
+        // initialize array
+        $documentSet = [];
 
         foreach ($solrResult as $doc) {
 
@@ -376,11 +391,13 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
+        $documentSet = array_unique($documentSet);
+
         //Fetch document info for UIDs in $documentSet from DB
         $documents = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.uid AS uid, tx_dlf_documents.metadata_sorting AS metadata_sorting, tx_dlf_documents.volume_sorting AS volume_sorting, tx_dlf_documents.partof AS partof',
             'tx_dlf_documents',
-            'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'.$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents'),
+            'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
             '',
             '',
             ''
