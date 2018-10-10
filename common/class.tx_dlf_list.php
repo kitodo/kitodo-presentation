@@ -244,11 +244,11 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     $params = array ();
 
                     // Restrict the fields to the required ones
-                    $params['fields'] = array ('uid','id','toplevel','thumbnail','page');
+                    $params['fields'] = 'uid,id,toplevel,thumbnail,page';
 
                     foreach ($this->solrConfig as $solr_name) {
 
-                        $params['fields'][] = $solr_name;
+                        $params['fields'] .= ','.$solr_name;
 
                     }
 

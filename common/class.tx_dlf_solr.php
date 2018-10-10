@@ -353,7 +353,7 @@ class tx_dlf_solr {
         $checks = array ();
 
         // Restrict the fields to the required ones
-        $this->params['fields'] = array ('uid','id','toplevel');
+        $this->params['fields'] = 'uid,id,toplevel';
 
         // Get metadata configuration.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -370,7 +370,7 @@ class tx_dlf_solr {
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
             $sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
-            $this->params['fields'][] = $sorting[$resArray['index_name']];
+            $this->params['fields'] .= ','.$sorting[$resArray['index_name']];
 
         }
 
