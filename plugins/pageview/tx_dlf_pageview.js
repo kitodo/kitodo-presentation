@@ -568,7 +568,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
     //magnifier map
     var extent = [0, 0, 1000, 1000];
 
-    layerProj = new ol.proj.Projection({
+    var layerProj = new ol.proj.Projection({
         code: 'kitodo-image',
         units: 'pixels',
         extent: extent
