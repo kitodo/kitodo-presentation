@@ -358,8 +358,6 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
         baseMin = dlfUtils.exists(opt_baseValues) ? opt_baseValues[1] : 0,
         baseMax = dlfUtils.exists(opt_baseValues) ? opt_baseValues[2] : 100,
         steps = dlfUtils.exists(opt_baseValues) ? opt_baseValues[3] : 1,
-        minValueEl,
-        maxValueEl,
         startValue = dlfUtils.exists(opt_baseValues) ? opt_baseValues[0] : 100;
 
     /**
