@@ -174,7 +174,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
         });
 
         // bind behavior of both together
-        if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+        if (fulltextControl !== undefined) {
             $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
             $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
         }
