@@ -18,8 +18,6 @@
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
- * @property Solarium\Client $service
- * @property integer $limit
  */
 class tx_dlf_solr {
 
@@ -250,15 +248,13 @@ class tx_dlf_solr {
     }
 
     /**
-     * Returns the connection information a specific Solr core
+     * Returns the connection information for Solr
      *
      * @access	public
      *
-     * @param	string		$core: Name of the core to load
-     *
      * @return	string		The connection parameters for a specific Solr core
      */
-    public static function getSolrConnectionInfo($core = '') {
+    public static function getSolrConnectionInfo() {
 
         $solrInfo = array ();
 
@@ -268,7 +264,7 @@ class tx_dlf_solr {
         // Derive Solr host name.
         $solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
 
-        // Uusername and password
+        // Set username and password.
         $solrInfo['username'] = $conf['solrUser'];
         $solrInfo['password'] = $conf['solrPass'];
 
@@ -294,15 +290,15 @@ class tx_dlf_solr {
     public static function getSolrUrl($core = '') {
 
         // Get Solr connection information.
-        $solrInfo = self::getSolrConnectionInfo($core);
+        $solrInfo = self::getSolrConnectionInfo();
 
         if ($solrInfo['username'] && $solrInfo['password']) {
 
-            $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.($solrInfo['host'] ? $solrInfo['host'] : 'localhost');
+            $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
 
         } else {
 
-            $host = ($solrInfo['host'] ? $solrInfo['host'] : 'localhost');
+            $host = $solrInfo['host'];
 
         }
 
@@ -743,7 +739,7 @@ class tx_dlf_solr {
      */
     protected function __construct($core) {
 
-        $solrInfo = self::getSolrConnectionInfo($core);
+        $solrInfo = self::getSolrConnectionInfo();
 
         $config = array (
             'endpoint' => array (
@@ -763,7 +759,6 @@ class tx_dlf_solr {
         $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Solarium\Client', $config);
 
         // Check if connection is established.
-
         $ping = $this->service->createPing();
 
         try {
