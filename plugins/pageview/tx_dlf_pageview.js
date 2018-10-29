@@ -174,7 +174,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
         });
 
         // bind behavior of both together
-        if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+        if (fulltextControl !== undefined) {
             $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
             $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
         }
@@ -568,7 +568,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
     //magnifier map
     var extent = [0, 0, 1000, 1000];
 
-    layerProj = new ol.proj.Projection({
+    var layerProj = new ol.proj.Projection({
         code: 'kitodo-image',
         units: 'pixels',
         extent: extent
