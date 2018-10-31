@@ -41,7 +41,7 @@ solrConnect = 0
 solrHost = localhost
 
 # cat=Solr; type=int[0-65535]; label=LLL:EXT:dlf/locallang.xml:config.solrPort
-solrPort = 8180
+solrPort = 8983
 
 # cat=Solr; type=string; label=LLL:EXT:dlf/locallang.xml:config.solrPath
 solrPath = /solr/

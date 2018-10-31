@@ -126,7 +126,7 @@ class tx_dlf_tcemain {
                     }
 
                     // Set port if not set.
-                    $port = (intval($conf['solrPort']) > 0 ? intval($conf['solrPort']) : 8180);
+                    $port = (intval($conf['solrPort']) > 0 ? intval($conf['solrPort']) : 8983);
 
                     // Trim path and append trailing slash.
                     $path = (trim($conf['solrPath'], '/') ? trim($conf['solrPath'], '/').'/' : '');

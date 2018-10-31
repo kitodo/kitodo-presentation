@@ -268,7 +268,7 @@ class tx_dlf_solr {
         $solrInfo['password'] = $conf['solrPass'];
 
         // Set port if not set.
-        $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
+        $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
 
         // Append core name to path.
         $solrInfo['path'] = trim($conf['solrPath'], '/');
