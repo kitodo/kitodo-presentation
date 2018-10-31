@@ -259,7 +259,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                             'highlighting' => array (
                                 'query' => tx_dlf_solr::escapeQuery($this->metadata['searchString']),
                                 'field' => 'fulltext',
-                                'usefastvectrohighlighter' => true
+                                'usefastvectorhighlighter' => true
                             )
                         );
 
