@@ -21,7 +21,7 @@
   "version": "2.2.0",
   "require": {
     "php" : "^7.0.8",
-    "typo3/cms": "^7.0",
+    "typo3/cms": "^7.6",
     "solarium/solarium" : "^4.0"
   },
   "replace": {
