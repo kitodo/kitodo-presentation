@@ -140,7 +140,8 @@ class tx_dlf_tcemain {
 
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
-                    $url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=dlfCore'.$coreNumber.'&dataDir=data&configSet=dlf';
+                    $scheme = empty($this->conf['useHttps']) ? 'http' : 'https';
+                    $url = $scheme.'://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=dlfCore'.$coreNumber.'&dataDir=data&configSet=dlf';
 
                     $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
 

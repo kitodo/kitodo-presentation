@@ -260,6 +260,9 @@ class tx_dlf_solr {
         // Extract extension configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
+        // Derive Solr scheme
+        $solrInfo['scheme'] = empty($conf['useHttps']) ? 'http' : 'https';
+
         // Derive Solr host name.
         $solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
 
@@ -302,7 +305,7 @@ class tx_dlf_solr {
         }
 
         // Return entire request URL.
-        return 'http://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/'.$core;
+        return $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/'.$core;
 
     }
 
@@ -743,7 +746,7 @@ class tx_dlf_solr {
         $config = array (
             'endpoint' => array (
                 'dlf' => array (
-                    'schema' => 'http',
+                    'scheme' => $solrInfo['scheme'],
                     'host' => $solrInfo['host'],
                     'port' => $solrInfo['port'],
                     'path' => '/'.$solrInfo['path'].'/',
