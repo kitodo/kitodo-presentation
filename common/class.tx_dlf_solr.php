@@ -380,7 +380,7 @@ class tx_dlf_solr {
         $selectQuery = $this->service->createSelect($this->params);
         $results = $this->service->select($selectQuery);
 
-        $this->numberOfHits = min($results->getNumFound(), $this->limit);
+        $this->numberOfHits = $results->getNumFound();
 
         // Keep track of relevance.
         $i = 0;
