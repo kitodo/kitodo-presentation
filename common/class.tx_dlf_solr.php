@@ -261,7 +261,7 @@ class tx_dlf_solr {
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
         // Derive Solr scheme
-        $solrInfo['scheme'] = empty($conf['useHttps']) ? 'http' : 'https';
+        $solrInfo['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
 
         // Derive Solr host name.
         $solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
