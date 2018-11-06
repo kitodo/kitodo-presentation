@@ -77,6 +77,9 @@ See also: https://wiki.apache.org/solr/SolrTomcat
 
 2. Copy the configsets/dlf to to $SOLR_HOME/configsets/dlf.
 
+3. Optional but recommended is the authentication. The documentation is available here:
+	https://lucene.apache.org/solr/guide/7_4/basic-authentication-plugin.html
+
 Update instructions
 -------------------
 
