@@ -396,7 +396,7 @@ dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
         })[1],
         resolutions: jsonld.tiles !== undefined ? jsonld.tiles.map(function (a) {
             return a.scaleFactors;
-        })[0] : [1,2,4,8,16],
+        })[0] : [],
         mimetype: mimetype
     };
 };
