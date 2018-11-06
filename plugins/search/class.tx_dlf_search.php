@@ -794,8 +794,8 @@ class tx_dlf_search extends tx_dlf_plugin {
                 'key' => $field,
                 'field' => $field,
                 'limit' => $this->conf['limitFacets']
-
             );
+
         }
 
         // Set additional query parameters.
