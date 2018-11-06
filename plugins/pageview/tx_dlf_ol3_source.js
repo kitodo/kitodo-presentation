@@ -90,11 +90,36 @@ dlfViewerSource.IIIF = function(options) {
         resolutions = $.extend([], options.resolutions),
         projection = options.projection;
 
-    // calculate custom paramters
-    var maxZoom = Math.max(
-        Math.ceil( Math.log(width / tileSize) / Math.LN2),
-        Math.ceil( Math.log(height / tileSize) / Math.LN2)
-    );
+    // sort resolutions because the spec does not specify any order
+    resolutions.sort(function(a, b) {
+        return a - b;
+    });
+    var ignoreScaleFactors = false,
+        maxZoom;
+
+    // check if provided resolutions are consecutive powers to 2
+    for (var i=0; i < resolutions.length; i++) {
+        if (Math.pow(2,i) != resolutions[i]) {
+            ignoreScaleFactors = true;
+            break;
+        }
+    }
+
+    // no resolutions are provided or they can't be continuously calculated with a zoomFactor of 2
+    if (resolutions.length == 0 || ignoreScaleFactors) {
+        maxZoom = Math.max(
+            Math.ceil( Math.log(width / tileSize) / Math.LN2),
+            Math.ceil( Math.log(height / tileSize) / Math.LN2)
+        );
+        // provide resolutions from 2^0 to 2^maxZoom
+        resolutions = [];
+        for (var i = 0; i <= maxZoom; i++) {
+            resolutions.push(Math.pow(2,i));
+        }
+    } else {
+        var maxScaleFactor = Math.max.apply(null, resolutions);
+        maxZoom = Math.round(Math.log(maxScaleFactor) / Math.LN2);
+    }
 
     var tierSizes = [];
     for (var i = 0; i <= maxZoom; i++) {
