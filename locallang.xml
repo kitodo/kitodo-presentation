@@ -174,7 +174,7 @@
 			<label index="config.fileGrpFulltext">Fulltext fileGrp: @USE attribute value (default is "FULLTEXT")</label>
 			<label index="config.fileGrpAudio">Audio fileGrp: @USE attribute value (default is "AUDIO")</label>
 			<label index="config.solrConnect">Solr Connection</label>
-			<label index="config.useHttps">Use https: (default is "FALSE")</label>
+			<label index="config.solrHttps">Use https: (default is "FALSE")</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
 			<label index="config.solrPort">Solr Server Port: (default is "8983")</label>
 			<label index="config.solrPath">Solr Server Path: (default is "/solr/")</label>
@@ -384,7 +384,7 @@
 			<label index="config.fileGrpFulltext">Volltext fileGrp: @USE Attributwert der Volltexte (Standard ist "FULLTEXT")</label>
 			<label index="config.fileGrpAudio">Audio fileGrp: @USE Attributwert der Audiodateien (Standard ist "AUDIO")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
-			<label index="config.useHttps">Https verwenden: (Standard ist "FALSE")</label>
+			<label index="config.solrHttps">Https verwenden: (Standard ist "FALSE")</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
 			<label index="config.solrPort">Solr Server Port: (Standard ist "8983")</label>
 			<label index="config.solrPath">Solr Server Pfad: (Standard ist "/solr/")</label>
