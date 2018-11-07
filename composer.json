@@ -71,13 +71,6 @@
       "plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php",
       "plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php",
       "plugins/validator/class.tx_dlf_validator.php"
-    ],
-    "psr-4" : {
-      "Solarium\\" : "lib/solarium/src",
-      "Symfony\\Component\\EventDispatcher\\" : "lib/symfony/event-dispatcher"
-    },
-    "exclude-from-classmap" : [
-      "/Tests/"
     ]
   }
 }
