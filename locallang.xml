@@ -222,7 +222,9 @@
 			<label index="update.copyIndexRelatedColumns">Copy index related columns...</label>
 			<label index="update.copyIndexRelatedColumnsOkay">...successfully completed!</label>
 			<label index="update.copyIndexRelatedColumnsNotOkay">...incomplete! The index related columns (tokenized, stored, indexed, boost, autocomplete) of table tx_dlf_metadata have to be copied manually.</label>
-
+			<label index="update.solariumSolrUpdate">Solarium/Solr update...</label>
+			<label index="update.solariumSolrUpdateOkay">...successfully completed! Please index your documents again!</label>
+			<label index="update.solariumSolrUpdateNotOkay">...could not create Solr core %s! Please check your Solr configuration!</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -432,6 +434,9 @@
 			<label index="update.copyIndexRelatedColumns">Kopieren der Index bezogenen Tabellenspalten...</label>
 			<label index="update.copyIndexRelatedColumnsOkay">...erfolgreich beendet! Tabellen wurden erfolgreich kopiert.</label>
 			<label index="update.copyIndexRelatedColumnsNotOkay">...abgebrochen! Das Kopieren der Index bezogenen Tabellenspalten (tokenized, stored, indexed, boost, autocomplete) der Tabelle tx_dlf_metadata muss manuell erfolgen.</label>
+			<label index="update.solariumSolrUpdate">Solarium/Solr update...</label>
+			<label index="update.solariumSolrUpdateOkay">...erfolgreich beendet! Bitte indexieren Sie Ihre Dokumente erneut!</label>
+			<label index="update.solariumSolrUpdateNotOkay">...konnte Solr core %s nicht erzeugen! Bitte überprüfen Sie die Solr-Konfiguration!</label>
 		</languageKey>
 	</data>
 </T3locallang>
