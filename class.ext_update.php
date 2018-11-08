@@ -387,7 +387,7 @@ class ext_update {
 
                     if ($status && $status[0] == 0) {
 
-                        contiunue;
+                        continue;
 
                     }
 
