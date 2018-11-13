@@ -30,7 +30,7 @@
   },
   "autoload": {
     "classmap": [
-      "vendor/solarium/",
+      "vendor/",
       "cli/class.tx_dlf_cli.php",
       "common/class.tx_dlf_alto.php",
       "common/class.tx_dlf_document.php",
@@ -72,6 +72,9 @@
       "plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php",
       "plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php",
       "plugins/validator/class.tx_dlf_validator.php"
+    ],
+    "exclude-from-classmap": [
+      "vendor/typo3/"
     ]
   }
 }
