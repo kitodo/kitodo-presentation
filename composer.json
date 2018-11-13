@@ -30,6 +30,7 @@
   },
   "autoload": {
     "classmap": [
+      "vendor/solarium/",
       "cli/class.tx_dlf_cli.php",
       "common/class.tx_dlf_alto.php",
       "common/class.tx_dlf_document.php",
