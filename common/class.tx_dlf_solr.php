@@ -276,6 +276,9 @@ class tx_dlf_solr {
         // Append core name to path.
         $solrInfo['path'] = trim($conf['solrPath'], '/');
 
+        // Timeout
+        $solrInfo['timeout'] = $conf['solrTimeout'];
+
         return $solrInfo;
 
     }
@@ -752,7 +755,8 @@ class tx_dlf_solr {
                     'path' => '/'.$solrInfo['path'].'/',
                     'core' => $core,
                     'username' => $solrInfo['username'],
-                    'password' => $solrInfo['password']
+                    'password' => $solrInfo['password'],
+                    'timeout' => $solrInfo['timeout']
                 )
             )
         );
