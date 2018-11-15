@@ -277,7 +277,7 @@ class tx_dlf_solr {
         $solrInfo['path'] = trim($conf['solrPath'], '/');
 
         // Timeout
-        $solrInfo['timeout'] = $conf['solrTimeout'];
+        $solrInfo['timeout'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, intval(ini_get('max_execution_time')), 10);
 
         return $solrInfo;
 
