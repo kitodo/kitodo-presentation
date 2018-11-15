@@ -57,38 +57,24 @@ The install tool writes this configuration to typo3conf/LocalConfiguration.php::
 .. _configuration-solr:
 
 *****************
-SOLR Installation
+Solr Installation
 *****************
 
-The following instructions are taken from `dlf/lib/ApacheSolr/README.txt`.
+This extension doesn't include Solr, but just a prepared configuration set.
+To setup Apache Solr, perform the following steps:
 
-Apache Solr for Kitodo.Presentation
-==================================
-
-This is just a configset for Apache Solr.
-
-Installation instructions
--------------------------
-
-See also: https://wiki.apache.org/solr/SolrTomcat
-
-1. Make sure you have Apache Solr 7.4 up and running. Download Solr
-	from http://lucene.apache.org/solr/. Other versions since 5.0 should be possible but are not tested.
+1. Make sure you have Apache Solr 7.4 up and running.
+	Download Solr from http://lucene.apache.org/solr/.
+	Other versions since 5.0 should be possible but are not tested.
 
 2. Copy the lib/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/dlf.
 
-3. Using basic authentication is optional but recommended. The documentation is available here:
+3. Using basic authentication is optional but recommended.
+	The documentation is available here:
 	https://lucene.apache.org/solr/guide/7_4/basic-authentication-plugin.html
-
-Update instructions
--------------------
-
-When updating an existing Solr instance for Kitodo.Presentation follow the
-above steps.
 
 
 .. _configuration-typoscript:
-
 
 ******************************
 TypoScript Basic Configuration
