@@ -1,4 +1,4 @@
-﻿.. ==================================================
+.. ==================================================
 .. FOR YOUR INFORMATION
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
@@ -56,6 +56,7 @@ Kitodo.Presentation
 	:glob:
 
 	Introduction/Index
+	Administrator/Index
 	Configuration/Index
 	Plugins/Index
 	Community/Index
