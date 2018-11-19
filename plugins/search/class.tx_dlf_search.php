@@ -14,6 +14,7 @@
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Henrik Lochmann <dev@mentalmotive.com>
+ * @author	Frank Ulrich Weber <fuw@zeutschel.de>
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
@@ -653,26 +654,43 @@ class tx_dlf_search extends tx_dlf_plugin {
 
             }
 
+            // Set some query parameters.
+            $params['query'] = $query;
+            $params['start'] = 0;
+            $params['rows'] = 0;
+            $params['sort'] = array ('score' => 'desc');
+
+            // Instantiate search object.
+            $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+
+            if (!$solr->ready) {
+
+                if (TYPO3_DLOG) {
+
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+
+                }
+
+                return $content;
+
+            }
+
             // Set search parameters.
-            $solr->limit = max(intval($this->conf['limit']), 1);
-
             $solr->cPid = $this->conf['pages'];
-
             $solr->params = $params;
 
             // Perform search.
-            $results = $solr->search($query);
+            $list = $solr->search();
 
-            $results->metadata = array (
+            $list->metadata = array (
                 'label' => $label,
-                'description' => '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $solr->numberOfHits, count($results))).'</p>',
                 'thumbnail' => '',
                 'searchString' => $this->piVars['query'],
                 'fulltextSearch' => (!empty($this->piVars['fulltext']) ? '1' : '0'),
-                'options' => $results->metadata['options']
+                'options' => $list->metadata['options']
             );
 
-            $results->save();
+            $list->save();
 
             // Clean output buffer.
             \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
@@ -686,13 +704,13 @@ class tx_dlf_search extends tx_dlf_plugin {
             }
 
             // Jump directly to the page view, if there is only one result and it is configured
-            if ($results->count() == 1 && !empty($this->conf['showSingleResult'])) {
+            if ($list->metadata['options']['numberOfHits'] == 1 && !empty($this->conf['showSingleResult'])) {
 
                 $linkConf['parameter'] = $this->conf['targetPidPageView'];
 
-                $additionalParams['id'] = $results->current()['uid'];
-                $additionalParams['highlight_word'] = preg_replace('/\s\s+/', ';', $results->metadata['searchString']);
-                $additionalParams['page'] = count($results[0]['subparts']) == 1 ? $results[0]['subparts'][0]['page'] : 1;
+                $additionalParams['id'] = $list->current()['uid'];
+                $additionalParams['highlight_word'] = preg_replace('/\s\s+/', ';', $list->metadata['searchString']);
+                $additionalParams['page'] = count($list[0]['subparts']) == 1 ? $list[0]['subparts'][0]['page'] : 1;
 
             } else {
 

@@ -13,6 +13,7 @@
  * List class 'tx_dlf_list' for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author	Frank Ulrich Weber <fuw@zeutschel.de>
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
@@ -252,7 +253,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                     }
 
-                    // If it is a fulltext search, enable highlighting and fetch the results
+                    // If it is a fulltext search, enable highlighting.
                     if ($this->metadata['fulltextSearch']) {
 
                         $params['component'] = array (
@@ -267,12 +268,30 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                     // Set additional query parameters.
                     $params['start'] = 0;
-                    $params['rows'] = $this->solr->limit;
 
-                    // Set query.
-                    $params['query'] = 'uid:'.tx_dlf_solr::escapeQuery($record['uid']);
+                    // All results are needed, so set the limit unreachable high.
+                    $params['rows'] = 1000000000;
 
-                    // Perform search.
+                    // Take over existing filter queries.
+                    $params['filterquery'] = isset($this->metadata['options']['params']['filterquery']) ? $this->metadata['options']['params']['filterquery'] : array ();
+
+                    // Extend filter query to get all documents with the same uid.
+                    foreach ($params['filterquery'] as $key=>$value) {
+
+                        $params['filterquery'][$key] = array ('query' => $value['query'].' OR toplevel:true');
+
+                    }
+
+                    // Add filter query to get all documents with the required uid.
+                    $params['filterquery'][] = array ('query' => 'uid:'.tx_dlf_solr::escapeQuery($record['uid']));
+
+                    // Add sorting
+                    $params['sort'] = $this->metadata['options']['params']['sort'];
+
+                    // Set query 
+                    $params['query'] = $this->metadata['options']['select'].' OR toplevel:true';
+
+                    // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
                     $selectQuery = $this->solr->service->createSelect($params);
                     $result = $this->solr->service->select($selectQuery);
 
@@ -306,7 +325,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                             $record['metadata'] = $metadata;
 
-                        } elseif (isset($record['subparts'][$resArray->id])) {
+                        } else {
 
                             $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : NULL;
                             $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField('fulltext')[0] : "";

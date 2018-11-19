@@ -582,7 +582,8 @@ class tx_dlf_indexing {
 
             $solrDoc->setField('sid', $logicalUnit['id']);
 
-            $solrDoc->setField('toplevel', in_array($logicalUnit['type'], self::$toplevel));
+            // There can be only one toplevel unit per uid, independently of backend configuration
+            $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? TRUE : FALSE);
 
             $solrDoc->setField('type', $logicalUnit['type'], self::$fields['fieldboost']['type']);
 

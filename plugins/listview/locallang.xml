@@ -36,6 +36,7 @@
 			<label index="direction.desc">descending</label>
 			<label index="noTitle">[no title]</label>
 			<label index="addBasket">Add to basket</label>
+			<label index="hits">%d hits found in %d documents.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
@@ -59,6 +60,7 @@
 			<label index="direction.desc">absteigend</label>
 			<label index="noTitle">[kein Titel]</label>
 			<label index="addBasket">Zum Warenkorb hinzufügen</label>
+			<label index="hits">Die Suche ergab %d Treffer in %d Dokumenten.</label>
 		</languageKey>
 	</data>
 </T3locallang>
