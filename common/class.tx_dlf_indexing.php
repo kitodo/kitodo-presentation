@@ -62,9 +62,9 @@ class tx_dlf_indexing {
     protected static $processedDocs = array ();
 
     /**
-     * Instance of Apache_Solr_Service class
+     * Instance of tx_dlf_solr class
      *
-     * @var	Apache_Solr_Service
+     * @var	tx_dlf_solr
      * @access protected
      */
     protected static $solr;
@@ -127,7 +127,9 @@ class tx_dlf_indexing {
                 self::$processedDocs[] = $doc->uid;
 
                 // Delete old Solr documents.
-                self::$solr->service->deleteByQuery('uid:'.$doc->uid);
+                $updateQuery = self::$solr->service->createUpdate();
+                $updateQuery->addDeleteQuery('uid:'.$doc->uid);
+                self::$solr->service->update($updateQuery);
 
                 // Index every logical unit as separate Solr document.
                 foreach ($doc->tableOfContents as $logicalUnit) {
@@ -163,7 +165,9 @@ class tx_dlf_indexing {
 
                 }
 
-                self::$solr->service->commit();
+                $updateQuery = self::$solr->service->createUpdate();
+                $updateQuery->addCommit();
+                self::$solr->service->update($updateQuery);
 
                 // Get document title from database.
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -298,9 +302,10 @@ class tx_dlf_indexing {
                 try {
 
                     // Delete Solr document.
-                    self::$solr->service->deleteByQuery('uid:'.$uid);
-
-                    self::$solr->service->commit();
+                    $updateQuery = self::$solr->service->createUpdate();
+                    $updateQuery->addDeleteQuery('uid:'.$uid);
+                    $updateQuery->addCommit();
+                    self::$solr->service->update($updateQuery);
 
                 } catch (Exception $e) {
 
@@ -544,15 +549,9 @@ class tx_dlf_indexing {
 
         if (!empty($metadata)) {
 
-            // Load class.
-            if (!class_exists('Apache_Solr_Document')) {
-
-                require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Document.php'));
-
-            }
-
             // Create new Solr document.
-            $solrDoc = new Apache_Solr_Document();
+            $updateQuery = self::$solr->service->createUpdate();
+            $solrDoc = $updateQuery->createDocument();
 
             // Create unique identifier from document's UID and unit's XML ID.
             $solrDoc->setField('id', $doc->uid.$logicalUnit['id']);
@@ -651,7 +650,9 @@ class tx_dlf_indexing {
 
             try {
 
-                self::$solr->service->addDocument($solrDoc);
+                $updateQuery->addDocument($solrDoc);
+                $updateQuery->addCommit();
+                self::$solr->service->update($updateQuery);
 
             } catch (Exception $e) {
 
@@ -758,15 +759,9 @@ class tx_dlf_indexing {
 
             }
 
-            // Load class.
-            if (!class_exists('Apache_Solr_Document')) {
-
-                require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Document.php'));
-
-            }
-
             // Create new Solr document.
-            $solrDoc = new Apache_Solr_Document();
+            $updateQuery = self::$solr->service->createUpdate();
+            $solrDoc = $updateQuery->createDocument();
 
             // Create unique identifier from document's UID and unit's XML ID.
             $solrDoc->setField('id', $doc->uid.$physicalUnit['id']);
@@ -823,7 +818,9 @@ class tx_dlf_indexing {
 
             try {
 
-                self::$solr->service->addDocument($solrDoc);
+                $updateQuery->addDocument($solrDoc);
+                $updateQuery->addCommit();
+                self::$solr->service->update($updateQuery);
 
             } catch (Exception $e) {
 

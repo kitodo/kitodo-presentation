@@ -42,7 +42,7 @@ class tx_dlf_search_suggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
         if (!empty($core)) {
 
-            $url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?q='.tx_dlf_solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
+            $url = trim(tx_dlf_solr::getSolrUrl($core), '/').'/suggest/?wt=xml&q='.tx_dlf_solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
 
             if ($stream = fopen($url, 'r')) {
 

@@ -87,7 +87,7 @@ class tx_dlf_solr {
     /**
      * This holds the Solr service object
      *
-     * @var	Apache_Solr_Service
+     * @var	Solarium\Client
      * @access protected
      */
     protected $service;
@@ -103,21 +103,16 @@ class tx_dlf_solr {
      */
     public static function escapeQuery($query) {
 
-        // Load class.
-        if (!class_exists('Apache_Solr_Service')) {
-
-            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
-
-        }
+        $helper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Solarium\Core\Query\Helper');
 
         // Escape query phrase or term.
         if (preg_match('/^".*"$/', $query)) {
 
-            return '"'.Apache_Solr_Service::escapePhrase(trim($query, '"')).'"';
+            return '"'.$helper->escapePhrase(trim($query, '"')).'"';
 
         } else {
 
-            return Apache_Solr_Service::escape($query);
+            return $helper->escapeTerm($query);
 
         }
 
@@ -252,36 +247,37 @@ class tx_dlf_solr {
     }
 
     /**
-     * Returns the connection information a specific Solr core
+     * Returns the connection information for Solr
      *
      * @access	public
      *
-     * @param	string		$core: Name of the core to load
-     *
      * @return	string		The connection parameters for a specific Solr core
      */
-    public static function getSolrConnectionInfo($core = '') {
+    public static function getSolrConnectionInfo() {
 
         $solrInfo = array ();
 
         // Extract extension configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
+        // Derive Solr scheme
+        $solrInfo['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
+
         // Derive Solr host name.
         $solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
 
-        // Prepend username and password to hostname.
-        if ($conf['solrUser'] && $conf['solrPass']) {
-
-            $solrInfo['host'] = $conf['solrUser'].':'.$conf['solrPass'].'@'.$solrInfo['host'];
-
-        }
+        // Set username and password.
+        $solrInfo['username'] = $conf['solrUser'];
+        $solrInfo['password'] = $conf['solrPass'];
 
         // Set port if not set.
-        $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8180);
+        $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
 
         // Append core name to path.
-        $solrInfo['path'] = trim($conf['solrPath'], '/').'/'.$core;
+        $solrInfo['path'] = trim($conf['solrPath'], '/');
+
+        // Timeout
+        $solrInfo['timeout'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, intval(ini_get('max_execution_time')), 10);
 
         return $solrInfo;
 
@@ -299,10 +295,20 @@ class tx_dlf_solr {
     public static function getSolrUrl($core = '') {
 
         // Get Solr connection information.
-        $solrInfo = self::getSolrConnectionInfo($core);
+        $solrInfo = self::getSolrConnectionInfo();
+
+        if ($solrInfo['username'] && $solrInfo['password']) {
+
+            $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
+
+        } else {
+
+            $host = $solrInfo['host'];
+
+        }
 
         // Return entire request URL.
-        return 'http://'.$solrInfo['host'].':'.$solrInfo['port'].'/'.$solrInfo['path'];
+        return $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/'.$core;
 
     }
 
@@ -348,7 +354,7 @@ class tx_dlf_solr {
         $checks = array ();
 
         // Restrict the fields to the required ones
-        $this->params['fl'] = 'uid,id,toplevel';
+        $this->params['fields'] = 'uid,id,toplevel';
 
         // Get metadata configuration.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -365,23 +371,31 @@ class tx_dlf_solr {
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
             $sorting[$resArray['index_name']] = $resArray['index_name'].'_sorting';
-            $this->params['fl'] .= ','.$sorting[$resArray['index_name']];
+            $this->params['fields'] .= ','.$sorting[$resArray['index_name']];
 
         }
 
-        // Perform search.
-        $results = $this->service->search((string) $query, 0, $this->limit, $this->params);
+        // Set additional query parameters.
+        $this->params['start'] = 0;
+        $this->params['rows'] = $this->limit;
 
-        $this->numberOfHits = count($results->response->docs);
+        // Set query.
+        $this->params['query'] = $query;
+
+        // Perform search.
+        $selectQuery = $this->service->createSelect($this->params);
+        $results = $this->service->select($selectQuery);
+
+        $this->numberOfHits = $results->getNumFound();
 
         // Keep track of relevance.
         $i = 0;
 
         // Process results.
-        foreach ($results->response->docs as $doc) {
+        foreach ($results as $doc) {
 
             // Split toplevel documents from subparts.
-            if ($doc->toplevel == 1) {
+            if ($doc->toplevel) {
 
                 // Prepare document's metadata for sorting.
                 $docSorting = array ();
@@ -414,7 +428,7 @@ class tx_dlf_solr {
 
                 $toplevel[$doc->uid]['p'][$doc->id] = array (
                     'u' => $doc->id,
-                    'h' => (!empty($results->highlighting->{$doc->id}->fulltext) ? $results->highlighting->{$doc->id}->fulltext[0] : '')
+                    'h' => ''
                 );
 
                 if (!in_array($doc->uid, $checks)) {
@@ -540,11 +554,21 @@ class tx_dlf_solr {
      * @return	array       The Apache Solr Documents that were fetched
      */
     public function search_raw($query = '', $parameters = array ()) {
-        $solr_response = $this->service->search((string) $query, 0, $this->limit, array_merge($this->params, $parameters));
+
+        // Set additional query parameters.
+        $parameters['start'] = 0;
+        $parameters['rows'] = $this->limit;
+
+        // Set query.
+        $parameters['query'] = $query;
+
+        // Perform search.
+        $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
+        $solr_response = $this->service->select($selectQuery);
 
         $searchresult = array ();
 
-        foreach ($solr_response->response->docs as $doc) {
+        foreach ($solr_response as $doc) {
             $searchresult[] = $doc;
         }
 
@@ -595,7 +619,7 @@ class tx_dlf_solr {
      *
      * @access	protected
      *
-     * @return	Apache_Solr_Service		Apache Solr service object
+     * @return	Solarium\Client		Apache Solr service object
      */
     protected function _getService() {
 
@@ -720,29 +744,42 @@ class tx_dlf_solr {
      */
     protected function __construct($core) {
 
-        // Load class.
-        if (!class_exists('Apache_Solr_Service')) {
+        $solrInfo = self::getSolrConnectionInfo();
 
-            require_once(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:'.self::$extKey.'/lib/SolrPhpClient/Apache/Solr/Service.php'));
+        $config = array (
+            'endpoint' => array (
+                'dlf' => array (
+                    'scheme' => $solrInfo['scheme'],
+                    'host' => $solrInfo['host'],
+                    'port' => $solrInfo['port'],
+                    'path' => '/'.$solrInfo['path'].'/',
+                    'core' => $core,
+                    'username' => $solrInfo['username'],
+                    'password' => $solrInfo['password'],
+                    'timeout' => $solrInfo['timeout']
+                )
+            )
+        );
 
-        }
-
-        $solrInfo = self::getSolrConnectionInfo($core);
-
-        // Instantiate Apache_Solr_Service class.
-        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Apache_Solr_Service', $solrInfo['host'], $solrInfo['port'], $solrInfo['path']);
+        // Instantiate Solarium\Client class.
+        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Solarium\Client', $config);
 
         // Check if connection is established.
-        if ($this->service->ping() !== FALSE) {
+        $ping = $this->service->createPing();
 
-            // Do not collapse single value arrays.
-            $this->service->setCollapseSingleValueArrays = FALSE;
+        try {
+
+            $this->service->ping($ping);
 
             // Set core name.
             $this->core = $core;
 
             // Instantiation successful!
             $this->ready = TRUE;
+
+        } catch (Exception $e) {
+
+            // Nothing to do here.
 
         }
 

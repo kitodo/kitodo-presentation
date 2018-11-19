@@ -174,11 +174,13 @@
 			<label index="config.fileGrpFulltext">Fulltext fileGrp: @USE attribute value (default is "FULLTEXT")</label>
 			<label index="config.fileGrpAudio">Audio fileGrp: @USE attribute value (default is "AUDIO")</label>
 			<label index="config.solrConnect">Solr Connection</label>
+			<label index="config.solrHttps">Use https: (default is "FALSE")</label>
 			<label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
-			<label index="config.solrPort">Solr Server Port: (default is "8180")</label>
+			<label index="config.solrPort">Solr Server Port: (default is "8983")</label>
 			<label index="config.solrPath">Solr Server Path: (default is "/solr/")</label>
 			<label index="config.solrUser">Solr Server User: (default is "")</label>
 			<label index="config.solrPass">Solr Server Password: (default is "")</label>
+			<label index="config.solrTimeout">Solr Server Timeout: (default is "10")</label>
 			<label index="solr.connected">Connection established!</label>
 			<label index="solr.status">The status code returned by Apache Solr is &lt;strong&gt;%s&lt;/strong&gt;.</label>
 			<label index="solr.notConnected">Connection failed!</label>
@@ -221,7 +223,9 @@
 			<label index="update.copyIndexRelatedColumns">Copy index related columns...</label>
 			<label index="update.copyIndexRelatedColumnsOkay">...successfully completed!</label>
 			<label index="update.copyIndexRelatedColumnsNotOkay">...incomplete! The index related columns (tokenized, stored, indexed, boost, autocomplete) of table tx_dlf_metadata have to be copied manually.</label>
-
+			<label index="update.solariumSolrUpdate">Re-adding cores to Solr...</label>
+			<label index="update.solariumSolrUpdateOkay">...successfully completed! Please re-index your documents now.</label>
+			<label index="update.solariumSolrUpdateNotOkay">...failed for core %s! Please check your Solr configuration.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -383,11 +387,13 @@
 			<label index="config.fileGrpFulltext">Volltext fileGrp: @USE Attributwert der Volltexte (Standard ist "FULLTEXT")</label>
 			<label index="config.fileGrpAudio">Audio fileGrp: @USE Attributwert der Audiodateien (Standard ist "AUDIO")</label>
 			<label index="config.solrConnect">Solr Verbindung</label>
+			<label index="config.solrHttps">Https verwenden: (Standard ist "FALSE")</label>
 			<label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
-			<label index="config.solrPort">Solr Server Port: (Standard ist "8180")</label>
+			<label index="config.solrPort">Solr Server Port: (Standard ist "8983")</label>
 			<label index="config.solrPath">Solr Server Pfad: (Standard ist "/solr/")</label>
 			<label index="config.solrUser">Solr Server Benutzername: (Standard ist "")</label>
 			<label index="config.solrPass">Solr Server Kennwort: (Standard ist "")</label>
+			<label index="config.solrTimeout">Solr Server Timeout: (Standard ist "10")</label>
 			<label index="solr.connected">Verbindung hergestellt!</label>
 			<label index="solr.status">Apache Solr gibt den Statuscode &lt;strong&gt;%s&lt;/strong&gt; zurück.</label>
 			<label index="solr.notConnected">Verbindung fehlgeschlagen!</label>
@@ -430,6 +436,9 @@
 			<label index="update.copyIndexRelatedColumns">Kopieren der Index bezogenen Tabellenspalten...</label>
 			<label index="update.copyIndexRelatedColumnsOkay">...erfolgreich beendet! Tabellen wurden erfolgreich kopiert.</label>
 			<label index="update.copyIndexRelatedColumnsNotOkay">...abgebrochen! Das Kopieren der Index bezogenen Tabellenspalten (tokenized, stored, indexed, boost, autocomplete) der Tabelle tx_dlf_metadata muss manuell erfolgen.</label>
+			<label index="update.solariumSolrUpdate">Hinzufügen der Solr Kerne...</label>
+			<label index="update.solariumSolrUpdateOkay">...erfolgreich beendet! Bitte re-indexieren Sie jetzt alle Dokumente.</label>
+			<label index="update.solariumSolrUpdateNotOkay">...für Kern %s fehlgeschlagen! Bitte überprüfen Sie die Solr-Konfiguration.</label>
 		</languageKey>
 	</data>
 </T3locallang>

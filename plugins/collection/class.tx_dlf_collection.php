@@ -351,7 +351,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                         'source' => 'collection',
                         'select' => $id,
                         'userid' => $resArray['userid'],
-                        'params' => array ('fq' => array ('collection_faceting:("'.$resArray['index_name'].'")')),
+                        'params' => array ('filterquery' => array (array ('query' => 'collection_faceting:("'.$resArray['index_name'].'")'))),
                         'core' => '',
                         'pid' => $this->conf['pages'],
                         'order' => 'title',

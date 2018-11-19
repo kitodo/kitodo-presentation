@@ -982,7 +982,12 @@ class tx_dlf_oai extends tx_dlf_plugin {
         }
 
         // We only care about the UID in the results and want them sorted
-        $parameters = array ("fl" => "uid", "sort" => "uid asc");
+        $parameters = array (
+            "fields" => "uid",
+            "sort" => array (
+                "uid" => "asc"
+            )
+        );
 
         $result = $solr->search_raw($solr_query, $parameters);
 

@@ -114,22 +114,18 @@ class tx_dlf_tcemain {
                     // Get Solr credentials.
                     $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
 
-                    // Prepend username and password to hostname.
-                    if ($conf['solrUser'] && $conf['solrPass']) {
+                    $solrInfo = tx_dlf_solr::getSolrConnectionInfo();
 
-                        $host = $conf['solrUser'].':'.$conf['solrPass'].'@'.($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
+                    // Prepend username and password to hostname.
+                    if ($solrInfo['username'] && $solrInfo['password']) {
+
+                        $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
 
                     } else {
 
-                        $host = ($conf['solrHost'] ? $conf['solrHost'] : 'localhost');
+                        $host = $solrInfo['host'];
 
                     }
-
-                    // Set port if not set.
-                    $port = (intval($conf['solrPort']) > 0 ? intval($conf['solrPort']) : 8180);
-
-                    // Trim path and append trailing slash.
-                    $path = (trim($conf['solrPath'], '/') ? trim($conf['solrPath'], '/').'/' : '');
 
                     $context = stream_context_create(array (
                         'http' => array (
@@ -140,7 +136,7 @@ class tx_dlf_tcemain {
 
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
-                    $url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=.&dataDir=dlfCore'.$coreNumber;
+                    $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=dlfCore'.$coreNumber.'&dataDir=data&configSet=dlf';
 
                     $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
 
@@ -328,9 +324,10 @@ class tx_dlf_tcemain {
                                 if ($solr = tx_dlf_solr::getInstance($core)) {
 
                                     // Delete Solr document.
-                                    $solr->service->deleteByQuery('uid:'.$id);
-
-                                    $solr->service->commit();
+                                    $updateQuery = $solr->service->createUpdate();
+                                    $updateQuery->addDeleteQuery('uid:'.$id);
+                                    $updateQuery->addCommit();
+                                    $solr->service->update($updateQuery);
 
                                 }
 
@@ -407,9 +404,10 @@ class tx_dlf_tcemain {
                         if ($solr = tx_dlf_solr::getInstance($core)) {
 
                             // Delete Solr document.
-                            $solr->service->deleteByQuery('uid:'.$id);
-
-                            $solr->service->commit();
+                            $updateQuery = $solr->service->createUpdate();
+                            $updateQuery->addDeleteQuery('uid:'.$id);
+                            $updateQuery->addCommit();
+                            $solr->service->update($updateQuery);
 
                             if ($command == 'delete') {
 

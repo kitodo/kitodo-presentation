@@ -47,25 +47,21 @@ class tx_dlf_em {
      */
     public function checkSolrConnection(&$params, &$pObj) {
 
-        // Prepend username and password to hostname.
-        if (!empty($this->conf['solrUser']) && !empty($this->conf['solrPass'])) {
+        $solrInfo = tx_dlf_solr::getSolrConnectionInfo();
 
-            $host = $this->conf['solrUser'].':'.$this->conf['solrPass'].'@'.(!empty($this->conf['solrHost']) ? $this->conf['solrHost'] : 'localhost');
+        // Prepend username and password to hostname.
+        if (!empty($solrInfo['username']) && !empty($solrInfo['password'])) {
+
+            $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
 
         } else {
 
-            $host = (!empty($this->conf['solrHost']) ? $this->conf['solrHost'] : 'localhost');
+            $host = $solrInfo['host'];
 
         }
 
-        // Set port if not set.
-        $port = (!empty($this->conf['solrPort']) ? \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->conf['solrPort'], 0, 65535, 8180) : 8180);
-
-        // Trim path and append trailing slash.
-        $path = (!empty($this->conf['solrPath']) ? trim($this->conf['solrPath'], '/').'/' : '');
-
         // Build request URI.
-        $url = 'http://'.$host.':'.$port.'/'.$path.'admin/cores?wt=xml';
+        $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml';
 
         $context = stream_context_create(array (
             'http' => array (
