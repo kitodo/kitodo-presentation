@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
