@@ -210,15 +210,11 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultMail) > 0) {
 
-            $mails = array ();
-
             $mailForm = '<select name="tx_dlf[mail_action]">';
 
             $mailForm .= '<option value="">'.$this->pi_getLL('chooseMail', '', TRUE).'</option>';
 
             while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail)) {
-
-                $mails[] = $row;
 
                 $mailForm .= '<option value="'.$row['uid'].'">'.$row['name'].' ('.$row['mail'].')</option>';
 
@@ -255,15 +251,11 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultPrinter) > 0) {
 
-            $printers = array ();
-
             $printForm = '<select name="tx_dlf[print_action]">';
 
             $printForm .= '<option value="">'.$this->pi_getLL('choosePrinter', '', TRUE).'</option>';
 
             while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter)) {
-
-                $printers[] = $row;
 
                 $printForm .= '<option value="'.$row['uid'].'">'.$row['label'].'</option>';
 
@@ -281,7 +273,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         if (isset($basketData['doc_ids'])) {
 
             // get each entry
-            foreach ($basketData['doc_ids'] as $key => $value) {
+            foreach ($basketData['doc_ids'] as $value) {
 
                 $entries .= $this->getEntry($value, $subpartArray);
 
@@ -321,7 +313,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
      * Return one basket entry
      * @param  array $data     DocumentData
      * @param  array $template Template information
-     * @return Template
+     * @return string
      */
     public function getEntry($data, $template) {
 
@@ -391,7 +383,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         $markerArray['###NUMBER###'] = $docData['record_id'];
 
-        return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###ENTRY###', $subpart, TRUE), $markerArray);
+        return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###ENTRY###', '', TRUE), $markerArray);
 
     }
 
@@ -417,12 +409,12 @@ class tx_dlf_basket extends tx_dlf_plugin {
             $documentItem = array (
                 'id' => intval($_piVars['id']),
                 'startpage' => intval($_piVars['startpage']),
-                'endpage' => intval($_piVars['endpage']),
-                'startX' => intval($_piVars['startX']),
-                'startY' => intval($_piVars['startY']),
-                'endX' => intval($_piVars['endX']),
-                'endY' => intval($_piVars['endY']),
-                'rotation' => intval($_piVars['rotation'])
+                'endpage' => !isset($_piVars['endpage']) || $_piVars['endpage'] === "" ? "" : intval($_piVars['endpage']),
+                'startX' => !isset($_piVars['startX']) || $_piVars['startX'] === "" ? "" : intval($_piVars['startX']),
+                'startY' => !isset($_piVars['startY']) || $_piVars['startY'] === "" ? "" : intval($_piVars['startY']),
+                'endX' => !isset($_piVars['endX']) || $_piVars['endX'] === "" ? "" : intval($_piVars['endX']),
+                'endY' => !isset($_piVars['endY']) || $_piVars['endY'] === "" ? "" : intval($_piVars['endY']),
+                'rotation' => !isset($_piVars['rotation']) || $_piVars['rotation'] === "" ? "" : intval($_piVars['rotation'])
             );
 
             // update basket
@@ -551,7 +543,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         }
 
-        foreach ($_piVars['selected'] as $key => $value) {
+        foreach ($_piVars['selected'] as $value) {
 
             if (isset($value['id'])) {
 
@@ -607,17 +599,13 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         $pdfUrl = $this->conf['pdfgenerate'];
 
-        foreach ($this->piVars['selected'] as $docId => $docValue) {
+        foreach ($this->piVars['selected'] as $docValue) {
 
             if ($docValue['id']) {
-
-                $filename .= $docValue['id'].'_';
 
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
 
                 $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
-
-                $numberOfPages += $docData['pageNums'];
 
             }
 
@@ -652,7 +640,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             if ($data['startpage'] != $data['endpage']) {
 
-                $urlParams = str_replace("##endpage##", intval($data['endpage']), $urlParams);
+                $urlParams = str_replace("##endpage##", $data['endpage'] === "" ? "" : intval($data['endpage']), $urlParams);
 
             } else {
 
@@ -661,15 +649,15 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             }
 
-            $urlParams = str_replace("##startx##", intval($data['startX']), $urlParams);
+            $urlParams = str_replace("##startx##", $data['startX'] === "" ? "" : intval($data['startX']), $urlParams);
 
-            $urlParams = str_replace("##starty##", intval($data['startY']), $urlParams);
+            $urlParams = str_replace("##starty##", $data['startY'] === "" ? "" : intval($data['startY']), $urlParams);
 
-            $urlParams = str_replace("##endx##", intval($data['endX']), $urlParams);
+            $urlParams = str_replace("##endx##", $data['endX'] === "" ? "" : intval($data['endX']), $urlParams);
 
-            $urlParams = str_replace("##endy##", intval($data['endY']), $urlParams);
+            $urlParams = str_replace("##endy##", $data['endY'] === "" ? "" : intval($data['endY']), $urlParams);
 
-            $urlParams = str_replace("##rotation##", intval($data['rotation']), $urlParams);
+            $urlParams = str_replace("##rotation##", $data['rotation'] === "" ? "" : intval($data['rotation']), $urlParams);
 
             $downloadUrl = $this->conf['pdfgenerate'].$urlParams;
 
@@ -755,7 +743,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         $pdfUrl = $this->conf['pdfdownload'];
 
         // prepare links
-        foreach ($this->piVars['selected'] as $docId => $docValue) {
+        foreach ($this->piVars['selected'] as $docValue) {
 
             if ($docValue['id']) {
 
@@ -881,15 +869,11 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
             $pdfUrl = $printerData['print'];
 
-            $filename = 'Document_';
-
             $numberOfPages = 0;
 
             foreach ($this->piVars['selected'] as $docId => $docValue) {
 
                 if ($docValue['id']) {
-
-                    $filename .= $docValue['id'].'_';
 
                     $explodeId = explode("_", $docId);
 

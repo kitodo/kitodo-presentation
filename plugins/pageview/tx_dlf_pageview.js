@@ -143,9 +143,9 @@ var dlfViewer = function(settings){
  * @param {Array.<string>} controlNames
  */
 dlfViewer.prototype.addCustomControls = function(controlNames) {
-	var fulltextControl = undefined,
-		imageManipulationControl = undefined,
-		images = this.images;
+    var fulltextControl = undefined,
+        imageManipulationControl = undefined,
+        images = this.images;
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
@@ -174,7 +174,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
         });
 
         // bind behavior of both together
-        if (imageManipulationControl !== undefined && fulltextControl !== undefined) {
+        if (fulltextControl !== undefined) {
             $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
             $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
         }
@@ -198,7 +198,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
  * @param {number} width
  * @param {number} height
  *
- * @return	void
+ * @return void
  */
 dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, width, height) {
 
@@ -312,7 +312,7 @@ dlfViewer.prototype.displayHighlightWord = function() {
         if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
-            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width)
+            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width);
         }
 
         var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
@@ -568,7 +568,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
     //magnifier map
     var extent = [0, 0, 1000, 1000];
 
-    layerProj = new ol.proj.Projection({
+    var layerProj = new ol.proj.Projection({
         code: 'kitodo-image',
         units: 'pixels',
         extent: extent

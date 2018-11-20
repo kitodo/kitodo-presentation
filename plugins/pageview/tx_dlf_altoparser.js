@@ -78,7 +78,7 @@ dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
         var width = feature.get('width'),
             height = feature.get('height');
 
-        if ((dlfUtils.exists(width) && dlfUtils.exists(height)) && (!dlfUtils.exists(this.width_) && !dlfUtils.exists(this.width_))) {
+        if (dlfUtils.exists(width) && dlfUtils.exists(height) && !dlfUtils.exists(this.width_) && !dlfUtils.exists(this.height_)) {
             this.width_ = width;
             this.height_ = height;
         }
@@ -90,7 +90,7 @@ dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
         var width = feature.get('width'),
             height = feature.get('height');
 
-        if ((dlfUtils.exists(width) && dlfUtils.exists(height)) && (!dlfUtils.exists(this.width_) && !dlfUtils.exists(this.width_))) {
+        if (dlfUtils.exists(width) && dlfUtils.exists(height) && !dlfUtils.exists(this.width_) && !dlfUtils.exists(this.height_)) {
             this.width_ = width;
             this.height_ = height;
         }

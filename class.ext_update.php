@@ -44,6 +44,10 @@ class ext_update {
 
             return TRUE;
 
+        } else if ($this->solariumSolrUpdateRequired()) {
+
+            return TRUE;
+
         }
 
         return FALSE;
@@ -114,6 +118,12 @@ class ext_update {
         if ($this->oldIndexRelatedTableNames()) {
 
             $this->renameIndexRelatedColumns();
+
+        }
+
+        if ($this->solariumSolrUpdateRequired()) {
+
+            $this->doSolariumSolrUpdate();
 
         }
 
@@ -277,6 +287,137 @@ class ext_update {
             }
 
         }
+
+    }
+
+    /**
+     * Check all configured Solr cores
+     *
+     * @access	protected
+     *
+     * @return	boolean
+     */
+    protected function solariumSolrUpdateRequired() {
+
+        // Get all Solr cores that were not deleted.
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'index_name',
+            'tx_dlf_solrcores',
+            'deleted = 0',
+            '',
+            '',
+            ''
+            );
+
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+            // Instantiate search object.
+            $solr = tx_dlf_solr::getInstance($resArray['index_name']);
+
+            if (!$solr->ready) {
+
+                return TRUE;
+
+            }
+
+        }
+
+        return FALSE;
+
+    }
+
+    /**
+     * Create all configured Solr cores
+     *
+     * @access	protected
+     *
+     * @return	void
+     */
+    protected function doSolariumSolrUpdate() {
+
+        // Get all Solr cores that were not deleted.
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'index_name',
+            'tx_dlf_solrcores',
+            'deleted = 0',
+            '',
+            '',
+            ''
+            );
+
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+            // Instantiate search object.
+            $solr = tx_dlf_solr::getInstance($resArray['index_name']);
+
+            if (!$solr->ready) {
+
+                $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+
+                $solrInfo = tx_dlf_solr::getSolrConnectionInfo();
+
+                // Prepend username and password to hostname.
+                if ($solrInfo['username'] && $solrInfo['password']) {
+
+                    $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
+
+                } else {
+
+                    $host = $solrInfo['host'];
+
+                }
+
+                $context = stream_context_create(array (
+                    'http' => array (
+                        'method' => 'GET',
+                        'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
+                    )
+                ));
+
+                // Build request for adding new Solr core.
+                // @see http://wiki.apache.org/solr/CoreAdmin
+                $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml&action=CREATE&name='.$resArray['index_name'].'&instanceDir=dlfCore'.$resArray['index_name'].'&dataDir=data&configSet=dlf';
+
+                $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
+
+                // Process response.
+                if ($response) {
+
+                    $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
+
+                    if ($status && $status[0] == 0) {
+
+                        continue;
+
+                    }
+
+                }
+
+                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                    'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                    $GLOBALS['LANG']->getLL('update.solariumSolrUpdateNotOkay', TRUE),
+                    sprintf($GLOBALS['LANG']->getLL('update.solariumSolrUpdate', TRUE), $resArray['index_name']),
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
+                    FALSE
+                    );
+
+                $this->content .= $message->render();
+
+                return;
+
+            }
+
+        }
+
+        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            $GLOBALS['LANG']->getLL('update.solariumSolrUpdateOkay', TRUE),
+            $GLOBALS['LANG']->getLL('update.solariumSolrUpdate', TRUE),
+            \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+            FALSE
+            );
+
+        $this->content .= $message->render();
 
     }
 

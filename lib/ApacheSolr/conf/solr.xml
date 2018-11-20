@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Set the path to the Solr war file as "docBase". -->
-<Context docBase="/home/solr/apache-solr-for-kitodo.war" debug="0" crossContext="true">
-	<!-- Specify the Solr home directory as "value". -->
-	<Environment name="solr/home" type="java.lang.String" value="/home/solr" override="true"/>
-</Context>

@@ -5,20 +5,26 @@ Kitodo.Presentation is a feature-rich framework for building a METS-based digita
 
 Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://typo3.org), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media. It implements international standards such as [IIIF Image API](http://iiif.io/api/image), [OAI Protocol for Metadata Harvesting](http://www.openarchives.org/OAI/openarchivesprotocol.html), [METS](http://www.loc.gov/standards/mets), [MODS](http://www.loc.gov/standards/mods), [TEI](http://www.tei-c.org), [ALTO](http://www.loc.gov/standards/alto), and can be configured to support any other descriptive XML format using simple XPath expressions.
 
+<a href="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master">
+  <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master"/>
+</a>
 <a href="https://www.codacy.com/app/kitodo/kitodo-presentation">
   <img alt="Codacy Grade" src="https://api.codacy.com/project/badge/Grade/1291eba67cb744c9ad04a74883d45d84"/>
 </a>
+<a href="https://lgtm.com/projects/g/kitodo/kitodo-presentation/context:javascript">
+  <img alt="LGTM Language Grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/kitodo/kitodo-presentation.svg?logo=lgtm&logoWidth=18"/>
+</a>
+<a href="https://lgtm.com/projects/g/kitodo/kitodo-presentation/alerts/">
+  <img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/g/kitodo/kitodo-presentation.svg?logo=lgtm&logoWidth=18"/>
+</a>
 <a href="https://scan.coverity.com/projects/kitodo-presentation">
   <img alt="Coverity Status" src="https://scan.coverity.com/projects/11566/badge.svg"/>
-</a>
-<a href="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master">
-  <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master"/>
 </a>
 
 Requirements
 ------------
 
-Kitodo.Presentation requires [TYPO3 7 LTS](https://get.typo3.org) which in turn needs at least [PHP 5.5](https://secure.php.net) and [MySQL 5.5](https://www.mysql.com) or [MariaDB 5.5](https://mariadb.com). [Apache Solr](https://lucene.apache.org/solr) must be available at least in version 3.6.2, but any version up to 7.0.1 should be working as well.
+Kitodo.Presentation requires [TYPO3 7 LTS](https://get.typo3.org) with at least [PHP 7.0.0](https://secure.php.net) and [MySQL 5.5](https://www.mysql.com) or [MariaDB 5.5](https://mariadb.com). [Apache Solr](https://lucene.apache.org/solr) should be available in version 7.4, but any version since 5.0 should be working as well.
 
 Kitodo. Digital Library Modules
 -------------------------------

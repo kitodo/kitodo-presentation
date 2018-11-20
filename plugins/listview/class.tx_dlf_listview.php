@@ -348,8 +348,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
         // Configure @action URL for form.
         $linkConf = array (
-            'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1
+            'parameter' => $GLOBALS['TSFE']->id
         );
 
         if (!empty($this->piVars['logicalPage'])) {
