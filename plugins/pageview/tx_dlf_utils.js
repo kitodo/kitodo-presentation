@@ -502,7 +502,7 @@ dlfUtils.fetchZoomifyData = function (imageSourceObj) {
         var properties = $(response).find('IMAGE_PROPERTIES');
 
         var imageDataObj = {
-            src: response.URL.substring(0, response.URL.lastIndexOf("/") + 1),
+            src: imageSourceObj.url.substring(0, imageSourceObj.url.lastIndexOf("/") + 1),
             width: parseInt(properties.attr('WIDTH')),
             height: parseInt(properties.attr('HEIGHT')),
             tilesize: parseInt(properties.attr('TILESIZE')),
