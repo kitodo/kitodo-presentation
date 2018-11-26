@@ -688,7 +688,6 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
     if (image === undefined) return [];
 
     var scale = image.scale,
-        displayImageHeight = imageObj.height,
         offset = opt_offset !== undefined ? opt_offset : 0;
 
     // do rescaling and set a id
