@@ -232,7 +232,7 @@ return array (
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_dlf_structures',
-                'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY tx_dlf_structures.label',
+                'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) AND tx_dlf_structures.toplevel=1 ORDER BY tx_dlf_structures.label',
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
