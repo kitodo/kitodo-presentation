@@ -53,7 +53,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
         //
         // Create layer
         //
-        var extent = [offsetWidth, 0, imageSourceObj.width + offsetWidth, imageSourceObj.height],
+        var extent = [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0],
             layer = void 0;
 
         if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
@@ -151,11 +151,7 @@ dlfUtils.createOl3View = function (images) {
         maxLatY = images.reduce(function (prev, curr) {
         return Math.max(prev, curr.height);
     }, 0),
-        extent = images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY &&
-        images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIIF &&
-        images[0].mimetype !== dlfUtils.CUSTOM_MIMETYPE.IIP
-            ? [0, 0, maxLonX, maxLatY]
-            : [0, -maxLatY, maxLonX, 0];
+        extent = [0, -maxLatY, maxLonX, 0];
 
     // globally define max zoom
     window.OL3_MAX_ZOOM = 8;
@@ -703,7 +699,7 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
 
         for (var j = 0; j < oldCoordinates.length; j++) {
             newCoordinates.push(
-              [offset + scale * oldCoordinates[j][0], displayImageHeight - scale * oldCoordinates[j][1]]);
+              [offset + scale * oldCoordinates[j][0], 0 - scale * oldCoordinates[j][1]]);
         }
 
         features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));

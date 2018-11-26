@@ -233,13 +233,12 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
 
     // rescale coordinates
     var scale = this.image_.width / this.width_,
-        displayedImageHeight = this.image_.height,
         offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0,
         coordinatesRescale = [];
 
     for (var i = 0; i < coordinatesWithoutScale[0].length; i++) {
         coordinatesRescale.push([offset + ( scale * coordinatesWithoutScale[0][i][0]),
-            displayedImageHeight - (scale * coordinatesWithoutScale[0][i][1])]);
+            0 - (scale * coordinatesWithoutScale[0][i][1])]);
     };
 
     return new ol.geom.Polygon([coordinatesRescale]);
