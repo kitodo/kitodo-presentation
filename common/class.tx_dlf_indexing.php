@@ -70,15 +70,6 @@ class tx_dlf_indexing {
     protected static $solr;
 
     /**
-     * Array of toplevel structure elements
-     * @see loadIndexConf()
-     *
-     * @var	array
-     * @access protected
-     */
-    protected static $toplevel = array ();
-
-    /**
      * Insert given document into Solr index
      *
      * @access	public
@@ -447,22 +438,6 @@ class tx_dlf_indexing {
     protected static function loadIndexConf($pid) {
 
         if (!self::$fieldsLoaded) {
-
-            // Get the list of toplevel structures.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_structures.index_name AS index_name',
-                'tx_dlf_structures',
-                'tx_dlf_structures.toplevel=1 AND tx_dlf_structures.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_structures'),
-                '',
-                '',
-                ''
-            );
-
-            while ($toplevel = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-
-                self::$toplevel[] = $toplevel['index_name'];
-
-            }
 
             // Get the metadata indexing options.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
