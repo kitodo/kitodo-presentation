@@ -350,7 +350,7 @@ class tx_dlf_solr {
         $toplevel = array ();
 
         // Take over query parameters.
-        $params =  $this->params;
+        $params = $this->params;
 
         $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : array ();
 
@@ -365,7 +365,7 @@ class tx_dlf_solr {
         $this->numberOfHits = $results->getNumFound();
 
         // Restore query parameters
-        $params =  $this->params;
+        $params = $this->params;
 
         $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : array ();
 
@@ -383,7 +383,7 @@ class tx_dlf_solr {
         $params['filterquery'][] = array ('query' => 'toplevel:true');
 
         // Set join query to get all documents with the same uids.
-        $params['query'] = '{!join from=uid to=uid}'. $params['query'];
+        $params['query'] = '{!join from=uid to=uid}'.$params['query'];
 
         // Perform search to determine the total number of toplevel hits and fetch the required rows.
         $selectQuery = $this->service->createSelect($params);
@@ -439,6 +439,7 @@ class tx_dlf_solr {
      * @access	public
      *
      * @param	string		$query: The search query
+     * @param   array       $parameters: Additional search parameters
      *
      * @return	array       The Apache Solr Documents that were fetched
      */
@@ -462,6 +463,7 @@ class tx_dlf_solr {
         }
 
         return $searchresult;
+ 
     }
 
     /**
