@@ -278,7 +278,11 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     // Extend filter query to get all documents with the same uid.
                     foreach ($params['filterquery'] as $key=>$value) {
 
-                        $params['filterquery'][$key] = array ('query' => $value['query'].' OR toplevel:true');
+                        if (isset($value['query'])) {
+
+                            $params['filterquery'][$key]['query'] = $value['query'].' OR toplevel:true';
+
+                        }
 
                     }
 

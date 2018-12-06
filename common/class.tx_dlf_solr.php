@@ -375,7 +375,11 @@ class tx_dlf_solr {
         // Extend filter query to get all documents with the same uids.
         foreach ($params['filterquery'] as $key=>$value) {
 
-            $params['filterquery'][$key] = array ('query' => '{!join from=uid to=uid}'.$value['query']);
+            if (isset($value['query'])) {
+
+                $params['filterquery'][$key]['query'] = '{!join from=uid to=uid}'.$value['query'];
+
+            }
 
         }
 
