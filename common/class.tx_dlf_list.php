@@ -223,7 +223,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                         $record['metadata'] = $metadata;
 
-                    } elseif (($key = array_search(array('u' => $resArray['uid']), $record['subparts'], TRUE)) !== FALSE) {
+                    } elseif (($key = array_search(array ('u' => $resArray['uid']), $record['subparts'], TRUE)) !== FALSE) {
 
                         $record['subparts'][$key] = array (
                             'uid' => $resArray['uid'],
@@ -259,7 +259,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                             'highlighting' => array (
                                 'query' => tx_dlf_solr::escapeQuery($this->metadata['searchString']),
                                 'field' => 'fulltext',
-                                'usefastvectorhighlighter' => true
+                                'usefastvectorhighlighter' => TRUE
                             )
                         );
 
