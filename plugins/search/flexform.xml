@@ -78,18 +78,6 @@
 							</config>
 						</TCEforms>
 					</solrcore>
-					<limit>
-						<TCEforms>
-							<displayCond>FIELD:pages:REQ:true</displayCond>
-							<exclude>1</exclude>
-							<label>LLL:EXT:dlf/plugins/search/locallang.xml:tt_content.pi_flexform.limit</label>
-							<config>
-								<type>input</type>
-								<eval>num,int</eval>
-								<default>50000</default>
-							</config>
-						</TCEforms>
-					</limit>
 					<extendedSlotCount>
 						<TCEforms>
 							<displayCond>FIELD:pages:REQ:true</displayCond>

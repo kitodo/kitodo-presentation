@@ -70,15 +70,6 @@ class tx_dlf_indexing {
     protected static $solr;
 
     /**
-     * Array of toplevel structure elements
-     * @see loadIndexConf()
-     *
-     * @var	array
-     * @access protected
-     */
-    protected static $toplevel = array ();
-
-    /**
      * Insert given document into Solr index
      *
      * @access	public
@@ -448,22 +439,6 @@ class tx_dlf_indexing {
 
         if (!self::$fieldsLoaded) {
 
-            // Get the list of toplevel structures.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_structures.index_name AS index_name',
-                'tx_dlf_structures',
-                'tx_dlf_structures.toplevel=1 AND tx_dlf_structures.pid='.intval($pid).tx_dlf_helper::whereClause('tx_dlf_structures'),
-                '',
-                '',
-                ''
-            );
-
-            while ($toplevel = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-
-                self::$toplevel[] = $toplevel['index_name'];
-
-            }
-
             // Get the metadata indexing options.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.index_indexed AS index_indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.index_autocomplete AS index_autocomplete,tx_dlf_metadata.index_boost AS index_boost',
@@ -582,7 +557,8 @@ class tx_dlf_indexing {
 
             $solrDoc->setField('sid', $logicalUnit['id']);
 
-            $solrDoc->setField('toplevel', in_array($logicalUnit['type'], self::$toplevel));
+            // There can be only one toplevel unit per uid, independently of backend configuration
+            $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? TRUE : FALSE);
 
             $solrDoc->setField('type', $logicalUnit['type'], self::$fields['fieldboost']['type']);
 
