@@ -269,8 +269,9 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     // Set additional query parameters.
                     $params['start'] = 0;
 
-                    // All results are needed, so set the limit unreachable high.
-                    $params['rows'] = 1000000000;
+                    // Set reasonable limit for safety reasons.
+                    // We don't expect to get more than 10.000 hits per UID.
+                    $params['rows'] = 10000;
 
                     // Take over existing filter queries.
                     $params['filterquery'] = isset($this->metadata['options']['params']['filterquery']) ? $this->metadata['options']['params']['filterquery'] : array ();
