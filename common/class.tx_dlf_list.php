@@ -276,7 +276,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     $params['filterquery'] = isset($this->metadata['options']['params']['filterquery']) ? $this->metadata['options']['params']['filterquery'] : array ();
 
                     // Extend filter query to get all documents with the same uid.
-                    foreach ($params['filterquery'] as $key=>$value) {
+                    foreach ($params['filterquery'] as $key => $value) {
 
                         if (isset($value['query'])) {
 
@@ -332,7 +332,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                         } else {
 
                             $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : NULL;
-                            $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField('fulltext')[0] : "";
+                            $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField('fulltext')[0] : '';
 
                             $record['subparts'][$resArray->id] = array (
                                 'uid' => $resArray->uid,

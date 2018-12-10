@@ -373,7 +373,7 @@ class tx_dlf_solr {
         $params['fields'] = 'uid,id';
 
         // Extend filter query to get all documents with the same uids.
-        foreach ($params['filterquery'] as $key=>$value) {
+        foreach ($params['filterquery'] as $key => $value) {
 
             if (isset($value['query'])) {
 
@@ -458,15 +458,17 @@ class tx_dlf_solr {
 
         // Perform search.
         $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
-        $solr_response = $this->service->select($selectQuery);
+        $result = $this->service->select($selectQuery);
 
-        $searchresult = array ();
+        $resultSet = array ();
 
-        foreach ($solr_response as $doc) {
-            $searchresult[] = $doc;
+        foreach ($result as $doc) {
+
+            $resultSet[] = $doc;
+
         }
 
-        return $searchresult;
+        return $resultSet;
  
     }
 
