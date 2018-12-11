@@ -156,6 +156,7 @@ class tx_dlf_indexing {
 
                 }
 
+                // Commit all changes.
                 $updateQuery = self::$solr->service->createUpdate();
                 $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
@@ -557,7 +558,7 @@ class tx_dlf_indexing {
 
             $solrDoc->setField('sid', $logicalUnit['id']);
 
-            // There can be only one toplevel unit per uid, independently of backend configuration
+            // There can be only one toplevel unit per UID, independently of backend configuration
             $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? TRUE : FALSE);
 
             $solrDoc->setField('type', $logicalUnit['type'], self::$fields['fieldboost']['type']);
@@ -627,7 +628,6 @@ class tx_dlf_indexing {
             try {
 
                 $updateQuery->addDocument($solrDoc);
-                $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
 
             } catch (Exception $e) {
@@ -795,7 +795,6 @@ class tx_dlf_indexing {
             try {
 
                 $updateQuery->addDocument($solrDoc);
-                $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
 
             } catch (Exception $e) {
