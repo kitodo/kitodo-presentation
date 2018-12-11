@@ -50,7 +50,7 @@ class tx_dlf_tcemain {
 
                     break;
 
-                    // Field post-processing for table "tx_dlf_metadata".
+                // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
 
                     // Store field in index if it should appear in lists.
@@ -67,7 +67,7 @@ class tx_dlf_tcemain {
 
                     }
 
-                    // Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
+                // Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
                 case 'tx_dlf_collections':
                 case 'tx_dlf_libraries':
                 case 'tx_dlf_structures':
@@ -95,7 +95,7 @@ class tx_dlf_tcemain {
 
                     break;
 
-                    // Field post-processing for table "tx_dlf_solrcores".
+                // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
 
                     // Get number of existing cores.
@@ -172,7 +172,7 @@ class tx_dlf_tcemain {
 
             switch ($table) {
 
-                    // Field post-processing for table "tx_dlf_metadata".
+                // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
 
                     // Store field in index if it should appear in lists.
@@ -231,7 +231,7 @@ class tx_dlf_tcemain {
 
                     }
 
-                    // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
+                // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
                 case 'tx_dlf_structures':
 
                     // The index name should not be changed in production.
