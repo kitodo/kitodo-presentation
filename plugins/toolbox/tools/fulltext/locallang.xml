@@ -16,7 +16,7 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="fulltext-on">Activate Fulltext</label>
-			<label index="fulltext-off">Dectivate Fulltext</label>
+			<label index="fulltext-off">Deactivate Fulltext</label>
 			<label index="fulltext-not-available">No Fulltext available</label>
 		</languageKey>
 		<languageKey index="de" type="array">

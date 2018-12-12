@@ -57,7 +57,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext-on':'Activate Fulltext','fulltext-off':'Dectivate Fulltext'};
+        {'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext'};
 
     /**
      * @type {ol.Feature|undefined}
