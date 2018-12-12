@@ -111,7 +111,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             $selectedCollections = 'tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
 
-            $orderBy = 'FIELD(tx_dlf_collections.uid, '.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+            $orderBy = 'FIELD(tx_dlf_collections.uid,'.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
 
         }
 
@@ -154,6 +154,12 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
+        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+
+        // We only care about the UID and partOf in the results and want them sorted
+        $params['fields'] = 'uid,partof';
+        $params['sort'] = array ('uid' => 'asc');
+
         $collections = array ();
 
         while ($collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -170,11 +176,6 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
-        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
-
-        // We only care about the UID and partOf in the results and want them sorted
-        $parameters = array ("fl" => "uid,partof", "sort" => "uid asc");
-
         // Process results.
         foreach ($collections as $collection) {
 
@@ -186,15 +187,15 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             } else {
 
-                $solr_query .= 'collection:"'.$collection['index_name'].'"';
+                $solr_query .= 'collection:("'.$collection['index_name'].'")';
 
             }
 
-            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0', $parameters);
+            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0', $params);
 
-            $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $parameters);
+            $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $params);
 
-            // Titles are all documents that are "root"-elements i.e. partof == 0;
+            // Titles are all documents that are "root" elements i.e. partof == 0
             $titles = array ();
 
             foreach ($partOfNothing as $doc) {
@@ -204,16 +205,15 @@ class tx_dlf_collection extends tx_dlf_plugin {
             }
 
             // Volumes are documents that are both
-            // a) "leaf"-elements i.e. partof != 0
-            // b) "root"-elements that are not referenced by other documents ("root"-elements that have no descendants)
-
+            // a) "leaf" elements i.e. partof != 0
+            // b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
             $volumes = $titles;
 
             foreach ($partOfSomething as $doc) {
 
                 $volumes[] = $doc->uid;
 
-                // if a document is referenced via partof, it’s not a volume anymore
+                // If a document is referenced via partof, it’s not a volume anymore.
                 unset($volumes[$doc->partof]);
 
             }
@@ -357,18 +357,18 @@ class tx_dlf_collection extends tx_dlf_plugin {
             '1'
         );
 
-        // Fetch corresponding document UIDs from Solr
-        $solr_query = "";
+        // Fetch corresponding document UIDs from Solr.
+        $solr_query = '';
 
         $collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection);
 
-        if ($collectionData['index_query'] != "") {
+        if ($collectionData['index_query'] != '') {
 
             $solr_query .= '('.$collectionData['index_query'].')';
 
         } else {
 
-            $solr_query .= 'collection:'.'"'.$collectionData['index_name'].'"';
+            $solr_query .= 'collection:("'.$collectionData['index_name'].'")';
 
         }
 
@@ -386,9 +386,10 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
-        $parameters = array ("fl" => "uid", "sort" => "uid asc");
+        $params['fields'] = 'uid';
+        $params['sort'] = array ('uid' => 'asc');
 
-        $solrResult = $solr->search_raw($solr_query, $parameters);
+        $solrResult = $solr->search_raw($solr_query, $params);
 
         // initialize array
         $documentSet = [];
