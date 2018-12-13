@@ -10,6 +10,18 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+// Internet Explorer does not support String.prototype.endsWith
+if (String.prototype.endsWith === undefined) {
+    String.prototype.endsWith = function(searchString, length) {
+        if (searchString == null || searchString == '' || length!=null && searchString.length > length || searchString.length > this.length) {
+            return false;
+        }
+        length = length == null || length > this.length || length <= 0 ? this.length : length;
+        var substr = this.substr(0, length);
+        return substr.lastIndexOf(searchString) == length - searchString.length;
+    };
+}
+
 /**
  * Base namespace for utility functions used by the dlf module.
  *
