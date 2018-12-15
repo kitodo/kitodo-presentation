@@ -100,7 +100,7 @@ limitations under the License.
 		<!-- Unique identifier for the document in the index. -->
 		<field name="id" type="string" indexed="true" stored="true" required="true" />
 		<!-- Unique identifier for the document (or its top-level parent) in the TYPO3 database. -->
-		<field name="uid" type="int" indexed="true" stored="true" required="true" default="0" />
+		<field name="uid" type="int" indexed="true" stored="true" required="true" default="0" docValues="true"/>
 		<!-- PageID for the document (or its top-level parent) in the TYPO3 database. -->
 		<field name="pid" type="int" indexed="true" stored="false" required="true" default="0" />
 		<!-- Image number where this document starts. -->
