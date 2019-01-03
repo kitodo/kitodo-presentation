@@ -71,7 +71,7 @@
 			<label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
 			<label index="tt_content.pi_flexform.limitFacets">Maximale Facettenwerte</label>
 			<label index="tt_content.pi_flexform.resetFacets">Facetten zurücksetzen erlauben</label>
-			<label index="tt_content.pi_flexform.sortingFacets">Facettensortierung</label>
+			<label index="tt_content.pi_flexform.sortingFacets">Facetten Sortierung</label>
 			<label index="tt_content.pi_flexform.sortingFacets.count">Count</label>
 			<label index="tt_content.pi_flexform.sortingFacets.index">Index</label>			
 			<label index="tt_content.pi_flexform.suggest">Suchvorschläge anzeigen</label>
