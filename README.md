@@ -17,9 +17,6 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 <a href="https://lgtm.com/projects/g/kitodo/kitodo-presentation/alerts/">
   <img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/g/kitodo/kitodo-presentation.svg?logo=lgtm&logoWidth=18"/>
 </a>
-<a href="https://scan.coverity.com/projects/kitodo-presentation">
-  <img alt="Coverity Status" src="https://scan.coverity.com/projects/11566/badge.svg"/>
-</a>
 
 Requirements
 ------------
