@@ -412,6 +412,12 @@ dlfUtils.iiifProfiles = {
  */
 dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
 
+    if (typeof jsonld.profile == "string") {
+        jsonld.profile = [jsonld.profile, {}];
+    }
+    if (jsonld.profile !== undefined && jsonld.profile.length < 2) {
+        jsonld.profile.push({});
+    }
     var levelProfile = jsonld.profile === undefined || dlfUtils.iiifProfiles[jsonld.profile[0]] === undefined ? dlfUtils.iiifProfiles['none'] : dlfUtils.iiifProfiles[jsonld.profile[0]];
     return {
         src: uri,
