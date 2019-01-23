@@ -52,7 +52,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
         $entryArray['type'] = tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
 
-        $entryArray['pagination'] = $entry['pagination'];
+        $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
 
         $entryArray['_OVERRIDE_HREF'] = '';
 
