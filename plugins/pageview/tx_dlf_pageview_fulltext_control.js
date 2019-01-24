@@ -417,7 +417,7 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
     if (features !== undefined) {
         $('#tx-dlf-fulltextselection').children().remove();
         for (var i = 0; i < features.length; i++) {
-            var textlines = features[i].get('textlines')
+            var textlines = features[i].get('textlines');
             for (var j = 0; j < textlines.length; j++) {
                 var textLineSpan = $('<span class="textline" id="' + textlines[j].getId() + '">');
                 var content = textlines[j].get('content');
