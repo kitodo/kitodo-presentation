@@ -49,7 +49,7 @@ class tx_dlf_pagegrid extends tx_dlf_plugin {
         $markerArray['###NUMBER###'] = $number;
 
         // Set pagination.
-        $markerArray['###PAGINATION###'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['orderlabel'];
+        $markerArray['###PAGINATION###'] = htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['orderlabel']);
 
         // Get thumbnail or placeholder.
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$this->conf['fileGrpThumbs']])) {
