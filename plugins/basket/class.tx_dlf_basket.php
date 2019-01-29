@@ -736,7 +736,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
 
         $mailData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail);
 
-        $body = $this->pi_getLL('mailBody', '', TRUE)."\n";
+        $mailText = $this->pi_getLL('mailBody', '', TRUE)."\n";
 
         $numberOfPages = 0;
 
@@ -772,8 +772,22 @@ class tx_dlf_basket extends tx_dlf_plugin {
         // Remove leading/tailing pdfparamseperator
         $pdfUrl = trim($pdfUrl, $this->conf['pdfparamseparator']);
 
-        $body .= $pdfUrl;
+        $mailBody = $mailText.$pdfUrl;
 
+        // Get hook objects.
+        $hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
+        
+        // Hook for getting a customized mail body.
+        foreach ($hookObjects as $hookObj) {
+            
+            if (method_exists($hookObj, 'customizeMailBody')) {
+                
+                $mailBody = $hookObj->customizeMailBody($mailText, $pdfUrl);
+                
+            }
+            
+        }  
+        
         $from = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
 
         // send mail
@@ -790,7 +804,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
             // Set the To addresses with an associative array
             ->setTo(array ($mailData['mail'] => $mailData['name']))
 
-            ->setBody($body, 'text/html')
+            ->setBody($mailBody, 'text/html')
 
             ->send()
         ;
