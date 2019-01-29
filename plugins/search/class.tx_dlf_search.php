@@ -811,7 +811,8 @@ class tx_dlf_search extends tx_dlf_plugin {
                 'type' => 'field',
                 'key' => $field,
                 'field' => $field,
-                'limit' => $this->conf['limitFacets']
+                'limit' => $this->conf['limitFacets'],
+                'sort' => isset($this->conf['sortingFacets']) ? $this->conf['sortingFacets'] : 'count'
             );
 
         }
