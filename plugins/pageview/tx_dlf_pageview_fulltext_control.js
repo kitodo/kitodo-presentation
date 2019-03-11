@@ -57,7 +57,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext-on':'Activate Fulltext','fulltext-off':'Dectivate Fulltext'};
+        {'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext'};
 
     /**
      * @type {ol.Feature|undefined}
@@ -414,41 +414,31 @@ dlfViewerFullTextControl.fetchFulltextDataFromServer = function(url, image, opt_
  */
 dlfViewerFullTextControl.prototype.showFulltext = function(features) {
 
-    var popupHTML = '',
-      /**
-       * Functions wraps fulltext context of a given textblock to a html string
-       * @param {ol.Feature} feature
-       * @return {string}
-       */
-      appendHTML = function(feature) {
-          var html = '',
-            textlines = feature.get('textlines');
-
-          for (var i = 0; i < textlines.length; i++) {
-
-              html = html + '<span class="textline" id="' + textlines[i].getId() + '">';
-
-              var content = textlines[i].get('content');
-              for (var j = 0; j < content.length; j++) {
-                  html = html + '<span class="' + content[j].get('type') + '" id="' + content[j].getId()
-                    + '">' + content[j].get('fulltext').replace(/\n/g, '<br />') + '</span>';
-              }
-
-              html = html + '</span>';
-          }
-
-          return html;
-      };
-
-    // iterate over given textblocks
     if (features !== undefined) {
-
+        $('#tx-dlf-fulltextselection').children().remove();
         for (var i = 0; i < features.length; i++) {
-            popupHTML = popupHTML + appendHTML(features[i]) + '<br /><br />';
+            var textlines = features[i].get('textlines');
+            for (var j = 0; j < textlines.length; j++) {
+                var textLineSpan = $('<span class="textline" id="' + textlines[j].getId() + '">');
+                var content = textlines[j].get('content');
+                
+                for (var k = 0; k < content.length; k++) {
+                    var span = $('<span class="' + content[k].get('type') + '" id="' + content[k].getId() + '"/>');
+                    var spanText = content[k].get('fulltext');
+                    var spanTextLines = spanText.split(/\n/g);
+                    for (var l = 0; l < spanTextLines.length; l++) {
+                        span.append(document.createTextNode(spanTextLines[l]));
+                        if (l < spanTextLines.length - 1) {
+                            span.append($('<br />'));
+                        }
+                    }
+                    textLineSpan.append(span);
+                }
+                $('#tx-dlf-fulltextselection').append(textLineSpan);
+            }
+            $('#tx-dlf-fulltextselection').append('<br /><br />');
         }
 
     };
-
-    $('#tx-dlf-fulltextselection').html(popupHTML);
 
 };

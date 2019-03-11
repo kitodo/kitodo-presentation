@@ -389,7 +389,7 @@ dlfViewer.prototype.init = function(controlNames) {
             if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lon) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(lat) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoom)) {
                 // make sure, zoom center is on viewport
                 var center = this.map.getView().getCenter();
-                if ((lon < (2.2 * center[0])) && (lat < (2.2 * center[1]))) {
+                if ((lon < (2.2 * center[0])) && (lat < (-0.2 * center[1])) && (lat > (2.2 * center[1]))) {
                     this.map.zoomTo([lon, lat], zoom);
                 }
             }

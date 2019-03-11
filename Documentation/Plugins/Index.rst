@@ -276,6 +276,7 @@ Search
 	facets                      :ref:`t3tsref:data-type-list`
 	limitFacets                 :ref:`t3tsref:data-type-integer`      15
 	resetFacets                 :ref:`t3tsref:data-type-boolean`      0
+   sortingFacets               :ref:`t3tsref:data-type-string`
 	suggest                     :ref:`t3tsref:data-type-boolean`      1
 	showSingleResult            :ref:`t3tsref:data-type-boolean`      0
 	targetPid                   :ref:`t3tsref:data-type-page-id`

@@ -10,6 +10,18 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+// Internet Explorer does not support String.prototype.endsWith
+if (String.prototype.endsWith === undefined) {
+    String.prototype.endsWith = function(searchString, length) {
+        if (searchString == null || searchString == '' || length!=null && searchString.length > length || searchString.length > this.length) {
+            return false;
+        }
+        length = length == null || length > this.length || length <= 0 ? this.length : length;
+        var substr = this.substr(0, length);
+        return substr.lastIndexOf(searchString) == length - searchString.length;
+    };
+}
+
 /**
  * Base namespace for utility functions used by the dlf module.
  *
@@ -400,6 +412,12 @@ dlfUtils.iiifProfiles = {
  */
 dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
 
+    if (typeof jsonld.profile == "string") {
+        jsonld.profile = [jsonld.profile, {}];
+    }
+    if (jsonld.profile !== undefined && jsonld.profile.length < 2) {
+        jsonld.profile.push({});
+    }
     var levelProfile = jsonld.profile === undefined || dlfUtils.iiifProfiles[jsonld.profile[0]] === undefined ? dlfUtils.iiifProfiles['none'] : dlfUtils.iiifProfiles[jsonld.profile[0]];
     return {
         src: uri,
