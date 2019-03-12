@@ -9,31 +9,28 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-$EM_CONF[$_EXTKEY] = array (
+$EM_CONF[$_EXTKEY] = [
     'title' => 'Kitodo.Presentation',
     'description' => 'Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.',
-    'category' => 'fe',
-    'author' => 'Kitodo. Key to digital objects e.V.',
-    'author_email' => 'contact@kitodo.org',
-    'author_company' => 'http://www.kitodo.org/',
+    'version' => '3.0.0',
+    'category' => 'misc',
+    'constraints' => [
+        'depends' => [
+            'php' => '7.0.0-',
+            'typo3' => '7.6.0-8.9.99'
+        ],
+        'conflicts' => [],
+        'suggests' => []
+    ],
     'state' => 'stable',
-    'internal' => '',
-    'uploadfolder' => TRUE,
+    'uploadfolder' => FALSE,
     'createDirs' => '',
     'clearCacheOnLoad' => FALSE,
-    'version' => '2.2.0',
-    'constraints' => array (
-        'depends' => array (
-            'php' => '7.0.0-',
-            'typo3' => '7.6.0-',
-        ),
-        'conflicts' => array (
-        ),
-        'suggests' => array (
-        ),
-    ),
-    'autoload' => array (
-        'classmap' => array (
+    'author' => 'Sebastian Meyer (Maintainer)',
+    'author_email' => 'contact@kitodo.org',
+    'author_company' => 'Kitodo. Key to digital objects e. V.',
+    'autoload' => [
+        'classmap' => [
             'vendor/solarium',
             'vendor/symfony/event-dispatcher',
             'Classes/Cli/class.tx_dlf_cli.php',
@@ -76,8 +73,7 @@ $EM_CONF[$_EXTKEY] = array (
             'plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php',
             'plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php',
             'plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php',
-            'plugins/validator/class.tx_dlf_validator.php',
-        ),
-    ),
-    '_md5_values_when_last_written' => '',
-);
+            'plugins/validator/class.tx_dlf_validator.php'
+        ]
+    ]
+];
