@@ -18,7 +18,7 @@ return array (
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY label',
         'delete'	=> 'deleted',
-        'iconfile'	=> 'EXT:dlf/res/icons/txdlfsolrcores.png',
+        'iconfile'	=> 'EXT:dlf/Resources/Public/Icons/txdlfsolrcores.png',
         'rootLevel'	=> -1,
         'dividers2tabs' => 2,
         'searchFields' => 'label,index_name',

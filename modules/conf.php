@@ -17,6 +17,6 @@ $MCONF['script'] = '_DISPATCH';
 
 $MCONF['defaultMod'] = 'txdlfindexing';
 
-$MLANG['default']['tabs_images']['tab'] = '../res/icons/txdlfmodules.png';
+$MLANG['default']['tabs_images']['tab'] = '../Resources/Public/Icons/txdlfmodules.png';
 
 $MLANG['default']['ll_ref'] = 'LLL:EXT:dlf/modules/locallang_mod.xml';

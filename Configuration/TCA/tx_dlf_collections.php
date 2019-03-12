@@ -28,7 +28,7 @@ return array (
             'fe_group' => 'fe_group',
         ),
         'requestUpdate' => 'sys_language_uid',
-        'iconfile'	=> 'EXT:dlf/res/icons/txdlfcollections.png',
+        'iconfile'	=> 'EXT:dlf/Resources/Public/Icons/txdlfcollections.png',
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,index_name,oai_name,fe_cruser_id',

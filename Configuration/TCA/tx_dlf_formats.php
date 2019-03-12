@@ -18,7 +18,7 @@ return array (
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY type',
         'delete'	=> 'deleted',
-        'iconfile'	=> 'EXT:dlf/res/icons/txdlfformats.png',
+        'iconfile'	=> 'EXT:dlf/Resources/Public/Icons/txdlfformats.png',
         'rootLevel'	=> 1,
         'dividers2tabs' => 2,
         'searchFields' => 'type,class',
