@@ -100,6 +100,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         $orderBy = 'tx_dlf_collections.label';
 
+        $showUserDefinedColls = '';
+
         // Handle collections set by configuration.
         if ($this->conf['collections']) {
 
@@ -115,10 +117,12 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
-        $showUserDefinedColls = ' AND tx_dlf_collections.fe_cruser_id=0';
-
         // Should user-defined collections be shown?
-        if (!empty($this->conf['show_userdefined']) && $this->conf['show_userdefined'] > 0) {
+        if (empty($this->conf['show_userdefined'])) {
+
+            $showUserDefinedColls = ' AND tx_dlf_collections.fe_cruser_id=0';
+
+        } elseif ($this->conf['show_userdefined'] > 0) {
 
             if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
 
@@ -150,7 +154,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
-            return $this->showSingleCollection(intval($resArray['uid']));
+            $this->showSingleCollection(intval($resArray['uid']));
 
         }
 
@@ -176,6 +180,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
+        $markerArray = array ();
+
         // Process results.
         foreach ($collections as $collection) {
 
@@ -196,31 +202,27 @@ class tx_dlf_collection extends tx_dlf_plugin {
             $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $params);
 
             // Titles are all documents that are "root" elements i.e. partof == 0
-            $titles = array ();
+            $collection['titles'] = array ();
 
             foreach ($partOfNothing as $doc) {
 
-                $titles[] = $doc->uid;
+                $collection['titles'][$doc->uid] = $doc->uid;
 
             }
 
             // Volumes are documents that are both
             // a) "leaf" elements i.e. partof != 0
             // b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
-            $volumes = $titles;
+            $collection['volumes'] = $collection['titles'];
 
             foreach ($partOfSomething as $doc) {
 
-                $volumes[] = $doc->uid;
+                $collection['volumes'][$doc->uid] = $doc->uid;
 
                 // If a document is referenced via partof, it’s not a volume anymore.
-                unset($volumes[$doc->partof]);
+                unset($collection['volumes'][$doc->partof]);
 
             }
-
-            $collection['titles'] = array_unique($titles);
-
-            $collection['volumes'] = array_unique($volumes);
 
             // Generate random but unique array key taking priority into account.
             do {
@@ -378,11 +380,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_collection->showSingleCollection('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_collection->showSingleCollection('.intval($id).')] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
             }
 
-            return $content;
+            return;
 
         }
 
