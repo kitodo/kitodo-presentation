@@ -105,7 +105,7 @@ abstract class tx_dlf_module extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
         $this->doc->setModuleTemplate('EXT:'.$this->extKey.'/modules/'.$this->modPath.'template.tmpl');
 
-        $this->doc->getPageRenderer()->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($this->extKey).'res/backend.css');
+        $this->doc->getPageRenderer()->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($this->extKey).'Resources/Public/Stylesheet/backend.css');
 
         $this->doc->backPath = $GLOBALS['BACK_PATH'];
 
