@@ -564,14 +564,15 @@ class tx_dlf_em {
 
         $nsDefined = array (
             'MODS' => FALSE,
-            'TEIHDR' => FALSE
+            'TEIHDR' => FALSE,
+            'ALTO' => FALSE
         );
 
-        // Check if formats "MODS" and "TEIHDR" exist.
+        // Check existing format specifications.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'type',
             'tx_dlf_formats',
-            '(type='.$GLOBALS['TYPO3_DB']->fullQuoteStr('MODS', 'tx_dlf_formats').' OR type='.$GLOBALS['TYPO3_DB']->fullQuoteStr('TEIHDR', 'tx_dlf_formats').')'.tx_dlf_helper::whereClause('tx_dlf_formats')
+            '1=1'.tx_dlf_helper::whereClause('tx_dlf_formats')
         );
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -605,6 +606,19 @@ class tx_dlf_em {
                 'root' => 'teiHeader',
                 'namespace' => 'http://www.tei-c.org/ns/1.0',
                 'class' => 'tx_dlf_teihdr'
+            );
+
+        }
+
+        // Add ALTO namespace.
+        if (!$nsDefined['ALTO']) {
+
+            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+                'pid' => 0,
+                'type' => 'ALTO',
+                'root' => 'alto',
+                'namespace' => 'http://www.loc.gov/standards/alto/ns-v2#',
+                'class' => 'tx_dlf_alto'
             );
 
         }
