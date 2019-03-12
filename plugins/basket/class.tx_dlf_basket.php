@@ -394,6 +394,8 @@ class tx_dlf_basket extends tx_dlf_plugin {
      */
     public function addToBasket($_piVars, $basketData) {
 
+        $output = '';
+
         if (!$_piVars['startpage']) {
 
             $page = 0;
@@ -786,8 +788,8 @@ class tx_dlf_basket extends tx_dlf_plugin {
                 
             }
             
-        }  
-        
+        }
+
         $from = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
 
         // send mail
@@ -848,6 +850,8 @@ class tx_dlf_basket extends tx_dlf_plugin {
     public function printDocument() {
 
         $pdfUrl = $this->conf['pdfprint'];
+
+        $numberOfPages = 0;
 
         foreach ($this->piVars['selected'] as $docId => $docValue) {
 
