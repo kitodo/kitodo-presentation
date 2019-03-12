@@ -40,9 +40,9 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 
         $output = array ();
 
-        $output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/blue.monday/css/jplayer.blue.monday.min.css">';
+        $output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css">';
 
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.min.js"></script>';
+        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js"></script>';
 
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/audioplayer/js/tx_dlf_audioplayer.js"></script>';
 
@@ -60,7 +60,7 @@ class tx_dlf_audioplayer extends tx_dlf_plugin {
 						url:  "' . $this->audio['url'].'"
 					},
 					parentElId: "tx-dlf-audio",
-					swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/jPlayer/jquery.jplayer.swf"
+					swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
 				});
 			});
 		</script>';
