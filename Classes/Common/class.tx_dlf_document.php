@@ -2561,7 +2561,7 @@ final class tx_dlf_document {
                     }
 
                     // Get hook objects.
-                    $hookObjects = tx_dlf_helper::getHookObjects('common/class.tx_dlf_document.php');
+                    $hookObjects = tx_dlf_helper::getHookObjects('Classes/Common/class.tx_dlf_document.php');
 
                     // Apply hooks.
                     foreach ($hookObjects as $hookObj) {

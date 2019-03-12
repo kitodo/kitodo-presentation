@@ -24,7 +24,7 @@ abstract class tx_dlf_plugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
     public $prefixId = 'tx_dlf';
 
-    public $scriptRelPath = 'common/class.tx_dlf_plugin.php';
+    public $scriptRelPath = 'Classes/Common/class.tx_dlf_plugin.php';
 
     // Plugins are cached by default (@see setCache()).
     public $pi_USER_INT_obj = FALSE;
