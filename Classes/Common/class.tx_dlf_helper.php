@@ -612,11 +612,11 @@ class tx_dlf_helper {
 
         if (preg_match('/^[a-z]{3}$/', $isoCode)) {
 
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'lib/ISO-639/iso-639-2b.xml';
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/ISO-639/iso-639-2b.xml';
 
         } elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
 
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'lib/ISO-639/iso-639-1.xml';
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/ISO-639/iso-639-1.xml';
 
         } else {
 
