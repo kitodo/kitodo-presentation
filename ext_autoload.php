@@ -12,7 +12,7 @@
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('dlf');
 
 return array (
-    'tx_dlf_cli' => $extensionPath.'cli/class.tx_dlf_cli.php',
+    'tx_dlf_cli' => $extensionPath.'Classes/Cli/class.tx_dlf_cli.php',
     'tx_dlf_alto' => $extensionPath.'common/class.tx_dlf_alto.php',
     'tx_dlf_document' => $extensionPath.'common/class.tx_dlf_document.php',
     'tx_dlf_format' => $extensionPath.'common/class.tx_dlf_format.php',

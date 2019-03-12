@@ -36,7 +36,7 @@ $EM_CONF[$_EXTKEY] = array (
         'classmap' => array (
             'vendor/solarium',
             'vendor/symfony/event-dispatcher',
-            'cli/class.tx_dlf_cli.php',
+            'Classes/Cli/class.tx_dlf_cli.php',
             'common/class.tx_dlf_alto.php',
             'common/class.tx_dlf_document.php',
             'common/class.tx_dlf_format.php',
