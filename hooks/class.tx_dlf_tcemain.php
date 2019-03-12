@@ -301,12 +301,12 @@ class tx_dlf_tcemain {
                 // After database operations for table "tx_dlf_documents".
                 case 'tx_dlf_documents':
 
-                    // Delete/reindex document in Solr according to "hidden" status in database.
-                    if (isset($fieldArray['hidden'])) {
+                    // Delete/reindex document in Solr if "hidden" status or collections have changed.
+                    if (isset($fieldArray['hidden']) || isset($fieldArray['collections'])) {
 
                         // Get Solr core.
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                            'tx_dlf_solrcores.uid',
+                            'tx_dlf_solrcores.uid,tx_dlf_documents.hidden',
                             'tx_dlf_solrcores,tx_dlf_documents',
                             'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
                             '',
@@ -316,9 +316,9 @@ class tx_dlf_tcemain {
 
                         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
 
-                            list ($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+                            list ($core, $hidden) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
 
-                            if ($fieldArray['hidden']) {
+                            if ($hidden) {
 
                                 // Establish Solr connection.
                                 if ($solr = tx_dlf_solr::getInstance($core)) {

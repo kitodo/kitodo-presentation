@@ -1048,7 +1048,7 @@ final class tx_dlf_document {
 
                 if (TYPO3_DLOG) {
 
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"'.self::$extKey, SYSLOG_SEVERITY_WARNING);
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
                 }
 
@@ -1499,8 +1499,7 @@ final class tx_dlf_document {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type '.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures'),
-                                            self::$extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_document->save('.$_pid.', '.$_core.')] Could not identify document/structure type '.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures'), self::$extKey, SYSLOG_SEVERITY_ERROR);
 
             }
 
