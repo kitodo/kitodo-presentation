@@ -9,6 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
+
 /**
  * Hooks and helper for the extension manager.
  *
@@ -47,7 +50,7 @@ class tx_dlf_em {
      */
     public function checkSolrConnection(&$params, &$pObj) {
 
-        $solrInfo = tx_dlf_solr::getSolrConnectionInfo();
+        $solrInfo = Solr::getSolrConnectionInfo();
 
         // Prepend username and password to hostname.
         if (!empty($solrInfo['username']) && !empty($solrInfo['password'])) {
@@ -178,7 +181,7 @@ class tx_dlf_em {
                         $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['endtime'] => 0
                     );
 
-                    tx_dlf_helper::processDBasAdmin($data);
+                    Helper::processDBasAdmin($data);
 
                     // Check if configuration was successful.
                     if ($this->checkCliUser(TRUE, $groupUid)) {
@@ -235,7 +238,7 @@ class tx_dlf_em {
                     'usergroup' => intval($groupUid)
                 );
 
-                $substUid = tx_dlf_helper::processDBasAdmin($data);
+                $substUid = Helper::processDBasAdmin($data);
 
                 // Check if creation was successful.
                 if (!empty($substUid[$tempUid])) {
@@ -392,7 +395,7 @@ class tx_dlf_em {
                         $GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
                     );
 
-                    tx_dlf_helper::processDBasAdmin($data);
+                    Helper::processDBasAdmin($data);
 
                     // Check if configuration was successful.
                     if ($this->checkCliGroup(TRUE, $settings)) {
@@ -450,7 +453,7 @@ class tx_dlf_em {
                     'tables_modify' => implode(',', $settings['tables_modify'])
                 );
 
-                $substUid = tx_dlf_helper::processDBasAdmin($data);
+                $substUid = Helper::processDBasAdmin($data);
 
                 // Check if creation was successful.
                 if (!empty($substUid[$tempUid])) {
@@ -572,7 +575,7 @@ class tx_dlf_em {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'type',
             'tx_dlf_formats',
-            '1=1'.tx_dlf_helper::whereClause('tx_dlf_formats')
+            '1=1'.Helper::whereClause('tx_dlf_formats')
         );
 
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -626,7 +629,7 @@ class tx_dlf_em {
         if (!empty($data)) {
 
             // Process changes.
-            $substUid = tx_dlf_helper::processDBasAdmin($data);
+            $substUid = Helper::processDBasAdmin($data);
 
             if (!empty($substUid)) {
 

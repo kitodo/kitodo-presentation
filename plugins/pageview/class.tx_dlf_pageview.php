@@ -17,7 +17,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_pageview extends tx_dlf_plugin {
+class tx_dlf_pageview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/pageview/class.tx_dlf_pageview.php';
 

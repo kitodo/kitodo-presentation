@@ -9,6 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Feeds' for the 'dlf' extension.
  *
@@ -17,7 +20,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_feeds extends tx_dlf_plugin {
+class tx_dlf_feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/feeds/class.tx_dlf_feeds.php';
 
@@ -62,7 +65,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_libraries.label AS label',
             'tx_dlf_libraries',
-            'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).tx_dlf_helper::whereClause('tx_dlf_libraries'),
+            'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).Helper::whereClause('tx_dlf_libraries'),
             '',
             '',
             '1'
@@ -101,7 +104,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
                 'tx_dlf_documents',
                 'tx_dlf_relations',
                 'tx_dlf_collections',
-                'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                'AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$additionalWhere.Helper::whereClause('tx_dlf_documents').Helper::whereClause('tx_dlf_collections'),
                 'tx_dlf_documents.uid',
                 'tx_dlf_documents.tstamp DESC',
                 intval($this->conf['limit'])
@@ -119,7 +122,7 @@ class tx_dlf_feeds extends tx_dlf_plugin {
                     // Get title of superior document.
                     if ((empty($resArray['title']) || !empty($this->conf['prependSuperiorTitle'])) && !empty($resArray['partof'])) {
 
-                        $superiorTitle = tx_dlf_document::getTitle($resArray['partof'], TRUE);
+                        $superiorTitle = Document::getTitle($resArray['partof'], TRUE);
 
                         if (!empty($superiorTitle)) {
 

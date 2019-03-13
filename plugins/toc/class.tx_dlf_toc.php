@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Viewer' for the 'dlf' extension.
  *
@@ -17,7 +19,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_toc extends tx_dlf_plugin {
+class tx_dlf_toc extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/toc/class.tx_dlf_toc.php';
 
@@ -34,7 +36,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
      *
      * @access	protected
      *
-     * @param	array		$entry: The entry's array from tx_dlf_document->getLogicalStructure
+     * @param	array		$entry: The entry's array from \Kitodo\Dlf\Common\Document->getLogicalStructure
      * @param	boolean		$recursive: Whether to include the child entries
      *
      * @return	array		HMENU array for menu entry
@@ -50,7 +52,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
         $entryArray['orderlabel'] = $entry['orderlabel'];
 
-        $entryArray['type'] = tx_dlf_helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
+        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
 
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
 
@@ -186,7 +188,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
 
         $TSconfig['special.']['userFunc'] = 'tx_dlf_toc->makeMenuArray';
 
-        $TSconfig = tx_dlf_helper::array_merge_recursive_overrule($this->conf['menuConf.'], $TSconfig);
+        $TSconfig = Helper::array_merge_recursive_overrule($this->conf['menuConf.'], $TSconfig);
 
         $markerArray['###TOCMENU###'] = $this->cObj->HMENU($TSconfig);
 
@@ -279,7 +281,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
             }
 
             // Get all child documents from database.
-            $whereClause = 'tx_dlf_documents.partof='.intval($this->doc->uid).' AND tx_dlf_documents.structure=tx_dlf_structures.uid AND tx_dlf_structures.pid='.$this->doc->pid.tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_structures');
+            $whereClause = 'tx_dlf_documents.partof='.intval($this->doc->uid).' AND tx_dlf_documents.structure=tx_dlf_structures.uid AND tx_dlf_structures.pid='.$this->doc->pid.Helper::whereClause('tx_dlf_documents').Helper::whereClause('tx_dlf_structures');
 
             if ($this->conf['excludeOther']) {
 

@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Hooks and helper for the '\TYPO3\CMS\Backend\Form\FormEngine' library.
  *
@@ -94,7 +96,7 @@ class tx_dlf_tceforms {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'label,uid',
                     'tx_dlf_collections',
-                    'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_collections'),
+                    'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.Helper::whereClause('tx_dlf_collections'),
                     '',
                     'label',
                     ''
@@ -162,7 +164,7 @@ class tx_dlf_tceforms {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'label,index_name',
                     'tx_dlf_metadata',
-                    'index_indexed=1 AND pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                    'index_indexed=1 AND pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.Helper::whereClause('tx_dlf_metadata'),
                     '',
                     'sorting',
                     ''
@@ -230,7 +232,7 @@ class tx_dlf_tceforms {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'label,index_name',
                     'tx_dlf_metadata',
-                    'is_facet=1 AND pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                    'is_facet=1 AND pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.Helper::whereClause('tx_dlf_metadata'),
                     '',
                     'sorting',
                     ''
@@ -298,7 +300,7 @@ class tx_dlf_tceforms {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'label,uid',
                     'tx_dlf_libraries',
-                    'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_libraries'),
+                    'pid='.intval($pages).' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'.Helper::whereClause('tx_dlf_libraries'),
                     '',
                     'label',
                     ''
@@ -366,7 +368,7 @@ class tx_dlf_tceforms {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'label,uid',
                     'tx_dlf_solrcores',
-                    'pid IN ('.intval($pages).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+                    'pid IN ('.intval($pages).',0)'.Helper::whereClause('tx_dlf_solrcores'),
                     '',
                     'label',
                     ''

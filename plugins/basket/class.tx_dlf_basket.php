@@ -9,6 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Basket' for the 'dlf' extension.
  *
@@ -17,7 +20,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_basket extends tx_dlf_plugin {
+class tx_dlf_basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/basket/class.tx_dlf_basket.php';
 
@@ -63,7 +66,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
             $query = $GLOBALS['TYPO3_DB']->SELECTquery(
                 '*',
                 'tx_dlf_basket',
-                'tx_dlf_basket.fe_user_id='.intval($insertArray['fe_user_id']).tx_dlf_helper::whereClause('tx_dlf_basket'),
+                'tx_dlf_basket.fe_user_id='.intval($insertArray['fe_user_id']).Helper::whereClause('tx_dlf_basket'),
                 '',
                 '',
                 '1'
@@ -80,7 +83,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
             $query = $GLOBALS['TYPO3_DB']->SELECTquery(
                 '*',
                 'tx_dlf_basket',
-                'tx_dlf_basket.session_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($sessionId, 'tx_dlf_basket').tx_dlf_helper::whereClause('tx_dlf_basket'),
+                'tx_dlf_basket.session_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($sessionId, 'tx_dlf_basket').Helper::whereClause('tx_dlf_basket'),
                 '',
                 '',
                 '1'
@@ -202,7 +205,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         $resultMail = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             '*',
             'tx_dlf_mail',
-            '1'.tx_dlf_helper::whereClause('tx_dlf_mail'),
+            '1'.Helper::whereClause('tx_dlf_mail'),
             '',
             'tx_dlf_mail.sorting',
             ''
@@ -241,7 +244,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         $resultPrinter = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             '*',
             'tx_dlf_printer',
-            '1'.tx_dlf_helper::whereClause('tx_dlf_printer'),
+            '1'.Helper::whereClause('tx_dlf_printer'),
             '',
             '',
             ''
@@ -433,7 +436,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
             }
 
             // get document instance to load further information
-            $document = tx_dlf_document::getInstance($documentItem['id'], 0);
+            $document = Document::getInstance($documentItem['id'], 0);
 
             // set endpage for toc and subentry based on logid
             if (($_piVars['addToBasket'] == 'subentry') or ($_piVars['addToBasket'] == 'toc')) {
@@ -629,7 +632,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
     public function getDocumentData($id, $data) {
 
         // get document instance to load further information
-        $document = tx_dlf_document::getInstance($id, 0);
+        $document = Document::getInstance($id, 0);
 
         if ($document) {
 
@@ -730,7 +733,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         $resultMail = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             '*',
             'tx_dlf_mail',
-            'tx_dlf_mail.uid="'.intval($mailId).'"'.tx_dlf_helper::whereClause('tx_dlf_mail'),
+            'tx_dlf_mail.uid="'.intval($mailId).'"'.Helper::whereClause('tx_dlf_mail'),
             '',
             '',
             '1'
@@ -777,7 +780,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         $mailBody = $mailText.$pdfUrl;
 
         // Get hook objects.
-        $hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
+        $hookObjects = Helper::getHookObjects($this->scriptRelPath);
         
         // Hook for getting a customized mail body.
         foreach ($hookObjects as $hookObj) {
@@ -874,7 +877,7 @@ class tx_dlf_basket extends tx_dlf_plugin {
         $resultPrinter = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             '*',
             'tx_dlf_printer',
-            'tx_dlf_printer.uid="'.intval($printerId).'"'.tx_dlf_helper::whereClause('tx_dlf_basket'),
+            'tx_dlf_printer.uid="'.intval($printerId).'"'.Helper::whereClause('tx_dlf_basket'),
             '',
             '',
             '1'

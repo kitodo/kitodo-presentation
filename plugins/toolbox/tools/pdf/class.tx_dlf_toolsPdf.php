@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Tool 'PDF Download' for the plugin 'DLF: Toolbox' of the 'dlf' extension.
  *
@@ -18,7 +20,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_toolsPdf extends tx_dlf_plugin {
+class tx_dlf_toolsPdf extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php';
 
@@ -37,7 +39,7 @@ class tx_dlf_toolsPdf extends tx_dlf_plugin {
         $this->init($conf);
 
         // Merge configuration with conf array of toolbox.
-        $this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+        $this->conf = Helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
 
         // Load current document.
         $this->loadDocument();

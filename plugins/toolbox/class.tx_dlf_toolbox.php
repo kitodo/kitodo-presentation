@@ -17,7 +17,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_toolbox extends tx_dlf_plugin {
+class tx_dlf_toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/toolbox/class.tx_dlf_toolbox.php';
 

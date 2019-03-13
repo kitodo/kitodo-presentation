@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Cli;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -9,21 +11,18 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-if (!defined('TYPO3_cliMode')) {
-
-    die('You cannot run this script directly!');
-
-}
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
 
 /**
- * CLI script for the 'dlf' extension.
+ * Command Line Indexer script for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
+class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
     /**
      * This is the return code.
@@ -89,7 +88,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
                 }
 
                 // Get the document...
-                $doc = & tx_dlf_document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
+                $doc = Document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
 
                 if ($doc->ready) {
 
@@ -161,7 +160,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
                     'tx_dlf_documents',
                     'tx_dlf_relations',
                     'tx_dlf_collections',
-                    'AND tx_dlf_collections.uid='.intval($this->cli_args['-coll'][0]).' AND tx_dlf_collections.pid='.intval($this->cli_args['-pid'][0]).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                    'AND tx_dlf_collections.uid='.intval($this->cli_args['-coll'][0]).' AND tx_dlf_collections.pid='.intval($this->cli_args['-pid'][0]).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').Helper::whereClause('tx_dlf_documents').Helper::whereClause('tx_dlf_collections'),
                     '',
                     '',
                     ''
@@ -170,7 +169,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
                     // Get the document...
-                    $doc = & tx_dlf_document::getInstance($resArray['uid'], $this->cli_args['-pid'][0], TRUE);
+                    $doc = Document::getInstance($resArray['uid'], $this->cli_args['-pid'][0], TRUE);
 
                     if ($doc->ready) {
 
@@ -192,7 +191,7 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
                     }
 
                     // Clear document registry to prevent memory exhaustion.
-                    tx_dlf_document::clearRegistry();
+                    Document::clearRegistry();
 
                 }
 
@@ -212,6 +211,9 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
 
     public function __construct() {
 
+        // Run parent constructor.
+        parent::__construct();
+
         // Set basic information about the script.
         $this->cli_help = array (
             'name' => 'Command Line Interface for Kitodo.Presentation',
@@ -219,17 +221,9 @@ class tx_dlf_cli extends \TYPO3\CMS\Core\Controller\CommandLineController {
             'description' => 'Currently the only tasks available are "index" and "reindex".'.LF.'Try "/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK" for more options.',
             'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
             'options' => '',
-            'license' => 'GNU GPL - free software!',
             'author' => 'Kitodo. Key to digital objects e.V. <contact@kitodo.org>',
         );
-
-        // Run parent constructor.
-        parent::__construct();
 
     }
 
 }
-
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_cli');
-
-$SOBE->main();

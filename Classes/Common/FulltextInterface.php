@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,15 +12,15 @@
  */
 
 /**
- * Interface 'tx_dlf_fulltext' for the 'dlf' extension.
+ * Fulltext interface for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  * @abstract
  */
-interface tx_dlf_fulltext {
+interface FulltextInterface {
 
     /**
      * This extracts raw fulltext data from XML

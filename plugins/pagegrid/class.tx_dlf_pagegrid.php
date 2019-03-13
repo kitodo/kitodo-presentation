@@ -18,7 +18,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_pagegrid extends tx_dlf_plugin {
+class tx_dlf_pagegrid extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/pagegrid/class.tx_dlf_pagegrid.php';
 

@@ -9,6 +9,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
+
 /**
  * Hooks and helper for the '\TYPO3\CMS\Core\DataHandling\DataHandler' library.
  *
@@ -109,12 +113,12 @@ class tx_dlf_tcemain {
                     );
 
                     // Get first unused core number.
-                    $coreNumber = tx_dlf_solr::solrGetCoreNumber($GLOBALS['TYPO3_DB']->sql_num_rows($result));
+                    $coreNumber = Solr::solrGetCoreNumber($GLOBALS['TYPO3_DB']->sql_num_rows($result));
 
                     // Get Solr credentials.
                     $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
 
-                    $solrInfo = tx_dlf_solr::getSolrConnectionInfo();
+                    $solrInfo = Solr::getSolrConnectionInfo();
 
                     // Prepend username and password to hostname.
                     if ($solrInfo['username'] && $solrInfo['password']) {
@@ -188,7 +192,7 @@ class tx_dlf_tcemain {
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             $table.'.is_listed AS is_listed',
                             $table,
-                            $table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+                            $table.'.uid='.intval($id).Helper::whereClause($table),
                             '',
                             '',
                             '1'
@@ -216,7 +220,7 @@ class tx_dlf_tcemain {
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             $table.'.index_autocomplete AS index_autocomplete',
                             $table,
-                            $table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+                            $table.'.uid='.intval($id).Helper::whereClause($table),
                             '',
                             '',
                             '1'
@@ -248,7 +252,7 @@ class tx_dlf_tcemain {
                             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                                 $table.'.index_name AS index_name',
                                 $table,
-                                $table.'.uid='.intval($id).tx_dlf_helper::whereClause($table),
+                                $table.'.uid='.intval($id).Helper::whereClause($table),
                                 '',
                                 '',
                                 '1'
@@ -308,7 +312,7 @@ class tx_dlf_tcemain {
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             'tx_dlf_solrcores.uid,tx_dlf_documents.hidden',
                             'tx_dlf_solrcores,tx_dlf_documents',
-                            'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+                            'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).Helper::whereClause('tx_dlf_solrcores'),
                             '',
                             '',
                             '1'
@@ -321,7 +325,7 @@ class tx_dlf_tcemain {
                             if ($hidden) {
 
                                 // Establish Solr connection.
-                                if ($solr = tx_dlf_solr::getInstance($core)) {
+                                if ($solr = Solr::getInstance($core)) {
 
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
@@ -334,7 +338,7 @@ class tx_dlf_tcemain {
                             } else {
 
                                 // Reindex document.
-                                $doc = & tx_dlf_document::getInstance($id);
+                                $doc = Document::getInstance($id);
 
                                 if ($doc->ready) {
 
@@ -385,7 +389,7 @@ class tx_dlf_tcemain {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_solrcores.uid',
                 'tx_dlf_solrcores,tx_dlf_documents',
-                'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+                'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore AND tx_dlf_documents.uid='.intval($id).Helper::whereClause('tx_dlf_solrcores'),
                 '',
                 '',
                 '1'
@@ -401,7 +405,7 @@ class tx_dlf_tcemain {
                     case 'delete':
 
                         // Establish Solr connection.
-                        if ($solr = tx_dlf_solr::getInstance($core)) {
+                        if ($solr = Solr::getInstance($core)) {
 
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
@@ -420,7 +424,7 @@ class tx_dlf_tcemain {
                     case 'undelete':
 
                         // Reindex document.
-                        $doc = & tx_dlf_document::getInstance($id);
+                        $doc = Document::getInstance($id);
 
                         if ($doc->ready) {
 

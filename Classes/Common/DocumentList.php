@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,15 +12,15 @@
  */
 
 /**
- * List class 'tx_dlf_list' for the 'dlf' extension.
+ * List class for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Frank Ulrich Weber <fuw@zeutschel.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\SingletonInterface {
+class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\SingletonInterface {
 
     /**
      * This holds the number of documents in the list
@@ -33,7 +35,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
      * This holds the list entries in sorted order
      * @see ArrayAccess
      *
-     * @var	array()
+     * @var	array
      * @access protected
      */
     protected $elements = array ();
@@ -58,15 +60,15 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
     /**
      * This holds the full records of already processed list elements
      *
-     * @var	array()
+     * @var	array
      * @access protected
      */
     protected $records = array ();
 
     /**
-     * Instance of tx_dlf_solr class
+     * Instance of \Kitodo\Dlf\Common\Solr class
      *
-     * @var	tx_dlf_solr
+     * @var	\Kitodo\Dlf\Common\Solr
      * @access protected
      */
     protected $solr;
@@ -135,7 +137,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->current()] Invalid position "'.$this->position.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->current()] Invalid position "'.$this->position.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
             }
 
@@ -179,7 +181,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     'tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata',
                     'tx_dlf_documents',
-                    '(tx_dlf_documents.uid='.intval($record['uid']).' OR tx_dlf_documents.partof='.intval($record['uid']).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+                    '(tx_dlf_documents.uid='.intval($record['uid']).' OR tx_dlf_documents.partof='.intval($record['uid']).')'.Helper::whereClause('tx_dlf_documents'),
                     '',
                     '',
                     ''
@@ -193,13 +195,13 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                     if (!empty($metadata['type'][0]) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['type'][0])) {
 
-                        $metadata['type'][0] = tx_dlf_helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
+                        $metadata['type'][0] = Helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
 
                     }
 
                     if (!empty($metadata['owner'][0]) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])) {
 
-                        $metadata['owner'][0] = tx_dlf_helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
+                        $metadata['owner'][0] = Helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
 
                     }
 
@@ -209,7 +211,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                             if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($collection)) {
 
-                                $metadata['collection'][$i] = tx_dlf_helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
+                                $metadata['collection'][$i] = Helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
 
                             }
 
@@ -258,7 +260,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
                         $params['component'] = array (
                             'highlighting' => array (
-                                'query' => tx_dlf_solr::escapeQuery($this->metadata['searchString']),
+                                'query' => Solr::escapeQuery($this->metadata['searchString']),
                                 'field' => 'fulltext',
                                 'usefastvectorhighlighter' => TRUE
                             )
@@ -288,7 +290,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
                     }
 
                     // Add filter query to get all documents with the required uid.
-                    $params['filterquery'][] = array ('query' => 'uid:'.tx_dlf_solr::escapeQuery($record['uid']));
+                    $params['filterquery'][] = array ('query' => 'uid:'.Solr::escapeQuery($record['uid']));
 
                     // Add sorting
                     $params['sort'] = $this->metadata['options']['params']['sort'];
@@ -358,7 +360,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->getRecord([data])] No UID of list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_NOTICE, $element);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->getRecord([data])] No UID of list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_NOTICE, $element);
 
             }
 
@@ -410,7 +412,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', $this->extKey, SYSLOG_SEVERITY_WARNING);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -425,7 +427,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -519,7 +521,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
 
             }
 
@@ -579,7 +581,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -617,7 +619,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
             }
 
             return;
@@ -685,7 +687,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
         } else {
 
-            tx_dlf_helper::saveToSession(array ($this->elements, $this->metadata), get_class($this));
+            Helper::saveToSession(array ($this->elements, $this->metadata), get_class($this));
 
         }
 
@@ -704,13 +706,13 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
         if (!$this->solr) {
 
             // Connect to Solr server.
-            if ($this->solr = tx_dlf_solr::getInstance($this->metadata['options']['core'])) {
+            if ($this->solr = Solr::getInstance($this->metadata['options']['core'])) {
 
                 // Load index configuration.
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                         'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_indexed AS index_indexed',
                         'tx_dlf_metadata',
-                        'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid']).tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                        'tx_dlf_metadata.is_listed=1 AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid']).Helper::whereClause('tx_dlf_metadata'),
                         '',
                         'tx_dlf_metadata.sorting ASC',
                         ''
@@ -791,7 +793,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', $this->extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
             }
 
@@ -877,7 +879,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
         if (empty($elements) && empty($metadata)) {
 
             // Let's check the user's session.
-            $sessionData = tx_dlf_helper::loadFromSession(get_class($this));
+            $sessionData = Helper::loadFromSession(get_class($this));
 
             // Restore list from session data.
             if (is_array($sessionData)) {
@@ -937,7 +939,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -969,7 +971,7 @@ class tx_dlf_list implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\S
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_list->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $value);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $value);
 
             }
 

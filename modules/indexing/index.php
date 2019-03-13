@@ -9,6 +9,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\DocumentList;
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Module 'indexing' for the 'dlf' extension.
  *
@@ -17,7 +21,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_modIndexing extends tx_dlf_module {
+class tx_dlf_modIndexing extends \Kitodo\Dlf\Common\AbstractModule {
 
     protected $modPath = 'indexing/';
 
@@ -34,7 +38,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
     /**
      * This holds a list of documents to index
      *
-     * @var	tx_dlf_list
+     * @var	\Kitodo\Dlf\Common\DocumentList
      * @access protected
      */
     protected $list;
@@ -52,7 +56,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
         $_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
             'tx_dlf_solrcores',
-            'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+            'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.Helper::whereClause('tx_dlf_solrcores'),
             '',
             '',
             ''
@@ -62,7 +66,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
         $_collections = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.label AS label,tx_dlf_collections.uid AS uid',
             'tx_dlf_collections',
-            'tx_dlf_collections.fe_cruser_id=0 AND tx_dlf_collections.pid='.intval($this->id).' AND tx_dlf_collections.sys_language_uid IN (-1,0)'.tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'tx_dlf_collections.fe_cruser_id=0 AND tx_dlf_collections.pid='.intval($this->id).' AND tx_dlf_collections.sys_language_uid IN (-1,0)'.Helper::whereClause('tx_dlf_collections'),
             '',
             'tx_dlf_collections.label ASC',
             ''
@@ -116,7 +120,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
         $_cores = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_solrcores.label AS label,tx_dlf_solrcores.uid AS uid',
             'tx_dlf_solrcores',
-            'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.tx_dlf_helper::whereClause('tx_dlf_solrcores'),
+            'tx_dlf_solrcores.pid IN (0,'.intval($this->id).')'.Helper::whereClause('tx_dlf_solrcores'),
             '',
             '',
             ''
@@ -162,7 +166,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
         $this->list->save();
 
         // Save document to database and index.
-        $doc = & tx_dlf_document::getInstance($uid, 0, TRUE);
+        $doc = Document::getInstance($uid, 0, TRUE);
 
         if ($doc->ready) {
 
@@ -173,8 +177,8 @@ class tx_dlf_modIndexing extends tx_dlf_module {
         // Give feedback about progress.
         $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
             'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-            htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.documentsToGo'), count($this->list))),
-            tx_dlf_helper::getLL('flash.running', TRUE),
+            htmlspecialchars(sprintf(Helper::getLL('flash.documentsToGo'), count($this->list))),
+            Helper::getLL('flash.running', TRUE),
             \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
             TRUE
         );
@@ -219,7 +223,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
                         && \TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->data['id'])) {
 
                         // Save document to database and index.
-                        $doc = & tx_dlf_document::getInstance($this->data['id'], $this->id, TRUE);
+                        $doc = Document::getInstance($this->data['id'], $this->id, TRUE);
 
                         if ($doc->ready) {
 
@@ -229,13 +233,13 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
                             $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                                htmlspecialchars(sprintf(tx_dlf_helper::getLL('flash.fileNotLoaded'), $this->data['id'])),
-                                tx_dlf_helper::getLL('flash.error', TRUE),
+                                htmlspecialchars(sprintf(Helper::getLL('flash.fileNotLoaded'), $this->data['id'])),
+                                Helper::getLL('flash.error', TRUE),
                                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                                 TRUE
                             );
 
-                            tx_dlf_helper::addMessage($_message);
+                            Helper::addMessage($_message);
 
                         }
 
@@ -255,7 +259,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
                                 'tx_dlf_documents',
                                 'tx_dlf_relations',
                                 'tx_dlf_collections',
-                                'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_collections'),
+                                'AND tx_dlf_documents.pid='.intval($this->id).' AND tx_dlf_collections.uid='.intval($this->data['collection']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').Helper::whereClause('tx_dlf_documents').Helper::whereClause('tx_dlf_collections'),
                                 'tx_dlf_documents.uid',
                                 '',
                                 ''
@@ -267,7 +271,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
                             $_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                                 'tx_dlf_documents.title AS title,tx_dlf_documents.uid AS uid',
                                 'tx_dlf_documents',
-                                'tx_dlf_documents.pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_documents'),
+                                'tx_dlf_documents.pid='.intval($this->id).Helper::whereClause('tx_dlf_documents'),
                                 '',
                                 '',
                                 ''
@@ -284,7 +288,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
                         }
 
-                        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list', $elements);
+                        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class, $elements);
 
                         // Start index looping.
                         if (count($this->list) > 0) {
@@ -303,7 +307,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
                     $GLOBALS['BE_USER']->fetchUserSession();
 
                     // Get document list from user's session.
-                    $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+                    $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
                     // Continue index looping.
                     if (count($this->list) > 0 && isset($this->data['core'])) {
@@ -314,13 +318,13 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
                         $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                            tx_dlf_helper::getLL('flash.seeLog', TRUE),
-                            tx_dlf_helper::getLL('flash.done', TRUE),
+                            Helper::getLL('flash.seeLog', TRUE),
+                            Helper::getLL('flash.done', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                             TRUE
                         );
 
-                        tx_dlf_helper::addMessage($_message);
+                        Helper::addMessage($_message);
 
                     }
 
@@ -328,7 +332,7 @@ class tx_dlf_modIndexing extends tx_dlf_module {
 
             }
 
-            $this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
+            $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
 
             switch ($this->MOD_SETTINGS['function']) {
 

@@ -9,6 +9,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\DocumentList;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
+
 /**
  * Plugin 'DLF: Collection' for the 'dlf' extension.
  *
@@ -17,7 +21,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_collection extends tx_dlf_plugin {
+class tx_dlf_collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/collection/class.tx_dlf_collection.php';
 
@@ -71,7 +75,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         }
 
         // Get hook objects.
-        $this->hookObjects = tx_dlf_helper::getHookObjects($this->scriptRelPath);
+        $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);
 
         if (!empty($this->piVars['collection'])) {
 
@@ -140,7 +144,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.index_search as index_query,tx_dlf_collections.uid AS uid,tx_dlf_collections.sys_language_uid AS sys_language_uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority',
             'tx_dlf_collections',
-            $selectedCollections.$showUserDefinedColls.' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))'.tx_dlf_helper::whereClause('tx_dlf_collections'),
+            $selectedCollections.$showUserDefinedColls.' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))'.Helper::whereClause('tx_dlf_collections'),
             '',
             $orderBy,
             ''
@@ -158,7 +162,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
-        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+        $solr = Solr::getInstance($this->conf['solrcore']);
 
         // We only care about the UID and partOf in the results and want them sorted
         $params['fields'] = 'uid,partof';
@@ -240,7 +244,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
                 unset($piVars['DATA']);
 
-                $additionalParams = tx_dlf_helper::array_merge_recursive_overrule($piVars, $additionalParams);
+                $additionalParams = Helper::array_merge_recursive_overrule($piVars, $additionalParams);
 
             }
 
@@ -353,7 +357,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $collection = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.index_search as index_query, tx_dlf_collections.label AS collLabel, tx_dlf_collections.description AS collDesc, tx_dlf_collections.thumbnail AS collThumb, tx_dlf_collections.fe_cruser_id',
             'tx_dlf_collections',
-            'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.uid='.intval($id).$additionalWhere.tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.uid='.intval($id).$additionalWhere.Helper::whereClause('tx_dlf_collections'),
             '',
             '',
             '1'
@@ -374,7 +378,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         }
 
-        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+        $solr = Solr::getInstance($this->conf['solrcore']);
 
         if (!$solr->ready) {
 
@@ -408,7 +412,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         $documents = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.uid AS uid, tx_dlf_documents.metadata_sorting AS metadata_sorting, tx_dlf_documents.volume_sorting AS volume_sorting, tx_dlf_documents.partof AS partof',
             'tx_dlf_documents',
-            'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
+            'tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'.Helper::whereClause('tx_dlf_documents'),
             '',
             '',
             ''
@@ -457,19 +461,19 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
                 if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
 
-                    $sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+                    $sorting['type'] = Helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
 
                 }
 
                 if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
 
-                    $sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+                    $sorting['owner'] = Helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
 
                 }
 
                 if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
 
-                    $sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
+                    $sorting['collection'] = Helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
 
                 }
 
@@ -506,7 +510,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
         }
 
         // Save list of documents.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $list->reset();
 

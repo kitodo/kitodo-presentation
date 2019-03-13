@@ -17,7 +17,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_alto implements tx_dlf_fulltext {
+class tx_dlf_alto implements \Kitodo\Dlf\Common\FulltextInterface {
 
     /**
      * This extracts the fulltext data from ALTO XML

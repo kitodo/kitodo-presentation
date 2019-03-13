@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,15 +12,15 @@
  */
 
 /**
- * Solr class 'tx_dlf_solr' for the 'dlf' extension.
+ * Solr class for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author	Henrik Lochmann <dev@mentalmotive.com>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_solr {
+class Solr {
 
     /**
      * This holds the core name
@@ -79,7 +81,7 @@ class tx_dlf_solr {
     /**
      * This holds the singleton search objects with their core as array key
      *
-     * @var	array(tx_dlf_solr)
+     * @var	array (\Kitodo\Dlf\Common\Solr)
      * @access protected
      */
     protected static $registry = array ();
@@ -139,7 +141,7 @@ class tx_dlf_solr {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
                 'tx_dlf_metadata',
-                'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid='.intval($pid).' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'.tx_dlf_helper::whereClause('tx_dlf_metadata'),
+                'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid='.intval($pid).' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'.Helper::whereClause('tx_dlf_metadata'),
                 '',
                 '',
                 ''
@@ -186,7 +188,7 @@ class tx_dlf_solr {
      *
      * @param	mixed		$core: Name or UID of the core to load
      *
-     * @return	tx_dlf_solr		Instance of this class
+     * @return	\Kitodo\Dlf\Common\Solr	    Instance of this class
      */
     public static function getInstance($core) {
 
@@ -196,7 +198,7 @@ class tx_dlf_solr {
         // Get core name if UID is given.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
 
-            $core = tx_dlf_helper::getIndexName($core, 'tx_dlf_solrcores');
+            $core = Helper::getIndexName($core, 'tx_dlf_solrcores');
 
         }
 
@@ -205,7 +207,7 @@ class tx_dlf_solr {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
             }
 
@@ -236,7 +238,7 @@ class tx_dlf_solr {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
             }
 
@@ -343,7 +345,7 @@ class tx_dlf_solr {
      *
      * @access	public
      *
-     * @return	tx_dlf_list		The result list
+     * @return	\Kitodo\Dlf\Common\DocumentList 	The result list
      */
     public function search() {
 
@@ -408,7 +410,7 @@ class tx_dlf_solr {
         }
 
         // Save list of documents.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $list->reset();
 
@@ -586,7 +588,7 @@ class tx_dlf_solr {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
 
             }
 
@@ -618,7 +620,7 @@ class tx_dlf_solr {
 
             if (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
 
             }
 

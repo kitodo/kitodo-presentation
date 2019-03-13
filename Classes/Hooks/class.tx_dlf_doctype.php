@@ -9,6 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Document Type Check for usage as Typoscript Condition.
  * @see dlf/ext_localconf.php->user_dlf_docTypeCheck()
@@ -23,7 +26,7 @@ class tx_dlf_doctype {
     /**
      * This holds the current document
      *
-     * @var	tx_dlf_document
+     * @var	\Kitodo\Dlf\Common\Document
      * @access protected
      */
     protected $doc;
@@ -160,8 +163,8 @@ class tx_dlf_doctype {
         // Check for required variable.
         if (!empty($this->piVars['id'])) {
 
-            // Get instance of tx_dlf_document.
-            $this->doc = & tx_dlf_document::getInstance($this->piVars['id']);
+            // Get instance of \Kitodo\Dlf\Common\Document.
+            $this->doc = Document::getInstance($this->piVars['id']);
 
             if (!$this->doc->ready) {
 
@@ -182,7 +185,7 @@ class tx_dlf_doctype {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid',
                 'tx_dlf_documents',
-                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').tx_dlf_helper::whereClause('tx_dlf_documents'),
+                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents').Helper::whereClause('tx_dlf_documents'),
                 '',
                 '',
                 '1'

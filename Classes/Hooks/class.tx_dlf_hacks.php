@@ -20,7 +20,7 @@
 class tx_dlf_hacks {
 
     /**
-     * Hook for the __construct() method of dlf/Classes/Common/class.tx_dlf_document.php
+     * Hook for \Kitodo\Dlf\Common\Document::__construct()
      * When using Kitodo.Production the record identifier is saved only in MODS, but not
      * in METS. To get it anyway, we have to do some magic.
      *

@@ -9,6 +9,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\DocumentList;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
+
 /**
  * Plugin 'DLF: OAI-PMH Interface' for the 'dlf' extension.
  *
@@ -17,7 +21,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_oai extends tx_dlf_plugin {
+class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/oai/class.tx_dlf_oai.php';
 
@@ -181,7 +185,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.record_id',
                 'tx_dlf_documents',
-                'tx_dlf_documents.uid='.intval($metadata['partof']).tx_dlf_helper::whereClause('tx_dlf_documents'),
+                'tx_dlf_documents.uid='.intval($metadata['partof']).Helper::whereClause('tx_dlf_documents'),
                 '',
                 '',
                 '1'
@@ -520,7 +524,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
-            'AND tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents').' AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'AND tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents').' AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').$where.Helper::whereClause('tx_dlf_collections'),
             'tx_dlf_documents.uid',
             'tx_dlf_documents.tstamp',
             '1'
@@ -608,7 +612,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_libraries.oai_label AS oai_label,tx_dlf_libraries.contact AS contact',
             'tx_dlf_libraries',
-            'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).tx_dlf_helper::whereClause('tx_dlf_libraries'),
+            'tx_dlf_libraries.pid='.intval($this->conf['pages']).' AND tx_dlf_libraries.uid='.intval($this->conf['library']).Helper::whereClause('tx_dlf_libraries'),
             '',
             '',
             ''
@@ -697,7 +701,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             return $this->error($exception->getMessage());
         }
 
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $resultSet->reset();
         $resultSet->add($documentSet);
@@ -806,7 +810,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             return $this->error($exception->getMessage());
         }
 
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
         $resultSet->reset();
         $resultSet->add($documentSet);
@@ -845,7 +849,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.oai_name AS oai_name,tx_dlf_collections.label AS label',
             'tx_dlf_collections',
-            'tx_dlf_collections.sys_language_uid IN (-1,0) AND NOT tx_dlf_collections.oai_name=\'\' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'tx_dlf_collections.sys_language_uid IN (-1,0) AND NOT tx_dlf_collections.oai_name=\'\' AND tx_dlf_collections.pid='.intval($this->conf['pages']).$where.Helper::whereClause('tx_dlf_collections'),
             'tx_dlf_collections.oai_name',
             'tx_dlf_collections.oai_name',
             ''
@@ -892,7 +896,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
                 'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.uid AS uid, tx_dlf_collections.index_search as index_query ',
                 'tx_dlf_collections',
                 'tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'],
-                    'tx_dlf_collections').$where.tx_dlf_helper::whereClause('tx_dlf_collections'),
+                    'tx_dlf_collections').$where.Helper::whereClause('tx_dlf_collections'),
                 '',
                 '',
                 '1'
@@ -975,7 +979,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
 
         $documentSet = array ();
 
-        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+        $solr = Solr::getInstance($this->conf['solrcore']);
 
         if (intval($this->conf['solr_limit']) > 0) {
             $solr->limit = intval($this->conf['solr_limit']);
@@ -1003,8 +1007,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
     }
 
     /**
-     * @param tx_dlf_list $documentListSet
-     * @return DOMElement
+     * @param \Kitodo\Dlf\Common\DocumentList $documentListSet
+     * @return \DOMElement
      */
     private function generateOutputForDocumentList($documentListSet) {
 
@@ -1016,7 +1020,7 @@ class tx_dlf_oai extends tx_dlf_plugin {
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
-            'AND tx_dlf_documents.uid IN ('.implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)).') AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').tx_dlf_helper::whereClause('tx_dlf_collections'),
+            'AND tx_dlf_documents.uid IN ('.implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)).') AND tx_dlf_documents.pid='.intval($this->conf['pages']).' AND tx_dlf_collections.pid='.intval($this->conf['pages']).' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations').Helper::whereClause('tx_dlf_collections'),
             'tx_dlf_documents.uid',
             'tx_dlf_documents.tstamp',
             $this->conf['limit']
@@ -1098,8 +1102,8 @@ class tx_dlf_oai extends tx_dlf_plugin {
     }
 
     /**
-     * @param tx_dlf_list $documentListSet
-     * @return DOMElement
+     * @param \Kitodo\Dlf\Common\DocumentList $documentListSet
+     * @return \DOMElement
      */
     private function generateResumptionTokenForDocumentListSet($documentListSet) {
 

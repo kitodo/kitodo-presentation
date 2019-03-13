@@ -9,6 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Module 'newclient' for the 'dlf' extension.
  *
@@ -17,7 +19,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_modNewclient extends tx_dlf_module {
+class tx_dlf_modNewclient extends \Kitodo\Dlf\Common\AbstractModule {
 
     protected $modPath = 'newclient/';
 
@@ -56,18 +58,18 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
                 $data['be_groups'][$resArray['uid']]['db_mountpoints'] = $resArray['db_mountpoints'].','.$this->id;
 
-                tx_dlf_helper::processDBasAdmin($data);
+                Helper::processDBasAdmin($data);
 
                 // Fine.
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    tx_dlf_helper::getLL('flash.usergroupAddedMsg'),
-                    tx_dlf_helper::getLL('flash.usergroupAdded', TRUE),
+                    Helper::getLL('flash.usergroupAddedMsg'),
+                    Helper::getLL('flash.usergroupAdded', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                     FALSE
                 );
 
-                tx_dlf_helper::addMessage($_message);
+                Helper::addMessage($_message);
 
             }
 
@@ -127,7 +129,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
         }
 
-        $_ids = tx_dlf_helper::processDBasAdmin($data);
+        $_ids = Helper::processDBasAdmin($data);
 
         // Check for failed inserts.
         if (count($_ids) == $i) {
@@ -135,8 +137,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             // Fine.
             $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                tx_dlf_helper::getLL('flash.metadataAddedMsg'),
-                tx_dlf_helper::getLL('flash.metadataAdded', TRUE),
+                Helper::getLL('flash.metadataAddedMsg'),
+                Helper::getLL('flash.metadataAdded', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                 FALSE
             );
@@ -146,15 +148,15 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             // Something went wrong.
             $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                tx_dlf_helper::getLL('flash.metadataNotAddedMsg'),
-                tx_dlf_helper::getLL('flash.metadataNotAdded', TRUE),
+                Helper::getLL('flash.metadataNotAddedMsg'),
+                Helper::getLL('flash.metadataNotAdded', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                 FALSE
             );
 
         }
 
-        tx_dlf_helper::addMessage($_message);
+        Helper::addMessage($_message);
 
     }
 
@@ -174,7 +176,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             'index_name' => '',
         );
 
-        $_ids = tx_dlf_helper::processDBasAdmin($data);
+        $_ids = Helper::processDBasAdmin($data);
 
         // Check for failed inserts.
         if (count($_ids) == 1) {
@@ -182,8 +184,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             // Fine.
             $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                tx_dlf_helper::getLL('flash.solrcoreAddedMsg'),
-                tx_dlf_helper::getLL('flash.solrcoreAdded', TRUE),
+                Helper::getLL('flash.solrcoreAddedMsg'),
+                Helper::getLL('flash.solrcoreAdded', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                 FALSE
             );
@@ -193,15 +195,15 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             // Something went wrong.
             $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                tx_dlf_helper::getLL('flash.solrcoreNotAddedMsg'),
-                tx_dlf_helper::getLL('flash.solrcoreNotAdded', TRUE),
+                Helper::getLL('flash.solrcoreNotAddedMsg'),
+                Helper::getLL('flash.solrcoreNotAdded', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                 FALSE
             );
 
         }
 
-        tx_dlf_helper::addMessage($_message);
+        Helper::addMessage($_message);
 
     }
 
@@ -231,7 +233,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
         }
 
-        $_ids = tx_dlf_helper::processDBasAdmin($data);
+        $_ids = Helper::processDBasAdmin($data);
 
         // Check for failed inserts.
         if (count($_ids) == count($structures)) {
@@ -239,8 +241,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             // Fine.
             $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                tx_dlf_helper::getLL('flash.structureAddedMsg'),
-                tx_dlf_helper::getLL('flash.structureAdded', TRUE),
+                Helper::getLL('flash.structureAddedMsg'),
+                Helper::getLL('flash.structureAdded', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                 FALSE
             );
@@ -250,15 +252,15 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             // Something went wrong.
             $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                tx_dlf_helper::getLL('flash.structureNotAddedMsg'),
-                tx_dlf_helper::getLL('flash.structureNotAdded', TRUE),
+                Helper::getLL('flash.structureNotAddedMsg'),
+                Helper::getLL('flash.structureNotAdded', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                 FALSE
             );
 
         }
 
-        tx_dlf_helper::addMessage($_message);
+        Helper::addMessage($_message);
 
     }
 
@@ -281,15 +283,15 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    tx_dlf_helper::getLL('flash.wrongPageTypeMsg'),
-                    tx_dlf_helper::getLL('flash.wrongPageType', TRUE),
+                    Helper::getLL('flash.wrongPageTypeMsg'),
+                    Helper::getLL('flash.wrongPageType', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                     FALSE
                 );
 
-                tx_dlf_helper::addMessage($_message);
+                Helper::addMessage($_message);
 
-                $this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
+                $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
 
                 $this->printContent();
 
@@ -318,7 +320,7 @@ class tx_dlf_modNewclient extends tx_dlf_module {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'uid',
                 'tx_dlf_structures',
-                'pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_structures')
+                'pid='.intval($this->id).Helper::whereClause('tx_dlf_structures')
             );
 
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -326,8 +328,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
                 // Fine.
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    tx_dlf_helper::getLL('flash.structureOkayMsg'),
-                    tx_dlf_helper::getLL('flash.structureOkay', TRUE),
+                    Helper::getLL('flash.structureOkayMsg'),
+                    Helper::getLL('flash.structureOkay', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                     FALSE
                 );
@@ -339,21 +341,21 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    sprintf(tx_dlf_helper::getLL('flash.structureNotOkayMsg'), $_url),
-                    tx_dlf_helper::getLL('flash.structureNotOkay', TRUE),
+                    sprintf(Helper::getLL('flash.structureNotOkayMsg'), $_url),
+                    Helper::getLL('flash.structureNotOkay', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                     FALSE
                 );
 
             }
 
-            tx_dlf_helper::addMessage($_message);
+            Helper::addMessage($_message);
 
             // Check for existing metadata configuration.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'uid',
                 'tx_dlf_metadata',
-                'pid='.intval($this->id).tx_dlf_helper::whereClause('tx_dlf_metadata')
+                'pid='.intval($this->id).Helper::whereClause('tx_dlf_metadata')
             );
 
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -361,8 +363,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
                 // Fine.
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    tx_dlf_helper::getLL('flash.metadataOkayMsg'),
-                    tx_dlf_helper::getLL('flash.metadataOkay', TRUE),
+                    Helper::getLL('flash.metadataOkayMsg'),
+                    Helper::getLL('flash.metadataOkay', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                     FALSE
                 );
@@ -374,15 +376,15 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    sprintf(tx_dlf_helper::getLL('flash.metadataNotOkayMsg'), $_url),
-                    tx_dlf_helper::getLL('flash.metadataNotOkay', TRUE),
+                    sprintf(Helper::getLL('flash.metadataNotOkayMsg'), $_url),
+                    Helper::getLL('flash.metadataNotOkay', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                     FALSE
                 );
 
             }
 
-            tx_dlf_helper::addMessage($_message);
+            Helper::addMessage($_message);
 
             // Check the access conditions for the command line indexer's user.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -400,8 +402,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
                     // Fine.
                     $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        tx_dlf_helper::getLL('flash.usergroupOkayMsg'),
-                        tx_dlf_helper::getLL('flash.usergroupOkay', TRUE),
+                        Helper::getLL('flash.usergroupOkayMsg'),
+                        Helper::getLL('flash.usergroupOkay', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                         FALSE
                     );
@@ -413,8 +415,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
                     $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        sprintf(tx_dlf_helper::getLL('flash.usergroupNotOkayMsg'), $_url),
-                        tx_dlf_helper::getLL('flash.usergroupNotOkay', TRUE),
+                        sprintf(Helper::getLL('flash.usergroupNotOkayMsg'), $_url),
+                        Helper::getLL('flash.usergroupNotOkay', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         FALSE
                     );
@@ -426,21 +428,21 @@ class tx_dlf_modNewclient extends tx_dlf_module {
                 // Usergoup missing.
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    tx_dlf_helper::getLL('flash.usergroupMissingMsg'),
-                    tx_dlf_helper::getLL('flash.usergroupMissing', TRUE),
+                    Helper::getLL('flash.usergroupMissingMsg'),
+                    Helper::getLL('flash.usergroupMissing', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                     FALSE
                 );
 
             }
 
-            tx_dlf_helper::addMessage($_message);
+            Helper::addMessage($_message);
 
             // Check for existing Solr core.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'uid,pid',
                 'tx_dlf_solrcores',
-                'pid IN ('.intval($this->id).',0)'.tx_dlf_helper::whereClause('tx_dlf_solrcores')
+                'pid IN ('.intval($this->id).',0)'.Helper::whereClause('tx_dlf_solrcores')
             );
 
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -452,8 +454,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
                     // Fine.
                     $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        tx_dlf_helper::getLL('flash.solrcoreOkayMsg'),
-                        tx_dlf_helper::getLL('flash.solrcoreOkay', TRUE),
+                        Helper::getLL('flash.solrcoreOkayMsg'),
+                        Helper::getLL('flash.solrcoreOkay', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                         FALSE
                     );
@@ -465,8 +467,8 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
                     $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                        sprintf(tx_dlf_helper::getLL('flash.solrcoreDeprecatedMsg'), $_url),
-                        tx_dlf_helper::getLL('flash.solrcoreDeprecatedOkay', TRUE),
+                        sprintf(Helper::getLL('flash.solrcoreDeprecatedMsg'), $_url),
+                        Helper::getLL('flash.solrcoreDeprecatedOkay', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::NOTICE,
                         FALSE
                     );
@@ -480,17 +482,17 @@ class tx_dlf_modNewclient extends tx_dlf_module {
 
                 $_message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-                    sprintf(tx_dlf_helper::getLL('flash.solrcoreMissingMsg'), $_url),
-                    tx_dlf_helper::getLL('flash.solrcoreMissing', TRUE),
+                    sprintf(Helper::getLL('flash.solrcoreMissingMsg'), $_url),
+                    Helper::getLL('flash.solrcoreMissing', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
                     FALSE
                 );
 
             }
 
-            tx_dlf_helper::addMessage($_message);
+            Helper::addMessage($_message);
 
-            $this->markerArray['CONTENT'] .= tx_dlf_helper::renderFlashMessages();
+            $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
 
         } else {
 

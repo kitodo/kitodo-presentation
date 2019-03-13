@@ -9,6 +9,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\DocumentList;
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'DLF: Navigation' for the 'dlf' extension.
  *
@@ -17,7 +20,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_navigation extends tx_dlf_plugin {
+class tx_dlf_navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     public $scriptRelPath = 'plugins/navigation/class.tx_dlf_navigation.php';
 
@@ -33,7 +36,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
         if (!empty($this->conf['targetPid'])) {
 
             // Load the list.
-            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_list');
+            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
 
             if (count($list) > 0) {
 
@@ -73,7 +76,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
         // Add plugin variables.
         foreach ($this->piVars as $piVar => $value) {
 
-            if ($piVar != 'page' && $piVars != 'DATA' && !empty($value)) {
+            if ($piVar != 'page' && $piVar != 'DATA' && !empty($value)) {
 
                 $output .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
 
@@ -312,7 +315,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
             unset($piVars['DATA']);
 
-            $overrulePIvars = tx_dlf_helper::array_merge_recursive_overrule($piVars, $overrulePIvars);
+            $overrulePIvars = Helper::array_merge_recursive_overrule($piVars, $overrulePIvars);
 
         }
 

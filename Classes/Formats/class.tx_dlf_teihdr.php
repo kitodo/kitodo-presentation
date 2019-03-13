@@ -17,7 +17,7 @@
  * @subpackage	tx_dlf
  * @access	public
  */
-class tx_dlf_teihdr implements tx_dlf_format {
+class tx_dlf_teihdr implements \Kitodo\Dlf\Common\FormatInterface {
 
     /**
      * This extracts the essential TEIHDR metadata from XML
