@@ -53,10 +53,6 @@
   "autoload": {
     "psr-4": {
       "Kitodo\\Dlf\\": "Classes/"
-    },
-    "classmap": [
-      "modules/indexing/index.php",
-      "modules/newclient/index.php"
-    ]
+    }
   }
 }

@@ -35,9 +35,7 @@ $EM_CONF[$_EXTKEY] = [
         ],
         'classmap' => [
             'vendor/solarium',
-            'vendor/symfony/event-dispatcher',
-            'modules/indexing/index.php',
-            'modules/newclient/index.php'
+            'vendor/symfony/event-dispatcher'
         ]
     ]
 ];
