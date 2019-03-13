@@ -180,7 +180,7 @@ class Indexer {
                     if (!$errors) {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                             htmlspecialchars(sprintf(Helper::getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getLL('flash.done', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
@@ -190,7 +190,7 @@ class Indexer {
                     } else {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                             htmlspecialchars(sprintf(Helper::getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getLL('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
@@ -205,12 +205,12 @@ class Indexer {
 
                 return $errors;
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
                 if (!defined('TYPO3_cliMode')) {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                         Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
@@ -236,7 +236,7 @@ class Indexer {
             if (!defined('TYPO3_cliMode')) {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     Helper::getLL('flash.solrNoConnection', TRUE),
                     Helper::getLL('flash.warning', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
@@ -301,12 +301,12 @@ class Indexer {
                     $updateQuery->addCommit();
                     self::$solr->service->update($updateQuery);
 
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                     if (!defined('TYPO3_cliMode')) {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                             Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                             Helper::getLL('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
@@ -332,7 +332,7 @@ class Indexer {
                 if (!defined('TYPO3_cliMode')) {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getLL('flash.solrNoConnection', TRUE),
                         Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
@@ -356,7 +356,7 @@ class Indexer {
             if (!defined('TYPO3_cliMode')) {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     htmlspecialchars(sprintf(Helper::getLL('flash.documentDeleted'), $title, $uid)),
                     Helper::getLL('flash.done', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
@@ -632,12 +632,12 @@ class Indexer {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
                 if (!defined('TYPO3_cliMode')) {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                         Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
@@ -799,12 +799,12 @@ class Indexer {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
                 if (!defined('TYPO3_cliMode')) {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                         Helper::getLL('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,

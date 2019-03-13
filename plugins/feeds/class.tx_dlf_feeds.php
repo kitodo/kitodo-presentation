@@ -42,7 +42,7 @@ class tx_dlf_feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(FALSE);
 
         // Create XML document.
-        $rss = new DOMDocument('1.0', 'utf-8');
+        $rss = new \DOMDocument('1.0', 'utf-8');
 
         // Add mandatory root element.
         $root = $rss->createElement('rss');

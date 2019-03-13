@@ -12,7 +12,7 @@ namespace Kitodo\Dlf\Common;
  */
 
 /**
- * Format interface for the 'dlf' extension.
+ * Metadata interface for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
@@ -20,18 +20,18 @@ namespace Kitodo\Dlf\Common;
  * @access	public
  * @abstract
  */
-interface FormatInterface {
+interface MetadataInterface {
 
     /**
      * This extracts metadata from XML
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param	\SimpleXMLElement		$xml: The XML to extract the metadata from
      * @param	array		&$metadata: The metadata array to fill
      *
      * @return	void
      */
-    public function extractMetadata(SimpleXMLElement $xml, array &$metadata);
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata);
 
 }

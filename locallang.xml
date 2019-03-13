@@ -186,11 +186,11 @@
 			<label index="solr.notConnected">Connection failed!</label>
 			<label index="solr.error">Apache Solr was not reachable under &lt;strong&gt;%s&lt;/strong&gt;.</label>
 			<label index="metadataFormats.nsOkay">Default namespaces found!</label>
-			<label index="metadataFormats.nsOkayMsg">The namespace definitions for MODS and TEIHDR do exist.</label>
+			<label index="metadataFormats.nsOkayMsg">The namespace definitions for MODS, TEIHDR and ALTO do exist.</label>
 			<label index="metadataFormats.nsCreated">Default namespaces created successfully!</label>
-			<label index="metadataFormats.nsCreatedMsg">The namespace definitions for MODS and/or TEIHDR were created properly.</label>
+			<label index="metadataFormats.nsCreatedMsg">The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.</label>
 			<label index="metadataFormats.nsNotCreated">Default namespaces not found!</label>
-			<label index="metadataFormats.nsNotCreatedMsg">The namespace definitions for MODS and/or TEIHDR do not exist and could not be created.</label>
+			<label index="metadataFormats.nsNotCreatedMsg">The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.</label>
 			<label index="cliUserGroup.usrRealName">Kitodo.Presentation command line indexer</label>
 			<label index="cliUserGroup.usrOkay">User "_cli_dlf" found!</label>
 			<label index="cliUserGroup.usrOkayMsg">The backend user for the command line indexer exists and is configured properly.</label>
@@ -226,6 +226,8 @@
 			<label index="update.solariumSolrUpdate">Re-adding cores to Solr...</label>
 			<label index="update.solariumSolrUpdateOkay">...successfully completed! Please re-index your documents now.</label>
 			<label index="update.solariumSolrUpdateNotOkay">...failed for core %s! Please check your Solr configuration.</label>
+			<label index="update.FormatClasses">Switching format classes to namespaces...</label>
+			<label index="update.FormatClassesOkay">...successfully completed! Please check all format records in the page tree's root.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -399,11 +401,11 @@
 			<label index="solr.notConnected">Verbindung fehlgeschlagen!</label>
 			<label index="solr.error">Apache Solr ist unter &lt;strong&gt;%s&lt;/strong&gt; nicht erreichbar.</label>
 			<label index="metadataFormats.nsOkay">Standard-Namensräume gefunden!</label>
-			<label index="metadataFormats.nsOkayMsg">Die Standard-Namensräume für MODS und TEIHDR sind definiert.</label>
+			<label index="metadataFormats.nsOkayMsg">Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.</label>
 			<label index="metadataFormats.nsCreated">Standard-Namensräume erfolgreich angelegt!</label>
-			<label index="metadataFormats.nsCreatedMsg">Die Standard-Namensräume für MODS und/oder TEIHDR wurden erfolgreich definiert.</label>
+			<label index="metadataFormats.nsCreatedMsg">Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.</label>
 			<label index="metadataFormats.nsNotCreated">Standard-Namensräume nicht gefunden!</label>
-			<label index="metadataFormats.nsNotCreatedMsg">Die Standard-Namensräume für MODS und/oder TEIHDR konnten nicht definiert werden.</label>
+			<label index="metadataFormats.nsNotCreatedMsg">Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.</label>
 			<label index="cliUserGroup.usrRealName">Kitodo.Presentation Kommandozeilen-Indexierungsdienst</label>
 			<label index="cliUserGroup.usrOkay">Nutzer "_cli_dlf" gefunden!</label>
 			<label index="cliUserGroup.usrOkayMsg">Der Nutzer für den Kommandozeilen-Indexierungsdienst ist korrekt konfiguriert und aktiviert.</label>
@@ -439,6 +441,8 @@
 			<label index="update.solariumSolrUpdate">Hinzufügen der Solr Kerne...</label>
 			<label index="update.solariumSolrUpdateOkay">...erfolgreich beendet! Bitte re-indexieren Sie jetzt alle Dokumente.</label>
 			<label index="update.solariumSolrUpdateNotOkay">...für Kern %s fehlgeschlagen! Bitte überprüfen Sie die Solr-Konfiguration.</label>
+			<label index="update.FormatClasses">Format-Klassen auf Namensräume umstellen...</label>
+			<label index="update.FormatClassesOkay">...erfolgreich beendet! Bitte prüfen Sie dennoch alle Formateinträge im Wurzelknoten des Seitenbaums.</label>
 		</languageKey>
 	</data>
 </T3locallang>

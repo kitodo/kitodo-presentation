@@ -36,7 +36,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * This holds the OAI DOM object
      *
-     * @var	DOMDocument
+     * @var	\DOMDocument
      * @access protected
      */
     protected $oai;
@@ -93,7 +93,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @param	string		$type: Error type
      *
-     * @return	DOMElement		XML node to add to the OAI response
+     * @return	\DOMElement		XML node to add to the OAI response
      */
     protected function error($type) {
         $this->error = TRUE;
@@ -142,7 +142,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @param	array		$metadata: The metadata array
      *
-     * @return	DOMElement		XML node to add to the OAI response
+     * @return	\DOMElement		XML node to add to the OAI response
      */
     protected function getDcData(array $metadata) {
 
@@ -209,7 +209,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @param	array		$metadata: The metadata array
      *
-     * @return	DOMElement		XML node to add to the OAI response
+     * @return	\DOMElement		XML node to add to the OAI response
      */
     protected function getEpicurData(array $metadata) {
 
@@ -308,21 +308,21 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @param	array		$metadata: The metadata array
      *
-     * @return	DOMElement		XML node to add to the OAI response
+     * @return	\DOMElement		XML node to add to the OAI response
      */
     protected function getMetsData(array $metadata) {
 
         $mets = NULL;
 
         // Load METS file.
-        $xml = new DOMDocument();
+        $xml = new \DOMDocument();
 
         if ($xml->load($metadata['location'])) {
             // Get root element.
             $root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
 
-            if ($root->item(0) instanceof DOMNode) {
-                // Import node into DOMDocument.
+            if ($root->item(0) instanceof \DOMNode) {
+                // Import node into \DOMDocument.
                 $mets = $this->oai->importNode($root->item(0), TRUE);
             } else {
                     $this->devLog('[tx_dlf_oai->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
@@ -363,7 +363,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->deleteExpiredTokens();
 
         // Create XML document.
-        $this->oai = new DOMDocument('1.0', 'UTF-8');
+        $this->oai = new \DOMDocument('1.0', 'UTF-8');
 
         // Add processing instruction (aka XSL stylesheet).
         if (!empty($this->conf['stylesheet'])) {
@@ -594,7 +594,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @access	protected
      *
-     * @return	DOMElement		XML node to add to the OAI response
+     * @return	\DOMElement		XML node to add to the OAI response
      */
     protected function verbIdentify() {
 
@@ -697,7 +697,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         try {
             $documentSet = $this->fetchDocumentUIDs();
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return $this->error($exception->getMessage());
         }
 
@@ -719,7 +719,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @access	protected
      *
-     * @return	DOMElement		XML node to add to the OAI response
+     * @return	\DOMElement		XML node to add to the OAI response
      */
     protected function verbListMetadataFormats() {
 
@@ -806,7 +806,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         try {
             $documentSet = $this->fetchDocumentUIDs();
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return $this->error($exception->getMessage());
         }
 
@@ -878,7 +878,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
 
     /**
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     private function fetchDocumentUIDs() {
         $solr_query = '';
@@ -903,7 +903,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
             );
 
             if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                throw new Exception('noSetHierarchy');
+                throw new \Exception('noSetHierarchy');
             }
 
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -942,7 +942,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $from = date("Y-m-d", $timestamp).'T'.date("H:i:s", $timestamp).'.000Z';
 
             } else {
-                throw new Exception('badArgument');
+                throw new \Exception('badArgument');
             }
         }
 
@@ -960,18 +960,18 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $until = date("Y-m-d", $timestamp).'T'.date("H:i:s", $timestamp).'.999Z';
 
                 if ($from != "*" && $from > $until) {
-                    throw new Exception('badArgument');
+                    throw new \Exception('badArgument');
                 }
 
             } else {
-                throw new Exception('badArgument');
+                throw new \Exception('badArgument');
             }
         }
 
         // Check "from" and "until" for same granularity.
         if (!empty($this->piVars['from']) && !empty($this->piVars['until'])) {
             if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
-                throw new Exception('badArgument');
+                throw new \Exception('badArgument');
             }
         }
 
@@ -996,7 +996,7 @@ class tx_dlf_oai extends \Kitodo\Dlf\Common\AbstractPlugin {
         $result = $solr->search_raw($solr_query, $parameters);
 
         if (empty($result)) {
-            throw new Exception('noRecordsMatch');
+            throw new \Exception('noRecordsMatch');
         }
 
         foreach ($result as $doc) {

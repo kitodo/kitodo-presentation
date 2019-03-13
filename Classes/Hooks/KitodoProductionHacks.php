@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Hooks;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,14 +12,14 @@
  */
 
 /**
- * Hooks and hacks for Kitodo.Production.
+ * Hooks and hacks for Kitodo.Production
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_hacks {
+class KitodoProductionHacks {
 
     /**
      * Hook for \Kitodo\Dlf\Common\Document::__construct()
@@ -26,12 +28,12 @@ class tx_dlf_hacks {
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		&$xml: The XML object
+     * @param	\SimpleXMLElement		&$xml: The XML object
      * @param	mixed		$record_id: The record identifier
      *
      * @return	void
      */
-    public function construct_postProcessRecordId(SimpleXMLElement &$xml, &$record_id) {
+    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$record_id) {
 
         if (!$record_id) {
 

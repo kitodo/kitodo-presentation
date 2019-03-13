@@ -163,7 +163,7 @@ final class Document {
     protected $metadataArrayLoaded = FALSE;
 
     /**
-     * This holds the XML file's METS part as SimpleXMLElement object
+     * This holds the XML file's METS part as \SimpleXMLElement object
      *
      * @var	\SimpleXMLElement
      * @access protected
@@ -336,9 +336,9 @@ final class Document {
     protected $uid = 0;
 
     /**
-     * This holds the whole XML file as SimpleXMLElement object
+     * This holds the whole XML file as \SimpleXMLElement object
      *
-     * @var	SimpleXMLElement
+     * @var	\SimpleXMLElement
      * @access protected
      */
     protected $xml;
@@ -784,7 +784,7 @@ final class Document {
                     $class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
 
                     // Get the metadata from class.
-                    if (class_exists($class) && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof FormatInterface) {
+                    if (class_exists($class) && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof MetadataInterface) {
 
                         $obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
 
@@ -835,10 +835,10 @@ final class Document {
                 ''
             );
 
-            // We need a DOMDocument here, because SimpleXML doesn't support XPath functions properly.
+            // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
 
-            $domXPath = new DOMXPath($domNode->ownerDocument);
+            $domXPath = new \DOMXPath($domNode->ownerDocument);
 
             $this->registerNamespaces($domXPath);
 
@@ -848,7 +848,7 @@ final class Document {
                 // Set metadata field's value(s).
                 if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))) {
 
-                    if ($values instanceof DOMNodeList && $values->length > 0) {
+                    if ($values instanceof \DOMNodeList && $values->length > 0) {
 
                         $metadata[$resArray['index_name']] = array ();
 
@@ -858,7 +858,7 @@ final class Document {
 
                         }
 
-                    } elseif (!($values instanceof DOMNodeList)) {
+                    } elseif (!($values instanceof \DOMNodeList)) {
 
                         $metadata[$resArray['index_name']] = array (trim((string) $values));
 
@@ -881,11 +881,11 @@ final class Document {
 
                     if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting']) && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))) {
 
-                        if ($values instanceof DOMNodeList && $values->length > 0) {
+                        if ($values instanceof \DOMNodeList && $values->length > 0) {
 
                             $metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values->item(0)->nodeValue);
 
-                        } elseif (!($values instanceof DOMNodeList)) {
+                        } elseif (!($values instanceof \DOMNodeList)) {
 
                             $metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values);
 
@@ -1337,11 +1337,11 @@ final class Document {
     }
 
     /**
-     * Register all available namespaces for a SimpleXMLElement object
+     * Register all available namespaces for a \SimpleXMLElement object
      *
      * @access	public
      *
-     * @param	SimpleXMLElement|DOMXPath		&$obj: SimpleXMLElement or DOMXPath object
+     * @param	\SimpleXMLElement|\DOMXPath		&$obj: \SimpleXMLElement or \DOMXPath object
      *
      * @return	void
      */
@@ -1349,12 +1349,12 @@ final class Document {
 
         $this->loadFormats();
 
-        // Do we have a SimpleXMLElement or DOMXPath object?
-        if ($obj instanceof SimpleXMLElement) {
+        // Do we have a \SimpleXMLElement or \DOMXPath object?
+        if ($obj instanceof \SimpleXMLElement) {
 
             $method = 'registerXPathNamespace';
 
-        } elseif ($obj instanceof DOMXPath) {
+        } elseif ($obj instanceof \DOMXPath) {
 
             $method = 'registerNamespace';
 
@@ -1563,7 +1563,7 @@ final class Document {
                 if (!defined('TYPO3_cliMode')) {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         htmlspecialchars(sprintf(Helper::getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
                         Helper::getLL('flash.attention', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
@@ -1624,7 +1624,7 @@ final class Document {
             if (!defined('TYPO3_cliMode')) {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     htmlspecialchars(sprintf(Helper::getLL('flash.newLibrary'), $owner, $ownerUid)),
                     Helper::getLL('flash.attention', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
@@ -1792,7 +1792,7 @@ final class Document {
         if (!defined('TYPO3_cliMode')) {
 
             $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                 htmlspecialchars(sprintf(Helper::getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
                 Helper::getLL('flash.done', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
@@ -2055,7 +2055,7 @@ final class Document {
      *
      * @access	protected
      *
-     * @return	SimpleXMLElement		The XML's METS part as SimpleXMLElement object
+     * @return	\SimpleXMLElement		The XML's METS part as \SimpleXMLElement object
      */
     protected function _getMets() {
 
@@ -2743,7 +2743,7 @@ final class Document {
      */
     public function __sleep() {
 
-        // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
+        // \SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
 
         return array ('uid', 'pid', 'recordId', 'parentId', 'asXML');
@@ -2759,7 +2759,7 @@ final class Document {
      */
     public function __toString() {
 
-        $xml = new DOMDocument('1.0', 'utf-8');
+        $xml = new \DOMDocument('1.0', 'utf-8');
 
         $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), TRUE));
 

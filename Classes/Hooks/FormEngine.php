@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Hooks;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,14 +14,14 @@
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Hooks and helper for the '\TYPO3\CMS\Backend\Form\FormEngine' library.
+ * Hooks and helper for \TYPO3\CMS\Backend\Form\FormEngine
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_tceforms {
+class FormEngine {
 
     /**
      * Helper to display document's thumbnail for table "tx_dlf_documents"

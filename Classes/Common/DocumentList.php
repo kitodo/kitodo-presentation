@@ -20,11 +20,11 @@ namespace Kitodo\Dlf\Common;
  * @subpackage	dlf
  * @access	public
  */
-class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\SingletonInterface {
+class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Core\SingletonInterface {
 
     /**
      * This holds the number of documents in the list
-     * @see Countable
+     * @see \Countable
      *
      * @var	integer
      * @access protected
@@ -33,7 +33,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This holds the list entries in sorted order
-     * @see ArrayAccess
+     * @see \ArrayAccess
      *
      * @var	array
      * @access protected
@@ -50,7 +50,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This holds the current list position
-     * @see Iterator
+     * @see \Iterator
      *
      * @var	integer
      * @access protected
@@ -107,7 +107,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This counts the elements
-     * @see Countable::count()
+     * @see \Countable::count()
      *
      * @access	public
      *
@@ -121,7 +121,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This returns the current element
-     * @see Iterator::current()
+     * @see \Iterator::current()
      *
      * @access	public
      *
@@ -374,7 +374,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This returns the current position
-     * @see Iterator::key()
+     * @see \Iterator::key()
      *
      * @access	public
      *
@@ -473,7 +473,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This increments the current list position
-     * @see Iterator::next()
+     * @see \Iterator::next()
      *
      * @access	public
      *
@@ -487,7 +487,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This checks if an offset exists
-     * @see ArrayAccess::offsetExists()
+     * @see \ArrayAccess::offsetExists()
      *
      * @access	public
      *
@@ -503,7 +503,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This returns the element at the given offset
-     * @see ArrayAccess::offsetGet()
+     * @see \ArrayAccess::offsetGet()
      *
      * @access	public
      *
@@ -533,7 +533,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This sets the element at the given offset
-     * @see ArrayAccess::offsetSet()
+     * @see \ArrayAccess::offsetSet()
      *
      * @access	public
      *
@@ -655,7 +655,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This resets the list position
-     * @see Iterator::rewind()
+     * @see \Iterator::rewind()
      *
      * @access	public
      *
@@ -803,7 +803,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This unsets the element at the given offset
-     * @see ArrayAccess::offsetUnset()
+     * @see \ArrayAccess::offsetUnset()
      *
      * @access	public
      *
@@ -824,7 +824,7 @@ class DocumentList implements ArrayAccess, Countable, Iterator, \TYPO3\CMS\Core\
 
     /**
      * This checks if the current list position is valid
-     * @see Iterator::valid()
+     * @see \Iterator::valid()
      *
      * @access	public
      *

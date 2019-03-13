@@ -212,7 +212,7 @@ return array (
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.thumbnail',
             'config' => array (
                 'type' => 'user',
-                'userFunc' => 'EXT:dlf/Classes/Hooks/class.tx_dlf_tceforms.php:tx_dlf_tceforms->displayThumbnail',
+                'userFunc' => 'EXT:dlf/Classes/Hooks/FormEngine.php:FormEngine->displayThumbnail',
             ),
         ),
         'metadata' => array (

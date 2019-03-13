@@ -60,11 +60,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CM
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsImagedownload'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsImagedownload';
 
 // Register hooks.
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:'.$_EXTKEY.'/Classes/Hooks/class.tx_dlf_tcemain.php:tx_dlf_tcemain';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:'.$_EXTKEY.'/Classes/Hooks/DataHandler.php:DataHandler';
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:'.$_EXTKEY.'/Classes/Hooks/class.tx_dlf_tcemain.php:tx_dlf_tcemain';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:'.$_EXTKEY.'/Classes/Hooks/DataHandler.php:DataHandler';
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/Document.php']['hookClass'][] = 'EXT:'.$_EXTKEY.'/Classes/Hooks/class.tx_dlf_hacks.php:tx_dlf_hacks';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/Document.php']['hookClass'][] = 'EXT:'.$_EXTKEY.'/Classes/Hooks/KitodoProductionHacks.php:KitodoProductionHacks';
 
 // Register command line scripts.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array (
@@ -94,7 +94,7 @@ if (TYPO3_MODE === 'FE') {
      */
     function user_dlf_docTypeCheck($type) {
 
-        $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_dlf_doctype');
+        $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Common\DocumentTypeCheck::class);
 
         return ($hook->getDocType() === $type);
 

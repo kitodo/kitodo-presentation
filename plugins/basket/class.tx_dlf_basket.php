@@ -796,7 +796,7 @@ class tx_dlf_basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         $from = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
 
         // send mail
-        $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Mail\\MailMessage');
+        $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
 
         // Prepare and send the message
         $mail

@@ -81,7 +81,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.uid AS uid',
             'tx_dlf_metadata',
-            'tx_dlf_metadata.format=0 AND NOT tx_dlf_metadata.xpath=\'\''.Helper::whereClause('tx_dlf_metadata'),
+            'tx_dlf_metadata.format=0 AND NOT tx_dlf_metadata.xpath=""'.Helper::whereClause('tx_dlf_metadata'),
             '',
             '',
             ''
@@ -119,18 +119,49 @@ class ext_update {
         }
 
         if ($this->oldIndexRelatedTableNames()) {
-
             $this->renameIndexRelatedColumns();
-
         }
 
         if ($this->solariumSolrUpdateRequired()) {
-
             $this->doSolariumSolrUpdate();
+        }
 
+        if (count($this->oldFormatClasses())) {
+            $this->updateFormatClasses();
         }
 
         return $this->content;
+
+    }
+
+    /**
+     * Check for old format classes
+     *
+     * @access	protected
+     *
+     * @return	boolean		true if old format classes exist
+     */
+    protected function oldFormatClasses() {
+
+        $oldRecords = array ();
+
+        // Get all records with outdated configuration.
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
+            'tx_dlf_formats',
+            'tx_dlf_formats.class NOT LIKE "%\\%"'.Helper::whereClause('tx_dlf_formats'),
+            '',
+            '',
+            ''
+        );
+
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+            $oldRecords[$resArray['uid']] = $resArray['type'];
+
+        }
+
+        return $oldRecords;
 
     }
 
@@ -189,7 +220,7 @@ class ext_update {
         if ($result) {
 
             $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
@@ -199,7 +230,7 @@ class ext_update {
         } else {
 
             $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
@@ -207,6 +238,43 @@ class ext_update {
                 );
 
         }
+
+        $this->content .= $message->render();
+
+    }
+
+    /**
+     * Update all outdated format records
+     *
+     * @access	protected
+     *
+     * @return	void
+     */
+    protected function updateFormatClasses() {
+
+        $oldRecords = $this->oldFormatClasses();
+
+        $newValues = array (
+            'ALTO' => 'Kitodo\\Dlf\\Formats\\Alto',
+            'MODS' => 'Kitodo\\Dlf\\Formats\\Mods',
+            'TEIHDR' => 'Kitodo\\Dlf\\Formats\\TeiHeader'
+        );
+
+        foreach ($oldRecords as $uid => $type) {
+
+            $sqlQuery = 'UPDATE tx_dlf_formats SET class="'.$newValues[$type].'" WHERE uid='.$uid;
+
+            $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+
+        }
+
+        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            $GLOBALS['LANG']->getLL('update.FormatClassesOkay', TRUE),
+            $GLOBALS['LANG']->getLL('update.FormatClasses', TRUE),
+            \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+            FALSE
+            );
 
         $this->content .= $message->render();
 
@@ -266,7 +334,7 @@ class ext_update {
                 if (!empty($substUids)) {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         $GLOBALS['LANG']->getLL('update.metadataConfigOkay', TRUE),
                         $GLOBALS['LANG']->getLL('update.metadataConfig', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
@@ -276,7 +344,7 @@ class ext_update {
                 } else {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         $GLOBALS['LANG']->getLL('update.metadataConfigNotOkay', TRUE),
                         $GLOBALS['LANG']->getLL('update.metadataConfig', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
@@ -397,7 +465,7 @@ class ext_update {
                 }
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     $GLOBALS['LANG']->getLL('update.solariumSolrUpdateNotOkay', TRUE),
                     sprintf($GLOBALS['LANG']->getLL('update.solariumSolrUpdate', TRUE), $resArray['index_name']),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
@@ -413,7 +481,7 @@ class ext_update {
         }
 
         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
             $GLOBALS['LANG']->getLL('update.solariumSolrUpdateOkay', TRUE),
             $GLOBALS['LANG']->getLL('update.solariumSolrUpdate', TRUE),
             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,

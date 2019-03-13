@@ -40,7 +40,7 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      */
     public function main($content = '', $conf = array ()) {
 
-        $this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $this->cObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
 
         $this->extKey = 'dlf';
 

@@ -69,7 +69,7 @@ class tx_dlf_toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             $tool = trim($tool);
 
-            $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
 
             $cObj->data = $data;
 

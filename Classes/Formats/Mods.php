@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Formats;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,26 +12,26 @@
  */
 
 /**
- * Metadata format class 'tx_dlf_mods' for the 'dlf' extension.
+ * Metadata MODS format class for the 'dlf' extension.
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_mods implements \Kitodo\Dlf\Common\FormatInterface {
+class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
 
     /**
      * This extracts the essential MODS metadata from XML
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param	\SimpleXMLElement		$xml: The XML to extract the metadata from
      * @param	array		&$metadata: The metadata array to fill
      *
      * @return	void
      */
-    public function extractMetadata(SimpleXMLElement $xml, array &$metadata) {
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata) {
 
         $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 

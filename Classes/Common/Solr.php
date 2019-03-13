@@ -105,7 +105,7 @@ class Solr {
      */
     public static function escapeQuery($query) {
 
-        $helper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Solarium\Core\Query\Helper');
+        $helper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
 
         // Escape query phrase or term.
         if (preg_match('/^".*"$/', $query)) {
@@ -661,7 +661,7 @@ class Solr {
         );
 
         // Instantiate Solarium\Client class.
-        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Solarium\Client', $config);
+        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Client::class, $config);
 
         // Check if connection is established.
         $ping = $this->service->createPing();
@@ -676,7 +676,7 @@ class Solr {
             // Instantiation successful!
             $this->ready = TRUE;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             // Nothing to do here.
 

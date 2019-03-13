@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Common;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -9,19 +11,16 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Kitodo\Dlf\Common\Document;
-use Kitodo\Dlf\Common\Helper;
-
 /**
- * Document Type Check for usage as Typoscript Condition.
+ * Document Type Checker for usage as Typoscript Condition.
  * @see dlf/ext_localconf.php->user_dlf_docTypeCheck()
  *
  * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_doctype {
+class DocumentTypeCheck {
 
     /**
      * This holds the current document
@@ -173,7 +172,7 @@ class tx_dlf_doctype {
 
                 if (TYPO3_DLOG) {
 
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_doctype->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentTypeCheck->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
                 }
 
@@ -208,7 +207,7 @@ class tx_dlf_doctype {
 
                 if (TYPO3_DLOG) {
 
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_doctype->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentTypeCheck->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
 
                 }
 

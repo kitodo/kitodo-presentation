@@ -27,10 +27,10 @@ interface FulltextInterface {
      *
      * @access	public
      *
-     * @param	SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param	\SimpleXMLElement		$xml: The XML to extract the metadata from
      *
      * @return	string			The raw unformatted fulltext
      */
-    public function getRawText(SimpleXMLElement $xml);
+    public function getRawText(\SimpleXMLElement $xml);
 
 }

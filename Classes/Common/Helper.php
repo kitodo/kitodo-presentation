@@ -49,7 +49,7 @@ class Helper {
      */
     public static function addMessage($message) {
 
-        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
 
         $flashMessageService->getMessageQueueByIdentifier()->enqueue($message);
 
@@ -337,7 +337,7 @@ class Helper {
         if (TYPO3_MODE === 'FE' || TYPO3_MODE === 'BE') {
 
             // Initialize backend session with CLI user's rights.
-            $userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
+            $userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Authentication\BackendUserAuthentication::class);
 
             $userObj->dontSetCookie = TRUE;
 
@@ -915,7 +915,7 @@ class Helper {
     public static function processDB(array $data = array (), array $cmd = array (), $reverseOrder = FALSE, $be_user = FALSE) {
 
         // Instantiate TYPO3 core engine.
-        $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 
         // Set some configuration variables.
         $tce->stripslashes_values = FALSE;
@@ -997,7 +997,7 @@ class Helper {
      */
     public static function renderFlashMessages() {
 
-        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
 
         $content = '';
 
@@ -1300,7 +1300,7 @@ class Helper {
 
             } else {
 
-                $pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+                $pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
 
                 $GLOBALS['TSFE']->includeTCA();
 

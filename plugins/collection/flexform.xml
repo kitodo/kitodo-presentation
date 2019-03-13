@@ -49,7 +49,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"/>
-								<itemsProcFunc>tx_dlf_tceforms-&gt;itemsProcFunc_collectionList</itemsProcFunc>
+								<itemsProcFunc>Kitodo\\Dlf\\Hooks\\FormEngine-&gt;itemsProcFunc_collectionList</itemsProcFunc>
 								<size>5</size>
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>1024</maxitems>
@@ -65,7 +65,7 @@
 							<config>
 								<type>select</type>
 								<items type="array"></items>
-								<itemsProcFunc>tx_dlf_tceforms->itemsProcFunc_solrList</itemsProcFunc>
+								<itemsProcFunc>Kitodo\\Dlf\\Hooks\\FormEngine->itemsProcFunc_solrList</itemsProcFunc>
 								<size>1</size>
 								<maxitems>1</maxitems>
 								<minitems>1</minitems>

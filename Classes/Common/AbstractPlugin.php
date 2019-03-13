@@ -291,7 +291,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      */
     protected function parseTS($string = '') {
 
-        $parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
+        $parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
 
         $parser->parse($string);
 

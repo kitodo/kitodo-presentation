@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Hooks;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -14,14 +16,14 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 
 /**
- * Hooks and helper for the '\TYPO3\CMS\Core\DataHandling\DataHandler' library.
+ * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
-class tx_dlf_tcemain {
+class DataHandler {
 
     /**
      * Field post-processing hook for the process_datamap() method.
@@ -161,7 +163,7 @@ class tx_dlf_tcemain {
 
                     if (TYPO3_DLOG) {
 
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
+                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
 
                     }
 
@@ -269,7 +271,7 @@ class tx_dlf_tcemain {
 
                         if (TYPO3_DLOG) {
 
-                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_NOTICE, $fieldArray);
+                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_NOTICE, $fieldArray);
 
                         }
 
@@ -348,7 +350,7 @@ class tx_dlf_tcemain {
 
                                     if (TYPO3_DLOG) {
 
-                                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
+                                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
 
                                     }
 
@@ -434,7 +436,7 @@ class tx_dlf_tcemain {
 
                             if (TYPO3_DLOG) {
 
-                                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[tx_dlf_tcemain->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
+                                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
 
                             }
 
