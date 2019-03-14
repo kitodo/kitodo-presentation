@@ -41,7 +41,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->init($conf);
 
         // Merge configuration with conf array of toolbox.
-        $this->conf = Helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+        $this->conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
 
         // Load current document.
         $this->loadDocument();

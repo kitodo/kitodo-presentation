@@ -53,28 +53,6 @@ class Helper
     }
 
     /**
-     * Implements array_merge_recursive_overrule() in a cross-version way
-     * This code is a copy from realurl, written by Dmitry Dulepov <dmitry.dulepov@gmail.com>.
-     *
-     * @access public
-     *
-     * @param array $array1: First array
-     * @param array $array2: Second array
-     *
-     * @return array Merged array with second array overruling first one
-     */
-    static public function array_merge_recursive_overrule($array1, $array2)
-    {
-        if (class_exists('\\TYPO3\\CMS\\Core\\Utility\\ArrayUtility'))
-        {
-            \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($array1, $array2);
-        } else {
-            $array1 = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($array1, $array2);
-        }
-        return $array1;
-    }
-
-    /**
      * Check if given identifier is a valid identifier of the German National Library
      * @see	http://support.d-nb.de/iltis/onlineRoutinen/Pruefziffernberechnung.htm
      *

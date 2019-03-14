@@ -182,7 +182,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $TSconfig['special.']['userFunc'] = 'Kitodo\\Dlf\\Plugins\\TableOfContents->makeMenuArray';
 
-        $TSconfig = Helper::array_merge_recursive_overrule($this->conf['menuConf.'], $TSconfig);
+        $TSconfig = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['menuConf.'], $TSconfig);
 
         $markerArray['###TOCMENU###'] = $this->cObj->HMENU($TSconfig);
 

@@ -309,7 +309,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             unset($piVars['DATA']);
 
-            $overrulePIvars = Helper::array_merge_recursive_overrule($piVars, $overrulePIvars);
+            $overrulePIvars = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($piVars, $overrulePIvars);
 
         }
 

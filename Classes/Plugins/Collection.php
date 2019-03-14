@@ -238,7 +238,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 unset($piVars['DATA']);
 
-                $additionalParams = Helper::array_merge_recursive_overrule($piVars, $additionalParams);
+                $additionalParams = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($piVars, $additionalParams);
 
             }
 

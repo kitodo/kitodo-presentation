@@ -83,37 +83,37 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
         if (!empty($flexFormConf))
         {
-            $conf = Helper::array_merge_recursive_overrule($flexFormConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($flexFormConf, $conf);
         }
         // Read plugin TS configuration.
         $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][get_class($this).'.'];
         if (is_array($pluginConf))
         {
-            $conf = Helper::array_merge_recursive_overrule($pluginConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($pluginConf, $conf);
         }
         // Read old plugin TS configuration.
         $oldPluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(get_class($this)).'.'];
         if (is_array($oldPluginConf))
         {
-            $conf = Helper::array_merge_recursice_overrule($oldPluginConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($oldPluginConf, $conf);
         }
         // Read general TS configuration.
         $generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
         if (is_array($generalConf))
         {
-            $conf = Helper::array_merge_recursive_overrule($generalConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($generalConf, $conf);
         }
         // Read extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
         if (is_array($extConf))
         {
-            $conf = Helper::array_merge_recursive_overrule($extConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($extConf, $conf);
         }
         // Read TYPO3_CONF_VARS configuration.
         $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
         if (is_array($varsConf))
         {
-            $conf = Helper::array_merge_recursive_overrule($varsConf, $conf);
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($varsConf, $conf);
         }
         $this->conf = $conf;
         // Set default plugin variables.
