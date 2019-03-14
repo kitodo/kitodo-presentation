@@ -12,33 +12,29 @@ namespace Kitodo\Dlf\Formats;
  */
 
 /**
- * Fulltext ALTO format class for the 'dlf' extension.
+ * Fulltext ALTO format class for the 'dlf' extension
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @package	TYPO3
- * @subpackage	dlf
- * @access	public
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
-class Alto implements \Kitodo\Dlf\Common\FulltextInterface {
-
+class Alto implements \Kitodo\Dlf\Common\FulltextInterface
+{
     /**
      * This extracts the fulltext data from ALTO XML
      *
-     * @access	public
+     * @access public
      *
-     * @param	\SimpleXMLElement		$xml: The XML to extract the raw text from
+     * @param \SimpleXMLElement $xml: The XML to extract the raw text from
      *
-     * @return	string			The raw unformatted fulltext
+     * @return string The raw unformatted fulltext
      */
-    public function getRawText(\SimpleXMLElement $xml) {
-
+    public function getRawText(\SimpleXMLElement $xml)
+    {
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
-
         // Get all (presumed) words of the text.
         $words = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String/@CONTENT');
-
         return implode(' ', $words);
-
     }
-
 }
