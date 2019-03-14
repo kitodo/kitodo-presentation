@@ -12,16 +12,16 @@ namespace Kitodo\Dlf\Common;
  */
 
 /**
- * Solr class for the 'dlf' extension.
+ * Solr class for the 'dlf' extension
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author	Henrik Lochmann <dev@mentalmotive.com>
- * @package	TYPO3
- * @subpackage	dlf
- * @access	public
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author Henrik Lochmann <dev@mentalmotive.com>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
-class Solr {
-
+class Solr
+{
     /**
      * This holds the core name
      *
@@ -89,7 +89,7 @@ class Solr {
     /**
      * This holds the Solr service object
      *
-     * @var	Solarium\Client
+     * @var	\Solarium\Client
      * @access protected
      */
     protected $service;
@@ -97,325 +97,255 @@ class Solr {
     /**
      * Escape all special characters in a query string
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$query: The query string
+     * @param string $query: The query string
      *
-     * @return	string		The escaped query string
+     * @return string The escaped query string
      */
-    public static function escapeQuery($query) {
-
+    public static function escapeQuery($query)
+    {
         $helper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
-
         // Escape query phrase or term.
-        if (preg_match('/^".*"$/', $query)) {
-
+        if (preg_match('/^".*"$/', $query))
+        {
             return '"'.$helper->escapePhrase(trim($query, '"')).'"';
-
         } else {
-
             return $helper->escapeTerm($query);
-
         }
-
     }
 
     /**
      * Escape all special characters in a query string while retaining valid field queries
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$query: The query string
-     * @param	integer		$pid: The PID for the field configuration
+     * @param string $query: The query string
+     * @param integer $pid: The PID for the field configuration
      *
-     * @return	string		The escaped query string
+     * @return string The escaped query string
      */
-    public static function escapeQueryKeepField($query, $pid) {
-
+    public static function escapeQueryKeepField($query, $pid)
+    {
         // Is there a field query?
-        if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
-
+        if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query))
+        {
             // Get all indexed fields.
             $fields = [];
-
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
                 'tx_dlf_metadata',
-                'tx_dlf_metadata.index_indexed=1 AND tx_dlf_metadata.pid='.intval($pid).' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'.Helper::whereClause('tx_dlf_metadata'),
+                'tx_dlf_metadata.index_indexed=1'
+                    .' AND tx_dlf_metadata.pid='.intval($pid)
+                    .' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'
+                    .Helper::whereClause('tx_dlf_metadata'),
                 '',
                 '',
                 ''
             );
-
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-
+            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)
+            {
+                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result))
+                {
                     $fields[] = $resArray[0].'_'.($resArray[1] ? 't' : 'u').($resArray[2] ? 's' : 'u').'i';
-
                 }
-
             }
-
             // Check if queried field is valid.
             $splitQuery = explode(':', $query, 2);
-
-            if (in_array($splitQuery[0], $fields)) {
-
+            if (in_array($splitQuery[0], $fields))
+            {
                 $query = $splitQuery[0].':('.self::escapeQuery(trim($splitQuery[1], '()')).')';
-
             } else {
-
                 $query = self::escapeQuery($query);
-
             }
-
-        } elseif (!empty($query) && $query !== '*') {
-
+        } elseif (!empty($query)
+            && $query !== '*')
+        {
             // Don't escape plain asterisk search.
             $query = self::escapeQuery($query);
-
         }
-
         return $query;
-
     }
 
     /**
      * This is a singleton class, thus instances must be created by this method
      *
-     * @access	public
+     * @access public
      *
-     * @param	mixed		$core: Name or UID of the core to load
+     * @param mixed $core: Name or UID of the core to load
      *
-     * @return	\Kitodo\Dlf\Common\Solr	    Instance of this class
+     * @return \Kitodo\Dlf\Common\Solr Instance of this class
      */
-    public static function getInstance($core) {
-
+    public static function getInstance($core)
+    {
         // Save parameter for logging purposes.
         $_core = $core;
-
         // Get core name if UID is given.
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
-
+        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core))
+        {
             $core = Helper::getIndexName($core, 'tx_dlf_solrcores');
-
         }
-
         // Check if core is set.
-        if (empty($core)) {
-
-            if (TYPO3_DLOG) {
-
+        if (empty($core))
+        {
+            if (TYPO3_DLOG)
+            {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
             }
-
             return;
-
         }
-
         // Check if there is an instance in the registry already.
-        if (is_object(self::$registry[$core]) && self::$registry[$core] instanceof self) {
-
+        if (is_object(self::$registry[$core])
+            && self::$registry[$core] instanceof self)
+        {
             // Return singleton instance if available.
             return self::$registry[$core];
-
         }
-
         // Create new instance...
         $instance = new self($core);
-
         // ...and save it to registry.
-        if ($instance->ready) {
-
+        if ($instance->ready)
+        {
             self::$registry[$core] = $instance;
-
             // Return new instance.
             return $instance;
-
         } else {
-
-            if (TYPO3_DLOG) {
-
+            if (TYPO3_DLOG)
+            {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
-
             }
-
             return;
-
         }
-
     }
 
     /**
      * Returns the connection information for Solr
      *
-     * @access	public
+     * @access public
      *
-     * @return	string		The connection parameters for a specific Solr core
+     * @return string The connection parameters for a specific Solr core
      */
-    public static function getSolrConnectionInfo() {
-
+    public static function getSolrConnectionInfo()
+    {
         $solrInfo = [];
-
         // Extract extension configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-
         // Derive Solr scheme
         $solrInfo['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
-
         // Derive Solr host name.
         $solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
-
         // Set username and password.
         $solrInfo['username'] = $conf['solrUser'];
         $solrInfo['password'] = $conf['solrPass'];
-
         // Set port if not set.
         $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
-
         // Append core name to path.
         $solrInfo['path'] = trim($conf['solrPath'], '/');
-
         // Timeout
         $solrInfo['timeout'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, intval(ini_get('max_execution_time')), 10);
-
         return $solrInfo;
-
     }
 
     /**
      * Returns the request URL for a specific Solr core
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$core: Name of the core to load
+     * @param string $core: Name of the core to load
      *
-     * @return	string		The request URL for a specific Solr core
+     * @return string The request URL for a specific Solr core
      */
-    public static function getSolrUrl($core = '') {
-
+    public static function getSolrUrl($core = '')
+    {
         // Get Solr connection information.
         $solrInfo = self::getSolrConnectionInfo();
-
-        if ($solrInfo['username'] && $solrInfo['password']) {
-
+        if ($solrInfo['username']
+            && $solrInfo['password'])
+        {
             $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
-
         } else {
-
             $host = $solrInfo['host'];
-
         }
-
         // Return entire request URL.
         return $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/'.$core;
-
     }
 
     /**
      * Get next unused Solr core number
      *
-     * @access	public
+     * @access public
      *
-     * @param	integer		$start: Number to start with
+     * @param integer $start: Number to start with
      *
-     * @return	integer		First unused core number found
+     * @return integer First unused core number found
      */
-    public static function solrGetCoreNumber($start = 0) {
-
+    public static function solrGetCoreNumber($start = 0)
+    {
         $start = max(intval($start), 0);
-
         // Check if core already exists.
-        if (self::getInstance('dlfCore'.$start) === NULL) {
-
+        if (self::getInstance('dlfCore'.$start) === NULL)
+        {
             return $start;
-
         } else {
-
             return self::solrGetCoreNumber($start + 1);
-
         }
-
     }
 
     /**
      * Processes a search request.
      *
-     * @access	public
+     * @access public
      *
-     * @return	\Kitodo\Dlf\Common\DocumentList 	The result list
+     * @return \Kitodo\Dlf\Common\DocumentList The result list
      */
-    public function search() {
-
+    public function search()
+    {
         $toplevel = [];
-
         // Take over query parameters.
         $params = $this->params;
-
         $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
-
         // Set some query parameters.
         $params['start'] = 0;
         $params['rows'] = 0;
-
         // Perform search to determine the total number of hits without fetching them.
         $selectQuery = $this->service->createSelect($params);
         $results = $this->service->select($selectQuery);
-
         $this->numberOfHits = $results->getNumFound();
-
         // Restore query parameters
         $params = $this->params;
-
         $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
-
         // Restrict the fields to the required ones.
         $params['fields'] = 'uid,id';
-
         // Extend filter query to get all documents with the same uids.
-        foreach ($params['filterquery'] as $key => $value) {
-
-            if (isset($value['query'])) {
-
+        foreach ($params['filterquery'] as $key => $value)
+        {
+            if (isset($value['query']))
+            {
                 $params['filterquery'][$key]['query'] = '{!join from=uid to=uid}'.$value['query'];
-
             }
-
         }
-
         // Set filter query to just get toplevel documents.
         $params['filterquery'][] = ['query' => 'toplevel:true'];
-
         // Set join query to get all documents with the same uids.
         $params['query'] = '{!join from=uid to=uid}'.$params['query'];
-
         // Perform search to determine the total number of toplevel hits and fetch the required rows.
         $selectQuery = $this->service->createSelect($params);
         $results = $this->service->select($selectQuery);
-
         $numberOfToplevelHits = $results->getNumFound();
-
         // Process results.
-        foreach ($results as $doc) {
-
+        foreach ($results as $doc)
+        {
             $toplevel[$doc->id] = [
                 'u' => $doc->uid,
                 'h' => '',
                 's' => '',
                 'p' => []
             ];
-
         }
-
         // Save list of documents.
         $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
-
         $list->reset();
-
         $list->add(array_values($toplevel));
-
         // Set metadata for search.
         $list->metadata = [
             'label' => '',
@@ -434,217 +364,189 @@ class Solr {
                 'numberOfToplevelHits' => $numberOfToplevelHits
             ]
         ];
-
         return $list;
-
     }
 
     /**
      * Processes a search request and returns the raw Apache Solr Documents.
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$query: The search query
-     * @param   array       $parameters: Additional search parameters
+     * @param string $query: The search query
+     * @param array $parameters: Additional search parameters
      *
-     * @return	array       The Apache Solr Documents that were fetched
+     * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($query = '', $parameters = []) {
-
+    public function search_raw($query = '', $parameters = [])
+    {
         // Set additional query parameters.
         $parameters['start'] = 0;
         $parameters['rows'] = $this->limit;
-
         // Set query.
         $parameters['query'] = $query;
-
         // Perform search.
         $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
         $result = $this->service->select($selectQuery);
-
         $resultSet = [];
-
-        foreach ($result as $doc) {
-
+        foreach ($result as $doc)
+        {
             $resultSet[] = $doc;
-
         }
-
         return $resultSet;
- 
     }
 
     /**
      * This returns $this->limit via __get()
      *
-     * @access	protected
+     * @access protected
      *
-     * @return	integer		The max number of results
+     * @return integer The max number of results
      */
-    protected function _getLimit() {
-
+    protected function _getLimit()
+    {
         return $this->limit;
-
     }
 
     /**
      * This returns $this->numberOfHits via __get()
      *
-     * @access	protected
+     * @access protected
      *
-     * @return	integer		Total number of hits for last search
+     * @return integer Total number of hits for last search
      */
-    protected function _getNumberOfHits() {
-
+    protected function _getNumberOfHits()
+    {
         return $this->numberOfHits;
-
     }
 
     /**
      * This returns $this->ready via __get()
      *
-     * @access	protected
+     * @access protected
      *
-     * @return	boolean		Is the search instantiated successfully?
+     * @return boolean Is the search instantiated successfully?
      */
-    protected function _getReady() {
-
+    protected function _getReady()
+    {
         return $this->ready;
-
     }
 
     /**
      * This returns $this->service via __get()
      *
-     * @access	protected
+     * @access protected
      *
-     * @return	Solarium\Client		Apache Solr service object
+     * @return \Solarium\Client Apache Solr service object
      */
-    protected function _getService() {
-
+    protected function _getService()
+    {
         return $this->service;
-
     }
 
     /**
      * This sets $this->cPid via __set()
      *
-     * @access	protected
+     * @access protected
      *
-     * @param	integer		$value: The new PID for the metadata definitions
+     * @param integer $value: The new PID for the metadata definitions
      *
-     * @return	void
+     * @return void
      */
-    protected function _setCPid($value) {
-
+    protected function _setCPid($value)
+    {
         $this->cPid = max(intval($value), 0);
-
     }
 
     /**
      * This sets $this->limit via __set()
      *
-     * @access	protected
+     * @access protected
      *
-     * @param	integer		$value: The max number of results
+     * @param integer $value: The max number of results
      *
-     * @return	void
+     * @return void
      */
-    protected function _setLimit($value) {
-
+    protected function _setLimit($value)
+    {
         $this->limit = max(intval($value), 0);
-
     }
 
     /**
      * This sets $this->params via __set()
      *
-     * @access	protected
+     * @access protected
      *
-     * @param	array		$value: The query parameters
+     * @param array $value: The query parameters
      *
-     * @return	void
+     * @return void
      */
-    protected function _setParams(array $value) {
-
+    protected function _setParams(array $value)
+    {
         $this->params = $value;
-
     }
 
     /**
      * This magic method is called each time an invisible property is referenced from the object
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$var: Name of variable to get
+     * @param string $var: Name of variable to get
      *
-     * @return	mixed		Value of $this->$var
+     * @return mixed Value of $this->$var
      */
-    public function __get($var) {
-
+    public function __get($var)
+    {
         $method = '_get'.ucfirst($var);
-
-        if (!property_exists($this, $var) || !method_exists($this, $method)) {
-
-            if (TYPO3_DLOG) {
-
+        if (!property_exists($this, $var)
+            || !method_exists($this, $method))
+        {
+            if (TYPO3_DLOG)
+            {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-
             }
-
             return;
-
         } else {
-
             return $this->$method();
-
         }
-
     }
 
     /**
      * This magic method is called each time an invisible property is referenced from the object
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$var: Name of variable to set
-     * @param	mixed		$value: New value of variable
+     * @param string $var: Name of variable to set
+     * @param mixed $value: New value of variable
      *
-     * @return	void
+     * @return void
      */
-    public function __set($var, $value) {
-
-        $method = '_set'.ucfirst($var);
-
-        if (!property_exists($this, $var) || !method_exists($this, $method)) {
-
-            if (TYPO3_DLOG) {
-
+    public function __set($var, $value)
+    {
+       $method = '_set'.ucfirst($var);
+        if (!property_exists($this, $var)
+            || !method_exists($this, $method))
+        {
+            if (TYPO3_DLOG)
+            {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
-
             }
-
         } else {
-
             $this->$method($value);
-
         }
-
     }
 
     /**
      * This is a singleton class, thus the constructor should be private/protected
      *
-     * @access	protected
+     * @access protected
      *
-     * @param	string		$core: The name of the core to use
+     * @param string $core: The name of the core to use
      *
-     * @return	void
+     * @return void
      */
-    protected function __construct($core) {
-
+    protected function __construct($core)
+    {
         $solrInfo = self::getSolrConnectionInfo();
-
         $config = [
             'endpoint' => [
                 'dlf' => [
@@ -659,29 +561,19 @@ class Solr {
                 ]
             ]
         ];
-
         // Instantiate Solarium\Client class.
         $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Client::class, $config);
-
         // Check if connection is established.
         $ping = $this->service->createPing();
-
         try {
-
             $this->service->ping($ping);
-
             // Set core name.
             $this->core = $core;
-
             // Instantiation successful!
             $this->ready = TRUE;
-
-        } catch (\Exception $e) {
-
+        } catch (\Exception $e)
+        {
             // Nothing to do here.
-
         }
-
     }
-
 }

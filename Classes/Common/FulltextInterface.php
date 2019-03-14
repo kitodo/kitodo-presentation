@@ -12,25 +12,24 @@ namespace Kitodo\Dlf\Common;
  */
 
 /**
- * Fulltext interface for the 'dlf' extension.
+ * Fulltext interface for the 'dlf' extension
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @package	TYPO3
- * @subpackage	dlf
- * @access	public
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  * @abstract
  */
-interface FulltextInterface {
-
+interface FulltextInterface
+{
     /**
      * This extracts raw fulltext data from XML
      *
-     * @access	public
+     * @access public
      *
-     * @param	\SimpleXMLElement		$xml: The XML to extract the metadata from
+     * @param \SimpleXMLElement $xml: The XML to extract the metadata from
      *
-     * @return	string			The raw unformatted fulltext
+     * @return string The raw unformatted fulltext
      */
     public function getRawText(\SimpleXMLElement $xml);
-
 }
