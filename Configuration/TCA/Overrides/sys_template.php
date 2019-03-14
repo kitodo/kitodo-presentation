@@ -9,23 +9,21 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-if (!defined('TYPO3_MODE')) {
+if (!defined('TYPO3_MODE'))
+{
     die('Access denied.');
 }
-
 // Register static typoscript.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
     'Configuration/TypoScript/',
     'Basic Configuration'
 );
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
     'Configuration/TypoScript/Search/',
     'Search Facets'
 );
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
     'Configuration/TypoScript/TableOfContents/',

@@ -12,55 +12,48 @@ namespace Kitodo\Dlf\Plugins\Eid;
  */
 
 /**
- * eID image proxy for plugin 'Page View' of the 'dlf' extension.
+ * eID image proxy for plugin 'Page View' of the 'dlf' extension
  *
- * @author	Alexander Bigga <alexander.bigga@slub-dresden.de>
- * @copyright	Copyright (c) 2015, Alexander Bigga, SLUB Dresden
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
+ * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
-class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
-
+class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugins/Eid/PageViewProxy.php';
 
     /**
      * The main method of the eID script
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$content: The PlugIn content
-     * @param	array		$conf: The PlugIn configuration
+     * @param string $content: The PlugIn content
+     * @param array $conf: The PlugIn configuration
      *
-     * @return	string
+     * @return string
      */
-    public function main($content = '', $conf = []) {
-
+    public function main($content = '', $conf = [])
+    {
         $this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
-
         $header = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('header');
-
         $url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
-
         $fetchedData = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0));
-
         // Add some header tags
         header('Last-Modified: '.gmdate("D, d M Y H:i:s").'GMT');
         header('Cache-Control: max-age=3600, must-revalidate');
         header('Content-Length: '.strlen($fetchedData));
         header('Content-Type: '.finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
-
         // Get last modified date from request header
         $fetchedHeader = explode("\n", \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, 2));
-        foreach ($fetchedHeader as $headerline) {
-            if (stripos($headerline, 'Last-Modified:') !== FALSE) {
+        foreach ($fetchedHeader as $headerline)
+        {
+            if (stripos($headerline, 'Last-Modified:') !== FALSE)
+            {
                 header($headerline);
                 break;
             }
         }
-
         echo $fetchedData;
-
     }
-
 }
