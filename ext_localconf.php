@@ -9,8 +9,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-if (!defined('TYPO3_MODE'))
-{
+if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
 // Register plugins.
@@ -45,8 +44,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/Document.php']['hookClass'][] = 'EXT:'.$_EXTKEY.'/Classes/Hooks/KitodoProductionHacks.php:KitodoProductionHacks';
 // Register command line scripts.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = [
-    function ()
-    {
+    function () {
         $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Cli\CommandLineIndexer::class);
         $SOBE->main();
     },
@@ -56,8 +54,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = [
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = \Kitodo\Dlf\Plugins\Eid\SearchSuggest::class.'::main';
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Plugins\Eid\PageViewProxy::class.'::main';
 // Register Typoscript user function.
-if (TYPO3_MODE === 'FE')
-{
+if (TYPO3_MODE === 'FE') {
     /**
      * docTypeCheck user function to use in Typoscript
      * @example [userFunc = user_dlf_docTypeCheck($type)]
@@ -68,8 +65,7 @@ if (TYPO3_MODE === 'FE')
      *
      * @return boolean TRUE if document type matches, FALSE if not
      */
-    function user_dlf_docTypeCheck($type)
-    {
+    function user_dlf_docTypeCheck($type) {
         $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Common\DocumentTypeCheck::class);
         return ($hook->getDocType() === $type);
     }

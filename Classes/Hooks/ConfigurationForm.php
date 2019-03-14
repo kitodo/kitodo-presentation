@@ -22,8 +22,7 @@ use Kitodo\Dlf\Common\Solr;
  * @subpackage dlf
  * @access public
  */
-class ConfigurationForm
-{
+class ConfigurationForm {
     /**
      * This holds the current configuration
      *
@@ -50,13 +49,11 @@ class ConfigurationForm
      *
      * @return string Message informing the user of success or failure
      */
-    public function checkSolrConnection(&$params, &$pObj)
-    {
+    public function checkSolrConnection(&$params, &$pObj) {
         $solrInfo = Solr::getSolrConnectionInfo();
         // Prepend username and password to hostname.
         if (!empty($solrInfo['username'])
-            && !empty($solrInfo['password']))
-        {
+            && !empty($solrInfo['password'])) {
             $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
         } else {
             $host = $solrInfo['host'];
@@ -72,11 +69,9 @@ class ConfigurationForm
         // Try to connect to Solr server.
         $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
         // Check status code.
-        if ($response)
-        {
+        if ($response) {
             $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-            if (is_array($status))
-            {
+            if (is_array($status)) {
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
@@ -109,8 +104,7 @@ class ConfigurationForm
      *
      * @return integer UID of user or 0 if something is wrong
      */
-    protected function checkCliUser($checkOnly, $groupUid)
-    {
+    protected function checkCliUser($checkOnly, $groupUid) {
         // Set default return value.
         $usrUid = 0;
         // Check if user "_cli_dlf" exists, is no admin and is not disabled.
@@ -120,8 +114,7 @@ class ConfigurationForm
             'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users')
                 .\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_users')
         );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)
-        {
+        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
             // Explode comma-separated list.
             $resArray['usergroup'] = explode(',', $resArray['usergroup']);
@@ -135,8 +128,7 @@ class ConfigurationForm
             // Check if user is configured properly.
             if (count(array_diff([$groupUid], $resArray['usergroup'])) == 0
                 && !$resArray['admin']
-                && $GLOBALS['TYPO3_DB']->sql_num_rows($result2) > 0)
-            {
+                && $GLOBALS['TYPO3_DB']->sql_num_rows($result2) > 0) {
                 $usrUid = $resArray['uid'];
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -147,8 +139,7 @@ class ConfigurationForm
                 );
             } else {
                 if (!$checkOnly
-                    && $groupUid)
-                {
+                    && $groupUid) {
                     // Keep exisiting values and add the new ones.
                     $usergroup = array_unique(array_merge([$groupUid], $resArray['usergroup']));
                     // Try to configure user.
@@ -162,8 +153,7 @@ class ConfigurationForm
                     ];
                     Helper::processDBasAdmin($data);
                     // Check if configuration was successful.
-                    if ($this->checkCliUser(TRUE, $groupUid))
-                    {
+                    if ($this->checkCliUser(TRUE, $groupUid)) {
                         $usrUid = $resArray['uid'];
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -193,8 +183,7 @@ class ConfigurationForm
             }
         } else {
             if (!$checkOnly
-                && $groupUid)
-            {
+                && $groupUid) {
                 // Try to create user.
                 $tempUid = uniqid('NEW');
                 $data = [];
@@ -207,8 +196,7 @@ class ConfigurationForm
                 ];
                 $substUid = Helper::processDBasAdmin($data);
                 // Check if creation was successful.
-                if (!empty($substUid[$tempUid]))
-                {
+                if (!empty($substUid[$tempUid])) {
                     $usrUid = $substUid[$tempUid];
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -250,13 +238,11 @@ class ConfigurationForm
      *
      * @return integer UID of usergroup or 0 if something is wrong
      */
-    protected function checkCliGroup($checkOnly, $settings = [])
-    {
+    protected function checkCliGroup($checkOnly, $settings = []) {
         // Set default return value.
         $grpUid = 0;
         // Set default configuration for usergroup.
-        if (empty($settings))
-        {
+        if (empty($settings)) {
             $settings = [
                 'non_exclude_fields' => [],
                 'tables_select' => [
@@ -276,12 +262,9 @@ class ConfigurationForm
                 ]
             ];
             // Set allowed exclude fields.
-            foreach ($settings['tables_modify'] as $table)
-            {
-                foreach ($GLOBALS['TCA'][$table]['columns'] as $field => $fieldConf)
-                {
-                    if (!empty($fieldConf['exclude']))
-                    {
+            foreach ($settings['tables_modify'] as $table) {
+                foreach ($GLOBALS['TCA'][$table]['columns'] as $field => $fieldConf) {
+                    if (!empty($fieldConf['exclude'])) {
                         $settings['non_exclude_fields'][] = $table.':'.$field;
                     }
                 }
@@ -294,8 +277,7 @@ class ConfigurationForm
             'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups')
                 .\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
         );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0)
-        {
+        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
             // Explode comma-separated lists.
             $resArray['non_exclude_fields'] = explode(',', $resArray['non_exclude_fields']);
@@ -305,8 +287,7 @@ class ConfigurationForm
             if (count(array_diff($settings['non_exclude_fields'], $resArray['non_exclude_fields'])) == 0
                 && count(array_diff($settings['tables_select'], $resArray['tables_select'])) == 0
                 && count(array_diff($settings['tables_modify'], $resArray['tables_modify'])) == 0
-                && $resArray[$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled']] == 0)
-            {
+                && $resArray[$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled']] == 0) {
                 $grpUid = $resArray['uid'];
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -316,8 +297,7 @@ class ConfigurationForm
                     FALSE
                 );
             } else {
-                if (!$checkOnly)
-                {
+                if (!$checkOnly) {
                     // Keep exisiting values and add the new ones.
                     $non_exclude_fields = array_unique(array_merge($settings['non_exclude_fields'], $resArray['non_exclude_fields']));
                     $tables_select = array_unique(array_merge($settings['tables_select'], $resArray['tables_select']));
@@ -332,8 +312,7 @@ class ConfigurationForm
                     ];
                     Helper::processDBasAdmin($data);
                     // Check if configuration was successful.
-                    if ($this->checkCliGroup(TRUE, $settings))
-                    {
+                    if ($this->checkCliGroup(TRUE, $settings)) {
                         $grpUid = $resArray['uid'];
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -362,8 +341,7 @@ class ConfigurationForm
                 }
             }
         } else {
-            if (!$checkOnly)
-            {
+            if (!$checkOnly) {
                 // Try to create usergroup.
                 $tempUid = uniqid('NEW');
                 $data = [];
@@ -377,8 +355,7 @@ class ConfigurationForm
                 ];
                 $substUid = Helper::processDBasAdmin($data);
                 // Check if creation was successful.
-                if (!empty($substUid[$tempUid]))
-                {
+                if (!empty($substUid[$tempUid])) {
                     $grpUid = $substUid[$tempUid];
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -420,8 +397,7 @@ class ConfigurationForm
      *
      * @return string Message informing the user of success or failure
      */
-    public function checkCliUserGroup(&$params, &$pObj)
-    {
+    public function checkCliUserGroup(&$params, &$pObj) {
         // Check if usergroup "_cli_dlf" exists and is configured properly.
         $groupUid = $this->checkCliGroup(empty($this->conf['makeCliUserGroup']));
         // Save output because it will be overwritten by the user check method.
@@ -431,8 +407,7 @@ class ConfigurationForm
         // Merge output from usergroup and user checks.
         $this->content .= $content;
         // Check if CLI dispatcher is executable.
-        if (is_executable(PATH_typo3.'cli_dispatch.phpsh'))
-        {
+        if (is_executable(PATH_typo3.'cli_dispatch.phpsh')) {
             $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                 $GLOBALS['LANG']->getLL('cliUserGroup.cliOkayMsg'),
@@ -463,8 +438,7 @@ class ConfigurationForm
      *
      * @return string Message informing the user of success or failure
      */
-    public function checkMetadataFormats(&$params, &$pObj)
-    {
+    public function checkMetadataFormats(&$params, &$pObj) {
         $nsDefined = [
             'MODS' => FALSE,
             'TEIHDR' => FALSE,
@@ -477,15 +451,13 @@ class ConfigurationForm
             '1=1'
                 .Helper::whereClause('tx_dlf_formats')
         );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))
-        {
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $nsDefined[$resArray['type']] = TRUE;
         }
         // Build data array.
         $data = [];
         // Add MODS namespace.
-        if (!$nsDefined['MODS'])
-        {
+        if (!$nsDefined['MODS']) {
             $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'MODS',
@@ -495,8 +467,7 @@ class ConfigurationForm
             ];
         }
         // Add TEIHDR namespace.
-        if (!$nsDefined['TEIHDR'])
-        {
+        if (!$nsDefined['TEIHDR']) {
             $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'TEIHDR',
@@ -506,8 +477,7 @@ class ConfigurationForm
             ];
         }
         // Add ALTO namespace.
-        if (!$nsDefined['ALTO'])
-        {
+        if (!$nsDefined['ALTO']) {
             $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'ALTO',
@@ -516,12 +486,10 @@ class ConfigurationForm
                 'class' => 'Kitodo\\Dlf\\Formats\\Alto'
             ];
         }
-        if (!empty($data))
-        {
+        if (!empty($data)) {
             // Process changes.
             $substUid = Helper::processDBasAdmin($data);
-            if (!empty($substUid))
-            {
+            if (!empty($substUid)) {
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     $GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg'),
@@ -558,8 +526,7 @@ class ConfigurationForm
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         // Load localization file.
         $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
         // Get current configuration.

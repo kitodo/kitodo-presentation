@@ -21,8 +21,7 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin
-{
+class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugins/Tools/ImageManipulationTool.php';
 
     /**
@@ -35,8 +34,7 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf)
-    {
+    public function main($content, $conf) {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         $this->conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);

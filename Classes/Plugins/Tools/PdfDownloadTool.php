@@ -22,8 +22,7 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
-{
+class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugins/Tools/PdfDownloadTool.php';
 
     /**
@@ -36,8 +35,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf)
-    {
+    public function main($content, $conf) {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         $this->conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
@@ -45,13 +43,11 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->loadDocument();
         if ($this->doc === NULL
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpDownload']))
-        {
+            || empty($this->conf['fileGrpDownload'])) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
-            if (!empty($this->piVars['logicalPage']))
-            {
+            if (!empty($this->piVars['logicalPage'])) {
                 $this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($this->piVars['logicalPage']);
@@ -59,8 +55,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
             if ((int) $this->piVars['page'] > 0
-                || empty($this->piVars['page']))
-            {
+                || empty($this->piVars['page'])) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -84,47 +79,39 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @return string Link to downloadable page
      */
-    protected function getPageLink()
-    {
+    protected function getPageLink() {
         $page1Link = '';
         $page2Link = '';
         $pageNumber = $this->piVars['page'];
         // Get image link.
         $details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]];
         $file = $details['files'][$this->conf['fileGrpDownload']];
-        if (!empty($file))
-        {
+        if (!empty($file)) {
             $page1Link = $this->doc->getFileLocation($file);
         }
         // Get second page, too, if double page view is activated.
         if ($this->piVars['double']
-            && $pageNumber < $this->doc->numPages)
-        {
+            && $pageNumber < $this->doc->numPages) {
             $details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]];
             $file = $details['files'][$this->conf['fileGrpDownload']];
-            if (!empty($file))
-            {
+            if (!empty($file)) {
                 $page2Link = $this->doc->getFileLocation($file);
             }
         }
         if (TYPO3_DLOG
             && empty($page1Link)
-            && empty($page2Link))
-        {
+            && empty($page2Link)) {
             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Tools\PdfDownloadTool->getPageLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
         }
         // Wrap URLs with HTML.
-        if (!empty($page1Link))
-        {
-            if ($this->piVars['double'])
-            {
+        if (!empty($page1Link)) {
+            if ($this->piVars['double']) {
                 $page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), ['parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')]);
             } else {
                 $page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''), ['parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')]);
             }
         }
-        if (!empty($page2Link))
-        {
+        if (!empty($page2Link)) {
             $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''), ['parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')]);
         }
         return $page1Link.$page2Link;
@@ -137,27 +124,22 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @return string Link to downloadable work
      */
-    protected function getWorkLink()
-    {
+    protected function getWorkLink() {
         $workLink = '';
         // Get work link.
-        if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']]))
-        {
+        if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']])) {
             $workLink = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']]);
         } else {
             $details = $this->doc->getLogicalStructure($this->doc->toplevelId);
-            if (!empty($details['files'][$this->conf['fileGrpDownload']]))
-            {
+            if (!empty($details['files'][$this->conf['fileGrpDownload']])) {
                 $workLink = $this->doc->getFileLocation($details['files'][$this->conf['fileGrpDownload']]);
             }
         }
         // Wrap URLs with HTML.
-        if (!empty($workLink))
-        {
+        if (!empty($workLink)) {
             $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), ['parameter' => $workLink, 'title' => $this->pi_getLL('work', '')]);
         } else {
-            if (TYPO3_DLOG)
-            {
+            if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Tools\PdfDownloadTool->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
             }
         }

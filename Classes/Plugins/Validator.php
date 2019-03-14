@@ -12,62 +12,49 @@ namespace Kitodo\Dlf\Plugins;
  */
 
 /**
- * Plugin 'Validator' for the 'dlf' extension.
+ * Plugin 'Validator' for the 'dlf' extension
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @package	TYPO3
- * @subpackage	dlf
- * @access	public
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
 class Validator extends \Kitodo\Dlf\Common\AbstractPlugin {
-
     public $scriptRelPath = 'Classes/Plugins/Validator.php';
 
     /**
      * The main method of the PlugIn
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$content: The PlugIn content
-     * @param	array		$conf: The PlugIn configuration
+     * @param string $content: The PlugIn content
+     * @param array $conf: The PlugIn configuration
      *
-     * @return	string		The content that is displayed on the website
+     * @return string The content that is displayed on the website
      */
     public function main($content, $conf) {
-
         $this->init($conf);
-
         // Disable caching for this plugin.
         $this->setCache(FALSE);
-
         // Load template file.
         $this->getTemplate();
-
         // Load current document.
         $this->loadDocument();
-
         if ($this->doc === NULL) {
-
             // Document could not be loaded.
             // Check:
             // - if document location is valid URL
             // - if document location is reachable
             // - if document is well-formed XML
             // - if document has METS node
-
         } else {
-
             // Document loaded.
             // Check:
             // - if document is valid METS document
             // - if document contains supported metadata schema
             // - if document's metadata are valid
             // - if document provides configured mandatory fields
-
         }
-
         return $this->pi_wrapInBaseClass($content);
-
     }
-
 }

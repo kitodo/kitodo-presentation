@@ -12,67 +12,49 @@ namespace Kitodo\Dlf\Plugins;
  */
 
 /**
- * Plugin 'Toolbox' for the 'dlf' extension.
+ * Plugin 'Toolbox' for the 'dlf' extension
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @package	TYPO3
- * @subpackage	dlf
- * @access	public
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
 class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
-
     public $scriptRelPath = 'Classes/Plugins/Toolbox.php';
 
     /**
      * The main method of the PlugIn
      *
-     * @access	public
+     * @access public
      *
-     * @param	string		$content: The PlugIn content
-     * @param	array		$conf: The PlugIn configuration
+     * @param string $content: The PlugIn content
+     * @param array $conf: The PlugIn configuration
      *
-     * @return	string		The content that is displayed on the website
+     * @return string The content that is displayed on the website
      */
     public function main($content, $conf) {
-
         $this->init($conf);
-
         // Quit without doing anything if required variable is not set.
         if (empty($this->piVars['id'])) {
-
             return $content;
-
         }
-
         // Load template file.
         $this->getTemplate();
-
         // Build data array.
         $data = [
             'conf' => $this->conf,
             'piVars' => $this->piVars,
         ];
-
         // Get template subpart for tools.
         $subpart = $this->cObj->getSubpart($this->template, '###TOOLS###');
-
         $tools = explode(',', $this->conf['tools']);
-
         // Add the tools to the toolbox.
         foreach ($tools as $tool) {
-
             $tool = trim($tool);
-
             $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
-
             $cObj->data = $data;
-
             $content .= $this->cObj->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])]);
-
         }
-
         return $this->pi_wrapInBaseClass($this->cObj->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
-
     }
-
 }

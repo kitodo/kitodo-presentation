@@ -19,8 +19,7 @@ namespace Kitodo\Dlf\Plugins\Eid;
  * @subpackage dlf
  * @access public
  */
-class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
-{
+class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugins/Eid/PageViewProxy.php';
 
     /**
@@ -33,8 +32,7 @@ class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return string
      */
-    public function main($content = '', $conf = [])
-    {
+    public function main($content = '', $conf = []) {
         $this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
         $header = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('header');
         $url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
@@ -46,10 +44,8 @@ class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         header('Content-Type: '.finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
         // Get last modified date from request header
         $fetchedHeader = explode("\n", \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, 2));
-        foreach ($fetchedHeader as $headerline)
-        {
-            if (stripos($headerline, 'Last-Modified:') !== FALSE)
-            {
+        foreach ($fetchedHeader as $headerline) {
+            if (stripos($headerline, 'Last-Modified:') !== FALSE) {
                 header($headerline);
                 break;
             }

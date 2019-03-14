@@ -20,8 +20,7 @@ namespace Kitodo\Dlf\Common;
  * @access public
  * @abstract
  */
-interface MetadataInterface
-{
+interface MetadataInterface {
     /**
      * This extracts metadata from XML
      *

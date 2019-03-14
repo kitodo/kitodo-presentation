@@ -23,8 +23,7 @@ use Kitodo\Dlf\Common\Solr;
  * @subpackage dlf
  * @access public
  */
-class DataHandler
-{
+class DataHandler {
     /**
      * Field post-processing hook for the process_datamap() method.
      *
@@ -38,31 +37,25 @@ class DataHandler
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj)
-    {
-        if ($status == 'new')
-        {
-            switch ($table)
-            {
+    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
+        if ($status == 'new') {
+            switch ($table) {
                 // Field post-processing for table "tx_dlf_documents".
                 case 'tx_dlf_documents':
                     // Set sorting field if empty.
                     if (empty($fieldArray['title_sorting'])
-                        && !empty($fieldArray['title']))
-                    {
+                        && !empty($fieldArray['title'])) {
                         $fieldArray['title_sorting'] = $fieldArray['title'];
                     }
                     break;
                 // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
                     // Store field in index if it should appear in lists.
-                    if (!empty($fieldArray['is_listed']))
-                    {
+                    if (!empty($fieldArray['is_listed'])) {
                         $fieldArray['index_stored'] = 1;
                     }
                     // Index field in index if it should be used for auto-completion.
-                    if (!empty($fieldArray['index_autocomplete']))
-                    {
+                    if (!empty($fieldArray['index_autocomplete'])) {
                         $fieldArray['index_indexed'] = 1;
                     }
                 // Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
@@ -71,19 +64,16 @@ class DataHandler
                 case 'tx_dlf_structures':
                     // Set label as index name if empty.
                     if (empty($fieldArray['index_name'])
-                        && !empty($fieldArray['label']))
-                    {
+                        && !empty($fieldArray['label'])) {
                         $fieldArray['index_name'] = $fieldArray['label'];
                     }
                     // Set index name as label if empty.
                     if (empty($fieldArray['label'])
-                        && !empty($fieldArray['index_name']))
-                    {
+                        && !empty($fieldArray['index_name'])) {
                         $fieldArray['label'] = $fieldArray['index_name'];
                     }
                     // Ensure that index names don't get mixed up with sorting values.
-                    if (substr($fieldArray['index_name'], -8) == '_sorting')
-                    {
+                    if (substr($fieldArray['index_name'], -8) == '_sorting') {
                         $fieldArray['index_name'] .= '0';
                     }
                     break;
@@ -105,8 +95,7 @@ class DataHandler
                     $solrInfo = Solr::getSolrConnectionInfo();
                     // Prepend username and password to hostname.
                     if ($solrInfo['username']
-                        && $solrInfo['password'])
-                    {
+                        && $solrInfo['password']) {
                         $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
                     } else {
                         $host = $solrInfo['host'];
@@ -122,39 +111,32 @@ class DataHandler
                     $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=dlfCore'.$coreNumber.'&dataDir=data&configSet=dlf';
                     $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
                     // Process response.
-                    if ($response)
-                    {
+                    if ($response) {
                         $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
                         if ($status
-                            && $status[0] == 0)
-                        {
+                            && $status[0] == 0) {
                             $fieldArray['index_name'] = 'dlfCore'.$coreNumber;
                             return;
                         }
                     }
-                    if (TYPO3_DLOG)
-                    {
+                    if (TYPO3_DLOG) {
                         \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
                     }
                     // Solr core could not be created, thus unset field array.
                     $fieldArray = [];
                     break;
             }
-        } elseif ($status == 'update')
-        {
-            switch ($table)
-            {
+        } elseif ($status == 'update') {
+            switch ($table) {
                 // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
                     // Store field in index if it should appear in lists.
-                    if (!empty($fieldArray['is_listed']))
-                    {
+                    if (!empty($fieldArray['is_listed'])) {
                         $fieldArray['index_stored'] = 1;
                     }
                     if (isset($fieldArray['index_stored'])
                         && $fieldArray['index_stored'] == 0
-                        && !isset($fieldArray['is_listed']))
-                    {
+                        && !isset($fieldArray['is_listed'])) {
                         // Get current configuration.
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             $table.'.is_listed AS is_listed',
@@ -165,21 +147,18 @@ class DataHandler
                             '',
                             '1'
                         );
-                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result))
-                        {
+                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
                             // Reset storing to current.
                             list ($fieldArray['index_stored']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                         }
                     }
                     // Index field in index if it should be used for auto-completion.
-                    if (!empty($fieldArray['index_autocomplete']))
-                    {
+                    if (!empty($fieldArray['index_autocomplete'])) {
                         $fieldArray['index_indexed'] = 1;
                     }
                     if (isset($fieldArray['index_indexed'])
                         && $fieldArray['index_indexed'] == 0
-                        && !isset($fieldArray['index_autocomplete']))
-                    {
+                        && !isset($fieldArray['index_autocomplete'])) {
                         // Get current configuration.
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             $table.'.index_autocomplete AS index_autocomplete',
@@ -190,8 +169,7 @@ class DataHandler
                             '',
                             '1'
                         );
-                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result))
-                        {
+                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
                             // Reset indexing to current.
                             list ($fieldArray['index_indexed']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                         }
@@ -199,10 +177,8 @@ class DataHandler
                 // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
                 case 'tx_dlf_structures':
                     // The index name should not be changed in production.
-                    if (isset($fieldArray['index_name']))
-                    {
-                        if (count($fieldArray) < 2)
-                        {
+                    if (isset($fieldArray['index_name'])) {
+                        if (count($fieldArray) < 2) {
                             // Unset the whole field array.
                             $fieldArray = [];
                         } else {
@@ -216,14 +192,12 @@ class DataHandler
                                 '',
                                 '1'
                             );
-                            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result))
-                            {
+                            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
                                 // Reset index name to current.
                                 list ($fieldArray['index_name']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                             }
                         }
-                        if (TYPO3_DLOG)
-                        {
+                        if (TYPO3_DLOG) {
                             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_NOTICE, $fieldArray);
                         }
                     }
@@ -245,18 +219,14 @@ class DataHandler
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, $pObj)
-    {
-        if ($status == 'update')
-        {
-            switch ($table)
-            {
+    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, $pObj) {
+        if ($status == 'update') {
+            switch ($table) {
                 // After database operations for table "tx_dlf_documents".
                 case 'tx_dlf_documents':
                     // Delete/reindex document in Solr if "hidden" status or collections have changed.
                     if (isset($fieldArray['hidden'])
-                        || isset($fieldArray['collections']))
-                    {
+                        || isset($fieldArray['collections'])) {
                         // Get Solr core.
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             'tx_dlf_solrcores.uid,tx_dlf_documents.hidden',
@@ -268,14 +238,11 @@ class DataHandler
                             '',
                             '1'
                         );
-                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result))
-                        {
+                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
                             list ($core, $hidden) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-                            if ($hidden)
-                            {
+                            if ($hidden) {
                                 // Establish Solr connection.
-                                if ($solr = Solr::getInstance($core))
-                                {
+                                if ($solr = Solr::getInstance($core)) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
                                     $updateQuery->addDeleteQuery('uid:'.$id);
@@ -285,12 +252,10 @@ class DataHandler
                             } else {
                                 // Reindex document.
                                 $doc = Document::getInstance($id);
-                                if ($doc->ready)
-                                {
+                                if ($doc->ready) {
                                     $doc->save($doc->pid, $core);
                                 } else {
-                                    if (TYPO3_DLOG)
-                                    {
+                                    if (TYPO3_DLOG) {
                                         \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
                                     }
                                 }
@@ -315,11 +280,9 @@ class DataHandler
      *
      * @return void
      */
-    public function processCmdmap_postProcess($command, $table, $id, $value, $pObj)
-    {
+    public function processCmdmap_postProcess($command, $table, $id, $value, $pObj) {
         if (in_array($command, ['move', 'delete', 'undelete'])
-            && $table == 'tx_dlf_documents')
-        {
+            && $table == 'tx_dlf_documents') {
             // Get Solr core.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_solrcores.uid',
@@ -331,35 +294,29 @@ class DataHandler
                 '',
                 '1'
             );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result))
-            {
+            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
                 list ($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-                switch ($command)
-                {
+                switch ($command) {
                     case 'move':
                     case 'delete':
                         // Establish Solr connection.
-                        if ($solr = Solr::getInstance($core))
-                        {
+                        if ($solr = Solr::getInstance($core)) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
                             $updateQuery->addDeleteQuery('uid:'.$id);
                             $updateQuery->addCommit();
                             $solr->service->update($updateQuery);
-                            if ($command == 'delete')
-                            {
+                            if ($command == 'delete') {
                                 break;
                             }
                         }
                     case 'undelete':
                         // Reindex document.
                         $doc = Document::getInstance($id);
-                        if ($doc->ready)
-                        {
+                        if ($doc->ready) {
                             $doc->save($doc->pid, $core);
                         } else {
-                            if (TYPO3_DLOG)
-                            {
+                            if (TYPO3_DLOG) {
                                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
                             }
                         }

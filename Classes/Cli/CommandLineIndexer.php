@@ -22,8 +22,7 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineController
-{
+class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineController {
     /**
      * This is the return code
      *
@@ -39,10 +38,8 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
      *
      * @return integer Return Code
      */
-    public function main()
-    {
-        switch ((string) $this->cli_args['_DEFAULT'][1])
-        {
+    public function main() {
+        switch ((string) $this->cli_args['_DEFAULT'][1]) {
             // (Re-)Index a single document.
             case 'index':
                 // Add command line arguments.
@@ -52,32 +49,26 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
                 // Check the command line arguments.
                 $this->cli_validateArgs();
                 if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-doc'][0])
-                    && !\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->cli_args['-doc'][0]))
-                {
+                    && !\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->cli_args['-doc'][0])) {
                     $this->cli_echo('ERROR: "'.$this->cli_args['-doc'][0].'" is not a valid document UID or URL.'.LF, TRUE);
                     $this->return = 1;
                 }
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-pid'][0]))
-                {
+                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-pid'][0])) {
                     $this->cli_echo('ERROR: "'.$this->cli_args['-pid'][0].'" is not a valid page UID.'.LF, TRUE);
                     $this->return = 1;
                 }
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-core'][0]))
-                {
+                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-core'][0])) {
                     $this->cli_echo('ERROR: "'.$this->cli_args['-core'][0].'" is not a valid core UID.'.LF, TRUE);
                     $this->return = 1;
                 }
-                if ($this->return > 0)
-                {
+                if ($this->return > 0) {
                     break;
                 }
                 // Get the document...
                 $doc = Document::getInstance($this->cli_args['-doc'][0], $this->cli_args['-pid'][0], TRUE);
-                if ($doc->ready)
-                {
+                if ($doc->ready) {
                     // ...and save it to the database...
-                    if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0])))
-                    {
+                    if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0]))) {
                         $this->cli_echo('ERROR: Document "'.$this->cli_args['-doc'][0].'" not saved and indexed.'.LF, TRUE);
                         $this->return = 1;
                     }
@@ -94,18 +85,15 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
                 $this->cli_options[] = ['-core UID', 'UID of the Solr core the document should be added to.'];
                 // Check the command line arguments.
                 $this->cli_validateArgs();
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-coll'][0]))
-                {
+                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-coll'][0])) {
                     $this->cli_echo('ERROR: "'.$this->cli_args['-coll'][0].'" is not a valid collection UID.'.LF, TRUE);
                     $this->return = 1;
                 }
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-pid'][0]))
-                {
+                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-pid'][0])) {
                     $this->cli_echo('ERROR: "'.$this->cli_args['-pid'][0].'" is not a valid page UID.'.LF, TRUE);
                     $this->return = 1;
                 }
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-core'][0]))
-                {
+                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->cli_args['-core'][0])) {
                     $this->cli_echo('ERROR: "'.$this->cli_args['-core'][0].'" is not a valid core UID.'.LF, TRUE);
                     $this->return = 1;
                 }
@@ -127,15 +115,12 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
                     '',
                     ''
                 );
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result))
-                {
+                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                     // Get the document...
                     $doc = Document::getInstance($resArray['uid'], $this->cli_args['-pid'][0], TRUE);
-                    if ($doc->ready)
-                    {
+                    if ($doc->ready) {
                         // ...and save it to the database...
-                        if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0])))
-                        {
+                        if (!$doc->save(intval($this->cli_args['-pid'][0]), intval($this->cli_args['-core'][0]))) {
                             $this->cli_echo('ERROR: Document "'.$resArray['uid'].'" not saved and indexed.'.LF, TRUE);
                             $this->return = 1;
                         }
@@ -161,8 +146,7 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         // Run parent constructor.
         parent::__construct();
         // Set basic information about the script.

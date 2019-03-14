@@ -23,8 +23,7 @@ use Kitodo\Dlf\Common\Solr;
  * @subpackage dlf
  * @access public
  */
-class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
-{
+class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugins/Eid/SearchSuggest.php';
 
     /**
@@ -37,18 +36,14 @@ class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return string XML response of search suggestions
      */
-    public function main($content = '', $conf = [])
-    {
+    public function main($content = '', $conf = []) {
         if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted') != ''
-            && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '')
-        {
+            && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '') {
             $core = Helper::decrypt(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted'), \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed'));
         }
-        if (!empty($core))
-        {
+        if (!empty($core)) {
             $url = trim(Solr::getSolrUrl($core), '/').'/suggest/?wt=xml&q='.Solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
-            if ($stream = fopen($url, 'r'))
-            {
+            if ($stream = fopen($url, 'r')) {
                 $content .= stream_get_contents($stream);
                 fclose($stream);
             }

@@ -19,8 +19,7 @@ namespace Kitodo\Dlf\Formats;
  * @subpackage dlf
  * @access public
  */
-class Mods implements \Kitodo\Dlf\Common\MetadataInterface
-{
+class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
     /**
      * This extracts the essential MODS metadata from XML
      *
@@ -31,47 +30,36 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
-    {
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata) {
         $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
         // Get "author" and "author_sorting".
         $authors = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="aut"]');
         // Get "author" and "author_sorting" again if that was to sophisticated.
-        if (!$authors)
-        {
+        if (!$authors) {
             // Get all names which do not have any role term assigned and assume these are authors.
             $authors = $xml->xpath('./mods:name[not(./mods:role)]');
         }
-        if (is_array($authors))
-        {
-            for ($i = 0, $j = count($authors); $i < $j; $i++)
-            {
+        if (is_array($authors)) {
+            for ($i = 0, $j = count($authors); $i < $j; $i++) {
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
                 // Check if there is a display form.
-                if (($displayForm = $authors[$i]->xpath('./mods:displayForm')))
-                {
+                if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
                     $metadata['author'][$i] = (string) $displayForm[0];
-                } elseif (($nameParts = $authors[$i]->xpath('./mods:namePart')))
-                {
+                } elseif (($nameParts = $authors[$i]->xpath('./mods:namePart'))) {
                     $name = [];
                     $k = 4;
-                    foreach ($nameParts as $namePart)
-                    {
+                    foreach ($nameParts as $namePart) {
                         if (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'family')
-                        {
+                            && (string) $namePart['type'] == 'family') {
                             $name[0] = (string) $namePart;
                         } elseif (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'given')
-                        {
+                            && (string) $namePart['type'] == 'given') {
                             $name[1] = (string) $namePart;
                         } elseif (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'termsOfAddress')
-                        {
+                            && (string) $namePart['type'] == 'termsOfAddress') {
                             $name[2] = (string) $namePart;
                         } elseif (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'date')
-                        {
+                            && (string) $namePart['type'] == 'date') {
                             $name[3] = (string) $namePart;
                         } else {
                             $name[$k] = (string) $namePart;
@@ -86,49 +74,38 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         // Get "place" and "place_sorting".
         $places = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:place/mods:placeTerm');
         // Get "place" and "place_sorting" again if that was to sophisticated.
-        if (!$places)
-        {
+        if (!$places) {
             // Get all places and assume these are places of publication.
             $places = $xml->xpath('./mods:originInfo/mods:place/mods:placeTerm');
         }
-        if (is_array($places))
-        {
-            foreach ($places as $place)
-            {
+        if (is_array($places)) {
+            foreach ($places as $place) {
                 $metadata['place'][] = (string) $place;
-                if (!$metadata['place_sorting'][0])
-                {
+                if (!$metadata['place_sorting'][0]) {
                     $metadata['place_sorting'][0] = preg_replace('/[[:punct:]]/', '', (string) $place);
                 }
             }
         }
         // Get "year_sorting".
-        if (($years_sorting = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]')))
-        {
-            foreach ($years_sorting as $year_sorting)
-            {
+        if (($years_sorting = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]'))) {
+            foreach ($years_sorting as $year_sorting) {
                 $metadata['year_sorting'][0] = intval($year_sorting);
             }
         }
         // Get "year" and "year_sorting" if not specified separately.
         $years = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateIssued[@keyDate="yes"]');
         // Get "year" and "year_sorting" again if that was to sophisticated.
-        if (!$years)
-        {
+        if (!$years) {
             // Get all dates and assume these are dates of publication.
             $years = $xml->xpath('./mods:originInfo/mods:dateIssued');
         }
-        if (is_array($years))
-        {
-            foreach ($years as $year)
-            {
+        if (is_array($years)) {
+            foreach ($years as $year) {
                 $metadata['year'][] = (string) $year;
-                if (!$metadata['year_sorting'][0])
-                {
+                if (!$metadata['year_sorting'][0]) {
                     $year_sorting = str_ireplace('x', '5', preg_replace('/[^\d.x]/i', '', (string) $year));
                     if (strpos($year_sorting, '.')
-                        || strlen($year_sorting) < 3)
-                    {
+                        || strlen($year_sorting) < 3) {
                         $year_sorting = ((intval(trim($year_sorting, '.')) - 1) * 100) + 50;
                     }
                     $metadata['year_sorting'][0] = intval($year_sorting);

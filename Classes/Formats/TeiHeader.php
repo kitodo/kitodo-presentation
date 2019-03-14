@@ -19,8 +19,7 @@ namespace Kitodo\Dlf\Formats;
  * @subpackage dlf
  * @access public
  */
-class TeiHeader implements \Kitodo\Dlf\Common\MetadataInterface
-{
+class TeiHeader implements \Kitodo\Dlf\Common\MetadataInterface {
     /**
      * This extracts the essential TEIHDR metadata from XML
      *
@@ -31,8 +30,7 @@ class TeiHeader implements \Kitodo\Dlf\Common\MetadataInterface
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
-    {
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata) {
         $xml->registerXPathNamespace('teihdr', 'http://www.tei-c.org/ns/1.0');
     }
 }

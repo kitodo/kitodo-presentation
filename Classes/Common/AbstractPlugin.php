@@ -20,8 +20,7 @@ namespace Kitodo\Dlf\Common;
  * @access public
  * @abstract
  */
-abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
-{
+abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     public $extKey = 'dlf';
     public $prefixId = 'tx_dlf';
     public $scriptRelPath = 'Classes/Common/AbstractPlugin.php';
@@ -54,10 +53,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return void
      */
-    protected function getTemplate($part = '###TEMPLATE###')
-    {
-        if (!empty($this->conf['templateFile']))
-        {
+    protected function getTemplate($part = '###TEMPLATE###') {
+        if (!empty($this->conf['templateFile'])) {
             // Load template file from configuration.
             $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
         } else {
@@ -76,43 +73,36 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return void
      */
-    protected function init(array $conf)
-    {
+    protected function init(array $conf) {
         // Read FlexForm configuration.
         $flexFormConf = [];
         $this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
-        if (!empty($flexFormConf))
-        {
+        if (!empty($flexFormConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($flexFormConf, $conf);
         }
         // Read plugin TS configuration.
         $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][get_class($this).'.'];
-        if (is_array($pluginConf))
-        {
+        if (is_array($pluginConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($pluginConf, $conf);
         }
         // Read old plugin TS configuration.
         $oldPluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(get_class($this)).'.'];
-        if (is_array($oldPluginConf))
-        {
+        if (is_array($oldPluginConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($oldPluginConf, $conf);
         }
         // Read general TS configuration.
         $generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
-        if (is_array($generalConf))
-        {
+        if (is_array($generalConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($generalConf, $conf);
         }
         // Read extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-        if (is_array($extConf))
-        {
+        if (is_array($extConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($extConf, $conf);
         }
         // Read TYPO3_CONF_VARS configuration.
         $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
-        if (is_array($varsConf))
-        {
+        if (is_array($varsConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($varsConf, $conf);
         }
         $this->conf = $conf;
@@ -129,12 +119,10 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return void
      */
-    protected function loadDocument()
-    {
+    protected function loadDocument() {
         // Check for required variable.
         if (!empty($this->piVars['id'])
-            && !empty($this->conf['pages']))
-        {
+            && !empty($this->conf['pages'])) {
             // Should we exclude documents from other pages than $this->conf['pages']?
             $pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
             // Get instance of \Kitodo\Dlf\Common\Document.
@@ -142,16 +130,14 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = NULL;
-                if (TYPO3_DLOG)
-                {
+                if (TYPO3_DLOG) {
                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\AbstractPlugin->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
                 }
             } else {
                 // Set configuration PID.
                 $this->doc->cPid = $this->conf['pages'];
             }
-        } elseif (!empty($this->piVars['recordId']))
-        {
+        } elseif (!empty($this->piVars['recordId'])) {
             // Get UID of document with given record identifier.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid',
@@ -162,8 +148,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 '',
                 '1'
             );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1)
-            {
+            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
                 list ($this->piVars['id']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                 // Set superglobal $_GET array and unset variables to avoid infinite looping.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
@@ -171,14 +156,12 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                if (TYPO3_DLOG)
-                {
+                if (TYPO3_DLOG) {
                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\AbstractPlugin->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
                 }
             }
         } else {
-            if (TYPO3_DLOG)
-            {
+            if (TYPO3_DLOG) {
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\AbstractPlugin->loadDocument()] Invalid UID "'.$this->piVars['id'].'" or PID "'.$this->conf['pages'].'" for document loading', $this->extKey, SYSLOG_SEVERITY_ERROR);
             }
         }
@@ -207,14 +190,11 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return string HTML content wrapped, ready to return to the parent object.
      */
-    public function pi_wrapInBaseClass($content)
-    {
-        if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass'])
-        {
+    public function pi_wrapInBaseClass($content) {
+        if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass']) {
             // Use get_class($this) instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
             $content = '<div class="tx-dlf-'.get_class($this).'">'.$content.'</div>';
-            if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment'])
-            {
+            if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
                 $content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n";
             }
         }
@@ -230,8 +210,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return array The resulting typoscript array
      */
-    protected function parseTS($string = '')
-    {
+    protected function parseTS($string = '') {
         $parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
         $parser->parse($string);
         return $parser->setup;
@@ -246,15 +225,12 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @return void
      */
-    protected function setCache($cache = TRUE)
-    {
-        if ($cache)
-        {
+    protected function setCache($cache = TRUE) {
+        if ($cache) {
             // Set cObject type to "USER" (default).
             $this->pi_USER_INT_obj = FALSE;
             $this->pi_checkCHash = TRUE;
-            if (count($this->piVars))
-            {
+            if (count($this->piVars)) {
                 // Check cHash or disable caching.
                 $GLOBALS['TSFE']->reqCHash();
             }

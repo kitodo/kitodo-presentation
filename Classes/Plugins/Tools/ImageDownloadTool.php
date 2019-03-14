@@ -21,8 +21,7 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
-{
+class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugins/Tools/ImageDownloadTool.php';
 
     /**
@@ -35,8 +34,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf)
-    {
+    public function main($content, $conf) {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         $this->conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
@@ -44,13 +42,11 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->loadDocument();
         if ($this->doc === NULL
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpsImageDownload']))
-        {
+            || empty($this->conf['fileGrpsImageDownload'])) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
-            if (!empty($this->piVars['logicalPage']))
-            {
+            if (!empty($this->piVars['logicalPage'])) {
                 $this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($this->piVars['logicalPage']);
@@ -58,8 +54,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
             if ((int) $this->piVars['page'] > 0
-                || empty($this->piVars['page']))
-            {
+                || empty($this->piVars['page'])) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -86,20 +81,16 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @return string Link to image file with given label
      */
-    protected function getImage($page, $label)
-    {
+    protected function getImage($page, $label) {
         $image = [];
         // Get @USE value of METS fileGrp.
         $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpsImageDownload']);
-        while ($fileGrp = @array_pop($fileGrps))
-        {
+        while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]))
-            {
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
                 $image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
-                switch ($image['mimetype'])
-                {
+                switch ($image['mimetype']) {
                     case 'image/jpeg':
                         $mimetypeLabel = '(JPG)';
                         break;
@@ -117,8 +108,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 $imageLink = $this->cObj->typoLink($label.' '.$mimetypeLabel, $linkConf);
                 break;
             } else {
-                if (TYPO3_DLOG)
-                {
+                if (TYPO3_DLOG) {
                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Tools\ImageDownloadTool->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
                 }
             }

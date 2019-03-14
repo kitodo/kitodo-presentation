@@ -20,8 +20,7 @@ namespace Kitodo\Dlf\Common;
  * @access public
  * @abstract
  */
-interface FulltextInterface
-{
+interface FulltextInterface {
     /**
      * This extracts raw fulltext data from XML
      *

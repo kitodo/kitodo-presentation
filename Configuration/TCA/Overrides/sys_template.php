@@ -9,8 +9,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-if (!defined('TYPO3_MODE'))
-{
+if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 // Register static typoscript.

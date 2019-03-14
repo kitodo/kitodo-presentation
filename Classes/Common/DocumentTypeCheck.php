@@ -20,8 +20,7 @@ namespace Kitodo\Dlf\Common;
  * @subpackage dlf
  * @access public
  */
-class DocumentTypeCheck
-{
+class DocumentTypeCheck {
     /**
      * This holds the current document
      *
@@ -62,12 +61,10 @@ class DocumentTypeCheck
      *
      * @return string The type of the current document
      */
-    public function getDocType()
-    {
+    public function getDocType() {
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL)
-        {
+        if ($this->doc === NULL) {
             // Quit without doing anything if document not available.
             return '';
         }
@@ -86,12 +83,10 @@ class DocumentTypeCheck
          *            - children array ([0]) --> type = month
          *            - children array ([0], [1], [2], ...) --> type = day --> Issue
          */
-        switch ($toc[0]['type'])
-        {
+        switch ($toc[0]['type']) {
             case 'newspaper':
                 $nodes_year = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]');
-                if (count($nodes_year) > 1)
-                {
+                if (count($nodes_year) > 1) {
                     // Multiple years means this is a newspaper's anchor file.
                     return 'newspaper';
                 } else {
@@ -100,26 +95,22 @@ class DocumentTypeCheck
                     $nodes_issue = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]');
                     $nodes_issue_current = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]/@DMDID');
                     if (count($nodes_year) == 1
-                        && count($nodes_issue) == 0)
-                    {
+                        && count($nodes_issue) == 0) {
                         // It's possible to have only one year in the newspaper's anchor file.
                         return 'newspaper';
                     } elseif (count($nodes_year) == 1
-                        && count($nodes_month) > 1)
-                    {
+                        && count($nodes_month) > 1) {
                         // One year, multiple months means this is a year's anchor file.
                         return 'year';
                     } elseif (count($nodes_year) == 1
                         && count($nodes_month) == 1
-                        && count($nodes_day) > 1)
-                    {
+                        && count($nodes_day) > 1) {
                         // One year, one month, one or more days means this is a year's anchor file.
                         return 'year';
                     } elseif (count($nodes_year) == 1
                         && count($nodes_month) == 1
                         && count($nodes_day) == 1
-                        && count($nodes_issue_current) == 0)
-                    {
+                        && count($nodes_issue_current) == 0) {
                         // One year, one month, a single day, one or more issues (but not the current one) means this is a year's anchor file.
                         return 'year';
                     } else {
@@ -140,24 +131,19 @@ class DocumentTypeCheck
      *
      * @return void
      */
-    protected function loadDocument()
-    {
+    protected function loadDocument() {
         // Check for required variable.
-        if (!empty($this->piVars['id']))
-        {
+        if (!empty($this->piVars['id'])) {
             // Get instance of \Kitodo\Dlf\Common\Document.
             $this->doc = Document::getInstance($this->piVars['id']);
-            if (!$this->doc->ready)
-            {
+            if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = NULL;
-                if (TYPO3_DLOG)
-                {
+                if (TYPO3_DLOG) {
                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentTypeCheck->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
                 }
             }
-        } elseif (!empty($this->piVars['recordId']))
-        {
+        } elseif (!empty($this->piVars['recordId'])) {
             // Get UID of document with given record identifier.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid',
@@ -168,8 +154,7 @@ class DocumentTypeCheck
                 '',
                 '1'
             );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1)
-            {
+            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
                 list ($this->piVars['id']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                 // Set superglobal $_GET array.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
@@ -178,8 +163,7 @@ class DocumentTypeCheck
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                if (TYPO3_DLOG)
-                {
+                if (TYPO3_DLOG) {
                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentTypeCheck->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
                 }
             }
@@ -193,8 +177,7 @@ class DocumentTypeCheck
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         // Load current plugin parameters.
         $this->piVars = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefixId);
     }
