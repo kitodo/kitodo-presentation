@@ -11,7 +11,7 @@
 
 return array (
     'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -31,7 +31,7 @@ return array (
     ),
     'columns' => array (
         'label' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.label',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -40,7 +40,7 @@ return array (
             ),
         ),
         'index_name' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.index_name',
             'config' => array (
                 'type' => 'none',
                 'size' => 30,
@@ -50,7 +50,7 @@ return array (
         ),
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_solrcores.tab1, label;;;;1-1-1, index_name;;;;2-2-2'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.tab1, label;;;;1-1-1, index_name;;;;2-2-2'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => ''),

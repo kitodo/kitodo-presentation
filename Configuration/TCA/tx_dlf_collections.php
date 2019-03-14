@@ -11,7 +11,7 @@
 
 return array (
     'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -103,7 +103,7 @@ return array (
         ),
         'label' => array (
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.label',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -114,7 +114,7 @@ return array (
         'index_name' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.index_name',
             'config' => array (
                 'type' => 'none',
                 'size' => 30,
@@ -125,7 +125,7 @@ return array (
         'index_search' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_search',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.index_search',
             'config' => array (
             'type' => 'text',
                 'cols' => 30,
@@ -136,7 +136,7 @@ return array (
         'oai_name' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.oai_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.oai_name',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -147,7 +147,7 @@ return array (
         'description' => array (
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.description',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.description',
             'config' => array (
                 'type' => 'text',
                 'cols' => 30,
@@ -159,7 +159,7 @@ return array (
         'thumbnail' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.thumbnail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.thumbnail',
             'config' => array (
                 'type' => 'group',
                 'internal_type' => 'file_reference',
@@ -172,7 +172,7 @@ return array (
         'priority' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.priority',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.priority',
             'config' => array (
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -192,7 +192,7 @@ return array (
         'documents' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.documents',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.documents',
             'config' => array (
                 'type' => 'select',
                 'renderType' => 'selectSingleBox',
@@ -212,12 +212,12 @@ return array (
         'owner' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.owner',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.owner',
             'config' => array (
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => array (
-                    array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.owner.none', 0),
+                    array ('LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.owner.none', 0),
                 ),
                 'foreign_table' => 'tx_dlf_libraries',
                 'foreign_table_where' => 'AND tx_dlf_libraries.sys_language_uid IN (-1,0) ORDER BY tx_dlf_libraries.label',
@@ -229,12 +229,12 @@ return array (
         'fe_cruser_id' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_cruser_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_cruser_id',
             'config' => array (
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => array (
-                    array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_cruser_id.none', 0),
+                    array ('LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_cruser_id.none', 0),
                 ),
                 'foreign_table' => 'fe_users',
                 'foreign_table_where' => 'ORDER BY fe_users.username',
@@ -246,7 +246,7 @@ return array (
         'fe_admin_lock' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.fe_admin_lock',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_admin_lock',
             'config' => array (
                 'type' => 'check',
                 'default' => 0,
@@ -255,12 +255,12 @@ return array (
         'status' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.status',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.status',
             'config' => array (
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => array (
-                    array ('LLL:EXT:dlf/locallang.xml:tx_dlf_collections.status.default', 0),
+                    array ('LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.status.default', 0),
                 ),
                 'size' => 1,
                 'minitems' => 1,
@@ -270,7 +270,7 @@ return array (
         ),
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab1, label,--palette--;;1;;1-1-1, description,--palette--;;2;;2-2-2, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id,--palette--;;3'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab1, label,--palette--;;1;;1-1-1, description,--palette--;;2;;2-2-2, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id,--palette--;;3'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => 'index_name, --linebreak--, index_search, --linebreak--, oai_name', 'canNotCollapse' => 1),

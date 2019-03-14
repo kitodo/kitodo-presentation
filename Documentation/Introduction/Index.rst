@@ -54,9 +54,9 @@ capable, i.e. any number of instances of Kitodo.Presentation can be run within
 a single TYPO3 installation, each with its own configuration, search index,
 database, access permissions, visual design, etc.
 
-Kitodo.Presentation offers a standard OAI 2-compliant interface for
+Kitodo.Presentation offers a standard OAI-PMH 2-compliant interface for
 international search capability and digital metadata legibility. We recommend
-registering your Kitodo installation with the appropriate public OAI register.
+registering your Kitodo installation with the appropriate public OAI registry.
 
 Software Components
 -------------------
@@ -67,7 +67,7 @@ Commons
 ^^^^^^^
 is a group of classes that build upon the TYPO3 API, adding
 Kitodo-specific functions, such as handling METS structures and library metadata
-in various formats, or linking external resources, such as OAI interfaces or
+in various formats, or linking external resources, such as OAI-PMH interfaces or
 Solr search engines. The API extensions are available to all TYPO3 extensions,
 which means that they can not only be used by Kitodo.Presentation, but by other
 extensions as well. Thus, commercial or other very specific functions, which

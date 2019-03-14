@@ -11,7 +11,7 @@
 
 return array (
     'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -82,7 +82,7 @@ return array (
         'toplevel' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.toplevel',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.toplevel',
             'config' => array (
                 'type' => 'check',
                 'default' => 0,
@@ -90,7 +90,7 @@ return array (
         ),
         'label' => array (
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.label',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -101,7 +101,7 @@ return array (
         'index_name' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.index_name',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -112,7 +112,7 @@ return array (
         'oai_name' => array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.oai_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.oai_name',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -124,12 +124,12 @@ return array (
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'displayCond' => 'FIELD:toplevel:REQ:true',
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.thumbnail',
             'config' => array (
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => array (
-                    array ('LLL:EXT:dlf/locallang.xml:tx_dlf_structures.thumbnail.self', 0),
+                    array ('LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.thumbnail.self', 0),
                 ),
                 'foreign_table' => 'tx_dlf_structures',
                 'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.toplevel=0 AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY tx_dlf_structures.label',
@@ -141,12 +141,12 @@ return array (
         ),
         'status' => array (
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_structures.status',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.status',
             'config' => array (
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => array (
-                    array ('LLL:EXT:dlf/locallang.xml:tx_dlf_structures.status.default', 0),
+                    array ('LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.status.default', 0),
                 ),
                 'size' => 1,
                 'minitems' => 1,
@@ -156,7 +156,7 @@ return array (
         ),
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label,--palette--;;1, thumbnail, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/locallang.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.tab1, toplevel;;;;1-1-1, label,--palette--;;1, thumbnail, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.tab3, hidden;;;;1-1-1, status;;;;2-2-2'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1),

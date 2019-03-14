@@ -17,7 +17,7 @@ use Kitodo\Dlf\Common\Solr;
  *
  * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package	TYPO3
- * @subpackage	tx_dlf
+ * @subpackage	dlf
  * @access	public
  */
 class ext_update {
@@ -51,6 +51,10 @@ class ext_update {
 
             return TRUE;
 
+        } else if (count($this->oldFormatClasses())) {
+
+            return TRUE;
+
         }
 
         return FALSE;
@@ -66,7 +70,7 @@ class ext_update {
      */
     protected function getMetadataConfig() {
 
-        $uids = array ();
+        $uids = [];
 
         // check if tx_dlf_metadata.xpath exists anyhow
         $fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
@@ -111,7 +115,7 @@ class ext_update {
     public function main() {
 
         // Load localization file.
-        $GLOBALS['LANG']->includeLLFile('EXT:dlf/locallang.xml');
+        $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
 
         // Update the metadata configuration.
         if (count($this->getMetadataConfig())) {
@@ -143,7 +147,7 @@ class ext_update {
      */
     protected function oldFormatClasses() {
 
-        $oldRecords = array ();
+        $oldRecords = [];
 
         // Get all records with outdated configuration.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -254,11 +258,11 @@ class ext_update {
 
         $oldRecords = $this->oldFormatClasses();
 
-        $newValues = array (
+        $newValues = [
             'ALTO' => 'Kitodo\\Dlf\\Formats\\Alto',
             'MODS' => 'Kitodo\\Dlf\\Formats\\Mods',
             'TEIHDR' => 'Kitodo\\Dlf\\Formats\\TeiHeader'
-        );
+        ];
 
         foreach ($oldRecords as $uid => $type) {
 
@@ -293,7 +297,7 @@ class ext_update {
 
         if (!empty($metadataUids)) {
 
-            $data = array ();
+            $data = [];
 
             // Get all old metadata configuration records.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -310,14 +314,14 @@ class ext_update {
                 $newId = uniqid('NEW');
 
                 // Copy record to new table.
-                $data['tx_dlf_metadataformat'][$newId] = array (
+                $data['tx_dlf_metadataformat'][$newId] = [
                     'pid' => $resArray['pid'],
                     'cruser_id' => $resArray['cruser_id'],
                     'parent_id' => $resArray['uid'],
                     'encoded' => $resArray['encoded'],
                     'xpath' => $resArray['xpath'],
                     'xpath_sorting' => $resArray['xpath_sorting']
-                );
+                ];
 
                 // Add reference to old table.
                 $data['tx_dlf_metadata'][$resArray['uid']]['format'] = $newId;
@@ -438,12 +442,12 @@ class ext_update {
 
                 }
 
-                $context = stream_context_create(array (
-                    'http' => array (
+                $context = stream_context_create([
+                    'http' => [
                         'method' => 'GET',
                         'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-                    )
-                ));
+                    ]
+                ]);
 
                 // Build request for adding new Solr core.
                 // @see http://wiki.apache.org/solr/CoreAdmin

@@ -64,22 +64,7 @@ class FormEngine {
      */
     public function itemsProcFunc_collectionList(&$params, &$pObj) {
 
-        // the access to pi_flexform data has changed in TYPO3 7.6
-        if (version_compare(TYPO3_version, '7.6', '<')) {
-
-            if ($params['row']['pi_flexform']) {
-
-                $pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
-
-                $pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
-
-            }
-
-        } else {
-
-            $pages = $params['row']['pages'];
-
-        }
+        $pages = $params['row']['pages'];
 
         if (!empty($pages)) {
 
@@ -121,7 +106,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_search"
+     * Helper to get flexform's items array for plugin "Search"
      *
      * @access	public
      *
@@ -132,22 +117,7 @@ class FormEngine {
      */
     public function itemsProcFunc_extendedSearchList(&$params, &$pObj) {
 
-        // the access to pi_flexform data has changed in TYPO3 7.6
-        if (version_compare(TYPO3_version, '7.6', '<')) {
-
-            if ($params['row']['pi_flexform']) {
-
-                $pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
-
-                $pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
-
-            }
-
-        } else {
-
-            $pages = $params['row']['pages'];
-
-        }
+        $pages = $params['row']['pages'];
 
         if (!empty($pages)) {
 
@@ -189,7 +159,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_search"
+     * Helper to get flexform's items array for plugin "Search"
      *
      * @access	public
      *
@@ -200,22 +170,7 @@ class FormEngine {
      */
     public function itemsProcFunc_facetsList(&$params, &$pObj) {
 
-        // the access to pi_flexform data has changed in TYPO3 7.6
-        if (version_compare(TYPO3_version, '7.6', '<')) {
-
-            if ($params['row']['pi_flexform']) {
-
-                $pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
-
-                $pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
-
-            }
-
-        } else {
-
-            $pages = $params['row']['pages'];
-
-        }
+        $pages = $params['row']['pages'];
 
         if (!empty($pages)) {
 
@@ -257,7 +212,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_oai"
+     * Helper to get flexform's items array for plugin "OaiPmh"
      *
      * @access	public
      *
@@ -268,22 +223,7 @@ class FormEngine {
      */
     public function itemsProcFunc_libraryList(&$params, &$pObj) {
 
-        // the access to pi_flexform data has changed in TYPO3 7.6
-        if (version_compare(TYPO3_version, '7.6', '<')) {
-
-            if ($params['row']['pi_flexform']) {
-
-                $pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
-
-                $pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
-
-            }
-
-        } else {
-
-            $pages = $params['row']['pages'];
-
-        }
+        $pages = $params['row']['pages'];
 
         if (!empty($pages)) {
 
@@ -325,7 +265,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_search"
+     * Helper to get flexform's items array for plugin "Search"
      *
      * @access	public
      *
@@ -336,22 +276,7 @@ class FormEngine {
      */
     public function itemsProcFunc_solrList(&$params, &$pObj) {
 
-        // the access to pi_flexform data has changed in TYPO3 7.6
-        if (version_compare(TYPO3_version, '7.6', '<')) {
-
-            if ($params['row']['pi_flexform']) {
-
-                $pi_flexform = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($params['row']['pi_flexform']);
-
-                $pages = $pi_flexform['data']['sDEF']['lDEF']['pages']['vDEF'];
-
-            }
-
-        } else {
-
-            $pages = $params['row']['pages'];
-
-        }
+        $pages = $params['row']['pages'];
 
         if (!empty($pages)) {
 
@@ -393,7 +318,7 @@ class FormEngine {
     }
 
     /**
-     * Helper to get flexform's items array for plugin "tx_dlf_toolbox"
+     * Helper to get flexform's items array for plugin "Toolbox"
      *
      * @access	public
      *

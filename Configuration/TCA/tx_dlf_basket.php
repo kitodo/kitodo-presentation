@@ -11,7 +11,7 @@
 
 return array (
     'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'fe_user_id' => 'fe_user_id',
@@ -33,7 +33,7 @@ return array (
     ),
     'columns' => array (
         'label' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.label',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -42,7 +42,7 @@ return array (
             ),
         ),
         'session_id' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.sessionId',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.sessionId',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -51,7 +51,7 @@ return array (
             ),
         ),
         'doc_ids' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.docIds',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.docIds',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -60,7 +60,7 @@ return array (
             ),
         ),
         'fe_user_id' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_basket.feUser',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.feUser',
             'config' => array (
                 'type' => 'input',
                 'eval' => 'int,unique',
@@ -68,7 +68,7 @@ return array (
         ),
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => ''),

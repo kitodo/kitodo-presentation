@@ -81,14 +81,14 @@ class DocumentTypeCheck {
          *
          * 1. newspaper
          *    case 1) - type=newspaper
-         *            - children array([0], [1], [2], ...) -> type = year --> Newspaper Anchor File
+         *            - children array ([0], [1], [2], ...) -> type = year --> Newspaper Anchor File
          *    case 2) - type=newspaper
-         *            - children array([0]) --> type = year
-         *            - children array([0], [1], [2], ...) --> type = month --> Year Anchor File
+         *            - children array ([0]) --> type = year
+         *            - children array ([0], [1], [2], ...) --> type = month --> Year Anchor File
          *    case 3) - type=newspaper
-         *            - children array([0]) --> type = year
-         *            - children array([0]) --> type = month
-         *            - children array([0], [1], [2], ...) --> type = day --> Issue
+         *            - children array ([0]) --> type = year
+         *            - children array ([0]) --> type = month
+         *            - children array ([0], [1], [2], ...) --> type = day --> Issue
          */
         switch ($toc[0]['type']) {
 

@@ -50,6 +50,25 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     protected $template = '';
 
     /**
+     * Read and parse the template file
+     *
+     * @access	protected
+     *
+     * @param	string		$part: Name of the subpart to load
+     *
+     * @return	void
+     */
+    protected function getTemplate($part = '###TEMPLATE###') {
+        if (!empty($this->conf['templateFile'])) {
+            // Load template file from configuration.
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
+        } else {
+            // Load default template file.
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/Resources/Private/Templates/'.get_class($this).'.tmpl'), $part);
+        }
+    }
+
+    /**
      * All the needed configuration values are stored in class variables
      * Priority: Flexforms > TS-Templates > Extension Configuration > ext_localconf.php
      *
@@ -78,6 +97,15 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         if (is_array($pluginConf)) {
 
             $conf = Helper::array_merge_recursive_overrule($pluginConf, $conf);
+
+        }
+
+        // Read old plugin TS configuration.
+        $oldPluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(get_class($this)).'.'];
+
+        if (is_array($oldPluginConf)) {
+
+            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiceWithOverrule($oldPluginConf, $conf);
 
         }
 
@@ -114,7 +142,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         $this->pi_setPiVarDefaults();
 
         // Load translation files.
-        $this->pi_loadLL();
+        $this->pi_loadLL('EXT:'.$this->extKey.'/Resources/Private/Language/'.get_class($this).'.xml');
 
     }
 
@@ -216,45 +244,6 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     abstract public function main($content, $conf);
 
     /**
-     * Sets default plugin variables from Typoscript
-     * (stdWrap backport from TYPO3 6.2)
-     * @see http://forge.typo3.org/issues/22045
-     *
-     * @access	public
-     *
-     * @return	void
-     */
-    public function pi_setPiVarDefaults() {
-
-        if (is_array($this->conf['_DEFAULT_PI_VARS.'])) {
-
-            foreach ($this->conf['_DEFAULT_PI_VARS.'] as $GPkey => $GPval) {
-
-                if (strpos($GPkey, '.')) {
-
-                    $GPkey = substr($GPkey, 0, -1);
-
-                }
-
-                if (is_array($this->conf['_DEFAULT_PI_VARS.'][$GPkey.'.']['stdWrap.'])) {
-
-                    $GPval = $GPval ? $GPval : '';
-
-                    $this->conf['_DEFAULT_PI_VARS.'][$GPkey] = $this->cObj->stdWrap($GPval, $this->conf['_DEFAULT_PI_VARS.'][$GPkey.'.']['stdWrap.']);
-
-                    unset ($this->conf['_DEFAULT_PI_VARS.'][$GPkey.'.']['stdWrap.']);
-
-                }
-
-            }
-
-            $this->piVars = Helper::array_merge_recursive_overrule($this->conf['_DEFAULT_PI_VARS.'], is_array($this->piVars) ? $this->piVars : array ());
-
-        }
-
-    }
-
-    /**
      * Wraps the input string in a tag with the class attribute set to the class name
      *
      * @access	public
@@ -267,7 +256,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 
         if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass']) {
             // Use get_class($this) instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
-            $content = '<div class="'.str_replace('_', '-', get_class($this)).'">'.$content.'</div>';
+            $content = '<div class="tx-dlf-'.get_class($this).'">'.$content.'</div>';
 
             if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
 

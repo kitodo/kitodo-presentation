@@ -11,7 +11,7 @@
 
 return array (
     'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail',
         'label'     => 'label',
         'sortby' => 'sorting',
         'delete'	=> 'deleted',
@@ -28,7 +28,7 @@ return array (
     ),
     'columns' => array (
         'label' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -37,7 +37,7 @@ return array (
             ),
         ),
         'name' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail.name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.name',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -46,7 +46,7 @@ return array (
             ),
         ),
         'mail' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_mail.mail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.mail',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -56,7 +56,7 @@ return array (
         ),
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_mail.tab1, label;;;;1-1-1, name;;;;2-2-2, mail;;;;2-2-2'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.tab1, label;;;;1-1-1, name;;;;2-2-2, mail;;;;2-2-2'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => ''),

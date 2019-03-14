@@ -11,7 +11,7 @@
 
 return array (
     'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer',
         'label'     => 'label',
         'default_sortby' => 'ORDER BY label',
         'delete'	=> 'deleted',
@@ -28,7 +28,7 @@ return array (
     ),
     'columns' => array (
         'label' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.label',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -37,7 +37,7 @@ return array (
             ),
         ),
         'print' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_printer.printcommand',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.printcommand',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -47,7 +47,7 @@ return array (
         ),
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_printer.tab1, label;;;;1-1-1, print;;;;2-2-2'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.tab1, label;;;;1-1-1, print;;;;2-2-2'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => ''),

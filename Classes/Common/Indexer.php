@@ -181,8 +181,8 @@ class Indexer {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                            htmlspecialchars(sprintf(Helper::getLL('flash.documentIndexed'), $resArray['title'], $doc->uid)),
-                            Helper::getLL('flash.done', TRUE),
+                            htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
+                            Helper::getMessage('flash.done', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                             TRUE
                         );
@@ -191,8 +191,8 @@ class Indexer {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                            htmlspecialchars(sprintf(Helper::getLL('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
-                            Helper::getLL('flash.error', TRUE),
+                            htmlspecialchars(sprintf(Helper::getMessage('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
+                            Helper::getMessage('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                             TRUE
                         );
@@ -211,8 +211,8 @@ class Indexer {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                        Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                        Helper::getLL('flash.error', TRUE),
+                        Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
@@ -237,8 +237,8 @@ class Indexer {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                    Helper::getLL('flash.solrNoConnection', TRUE),
-                    Helper::getLL('flash.warning', TRUE),
+                    Helper::getMessage('flash.solrNoConnection', TRUE),
+                    Helper::getMessage('flash.warning', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
                     TRUE
                 );
@@ -307,8 +307,8 @@ class Indexer {
 
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                            Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                            Helper::getLL('flash.error', TRUE),
+                            Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                            Helper::getMessage('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                             TRUE
                         );
@@ -333,8 +333,8 @@ class Indexer {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                        Helper::getLL('flash.solrNoConnection', TRUE),
-                        Helper::getLL('flash.error', TRUE),
+                        Helper::getMessage('flash.solrNoConnection', TRUE),
+                        Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
@@ -357,8 +357,8 @@ class Indexer {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                    htmlspecialchars(sprintf(Helper::getLL('flash.documentDeleted'), $title, $uid)),
-                    Helper::getLL('flash.done', TRUE),
+                    htmlspecialchars(sprintf(Helper::getMessage('flash.documentDeleted'), $title, $uid)),
+                    Helper::getMessage('flash.done', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                     TRUE
                 );
@@ -638,8 +638,8 @@ class Indexer {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                        Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                        Helper::getLL('flash.error', TRUE),
+                        Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
@@ -805,8 +805,8 @@ class Indexer {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                        Helper::getLL('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
-                        Helper::getLL('flash.error', TRUE),
+                        Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );

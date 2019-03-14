@@ -41,7 +41,7 @@ Properties
 
 .. container:: ts-properties-tx-dlf-audioplayer
 
-:typoscript:`plugin.tx_dlf_audioplayer.`
+:typoscript:`plugin.AudioPlayer.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -49,7 +49,7 @@ Properties
 	pages_                      :ref:`t3tsref:data-type-page-id`
 	excludeOther_               :ref:`t3tsref:data-type-boolean`      1
 	elementId_                  :ref:`t3tsref:data-type-string`       tx-dlf-audio
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     AudioPlayer.tmpl
 	=========================== ===================================== ====================
 
 excludeOther
@@ -65,7 +65,7 @@ Basket
 
 .. container:: ts-properties-tx-dlf-basket
 
-:typoscript:`plugin.tx_dlf_basket.`
+:typoscript:`plugin.Basket.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -79,9 +79,22 @@ Basket
 	pdfparamseparator           :ref:`t3tsref:data-type-string`       `*`
 	basketGoToButton            :ref:`t3tsref:data-type-boolean`      0
 	targetBasket                :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     Basket.tmpl
 	=========================== ===================================== ====================
 
+Calendar
+---------
+
+.. container:: ts-properties-tx-dlf-calendar
+
+:typoscript:`plugin.Calendar.`
+
+	=========================== ===================================== ====================
+	Property                    Data type                             Default
+	=========================== ===================================== ====================
+	pages_                      :ref:`t3tsref:data-type-page-id`
+	templateFile_               :ref:`t3tsref:data-type-resource`     Calendar.tmpl
+	=========================== ===================================== ====================
 
 Collection
 ----------
@@ -90,7 +103,7 @@ The collection plugin shows one collection, all collections or selected collecti
 
 .. container:: ts-properties-tx-dlf-collection
 
-:typoscript:`plugin.tx_dlf_collection.`
+:typoscript:`plugin.Collection.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -102,7 +115,7 @@ The collection plugin shows one collection, all collections or selected collecti
 	randomize                   :ref:`t3tsref:data-type-boolean`      0
 	targetPid                   :ref:`t3tsref:data-type-page-id`
 	targetFeed                  :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     Collection.tmpl
 	=========================== ===================================== ====================
 
 
@@ -127,12 +140,12 @@ Feeds
 	description                :ref:`t3tsref:data-type-string`
 	=========================== ===================================== ====================
 
-Listview
---------
+List View
+---------
 
 .. container:: ts-properties-tx-dlf-listview
 
-:typoscript:`plugin.tx_dlf_listview.`
+:typoscript:`plugin.ListView.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -143,7 +156,7 @@ Listview
 	getTitle                    :ref:`t3tsref:data-type-boolean`      0
 	basketButton                :ref:`t3tsref:data-type-boolean`      0
 	targetBasket                :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     ListView.tmpl
 	=========================== ===================================== ====================
 
 Metadata
@@ -151,7 +164,7 @@ Metadata
 
 .. container:: ts-properties-tx-dlf-metadata
 
-:typoscript:`plugin.tx_dlf_metadata.`
+:typoscript:`plugin.Metadata.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -164,7 +177,7 @@ Metadata
 	showFull                    :ref:`t3tsref:data-type-boolean`      1
 	rootline                    :ref:`t3tsref:data-type-integer`      0
 	separator                   :ref:`t3tsref:data-type-string`       #
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     Metadata.tmpl
 	=========================== ===================================== ====================
 
 Navigation
@@ -172,7 +185,7 @@ Navigation
 
 .. container:: ts-properties-tx-dlf-navigation
 
-:typoscript:`plugin.tx_dlf_navigation.`
+:typoscript:`plugin.Navigation.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -180,29 +193,15 @@ Navigation
 	pages_                      :ref:`t3tsref:data-type-page-id`
 	pageStep                    :ref:`t3tsref:data-type-integer`      5
 	targetPid                   :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     Navigation.tmpl
 	=========================== ===================================== ====================
 
-Newspaper
----------
+OAI-PMH
+-------
 
-.. container:: ts-properties-tx-dlf-newspaper
+.. container:: ts-properties-tx-dlf-oaipmh
 
-:typoscript:`plugin.tx_dlf_newspaper.`
-
-	=========================== ===================================== ====================
-	Property                    Data type                             Default
-	=========================== ===================================== ====================
-	pages_                      :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
-	=========================== ===================================== ====================
-
-OAI
----
-
-.. container:: ts-properties-tx-dlf-oai
-
-:typoscript:`plugin.tx_dlf_oai.`
+:typoscript:`plugin.OaiPmh.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -216,12 +215,12 @@ OAI
 	unqualified_epicur          :ref:`t3tsref:data-type-boolean`      0
 	=========================== ===================================== ====================
 
-Pagegrid
---------
+Page Grid
+---------
 
 .. container:: ts-properties-tx-dlf-pagegrid
 
-:typoscript:`plugin.tx_dlf_pagegrid.`
+:typoscript:`plugin.PageGrid.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -230,15 +229,15 @@ Pagegrid
 	limit                       :ref:`t3tsref:data-type-integer`      24
 	placeholder                 :ref:`t3tsref:data-type-resource`
 	targetPid                   :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     PageGrid.tmpl
 	=========================== ===================================== ====================
 
-Pageview
---------
+Page View
+---------
 
 .. container:: ts-properties-tx-dlf-pageview
 
-:typoscript:`plugin.tx_dlf_pageview.`
+:typoscript:`plugin.PageView.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -252,7 +251,7 @@ Pageview
 	magnifier                   :ref:`t3tsref:data-type-boolean`      0
 	basketButton                :ref:`t3tsref:data-type-boolean`      0
 	targetBasket                :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     PageView.tmpl
 	=========================== ===================================== ====================
 
 Search
@@ -260,7 +259,7 @@ Search
 
 .. container:: ts-properties-tx-dlf-search
 
-:typoscript:`plugin.tx_dlf_search.`
+:typoscript:`plugin.Search.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -276,12 +275,12 @@ Search
 	facets                      :ref:`t3tsref:data-type-list`
 	limitFacets                 :ref:`t3tsref:data-type-integer`      15
 	resetFacets                 :ref:`t3tsref:data-type-boolean`      0
-   sortingFacets               :ref:`t3tsref:data-type-string`
+    sortingFacets               :ref:`t3tsref:data-type-string`
 	suggest                     :ref:`t3tsref:data-type-boolean`      1
 	showSingleResult            :ref:`t3tsref:data-type-boolean`      0
 	targetPid                   :ref:`t3tsref:data-type-page-id`
 	targetPidPageView           :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     Search.tmpl
 	=========================== ===================================== ====================
 
 Statistics
@@ -289,7 +288,7 @@ Statistics
 
 .. container:: ts-properties-tx-dlf-statistics
 
-:typoscript:`plugin.tx_dlf_statistics.`
+:typoscript:`plugin.Statistics.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -299,12 +298,12 @@ Statistics
 	description                 :ref:`t3tsref:data-type-string`
 	=========================== ===================================== ====================
 
-TOC
----
+Table Of Contents
+-----------------
 
-.. container:: ts-properties-tx-dlf-toc
+.. container:: ts-properties-tx-dlf-tableofcontents
 
-:typoscript:`plugin.tx_dlf_toc.`
+:typoscript:`plugin.TableOfContents.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -314,7 +313,7 @@ TOC
 	basketButton                :ref:`t3tsref:data-type-boolean`      0
 	targetBasket                :ref:`t3tsref:data-type-page-id`
 	targetPid                   :ref:`t3tsref:data-type-page-id`
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     TableOfContents.tmpl
 	=========================== ===================================== ====================
 
 Toolbox
@@ -322,7 +321,7 @@ Toolbox
 
 .. container:: ts-properties-tx-dlf-toolbox
 
-:typoscript:`plugin.tx_dlf_toolbox.`
+:typoscript:`plugin.Toolbox.`
 
 	=========================== ===================================== ====================
 	Property                    Data type                             Default
@@ -330,5 +329,5 @@ Toolbox
 	pages_                      :ref:`t3tsref:data-type-page-id`
 	tools                       :ref:`t3tsref:data-type-list`
 	fileGrpsImageDownload       :ref:`t3tsref:data-type-list`         MIN,DEFAULT,MAX
-	templateFile_               :ref:`t3tsref:data-type-resource`     template.tmpl
+	templateFile_               :ref:`t3tsref:data-type-resource`     Toolbox.tmpl
 	=========================== ===================================== ====================

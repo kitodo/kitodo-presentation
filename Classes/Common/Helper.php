@@ -31,12 +31,12 @@ class Helper {
     public static $extKey = 'dlf';
 
     /**
-     * The locallang array for common use
+     * The locallang array for flash messages
      *
      * @var	array
      * @access protected
      */
-    protected static $locallang = array ();
+    protected static $messages = array ();
 
     /**
      * Adds a message to the message queue.
@@ -679,7 +679,7 @@ class Helper {
     }
 
     /**
-     * Wrapper function for getting localizations in frontend and backend
+     * Wrapper function for getting localized messages in frontend and backend
      *
      * @param	string		$key: The locallang key to translate
      * @param	boolean		$hsc: Should the result be htmlspecialchar()'ed?
@@ -687,46 +687,46 @@ class Helper {
      *
      * @return	string		The translated string or the given key on failure
      */
-    public static function getLL($key, $hsc = FALSE, $default = '') {
+    public static function getMessage($key, $hsc = FALSE, $default = '') {
 
         // Set initial output to default value.
         $translated = (string) $default;
 
-        // Load common locallang file.
-        if (empty(self::$locallang)) {
+        // Load common messages file.
+        if (empty(self::$messages)) {
 
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'common/locallang.xml');
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/FlashMessages.xml');
 
             if (TYPO3_MODE === 'FE') {
 
-                self::$locallang = $GLOBALS['TSFE']->readLLfile($file);
+                self::$messages = $GLOBALS['TSFE']->readLLfile($file);
 
             } elseif (TYPO3_MODE === 'BE') {
 
-                self::$locallang = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
+                self::$messages = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
 
             } elseif (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getLL('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getMessage('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
             }
 
         }
 
         // Get translation.
-        if (!empty(self::$locallang['default'][$key])) {
+        if (!empty(self::$messages['default'][$key])) {
 
             if (TYPO3_MODE === 'FE') {
 
-                $translated = $GLOBALS['TSFE']->getLLL($key, self::$locallang);
+                $translated = $GLOBALS['TSFE']->getLLL($key, self::$messages);
 
             } elseif (TYPO3_MODE === 'BE') {
 
-                $translated = $GLOBALS['LANG']->getLLL($key, self::$locallang, FALSE);
+                $translated = $GLOBALS['LANG']->getLLL($key, self::$messages, FALSE);
 
             } elseif (TYPO3_DLOG) {
 
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getLL('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getMessage('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
 
             }
 

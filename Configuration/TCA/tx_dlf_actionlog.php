@@ -11,7 +11,7 @@
 
 return array (
     'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog',
         'label'     => 'label',
         'crdate'    => 'crdate',
         'cruser_id' => 'user_id',
@@ -32,7 +32,7 @@ return array (
     ),
     'columns' => array (
         'label' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.label',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -41,7 +41,7 @@ return array (
             ),
         ),
         'user_id' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.user_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.user_id',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -50,7 +50,7 @@ return array (
             ),
         ),
         'file_name' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.file_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.file_name',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -59,7 +59,7 @@ return array (
             ),
         ),
         'count_pages' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.count_pages',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.count_pages',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -68,7 +68,7 @@ return array (
             ),
         ),
         'name' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.name',
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
@@ -78,7 +78,7 @@ return array (
         )
     ),
     'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, crdate;;;;2-2-2, count_pages;;;;2-2-2'),
+        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, crdate;;;;2-2-2, count_pages;;;;2-2-2'),
     ),
     'palettes' => array (
         '1' => array ('showitem' => ''),

@@ -1564,8 +1564,8 @@ final class Document {
 
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                        htmlspecialchars(sprintf(Helper::getLL('flash.newCollection'), $collection, $substUid[$collNewUid])),
-                        Helper::getLL('flash.attention', TRUE),
+                        htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
+                        Helper::getMessage('flash.attention', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
                         TRUE
                     );
@@ -1625,8 +1625,8 @@ final class Document {
 
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                    htmlspecialchars(sprintf(Helper::getLL('flash.newLibrary'), $owner, $ownerUid)),
-                    Helper::getLL('flash.attention', TRUE),
+                    htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
+                    Helper::getMessage('flash.attention', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
                     TRUE
                 );
@@ -1793,8 +1793,8 @@ final class Document {
 
             $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                htmlspecialchars(sprintf(Helper::getLL('flash.documentSaved'), $metadata['title'][0], $this->uid)),
-                Helper::getLL('flash.done', TRUE),
+                htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
+                Helper::getMessage('flash.done', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                 TRUE
             );
