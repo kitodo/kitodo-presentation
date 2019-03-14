@@ -47,11 +47,11 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
             case 'index':
 
                 // Add command line arguments.
-                $this->cli_options[] = array ('-doc UID/URL', 'UID or (properly encoded) URL of the document.');
+                $this->cli_options[] = ['-doc UID/URL', 'UID or (properly encoded) URL of the document.'];
 
-                $this->cli_options[] = array ('-pid UID', 'UID of the page the document should be added to.');
+                $this->cli_options[] = ['-pid UID', 'UID of the page the document should be added to.'];
 
-                $this->cli_options[] = array ('-core UID', 'UID of the Solr core the document should be added to.');
+                $this->cli_options[] = ['-core UID', 'UID of the Solr core the document should be added to.'];
 
                 // Check the command line arguments.
                 $this->cli_validateArgs();
@@ -115,11 +115,11 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
             case 'reindex':
 
                 // Add command line arguments.
-                $this->cli_options[] = array ('-coll UID', 'UID of the collection.');
+                $this->cli_options[] = ['-coll UID', 'UID of the collection.'];
 
-                $this->cli_options[] = array ('-pid UID', 'UID of the page the document should be added to.');
+                $this->cli_options[] = ['-pid UID', 'UID of the page the document should be added to.'];
 
-                $this->cli_options[] = array ('-core UID', 'UID of the Solr core the document should be added to.');
+                $this->cli_options[] = ['-core UID', 'UID of the Solr core the document should be added to.'];
 
                 // Check the command line arguments.
                 $this->cli_validateArgs();
@@ -215,14 +215,14 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
         parent::__construct();
 
         // Set basic information about the script.
-        $this->cli_help = array (
+        $this->cli_help = [
             'name' => 'Command Line Interface for Kitodo.Presentation',
             'synopsis' => '###OPTIONS###',
             'description' => 'Currently the only tasks available are "index" and "reindex".'.LF.'Try "/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK" for more options.',
             'examples' => '/PATH/TO/TYPO3/cli_dispatch.phpsh dlf TASK -ARG1=VALUE1 -ARG2=VALUE2',
             'options' => '',
             'author' => 'Kitodo. Key to digital objects e.V. <contact@kitodo.org>',
-        );
+        ];
 
     }
 

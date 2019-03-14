@@ -112,16 +112,16 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
         $countVolumes = $GLOBALS['TYPO3_DB']->sql_num_rows($resultVolumes);
 
         // Set replacements.
-        $replace = array (
-            'key' => array (
+        $replace = [
+            'key' => [
                 '###TITLES###',
                 '###VOLUMES###'
-            ),
-            'value' => array (
+            ],
+            'value' => [
                 $countTitles.($countTitles > 1 ? $this->pi_getLL('titles', '', TRUE) : $this->pi_getLL('title', '', TRUE)),
                 $countVolumes.($countVolumes > 1 ? $this->pi_getLL('volumes', '', TRUE) : $this->pi_getLL('volume', '', TRUE))
-            )
-        );
+            ]
+        ];
 
         // Apply replacements.
         $content = str_replace($replace['key'], $replace['value'], $content);

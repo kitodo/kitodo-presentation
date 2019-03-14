@@ -331,7 +331,7 @@ class FormEngine {
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'] as $class => $label) {
 
-            $params['items'][] = array ($GLOBALS['LANG']->sL($label), $class);
+            $params['items'][] = [$GLOBALS['LANG']->sL($label), $class];
 
         }
 

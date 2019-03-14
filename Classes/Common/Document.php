@@ -45,7 +45,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $dmdSec = array ();
+    protected $dmdSec = [];
 
     /**
      * Are the METS file's dmdSecs loaded?
@@ -71,7 +71,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $fileGrps = array ();
+    protected $fileGrps = [];
 
     /**
      * Are the file groups loaded?
@@ -89,20 +89,20 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $formats = array (
-        'OAI' => array (
+    protected $formats = [
+        'OAI' => [
             'rootElement' => 'OAI-PMH',
             'namespaceURI' => 'http://www.openarchives.org/OAI/2.0/',
-        ),
-        'METS' => array (
+        ],
+        'METS' => [
             'rootElement' => 'mets',
             'namespaceURI' => 'http://www.loc.gov/METS/',
-        ),
-        'XLINK' => array (
+        ],
+        'XLINK' => [
             'rootElement' => 'xlink',
             'namespaceURI' => 'http://www.w3.org/1999/xlink',
-        )
-    );
+        ]
+    ];
 
     /**
      * Are the available metadata formats loaded?
@@ -127,7 +127,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $lastSearchedPhysicalPage = array ('logicalPage' => NULL, 'physicalPage' => NULL);
+    protected $lastSearchedPhysicalPage = ['logicalPage' => NULL, 'physicalPage' => NULL];
 
     /**
      * This holds the documents location
@@ -143,7 +143,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $logicalUnits = array ();
+    protected $logicalUnits = [];
 
     /**
      * This holds the documents' parsed metadata array with their corresponding structMap//div's ID as array key
@@ -151,7 +151,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $metadataArray = array ();
+    protected $metadataArray = [];
 
     /**
      * Is the metadata array loaded?
@@ -192,7 +192,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $physicalStructure = array ();
+    protected $physicalStructure = [];
 
     /**
      * This holds the physical structure metadata
@@ -200,7 +200,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $physicalStructureInfo = array ();
+    protected $physicalStructureInfo = [];
 
     /**
      * Is the physical structure loaded?
@@ -225,7 +225,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $rawTextArray = array ();
+    protected $rawTextArray = [];
 
     /**
      * Is the document instantiated successfully?
@@ -249,7 +249,7 @@ final class Document {
      * @var	array (\Kitodo\Dlf\Common\Document)
      * @access protected
      */
-    protected static $registry = array ();
+    protected static $registry = [];
 
     /**
      * This holds the UID of the root document or zero if not multi-volumed
@@ -274,7 +274,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $smLinks = array ('l2p' => array (), 'p2l' => array ());
+    protected $smLinks = ['l2p' => [], 'p2l' => []];
 
     /**
      * Are the smLinks loaded?
@@ -291,7 +291,7 @@ final class Document {
      * @var	array
      * @access protected
      */
-    protected $tableOfContents = array ();
+    protected $tableOfContents = [];
 
     /**
      * Is the table of contents loaded?
@@ -353,7 +353,7 @@ final class Document {
     public static function clearRegistry() {
 
         // Reset registry array.
-        self::$registry = array ();
+        self::$registry = [];
 
     }
 
@@ -511,7 +511,7 @@ final class Document {
      */
     public function getLogicalStructure($id, $recursive = FALSE) {
 
-        $details = array ();
+        $details = [];
 
         // Is the requested logical unit already loaded?
         if (!$recursive && !empty($this->logicalUnits[$id])) {
@@ -578,7 +578,7 @@ final class Document {
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
         // Extract identity information.
-        $details = array ();
+        $details = [];
 
         $details['id'] = $attributes['ID'];
 
@@ -655,7 +655,7 @@ final class Document {
         }
 
         // Get the files this structure element is pointing at.
-        $details['files'] = array ();
+        $details['files'] = [];
 
         $fileUse = $this->_getFileGrps();
 
@@ -677,7 +677,7 @@ final class Document {
         // Walk the structure recursively? And are there any children of the current element?
         if ($recursive && count($structure->children('http://www.loc.gov/METS/')->div)) {
 
-            $details['children'] = array ();
+            $details['children'] = [];
 
             foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
 
@@ -725,7 +725,7 @@ final class Document {
 
             }
 
-            return array ();
+            return [];
 
         }
 
@@ -737,24 +737,24 @@ final class Document {
         }
 
         // Initialize metadata array with empty values.
-        $metadata = array (
-            'title' => array (),
-            'title_sorting' => array (),
-            'author' => array (),
-            'place' => array (),
-            'year' => array (),
-            'prod_id' => array (),
-            'record_id' => array (),
-            'opac_id' => array (),
-            'union_id' => array (),
-            'urn' => array (),
-            'purl' => array (),
-            'type' => array (),
-            'volume' => array (),
-            'volume_sorting' => array (),
-            'collection' => array (),
-            'owner' => array (),
-        );
+        $metadata = [
+            'title' => [],
+            'title_sorting' => [],
+            'author' => [],
+            'place' => [],
+            'year' => [],
+            'prod_id' => [],
+            'record_id' => [],
+            'opac_id' => [],
+            'union_id' => [],
+            'urn' => [],
+            'purl' => [],
+            'type' => [],
+            'volume' => [],
+            'volume_sorting' => [],
+            'collection' => [],
+            'owner' => [],
+        ];
 
         // Get the logical structure node's DMDID.
         if (!empty($this->logicalUnits[$id])) {
@@ -808,20 +808,20 @@ final class Document {
 
                 }
 
-                return array ();
+                return [];
 
             }
 
             // Get the structure's type.
             if (!empty($this->logicalUnits[$id])) {
 
-                $metadata['type'] = array ($this->logicalUnits[$id]['type']);
+                $metadata['type'] = [$this->logicalUnits[$id]['type']];
 
             } else {
 
                 $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@TYPE');
 
-                $metadata['type'] = array ((string) $struct[0]);
+                $metadata['type'] = [(string) $struct[0]];
 
             }
 
@@ -850,7 +850,7 @@ final class Document {
 
                     if ($values instanceof \DOMNodeList && $values->length > 0) {
 
-                        $metadata[$resArray['index_name']] = array ();
+                        $metadata[$resArray['index_name']] = [];
 
                         foreach ($values as $value) {
 
@@ -860,7 +860,7 @@ final class Document {
 
                     } elseif (!($values instanceof \DOMNodeList)) {
 
-                        $metadata[$resArray['index_name']] = array (trim((string) $values));
+                        $metadata[$resArray['index_name']] = [trim((string) $values)];
 
                     }
 
@@ -872,7 +872,7 @@ final class Document {
                 // These empty fields are then shown within the search facets as 'empty'.
                 if (empty($metadata[$resArray['index_name']][0]) && strlen($resArray['default_value']) > 0) {
 
-                    $metadata[$resArray['index_name']] = array ($resArray['default_value']);
+                    $metadata[$resArray['index_name']] = [$resArray['default_value']];
 
                 }
 
@@ -941,7 +941,7 @@ final class Document {
         } else {
 
             // There is no dmdSec for this structure node.
-            return array ();
+            return [];
 
         }
 
@@ -1322,11 +1322,11 @@ final class Document {
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
                 // Update format registry.
-                $this->formats[$resArray['type']] = array (
+                $this->formats[$resArray['type']] = [
                     'rootElement' => $resArray['root'],
                     'namespaceURI' => $resArray['namespace'],
                     'class' => $resArray['class']
-                );
+                ];
 
             }
 
@@ -1512,7 +1512,7 @@ final class Document {
         $metadata['type'][0] = $structure;
 
         // Get UIDs for collections.
-        $collections = array ();
+        $collections = [];
 
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.uid AS uid',
@@ -1541,7 +1541,7 @@ final class Document {
                 // Insert new collection.
                 $collNewUid = uniqid('NEW');
 
-                $collData['tx_dlf_collections'][$collNewUid] = array (
+                $collData['tx_dlf_collections'][$collNewUid] = [
                     'pid' => $pid,
                     'label' => $collection,
                     'index_name' => $collection,
@@ -1550,7 +1550,7 @@ final class Document {
                     'documents' => 0,
                     'owner' => 0,
                     'status' => 0,
-                );
+                ];
 
                 $substUid = Helper::processDB($collData);
 
@@ -1601,7 +1601,7 @@ final class Document {
             // Insert new library.
             $libNewUid = uniqid('NEW');
 
-            $libData['tx_dlf_libraries'][$libNewUid] = array (
+            $libData['tx_dlf_libraries'][$libNewUid] = [
                 'pid' => $pid,
                 'label' => $owner,
                 'index_name' => $owner,
@@ -1614,7 +1614,7 @@ final class Document {
                 'opac_base' => '',
                 'union_label' => '',
                 'union_base' => '',
-            );
+            ];
 
             $substUid = Helper::processDB($libData);
 
@@ -1705,9 +1705,9 @@ final class Document {
         }
 
         // Get metadata for lists and sorting.
-        $listed = array ();
+        $listed = [];
 
-        $sortable = array ();
+        $sortable = [];
 
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
@@ -1739,7 +1739,7 @@ final class Document {
         }
 
         // Fill data array.
-        $data['tx_dlf_documents'][$this->uid] = array (
+        $data['tx_dlf_documents'][$this->uid] = [
             'pid' => $pid,
             $GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['starttime'] => 0,
             $GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['endtime'] => 0,
@@ -1766,7 +1766,7 @@ final class Document {
             'owner' => $metadata['owner'][0],
             'solrcore' => $core,
             'status' => 0,
-        );
+        ];
 
         // Unhide hidden documents.
         if (!empty($conf['unhideOnIndex'])) {
@@ -2022,7 +2022,7 @@ final class Document {
 
             }
 
-            return array ();
+            return [];
 
         }
 
@@ -2746,7 +2746,7 @@ final class Document {
         // \SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
 
-        return array ('uid', 'pid', 'recordId', 'parentId', 'asXML');
+        return ['uid', 'pid', 'recordId', 'parentId', 'asXML'];
 
     }
 

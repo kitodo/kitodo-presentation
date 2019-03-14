@@ -29,7 +29,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $controls = array ();
+    protected $controls = [];
 
     /**
      * Holds the current images' URLs and MIME types
@@ -37,7 +37,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $images = array ();
+    protected $images = [];
 
     /**
      * Holds the current fulltexts' URLs
@@ -45,7 +45,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $fulltexts = array ();
+    protected $fulltexts = [];
 
     /**
      * Adds Viewer javascript
@@ -56,7 +56,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function addViewerJS() {
 
-        $output = array ();
+        $output = [];
 
         // Add OpenLayers library.
         $output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3.css">';
@@ -111,7 +111,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function addInteraction() {
 
-        $markerArray = array ();
+        $markerArray = [];
 
         if ($this->piVars['id']) {
 
@@ -159,17 +159,17 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function addBasketForm() {
 
-        $markerArray = array ();
+        $markerArray = [];
 
         // Add basket button
         if ($this->conf['basketButton'] && $this->conf['targetBasket'] && $this->piVars['id']) {
 
             $label = $this->pi_getLL('addBasket', '', TRUE);
 
-            $params = array (
+            $params = [
                 'id' => $this->piVars['id'],
                 'addToBasket' => TRUE
-            );
+            ];
 
             if (empty($this->piVars['page'])) {
 
@@ -177,11 +177,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             }
 
-            $basketConf = array (
+            $basketConf = [
                 'parameter' => $this->conf['targetBasket'],
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', TRUE, FALSE),
                 'title' => $label
-            );
+            ];
 
             $output = '<form id="addToBasketForm" action="'.$this->cObj->typoLink_URL($basketConf).'" method="post">';
 
@@ -236,7 +236,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function getImage($page) {
 
-        $image = array ();
+        $image = [];
 
         // Get @USE value of METS fileGrp.
         $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrps']);
@@ -250,10 +250,10 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 if ($this->conf['useInternalProxy']) {
                     // Configure @action URL for form.
-                    $linkConf = array (
+                    $linkConf = [
                         'parameter' => $GLOBALS['TSFE']->id,
                         'additionalParams' => '&eID=tx_dlf_pageview_proxy&url='.urlencode($image['url']),
-                    );
+                    ];
 
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
                 }
@@ -289,7 +289,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function getFulltext($page) {
 
-        $fulltext = array ();
+        $fulltext = [];
 
         // Get fulltext link.
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']])) {
@@ -297,10 +297,10 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
             $fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
 
             // Configure @action URL for form.
-            $linkConf = array (
+            $linkConf = [
                 'parameter' => $GLOBALS['TSFE']->id,
                 'additionalParams' => '&eID=tx_dlf_pageview_proxy&url='.urlencode($fulltext['url']),
-            );
+            ];
 
             $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
 
@@ -386,9 +386,9 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->controls = explode(',', $this->conf['features']);
 
         // Fill in the template markers.
-        $markerArray = array (
+        $markerArray = [
             '###VIEWER_JS###' => $this->addViewerJS()
-        );
+        ];
 
         $markerArray = array_merge($markerArray, $this->addInteraction(), $this->addBasketForm());
 

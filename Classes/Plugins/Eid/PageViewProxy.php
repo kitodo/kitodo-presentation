@@ -34,7 +34,7 @@ class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      *
      * @return	string
      */
-    public function main($content = '', $conf = array ()) {
+    public function main($content = '', $conf = []) {
 
         $this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
 

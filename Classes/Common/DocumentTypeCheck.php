@@ -45,7 +45,7 @@ class DocumentTypeCheck {
      * @var	array
      * @access protected
      */
-    protected $piVars = array ();
+    protected $piVars = [];
 
     /**
      * This holds the DLF parameter prefix

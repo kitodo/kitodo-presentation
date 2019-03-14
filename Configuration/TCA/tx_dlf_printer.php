@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-return array (
-    'ctrl' => array (
+return [
+    'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer',
         'label'     => 'label',
         'default_sortby' => 'ORDER BY label',
@@ -19,37 +19,37 @@ return array (
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,print',
-    ),
-    'interface' => array (
+    ],
+    'interface' => [
         'showRecordFieldList' => 'label,name,address',
-    ),
-    'feInterface' => array (
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => '',
-    ),
-    'columns' => array (
-        'label' => array (
+    ],
+    'columns' => [
+        'label' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.label',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
-            ),
-        ),
-        'print' => array (
+            ],
+        ],
+        'print' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.printcommand',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required',
-            ),
-        ),
-    ),
-    'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.tab1, label;;;;1-1-1, print;;;;2-2-2'),
-    ),
-    'palettes' => array (
-        '1' => array ('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.tab1, label;;;;1-1-1, print;;;;2-2-2'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

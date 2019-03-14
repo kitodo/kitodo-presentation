@@ -79,12 +79,12 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $piVars['page'] = $number;
 
-        $linkConf = array (
+        $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', TRUE, FALSE),
             'title' => $markerArray['###PAGINATION###']
-        );
+        ];
 
         $markerArray['###THUMBNAIL###'] = $this->cObj->typoLink($thumbnail, $linkConf);
 
@@ -117,7 +117,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
 
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), array ('pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1), TRUE).$separator;
+            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], TRUE).$separator;
 
         } else {
 
@@ -134,7 +134,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 if ($this->piVars['pointer'] != $i) {
 
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), array ('pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1), TRUE).$separator;
+                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], TRUE).$separator;
 
                 } else {
 
@@ -159,7 +159,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Add link to next page.
         if ($this->piVars['pointer'] < $maxPages - 1) {
 
-            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), array ('pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1), TRUE);
+            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1], TRUE);
 
         } else {
 

@@ -68,7 +68,7 @@ class Solr {
      * @var	array
      * @access protected
      */
-    protected $params = array ();
+    protected $params = [];
 
     /**
      * Is the search instantiated successfully?
@@ -84,7 +84,7 @@ class Solr {
      * @var	array (\Kitodo\Dlf\Common\Solr)
      * @access protected
      */
-    protected static $registry = array ();
+    protected static $registry = [];
 
     /**
      * This holds the Solr service object
@@ -136,7 +136,7 @@ class Solr {
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
 
             // Get all indexed fields.
-            $fields = array ();
+            $fields = [];
 
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
@@ -257,7 +257,7 @@ class Solr {
      */
     public static function getSolrConnectionInfo() {
 
-        $solrInfo = array ();
+        $solrInfo = [];
 
         // Extract extension configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
@@ -349,12 +349,12 @@ class Solr {
      */
     public function search() {
 
-        $toplevel = array ();
+        $toplevel = [];
 
         // Take over query parameters.
         $params = $this->params;
 
-        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : array ();
+        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
 
         // Set some query parameters.
         $params['start'] = 0;
@@ -369,7 +369,7 @@ class Solr {
         // Restore query parameters
         $params = $this->params;
 
-        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : array ();
+        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
 
         // Restrict the fields to the required ones.
         $params['fields'] = 'uid,id';
@@ -386,7 +386,7 @@ class Solr {
         }
 
         // Set filter query to just get toplevel documents.
-        $params['filterquery'][] = array ('query' => 'toplevel:true');
+        $params['filterquery'][] = ['query' => 'toplevel:true'];
 
         // Set join query to get all documents with the same uids.
         $params['query'] = '{!join from=uid to=uid}'.$params['query'];
@@ -400,12 +400,12 @@ class Solr {
         // Process results.
         foreach ($results as $doc) {
 
-            $toplevel[$doc->id] = array (
+            $toplevel[$doc->id] = [
                 'u' => $doc->uid,
                 'h' => '',
                 's' => '',
-                'p' => array ()
-            );
+                'p' => []
+            ];
 
         }
 
@@ -417,10 +417,10 @@ class Solr {
         $list->add(array_values($toplevel));
 
         // Set metadata for search.
-        $list->metadata = array (
+        $list->metadata = [
             'label' => '',
             'description' => '',
-            'options' => array (
+            'options' => [
                 'source' => 'search',
                 'engine' => 'solr',
                 'select' => $this->params['query'],
@@ -432,8 +432,8 @@ class Solr {
                 'order.asc' => TRUE,
                 'numberOfHits' => $this->numberOfHits,
                 'numberOfToplevelHits' => $numberOfToplevelHits
-            )
-        );
+            ]
+        ];
 
         return $list;
 
@@ -449,7 +449,7 @@ class Solr {
      *
      * @return	array       The Apache Solr Documents that were fetched
      */
-    public function search_raw($query = '', $parameters = array ()) {
+    public function search_raw($query = '', $parameters = []) {
 
         // Set additional query parameters.
         $parameters['start'] = 0;
@@ -462,7 +462,7 @@ class Solr {
         $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
         $result = $this->service->select($selectQuery);
 
-        $resultSet = array ();
+        $resultSet = [];
 
         foreach ($result as $doc) {
 
@@ -645,9 +645,9 @@ class Solr {
 
         $solrInfo = self::getSolrConnectionInfo();
 
-        $config = array (
-            'endpoint' => array (
-                'dlf' => array (
+        $config = [
+            'endpoint' => [
+                'dlf' => [
                     'scheme' => $solrInfo['scheme'],
                     'host' => $solrInfo['host'],
                     'port' => $solrInfo['port'],
@@ -656,9 +656,9 @@ class Solr {
                     'username' => $solrInfo['username'],
                     'password' => $solrInfo['password'],
                     'timeout' => $solrInfo['timeout']
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         // Instantiate Solarium\Client class.
         $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Client::class, $config);

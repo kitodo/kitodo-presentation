@@ -33,7 +33,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @var	array
      * @access protected
      */
-    protected $hookObjects = array ();
+    protected $hookObjects = [];
 
     /**
      * The main method of the PlugIn
@@ -160,9 +160,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         // We only care about the UID and partOf in the results and want them sorted
         $params['fields'] = 'uid,partof';
-        $params['sort'] = array ('uid' => 'asc');
+        $params['sort'] = ['uid' => 'asc'];
 
-        $collections = array ();
+        $collections = [];
 
         while ($collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
@@ -178,7 +178,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         }
 
-        $markerArray = array ();
+        $markerArray = [];
 
         // Process results.
         foreach ($collections as $collection) {
@@ -200,7 +200,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $params);
 
             // Titles are all documents that are "root" elements i.e. partof == 0
-            $collection['titles'] = array ();
+            $collection['titles'] = [];
 
             foreach ($partOfNothing as $doc) {
 
@@ -230,7 +230,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             } while (!empty($markerArray[$_key]));
 
             // Merge plugin variables with new set of values.
-            $additionalParams = array ('collection' => $collection['uid']);
+            $additionalParams = ['collection' => $collection['uid']];
 
             if (is_array($this->piVars)) {
 
@@ -243,11 +243,11 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
 
             // Build typolink configuration array.
-            $conf = array (
+            $conf = [
                 'useCacheHash' => 1,
                 'parameter' => $GLOBALS['TSFE']->id,
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-            );
+            ];
 
             // Link collection's title to list view.
             $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($collection['label']), $conf);
@@ -257,7 +257,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 $img = '<img src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
 
-                $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, array ($this->prefixId => array ('collection' => $collection['uid'])), FALSE, $this->conf['targetFeed']);
+                $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, [$this->prefixId => ['collection' => $collection['uid']]], FALSE, $this->conf['targetFeed']);
 
             } else {
 
@@ -387,7 +387,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         $params['fields'] = 'uid';
-        $params['sort'] = array ('uid' => 'asc');
+        $params['sort'] = ['uid' => 'asc'];
 
         $solrResult = $solr->search_raw($solr_query, $params);
 
@@ -412,11 +412,11 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             ''
         );
 
-        $toplevel = array ();
+        $toplevel = [];
 
-        $subparts = array ();
+        $subparts = [];
 
-        $listMetadata = array ();
+        $listMetadata = [];
 
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($documents)) {
@@ -429,21 +429,21 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             if (empty($listMetadata)) {
 
-                $listMetadata = array (
+                $listMetadata = [
                     'label' => !empty($l10nOverlay['label']) ? htmlspecialchars($l10nOverlay['label']) : htmlspecialchars($collectionData['collLabel']),
                     'description' => !empty($l10nOverlay['description']) ? $this->pi_RTEcssText($l10nOverlay['description']) : $this->pi_RTEcssText($collectionData['collDesc']),
                     'thumbnail' => htmlspecialchars($collectionData['collThumb']),
-                    'options' => array (
+                    'options' => [
                         'source' => 'collection',
                         'select' => $id,
                         'userid' => $collectionData['userid'],
-                        'params' => array ('filterquery' => array (array ('query' => 'collection_faceting:("'.$collectionData['index_name'].'")'))),
+                        'params' => ['filterquery' => [['query' => 'collection_faceting:("'.$collectionData['index_name'].'")']]],
                         'core' => '',
                         'pid' => $this->conf['pages'],
                         'order' => 'title',
                         'order.asc' => TRUE
-                    )
-                );
+                    ]
+                ];
 
             }
 
@@ -471,12 +471,12 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 }
 
-                $toplevel[$resArray['uid']] = array (
+                $toplevel[$resArray['uid']] = [
                     'u' => $resArray['uid'],
                     'h' => '',
                     's' => $sorting,
-                    'p' => array ()
-                );
+                    'p' => []
+                ];
 
             } else {
 
@@ -495,7 +495,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 foreach ($parts as $part) {
 
-                    $toplevel[$partof]['p'][] = array ('u' => $part);
+                    $toplevel[$partof]['p'][] = ['u' => $part];
 
                 }
 
@@ -520,7 +520,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
         // Send headers.
-        header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(array ('parameter' => $this->conf['targetPid']))));
+        header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(['parameter' => $this->conf['targetPid']])));
 
         // Flush output buffer and end script processing.
         ob_end_flush();

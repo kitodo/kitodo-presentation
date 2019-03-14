@@ -81,7 +81,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     protected function init(array $conf) {
 
         // Read FlexForm configuration.
-        $flexFormConf = array ();
+        $flexFormConf = [];
 
         $this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
 

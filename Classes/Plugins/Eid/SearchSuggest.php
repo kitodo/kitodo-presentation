@@ -37,7 +37,7 @@ class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      *
      * @return	string      XML response of search suggestions
      */
-    public function main($content = '', $conf = array ()) {
+    public function main($content = '', $conf = []) {
 
         if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted') != '' && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '') {
 

@@ -133,15 +133,15 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!empty($page1Link)) {
             if ($this->piVars['double']) {
                 $page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''),
-                    array ('parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')));
+                    ['parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')]);
             } else {
                 $page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''),
-                    array ('parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')));
+                    ['parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')]);
             }
         }
         if (!empty($page2Link)) {
             $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''),
-                array ('parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')));
+                ['parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')]);
         }
 
         return $page1Link.$page2Link;
@@ -178,7 +178,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Wrap URLs with HTML.
         if (!empty($workLink)) {
 
-            $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), array ('parameter' => $workLink, 'title' => $this->pi_getLL('work', '')));
+            $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), ['parameter' => $workLink, 'title' => $this->pi_getLL('work', '')]);
 
         } else {
 

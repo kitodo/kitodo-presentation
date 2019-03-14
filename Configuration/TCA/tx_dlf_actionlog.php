@@ -9,8 +9,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-return array (
-    'ctrl' => array (
+return [
+    'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog',
         'label'     => 'label',
         'crdate'    => 'crdate',
@@ -21,66 +21,66 @@ return array (
         'rootLevel'	=> 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,name,crdate',
-    ),
-    'interface' => array (
+    ],
+    'interface' => [
         'showRecordFieldList' => 'label,name,crdate',
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,
-    ),
-    'feInterface' => array (
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => '',
-    ),
-    'columns' => array (
-        'label' => array (
+    ],
+    'columns' => [
+        'label' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.label',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
-            ),
-        ),
-        'user_id' => array (
+            ],
+        ],
+        'user_id' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.user_id',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'alphanum,unique',
-            ),
-        ),
-        'file_name' => array (
+            ],
+        ],
+        'file_name' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.file_name',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'alphanum,unique',
-            ),
-        ),
-        'count_pages' => array (
+            ],
+        ],
+        'count_pages' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.count_pages',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
-            ),
-        ),
-        'name' => array (
+            ],
+        ],
+        'name' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.name',
-            'config' => array (
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
-            ),
-        )
-    ),
-    'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, crdate;;;;2-2-2, count_pages;;;;2-2-2'),
-    ),
-    'palettes' => array (
-        '1' => array ('showitem' => ''),
-    ),
-);
+            ],
+        ]
+    ],
+    'types' => [
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.tab1, label;;;;1-1-1, name;;;;2-2-2, file_name;;;;2-2-2, crdate;;;;2-2-2, count_pages;;;;2-2-2'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

@@ -36,15 +36,15 @@ class Indexer {
      * @var	array
      * @access protected
      */
-    protected static $fields = array (
-        'autocomplete' => array (),
-        'facets' => array (),
-        'sortables' => array (),
-        'indexed' => array (),
-        'stored' => array (),
-        'tokenized' => array (),
-        'fieldboost' => array ()
-    );
+    protected static $fields = [
+        'autocomplete' => [],
+        'facets' => [],
+        'sortables' => [],
+        'indexed' => [],
+        'stored' => [],
+        'tokenized' => [],
+        'fieldboost' => []
+    ];
 
     /**
      * Is the index configuration loaded?
@@ -61,7 +61,7 @@ class Indexer {
      * @var	array
      * @access protected
      */
-    protected static $processedDocs = array ();
+    protected static $processedDocs = [];
 
     /**
      * Instance of \Kitodo\Dlf\Common\Solr class
@@ -579,7 +579,7 @@ class Indexer {
 
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
 
-            $autocomplete = array ();
+            $autocomplete = [];
 
             foreach ($metadata as $index_name => $data) {
 

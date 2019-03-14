@@ -104,7 +104,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function getImage($page, $label) {
 
-        $image = array ();
+        $image = [];
 
         // Get @USE value of METS fileGrp.
         $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpsImageDownload']);
@@ -125,11 +125,11 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
                             break;
                     default:	$mimetypeLabel = '';
                 }
-                $linkConf = array (
+                $linkConf = [
                     'parameter' => $image['url'],
                     'title' => $label.' '.$mimetypeLabel,
                     'additionalParams' => '',
-                );
+                ];
 
                 $imageLink = $this->cObj->typoLink($label.' '.$mimetypeLabel, $linkConf);
 

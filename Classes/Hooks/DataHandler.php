@@ -133,12 +133,12 @@ class DataHandler {
 
                     }
 
-                    $context = stream_context_create(array (
-                        'http' => array (
+                    $context = stream_context_create([
+                        'http' => [
                             'method' => 'GET',
                             'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-                        )
-                    ));
+                        ]
+                    ]);
 
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
@@ -168,7 +168,7 @@ class DataHandler {
                     }
 
                     // Solr core could not be created, thus unset field array.
-                    $fieldArray = array ();
+                    $fieldArray = [];
 
                     break;
 
@@ -246,7 +246,7 @@ class DataHandler {
                         if (count($fieldArray) < 2) {
 
                             // Unset the whole field array.
-                            $fieldArray = array ();
+                            $fieldArray = [];
 
                         } else {
 
@@ -385,7 +385,7 @@ class DataHandler {
      */
     public function processCmdmap_postProcess($command, $table, $id, $value, $pObj) {
 
-        if (in_array($command, array ('move', 'delete', 'undelete')) && $table == 'tx_dlf_documents') {
+        if (in_array($command, ['move', 'delete', 'undelete']) && $table == 'tx_dlf_documents') {
 
             // Get Solr core.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
