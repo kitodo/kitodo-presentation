@@ -119,9 +119,7 @@ class DataHandler {
                             return;
                         }
                     }
-                    if (TYPO3_DLOG) {
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
-                    }
+                    Helper::devLog('Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', DEVLOG_SEVERITY_ERROR);
                     // Solr core could not be created, thus unset field array.
                     $fieldArray = [];
                     break;
@@ -197,9 +195,7 @@ class DataHandler {
                                 list ($fieldArray['index_name']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                             }
                         }
-                        if (TYPO3_DLOG) {
-                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_postProcessFieldArray('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Prevented change of "index_name" for UID "'.$id.'" in table "'.$table.'"', $this->extKey, SYSLOG_SEVERITY_NOTICE, $fieldArray);
-                        }
+                        Helper::devLog('Prevented change of index_name for UID '.$id.' in table "'.$table.'"', DEVLOG_SEVERITY_NOTICE);
                     }
                     break;
             }
@@ -255,9 +251,7 @@ class DataHandler {
                                 if ($doc->ready) {
                                     $doc->save($doc->pid, $core);
                                 } else {
-                                    if (TYPO3_DLOG) {
-                                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processDatamap_afterDatabaseOperations('.$status.', '.$table.', '.$id.', [data], ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR, $fieldArray);
-                                    }
+                                    Helper::devLog('Failed to re-index document with UID '.$id, DEVLOG_SEVERITY_ERROR);
                                 }
                             }
                         }
@@ -316,9 +310,7 @@ class DataHandler {
                         if ($doc->ready) {
                             $doc->save($doc->pid, $core);
                         } else {
-                            if (TYPO3_DLOG) {
-                                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Hooks\DataHandler->processCmdmap_postProcess('.$command.', '.$table.', '.$id.', '.$value.', ['.get_class($pObj).'])] Failed to re-index document with UID "'.$id.'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
-                            }
+                            Helper::devLog('Failed to re-index document with UID '.$id, DEVLOG_SEVERITY_ERROR);
                         }
                         break;
                 }

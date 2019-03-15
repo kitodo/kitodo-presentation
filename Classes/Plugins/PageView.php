@@ -192,9 +192,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 break;
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\PageView->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('File not found in fileGrp "'.$fileGrp.'"', DEVLOG_SEVERITY_WARNING);
             }
         }
         return $image;
@@ -222,9 +220,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
             $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
             $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\PageView->getFulltext('.$page.')] File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', DEVLOG_SEVERITY_WARNING);
         }
         return $fulltext;
     }

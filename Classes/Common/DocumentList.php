@@ -122,9 +122,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if ($this->valid()) {
             return $this->getRecord($this->elements[$this->position]);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->current()] Invalid position "'.$this->position.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
-            }
+            Helper::devLog('Invalid position "'.$this->position.'" for list element', DEVLOG_SEVERITY_NOTICE);
             return;
         }
     }
@@ -273,9 +271,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             // Save record for later usage.
             $this->records[$element['u']] = $record;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->getRecord([data])] No UID of list element to fetch full record', $this->extKey, SYSLOG_SEVERITY_NOTICE, $element);
-            }
+            Helper::devLog('No UID of list element to fetch full record', DEVLOG_SEVERITY_NOTICE);
             $record = $element;
         }
         return $record;
@@ -311,18 +307,14 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         // Check if list position is valid.
         if ($position < 0
             || $position >= $this->count) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->move('.$_position.', '.$_steps.')] Invalid position "'.$position.'" for element moving', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('Invalid position "'.$position.'" for element moving', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $steps = intval($steps);
         // Check if moving given amount of steps is possible.
         if (($position + $steps) < 0
             || ($position + $steps) >= $this->count) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->move('.$_position.', '.$_steps.')] Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $element = $this->remove($position);
@@ -395,9 +387,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if ($this->offsetExists($offset)) {
             return $this->getRecord($this->elements[$offset]);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->offsetGet('.$offset.')] Invalid offset "'.$offset.'" for list element', $this->extKey, SYSLOG_SEVERITY_NOTICE);
-            }
+            Helper::devLog('Invalid offset "'.$offset.'" for list element', DEVLOG_SEVERITY_NOTICE);
             return;
         }
     }
@@ -439,9 +429,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         $position = intval($position);
         if ($position < 0
             || $position >= $this->count) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('Invalid position "'.$position.'" for element removing', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $removed = array_splice($this->elements, $position, 1);
@@ -465,9 +453,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         $position = intval($position);
         if ($position < 0
             || $position >= $this->count) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->remove('.$_position.')] Invalid position "'.$position.'" for element removing', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('Invalid position "'.$position.'" for element removing', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $removed = array_splice($this->elements, $position, $length);
@@ -589,9 +575,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if ($this->count == count($newOrder)) {
             $this->elements = $newOrder;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->sort('.$by.', ['.($asc ? 'TRUE' : 'FALSE').'])] Sorted list elements do not match unsorted elements', $this->extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Sorted list elements do not match unsorted elements', DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -705,9 +689,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         $method = '_get'.ucfirst($var);
         if (!property_exists($this, $var)
             || !method_exists($this, $method)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->__get('.$var.')] There is no getter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('There is no getter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
             return;
         } else {
             return $this->$method();
@@ -728,9 +710,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         $method = '_set'.ucfirst($var);
         if (!property_exists($this, $var)
             || !method_exists($this, $method)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentList->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $value);
-            }
+            Helper::devLog('There is no setter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
         } else {
             $this->$method($value);
         }

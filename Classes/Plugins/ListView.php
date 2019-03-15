@@ -461,9 +461,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
                 // Instantiate search object.
                 $solr = Solr::getInstance($this->list->metadata['options']['core']);
                 if (!$solr->ready) {
-                    if (TYPO3_DLOG) {
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\ListView->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
-                    }
+                    Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
                     return $content;
                 }
                 // Set search parameters.

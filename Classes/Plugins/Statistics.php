@@ -40,9 +40,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(TRUE);
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Statistics->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-            }
+            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
             return $content;
         }
         // Get description.

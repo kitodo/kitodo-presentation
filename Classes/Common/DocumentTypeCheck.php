@@ -139,9 +139,7 @@ class DocumentTypeCheck {
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = NULL;
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentTypeCheck->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('Failed to load document with UID '.$this->piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($this->piVars['recordId'])) {
             // Get UID of document with given record identifier.
@@ -163,9 +161,7 @@ class DocumentTypeCheck {
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\DocumentTypeCheck->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('Failed to load document with record ID "'.$this->piVars['recordId'].'"', DEVLOG_SEVERITY_WARNING);
             }
         }
     }

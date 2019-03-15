@@ -106,9 +106,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $imageLink = $this->cObj->typoLink($label.' '.$mimetypeLabel, $linkConf);
                 break;
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Tools\ImageDownloadTool->getImage('.$page.')] File not found in fileGrp "'.$fileGrp.'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('File not found in fileGrp "'.$fileGrp.'"', DEVLOG_SEVERITY_WARNING);
             }
         }
         return $imageLink;

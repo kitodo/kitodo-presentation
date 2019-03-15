@@ -120,9 +120,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->init($conf);
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['menuConf.'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\TableOfContents->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-            }
+            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
             return $content;
         }
         // Load template file.

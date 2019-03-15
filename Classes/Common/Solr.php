@@ -176,9 +176,7 @@ class Solr {
         }
         // Check if core is set.
         if (empty($core)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->getInstance('.$_core.')] Invalid core name "'.$core.'" for Apache Solr', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid core name "'.$core.'" for Apache Solr', DEVLOG_SEVERITY_ERROR);
             return;
         }
         // Check if there is an instance in the registry already.
@@ -195,9 +193,7 @@ class Solr {
             // Return new instance.
             return $instance;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->getInstance('.$_core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
             return;
         }
     }
@@ -464,9 +460,7 @@ class Solr {
         $method = '_get'.ucfirst($var);
         if (!property_exists($this, $var)
             || !method_exists($this, $method)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('There is no getter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
             return;
         } else {
             return $this->$method();
@@ -487,9 +481,7 @@ class Solr {
        $method = '_set'.ucfirst($var);
         if (!property_exists($this, $var)
             || !method_exists($this, $method)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Solr->__set('.$var.', [data])] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
-            }
+            Helper::devLog('There is no setter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
         } else {
             $this->$method($value);
         }

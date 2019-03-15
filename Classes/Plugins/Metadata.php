@@ -102,9 +102,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
             array_unshift($metadata, $data);
         }
         if (empty($metadata)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Metadata->main('.$content.', [data])] No metadata found for document with UID "'.$this->doc->uid.'"', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-            }
+            Helper::devLog('No metadata found for document with UID '.$this->doc->uid, DEVLOG_SEVERITY_WARNING);
             return $content;
         }
         ksort($metadata);

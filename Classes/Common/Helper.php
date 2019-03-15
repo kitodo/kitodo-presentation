@@ -133,22 +133,16 @@ class Helper {
         $decrypted = NULL;
         // Check for PHP extension "mcrypt".
         if (!extension_loaded('mcrypt')) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->decrypt('.$encrypted.', '.$hash.')] PHP extension "mcrypt" not available', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('PHP extension "mcrypt" not available', DEVLOG_SEVERITY_WARNING);
             return;
         }
         if (empty($encrypted)
             || empty($hash)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->decrypt('.$encrypted.', '.$hash.')] Invalid parameters given for decryption', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Invalid parameters given for decryption', DEVLOG_SEVERITY_ERROR);
             return;
         }
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->decrypt('.$encrypted.', '.$hash.')] No encryption key set in TYPO3 configuration', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
             return;
         }
         $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
@@ -156,12 +150,52 @@ class Helper {
         $salt = substr($hash, 0, 10);
         $hashed = $salt.substr(sha1($salt.$decrypted), -10);
         if ($hashed !== $hash) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->decrypt('.$encrypted.', '.$hash.')] Invalid hash "'.$hash.'" given for decryption', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('Invalid hash "'.$hash.'" given for decryption', DEVLOG_SEVERITY_WARNING);
             return;
         }
         return $decrypted;
+    }
+
+    /**
+     * Add a message to the TYPO3 developer log
+     *
+     * @access public
+     *
+     * @param string $message: The message to log
+     * @param integer $severity: The severity of the message
+     *                           0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
+     *
+     * @return void
+     */
+    public static function devLog($message, $severity = 0) {
+        if (TYPO3_DLOG) {
+            $stacktrace = debug_backtrace(0, 2);
+            // Set some defaults.
+            $caller = 'Kitodo\Dlf\Default\UnknownClass::unknownMethod';
+            $args = [];
+            $data = [];
+            if (!empty($stacktrace[1])) {
+                $caller = $stacktrace[1]['class'].$stacktrace[1]['type'].$stacktrace[1]['function'];
+                foreach ($stacktrace[1]['args'] as $arg) {
+                    if (is_bool($arg)) {
+                        $args[] = ($arg ? 'TRUE' : 'FALSE');
+                    } elseif (is_scalar($arg)) {
+                        $args[] = (string) $arg;
+                    } elseif (is_null($arg)) {
+                        $args[] = 'NULL';
+                    } elseif (is_array($arg)) {
+                        $args[] = '[data]';
+                        $data[] = $arg;
+                    } elseif (is_object($arg)) {
+                        $args[] = '['.get_class($arg).']';
+                        $data[] = $arg;
+                    }
+                }
+            }
+            $arguments = '('.implode(', ', $args).')';
+            $additionalData = (empty($data) ? FALSE : $data);
+            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('['.$caller.$arguments.'] '.$message, self::$extKey, $severity, $additionalData);
+        }
     }
 
     /**
@@ -177,15 +211,11 @@ class Helper {
     public static function encrypt($string) {
         // Check for PHP extension "mcrypt".
         if (!extension_loaded('mcrypt')) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->encrypt('.$string.')] PHP extension "mcrypt" not available', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('PHP extension "mcrypt" not available', DEVLOG_SEVERITY_WARNING);
             return;
         }
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->encrypt('.$string.')] No encryption key set in TYPO3 configuration', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
             return;
         }
         $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
@@ -213,9 +243,7 @@ class Helper {
             $userObj->backendCheckLogin();
             return $userObj;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getBeUser()] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             return;
         }
     }
@@ -257,9 +285,7 @@ class Helper {
                 return \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
             }
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getFeUser()] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
         }
         return;
     }
@@ -302,9 +328,7 @@ class Helper {
         $uid = max(intval($uid), 0);
         if (!$uid
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getIndexName('.$_uid.', '.$table.', '.$_pid.')] Invalid UID "'.$uid.'" or table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Invalid UID "'.$uid.'" or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
             return '';
         }
         $where = '';
@@ -328,9 +352,7 @@ class Helper {
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
             return $resArray['index_name'];
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getIndexName('.$_uid.', '.$table.', '.$_pid.')] No "index_name" with UID "'.$uid.'" and PID "'.$pid.'" found in table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('No "index_name" with UID '.$uid.' and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -352,9 +374,7 @@ class Helper {
         $_pid = $pid;
         if (!$index_name
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getIdFromIndexName('.$_index_name.', '.$table.', '.$_pid.')] Invalid UID "'.$index_name.'" or table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Invalid UID '.$index_name.' or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
             return '';
         }
         $where = '';
@@ -378,9 +398,7 @@ class Helper {
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
             return $resArray['uid'];
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getIdFromIndexName('.$_index_name.', '.$table.', '.$_pid.')] No UID for given "index_name" "'.$index_name.'" and PID "'.$pid.'" found in table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('No UID for given index_name "'.$index_name.'" and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -417,17 +435,13 @@ class Helper {
                 $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639, FALSE);
             }
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getLanguageName('.$code.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             return $code;
         }
         if (!empty($lang)) {
             return $lang;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getLanguageName('.$code.')] Language code "'.$code.'" not found in ISO-639 table', self::$extKey, SYSLOG_SEVERITY_NOTICE);
-            }
+            self::devLog('Language code "'.$code.'" not found in ISO-639 table', DEVLOG_SEVERITY_NOTICE);
             return $code;
         }
     }
@@ -453,8 +467,8 @@ class Helper {
                 self::$messages = $GLOBALS['TSFE']->readLLfile($file);
             } elseif (TYPO3_MODE === 'BE') {
                 self::$messages = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
-            } elseif (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getMessage('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+            } else {
+                self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             }
         }
         // Get translation.
@@ -463,8 +477,8 @@ class Helper {
                 $translated = $GLOBALS['TSFE']->getLLL($key, self::$messages);
             } elseif (TYPO3_MODE === 'BE') {
                 $translated = $GLOBALS['LANG']->getLLL($key, self::$messages, FALSE);
-            } elseif (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getMessage('.$key.', '.$default.', ['.($hsc ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+            } else {
+                self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             }
         }
         // Escape HTML characters if applicable.
@@ -528,9 +542,7 @@ class Helper {
         ];
         $urn = strtolower($base.$id);
         if (preg_match('/[^a-z0-9:-]/', $urn)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->getURN('.$base.', '.$id.')] Invalid chars in given parameters', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('Invalid chars in given parameters', DEVLOG_SEVERITY_WARNING);
             return '';
         }
         $digits = '';
@@ -573,9 +585,7 @@ class Helper {
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->loadFromSession('.$_key.')] Invalid key "'.$key.'" for session data retrieval', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('Invalid key "'.$key.'" for session data retrieval', DEVLOG_SEVERITY_WARNING);
             return;
         }
         // Get the session data.
@@ -584,9 +594,7 @@ class Helper {
         } elseif (TYPO3_MODE === 'BE') {
             return $GLOBALS['BE_USER']->getSessionData($key);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->loadFromSession('.$_key.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             return;
         }
     }
@@ -650,9 +658,7 @@ class Helper {
             && $GLOBALS['BE_USER']->isAdmin()) {
             return self::processDB($data, $cmd, $reverseOrder, TRUE);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->processDBasAdmin([data->data], [data->cmd], ['.($reverseOrder ? 'TRUE' : 'FALSE').'])] Current backend user has no admin privileges', self::$extKey, SYSLOG_SEVERITY_ERROR, ['data' => $data, 'cmd' => $cmd]);
-            }
+            self::devLog('Current backend user has no admin privileges', DEVLOG_SEVERITY_ERROR);
             return [];
         }
     }
@@ -703,9 +709,7 @@ class Helper {
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->saveToSession([data], '.$_key.')] Invalid key "'.$key.'" for session data saving', self::$extKey, SYSLOG_SEVERITY_WARNING, $value);
-            }
+            self::devLog('Invalid key "'.$key.'" for session data saving', DEVLOG_SEVERITY_WARNING);
             return FALSE;
         }
         // Save value in session data.
@@ -717,9 +721,7 @@ class Helper {
             $GLOBALS['BE_USER']->setAndSaveSessionData($key, $value);
             return TRUE;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->saveToSession([data], '.$_key.')] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR, $value);
-            }
+            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
     }
@@ -744,9 +746,7 @@ class Helper {
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->translate('.$_index_name.', '.$table.', '.$_pid.')] Invalid PID "'.$pid.'" for translation', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            self::devLog('Invalid PID '.$pid.' for translation', DEVLOG_SEVERITY_WARNING);
             return $index_name;
         }
         // Check if "index_name" is an UID.
@@ -817,14 +817,10 @@ class Helper {
                         }
                     }
                 } else {
-                    if (TYPO3_DLOG) {
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->translate('.$_index_name.', '.$table.', '.$_pid.')] No translation with PID "'.$pid.'" available in table "'.$table.'" or translation not accessible', self::extKey, SYSLOG_SEVERITY_NOTICE);
-                    }
+                    self::devLog('No translation with PID '.$pid.' available in table "'.$table.'" or translation not accessible', DEVLOG_SEVERITY_NOTICE);
                 }
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->translate('.$_index_name.', '.$table.', '.$_pid.')] No translations available for table "'.$table.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                self::devLog('No translations available for table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
             }
         }
         if (!empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
@@ -866,9 +862,7 @@ class Helper {
         } elseif (TYPO3_MODE === 'BE') {
             return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Helper->whereClause('.$table.', ['.($showHidden ? 'TRUE' : 'FALSE').'])] Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             return ' AND 1=-1';
         }
     }

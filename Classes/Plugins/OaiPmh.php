@@ -81,7 +81,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         );
         if ($GLOBALS['TYPO3_DB']->sql_affected_rows() === -1) {
             // Deletion failed.
-            $this->devLog('[\Kitodo\Dlf\Plugins\OaiPmh->deleteExpiredTokens()] Could not delete expired resumption tokens', SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('Could not delete expired resumption tokens', DEVLOG_SEVERITY_WARNING);
         }
     }
 
@@ -266,10 +266,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
                 // Import node into \DOMDocument.
                 $mets = $this->oai->importNode($root->item(0), TRUE);
             } else {
-                $this->devLog('[\Kitodo\Dlf\Plugins\OaiPmh->getMetsData([data])] No METS part found in document with location "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+                Helper::devLog('No METS part found in document with location "'.$metadata['location'].'"', DEVLOG_SEVERITY_ERROR);
             }
         } else {
-            $this->devLog('[\Kitodo\Dlf\Plugins\OaiPmh->getMetsData([data])] Could not load XML file from "'.$metadata['location'].'"', SYSLOG_SEVERITY_ERROR, $metadata);
+            Helper::devLog('Could not load XML file from "'.$metadata['location'].'"', DEVLOG_SEVERITY_ERROR);
         }
         if ($mets === NULL) {
             $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!', FALSE), ENT_NOQUOTES, 'UTF-8'));
@@ -358,7 +358,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->oai->appendChild($root);
         $content = $this->oai->saveXML();
         // Clean output buffer.
-        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+    Helper::cleanOutputBuffers();
         // Send headers.
         header('HTTP/1.1 200 OK');
         header('Cache-Control: no-cache');
@@ -507,7 +507,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             $adminEmail = htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES);
             $repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
         } else {
-            $this->devLog('[\Kitodo\Dlf\Plugins\OaiPmh->verbIdentify()] Incomplete plugin configuration', SYSLOG_SEVERITY_NOTICE);
+            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_NOTICE);
         }
         // Get earliest datestamp. Use a default value if that fails.
         $earliestDatestamp = '0000-00-00T00:00:00Z';
@@ -523,7 +523,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             list ($timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
         } else {
-            $this->devLog('[\Kitodo\Dlf\Plugins\OaiPmh->verbIdentify()] No records found with PID "'.$this->conf['pages'].'"', SYSLOG_SEVERITY_NOTICE);
+            Helper::devLog('No records found with PID '.$this->conf['pages'], DEVLOG_SEVERITY_NOTICE);
         }
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
@@ -927,7 +927,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             if ($GLOBALS['TYPO3_DB']->sql_affected_rows() == 1) {
                 $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
             } else {
-                $this->devLog('[\Kitodo\Dlf\Plugins\OaiPmh->verb'.$this->piVars['verb'].'()] Could not create resumption token', SYSLOG_SEVERITY_ERROR);
+                Helper::devLog('Could not create resumption token', DEVLOG_SEVERITY_ERROR);
             }
         } else {
             // Result set complete. We don't need a token.
@@ -937,22 +937,5 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $resumptionToken->setAttribute('completeListSize', $documentListSet->metadata['completeListSize']);
         $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
         return $resumptionToken;
-    }
-
-    /**
-     * Helper for TYPO3 developer log
-     *
-     * @access protected
-     *
-     * @param string $message: The message to log
-     * @param integer $severity: The severity of the error
-     * @param mixed $data: Additional data to add to the log
-     *
-     * @return void
-     */
-    protected function devLog($message, $severity, $data = NULL) {
-        if (TYPO3_DLOG) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($message, $this->extKey, $severity, $data);
-        }
     }
 }

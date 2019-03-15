@@ -50,9 +50,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(TRUE);
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Collection->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-            }
+            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
             return $content;
         }
         // Load template file.
@@ -252,9 +250,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Collection->showSingleCollection('.intval($id).')] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
             return;
         }
         $params['fields'] = 'uid';
@@ -342,7 +338,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         $list->metadata = $listMetadata;
         $list->save();
         // Clean output buffer.
-        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+    Helper::cleanOutputBuffers();
         // Send headers.
         header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(['parameter' => $this->conf['targetPid']])));
         // Flush output buffer and end script processing.

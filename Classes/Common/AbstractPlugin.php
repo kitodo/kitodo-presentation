@@ -130,9 +130,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = NULL;
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\AbstractPlugin->loadDocument()] Failed to load document with UID "'.$this->piVars['id'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                Helper::devLog('Failed to load document with UID '.$this->piVars['id'], DEVLOG_SEVERITY_ERROR);
             } else {
                 // Set configuration PID.
                 $this->doc->cPid = $this->conf['pages'];
@@ -156,14 +154,10 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\AbstractPlugin->loadDocument()] Failed to load document with record ID "'.$this->piVars['recordId'].'"', $this->extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                Helper::devLog('Failed to load document with record ID "'.$this->piVars['recordId'].'"', DEVLOG_SEVERITY_ERROR);
             }
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\AbstractPlugin->loadDocument()] Invalid UID "'.$this->piVars['id'].'" or PID "'.$this->conf['pages'].'" for document loading', $this->extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid UID '.$this->piVars['id'].' or PID '.$this->conf['pages'].' for document loading', DEVLOG_SEVERITY_ERROR);
         }
     }
 

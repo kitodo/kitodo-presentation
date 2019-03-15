@@ -52,9 +52,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
             $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Search/Suggester.js"></script>';
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Search->addAutocompleteJS()] No metadata fields configured for search suggestions', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('No metadata fields configured for search suggestions', DEVLOG_SEVERITY_WARNING);
         }
     }
 
@@ -185,9 +183,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function addFacetsMenu() {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['facetsConf.'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Search->addFacetsMenu()] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
             return '';
         }
         // Quit without doing anything if no facets are selected.
@@ -322,9 +318,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(FALSE);
         // Quit without doing anything if required variables are not set.
         if (empty($this->conf['solrcore'])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Search->main('.$content.', [data])] Incomplete plugin configuration', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-            }
+            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
             return $content;
         }
         if (!isset($this->piVars['query'])
@@ -370,9 +364,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Instantiate search object.
             $solr = Solr::getInstance($this->conf['solrcore']);
             if (!$solr->ready) {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
-                }
+                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
                 return $content;
             }
             // Build label for result list.
@@ -456,9 +448,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Instantiate search object.
             $solr = Solr::getInstance($this->conf['solrcore']);
             if (!$solr->ready) {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Search->main('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
-                }
+                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
                 return $content;
             }
             // Set search parameters.
@@ -475,7 +465,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             ];
             $list->save();
             // Clean output buffer.
-            \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+        Helper::cleanOutputBuffers();
             $additionalParams = [];
             if (!empty($this->piVars['logicalPage'])) {
                 $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
@@ -538,9 +528,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Get applicable facets.
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Search->makeFacetsMenuArray('.$content.', [data])] Apache Solr not available', $this->extKey, SYSLOG_SEVERITY_ERROR, $conf);
-            }
+            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
             return [];
         }
         // Set needed parameters for facet search.

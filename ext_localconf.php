@@ -12,6 +12,22 @@
 if (!defined('TYPO3_MODE')) {
     die ('Access denied.');
 }
+// Define constants.
+if (!defined('DEVLOG_SEVERITY_OK')) {
+    define ('DEVLOG_SEVERITY_OK', -1);
+}
+if (!defined('DEVLOG_SEVERITY_INFO')) {
+    define ('DEVLOG_SEVERITY_INFO', 0);
+}
+if (!defined('DEVLOG_SEVERITY_NOTICE')) {
+    define ('DEVLOG_SEVERITY_NOTICE', 1);
+}
+if (!defined('DEVLOG_SEVERITY_WARNING')) {
+    define ('DEVLOG_SEVERITY_WARNING', 2);
+}
+if (!defined('DEVLOG_SEVERITY_ERROR')) {
+    define ('DEVLOG_SEVERITY_ERROR', 3);
+}
 // Register plugins.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'Classes/Plugins/AudioPlayer.php', '_audioplayer', 'list_type', TRUE);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'Classes/Plugins/Basket.php', '_basket', 'list_type', FALSE);

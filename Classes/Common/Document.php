@@ -368,9 +368,7 @@ final class Document {
             && ($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/mets:FLocat[@LOCTYPE="URL"]'))) {
             return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getFileLocation('.$id.')] There is no file node with @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('There is no file node with @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -389,9 +387,7 @@ final class Document {
             && ($mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/@MIMETYPE'))) {
             return (string) $mimetype[0];
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getFileMimeType('.$id.')] There is no file node with @ID "'.$id.'" or no MIME type specified', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('There is no file node with @ID "'.$id.'" or no MIME type specified', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -602,9 +598,7 @@ final class Document {
             // Retain current PID.
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
         } elseif (!$cPid) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getMetadata('.$id.', '.$_cPid.')] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid PID '.$cPid.' for metadata definitions', DEVLOG_SEVERITY_WARNING);
             return [];
         }
         // Get metadata from parsed metadata array if available.
@@ -651,15 +645,11 @@ final class Document {
                         && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof MetadataInterface) {
                         $obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
                     } else {
-                        if (TYPO3_DLOG) {
-                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getMetadata('.$id.', '.$_cPid.')] Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                        }
+                        Helper::devLog('Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', DEVLOG_SEVERITY_WARNING);
                     }
                 }
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getMetadata('.$id.', '.$_cPid.')] Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', DEVLOG_SEVERITY_WARNING);
                 return [];
             }
             // Get the structure's type.
@@ -832,9 +822,7 @@ final class Document {
                 // Get the root element's name as text format.
                 $textFormat = strtoupper($rawTextXml->getName());
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getRawText('.$id.')] Invalid structure node @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('Invalid structure node @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
                 return $rawText;
             }
             // Is this text format supported?
@@ -847,15 +835,11 @@ final class Document {
                         $rawText = $obj->getRawText($rawTextXml);
                         $this->rawTextArray[$id] = $rawText;
                     } else {
-                        if (TYPO3_DLOG) {
-                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getRawText('.$id.')] Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                        }
+                        Helper::devLog('Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', DEVLOG_SEVERITY_WARNING);
                     }
                 }
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getRawText('.$id.')] Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
             }
         }
         return $rawText;
@@ -898,14 +882,10 @@ final class Document {
                     $title = self::getTitle($partof, TRUE);
                 }
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('No document with UID '.$uid.' found or document not accessible', DEVLOG_SEVERITY_WARNING);
             }
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getTitle('.$_uid.', ['.($recursive ? 'TRUE' : 'FALSE').'])] Invalid UID "'.$uid.'" for document', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid UID '.$uid.' for document', DEVLOG_SEVERITY_ERROR);
         }
         return $title;
     }
@@ -948,9 +928,7 @@ final class Document {
             // Register namespaces.
             $this->registerNamespaces($this->mets);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->init()] No METS part found in document with UID "'.$this->uid.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('No METS part found in document with UID '.$this->uid, DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -987,14 +965,10 @@ final class Document {
                 $this->xml = $xml;
                 return TRUE;
             } else {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->load('.$location.')] Could not load XML file from "'.$location.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                Helper::devLog('Could not load XML file from "'.$location.'"', DEVLOG_SEVERITY_ERROR);
             }
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->load('.$location.')] Invalid file location "'.$location.'" for document loading', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid file location "'.$location.'" for document loading', DEVLOG_SEVERITY_ERROR);
         }
         return FALSE;
     }
@@ -1047,9 +1021,7 @@ final class Document {
         } elseif ($obj instanceof \DOMXPath) {
             $method = 'registerNamespace';
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->registerNamespaces(['.get_class($obj).'])] Given object is neither a SimpleXMLElement nor a DOMXPath instance', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Given object is neither a SimpleXMLElement nor a DOMXPath instance', DEVLOG_SEVERITY_ERROR);
             return;
         }
         // Register metadata format's namespaces.
@@ -1073,9 +1045,7 @@ final class Document {
         $_pid = $pid;
         $_core = $core;
         if (TYPO3_MODE !== 'BE') {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->save('.$_pid.', '.$_core.')] Saving a document is only allowed in the backend', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Saving a document is only allowed in the backend', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
         // Make sure $pid is a non-negative integer.
@@ -1088,9 +1058,7 @@ final class Document {
             // Retain current PID.
             $pid = $this->pid;
         } elseif (!$pid) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->save('.$_pid.', '.$_core.')] Invalid PID "'.$pid.'" for document saving', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid PID '.$pid.' for document saving', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
         // Set PID for metadata definitions.
@@ -1103,9 +1071,7 @@ final class Document {
         $metadata = $this->getTitledata($pid);
         // Check for record identifier.
         if (empty($metadata['record_id'][0])) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->save('.$_pid.', '.$_core.')] No record identifier found to avoid duplication', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('No record identifier found to avoid duplication', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
         // Load plugin configuration.
@@ -1122,9 +1088,7 @@ final class Document {
             '1'
         );
         if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->save('.$_pid.', '.$_core.')] Backend user "_cli_dlf" not found or disabled', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Backend user "_cli_dlf" not found or disabled', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
         // Get UID for structure type.
@@ -1141,9 +1105,7 @@ final class Document {
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
             list ($structure) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->save('.$_pid.', '.$_core.')] Could not identify document/structure type '.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures'), self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Could not identify document/structure type "'.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures').'"', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
         $metadata['type'][0] = $structure;
@@ -1357,9 +1319,7 @@ final class Document {
         if ($core) {
             Indexer::add($this, $core);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->save('.$_pid.', '.$_core.')] Invalid UID "'.$core.'" for Solr core', self::$extKey, SYSLOG_SEVERITY_NOTICE);
-            }
+            Helper::devLog('Invalid UID "'.$core.'" for Solr core', DEVLOG_SEVERITY_NOTICE);
         }
         return TRUE;
     }
@@ -1492,9 +1452,7 @@ final class Document {
         // Set metadata definitions' PID.
         $cPid = ($this->cPid ? $this->cPid : $this->pid);
         if (!$cPid) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->getMetadataArray()] Invalid PID "'.$cPid.'" for metadata definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid PID '.$cPid.' for metadata definitions', DEVLOG_SEVERITY_ERROR);
             return [];
         }
         if (!$this->metadataArrayLoaded
@@ -1725,18 +1683,14 @@ final class Document {
             // Retain current PID.
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
             if (!$cPid) {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->_getThumbnail()] Invalid PID "'.$cPid.'" for structure definitions', self::$extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                Helper::devLog('Invalid PID '.$cPid.' for structure definitions', DEVLOG_SEVERITY_ERROR);
                 $this->thumbnailLoaded = TRUE;
                 return $this->thumbnail;
             }
             // Load extension configuration.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             if (empty($extConf['fileGrpThumbs'])) {
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->_getThumbnail()] No fileGrp for thumbnails specified', self::$extKey, SYSLOG_SEVERITY_WARNING);
-                }
+                Helper::devLog('No fileGrp for thumbnails specified', DEVLOG_SEVERITY_WARNING);
                 $this->thumbnailLoaded = TRUE;
                 return $this->thumbnail;
             }
@@ -1773,8 +1727,8 @@ final class Document {
                 } else {
                     $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
                 }
-            } elseif (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->_getThumbnail()] No structure of type "'.$metadata['type'][0].'" found in database', self::$extKey, SYSLOG_SEVERITY_ERROR);
+            } else {
+                Helper::devLog('No structure of type "'.$metadata['type'][0].'" found in database', DEVLOG_SEVERITY_ERROR);
             }
             $this->thumbnailLoaded = TRUE;
         }
@@ -1937,9 +1891,7 @@ final class Document {
             // Document ready!
             $this->ready = TRUE;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->__construct('.$uid.', '.$pid.')] No document with UID "'.$uid.'" found or document not accessible', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('No document with UID '.$uid.' found or document not accessible', DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -1956,9 +1908,7 @@ final class Document {
         $method = '_get'.ucfirst($var);
         if (!property_exists($this, $var)
             || !method_exists($this, $method)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->__get('.$var.')] There is no getter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('There is no getter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
             return;
         } else {
             return $this->$method();
@@ -1979,9 +1929,7 @@ final class Document {
         $method = '_set'.ucfirst($var);
         if (!property_exists($this, $var)
             || !method_exists($this, $method)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->__set('.$var.', '.$value.')] There is no setter function for property "'.$var.'"', self::$extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('There is no setter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
         } else {
             $this->$method($value);
         }
@@ -2036,9 +1984,7 @@ final class Document {
             // Rebuild the unserializable properties.
             $this->init();
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Document->__wakeup()] Could not load XML after deserialization', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Could not load XML after deserialization', DEVLOG_SEVERITY_ERROR);
         }
     }
 }

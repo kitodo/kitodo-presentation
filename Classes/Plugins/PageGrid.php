@@ -142,9 +142,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->getTemplate();
         $entryTemplate = $this->cObj->getSubpart($this->template, '###ENTRY###');
         if (empty($entryTemplate)) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\PageGrid->main('.$content.', [data])] No template subpart for list entry found', $this->extKey, SYSLOG_SEVERITY_WARNING, $conf);
-            }
+            Helper::devLog('No template subpart for list entry found', DEVLOG_SEVERITY_WARNING);
             // Quit without doing anything if required variables are not set.
             return $content;
         }

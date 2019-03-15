@@ -96,10 +96,9 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $page2Link = $this->doc->getFileLocation($file);
             }
         }
-        if (TYPO3_DLOG
-            && empty($page1Link)
+        if (empty($page1Link)
             && empty($page2Link)) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Tools\PdfDownloadTool->getPageLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
+            Helper::devLog('File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', DEVLOG_SEVERITY_WARNING);
         }
         // Wrap URLs with HTML.
         if (!empty($page1Link)) {
@@ -137,9 +136,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!empty($workLink)) {
             $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), ['parameter' => $workLink, 'title' => $this->pi_getLL('work', '')]);
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Plugins\Tools\PdfDownloadTool->getWorkLink()] File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', $this->extKey, SYSLOG_SEVERITY_WARNING);
-            }
+            Helper::devLog('File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', DEVLOG_SEVERITY_WARNING);
         }
         return $workLink;
     }

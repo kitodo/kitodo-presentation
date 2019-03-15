@@ -91,9 +91,7 @@ class Indexer {
                 if ($parent->ready) {
                     $errors = self::add($parent, $core);
                 } else {
-                    if (TYPO3_DLOG) {
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Indexer->add(['.$doc->uid.'], '.$core.')] Could not load parent document with UID "'.$doc->parentId.'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-                    }
+                    Helper::devLog('Could not load parent document with UID '.$doc->parentId, DEVLOG_SEVERITY_ERROR);
                     return 1;
                 }
             }
@@ -169,9 +167,7 @@ class Indexer {
                     );
                     Helper::addMessage($message);
                 }
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Indexer->add(['.$doc->uid.'], '.$core.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                Helper::devLog('Apache Solr threw exception: "'.$e->getMessage().'"', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
         } else {
@@ -185,9 +181,7 @@ class Indexer {
                 );
                 Helper::addMessage($message);
             }
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Indexer->add(['.$doc->uid.'], '.$core.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
             return 1;
         }
     }
@@ -238,9 +232,7 @@ class Indexer {
                         );
                         Helper::addMessage($message);
                     }
-                    if (TYPO3_DLOG) {
-                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Indexer->delete('.$_uid.')] Apache Solr threw exception: "'.$e->getMessage().'"', self::$extKey, SYSLOG_SEVERITY_ERROR);
-                    }
+                    Helper::devLog('Apache Solr threw exception: "'.$e->getMessage().'"', DEVLOG_SEVERITY_ERROR);
                     return 1;
                 }
             } else {
@@ -254,9 +246,7 @@ class Indexer {
                     );
                     Helper::addMessage($message);
                 }
-                if (TYPO3_DLOG) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Indexer->delete('.$_uid.')] Could not connect to Apache Solr server', self::$extKey, SYSLOG_SEVERITY_ERROR);
-                }
+                Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
             if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
@@ -271,9 +261,7 @@ class Indexer {
             }
             return 0;
         } else {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Indexer->delete('.$_uid.')] Invalid UID "'.$uid.'" for document deletion', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid UID '.$uid.' for document deletion', DEVLOG_SEVERITY_ERROR);
             return 1;
         }
     }
@@ -294,9 +282,7 @@ class Indexer {
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {
-            if (TYPO3_DLOG) {
-                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[\Kitodo\Dlf\Common\Indexer->getIndexFieldName('.$index_name.', '.$_pid.')] Invalid PID "'.$pid.'" for metadata configuration', self::$extKey, SYSLOG_SEVERITY_ERROR);
-            }
+            Helper::devLog('Invalid PID '.$pid.' for metadata configuration', DEVLOG_SEVERITY_ERROR);
             return '';
         }
         // Load metadata configuration.
