@@ -12,7 +12,6 @@ namespace Kitodo\Dlf\Plugins;
  */
 
 use Kitodo\Dlf\Common\DocumentList;
-use Kitodo\Dlf\Common\Helper;
 
 /**
  * Plugin 'Navigation' for the 'dlf' extension

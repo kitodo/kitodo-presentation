@@ -11,8 +11,6 @@ namespace Kitodo\Dlf\Plugins\Tools;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Kitodo\Dlf\Common\Helper;
-
 /**
  * Image Download tool for the plugin 'Toolbox' of the 'dlf' extension
  *
