@@ -137,7 +137,7 @@ class Indexer {
                     '1'
                 );
                 $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-                if (!defined('TYPO3_cliMode')) {
+                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     if (!$errors) {
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -159,7 +159,7 @@ class Indexer {
                 }
                 return $errors;
             } catch (\Exception $e) {
-                if (!defined('TYPO3_cliMode')) {
+                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
@@ -175,7 +175,7 @@ class Indexer {
                 return 1;
             }
         } else {
-            if (!defined('TYPO3_cliMode')) {
+            if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     Helper::getMessage('flash.solrNoConnection', TRUE),
@@ -228,7 +228,7 @@ class Indexer {
                     $updateQuery->addCommit();
                     self::$solr->service->update($updateQuery);
                 } catch (\Exception $e) {
-                    if (!defined('TYPO3_cliMode')) {
+                    if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                         $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                             Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
@@ -244,7 +244,7 @@ class Indexer {
                     return 1;
                 }
             } else {
-                if (!defined('TYPO3_cliMode')) {
+                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getMessage('flash.solrNoConnection', TRUE),
@@ -259,7 +259,7 @@ class Indexer {
                 }
                 return 1;
             }
-            if (!defined('TYPO3_cliMode')) {
+            if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     htmlspecialchars(sprintf(Helper::getMessage('flash.documentDeleted'), $title, $uid)),
@@ -436,7 +436,7 @@ class Indexer {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!defined('TYPO3_cliMode')) {
+                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
@@ -539,7 +539,7 @@ class Indexer {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!defined('TYPO3_cliMode')) {
+                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),

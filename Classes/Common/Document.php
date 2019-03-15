@@ -1184,7 +1184,7 @@ final class Document {
                 unset ($collData);
                 // Add new collection's UID.
                 $collections[] = $substUid[$collNewUid];
-                if (!defined('TYPO3_cliMode')) {
+                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
@@ -1231,7 +1231,7 @@ final class Document {
             $substUid = Helper::processDB($libData);
             // Add new library's UID.
             $ownerUid = $substUid[$libNewUid];
-            if (!defined('TYPO3_cliMode')) {
+            if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                 $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
@@ -1343,7 +1343,7 @@ final class Document {
             $this->pid = $pid;
             $this->parentId = $partof;
         }
-        if (!defined('TYPO3_cliMode')) {
+        if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
             $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                 htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
