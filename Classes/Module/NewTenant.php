@@ -202,6 +202,10 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
      */
     public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
         $this->response = $response;
+        // Initialize module.
+        $GLOBALS['BE_USER']->modAccess($GLOBALS['MCONF'], 1);
+        parent::init();
+        $this->pageInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
         // Is the user allowed to access this page?
         $access = is_array($this->pageInfo) && $GLOBALS['BE_USER']->isAdmin();
         if ($this->id && $access) {

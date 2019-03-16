@@ -94,6 +94,11 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      * @return void
      */
     protected function printContent() {
+        $this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
+        $this->doc->setModuleTemplate('EXT:'.$this->extKey.'/Resources/Private/Templates/'.Helper::getUnqualifiedClassName(get_class($this)).'.tmpl');
+        $this->doc->backPath = $GLOBALS['BACK_PATH'];
+        $this->doc->bodyTagAdditions = 'class="ext-'.$this->extKey.'-modules"';
+        $this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
         // Add Javascript for function menu.
         $this->doc->JScode .= '<script type="text/javascript">script_ended = 0;function jumpToUrl(URL) { document.location = URL; }</script>';
         // Add Javascript for convenient module switch.
@@ -113,23 +118,15 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
     }
 
     /**
-     * Initializes the backend module by setting internal variables, initializing the menu.
+     * Initializes the backend module.
      *
      * @access public
      *
      * @return void
      */
     public function __construct() {
-        $GLOBALS['BE_USER']->modAccess($GLOBALS['MCONF'], 1);
         $GLOBALS['LANG']->includeLLFile('EXT:'.$this->extKey.'/Resources/Private/Language/'.Helper::getUnqualifiedClassName(get_class($this)).'.xml');
-        parent::init();
         $this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-        $this->pageInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
-        $this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc->setModuleTemplate('EXT:'.$this->extKey.'/Resources/Private/Templates/'.Helper::getUnqualifiedClassName(get_class($this)).'.tmpl');
-        $this->doc->backPath = $GLOBALS['BACK_PATH'];
-        $this->doc->bodyTagAdditions = 'class="ext-'.$this->extKey.'-modules"';
-        $this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
         $this->data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefixId);
     }
 }

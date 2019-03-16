@@ -24,4 +24,5 @@ if (TYPO3_MODE === 'BE') {
             'labels' => 'LLL:EXT:dlf/Resources/Private/Language/BackendModule.xml'
         ]
     );
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('tools_dlfNewTenantModule', 'typo3-pagetree');
 }
