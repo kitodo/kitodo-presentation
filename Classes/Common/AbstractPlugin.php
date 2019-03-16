@@ -59,7 +59,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
             $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
         } else {
             // Load default template file.
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/Resources/Private/Templates/'.get_class($this).'.tmpl'), $part);
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/Resources/Private/Templates/'.Helper::getUnqualifiedClassName(get_class($this)).'.tmpl'), $part);
         }
     }
 
@@ -81,12 +81,12 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($flexFormConf, $conf);
         }
         // Read plugin TS configuration.
-        $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][get_class($this).'.'];
+        $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][Helper::getUnqualifiedClassName(get_class($this)).'.'];
         if (is_array($pluginConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($pluginConf, $conf);
         }
         // Read old plugin TS configuration.
-        $oldPluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(get_class($this)).'.'];
+        $oldPluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(Helper::getUnqualifiedClassName(get_class($this))).'.'];
         if (is_array($oldPluginConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($oldPluginConf, $conf);
         }
@@ -109,7 +109,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         // Set default plugin variables.
         $this->pi_setPiVarDefaults();
         // Load translation files.
-        $this->pi_loadLL('EXT:'.$this->extKey.'/Resources/Private/Language/'.get_class($this).'.xml');
+        $this->pi_loadLL('EXT:'.$this->extKey.'/Resources/Private/Language/'.Helper::getUnqualifiedClassName(get_class($this)).'.xml');
     }
 
     /**
@@ -186,10 +186,10 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      */
     public function pi_wrapInBaseClass($content) {
         if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass']) {
-            // Use get_class($this) instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
-            $content = '<div class="tx-dlf-'.get_class($this).'">'.$content.'</div>';
+            // Use class name instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
+            $content = '<div class="tx-dlf-'.Helper::getUnqualifiedClassName(get_class($this)).'">'.$content.'</div>';
             if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
-                $content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".get_class($this)."' -->\n\n";
+                $content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".Helper::getUnqualifiedClassName(get_class($this))."' -->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".Helper::getUnqualifiedClassName(get_class($this))."' -->\n\n";
             }
         }
         return $content;

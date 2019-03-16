@@ -237,7 +237,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
             return '';
         }
         // Set class prefix.
-        $prefix = str_replace('_', '-', get_class($this));
+        $prefix = Helper::getUnqualifiedClassName(get_class($this));
         // Configure @action URL for form.
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id

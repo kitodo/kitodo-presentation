@@ -226,6 +226,20 @@ class Helper {
     }
 
     /**
+     * Get the unqualified name of a class
+     *
+     * @access public
+     *
+     * @param string $qualifiedClassname: The qualified class name from get_class()
+     *
+     * @return string The unqualified class name
+     */
+    public static function getUnqualifiedClassName($qualifiedClassname) {
+        $nameParts = explode('\\', $qualifiedClassname);
+        return end($nameParts);
+    }
+
+    /**
      * Get a backend user object (even in frontend mode)
      *
      * @access public

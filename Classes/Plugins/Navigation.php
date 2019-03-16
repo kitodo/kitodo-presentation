@@ -12,6 +12,7 @@ namespace Kitodo\Dlf\Plugins;
  */
 
 use Kitodo\Dlf\Common\DocumentList;
+use Kitodo\Dlf\Common\Helper;
 
 /**
  * Plugin 'Navigation' for the 'dlf' extension
@@ -68,7 +69,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
         }
         // Add page selector.
-        $uniqId = uniqid(str_replace('_', '-', get_class($this)).'-');
+        $uniqId = uniqid(Helper::getUnqualifiedClassName(get_class($this)).'-');
         $output .= '<label for="'.$uniqId.'">'.$this->pi_getLL('selectPage', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[page]" onchange="javascript:this.form.submit();"'.($this->doc->numPages < 1 ? ' disabled="disabled"' : '').'>';
         for ($i = 1; $i <= $this->doc->numPages; $i++) {
             $output .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel'] ? ' - '.htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel']) : '').'</option>';
