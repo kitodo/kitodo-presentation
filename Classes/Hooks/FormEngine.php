@@ -250,7 +250,7 @@ class FormEngine {
      * @return void
      */
     public function itemsProcFunc_toolList(&$params, &$pObj) {
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'] as $class => $label) {
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
             $params['items'][] = [$GLOBALS['LANG']->sL($label), $class];
         }
     }
