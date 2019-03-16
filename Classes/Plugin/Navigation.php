@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -23,7 +23,7 @@ use Kitodo\Dlf\Common\Helper;
  * @access public
  */
 class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Navigation.php';
+    public $scriptRelPath = 'Classes/Plugin/Navigation.php';
 
     /**
      * Display a link to the list view

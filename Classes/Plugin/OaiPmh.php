@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -24,7 +24,7 @@ use Kitodo\Dlf\Common\Solr;
  * @access public
  */
 class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/OaiPmh.php';
+    public $scriptRelPath = 'Classes/Plugin/OaiPmh.php';
 
     /**
      * Did an error occur?

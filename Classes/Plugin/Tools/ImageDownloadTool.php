@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins\Tools;
+namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -20,7 +20,7 @@ namespace Kitodo\Dlf\Plugins\Tools;
  * @access public
  */
 class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Tools/ImageDownloadTool.php';
+    public $scriptRelPath = 'Classes/Plugin/Tools/ImageDownloadTool.php';
 
     /**
      * The main method of the PlugIn

@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -22,7 +22,7 @@ use Kitodo\Dlf\Common\Helper;
  * @access public
  */
 class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Statistics.php';
+    public $scriptRelPath = 'Classes/Plugin/Statistics.php';
 
     /**
      * The main method of the PlugIn

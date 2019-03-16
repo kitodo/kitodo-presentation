@@ -202,9 +202,9 @@ class ext_update {
     protected function updateFormatClasses() {
         $oldRecords = $this->oldFormatClasses();
         $newValues = [
-            'ALTO' => 'Kitodo\\Dlf\\Formats\\Alto',
-            'MODS' => 'Kitodo\\Dlf\\Formats\\Mods',
-            'TEIHDR' => 'Kitodo\\Dlf\\Formats\\TeiHeader'
+            'ALTO' => 'Kitodo\\Dlf\\Format\\Alto',
+            'MODS' => 'Kitodo\\Dlf\\Format\\Mods',
+            'TEIHDR' => 'Kitodo\\Dlf\\Format\\TeiHeader'
         ];
         foreach ($oldRecords as $uid => $type) {
             $sqlQuery = 'UPDATE tx_dlf_formats SET class="'.$newValues[$type].'" WHERE uid='.$uid;

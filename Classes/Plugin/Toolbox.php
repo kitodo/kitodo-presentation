@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -20,7 +20,7 @@ namespace Kitodo\Dlf\Plugins;
  * @access public
  */
 class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Toolbox.php';
+    public $scriptRelPath = 'Classes/Plugin/Toolbox.php';
 
     /**
      * The main method of the PlugIn

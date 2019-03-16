@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins\Eid;
+namespace Kitodo\Dlf\Plugin\Eid;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -20,7 +20,7 @@ namespace Kitodo\Dlf\Plugins\Eid;
  * @access public
  */
 class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Eid/PageViewProxy.php';
+    public $scriptRelPath = 'Classes/Plugin/Eid/PageViewProxy.php';
 
     /**
      * The main method of the eID script

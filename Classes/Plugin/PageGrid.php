@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -21,7 +21,7 @@ namespace Kitodo\Dlf\Plugins;
  * @access public
  */
 class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/PageGrid.php';
+    public $scriptRelPath = 'Classes/Plugin/PageGrid.php';
 
     /**
      * Renders entry for one page of the current document.

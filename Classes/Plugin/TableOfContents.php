@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -22,7 +22,7 @@ use Kitodo\Dlf\Common\Helper;
  * @access public
  */
 class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/TableOfContents.php';
+    public $scriptRelPath = 'Classes/Plugin/TableOfContents.php';
 
     /**
      * This holds the active entries according to the currently selected page
@@ -127,7 +127,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->getTemplate();
         $TSconfig = [];
         $TSconfig['special'] = 'userfunction';
-        $TSconfig['special.']['userFunc'] = 'Kitodo\\Dlf\\Plugins\\TableOfContents->makeMenuArray';
+        $TSconfig['special.']['userFunc'] = 'Kitodo\\Dlf\\Plugin\\TableOfContents->makeMenuArray';
         $TSconfig = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['menuConf.'], $TSconfig);
         $markerArray['###TOCMENU###'] = $this->cObj->HMENU($TSconfig);
         $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);

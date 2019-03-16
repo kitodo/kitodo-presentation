@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -20,7 +20,7 @@ namespace Kitodo\Dlf\Plugins;
  * @access public
  */
 class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/AudioPlayer.php';
+    public $scriptRelPath = 'Classes/Plugin/AudioPlayer.php';
 
     /**
      * Holds the current audio file's URL, MIME type and optional label

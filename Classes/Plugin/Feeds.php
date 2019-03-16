@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -23,7 +23,7 @@ use Kitodo\Dlf\Common\Helper;
  * @access public
  */
 class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Feeds.php';
+    public $scriptRelPath = 'Classes/Plugin/Feeds.php';
 
     /**
      * The main method of the PlugIn

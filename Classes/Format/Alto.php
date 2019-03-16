@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Formats;
+namespace Kitodo\Dlf\Format;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>

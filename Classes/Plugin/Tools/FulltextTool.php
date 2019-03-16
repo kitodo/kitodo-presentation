@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins\Tools;
+namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -21,7 +21,7 @@ namespace Kitodo\Dlf\Plugins\Tools;
  * @access public
  */
 class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Tools/FulltextTool.php';
+    public $scriptRelPath = 'Classes/Plugin/Tools/FulltextTool.php';
 
     /**
      * The main method of the PlugIn

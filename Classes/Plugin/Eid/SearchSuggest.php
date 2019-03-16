@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins\Eid;
+namespace Kitodo\Dlf\Plugin\Eid;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -24,7 +24,7 @@ use Kitodo\Dlf\Common\Solr;
  * @access public
  */
 class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Eid/SearchSuggest.php';
+    public $scriptRelPath = 'Classes/Plugin/Eid/SearchSuggest.php';
 
     /**
      * The main method of the eID script

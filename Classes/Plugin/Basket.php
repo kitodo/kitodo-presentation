@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -23,7 +23,7 @@ use Kitodo\Dlf\Common\Helper;
  * @access public
  */
 class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Basket.php';
+    public $scriptRelPath = 'Classes/Plugin/Basket.php';
 
     /**
      * The main method of the PlugIn

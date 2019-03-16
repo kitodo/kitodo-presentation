@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -24,7 +24,7 @@ use Kitodo\Dlf\Common\Helper;
  * @access public
  */
 class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/Metadata.php';
+    public $scriptRelPath = 'Classes/Plugin/Metadata.php';
 
     /**
      * This holds the hook objects

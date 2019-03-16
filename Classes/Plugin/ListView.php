@@ -1,5 +1,5 @@
 <?php
-namespace Kitodo\Dlf\Plugins;
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -27,7 +27,7 @@ use Kitodo\Dlf\Common\Solr;
  * @access public
  */
 class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
-    public $scriptRelPath = 'Classes/Plugins/ListView.php';
+    public $scriptRelPath = 'Classes/Plugin/ListView.php';
 
     /**
      * This holds the field wrap of the metadata
