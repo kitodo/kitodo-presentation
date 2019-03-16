@@ -38,7 +38,7 @@
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms": "^8.7 || ^9.5",
+    "typo3/minimal": "^8.7 || ^9.5",
     "solarium/solarium" : "^4.2"
   },
   "replace": {
