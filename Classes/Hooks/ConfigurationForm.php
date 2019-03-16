@@ -180,7 +180,11 @@ class ConfigurationForm {
                     'username' => '_cli_dlf',
                     'password' => md5($tempUid),
                     'realName' => $GLOBALS['LANG']->getLL('cliUserGroup.usrRealName'),
-                    'usergroup' => intval($groupUid)
+                    'admin' => 0,
+                    'usergroup' => intval($groupUid),
+                    $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['disabled'] => 0,
+                    $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['starttime'] => 0,
+                    $GLOBALS['TCA']['be_users']['ctrl']['enablecolumns']['endtime'] => 0
                 ];
                 $substUid = Helper::processDBasAdmin($data);
                 // Check if creation was successful.
@@ -271,12 +275,10 @@ class ConfigurationForm {
                 && count(array_diff($settings['tables_modify'], $resArray['tables_modify'])) == 0
                 && $resArray[$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled']] == 0) {
                 $grpUid = $resArray['uid'];
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                Helper::addMessage(
                     $GLOBALS['LANG']->getLL('cliUserGroup.grpOkayMsg'),
                     $GLOBALS['LANG']->getLL('cliUserGroup.grpOkay'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                    FALSE
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
             } else {
                 if (!$checkOnly) {
@@ -327,7 +329,8 @@ class ConfigurationForm {
                     'description' => $GLOBALS['LANG']->getLL('cliUserGroup.grpDescription'),
                     'non_exclude_fields' => implode(',', $settings['non_exclude_fields']),
                     'tables_select' => implode(',', $settings['tables_select']),
-                    'tables_modify' => implode(',', $settings['tables_modify'])
+                    'tables_modify' => implode(',', $settings['tables_modify']),
+                    $GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'] => 0
                 ];
                 $substUid = Helper::processDBasAdmin($data);
                 // Check if creation was successful.
