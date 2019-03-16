@@ -1,6 +1,6 @@
-# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkMetadataFormats]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.metadataFormats
+# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:Kitodo\Dlf\Hooks\ConfigurationForm->checkMetadataFormats]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.metadataFormats
 metadataFormats = 0
-# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkCliUserGroup]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.cliUserGroup
+# cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:Kitodo\Dlf\Hooks\ConfigurationForm->checkCliUserGroup]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.cliUserGroup
 cliUserGroup = 0
 # cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.makeCliUserGroup
 makeCliUserGroup = 0
@@ -22,7 +22,7 @@ fileGrpDownload = DOWNLOAD
 fileGrpFulltext = FULLTEXT
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpAudio
 fileGrpAudio = AUDIO
-# cat=Solr; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:ConfigurationForm->checkSolrConnection]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrConnect
+# cat=Solr; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:Kitodo\Dlf\Hooks\ConfigurationForm->checkSolrConnection]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrConnect
 solrConnect = 0
 # cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrHttps
 solrHttps = 0
