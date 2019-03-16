@@ -203,7 +203,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
     public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
         $this->response = $response;
         // Initialize module.
-        //parent::init();
+        $GLOBALS['MCONF']['name'] = 'tools_dlfNewTenantModule';
+        $GLOBALS['BE_USER']->modAccess($MCONF, 1);
+        parent::init();
         $this->pageInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
         // Is the user allowed to access this page?
         $access = is_array($this->pageInfo) && $GLOBALS['BE_USER']->isAdmin();
@@ -233,7 +235,8 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'uid',
                 'tx_dlf_structures',
-                'pid='.intval($this->id).$GLOBALS['LANG']->whereClause('tx_dlf_structures')
+                'pid='.intval($this->id)
+                    .Helper::whereClause('tx_dlf_structures')
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
                 // Fine.
