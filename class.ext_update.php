@@ -121,7 +121,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
             'tx_dlf_formats',
-            'tx_dlf_formats.class NOT LIKE "%\\%"'
+            'tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
                 .Helper::whereClause('tx_dlf_formats'),
             '',
             '',
@@ -202,9 +202,9 @@ class ext_update {
     protected function updateFormatClasses() {
         $oldRecords = $this->oldFormatClasses();
         $newValues = [
-            'ALTO' => 'Kitodo\\Dlf\\Format\\Alto',
-            'MODS' => 'Kitodo\\Dlf\\Format\\Mods',
-            'TEIHDR' => 'Kitodo\\Dlf\\Format\\TeiHeader'
+            'ALTO' => 'Kitodo\\\\Dlf\\\\Format\\\\Alto', // Those are effectively single backslashes
+            'MODS' => 'Kitodo\\\\Dlf\\\\Format\\\\Mods',
+            'TEIHDR' => 'Kitodo\\\\Dlf\\\\Format\\\\TeiHeader'
         ];
         foreach ($oldRecords as $uid => $type) {
             $sqlQuery = 'UPDATE tx_dlf_formats SET class="'.$newValues[$type].'" WHERE uid='.$uid;
