@@ -1,10 +1,4 @@
 {
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.typo3.org/"
-    }
-  ],
   "name": "kitodo/presentation",
   "description": "Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.",
   "homepage": "https://www.kitodo.org/",
@@ -42,6 +36,7 @@
     "solarium/solarium": "^4.2"
   },
   "suggest": {
+    "devlog/devlog": "^3.0",
     "pagemachine/typo3-composer-legacy-cli": "^1.0"
   },
   "replace": {
