@@ -131,11 +131,6 @@ class Helper {
      */
     public static function decrypt($encrypted, $hash) {
         $decrypted = NULL;
-        // Check for PHP extension "mcrypt".
-        if (!extension_loaded('mcrypt')) {
-            self::devLog('PHP extension "mcrypt" not available', DEVLOG_SEVERITY_WARNING);
-            return;
-        }
         if (empty($encrypted)
             || empty($hash)) {
             self::devLog('Invalid parameters given for decryption', DEVLOG_SEVERITY_ERROR);
@@ -145,8 +140,8 @@ class Helper {
             self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
             return;
         }
-        $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
-        $decrypted = mcrypt_decrypt(MCRYPT_BLOWFISH, substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), base64_decode($encrypted), MCRYPT_MODE_CFB, $iv);
+        $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, openssl_cipher_iv_length('BF-CFB'));
+        $decrypted = openssl_decrypt($encrypted, 'BF-CFB', substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), 0, $iv);
         $salt = substr($hash, 0, 10);
         $hashed = $salt.substr(sha1($salt.$decrypted), -10);
         if ($hashed !== $hash) {
@@ -200,26 +195,20 @@ class Helper {
 
     /**
      * Encrypt the given string
-     * @see http://yavkata.co.uk/weblog/php/securing-html-hidden-input-fields-using-encryption-and-hashing/
      *
      * @access public
      *
-     * @param string		$string: The string to encrypt
+     * @param string $string: The string to encrypt
      *
-     * @return array		Array with encrypted string and control hash
+     * @return array Array with encrypted string and control hash
      */
     public static function encrypt($string) {
-        // Check for PHP extension "mcrypt".
-        if (!extension_loaded('mcrypt')) {
-            self::devLog('PHP extension "mcrypt" not available', DEVLOG_SEVERITY_WARNING);
-            return;
-        }
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
             self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
             return;
         }
-        $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB));
-        $encrypted = base64_encode(mcrypt_encrypt(MCRYPT_BLOWFISH, substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), $string, MCRYPT_MODE_CFB, $iv));
+        $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, openssl_cipher_iv_length('BF-CFB'));
+        $encrypted = openssl_encrypt($string, 'BF-CFB', substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), 0, $iv);
         $salt = substr(md5(uniqid(rand(), TRUE)), 0, 10);
         $hash = $salt.substr(sha1($salt.$string), -10);
         return ['encrypted' => $encrypted, 'hash' => $hash];

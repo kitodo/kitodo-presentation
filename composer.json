@@ -36,7 +36,7 @@
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
-    "ext-mcrypt": "*",
+    "ext-openssl": "*",
     "ext-simplexml": "*",
     "typo3/cms": "^8.7",
     "solarium/solarium" : "^4.0"
