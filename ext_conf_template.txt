@@ -2,8 +2,6 @@
 metadataFormats = 0
 # cat=Basic; type=user[EXT:dlf/Classes/Hooks/ConfigurationForm.php:Kitodo\Dlf\Hooks\ConfigurationForm->checkCliUserGroup]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.cliUserGroup
 cliUserGroup = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.makeCliUserGroup
-makeCliUserGroup = 0
 # cat=Basic; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.useragent
 useragent = Kitodo.Presentation
 # cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.caching

@@ -29,38 +29,6 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
     ];
 
     /**
-     * Add access rights
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    protected function cmdAddAccessRights() {
-        // Get command line indexer's usergroup.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'uid,db_mountpoints',
-            'be_groups',
-            'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups')
-                .' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'
-                .\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-            // Add current page to mountpoints.
-            if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($resArray['db_mountpoints'], $this->id)) {
-                $data['be_groups'][$resArray['uid']]['db_mountpoints'] = $resArray['db_mountpoints'].','.$this->id;
-                Helper::processDBasAdmin($data);
-                // Fine.
-                Helper::addMessage(
-                    Helper::getMessage('flash.usergroupAddedMsg'),
-                    Helper::getMessage('flash.usergroupAdded', TRUE),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-                );
-            }
-        }
-    }
-
-    /**
      * Add metadata configuration
      *
      * @access protected
@@ -98,7 +66,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
             ];
             $i++;
         }
-        $_ids = Helper::processDBasAdmin($data);
+        $_ids = Helper::processDBasAdmin($data, [], TRUE);
         // Check for failed inserts.
         if (count($_ids) == $i) {
             // Fine.
@@ -171,7 +139,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 'thumbnail' => 0,
             ];
         }
-        $_ids = Helper::processDBasAdmin($data);
+        $_ids = Helper::processDBasAdmin($data, [], TRUE);
         // Check for failed inserts.
         if (count($_ids) == count($structureDefaults)) {
             // Fine.
@@ -277,40 +245,6 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 Helper::addMessage(
                     sprintf(Helper::getMessage('flash.metadataNotOkayMsg'), $_url),
                     Helper::getMessage('flash.metadataNotOkay', TRUE),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
-                );
-            }
-            // Check the access conditions for the command line indexer's user.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'uid,db_mountpoints',
-                'be_groups',
-                'title='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_groups')
-                    .' AND '.$GLOBALS['TCA']['be_groups']['ctrl']['enablecolumns']['disabled'].'=0'
-                    .\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_groups')
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-                if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($resArray['db_mountpoints'], $this->id)) {
-                    // Fine.
-                    Helper::addMessage(
-                        Helper::getMessage('flash.usergroupOkayMsg'),
-                        Helper::getMessage('flash.usergroupOkay', TRUE),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-                    );
-                } else {
-                    // Configuration missing.
-                    $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addAccessRights']));
-                    Helper::addMessage(
-                        sprintf(Helper::getMessage('flash.usergroupNotOkayMsg'), $_url),
-                        Helper::getMessage('flash.usergroupNotOkay', TRUE),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
-                    );
-                }
-            } else {
-                // Usergoup missing.
-                Helper::addMessage(
-                    Helper::getMessage('flash.usergroupMissingMsg'),
-                    Helper::getMessage('flash.usergroupMissing', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }

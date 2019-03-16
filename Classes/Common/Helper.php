@@ -240,29 +240,6 @@ class Helper {
     }
 
     /**
-     * Get a backend user object (even in frontend mode)
-     *
-     * @access public
-     *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication Instance of \TYPO3\CMS\Core\Authentication\BackendUserAuthentication or NULL on failure
-     */
-    public static function getBeUser() {
-        if (TYPO3_MODE === 'FE'
-            || TYPO3_MODE === 'BE') {
-            // Initialize backend session with CLI user's rights.
-            $userObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Authentication\BackendUserAuthentication::class);
-            $userObj->dontSetCookie = TRUE;
-            $userObj->start();
-            $userObj->setBeUserByName('_cli_dlf');
-            $userObj->backendCheckLogin();
-            return $userObj;
-        } else {
-            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
-            return;
-        }
-    }
-
-    /**
      * Clean up a string to use in an URL.
      *
      * @access public
@@ -281,27 +258,6 @@ class Helper {
         // Convert whitespaces and underscore to dash.
         $string = preg_replace('/[\s_]/', '-', $string);
         return $string;
-    }
-
-    /**
-     * Get the current frontend user object
-     *
-     * @access public
-     *
-     * @return \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication Instance of \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication or NULL on failure
-     */
-    public static function getFeUser() {
-        if (TYPO3_MODE === 'FE') {
-            // Check if a user is currently logged in.
-            if (!empty($GLOBALS['TSFE']->loginUser)) {
-                return $GLOBALS['TSFE']->fe_user;
-            } elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('eID') !== NULL) {
-                return \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
-            }
-        } else {
-            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
-        }
-        return;
     }
 
     /**
@@ -606,63 +562,40 @@ class Helper {
     }
 
     /**
-     * Process a data and/or command map with TYPO3 core engine.
-     *
-     * @access public
-     *
-     * @param array $data: Data map
-     * @param array $cmd: Command map
-     * @param boolean $reverseOrder: Should the command map be processed first?
-     * @param boolean $be_user: Use current backend user's rights for processing?
-     *
-     * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
-     */
-    public static function processDB(array $data = [], array $cmd = [], $reverseOrder = FALSE, $be_user = FALSE) {
-        // Instantiate TYPO3 core engine.
-        $tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        // Set some configuration variables.
-        $tce->stripslashes_values = FALSE;
-        // Get backend user for processing.
-        if ($be_user
-            && isset($GLOBALS['BE_USER'])) {
-            $user = $GLOBALS['BE_USER'];
-        } else {
-            $user = self::getBeUser();
-        }
-        // Load data and command arrays.
-        $tce->start($data, $cmd, $user);
-        // Process command map first if default order is reversed.
-        if ($cmd
-            && $reverseOrder) {
-            $tce->process_cmdmap();
-        }
-        // Process data map.
-        if ($data) {
-            $tce->process_datamap();
-        }
-        // Process command map if processing order is not reversed.
-        if ($cmd
-            && !$reverseOrder) {
-            $tce->process_cmdmap();
-        }
-        return $tce->substNEWwithIDs;
-    }
-
-    /**
      * Process a data and/or command map with TYPO3 core engine as admin.
      *
      * @access public
      *
      * @param array $data: Data map
      * @param array $cmd: Command map
-     * @param boolean $reverseOrder: Should the command map be processed first?
+     * @param boolean $reverseOrder: Should the data map be reversed?
+     * @param boolean $cmdFirst: Should the command map be processed first?
      *
      * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
      */
-    public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = FALSE) {
+    public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = FALSE, $cmdFirst = FALSE) {
         if (TYPO3_MODE === 'BE'
             && $GLOBALS['BE_USER']->isAdmin()) {
-            return self::processDB($data, $cmd, $reverseOrder, TRUE);
+            // Instantiate TYPO3 core engine.
+            $dataHandler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+            // Load data and command arrays.
+            $dataHandler->start($data, $cmd);
+            // Process command map first if default order is reversed.
+            if (!empty($cmd)
+                && $cmdFirst) {
+                $dataHandler->process_cmdmap();
+            }
+            // Process data map.
+            if (!empty($data)) {
+                $dataHandler->reverseOrder = $reverseOrder;
+                $dataHandler->process_datamap();
+            }
+            // Process command map if processing order is not reversed.
+            if (!empty($cmd)
+                && !$cmdFirst) {
+                $dataHandler->process_cmdmap();
+            }
+            return $dataHandler->substNEWwithIDs;
         } else {
             self::devLog('Current backend user has no admin privileges', DEVLOG_SEVERITY_ERROR);
             return [];

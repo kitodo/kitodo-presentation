@@ -1134,7 +1134,7 @@ final class Document {
                     'owner' => 0,
                     'status' => 0,
                 ];
-                $substUid = Helper::processDB($collData);
+                $substUid = Helper::processDBasAdmin($collData);
                 // Prevent double insertion.
                 unset ($collData);
                 // Add new collection's UID.
@@ -1181,7 +1181,7 @@ final class Document {
                 'union_label' => '',
                 'union_base' => '',
             ];
-            $substUid = Helper::processDB($libData);
+            $substUid = Helper::processDBasAdmin($libData);
             // Add new library's UID.
             $ownerUid = $substUid[$libNewUid];
             if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
@@ -1287,7 +1287,7 @@ final class Document {
             $data['tx_dlf_documents'][$this->uid][$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['disabled']] = 0;
         }
         // Process data.
-        $newIds = Helper::processDB($data);
+        $newIds = Helper::processDBasAdmin($data);
         // Replace placeholder with actual UID.
         if (strpos($this->uid, 'NEW') === 0) {
             $this->uid = $newIds[$this->uid];
