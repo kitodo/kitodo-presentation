@@ -27,7 +27,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * This holds the active entries according to the currently selected page
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $activeEntries = [];

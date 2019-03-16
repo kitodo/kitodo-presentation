@@ -24,7 +24,7 @@ class Helper {
     /**
      * The extension key
      *
-     * @var	string
+     * @var string
      * @access public
      */
     public static $extKey = 'dlf';
@@ -32,7 +32,7 @@ class Helper {
     /**
      * The locallang array for flash messages
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected static $messages = [];
@@ -53,7 +53,7 @@ class Helper {
 
     /**
      * Check if given identifier is a valid identifier of the German National Library
-     * @see	http://support.d-nb.de/iltis/onlineRoutinen/Pruefziffernberechnung.htm
+     * @see http://support.d-nb.de/iltis/onlineRoutinen/Pruefziffernberechnung.htm
      *
      * @access public
      *
@@ -479,7 +479,7 @@ class Helper {
 
     /**
      * Get the URN of an object
-     * @see	http://www.persistent-identifier.de/?link=316
+     * @see http://www.persistent-identifier.de/?link=316
      *
      * @access public
      *

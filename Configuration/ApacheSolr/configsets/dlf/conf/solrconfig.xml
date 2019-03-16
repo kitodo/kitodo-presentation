@@ -800,18 +800,18 @@
     </lst>
   </requestHandler>
   -->
-	<!-- Autocomplete Handler -->
-	<requestHandler name="/suggest" class="org.apache.solr.handler.component.SearchHandler">
-		<lst name="defaults">
-			<str name="spellcheck">true</str>
-			<str name="spellcheck.dictionary">suggest</str>
-			<str name="spellcheck.count">10</str>
-			<str name="spellcheck.onlyMorePopular">true</str>
-		</lst>
-		<arr name="components">
-			<str>suggest</str>
-		</arr>
-	</requestHandler>
+    <!-- Autocomplete Handler -->
+    <requestHandler name="/suggest" class="org.apache.solr.handler.component.SearchHandler">
+        <lst name="defaults">
+            <str name="spellcheck">true</str>
+            <str name="spellcheck.dictionary">suggest</str>
+            <str name="spellcheck.count">10</str>
+            <str name="spellcheck.onlyMorePopular">true</str>
+        </lst>
+        <arr name="components">
+            <str>suggest</str>
+        </arr>
+    </requestHandler>
 
   <!-- Search Components
 
@@ -856,17 +856,17 @@
 
      -->
 
-	<!-- Autocomplete Component -->
-	<searchComponent name="suggest" class="solr.SpellCheckComponent">
-		<lst name="spellchecker">
-			<str name="name">suggest</str>
-			<str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
-			<str name="lookupImpl">org.apache.solr.spelling.suggest.tst.TSTLookup</str>
-			<str name="buildOnCommit">true</str>
-			<str name="field">autocomplete</str>
-			<str name="queryAnalyzerFieldType">autocomplete</str>
-		</lst>
-	</searchComponent>
+    <!-- Autocomplete Component -->
+    <searchComponent name="suggest" class="solr.SpellCheckComponent">
+        <lst name="spellchecker">
+            <str name="name">suggest</str>
+            <str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
+            <str name="lookupImpl">org.apache.solr.spelling.suggest.tst.TSTLookup</str>
+            <str name="buildOnCommit">true</str>
+            <str name="field">autocomplete</str>
+            <str name="queryAnalyzerFieldType">autocomplete</str>
+        </lst>
+    </searchComponent>
   
  <schemaFactory class="ClassicIndexSchemaFactory"/>
   

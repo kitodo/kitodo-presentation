@@ -9,32 +9,32 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 <T3locallang>
-	<meta type="array">
-		<type>module</type>
-		<description>Language labels for tool ImageManipulation</description>
-	</meta>
-	<data type="array">
-		<languageKey index="default" type="array">
-			<label index="imagemanipulation-on">Activate image manipulation</label>
-			<label index="imagemanipulation-off">Deactivate image manipulation</label>
-			<label index="reset">Reset</label>
-			<label index="saturation">Saturation</label>
-			<label index="hue">Hue</label>
-			<label index="contrast">Contrast</label>
-			<label index="brightness">Brightness</label>
-			<label index="invert">Color inverting</label>
-			<label index="no-support">Image manipulation is not supported</label>
-		</languageKey>
-		<languageKey index="de" type="array">
-			<label index="imagemanipulation-on">Bildbearbeitung an</label>
-			<label index="imagemanipulation-off">Bildbearbeitung aus</label>
-			<label index="reset">Zurücksetzen</label>
-			<label index="saturation">Sättigung</label>
-			<label index="hue">Färbung</label>
-			<label index="contrast">Kontrast</label>
-			<label index="brightness">Helligkeit</label>
-			<label index="invert">Farbinvertierung</label>
-			<label index="no-support">Bildbearbeitung wird nicht unterstützt</label>
-		</languageKey>
-	</data>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for tool ImageManipulation</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="imagemanipulation-on">Activate image manipulation</label>
+            <label index="imagemanipulation-off">Deactivate image manipulation</label>
+            <label index="reset">Reset</label>
+            <label index="saturation">Saturation</label>
+            <label index="hue">Hue</label>
+            <label index="contrast">Contrast</label>
+            <label index="brightness">Brightness</label>
+            <label index="invert">Color inverting</label>
+            <label index="no-support">Image manipulation is not supported</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="imagemanipulation-on">Bildbearbeitung an</label>
+            <label index="imagemanipulation-off">Bildbearbeitung aus</label>
+            <label index="reset">Zurücksetzen</label>
+            <label index="saturation">Sättigung</label>
+            <label index="hue">Färbung</label>
+            <label index="contrast">Kontrast</label>
+            <label index="brightness">Helligkeit</label>
+            <label index="invert">Farbinvertierung</label>
+            <label index="no-support">Bildbearbeitung wird nicht unterstützt</label>
+        </languageKey>
+    </data>
 </T3locallang>

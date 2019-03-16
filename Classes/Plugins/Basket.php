@@ -155,13 +155,13 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         $markerArray['###MAILACTION###'] = $mailForm;
         // remove action form
         $markerArray['###REMOVEACTION###'] = '
-			<select name="tx_dlf[basket_action]">
-				<option value="">'.$this->pi_getLL('chooseAction', '', TRUE).'</option>
-				<option value="open">'.$this->pi_getLL('download', '', TRUE).'</option>
-				<option value="remove">'.$this->pi_getLL('remove', '', TRUE).'</option>
-			</select>
-			<input type="submit">
-		';
+   <select name="tx_dlf[basket_action]">
+    <option value="">'.$this->pi_getLL('chooseAction', '', TRUE).'</option>
+    <option value="open">'.$this->pi_getLL('download', '', TRUE).'</option>
+    <option value="remove">'.$this->pi_getLL('remove', '', TRUE).'</option>
+   </select>
+   <input type="submit">
+  ';
         // get mail addresses
         $resultPrinter = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             '*',
@@ -330,14 +330,14 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
                 if ($this->conf['pregeneration']) {
                     // send ajax request to webapp
                     $output .= '
-					<script>
-						$(document).ready(function(){
-							$.ajax({
-							  url: "'.$pdfGenerateUrl.'",
-							}).done(function() {
-							});
-						});
-					</script>';
+     <script>
+      $(document).ready(function(){
+       $.ajax({
+         url: "'.$pdfGenerateUrl.'",
+       }).done(function() {
+       });
+      });
+     </script>';
                 }
             }
             $update = ['doc_ids' => json_encode($items)];
@@ -463,7 +463,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             return [
                 'downloadUrl' => $downloadUrl,
                 'downloadLink' => $downloadLink,
-                'pageNums'	=> $pageNums,
+                'pageNums' => $pageNums,
                 'urlParams' => $urlParams,
                 'record_id' => $document->recordId,
             ];

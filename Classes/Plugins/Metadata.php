@@ -29,7 +29,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * This holds the hook objects
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $hookObjects = [];
@@ -151,7 +151,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
             if ($resArray) {
                 // get correct language uid for translated realurl link
                 $link_uid = ($resArray['_LOCALIZED_UID']) ? $resArray['_LOCALIZED_UID'] : $resArray['uid'];
-                // do stuff with the row entry data	like built HTML or prepare further usage
+                // do stuff with the row entry data like built HTML or prepare further usage
                 if ($this->conf['showFull'] || $resArray['is_listed']) {
                     $metaList[$resArray['index_name']] = [
                         'wrap' => $resArray['wrap'],

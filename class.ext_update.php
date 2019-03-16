@@ -24,7 +24,7 @@ class ext_update {
     /**
      * This holds the output ready to return
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $content = '';

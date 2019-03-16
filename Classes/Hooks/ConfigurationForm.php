@@ -26,7 +26,7 @@ class ConfigurationForm {
     /**
      * This holds the current configuration
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $conf = [];
@@ -34,7 +34,7 @@ class ConfigurationForm {
     /**
      * This holds the output ready to return
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $content = '';

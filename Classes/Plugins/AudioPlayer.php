@@ -25,7 +25,7 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * Holds the current audio file's URL, MIME type and optional label
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $audio = [];
@@ -44,22 +44,20 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js"></script>';
         // Add player configuration.
         $output[] = '
-		<style>
-			#tx-dlf-audio { width: 100px; height: 100px };
-		</style>
-		<script id="tx-dlf-audioplayer-initViewer" type="text/javascript">
-			$(document).ready(function() {
-				AudioPlayer = new dlfAudioPlayer({
-					audio: {
-						mimeType: "' . $this->audio['mimetype'].'",
-						title: "' . $this->audio['label'].'",
-						url:  "' . $this->audio['url'].'"
-					},
-					parentElId: "tx-dlf-audio",
-					swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
-				});
-			});
-		</script>';
+            <style>#tx-dlf-audio { width: 100px; height: 100px; }</style>
+            <script id="tx-dlf-audioplayer-initViewer" type="text/javascript">
+                $(document).ready(function() {
+                    AudioPlayer = new dlfAudioPlayer({
+                        audio: {
+                            mimeType: "'.$this->audio['mimetype'].'",
+                            title: "'.$this->audio['label'].'",
+                            url:  "'.$this->audio['url'].'"
+                        },
+                        parentElId: "tx-dlf-audio",
+                        swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                    });
+                });
+            </script>';
         return implode("\n", $output);
     }
 

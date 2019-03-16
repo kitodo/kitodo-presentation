@@ -66,7 +66,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @access protected
      *
-     * @return string		The rendered page browser ready for output
+     * @return string The rendered page browser ready for output
      */
     protected function getPageBrowser() {
         // Get overall number of pages.

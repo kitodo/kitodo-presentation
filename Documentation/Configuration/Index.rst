@@ -13,8 +13,8 @@ System Setup
 ============
 
 .. contents::
-	:local:
-	:depth: 2
+    :local:
+    :depth: 2
 
 
 
@@ -48,10 +48,10 @@ behaviour before TYPO3 6.x.
 
 The install tool writes this configuration to typo3conf/LocalConfiguration.php::
 
-	'FE' => [
-	        'pageNotFoundOnCHashError' => '0',
-	        'pageNotFound_handling' => '',
-	    ],
+    'FE' => [
+            'pageNotFoundOnCHashError' => '0',
+            'pageNotFound_handling' => '',
+        ],
 
 
 .. _configuration-solr:
@@ -64,14 +64,14 @@ This extension doesn't include Solr, but just a prepared configuration set.
 To setup Apache Solr, perform the following steps:
 
 1. Make sure you have Apache Solr 7.4 up and running.
-	Download Solr from http://lucene.apache.org/solr/.
-	Other versions since 5.0 should be possible but are not tested.
+    Download Solr from http://lucene.apache.org/solr/.
+    Other versions since 5.0 should be possible but are not tested.
 
 2. Copy the lib/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/dlf.
 
 3. Using basic authentication is optional but recommended.
-	The documentation is available here:
-	https://lucene.apache.org/solr/guide/7_4/basic-authentication-plugin.html
+    The documentation is available here:
+    https://lucene.apache.org/solr/guide/7_4/basic-authentication-plugin.html
 
 
 .. _configuration-typoscript:

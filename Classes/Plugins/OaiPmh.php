@@ -18,10 +18,10 @@ use Kitodo\Dlf\Common\Solr;
 /**
  * Plugin 'OAI-PMH Interface' for the 'dlf' extension
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @package	TYPO3
- * @subpackage	dlf
- * @access	public
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
 class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugins/OaiPmh.php';
@@ -29,7 +29,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * Did an error occur?
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $error = FALSE;
@@ -37,7 +37,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * This holds the OAI DOM object
      *
-     * @var	\DOMDocument
+     * @var \DOMDocument
      * @access protected
      */
     protected $oai;
@@ -45,7 +45,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * This holds the configuration for all supported metadata prefixes
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $formats = [

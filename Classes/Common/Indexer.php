@@ -23,7 +23,7 @@ class Indexer {
     /**
      * The extension key
      *
-     * @var	string
+     * @var string
      * @access public
      */
     public static $extKey = 'dlf';
@@ -32,7 +32,7 @@ class Indexer {
      * Array of metadata fields' configuration
      * @see loadIndexConf()
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected static $fields = [
@@ -49,7 +49,7 @@ class Indexer {
      * Is the index configuration loaded?
      * @see $fields
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected static $fieldsLoaded = FALSE;
@@ -57,7 +57,7 @@ class Indexer {
     /**
      * List of already processed documents
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected static $processedDocs = [];
@@ -65,7 +65,7 @@ class Indexer {
     /**
      * Instance of \Kitodo\Dlf\Common\Solr class
      *
-     * @var	\Kitodo\Dlf\Common\Solr
+     * @var \Kitodo\Dlf\Common\Solr
      * @access protected
      */
     protected static $solr;

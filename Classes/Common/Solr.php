@@ -24,7 +24,7 @@ class Solr {
     /**
      * This holds the core name
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $core = '';
@@ -32,7 +32,7 @@ class Solr {
     /**
      * This holds the PID for the configuration
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $cPid = 0;
@@ -40,7 +40,7 @@ class Solr {
     /**
      * The extension key
      *
-     * @var	string
+     * @var string
      * @access public
      */
     public static $extKey = 'dlf';
@@ -48,7 +48,7 @@ class Solr {
     /**
      * This holds the max results
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $limit = 50000;
@@ -56,7 +56,7 @@ class Solr {
     /**
      * This holds the number of hits for last search
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $numberOfHits = 0;
@@ -64,7 +64,7 @@ class Solr {
     /**
      * This holds the additional query parameters
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $params = [];
@@ -72,7 +72,7 @@ class Solr {
     /**
      * Is the search instantiated successfully?
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $ready = FALSE;
@@ -80,7 +80,7 @@ class Solr {
     /**
      * This holds the singleton search objects with their core as array key
      *
-     * @var	array (\Kitodo\Dlf\Common\Solr)
+     * @var array (\Kitodo\Dlf\Common\Solr)
      * @access protected
      */
     protected static $registry = [];
@@ -88,7 +88,7 @@ class Solr {
     /**
      * This holds the Solr service object
      *
-     * @var	\Solarium\Client
+     * @var \Solarium\Client
      * @access protected
      */
     protected $service;

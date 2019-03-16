@@ -29,7 +29,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * This holds the hook objects
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $hookObjects = [];

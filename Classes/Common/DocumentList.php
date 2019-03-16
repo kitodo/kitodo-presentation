@@ -25,7 +25,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * This holds the number of documents in the list
      * @see \Countable
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $count = 0;
@@ -34,7 +34,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * This holds the list entries in sorted order
      * @see \ArrayAccess
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $elements = [];
@@ -42,7 +42,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
     /**
      * This holds the list's metadata
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $metadata = [];
@@ -51,7 +51,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * This holds the current list position
      * @see \Iterator
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $position = 0;
@@ -59,7 +59,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
     /**
      * This holds the full records of already processed list elements
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $records = [];
@@ -67,7 +67,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
     /**
      * Instance of \Kitodo\Dlf\Common\Solr class
      *
-     * @var	\Kitodo\Dlf\Common\Solr
+     * @var \Kitodo\Dlf\Common\Solr
      * @access protected
      */
     protected $solr;
@@ -75,7 +75,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
     /**
      * This holds the Solr metadata configuration
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $solrConfig = [];

@@ -9,20 +9,20 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 <T3locallang>
-	<meta type="array">
-		<type>module</type>
-		<description>Language labels for tool Fulltext</description>
-	</meta>
-	<data type="array">
-		<languageKey index="default" type="array">
-			<label index="fulltext-on">Activate Fulltext</label>
-			<label index="fulltext-off">Deactivate Fulltext</label>
-			<label index="fulltext-not-available">No Fulltext available</label>
-		</languageKey>
-		<languageKey index="de" type="array">
-			<label index="fulltext-on">Volltext an</label>
-			<label index="fulltext-off">Volltext aus</label>
-			<label index="fulltext-not-available">Keine Volltexte vorhanden</label>
-		</languageKey>
-	</data>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for tool Fulltext</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="fulltext-on">Activate Fulltext</label>
+            <label index="fulltext-off">Deactivate Fulltext</label>
+            <label index="fulltext-not-available">No Fulltext available</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="fulltext-on">Volltext an</label>
+            <label index="fulltext-off">Volltext aus</label>
+            <label index="fulltext-not-available">Keine Volltexte vorhanden</label>
+        </languageKey>
+    </data>
 </T3locallang>

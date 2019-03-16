@@ -78,7 +78,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'year' => $resArray['year']
             ];
         }
-        // 	We need an array of issues with month number as key.
+        //  We need an array of issues with month number as key.
         $calendarIssues = [];
         foreach ($issues as $issue) {
             $calendarIssues[date('n', strtotime($issue['year']))][date('j', strtotime($issue['year']))][] = $issue;
@@ -101,7 +101,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 '###DAYFRI_NAME###' => strftime('%a', strtotime('last Friday')),
                 '###DAYSAT_NAME###' => strftime('%a', strtotime('last Saturday')),
                 '###DAYSUN_NAME###' => strftime('%a', strtotime('last Sunday')),
-                '###MONTHNAME###' 	=> strftime('%B', strtotime($year.'-'.($i + 1).'-1'))
+                '###MONTHNAME###'  => strftime('%B', strtotime($year.'-'.($i + 1).'-1'))
             ];
             // Reset week content of new month.
             $subWeekPartContent = '';

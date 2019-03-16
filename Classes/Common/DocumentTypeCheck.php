@@ -24,7 +24,7 @@ class DocumentTypeCheck {
     /**
      * This holds the current document
      *
-     * @var	\Kitodo\Dlf\Common\Document
+     * @var \Kitodo\Dlf\Common\Document
      * @access protected
      */
     protected $doc;
@@ -32,7 +32,7 @@ class DocumentTypeCheck {
     /**
      * This holds the extension key
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $extKey = 'dlf';
@@ -41,7 +41,7 @@ class DocumentTypeCheck {
      * This holds the current DLF plugin parameters
      * @see __contruct()
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $piVars = [];
@@ -49,7 +49,7 @@ class DocumentTypeCheck {
     /**
      * This holds the DLF parameter prefix
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $prefixId = 'tx_dlf';

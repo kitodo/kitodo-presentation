@@ -9,22 +9,22 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 <T3locallang>
-	<meta type="array">
-		<type>module</type>
-		<description>Language labels for tool PdfDownload</description>
-	</meta>
-	<data type="array">
-		<languageKey index="default" type="array">
-			<label index="singlePage">Download single page</label>
-			<label index="leftPage">Download left page</label>
-			<label index="rightPage">Download right page</label>
-			<label index="work">Download whole work</label>
-		</languageKey>
-		<languageKey index="de" type="array">
-			<label index="singlePage">Einzelseite herunterladen</label>
-			<label index="leftPage">Linke Seite herunterladen</label>
-			<label index="rightPage">Rechte Seite herunterladen</label>
-			<label index="work">Ganzes Werk herunterladen</label>
-		</languageKey>
-	</data>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for tool PdfDownload</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="singlePage">Download single page</label>
+            <label index="leftPage">Download left page</label>
+            <label index="rightPage">Download right page</label>
+            <label index="work">Download whole work</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="singlePage">Einzelseite herunterladen</label>
+            <label index="leftPage">Linke Seite herunterladen</label>
+            <label index="rightPage">Rechte Seite herunterladen</label>
+            <label index="work">Ganzes Werk herunterladen</label>
+        </languageKey>
+    </data>
 </T3locallang>

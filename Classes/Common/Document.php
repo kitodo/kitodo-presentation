@@ -123,7 +123,7 @@ final class Document {
     /**
      * Last searched logical and physical page
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $lastSearchedPhysicalPage = ['logicalPage' => NULL, 'physicalPage' => NULL];
@@ -131,7 +131,7 @@ final class Document {
     /**
      * This holds the documents location
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $location = '';
@@ -139,7 +139,7 @@ final class Document {
     /**
      * This holds the logical units
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $logicalUnits = [];
@@ -147,7 +147,7 @@ final class Document {
     /**
      * This holds the documents' parsed metadata array with their corresponding structMap//div's ID as array key
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $metadataArray = [];
@@ -156,7 +156,7 @@ final class Document {
      * Is the metadata array loaded?
      * @see $metadataArray
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $metadataArrayLoaded = FALSE;
@@ -164,7 +164,7 @@ final class Document {
     /**
      * This holds the XML file's METS part as \SimpleXMLElement object
      *
-     * @var	\SimpleXMLElement
+     * @var \SimpleXMLElement
      * @access protected
      */
     protected $mets;
@@ -172,7 +172,7 @@ final class Document {
     /**
      * The holds the total number of pages
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $numPages = 0;
@@ -180,7 +180,7 @@ final class Document {
     /**
      * This holds the UID of the parent document or zero if not multi-volumed
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $parentId = 0;
@@ -188,7 +188,7 @@ final class Document {
     /**
      * This holds the physical structure
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $physicalStructure = [];
@@ -196,7 +196,7 @@ final class Document {
     /**
      * This holds the physical structure metadata
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $physicalStructureInfo = [];
@@ -205,7 +205,7 @@ final class Document {
      * Is the physical structure loaded?
      * @see $physicalStructure
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $physicalStructureLoaded = FALSE;
@@ -213,7 +213,7 @@ final class Document {
     /**
      * This holds the PID of the document or zero if not in database
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $pid = 0;
@@ -221,7 +221,7 @@ final class Document {
     /**
      * This holds the documents' raw text pages with their corresponding structMap//div's ID as array key
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $rawTextArray = [];
@@ -229,7 +229,7 @@ final class Document {
     /**
      * Is the document instantiated successfully?
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $ready = FALSE;
@@ -237,7 +237,7 @@ final class Document {
     /**
      * The METS file's record identifier
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $recordId;
@@ -245,7 +245,7 @@ final class Document {
     /**
      * This holds the singleton object of the document
      *
-     * @var	array (\Kitodo\Dlf\Common\Document)
+     * @var array (\Kitodo\Dlf\Common\Document)
      * @access protected
      */
     protected static $registry = [];
@@ -253,7 +253,7 @@ final class Document {
     /**
      * This holds the UID of the root document or zero if not multi-volumed
      *
-     * @var	integer
+     * @var integer
      * @access protected
      */
     protected $rootId = 0;
@@ -262,7 +262,7 @@ final class Document {
      * Is the root id loaded?
      * @see $rootId
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $rootIdLoaded = FALSE;
@@ -270,7 +270,7 @@ final class Document {
     /**
      * This holds the smLinks between logical and physical structMap
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $smLinks = ['l2p' => [], 'p2l' => []];
@@ -279,7 +279,7 @@ final class Document {
      * Are the smLinks loaded?
      * @see $smLinks
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $smLinksLoaded = FALSE;
@@ -287,7 +287,7 @@ final class Document {
     /**
      * This holds the logical structure
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $tableOfContents = [];
@@ -296,7 +296,7 @@ final class Document {
      * Is the table of contents loaded?
      * @see $tableOfContents
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $tableOfContentsLoaded = FALSE;
@@ -304,7 +304,7 @@ final class Document {
     /**
      * This holds the document's thumbnail location.
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $thumbnail = '';
@@ -313,7 +313,7 @@ final class Document {
      * Is the document's thumbnail location loaded?
      * @see $thumbnail
      *
-     * @var	boolean
+     * @var boolean
      * @access protected
      */
     protected $thumbnailLoaded = FALSE;
@@ -321,7 +321,7 @@ final class Document {
     /**
      * This holds the toplevel structure's @ID
      *
-     * @var	string
+     * @var string
      * @access protected
      */
     protected $toplevelId = '';
@@ -329,7 +329,7 @@ final class Document {
     /**
      * This holds the UID or the URL of the document
      *
-     * @var	mixed
+     * @var mixed
      * @access protected
      */
     protected $uid = 0;
@@ -337,7 +337,7 @@ final class Document {
     /**
      * This holds the whole XML file as \SimpleXMLElement object
      *
-     * @var	\SimpleXMLElement
+     * @var \SimpleXMLElement
      * @access protected
      */
     protected $xml;

@@ -25,7 +25,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * Holds the controls to add to the map
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $controls = [];
@@ -33,7 +33,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * Holds the current images' URLs and MIME types
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $images = [];
@@ -41,7 +41,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * Holds the current fulltexts' URLs
      *
-     * @var	array
+     * @var array
      * @access protected
      */
     protected $fulltexts = [];
@@ -70,19 +70,19 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/PageView.js"></script>';
         // Add viewer configuration.
         $output[] = '
-		<script id="tx-dlf-pageview-initViewer" type="text/javascript">
-			window.onload = function() {
-				if (dlfUtils.exists(dlfViewer)) {
-					tx_dlf_viewer = new dlfViewer({
-						controls: ["'.implode('", "', $this->controls).'"],
-						div: "'.$this->conf['elementId'].'",
-						images: '.json_encode($this->images).',
-						fulltexts: '.json_encode($this->fulltexts).',
-						useInternalProxy: '.($this->conf['useInternalProxy'] ? 1 : 0).'
-					})
-				}
-			}
-		</script>';
+            <script id="tx-dlf-pageview-initViewer" type="text/javascript">
+                $(document).ready(function() {
+                    if (dlfUtils.exists(dlfViewer)) {
+                        tx_dlf_viewer = new dlfViewer({
+                            controls: ["'.implode('", "', $this->controls).'"],
+                            div: "'.$this->conf['elementId'].'",
+                            images: '.json_encode($this->images).',
+                            fulltexts: '.json_encode($this->fulltexts).',
+                            useInternalProxy: '.($this->conf['useInternalProxy'] ? 1 : 0).'
+                        });
+                    }
+                });
+            </script>';
         return implode("\n", $output);
     }
 
@@ -150,12 +150,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
             $output .= '<button id="submitBasketForm" onclick="this.form.submit()">'.$label.'</button>';
             $output .= '</form>';
             $output .= '<script>';
-            $output .= '
-			$(document).ready(function() {
-				$("#submitBasketForm").click(function() {
-					$("#addToBasketForm").submit();
-				});
-			});';
+            $output .= '$(document).ready(function() { $("#submitBasketForm").click(function() { $("#addToBasketForm").submit(); }); });';
             $output .= '</script>';
             $markerArray['###BASKETBUTTON###'] = $output;
         } else {
