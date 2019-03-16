@@ -31,15 +31,15 @@
   "type": "typo3-cms-extension",
   "version": "3.0.0",
   "require": {
-    "php": "^7.0",
+    "php": "^7.2",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms": "^8.7",
-    "solarium/solarium" : "^4.0"
+    "typo3/cms": "^8.7 || ^9.5",
+    "solarium/solarium" : "^4.2"
   },
   "replace": {
     "dlf": "self.version",
