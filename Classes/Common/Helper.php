@@ -317,7 +317,7 @@ class Helper {
         $hookObjects = [];
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey.'/'.$scriptRelPath]['hookClass'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey.'/'.$scriptRelPath]['hookClass'] as $classRef) {
-                $hookObjects[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
+                $hookObjects[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
             }
         }
         return $hookObjects;
