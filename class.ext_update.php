@@ -177,19 +177,19 @@ class ext_update {
         // Copy the content of the old tables to the new ones
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
-            $messages = Helper::addMessage(
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
-            $messages = Helper::addMessage(
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
         }
-        $this->content .= $messages->renderFlashMessages();
+        $this->content .= Helper::renderFlashMessages();
     }
 
     /**
@@ -210,12 +210,12 @@ class ext_update {
             $sqlQuery = 'UPDATE tx_dlf_formats SET class="'.$newValues[$type].'" WHERE uid='.$uid;
             $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         }
-        $messages = Helper::addMessage(
+        Helper::addMessage(
             $GLOBALS['LANG']->getLL('update.FormatClassesOkay', TRUE),
             $GLOBALS['LANG']->getLL('update.FormatClasses', TRUE),
             \TYPO3\CMS\Core\Messaging\FlashMessage::OK
         );
-        $this->content .= $messages->renderFlashMessages();
+        $this->content .= Helper::renderFlashMessages();
     }
 
     /**
@@ -258,19 +258,19 @@ class ext_update {
                 $substUids = Helper::processDBasAdmin($data);
                 unset ($data);
                 if (!empty($substUids)) {
-                    $messages = Helper::addMessage(
+                    Helper::addMessage(
                         $GLOBALS['LANG']->getLL('update.metadataConfigOkay', TRUE),
                         $GLOBALS['LANG']->getLL('update.metadataConfig', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                     );
                 } else {
-                    $messages = Helper::addMessage(
+                    Helper::addMessage(
                         $GLOBALS['LANG']->getLL('update.metadataConfigNotOkay', TRUE),
                         $GLOBALS['LANG']->getLL('update.metadataConfig', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                     );
                 }
-                $this->content .= $messages->renderFlashMessages();
+                $this->content .= Helper::renderFlashMessages();
             }
         }
     }
@@ -350,20 +350,20 @@ class ext_update {
                         continue;
                     }
                 }
-                $messages = Helper::addMessage(
+                Helper::addMessage(
                     $GLOBALS['LANG']->getLL('update.solariumSolrUpdateNotOkay', TRUE),
                     sprintf($GLOBALS['LANG']->getLL('update.solariumSolrUpdate', TRUE), $resArray['index_name']),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
-                $this->content .= $messages->renderFlashMessages();
+                $this->content .= Helper::renderFlashMessages();
                 return;
             }
         }
-        $messages = Helper::addMessage(
+        Helper::addMessage(
             $GLOBALS['LANG']->getLL('update.solariumSolrUpdateOkay', TRUE),
             $GLOBALS['LANG']->getLL('update.solariumSolrUpdate', TRUE),
             \TYPO3\CMS\Core\Messaging\FlashMessage::OK
         );
-        $this->content .= $messages->renderFlashMessages();
+        $this->content .= Helper::renderFlashMessages();
     }
 }

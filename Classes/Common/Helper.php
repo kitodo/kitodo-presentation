@@ -132,7 +132,6 @@ class Helper {
 
     /**
      * Decrypt encrypted value with given control hash
-     * @see http://yavkata.co.uk/weblog/php/securing-html-hidden-input-fields-using-encryption-and-hashing/
      *
      * @access public
      *
@@ -321,10 +320,7 @@ class Helper {
      *
      * @return string "index_name" for the given UID
      */
-    public static function getIndexName($uid, $table, $pid = -1) {
-        // Save parameters for logging purposes.
-        $_uid = $uid;
-        $_pid = $pid;
+    public static function getIndexNameFromUid($uid, $table, $pid = -1) {
         // Sanitize input.
         $uid = max(intval($uid), 0);
         if (!$uid
@@ -354,52 +350,6 @@ class Helper {
             return $resArray['index_name'];
         } else {
             self::devLog('No "index_name" with UID '.$uid.' and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
-            return '';
-        }
-    }
-
-    /**
-     * Get the UID for a given "index_name"
-     *
-     * @access public
-     *
-     * @param integer $index_name: The index_name of the record
-     * @param string $table: Get the "index_name" from this table
-     * @param integer $pid: Get the "index_name" from this page
-     *
-     * @return string "uid" for the given index_name
-     */
-    public static function getIdFromIndexName($index_name, $table, $pid = -1) {
-        // Save parameters for logging purposes.
-        $_index_name = $index_name;
-        $_pid = $pid;
-        if (!$index_name
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
-            self::devLog('Invalid UID '.$index_name.' or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
-            return '';
-        }
-        $where = '';
-        // Should we check for a specific PID, too?
-        if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
-            $where = ' AND '.$table.'.pid='.$pid;
-        }
-        // Get index_name from database.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            $table.'.uid AS uid',
-            $table,
-            $table.'.index_name="'.$index_name.'"'
-                .$where
-                .self::whereClause($table),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-            return $resArray['uid'];
-        } else {
-            self::devLog('No UID for given index_name "'.$index_name.'" and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -487,6 +437,49 @@ class Helper {
             $translated = htmlspecialchars($translated);
         }
         return $translated;
+    }
+
+    /**
+     * Get the UID for a given "index_name"
+     *
+     * @access public
+     *
+     * @param integer $index_name: The index_name of the record
+     * @param string $table: Get the "index_name" from this table
+     * @param integer $pid: Get the "index_name" from this page
+     *
+     * @return string "uid" for the given index_name
+     */
+    public static function getUidFromIndexName($index_name, $table, $pid = -1) {
+        if (!$index_name
+            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
+            self::devLog('Invalid UID '.$index_name.' or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
+            return '';
+        }
+        $where = '';
+        // Should we check for a specific PID, too?
+        if ($pid !== -1) {
+            $pid = max(intval($pid), 0);
+            $where = ' AND '.$table.'.pid='.$pid;
+        }
+        // Get index_name from database.
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            $table.'.uid AS uid',
+            $table,
+            $table.'.index_name="'.$index_name.'"'
+                .$where
+                .self::whereClause($table),
+            '',
+            '',
+            '1'
+        );
+        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+            return $resArray['uid'];
+        } else {
+            self::devLog('No UID for given index_name "'.$index_name.'" and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
+            return '';
+        }
     }
 
     /**
@@ -669,27 +662,42 @@ class Helper {
      *
      * @access public
      *
+     * @param string $queue: The queue's unique identifier
+     *
      * @return string All flash messages in the queue rendered as HTML.
      */
-    public static function renderFlashMessages() {
+    public static function renderFlashMessages($queue = 'kitodo.default.flashMessages') {
         $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
+        // \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup() uses htmlspecialchars()
+        // on all messages, but we have messages with HTML tags. Therefore we copy the official
+        // implementation and remove the htmlspecialchars() call on the message body.
         $content = '';
-        // Since TYPO3 7.4.0, \TYPO3\CMS\Core\Messaging\FlashMessageQueue::renderFlashMessages
-        // uses htmlspecialchars on all texts, but we have message text with HTML tags.
-        // Therefore we copy the implementation from 7.4.0, but remove the htmlspecialchars call.
-        $flashMessages = $flashMessageService->getMessageQueueByIdentifier()->getAllMessagesAndFlush();
+        $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
         if (!empty($flashMessages)) {
-            $content .= '<ul class="typo3-messages">';
+            $content .= '<div class="typo3-messages">';
             foreach ($flashMessages as $flashMessage) {
-                $severityClass = sprintf('alert %s', $flashMessage->getClass());
-                //~ $messageContent = htmlspecialchars($flashMessage->getMessage());
-                $messageContent = $flashMessage->getMessage();
-                if ($flashMessage->getTitle() !== '') {
-                    $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($flashMessage->getTitle())).$messageContent;
+                $messageTitle = $flashMessage->getTitle();
+                $markup = [];
+                $markup[] = '<div class="alert '.htmlspecialchars($flashMessage->getClass()).'">';
+                $markup[] = '    <div class="media">';
+                $markup[] = '        <div class="media-left">';
+                $markup[] = '            <span class="fa-stack fa-lg">';
+                $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
+                $markup[] = '                <i class="fa fa-'.htmlspecialchars($flashMessage->getIconName()).' fa-stack-1x"></i>';
+                $markup[] = '            </span>';
+                $markup[] = '        </div>';
+                $markup[] = '        <div class="media-body">';
+                if (!empty($messageTitle)) {
+                    $markup[] = '            <h4 class="alert-title">'.htmlspecialchars($messageTitle).'</h4>';
                 }
-                $content .= sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
+                $markup[] = '            <p class="alert-message">'.$flashMessage->getMessage().'</p>'; // Removed htmlspecialchars() here.
+                $markup[] = '        </div>';
+                $markup[] = '    </div>';
+                $markup[] = '</div>';
+                $content .= implode('', $markup);
             }
-            $content .= '</ul>';
+            $content .= '</div>';
         }
         return $content;
     }
@@ -739,9 +747,6 @@ class Helper {
      * @return string Localized label for $index_name
      */
     public static function translate($index_name, $table, $pid) {
-        // Save parameters for logging purposes.
-        $_index_name = $index_name;
-        $_pid = $pid;
         // Load labels into static variable for future use.
         static $labels = [];
         // Sanitize input.
@@ -752,7 +757,7 @@ class Helper {
         }
         // Check if "index_name" is an UID.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
-            $index_name = self::getIndexName($index_name, $table, $pid);
+            $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
         }
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
          * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
@@ -873,6 +878,5 @@ class Helper {
      *
      * @access private
      */
-    private function __construct()
-    {}
+    private function __construct() {}
 }

@@ -1041,9 +1041,6 @@ final class Document {
      * @return boolean TRUE on success or FALSE on failure
      */
     public function save($pid = 0, $core = 0) {
-        // Save parameters for logging purposes.
-        $_pid = $pid;
-        $_core = $core;
         if (TYPO3_MODE !== 'BE') {
             Helper::devLog('Saving a document is only allowed in the backend', DEVLOG_SEVERITY_ERROR);
             return FALSE;
@@ -1705,7 +1702,7 @@ final class Document {
                 $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
                 // Get desired thumbnail structure if not the toplevel structure itself.
                 if (!empty($resArray['thumbnail'])) {
-                    $strctType = Helper::getIndexName($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
+                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
                     // Check if this document has a structure element of the desired type.
                     $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$strctType.'"]/@ID');
                     if (!empty($strctIds)) {
@@ -1791,8 +1788,7 @@ final class Document {
      *
      * @return void
      */
-    protected function __clone()
-    {}
+    protected function __clone() {}
 
     /**
      * This is a singleton class, thus the constructor should be private/protected

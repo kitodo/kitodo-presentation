@@ -172,7 +172,7 @@ class Solr {
         $_core = $core;
         // Get core name if UID is given.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
-            $core = Helper::getIndexName($core, 'tx_dlf_solrcores');
+            $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
         }
         // Check if core is set.
         if (empty($core)) {

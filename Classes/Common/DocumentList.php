@@ -168,17 +168,17 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     $metadata = unserialize($resArray['metadata']);
                     if (!empty($metadata['type'][0])
                         && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['type'][0])) {
-                        $metadata['type'][0] = Helper::getIndexName($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
+                        $metadata['type'][0] = Helper::getIndexNameFromUid($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
                     }
                     if (!empty($metadata['owner'][0])
                         && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])) {
-                        $metadata['owner'][0] = Helper::getIndexName($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
+                        $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
                     }
                     if (!empty($metadata['collection'])
                         && is_array($metadata['collection'])) {
                         foreach ($metadata['collection'] as $i => $collection) {
                             if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($collection)) {
-                                $metadata['collection'][$i] = Helper::getIndexName($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
+                                $metadata['collection'][$i] = Helper::getIndexNameFromUid($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
                             }
                         }
                     }
@@ -300,9 +300,6 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @return void
      */
     public function move($position, $steps) {
-        // Save parameters for logging purposes.
-        $_position = $position;
-        $_steps = $steps;
         $position = intval($position);
         // Check if list position is valid.
         if ($position < 0
@@ -673,8 +670,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    protected function __clone()
-    {}
+    protected function __clone() {}
 
     /**
      * This magic method is called each time an invisible property is referenced from the object

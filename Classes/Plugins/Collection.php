@@ -303,13 +303,13 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                 // Prepare document's metadata for sorting.
                 $sorting = unserialize($resArray['metadata_sorting']);
                 if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-                    $sorting['type'] = Helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+                    $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
                 }
                 if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-                    $sorting['owner'] = Helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+                    $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
                 }
                 if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-                    $sorting['collection'] = Helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
+                    $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
                 }
                 $toplevel[$resArray['uid']] = [
                     'u' => $resArray['uid'],

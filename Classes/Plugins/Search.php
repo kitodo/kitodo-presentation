@@ -76,7 +76,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $facetKeyVal = explode(':', $facet['query'], 2);
                 if ($facetKeyVal[0] == 'collection_faceting'
                     && !strpos($facetKeyVal[1], '" OR "')) {
-                    $collectionId = Helper::getIdFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
+                    $collectionId = Helper::getUidFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
                 }
             }
             return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$collectionId.'" />';
@@ -124,7 +124,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function addEncryptedCoreName() {
         // Get core name.
-        $name = Helper::getIndexName($this->conf['solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexNameFromUid($this->conf['solrcore'], 'tx_dlf_solrcores');
         // Encrypt core name.
         if (!empty($name)) {
             $name = Helper::encrypt($name);
@@ -425,7 +425,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 || $this->conf['searchIn'] == 'all') {
                 if (!empty($this->piVars['collection'])
                     && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])) {
-                    $index_name = Helper::getIndexName($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
+                    $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
                     $params['filterquery'][]['query'] = 'collection_faceting:("'.Solr::escapeQuery($index_name).'")';
                     $label .= sprintf($this->pi_getLL('in', '', TRUE), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
                 }
@@ -435,7 +435,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $collIds = explode(',', $this->conf['collections']);
                 $collIndexNames = [];
                 foreach ($collIds as $collId) {
-                    $collIndexNames[] = Solr::escapeQuery(Helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+                    $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
                 }
                 // Last value is fake and used for distinction in $this->addCurrentCollection()
                 $params['filterquery'][]['query'] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';

@@ -63,7 +63,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.uid AS uid, tx_dlf_documents.title AS title, tx_dlf_documents.year AS year',
             'tx_dlf_documents',
-            'tx_dlf_documents.structure='.Helper::getIdFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid)
+            'tx_dlf_documents.structure='.Helper::getUidFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid)
                 .' AND tx_dlf_documents.partof='.intval($this->doc->uid)
                 .Helper::whereClause('tx_dlf_documents'),
             '',
@@ -259,7 +259,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_documents.uid AS uid, tx_dlf_documents.title AS title',
             'tx_dlf_documents',
-            'tx_dlf_documents.structure='.Helper::getIdFromIndexName('year', 'tx_dlf_structures', $this->doc->pid)
+            'tx_dlf_documents.structure='.Helper::getUidFromIndexName('year', 'tx_dlf_structures', $this->doc->pid)
                 .' AND tx_dlf_documents.partof='.intval($this->doc->uid)
                 .Helper::whereClause('tx_dlf_documents'),
             '',
