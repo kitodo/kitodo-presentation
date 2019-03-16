@@ -198,13 +198,12 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
      * @param \Psr\Http\Message\ServerRequestInterface $request: The request object
      * @param \Psr\Http\Message\ResponseInterface $response: The response object
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface The response object
      */
     public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
         $this->response = $response;
         // Initialize module.
-        $GLOBALS['BE_USER']->modAccess($GLOBALS['MCONF'], 1);
-        parent::init();
+        //parent::init();
         $this->pageInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
         // Is the user allowed to access this page?
         $access = is_array($this->pageInfo) && $GLOBALS['BE_USER']->isAdmin();
@@ -218,7 +217,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 );
                 $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
                 $this->printContent();
-                return;
+                return $this->response;
             }
             // Should we do something?
             if (!empty($this->CMD)) {
@@ -349,5 +348,6 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
             $this->markerArray['CONTENT'] .= 'You are not allowed to access this page or have not selected a page, yet.';
         }
         $this->printContent();
+        return $this->response;
     }
 }

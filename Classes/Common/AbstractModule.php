@@ -82,7 +82,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      *
      * @abstract
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface The response object
      */
     abstract public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response);
 
@@ -114,7 +114,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
         }
         $this->content .= $this->doc->moduleBody($this->pageInfo, [], $this->markerArray, $this->subpartArray);
         $this->content .= $this->doc->endPage();
-        $this->resonse->getBody()->write($this->content);
+        $this->response->getBody()->write($this->content);
     }
 
     /**
