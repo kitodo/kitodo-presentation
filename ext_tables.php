@@ -19,7 +19,7 @@ if (TYPO3_MODE === 'BE') {
         [
             'routeTarget' => \Kitodo\Dlf\Module\NewTenant::class.'::main',
             'access' => 'admin',
-            'name' => 'dlfNewTenantModule',
+            'name' => 'tools_dlfNewTenantModule',
             'icon' => 'EXT:dlf/Resources/Public/Images/KitodoPresentationLogo.svg',
             'labels' => 'LLL:EXT:dlf/Resources/Private/Language/BackendModule.xml'
         ]
