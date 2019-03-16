@@ -21,7 +21,7 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 Requirements
 ------------
 
-Kitodo.Presentation requires [TYPO3 8 LTS](https://get.typo3.org/8) or [TYPO3 9 LTS](https://get.typo3.org/8) with at least [PHP 7.2+](https://secure.php.net). It uses [MySQL 5.7+](https://www.mysql.com) or [MariaDB 10.2+](https://mariadb.com) as database and [Apache Solr 7.0+](https://lucene.apache.org/solr) via [Solarium 4.2+](http://www.solarium-project.org/) as search engine backend.
+Kitodo.Presentation requires [TYPO3 8 LTS](https://get.typo3.org/8) with at least [PHP 7.0+](https://secure.php.net). It uses [MySQL 5.7+](https://www.mysql.com) or [MariaDB 10.2+](https://mariadb.com) as database and [Apache Solr 7.0+](https://lucene.apache.org/solr) via [Solarium 4.2+](http://www.solarium-project.org/) as search engine backend.
 
 Kitodo. Digital Library Modules
 -------------------------------

@@ -31,14 +31,14 @@
   "type": "typo3-cms-extension",
   "version": "3.0.0",
   "require": {
-    "php": "^7.2",
+    "php": "^7.0",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/minimal": "^8.7 || ^9.5",
+    "typo3/minimal": "^8.7",
     "solarium/solarium" : "^4.2"
   },
   "replace": {
