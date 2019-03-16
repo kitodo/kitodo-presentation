@@ -173,7 +173,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
         }
         $_ids = Helper::processDBasAdmin($data);
         // Check for failed inserts.
-        if (count($_ids) == count($structures)) {
+        if (count($_ids) == count($structureDefaults)) {
             // Fine.
             Helper::addMessage(
                 Helper::getMessage('flash.structureAddedMsg'),

@@ -41,6 +41,8 @@
             <label index="contents">Table of Contents</label>
             <label index="corrigenda">Corrigenda</label>
             <label index="cover">Cover</label>
+            <label index="cover_front">Front Cover</label>
+            <label index="cover_back">Back Cover</label>
             <label index="day">Day</label>
             <label index="dedication">Dedication</label>
             <label index="diploma_thesis">Diploma Thesis</label>
@@ -152,6 +154,8 @@
             <label index="contents">Inhaltsverzeichnis</label>
             <label index="corrigenda">Errata</label>
             <label index="cover">Deckel</label>
+            <label index="cover_front">Vorderdeckel</label>
+            <label index="cover_back">Rückdeckel</label>
             <label index="day">Tag</label>
             <label index="dedication">Widmung</label>
             <label index="diploma_thesis">Diplomarbeit</label>
