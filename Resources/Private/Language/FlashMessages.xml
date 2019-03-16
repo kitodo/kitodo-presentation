@@ -112,7 +112,7 @@
             <label index="cliUserGroup.cliOkay">Command Line Interface available!</label>
             <label index="cliUserGroup.cliOkayMsg">The TYPO3 command line interface is available for the indexer to use.</label>
             <label index="cliUserGroup.cliNotOkay">Command Line Interface not available!</label>
-            <label index="cliUserGroup.cliNotOkayMsg">The TYPO3 command line interface is not available for the indexer to use.</label>
+            <label index="cliUserGroup.cliNotOkayMsg">The TYPO3 command line interface is not available for the indexer to use. Please consider installing the composer package $lt;strong&gt;pagemachine/typo3-composer-legacy-cli&lt;/strong&gt;.</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="flash.attention">Achtung!</label>
@@ -212,7 +212,7 @@
             <label index="cliUserGroup.cliOkay">Kommandozeilen-Schnittstelle verfügbar!</label>
             <label index="cliUserGroup.cliOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst zur Verfügung.</label>
             <label index="cliUserGroup.cliNotOkay">Kommandozeilen-Schnittstelle nicht verfügbar!</label>
-            <label index="cliUserGroup.cliNotOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst nicht zur Verfügung.</label>
+            <label index="cliUserGroup.cliNotOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst nicht zur Verfügung. Sie können den Dispatcher über das Composer-Paket $lt;strong&gt;pagemachine/typo3-composer-legacy-cli&lt;/strong&gt; installieren.</label>
         </languageKey>
     </data>
 </T3locallang>

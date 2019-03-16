@@ -39,7 +39,10 @@
     "ext-openssl": "*",
     "ext-simplexml": "*",
     "typo3/minimal": "^8.7",
-    "solarium/solarium" : "^4.2"
+    "solarium/solarium": "^4.2"
+  },
+  "suggest": {
+    "pagemachine/typo3-composer-legacy-cli": "^1.0"
   },
   "replace": {
     "dlf": "self.version",
