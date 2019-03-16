@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<T3locallang>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for tool Fulltext</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="fulltext-on">Activate Fulltext</label>
+            <label index="fulltext-off">Deactivate Fulltext</label>
+            <label index="fulltext-not-available">No Fulltext available</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="fulltext-on">Volltext an</label>
+            <label index="fulltext-off">Volltext aus</label>
+            <label index="fulltext-not-available">Keine Volltexte vorhanden</label>
+        </languageKey>
+    </data>
+</T3locallang>

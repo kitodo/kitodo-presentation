@@ -1,0 +1,28 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<!-- ###TEMPLATE### -->
+<form class="tx-dlf-search-form" action="###ACTION_URL###" method="post" enctype="multipart/form-data"><div>
+    <label for="tx-dlf-search-query">###LABEL_QUERY###</label>
+    <!-- Never change the @id of this input field! Otherwise search suggestions won't work! -->
+    <input type="text" id="tx-dlf-search-query" name="###FIELD_QUERY###" value="###QUERY###" />
+    ###LOGICAL_PAGE###
+    <!-- The following element is needed for auto-completion! -->
+    <div id="tx-dlf-search-suggest"></div>
+    <input type="submit" value="###LABEL_SUBMIT###" />
+    ###FULLTEXTSWITCH###
+    ###FIELD_DOC###
+    ###FIELD_COLL###
+    ###ADDITIONAL_INPUTS###
+    <!-- ###EXT_SEARCH_ENTRY### -->
+    <div class="tx-dlf-search-extended">###EXT_SEARCH_OPERATOR### ###EXT_SEARCH_FIELDSELECTOR### ###EXT_SEARCH_FIELDQUERY###</div>
+    <!-- ###EXT_SEARCH_ENTRY### -->
+</div></form>
+<div class="tx-dlf-search-facets">###FACETS_MENU###</div>
+<!-- ###TEMPLATE### -->

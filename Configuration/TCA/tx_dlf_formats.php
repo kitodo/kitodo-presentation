@@ -9,68 +9,68 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-return array (
-    'ctrl' => array (
-        'title'     => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats',
+return [
+    'ctrl' => [
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats',
         'label'     => 'type',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY type',
-        'delete'	=> 'deleted',
-        'iconfile'	=> 'EXT:dlf/res/icons/txdlfformats.png',
-        'rootLevel'	=> 1,
+        'delete' => 'deleted',
+        'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfformats.png',
+        'rootLevel' => 1,
         'dividers2tabs' => 2,
         'searchFields' => 'type,class',
-    ),
-    'feInterface' => array (
+    ],
+    'feInterface' => [
         'fe_admin_fieldList' => '',
-    ),
-    'interface' => array (
+    ],
+    'interface' => [
         'showRecordFieldList' => 'type,class',
-    ),
-    'columns' => array (
-        'type' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.type',
-            'config' => array (
+    ],
+    'columns' => [
+        'type' => [
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.type',
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,unique',
-            ),
-        ),
-        'root' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.root',
-            'config' => array (
+            ],
+        ],
+        'root' => [
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.root',
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,unique',
-            ),
-        ),
-        'namespace' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.namespace',
-            'config' => array (
+            ],
+        ],
+        'namespace' => [
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.namespace',
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'required,nospace,unique',
-            ),
-        ),
-        'class' => array (
-            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_formats.class',
-            'config' => array (
+            ],
+        ],
+        'class' => [
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.class',
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'nospace,alphanum_x,unique',
-            ),
-        ),
-    ),
-    'types' => array (
-        '0' => array ('showitem' => '--div--;LLL:EXT:dlf/locallang.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'),
-    ),
-    'palettes' => array (
-        '1' => array ('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.tab1, type;;;;1-1-1, root;;;;2-2-2, namespace, class;;;;3-3-3'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];
