@@ -340,7 +340,7 @@ class ext_update {
                 ]);
                 // Build request for adding new Solr core.
                 // @see http://wiki.apache.org/solr/CoreAdmin
-                $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml&action=CREATE&name='.$resArray['index_name'].'&instanceDir=dlfCore'.$resArray['index_name'].'&dataDir=data&configSet=dlf';
+                $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml&action=CREATE&name='.$resArray['index_name'].'&instanceDir='.$resArray['index_name'].'&dataDir=data&configSet=dlf';
                 $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
                 // Process response.
                 if ($response) {
