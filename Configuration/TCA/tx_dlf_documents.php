@@ -212,7 +212,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.thumbnail',
             'config' => [
                 'type' => 'user',
-                'userFunc' => 'EXT:dlf/Classes/Hooks/FormEngine.php:FormEngine->displayThumbnail',
+                'userFunc' => \Kitodo\Dlf\Hooks\FormEngine::class.'->displayThumbnail',
             ],
         ],
         'metadata' => [

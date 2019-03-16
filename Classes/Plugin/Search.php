@@ -198,7 +198,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Render facets menu.
         $TSconfig = [];
         $TSconfig['special'] = 'userfunction';
-        $TSconfig['special.']['userFunc'] = 'Kitodo\\Dlf\\Plugin\\Search->makeFacetsMenuArray';
+        $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\Search::class.'->makeFacetsMenuArray';
         $TSconfig['special.']['facets'] = $facets;
         $TSconfig['special.']['limit'] = max(intval($this->conf['limitFacets']), 1);
         $TSconfig = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->conf['facetsConf.'], $TSconfig);
