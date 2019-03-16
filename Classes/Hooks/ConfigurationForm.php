@@ -72,25 +72,21 @@ class ConfigurationForm {
         if ($response) {
             $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
             if (is_array($status)) {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                $messages = Helper::addMessage(
                     sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
                     $GLOBALS['LANG']->getLL('solr.connected'),
-                    ($status[0] == 0 ? \TYPO3\CMS\Core\Messaging\FlashMessage::OK : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING),
-                    FALSE
+                    ($status[0] == 0 ? \TYPO3\CMS\Core\Messaging\FlashMessage::OK : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING)
                 );
-                $this->content .= $message->render();
+                $this->content .= $messages->renderFlashMessages();
                 return $this->content;
             }
         }
-        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+        $messages = Helper::addMessage(
             sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
             $GLOBALS['LANG']->getLL('solr.notConnected'),
-            \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-            FALSE
+            \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
         );
-        $this->content .= $message->render();
+        $this->content .= $messages->renderFlashMessages();
         return $this->content;
     }
 
@@ -130,12 +126,10 @@ class ConfigurationForm {
                 && !$resArray['admin']
                 && $GLOBALS['TYPO3_DB']->sql_num_rows($result2) > 0) {
                 $usrUid = $resArray['uid'];
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                $messages = Helper::addMessage(
                     $GLOBALS['LANG']->getLL('cliUserGroup.usrOkayMsg'),
                     $GLOBALS['LANG']->getLL('cliUserGroup.usrOkay'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                    FALSE
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
             } else {
                 if (!$checkOnly
@@ -155,29 +149,23 @@ class ConfigurationForm {
                     // Check if configuration was successful.
                     if ($this->checkCliUser(TRUE, $groupUid)) {
                         $usrUid = $resArray['uid'];
-                        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                        $messages = Helper::addMessage(
                             $GLOBALS['LANG']->getLL('cliUserGroup.usrConfiguredMsg'),
                             $GLOBALS['LANG']->getLL('cliUserGroup.usrConfigured'),
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                            FALSE
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                         );
                     } else {
-                        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                        $messages = Helper::addMessage(
                             $GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
                             $GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                            FALSE
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                         );
                     }
                 } else {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    $messages = Helper::addMessage(
                         $GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfiguredMsg'),
                         $GLOBALS['LANG']->getLL('cliUserGroup.usrNotConfigured'),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        FALSE
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                     );
                 }
             }
@@ -198,33 +186,27 @@ class ConfigurationForm {
                 // Check if creation was successful.
                 if (!empty($substUid[$tempUid])) {
                     $usrUid = $substUid[$tempUid];
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    $messages = Helper::addMessage(
                         $GLOBALS['LANG']->getLL('cliUserGroup.usrCreatedMsg'),
                         $GLOBALS['LANG']->getLL('cliUserGroup.usrCreated'),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                        FALSE
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                     );
                 } else {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    $messages = Helper::addMessage(
                         $GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
                         $GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        FALSE
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                     );
                 }
             } else {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                $messages = Helper::addMessage(
                     $GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreatedMsg'),
                     $GLOBALS['LANG']->getLL('cliUserGroup.usrNotCreated'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                    FALSE
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
         }
-        $this->content = $message->render();
+        $this->content = $messages->renderFlashMessages();
         return $usrUid;
     }
 
@@ -314,29 +296,23 @@ class ConfigurationForm {
                     // Check if configuration was successful.
                     if ($this->checkCliGroup(TRUE, $settings)) {
                         $grpUid = $resArray['uid'];
-                        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                        $messages = Helper::addMessage(
                             $GLOBALS['LANG']->getLL('cliUserGroup.grpConfiguredMsg'),
                             $GLOBALS['LANG']->getLL('cliUserGroup.grpConfigured'),
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                            FALSE
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                         );
                     } else {
-                        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                        $messages = Helper::addMessage(
                             $GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
                             $GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                            FALSE
+                            \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                         );
                     }
                 } else {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    $messages = Helper::addMessage(
                         $GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfiguredMsg'),
                         $GLOBALS['LANG']->getLL('cliUserGroup.grpNotConfigured'),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        FALSE
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                     );
                 }
             }
@@ -357,33 +333,27 @@ class ConfigurationForm {
                 // Check if creation was successful.
                 if (!empty($substUid[$tempUid])) {
                     $grpUid = $substUid[$tempUid];
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    $messages = Helper::addMessage(
                         $GLOBALS['LANG']->getLL('cliUserGroup.grpCreatedMsg'),
                         $GLOBALS['LANG']->getLL('cliUserGroup.grpCreated'),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                        FALSE
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                     );
                 } else {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    $messages = Helper::addMessage(
                         $GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
                         $GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        FALSE
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                     );
                 }
             } else {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                $messages = Helper::addMessage(
                     $GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreatedMsg'),
                     $GLOBALS['LANG']->getLL('cliUserGroup.grpNotCreated'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                    FALSE
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
         }
-        $this->content = $message->render();
+        $this->content = $messages->renderFlashMessages();
         return $grpUid;
     }
 
@@ -408,23 +378,19 @@ class ConfigurationForm {
         $this->content .= $content;
         // Check if CLI dispatcher is executable.
         if (is_executable(PATH_typo3.'cli_dispatch.phpsh')) {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            $messages = Helper::addMessage(
                 $GLOBALS['LANG']->getLL('cliUserGroup.cliOkayMsg'),
                 $GLOBALS['LANG']->getLL('cliUserGroup.cliOkay'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            $messages = Helper::addMessage(
                 $GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkayMsg'),
                 $GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkay'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }
-        $this->content .= $message->render();
+        $this->content .= $messages->renderFlashMessages();
         return $this->content;
     }
 
@@ -490,32 +456,26 @@ class ConfigurationForm {
             // Process changes.
             $substUid = Helper::processDBasAdmin($data);
             if (!empty($substUid)) {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                $messages = Helper::addMessage(
                     $GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg'),
                     $GLOBALS['LANG']->getLL('metadataFormats.nsCreated'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                    FALSE
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                 );
             } else {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                $messages = Helper::addMessage(
                     $GLOBALS['LANG']->getLL('metadataFormats.nsNotCreatedMsg'),
                     $GLOBALS['LANG']->getLL('metadataFormats.nsNotCreated'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                    FALSE
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
         } else {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            $messages = Helper::addMessage(
                 $GLOBALS['LANG']->getLL('metadataFormats.nsOkayMsg'),
                 $GLOBALS['LANG']->getLL('metadataFormats.nsOkay'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         }
-        $this->content .= $message->render();
+        $this->content .= $messages->renderFlashMessages();
         return $this->content;
     }
 

@@ -137,49 +137,42 @@ class Indexer {
                 $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     if (!$errors) {
-                        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                        Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getMessage('flash.done', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                             TRUE
                         );
                     } else {
-                        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                        Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getMessage('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                             TRUE
                         );
                     }
-                    Helper::addMessage($message);
                 }
                 return $errors;
             } catch (\Exception $e) {
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    Helper::addMessage(
                         Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
-                    Helper::addMessage($message);
                 }
                 Helper::devLog('Apache Solr threw exception: "'.$e->getMessage().'"', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
         } else {
             if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                Helper::addMessage(
                     Helper::getMessage('flash.solrNoConnection', TRUE),
                     Helper::getMessage('flash.warning', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
                     TRUE
                 );
-                Helper::addMessage($message);
             }
             Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
             return 1;
@@ -223,41 +216,35 @@ class Indexer {
                     self::$solr->service->update($updateQuery);
                 } catch (\Exception $e) {
                     if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                        $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                        Helper::addMessage(
                             Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                             Helper::getMessage('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                             TRUE
                         );
-                        Helper::addMessage($message);
                     }
                     Helper::devLog('Apache Solr threw exception: "'.$e->getMessage().'"', DEVLOG_SEVERITY_ERROR);
                     return 1;
                 }
             } else {
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    Helper::addMessage(
                         Helper::getMessage('flash.solrNoConnection', TRUE),
                         Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
-                    Helper::addMessage($message);
                 }
                 Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
             if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.documentDeleted'), $title, $uid)),
                     Helper::getMessage('flash.done', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                     TRUE
                 );
-                Helper::addMessage($message);
             }
             return 0;
         } else {
@@ -423,14 +410,12 @@ class Indexer {
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    Helper::addMessage(
                         Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
-                    Helper::addMessage($message);
                 }
                 return 1;
             }
@@ -526,14 +511,13 @@ class Indexer {
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                    Helper::addMessage(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
-                    Helper::addMessage($message);
                 }
                 return 1;
             }

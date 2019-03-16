@@ -38,22 +38,34 @@ class Helper {
     protected static $messages = [];
 
     /**
-     * Adds a message to the message queue.
+     * Generates a flash message and adds it to a message queue.
      *
      * @access public
      *
-     * @param \TYPO3\CMS\Core\Messaging\FlashMessage $message: Instance of \TYPO3\CMS\Core\Messaging\FlashMessage
+     * @param string $message: The body of the message
+     * @param string $title: The title of the message
+     * @param integer $severity: The message's severity
+     * @param boolean $session: Should the message be saved in the user's session?
+     * @param string $queue: The queue's unique identifier
      *
-     * @return void
+     * @return \TYPO3\CMS\Core\Messaging\FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage(\TYPO3\CMS\Core\Messaging\FlashMessage $message) {
+    public static function addMessage($message, $title, $severity, $session = FALSE, $queue = 'kitodo.default.flashMessages') {
         $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
-        $flashMessageService->getMessageQueueByIdentifier()->enqueue($message);
+        $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
+        $flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            $message,
+            $title,
+            $severity,
+            $session
+        );
+        $flashMessageQueue->enqueue($flashMessage);
+        return $flashMessageQueue;
     }
 
     /**
      * Check if given identifier is a valid identifier of the German National Library
-     * @see http://support.d-nb.de/iltis/onlineRoutinen/Pruefziffernberechnung.htm
      *
      * @access public
      *

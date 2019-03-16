@@ -1147,14 +1147,12 @@ final class Document {
                 // Add new collection's UID.
                 $collections[] = $substUid[$collNewUid];
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                    $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    Helper::addMessage(
                         htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
                         Helper::getMessage('flash.attention', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
                         TRUE
                     );
-                    Helper::addMessage($message);
                 }
             }
         }
@@ -1194,14 +1192,12 @@ final class Document {
             // Add new library's UID.
             $ownerUid = $substUid[$libNewUid];
             if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-                $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
                     Helper::getMessage('flash.attention', TRUE),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
                     TRUE
                 );
-                Helper::addMessage($message);
             }
         }
         $metadata['owner'][0] = $ownerUid;
@@ -1306,14 +1302,12 @@ final class Document {
             $this->parentId = $partof;
         }
         if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            Helper::addMessage(
                 htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
                 Helper::getMessage('flash.done', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
                 TRUE
             );
-            Helper::addMessage($message);
         }
         // Add document to index.
         if ($core) {
