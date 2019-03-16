@@ -338,7 +338,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         $list->metadata = $listMetadata;
         $list->save();
         // Clean output buffer.
-    Helper::cleanOutputBuffers();
+        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
         // Send headers.
         header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(['parameter' => $this->conf['targetPid']])));
         // Flush output buffer and end script processing.

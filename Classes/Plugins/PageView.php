@@ -96,9 +96,6 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function addInteraction() {
         $markerArray = [];
         if ($this->piVars['id']) {
-            if (empty($this->piVars['page'])) {
-                $params['page'] = 1;
-            }
             if ($this->conf['crop']) {
                 $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">'.$this->pi_getLL('editMode', '', TRUE).'</a>';
                 $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">'.$this->pi_getLL('editRemove', '', TRUE).'</a>';

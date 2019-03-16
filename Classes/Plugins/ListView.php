@@ -108,7 +108,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         return $output;
     }
- 
+
     /**
      * Renders one entry of the list
      *

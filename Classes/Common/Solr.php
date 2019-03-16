@@ -168,8 +168,6 @@ class Solr {
      * @return \Kitodo\Dlf\Common\Solr Instance of this class
      */
     public static function getInstance($core) {
-        // Save parameter for logging purposes.
-        $_core = $core;
         // Get core name if UID is given.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
             $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
@@ -478,7 +476,7 @@ class Solr {
      * @return void
      */
     public function __set($var, $value) {
-       $method = '_set'.ucfirst($var);
+        $method = '_set'.ucfirst($var);
         if (!property_exists($this, $var)
             || !method_exists($this, $method)) {
             Helper::devLog('There is no setter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);

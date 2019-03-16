@@ -588,8 +588,6 @@ final class Document {
      * @return array The logical structure node's parsed metadata array
      */
     public function getMetadata($id, $cPid = 0) {
-        // Save parameter for logging purposes.
-        $_cPid = $cPid;
         // Make sure $cPid is a non-negative integer.
         $cPid = max(intval($cPid), 0);
         // If $cPid is not given, try to get it elsewhere.
@@ -856,8 +854,6 @@ final class Document {
      * @return string The title of the document itself or a parent document
      */
     public static function getTitle($uid, $recursive = FALSE) {
-        // Save parameter for logging purposes.
-        $_uid = $uid;
         $title = '';
         // Sanitize input.
         $uid = max(intval($uid), 0);

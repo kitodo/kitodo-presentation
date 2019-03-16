@@ -421,8 +421,6 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @return array The removed element
      */
     public function remove($position) {
-        // Save parameter for logging purposes.
-        $_position = $position;
         $position = intval($position);
         if ($position < 0
             || $position >= $this->count) {
@@ -445,8 +443,6 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @return array The indizes of the removed elements
      */
     public function removeRange($position, $length) {
-        // Save parameter for logging purposes.
-        $_position = $position;
         $position = intval($position);
         if ($position < 0
             || $position >= $this->count) {

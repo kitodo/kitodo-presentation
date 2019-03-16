@@ -75,7 +75,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function deleteExpiredTokens() {
         // Delete expired resumption tokens.
-        $result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery(
             'tx_dlf_tokens',
             'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.tstamp<'.intval($GLOBALS['EXEC_TIME'] - $this->conf['expired'])
         );
@@ -358,7 +358,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->oai->appendChild($root);
         $content = $this->oai->saveXML();
         // Clean output buffer.
-    Helper::cleanOutputBuffers();
+        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
         // Send headers.
         header('HTTP/1.1 200 OK');
         header('Cache-Control: no-cache');

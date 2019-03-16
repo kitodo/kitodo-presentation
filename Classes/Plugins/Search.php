@@ -465,7 +465,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             ];
             $list->save();
             // Clean output buffer.
-        Helper::cleanOutputBuffers();
+            \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
             $additionalParams = [];
             if (!empty($this->piVars['logicalPage'])) {
                 $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
@@ -535,7 +535,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (empty($search['params']['filterquery'])) {
             $search['params']['filterquery'] = [];
         }
-        foreach ($this->conf['facets'] as $field => $name) {
+        foreach (array_keys($this->conf['facets']) as $field) {
             $search['params']['component']['facetset']['facet'][] = [
                 'type' => 'field',
                 'key' => $field,

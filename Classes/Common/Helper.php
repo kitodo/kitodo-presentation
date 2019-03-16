@@ -574,8 +574,6 @@ class Helper {
      * @return mixed Session value for given key or NULL on failure
      */
     public static function loadFromSession($key) {
-        // Save parameter for logging purposes.
-        $_key = $key;
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {
@@ -713,8 +711,6 @@ class Helper {
      * @return boolean TRUE on success, FALSE on failure
      */
     public static function saveToSession($value, $key) {
-        // Save parameter for logging purposes.
-        $_key = $key;
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {

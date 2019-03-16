@@ -189,8 +189,6 @@ class Indexer {
      * @return integer 0 on success or 1 on failure
      */
     public static function delete($uid) {
-        // Save parameter for logging purposes.
-        $_uid = $uid;
         // Sanitize input.
         $uid = max(intval($uid), 0);
         // Get Solr core for document.
@@ -264,8 +262,6 @@ class Indexer {
      * @return string The field's dynamic index name
      */
     public static function getIndexFieldName($index_name, $pid = 0) {
-        // Save parameter for logging purposes.
-        $_pid = $pid;
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {

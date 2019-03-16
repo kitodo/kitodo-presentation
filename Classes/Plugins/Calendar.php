@@ -275,7 +275,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $subYearPartContent = '';
         if (count($years) > 0) {
-            foreach ($years as $id => $year) {
+            foreach ($years as $year) {
                 $linkConf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetPid'],

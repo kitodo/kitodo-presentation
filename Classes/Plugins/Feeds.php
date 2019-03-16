@@ -149,7 +149,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
         $rss->appendChild($root);
         $content = $rss->saveXML();
         // Clean output buffer.
-    Helper::cleanOutputBuffers();
+        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
         // Send headers.
         header('HTTP/1.1 200 OK');
         header('Cache-Control: no-cache');

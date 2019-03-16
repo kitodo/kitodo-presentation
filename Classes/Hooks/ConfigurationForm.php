@@ -376,7 +376,7 @@ class ConfigurationForm {
         // Save output because it will be overwritten by the user check method.
         $content = $this->content;
         // Check if user "_cli_dlf" exists and is configured properly.
-        $userUid = $this->checkCliUser(empty($this->conf['makeCliUserGroup']), $groupUid);
+        $this->checkCliUser(empty($this->conf['makeCliUserGroup']), $groupUid);
         // Merge output from usergroup and user checks.
         $this->content .= $content;
         // Check if CLI dispatcher is executable.
