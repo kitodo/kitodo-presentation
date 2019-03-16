@@ -90,18 +90,18 @@ class ConfigurationForm {
      *
      * @return string Message informing the user of success or failure
      */
-    public function checkCli(&$params, &$pObj) {
+    public function checkCliDispatcher(&$params, &$pObj) {
         // Check if CLI dispatcher is executable.
         if (is_executable(PATH_typo3.'cli_dispatch.phpsh')) {
             Helper::addMessage(
-                $GLOBALS['LANG']->getLL('cliUserGroup.cliOkayMsg'),
-                $GLOBALS['LANG']->getLL('cliUserGroup.cliOkay'),
+                $GLOBALS['LANG']->getLL('cliDispatcher.cliOkayMsg'),
+                $GLOBALS['LANG']->getLL('cliDispatcher.cliOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             Helper::addMessage(
-                $GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkayMsg'),
-                $GLOBALS['LANG']->getLL('cliUserGroup.cliNotOkay'),
+                $GLOBALS['LANG']->getLL('cliDispatcher.cliNotOkayMsg'),
+                $GLOBALS['LANG']->getLL('cliDispatcher.cliNotOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }

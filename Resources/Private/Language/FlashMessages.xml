@@ -79,10 +79,10 @@
             <label index="metadataFormats.nsCreatedMsg">The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.</label>
             <label index="metadataFormats.nsNotCreated">Default namespaces not found!</label>
             <label index="metadataFormats.nsNotCreatedMsg">The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.</label>
-            <label index="cliUserGroup.cliOkay">Command Line Interface available!</label>
-            <label index="cliUserGroup.cliOkayMsg">The TYPO3 command line interface is available for the indexer to use.</label>
-            <label index="cliUserGroup.cliNotOkay">Command Line Interface not available!</label>
-            <label index="cliUserGroup.cliNotOkayMsg">The TYPO3 command line interface is not available for the indexer to use. Please consider installing the composer package $lt;strong&gt;pagemachine/typo3-composer-legacy-cli&lt;/strong&gt;.</label>
+            <label index="cliDispatcher.cliOkay">Command Line Interface available!</label>
+            <label index="cliDispatcher.cliOkayMsg">The TYPO3 command line interface is available for the indexer to use.</label>
+            <label index="cliDispatcher.cliNotOkay">Command Line Interface not available!</label>
+            <label index="cliDispatcher.cliNotOkayMsg">The TYPO3 command line interface is not available for the indexer to use. Please consider installing the composer package $lt;strong&gt;pagemachine/typo3-composer-legacy-cli&lt;/strong&gt;.</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="flash.attention">Achtung!</label>
@@ -149,10 +149,10 @@
             <label index="metadataFormats.nsCreatedMsg">Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.</label>
             <label index="metadataFormats.nsNotCreated">Standard-Namensräume nicht gefunden!</label>
             <label index="metadataFormats.nsNotCreatedMsg">Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.</label>
-            <label index="cliUserGroup.cliOkay">Kommandozeilen-Schnittstelle verfügbar!</label>
-            <label index="cliUserGroup.cliOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst zur Verfügung.</label>
-            <label index="cliUserGroup.cliNotOkay">Kommandozeilen-Schnittstelle nicht verfügbar!</label>
-            <label index="cliUserGroup.cliNotOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst nicht zur Verfügung. Sie können den Dispatcher über das Composer-Paket $lt;strong&gt;pagemachine/typo3-composer-legacy-cli&lt;/strong&gt; installieren.</label>
+            <label index="cliDispatcher.cliOkay">Kommandozeilen-Schnittstelle verfügbar!</label>
+            <label index="cliDispatcher.cliOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst zur Verfügung.</label>
+            <label index="cliDispatcher.cliNotOkay">Kommandozeilen-Schnittstelle nicht verfügbar!</label>
+            <label index="cliDispatcher.cliNotOkayMsg">Die TYPO3-Kommandozeilenschnittstelle steht für den Indexierungsdienst nicht zur Verfügung. Sie können den Dispatcher über das Composer-Paket $lt;strong&gt;pagemachine/typo3-composer-legacy-cli&lt;/strong&gt; installieren.</label>
         </languageKey>
     </data>
 </T3locallang>

@@ -162,7 +162,7 @@
             <label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
             <label index="tt_content.dlf_validator">DLF: Validator</label>
             <label index="config.metadataFormats">Default metadata namespaces</label>
-            <label index="config.cliUserGroup">CLI user/group</label>
+            <label index="config.cliDispatcher">CLI Dispatcher</label>
             <label index="config.useragent">DLF User-Agent: (default is "Kitodo.Presentation")</label>
             <label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
             <label index="config.publishNewCollections">Publish new collections?: Should new collections automatically be published in the OAI-PMH interface? (default is "TRUE")</label>
@@ -329,7 +329,7 @@
             <label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
             <label index="tt_content.dlf_validator">DLF: Validator</label>
             <label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
-            <label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
+            <label index="config.cliDispatcher">CLI Dispatcher</label>
             <label index="config.useragent">DLF User-Agent: (Standard ist "Kitodo.Presentation")</label>
             <label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
             <label index="config.publishNewCollections">Neue Kollektionen publizieren?: Sollen neue Kollektionen automatisch in der OAI-PMH-Schnittstelle veröffentlicht werden? (Standard ist "TRUE")</label>
