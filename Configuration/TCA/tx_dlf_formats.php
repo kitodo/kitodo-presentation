@@ -63,7 +63,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
-                'eval' => 'nospace,alphanum_x,unique',
+                'eval' => 'nospace,unique',
             ],
         ],
     ],
