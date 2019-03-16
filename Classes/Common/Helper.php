@@ -381,9 +381,9 @@ class Helper {
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
         if (preg_match('/^[a-z]{3}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/ISO-639/iso-639-2b.xml';
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/Data/iso-639-2b.xml';
         } elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/ISO-639/iso-639-1.xml';
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/Data/iso-639-1.xml';
         } else {
             // No ISO code, return unchanged.
             return $code;
