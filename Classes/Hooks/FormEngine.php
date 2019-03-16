@@ -33,13 +33,11 @@ class FormEngine {
      * @return string HTML <img> tag for thumbnail
      */
     public function displayThumbnail(&$params, &$pObj) {
-        $output = '<div style="padding:5px; background-color:#000000;">';
         // Simulate TCA field type "passthrough".
-        $output .= '<input type="hidden" name="'.$params['itemFormElName'].'" value="'.$params['itemFormElValue'].'" />';
+        $output = '<input type="hidden" name="'.$params['itemFormElName'].'" value="'.$params['itemFormElValue'].'" />';
         if (!empty($params['itemFormElValue'])) {
             $output .= '<img alt="" src="'.$params['itemFormElValue'].'" />';
         }
-        $output .= '</div>';
         return $output;
     }
 
