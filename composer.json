@@ -33,12 +33,13 @@
     "ext-openssl": "*",
     "ext-simplexml": "*",
     "typo3/minimal": "^8.7",
+    "typo3/cms-css-styled-content": "^8.7",
     "typo3/cms-tstemplate": "^8.7",
+    "pagemachine/typo3-composer-legacy-cli": "^1.0",
     "solarium/solarium": "^4.2"
   },
   "suggest": {
-    "devlog/devlog": "^3.0",
-    "pagemachine/typo3-composer-legacy-cli": "^1.0"
+    "devlog/devlog": "^3.0"
   },
   "replace": {
     "dlf": "self.version",
