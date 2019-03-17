@@ -206,7 +206,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (is_array($this->piVars)) {
             $piVars = $this->piVars;
             unset($piVars['DATA']);
-            $overrulePIvars = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($piVars, $overrulePIvars);
+            $overrulePIvars = Helper::mergeRecursiveWithOverrule($piVars, $overrulePIvars);
         }
         // Build typolink configuration array.
         $conf = [

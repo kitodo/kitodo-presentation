@@ -78,27 +78,27 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         $flexFormConf = [];
         $this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
         if (!empty($flexFormConf)) {
-            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($flexFormConf, $conf);
+            $conf = Helper::mergeRecursiveWithOverrule($flexFormConf, $conf);
         }
         // Read plugin TS configuration.
         $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(Helper::getUnqualifiedClassName(get_class($this))).'.'];
         if (is_array($pluginConf)) {
-            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($pluginConf, $conf);
+            $conf = Helper::mergeRecursiveWithOverrule($pluginConf, $conf);
         }
         // Read general TS configuration.
         $generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
         if (is_array($generalConf)) {
-            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($generalConf, $conf);
+            $conf = Helper::mergeRecursiveWithOverrule($generalConf, $conf);
         }
         // Read extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
         if (is_array($extConf)) {
-            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($extConf, $conf);
+            $conf = Helper::mergeRecursiveWithOverrule($extConf, $conf);
         }
         // Read TYPO3_CONF_VARS configuration.
         $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
         if (is_array($varsConf)) {
-            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($varsConf, $conf);
+            $conf = Helper::mergeRecursiveWithOverrule($varsConf, $conf);
         }
         $this->conf = $conf;
         // Set default plugin variables.

@@ -11,6 +11,8 @@ namespace Kitodo\Dlf\Plugin\Tools;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * PDF Download tool for the plugin 'Toolbox' of the 'dlf' extension
  *
@@ -36,7 +38,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
     public function main($content, $conf) {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
-        $this->conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
+        $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
         // Load current document.
         $this->loadDocument();
         if ($this->doc === NULL

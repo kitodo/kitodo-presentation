@@ -161,7 +161,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             if (is_array($this->piVars)) {
                 $piVars = $this->piVars;
                 unset($piVars['DATA']);
-                $additionalParams = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($piVars, $additionalParams);
+                $additionalParams = Helper::mergeRecursiveWithOverrule($piVars, $additionalParams);
             }
             // Build typolink configuration array.
             $conf = [

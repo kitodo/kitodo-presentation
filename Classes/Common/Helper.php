@@ -562,6 +562,25 @@ class Helper {
     }
 
     /**
+     * Merges two arrays recursively and actually returns the modified array.
+     * @see \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule()
+     *
+     * @access public
+     *
+     * @param array $original: Original array
+     * @param array $overrule: Overrule array, overruling the original array
+     * @param boolean $addKeys: If set to FALSE, keys that are not found in $original will not be set
+     * @param boolean $includeEmptyValues: If set, values from $overrule will overrule if they are empty
+     * @param boolean $enableUnsetFeature: If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
+     *
+     * @return array Merged array
+     */
+    public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = TRUE, $includeEmptyValues = TRUE, $enableUnsetFeature = TRUE) {
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
+        return $original;
+    }
+
+     /**
      * Process a data and/or command map with TYPO3 core engine as admin.
      *
      * @access public
