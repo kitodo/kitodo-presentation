@@ -121,9 +121,9 @@
                                     <minitems>1</minitems>
                                     <show_thumbs>1</show_thumbs>
                                     <wizards>
-                                            <suggest>
-                                                    <type>suggest</type>
-                                            </suggest>
+                                        <suggest>
+                                            <type>suggest</type>
+                                        </suggest>
                                     </wizards>
                                 </config>
                         </TCEforms>

@@ -33,6 +33,7 @@
     "ext-openssl": "*",
     "ext-simplexml": "*",
     "typo3/minimal": "^8.7",
+    "typo3/cms-tstemplate": "^8.7",
     "solarium/solarium": "^4.2"
   },
   "suggest": {

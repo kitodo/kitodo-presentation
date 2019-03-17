@@ -33,9 +33,9 @@
                                 <minitems>1</minitems>
                                 <show_thumbs>1</show_thumbs>
                                 <wizards>
-                                        <suggest>
-                                                <type>suggest</type>
-                                        </suggest>
+                                    <suggest>
+                                        <type>suggest</type>
+                                    </suggest>
                                 </wizards>
                             </config>
                         </TCEforms>
@@ -47,7 +47,7 @@
                             <config>
                                 <type>select</type>
                                 <items type="array"></items>
-                                <itemsProcFunc>Kitodo\\Dlf\\Hooks\\FormEngine->itemsProcFunc_toolList</itemsProcFunc>
+                                <itemsProcFunc>Kitodo\Dlf\Hooks\FormEngine->itemsProcFunc_toolList</itemsProcFunc>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
