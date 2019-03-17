@@ -358,7 +358,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->oai->appendChild($root);
         $content = $this->oai->saveXML();
         // Clean output buffer.
-        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+        ob_end_clean();
         // Send headers.
         header('HTTP/1.1 200 OK');
         header('Cache-Control: no-cache');
@@ -367,8 +367,6 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         header('Date: '.date('r', $GLOBALS['EXEC_TIME']));
         header('Expires: '.date('r', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
         echo $content;
-        // Flush output buffer and end script processing.
-        ob_end_flush();
         exit;
     }
 

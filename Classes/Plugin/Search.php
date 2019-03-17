@@ -465,7 +465,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             ];
             $list->save();
             // Clean output buffer.
-            \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+            ob_end_clean();
             $additionalParams = [];
             if (!empty($this->piVars['logicalPage'])) {
                 $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
@@ -487,8 +487,6 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
             // Send headers.
             header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
-            // Flush output buffer and end script processing.
-            ob_end_flush();
             exit;
         }
     }

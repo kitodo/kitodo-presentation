@@ -230,7 +230,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Get collection information from DB
         $collection = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.index_search as index_query, tx_dlf_collections.label AS collLabel, tx_dlf_collections.description AS collDesc, tx_dlf_collections.thumbnail AS collThumb, tx_dlf_collections.fe_cruser_id',
+            'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.index_search as index_search, tx_dlf_collections.label AS collLabel, tx_dlf_collections.description AS collDesc, tx_dlf_collections.thumbnail AS collThumb, tx_dlf_collections.fe_cruser_id',
             'tx_dlf_collections',
             'tx_dlf_collections.pid='.intval($this->conf['pages'])
                 .' AND tx_dlf_collections.uid='.intval($id)
@@ -241,12 +241,11 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             '1'
         );
         // Fetch corresponding document UIDs from Solr.
-        $solr_query = '';
         $collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection);
-        if ($collectionData['index_query'] != '') {
-            $solr_query .= '('.$collectionData['index_query'].')';
+        if ($collectionData['index_search'] != '') {
+            $solr_query = '('.$collectionData['index_search'].')';
         } else {
-            $solr_query .= 'collection:("'.$collectionData['index_name'].'")';
+            $solr_query = 'collection:("'.$collectionData['index_name'].'")';
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
@@ -338,11 +337,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         $list->metadata = $listMetadata;
         $list->save();
         // Clean output buffer.
-        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+        ob_end_clean();
         // Send headers.
         header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(['parameter' => $this->conf['targetPid']])));
-        // Flush output buffer and end script processing.
-        ob_end_flush();
         exit;
     }
 }
