@@ -55,17 +55,11 @@ class FormEngine {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
             foreach ($pages as $page) {
-                // There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
-                // i.e. instead of "18" it reads "pages_18|Title"
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($page)) {
-                    $parts = explode('|', $page);
-                    $page = array_pop(explode('_', $parts[0]));
-                }
-                if ($page > 0) {
+                if ($page['uid'] > 0) {
                     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                         'label,uid',
                         'tx_dlf_collections',
-                        'pid='.intval($page)
+                        'pid='.intval($page['uid'])
                             .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
                             .Helper::whereClause('tx_dlf_collections'),
                         '',
@@ -95,27 +89,23 @@ class FormEngine {
     public function itemsProcFunc_extendedSearchList(&$params, &$pObj) {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
-            // There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
-            // i.e. instead of "18" it reads "pages_18|Title"
-            if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($pages)) {
-                $_parts = explode('|', $pages);
-                $pages = array_pop(explode('_', $_parts[0]));
-            }
-            if ($pages > 0) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'label,index_name',
-                    'tx_dlf_metadata',
-                    'index_indexed=1'
-                        .' AND pid='.intval($pages)
-                        .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
-                        .Helper::whereClause('tx_dlf_metadata'),
-                    '',
-                    'sorting',
-                    ''
-                );
-                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                    while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                        $params['items'][] = $resArray;
+            foreach ($pages as $page) {
+                if ($page['uid'] > 0) {
+                    $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                        'label,index_name',
+                        'tx_dlf_metadata',
+                        'index_indexed=1'
+                            .' AND pid='.intval($page['uid'])
+                            .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
+                            .Helper::whereClause('tx_dlf_metadata'),
+                        '',
+                        'sorting',
+                        ''
+                    );
+                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+                        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+                            $params['items'][] = $resArray;
+                        }
                     }
                 }
             }
@@ -135,27 +125,23 @@ class FormEngine {
     public function itemsProcFunc_facetsList(&$params, &$pObj) {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
-            // There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
-            // i.e. instead of "18" it reads "pages_18|Title"
-            if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($pages)) {
-                $_parts = explode('|', $pages);
-                $pages = array_pop(explode('_', $_parts[0]));
-            }
-            if ($pages > 0) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'label,index_name',
-                    'tx_dlf_metadata',
-                    'is_facet=1'
-                        .' AND pid='.intval($pages)
-                        .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
-                        .Helper::whereClause('tx_dlf_metadata'),
-                    '',
-                    'sorting',
-                    ''
-                );
-                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                    while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                        $params['items'][] = $resArray;
+            foreach ($pages as $page) {
+                if ($page['uid'] > 0) {
+                    $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                        'label,index_name',
+                        'tx_dlf_metadata',
+                        'is_facet=1'
+                            .' AND pid='.intval($page['uid'])
+                            .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
+                            .Helper::whereClause('tx_dlf_metadata'),
+                        '',
+                        'sorting',
+                        ''
+                    );
+                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+                        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+                            $params['items'][] = $resArray;
+                        }
                     }
                 }
             }
@@ -175,26 +161,22 @@ class FormEngine {
     public function itemsProcFunc_libraryList(&$params, &$pObj) {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
-            // There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
-            // i.e. instead of "18" it reads "pages_18|Title"
-            if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($pages)) {
-                $parts = explode('|', $pages);
-                $pages = array_pop(explode('_', $parts[0]));
-            }
-            if ($pages > 0) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'label,uid',
-                    'tx_dlf_libraries',
-                    'pid='.intval($pages)
-                        .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
-                        .Helper::whereClause('tx_dlf_libraries'),
-                    '',
-                    'label',
-                    ''
-                );
-                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                    while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                        $params['items'][] = $resArray;
+            foreach ($pages as $page) {
+                if ($page['uid'] > 0) {
+                    $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                        'label,uid',
+                        'tx_dlf_libraries',
+                        'pid='.intval($page['uid'])
+                            .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
+                            .Helper::whereClause('tx_dlf_libraries'),
+                        '',
+                        'label',
+                        ''
+                    );
+                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+                        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+                            $params['items'][] = $resArray;
+                        }
                     }
                 }
             }
@@ -215,17 +197,11 @@ class FormEngine {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
             foreach ($pages as $page) {
-                // There is a strange behavior where the uid from the flexform is prepended by the table's name and appended by its title.
-                // i.e. instead of "18" it reads "pages_18|Title"
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($page)) {
-                    $parts = explode('|', $page);
-                    $page = array_pop(explode('_', $parts[0]));
-                }
-                if ($page > 0) {
+                if ($page['uid'] > 0) {
                     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                         'label,uid',
                         'tx_dlf_solrcores',
-                        'pid IN ('.intval($page).',0)'
+                        'pid IN ('.intval($page['uid']).',0)'
                             .Helper::whereClause('tx_dlf_solrcores'),
                         '',
                         'label',
