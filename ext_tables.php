@@ -20,8 +20,8 @@ if (TYPO3_MODE === 'BE') {
             'routeTarget' => \Kitodo\Dlf\Module\NewTenant::class.'::main',
             'access' => 'admin',
             'name' => 'tools_dlfNewTenantModule',
-            'icon' => 'EXT:dlf/Resources/Public/Images/KitodoPresentationLogo.svg',
-            'labels' => 'LLL:EXT:dlf/Resources/Private/Language/BackendModule.xml'
+            'icon' => 'EXT:dlf/Resources/Public/Images/NewTenant.svg',
+            'labels' => 'LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml'
         ]
     );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('tools_dlfNewTenantModule', 'typo3-pagetree');
