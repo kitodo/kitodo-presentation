@@ -202,7 +202,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         $TSconfig['special.']['facets'] = $facets;
         $TSconfig['special.']['limit'] = max(intval($this->conf['limitFacets']), 1);
         $TSconfig = Helper::mergeRecursiveWithOverrule($this->conf['facetsConf.'], $TSconfig);
-        return $this->cObj->HMENU($TSconfig);
+        return $this->cObj->cObjGetSingle('HMENU', $TSconfig);
     }
 
     /**
