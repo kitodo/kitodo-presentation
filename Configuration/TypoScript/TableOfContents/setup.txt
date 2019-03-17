@@ -1,4 +1,4 @@
-plugin.TableOfContents.menuConf {
+plugin.tx_dlf_tableofcontents.menuConf {
     expAll = 0
     1 = TMENU
     1 {

@@ -81,14 +81,9 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($flexFormConf, $conf);
         }
         // Read plugin TS configuration.
-        $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][Helper::getUnqualifiedClassName(get_class($this)).'.'];
+        $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(Helper::getUnqualifiedClassName(get_class($this))).'.'];
         if (is_array($pluginConf)) {
             $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($pluginConf, $conf);
-        }
-        // Read old plugin TS configuration.
-        $oldPluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(Helper::getUnqualifiedClassName(get_class($this))).'.'];
-        if (is_array($oldPluginConf)) {
-            $conf = \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($oldPluginConf, $conf);
         }
         // Read general TS configuration.
         $generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
