@@ -692,9 +692,6 @@ final class Document {
                     }
                 }
                 // Set default value if applicable.
-                // '!empty($resArray['default_value'])' is not possible, because '0' is a valid default value.
-                // Setting an empty default value creates a lot of empty fields within the index.
-                // These empty fields are then shown within the search facets as 'empty'.
                 if (empty($metadata[$resArray['index_name']][0])
                     && strlen($resArray['default_value']) > 0) {
                     $metadata[$resArray['index_name']] = [$resArray['default_value']];
@@ -1069,21 +1066,6 @@ final class Document {
         }
         // Load plugin configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-        // Get UID for user "_cli_dlf".
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'be_users.uid AS uid',
-            'be_users',
-            'username='.$GLOBALS['TYPO3_DB']->fullQuoteStr('_cli_dlf', 'be_users')
-                .\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('be_users')
-                .\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('be_users'),
-            '',
-            '',
-            '1'
-        );
-        if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            Helper::devLog('Backend user "_cli_dlf" not found or disabled', DEVLOG_SEVERITY_ERROR);
-            return FALSE;
-        }
         // Get UID for structure type.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_structures.uid AS uid',

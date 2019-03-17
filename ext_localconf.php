@@ -65,7 +65,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = [
         $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Cli\CommandLineIndexer::class);
         $SOBE->main();
     },
-    '_cli_dlf'
+    '_cli_'
 ];
 // Register AJAX eID handlers.
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = \Kitodo\Dlf\Plugin\Eid\SearchSuggest::class.'->main';

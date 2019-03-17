@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 
 /**
@@ -249,7 +250,7 @@ class DataHandler {
                                 // Reindex document.
                                 $doc = Document::getInstance($id);
                                 if ($doc->ready) {
-                                    $doc->save($doc->pid, $core);
+                                    Indexer::add($doc, $core);
                                 } else {
                                     Helper::devLog('Failed to re-index document with UID '.$id, DEVLOG_SEVERITY_ERROR);
                                 }
@@ -308,7 +309,7 @@ class DataHandler {
                         // Reindex document.
                         $doc = Document::getInstance($id);
                         if ($doc->ready) {
-                            $doc->save($doc->pid, $core);
+                            Indexer::add($doc, $core);
                         } else {
                             Helper::devLog('Failed to re-index document with UID '.$id, DEVLOG_SEVERITY_ERROR);
                         }
