@@ -76,7 +76,8 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
                     offset: [offsetWidth, 0]
-                })
+                }),
+                zDirection: -1
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
 
@@ -107,7 +108,8 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                         units: 'pixels',
                         extent: extent
                     })
-                })
+                }),
+                zDirection: -1
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
             tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
@@ -121,7 +123,8 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                     crossOrigin: origin,
                     tileSize: tileSize,
                     offset: [offsetWidth, 0]
-                })
+                }),
+                zDirection: -1
             });
         } else {
 
