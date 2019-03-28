@@ -1,0 +1,17 @@
+path_classifiers:
+  docs:
+    - exclude: / # ignore default classification for documentation
+    - Documentation/
+  generated:
+    - exclude: / # ignore default classification for generated code
+  library:
+    - exclude: / # ignore default classification for library code
+    - Resources/Javascript/jPlayer
+    - Resources/Javascript/jQuery
+    - Resources/Javascript/jQueryUI
+    - Resources/Javascript/OpenLayers
+  template:
+    - exclude: / # ignore default classification for templates
+    - Resources/Private/Templates
+  test:
+    - exclude: / # ignore default classification for test code
