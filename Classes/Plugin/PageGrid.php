@@ -11,6 +11,8 @@ namespace Kitodo\Dlf\Plugin;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Kitodo\Dlf\Common\Helper;
+
 /**
  * Plugin 'Page Grid' for the 'dlf' extension
  *
