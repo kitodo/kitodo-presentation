@@ -11,6 +11,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Ubl\Iiif\Tools\IiifHelper;
+use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
+
 /**
  * Indexer class for the 'dlf' extension
  *
@@ -445,29 +448,44 @@ class Indexer {
         $errors = 0;
         // Read extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-        if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])) {
-            $file = $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpFulltext']]);
-            // Load XML file.
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($file)) {
-                // Set user-agent to identify self when fetching XML data.
-                if (!empty($extConf['useragent'])) {
-                    @ini_set('user_agent', $extConf['useragent']);
-                }
-                // Turn off libxml's error logging.
-                $libxmlErrors = libxml_use_internal_errors(TRUE);
-                // disable entity loading
-                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-                // Load XML from file.
-                $xml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
-                // reset entity loader setting
-                libxml_disable_entity_loader($previousValueOfEntityLoader);
-                // Reset libxml's error logging.
-                libxml_use_internal_errors($libxmlErrors);
-                if ($xml === FALSE) {
+        if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])
+            || !empty($annotationContainerIds = $physicalUnit['annotationContainers'])) {
+            if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])) {
+                $file = $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpFulltext']]);
+                // Load XML file.
+                if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($file)) {
+                    // Set user-agent to identify self when fetching XML data.
+                    if (!empty($extConf['useragent'])) {
+                        @ini_set('user_agent', $extConf['useragent']);
+                    }
+                    // Turn off libxml's error logging.
+                    $libxmlErrors = libxml_use_internal_errors(TRUE);
+                    // disable entity loading
+                    $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                    // Load XML from file.
+                    $xml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
+                    // reset entity loader setting
+                    libxml_disable_entity_loader($previousValueOfEntityLoader);
+                    // Reset libxml's error logging.
+                    libxml_use_internal_errors($libxmlErrors);
+                    if ($xml === FALSE) {
+                        return 1;
+                    }
+                } else {
                     return 1;
                 }
-            } else {
-                return 1;
+            }
+            if (!empty($physicalUnit['annotationContainers'])) {
+                $annotationContainerIds = $physicalUnit['annotationContainers'];
+                foreach ($annotationContainerIds as $annotationContainerId) {
+                    if (!empty($extConf['useragent'])) {
+                        @ini_set('user_agent', $extConf['useragent']);
+                    }
+                    $annotationContainer = IiifHelper::loadIiifResource(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($annotationContainerId));
+                    if (!($annotationContainer instanceof AnnotationContainerInterface)) {
+                        return 1;
+                    }
+                }
             }
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
