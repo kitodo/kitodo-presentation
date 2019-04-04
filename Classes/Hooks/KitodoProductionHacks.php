@@ -21,7 +21,7 @@ namespace Kitodo\Dlf\Hooks;
  */
 class KitodoProductionHacks {
     /**
-     * Hook for \Kitodo\Dlf\Common\Document::__construct()
+     * Hook for \Kitodo\Dlf\Common\MetsDocument::establishRecordId()
      * When using Kitodo.Production the record identifier is saved only in MODS, but not
      * in METS. To get it anyway, we have to do some magic.
      *
