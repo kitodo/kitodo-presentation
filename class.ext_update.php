@@ -45,6 +45,10 @@ class ext_update {
             return TRUE;
         } elseif (count($this->oldFormatClasses())) {
             return TRUE;
+        } elseif ($this->hasNoFormatForDocument()) {
+            return TRUE;
+        } elseif ($this->hasOldXpathColumnNames()) {
+            return TRUE;
         }
         return FALSE;
     }
@@ -104,6 +108,13 @@ class ext_update {
         }
         if (count($this->oldFormatClasses())) {
             $this->updateFormatClasses();
+        }
+        // add format field for tx_dlf_document to distinguish between METS and IIIF
+        if ($this->hasNoFormatForDocument()) {
+            $this->updateDocumentAddFormat();
+        }
+        if ($this->hasOldXpathColumnNames()) {
+            $this->renameXpathToMetadataquery();
         }
         return $this->content;
     }
@@ -365,5 +376,132 @@ class ext_update {
             \TYPO3\CMS\Core\Messaging\FlashMessage::OK
         );
         $this->content .= Helper::renderFlashMessages();
+    }
+    
+    protected function hasNoFormatForDocument() {
+        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['database'];
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'column_name',
+            'INFORMATION_SCHEMA.COLUMNS',
+            'TABLE_NAME = "tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND column_name = "document_format"',
+            '',
+            '',
+            ''
+            );
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            if ($resArray['column_name'] == 'document_format') {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    protected function updateDocumentAddFormat() {
+        $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
+        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+        if ($result) {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.documentAddFormatOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+                FALSE
+                );
+        } else {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
+                FALSE
+                );
+            $this->content .= $message->render();
+            return;
+        }
+        $this->content .= $message->render();
+        $sqlQuery = 'UPDATE `tx_dlf_documents` SET `document_format`="METS" WHERE `document_format` IS NULL OR `document_format`="";';
+        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+        if ($result) {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+                FALSE
+                );
+        } else {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesNotOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
+                FALSE
+                );
+            return;
+            
+        }
+        $this->content .= $message->render();
+    }
+    
+    protected function hasOldXpathColumnNames() {
+        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['database'];
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'column_name',
+            'INFORMATION_SCHEMA.COLUMNS',
+            'TABLE_NAME = "tx_dlf_metadataformat" AND TABLE_SCHEMA = "'.$database.'" AND column_name LIKE "xpath%"',
+            '',
+            '',
+            ''
+            );
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            if ($resArray['column_name'] == 'xpath'
+                || $resArray['column_name'] == 'xpath_sorting') {
+                    return TRUE;
+            }
+        }
+        return FALSE;
+    }
+    
+    protected function renameXpathToMetadataquery() {
+        $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath metadataquery text NOT NULL;';
+        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+        if ($result) {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQueryOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQuery', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+                FALSE
+                );
+        } else {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQueryNotOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQuery', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
+                FALSE
+                );
+        }
+        $this->content .= $message->render();
+        $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath_sorting metadataquery_sorting text NOT NULL;';
+        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+        if ($result) {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySortingOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySorting', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+                FALSE
+                );
+        } else {
+            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySortingNotOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySorting', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
+                FALSE
+                );
+        }
+        $this->content .= $message->render();
     }
 }

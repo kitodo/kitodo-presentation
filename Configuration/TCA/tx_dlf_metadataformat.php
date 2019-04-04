@@ -28,7 +28,7 @@ return [
         'fe_admin_fieldList' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'parent_id,encoded,xpath,xpath_sorting',
+        'showRecordFieldList' => 'parent_id,encoded,metadataquery,metadataquery_sorting',
     ],
     'columns' => [
         'parent_id' => [
@@ -49,9 +49,9 @@ return [
                 'maxitems' => 1,
             ],
         ],
-        'xpath' => [
+        'metadataquery' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.xpath',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.metadataquery',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -59,9 +59,9 @@ return [
                 'eval' => 'required,trim',
             ],
         ],
-        'xpath_sorting' => [
+        'metadataquery_sorting' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.xpath_sorting',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.metadataquery_sorting',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -79,7 +79,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.tab1, encoded;;;;1-1-1, xpath;;;;2-2-2, xpath_sorting, mandatory;;;;3-3-3'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.tab1, encoded;;;;1-1-1, metadataquery;;;;2-2-2, metadataquery_sorting, mandatory;;;;3-3-3'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],
