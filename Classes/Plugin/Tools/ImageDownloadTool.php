@@ -88,7 +88,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
-                $image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
+                $image['url'] = $this->doc->getDownloadLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 switch ($image['mimetype']) {
                     case 'image/jpeg':
