@@ -29,7 +29,7 @@
             <label index="tx_dlf_basket.feUser">FE user ID</label>
             <label index="tx_dlf_documents">Documents</label>
             <label index="tx_dlf_documents.prod_id">Production Identifier</label>
-            <label index="tx_dlf_documents.location">Location of METS file (URI)</label>
+            <label index="tx_dlf_documents.location">Location of METS file / IIIF manifest (URI)</label>
             <label index="tx_dlf_documents.record_id">Record Identifier</label>
             <label index="tx_dlf_documents.opac_id">OPAC/Local Identifier</label>
             <label index="tx_dlf_documents.union_id">Union Catalog/Foreign Identifier</label>
@@ -49,6 +49,9 @@
             <label index="tx_dlf_documents.owner">Owner</label>
             <label index="tx_dlf_documents.status">Status</label>
             <label index="tx_dlf_documents.status.default">default</label>
+			<label index="tx_dlf_documents.document_format">METS or IIIF</label>
+			<label index="tx_dlf_documents.document_format.mets">METS</label>
+			<label index="tx_dlf_documents.document_format.iiif">IIIF</label>
             <label index="tx_dlf_documents.tab1">Titledata</label>
             <label index="tx_dlf_documents.tab2">Identifier</label>
             <label index="tx_dlf_documents.tab3">Access</label>
@@ -85,12 +88,12 @@
             <label index="tx_dlf_metadata.tab3">Access</label>
             <label index="tx_dlf_metadataformat">Metadata Format</label>
             <label index="tx_dlf_metadataformat.encoded">Encoding</label>
-            <label index="tx_dlf_metadataformat.xpath">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace)</label>
-            <label index="tx_dlf_metadataformat.xpath_sorting">XPath for sorting (optional)</label>
+            <label index="tx_dlf_metadataformat.metadataquery">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object</label>
+            <label index="tx_dlf_metadataformat.metadataquery_sorting">XPath / JSONPath for sorting (optional)</label>
             <label index="tx_dlf_metadataformat.mandatory">Mandatory field?</label>
             <label index="tx_dlf_metadataformat.tab1">General</label>
             <label index="tx_dlf_formats">Data Formats</label>
-            <label index="tx_dlf_formats.type">METS Name</label>
+            <label index="tx_dlf_formats.type">Format Name (e.g. in METS)</label>
             <label index="tx_dlf_formats.root">Root Element</label>
             <label index="tx_dlf_formats.namespace">Namespace URI</label>
             <label index="tx_dlf_formats.class">Class Name</label>
@@ -165,7 +168,7 @@
             <label index="config.metadataFormats">Default metadata namespaces</label>
             <label index="config.cliDispatcher">CLI Dispatcher</label>
             <label index="config.useragent">DLF User-Agent: (default is "Kitodo.Presentation")</label>
-            <label index="config.caching">Cache parsed METS files: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
+            <label index="config.caching">Cache parsed METS files / IIIF manifests: caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</label>
             <label index="config.publishNewCollections">Publish new collections?: Should new collections automatically be published in the OAI-PMH interface? (default is "TRUE")</label>
             <label index="config.unhideOnIndex">Unhide indexed documents?: Should hidden documents be unhidden when re-indexing them? (default is "FALSE")</label>
             <label index="config.fileGrps">Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "MIN,DEFAULT,MAX")</label>
@@ -173,6 +176,9 @@
             <label index="config.fileGrpDownload">Download fileGrp: @USE attribute value (default is "DOWNLOAD")</label>
             <label index="config.fileGrpFulltext">Fulltext fileGrp: @USE attribute value (default is "FULLTEXT")</label>
             <label index="config.fileGrpAudio">Audio fileGrp: @USE attribute value (default is "AUDIO")</label>
+			<label index="config.indexAnnotations">Index IIIF annotations with motivation "painting" as fulltext</label>
+			<label index="config.iiifThumbnailWidth">Maximum thumbnail width for IIIF images without a thumbnail declaration</label>
+			<label index="config.iiifThumbnailHeight">Maximum thumbnail height for IIIF images without a thumbnail declaration</label>
             <label index="config.solrConnect">Solr Connection</label>
             <label index="config.solrHttps">Use https: (default is "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
@@ -197,7 +203,7 @@
             <label index="tx_dlf_basket.feUser">FE User ID</label>
             <label index="tx_dlf_documents">Dokumente</label>
             <label index="tx_dlf_documents.prod_id">Production Identifikator</label>
-            <label index="tx_dlf_documents.location">Speicherort der METS-Datei (URI)</label>
+            <label index="tx_dlf_documents.location">Speicherort der METS-Datei / des IIIF-Manifests (URI)</label>
             <label index="tx_dlf_documents.record_id">Datensatz Identifikator</label>
             <label index="tx_dlf_documents.opac_id">OPAC/Lokaler Identifikator</label>
             <label index="tx_dlf_documents.union_id">Verbundkatalog/Fremder Identifikator</label>
@@ -217,6 +223,9 @@
             <label index="tx_dlf_documents.owner">Besitzer</label>
             <label index="tx_dlf_documents.status">Status</label>
             <label index="tx_dlf_documents.status.default">Standard</label>
+			<label index="tx_dlf_documents.document_format">METS oder IIIF</label>
+			<label index="tx_dlf_documents.document_format.mets">METS</label>
+			<label index="tx_dlf_documents.document_format.iiif">IIIF</label>
             <label index="tx_dlf_documents.tab1">Titeldaten</label>
             <label index="tx_dlf_documents.tab2">Identifier</label>
             <label index="tx_dlf_documents.tab3">Zugriff</label>
@@ -253,12 +262,12 @@
             <label index="tx_dlf_metadata.tab3">Zugriff</label>
             <label index="tx_dlf_metadataformat">Metadatenformat</label>
             <label index="tx_dlf_metadataformat.encoded">Datenformat</label>
-            <label index="tx_dlf_metadataformat.xpath">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum)</label>
-            <label index="tx_dlf_metadataformat.xpath_sorting">XPath für Sortierfeld (optional)</label>
+            <label index="tx_dlf_metadataformat.metadataquery">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum) oder JSONPath (relativ zum Ressourcen-JSON-Objekt</label>
+            <label index="tx_dlf_metadataformat.metadataquery_sorting">XPath / JSONPath für Sortierfeld (optional)</label>
             <label index="tx_dlf_metadataformat.mandatory">Pflichtfeld?</label>
             <label index="tx_dlf_metadataformat.tab1">Allgemein</label>
             <label index="tx_dlf_formats">Datenformate</label>
-            <label index="tx_dlf_formats.type">Bezeichnung in METS</label>
+            <label index="tx_dlf_formats.type">Bezeichnung des Formats (z.B. in METS)</label>
             <label index="tx_dlf_formats.root">Root-Element</label>
             <label index="tx_dlf_formats.namespace">Namensraum URI</label>
             <label index="tx_dlf_formats.class">Klassenname</label>
@@ -333,7 +342,7 @@
             <label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
             <label index="config.cliDispatcher">CLI Dispatcher</label>
             <label index="config.useragent">DLF User-Agent: (Standard ist "Kitodo.Presentation")</label>
-            <label index="config.caching">Eingelesene METS Dateien zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
+            <label index="config.caching">Eingelesene METS Dateien / IIIF-Manifeste zwischenspeichern: Dies kann die Geschwindigkeit geringfügig verbessern, führt aber zu einer sehr großen "fe_session_data" Tabelle (Standard ist "FALSE")</label>
             <label index="config.publishNewCollections">Neue Kollektionen publizieren?: Sollen neue Kollektionen automatisch in der OAI-PMH-Schnittstelle veröffentlicht werden? (Standard ist "TRUE")</label>
             <label index="config.unhideOnIndex">Indexierte Dokumente einblenden?: Sollen ausgeblendete Dokumente bei der erneuten Indexierung wieder eingeblendet werden? (Standard ist "FALSE")</label>
             <label index="config.fileGrps">Seiten fileGrps: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "MIN,DEFAULT,MAX")</label>
@@ -341,6 +350,9 @@
             <label index="config.fileGrpDownload">Download fileGrp: @USE Attributwert der Downloads (Standard ist "DOWNLOAD")</label>
             <label index="config.fileGrpFulltext">Volltext fileGrp: @USE Attributwert der Volltexte (Standard ist "FULLTEXT")</label>
             <label index="config.fileGrpAudio">Audio fileGrp: @USE Attributwert der Audiodateien (Standard ist "AUDIO")</label>
+			<label index="config.indexAnnotations">IIIF-Annotationen mit Motivation "painting" als Volltext im Suchindex speichern</label>
+			<label index="config.iiifThumbnailWidth">Maximale Thumbnail-Breite für IIIF-Images ohne Thumbnail-Angaben</label>
+			<label index="config.iiifThumbnailHeight">Maximale Thumbnail-Höhe für IIIF-Images ohne Thumbnail-Angaben</label>
             <label index="config.solrConnect">Solr Verbindung</label>
             <label index="config.solrHttps">Https verwenden: (Standard ist "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
