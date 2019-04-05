@@ -16,9 +16,9 @@
  * @param {number=} opt_offset
  */
 var DlfIiifAnnotationParser = function(opt_imageObj, opt_width, opt_height, opt_offset) {
-	
-	// get width and height either from image info.json or from canvas information
-	
+    
+    // get width and height either from image info.json or from canvas information
+    
     /**
      * @type {Object|undefined}
      * @private
@@ -68,17 +68,17 @@ DlfIiifAnnotationParser.prototype.parseAnnotation = function(annotation) {
     id = this.generateId_(xywh.width, xywh.height, xywh.x1, xywh.y1),
     feature = new ol.Feature(geometry);
 
-	feature.setId(id);
-	feature.setProperties({
-	    'type': 'annotation',
-	    'width': xywh.width,
-	    'height': xywh.height,
-	    'x1': xywh.x1,
-	    'y1': xywh.y1,
-	    'x2': xywh.x2,
-	    'y2': xywh.y2,
-	    'content': annotation.resource.chars
-	});
+    feature.setId(id);
+    feature.setProperties({
+        'type': 'annotation',
+        'width': xywh.width,
+        'height': xywh.height,
+        'x1': xywh.x1,
+        'y1': xywh.y1,
+        'x2': xywh.x2,
+        'y2': xywh.y2,
+        'content': annotation.resource.chars
+    });
 
     return feature;
 };
@@ -89,12 +89,12 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
 
     for (var i = 0; i < annotationList.resources.length; i++) {
     
-    	var annotation = annotationList.resources[i];
-    	
-    	var onCanvas = DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment(annotation.on);
-    	
-    	if (currentCanvas != onCanvas) continue;
-    	
+        var annotation = annotationList.resources[i];
+        
+        var onCanvas = DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment(annotation.on);
+        
+        if (currentCanvas != onCanvas) continue;
+        
         var feature = this.parseAnnotation(annotation);
 
         // Determine the dimension of the AnnotationList
@@ -107,23 +107,23 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
     };
 
     var width = maxX - minX,
-    	height = maxY - minY,
-    	listCoordinatesWithoutScale = [[[minX, minY], [maxX, minY], [maxX, maxY], [minX, maxY], [minX, minY]]],
-    	annotationListId = this.generateId_(width, height, minX, minY),
-    	scale = this.image_.width / this.width_,
-    	coordinatesRescale = [];
+        height = maxY - minY,
+        listCoordinatesWithoutScale = [[[minX, minY], [maxX, minY], [maxX, maxY], [minX, maxY], [minX, minY]]],
+        annotationListId = this.generateId_(width, height, minX, minY),
+        scale = this.image_.width / this.width_,
+        coordinatesRescale = [];
     
     for (var i = 0; i < listCoordinatesWithoutScale[0].length; i++) {
-    	coordinatesRescale.push([( scale * listCoordinatesWithoutScale[0][i][0]),
+        coordinatesRescale.push([( scale * listCoordinatesWithoutScale[0][i][0]),
             0 - (scale * listCoordinatesWithoutScale[0][i][1])]);
     };
-	listGeometry = new ol.geom.Polygon([coordinatesRescale]);
-	listFeature = new ol.Feature(listGeometry);
-    	
+    listGeometry = new ol.geom.Polygon([coordinatesRescale]);
+    listFeature = new ol.Feature(listGeometry);
+        
     listFeature.setId(annotationListId);
     listFeature.setProperties({
         'type': 'annotationList',
-    	'label': annotationList.label != null ? annotationList.label : '',
+        'label': annotationList.label != null ? annotationList.label : '',
         'width': maxX - minX + 1,
         'height': maxY - minY + 1,
         'x1': minX,
@@ -133,7 +133,7 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
         'annotations': annotationFeatures
     });
     listFeature.getAnnotations = function() {
-    	return annotationFeatures;
+        return annotationFeatures;
     };
     
     return listFeature;
@@ -171,23 +171,23 @@ DlfIiifAnnotationParser.prototype.parseGeometry = function(annotation) {
  */
 DlfIiifAnnotationParser.prototype.getXYWHForAnnotation = function (annotation) {
     var fragmentPos = annotation.on.indexOf("#xywh="),
-		xywh = fragmentPos > -1 ? annotation.on.substr(fragmentPos+6).split(",") : undefined;
+        xywh = fragmentPos > -1 ? annotation.on.substr(fragmentPos+6).split(",") : undefined;
     if (xywh === undefined) return {
         x1: 0,
         y1: 0,
-    	width: this.width,
+        width: this.width,
         height: this.height,
         x2: this.width - 1,
         y2: this.height - 1
     };
-	return {
+    return {
         x1: parseInt(xywh[0]),
         y1: parseInt(xywh[1]),
-    	width: parseInt(xywh[2]),
+        width: parseInt(xywh[2]),
         height: parseInt(xywh[3]),
         x2: parseInt(xywh[0]) + parseInt(xywh[2]) - 1,
         y2: parseInt(xywh[1]) + parseInt(xywh[3]) - 1
-	};
+    };
 };
 
 /**
@@ -197,8 +197,8 @@ DlfIiifAnnotationParser.prototype.getXYWHForAnnotation = function (annotation) {
  * @private
  */
 DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment = function(uri) {
-	if (uri == null) {
-		return null;
-	}
-	return uri.split("#")[0]; 
+    if (uri == null) {
+        return null;
+    }
+    return uri.split("#")[0]; 
 }
