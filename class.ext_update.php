@@ -381,15 +381,15 @@ class ext_update {
     protected function hasNoFormatForDocument() {
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['database'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'column_name',
+            'COLUMN_NAME',
             'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME = "tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND column_name = "document_format"',
+            'TABLE_NAME = "tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND COLUMN_NAME = "document_format"',
             '',
             '',
             ''
             );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            if ($resArray['column_name'] == 'document_format') {
+            if ($resArray['COLUMN_NAME'] == 'document_format') {
                 return false;
             }
         }
@@ -438,16 +438,16 @@ class ext_update {
     protected function hasOldXpathColumnNames() {
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['database'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'column_name',
+            'COLUMN_NAME',
             'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME = "tx_dlf_metadataformat" AND TABLE_SCHEMA = "'.$database.'" AND column_name LIKE "xpath%"',
+            'TABLE_NAME = "tx_dlf_metadataformat" AND TABLE_SCHEMA = "'.$database.'" AND COLUMN_NAME LIKE "xpath%"',
             '',
             '',
             ''
             );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            if ($resArray['column_name'] == 'xpath'
-                || $resArray['column_name'] == 'xpath_sorting') {
+            if ($resArray['COLUMN_NAME'] == 'xpath'
+                || $resArray['COLUMN_NAME'] == 'xpath_sorting') {
                     return TRUE;
             }
         }
