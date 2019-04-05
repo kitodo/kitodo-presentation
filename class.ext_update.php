@@ -400,47 +400,39 @@ class ext_update {
         $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.documentAddFormatOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
         } else {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
-            $this->content .= $message->render();
+            $this->content .= Helper::renderFlashMessages();
             return;
         }
         $this->content .= $message->render();
         $sqlQuery = 'UPDATE `tx_dlf_documents` SET `document_format`="METS" WHERE `document_format` IS NULL OR `document_format`="";';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                FALSE
-                );
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+               );
         } else {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
             return;
             
         }
-        $this->content .= $message->render();
+        $this->content .= Helper::renderFlashMessages();
     }
     
     protected function hasOldXpathColumnNames() {
@@ -466,42 +458,34 @@ class ext_update {
         $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath metadataquery text NOT NULL;';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQueryOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQuery', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
         } else {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQueryNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQuery', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
         }
         $this->content .= $message->render();
         $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath_sorting metadataquery_sorting text NOT NULL;';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySortingOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySorting', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
         } else {
-            $message = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySortingNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySorting', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-                FALSE
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
         }
-        $this->content .= $message->render();
+        $this->content .= Helper::renderFlashMessages();
     }
 }
