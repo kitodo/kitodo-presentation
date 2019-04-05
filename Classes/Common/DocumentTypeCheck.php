@@ -85,6 +85,7 @@ class DocumentTypeCheck {
          */
         switch ($toc[0]['type']) {
             case 'newspaper':
+                // TODO Delegate to METS document method. Newspapers currently not supported for IIIF in Kitodo.Presentation.
                 $nodes_year = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]');
                 if (count($nodes_year) > 1) {
                     // Multiple years means this is a newspaper's anchor file.
