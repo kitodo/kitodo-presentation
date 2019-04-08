@@ -15,7 +15,7 @@ $metadataDefaults = [
     'type' => [
         'format' => [
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => '$.metadata.[?(@.label==\'Manifest Type\')].value',
                 'metadataquery_sorting' => '',
             ],
@@ -44,7 +44,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => '$[label]',
                 'metadataquery_sorting' => '',
             ],
@@ -87,7 +87,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$.metadata.[?(@.label=='Author')].value",
                 'metadataquery_sorting' => '',
             ],
@@ -111,7 +111,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$.metadata.[?(@.label=='Place of publication')].value",
                 'metadataquery_sorting' => '',
             ],
@@ -135,7 +135,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate/@when',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$.metadata.[?(@.label=='Date of publication')].value",
                 'metadataquery_sorting' => '',
             ],
@@ -183,7 +183,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$.metadata.[?(@.label=='Collection')].value",
                 'metadataquery_sorting' => '',
             ],
@@ -212,7 +212,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$.metadata.[?(@.label=='Owner')].value",
                 'metadataquery_sorting' => '',
             ],
@@ -265,7 +265,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$.metadata.[?(@.label=='URN')].value",
                 'metadataquery_sorting' => '',
             ],
@@ -342,7 +342,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$['@id']",
                 'metadataquery_sorting' => '',
             ],
@@ -371,7 +371,7 @@ $metadataDefaults = [
                 'metadataquery_sorting' => '',
             ],
             [
-                'encoded' => 3,
+                'encoded' => 5,
                 'metadataquery' => "$.metadata.[?(@.label=='Kitodo')].value",
                 'metadataquery_sorting' => '',
             ],
