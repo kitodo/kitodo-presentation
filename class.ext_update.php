@@ -132,7 +132,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
             'tx_dlf_formats',
-            'tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
+            'tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
                 .Helper::whereClause('tx_dlf_formats'),
             '',
             '',
@@ -379,7 +379,7 @@ class ext_update {
     }
     
     protected function hasNoFormatForDocument() {
-        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['database'];
+        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'COLUMN_NAME',
             'INFORMATION_SCHEMA.COLUMNS',
@@ -436,7 +436,7 @@ class ext_update {
     }
     
     protected function hasOldXpathColumnNames() {
-        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['database'];
+        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'COLUMN_NAME',
             'INFORMATION_SCHEMA.COLUMNS',
