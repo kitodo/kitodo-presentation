@@ -41,7 +41,7 @@ class AnnotationTool extends AbstractPlugin {
     public function main($content, $conf) {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
-        $this->conf = Helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+        $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
         // Load current document.
         $this->loadDocument();
         if ($this->doc === NULL || $this->doc->numPages < 1) {
