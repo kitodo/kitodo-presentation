@@ -11,8 +11,6 @@ namespace Kitodo\Dlf\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Kitodo\Dlf\Common\Helper;
-
 /**
  * Hooks and helper for \TYPO3\CMS\Core\Utility\ExtensionManagementUtility
  *
@@ -37,7 +35,7 @@ class ExtensionManagementUtility extends \TYPO3\CMS\Core\Utility\ExtensionManage
      * @return void
      */
     public static function addPItoST43($key, $class, $suffix = '', $type = 'list_type', $cached = FALSE) {
-        $internalName = 'tx_'.$key.'_'.strtolower(Helper::getUnqualifiedClassName($class));
+        $internalName = 'tx_'.$key.$suffix;
         // General plugin
         $typoscript = 'plugin.'.$internalName.' = USER'.($cached ? '' : '_INT')."\n";
         $typoscript .= 'plugin.'.$internalName.'.userFunc = '.$class.'->main'."\n";
