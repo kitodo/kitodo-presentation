@@ -551,7 +551,7 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see Document::getParentDocumentUid()
      */
-    protected function getParentDocumentUidForSaving()
+    protected function getParentDocumentUidForSaving($pid, $core)
     {
         $partof = 0;
         // Get the closest ancestor of the current document which has a MPTR child.
@@ -679,8 +679,8 @@ final class MetsDocument extends Document
             if (!empty($extConf['fileGrpFulltext'])
                 && in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
                     $this->hasFulltext = TRUE;
-                }
-                $this->fileGrpsLoaded = TRUE;
+            }
+            $this->fileGrpsLoaded = TRUE;
         }
         return $this->fileGrps;
     }
@@ -778,7 +778,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
      */
@@ -832,7 +832,7 @@ final class MetsDocument extends Document
         $xml->formatOutput = TRUE;
         return $xml->saveXML();
     }
-    
+
     /**
      * This magic method is executed after the object is deserialized
      * @see __sleep()

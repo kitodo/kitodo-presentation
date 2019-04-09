@@ -38,7 +38,7 @@ class IiifUrlReader implements UrlReaderInterface {
     public function getContent($url) {
         return GeneralUtility::getUrl($url);
     }
-    
+
     /**
      * Return a singleton instance.
      *

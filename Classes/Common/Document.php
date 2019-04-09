@@ -549,7 +549,7 @@ abstract class Document {
      *
      * @access public
      *
-     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property 
+     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
      *
      * @return string The physical structure node's / IIIF resource's raw text
@@ -677,7 +677,7 @@ abstract class Document {
     }
 
     protected function getTreeDepth($structure, $depth, $logId) {
-        foreach($structure as $element) {
+        foreach ($structure as $element) {
             if ($element['id'] == $logId) {
                 return $depth;
             } elseif (array_key_exists('children', $element)) {
@@ -711,7 +711,7 @@ abstract class Document {
      * @return boolean true if $preloadedDocument can actually be reused, false if it has to be loaded again
      */
     protected abstract function setPreloadedDocument($preloadedDocument);
-    
+
     /**
      * METS/IIIF specific part of loading a location
      *
@@ -962,7 +962,7 @@ abstract class Document {
         }
         $metadata['owner'][0] = $ownerUid;
         // Get UID of parent document.
-        $partof = $this->getParentDocumentUidForSaving();
+        $partof = $this->getParentDocumentUidForSaving($pid, $core);
         // Use the date of publication or title as alternative sorting metric for parts of multi-part works.
         if (!empty($partof)) {
             if (empty($metadata['volume'][0])
@@ -1071,7 +1071,7 @@ abstract class Document {
      * Currently only applies to METS documents.
      * @return int The parent document's id.
      */
-    protected abstract function getParentDocumentUidForSaving();
+    protected abstract function getParentDocumentUidForSaving($pid, $core);
 
     /**
      * This returns $this->hasFulltext via __get()
@@ -1223,7 +1223,7 @@ abstract class Document {
 
     /**
      * This returns the smLinks between logical and physical structMap (METS) and models the
-     * relation between IIIF Canvases and Manifests / Ranges in the same way 
+     * relation between IIIF Canvases and Manifests / Ranges in the same way
      *
      * @access protected
      *
@@ -1368,7 +1368,7 @@ abstract class Document {
      * @param integer $uid: The UID of the document to parse or URL to XML file
      * @param integer $pid: If > 0, then only document with this PID gets loaded
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
-     * or IiifResourceInterface that has been loaded to determine the basic document format. 
+     * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
      */

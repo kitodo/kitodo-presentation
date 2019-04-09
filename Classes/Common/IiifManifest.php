@@ -254,7 +254,6 @@ final class IiifManifest extends Document
             if (!empty($this->iiif->getDefaultCanvases())) {
                 // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
                 $canvasOrder = 0;
-                $serviceProfileCache = [];
                 foreach ($this->iiif->getDefaultCanvases() as $canvas) {
                     $canvasOrder++;
                     $thumbnailUrl = $canvas->getThumbnailUrl();
@@ -316,7 +315,7 @@ final class IiifManifest extends Document
                     if (isset($thumbnailUrl)) {
                         $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseThumbs] = $thumbnailUrl;
                     }
-                    if (isSet($fileUseDownload)) {
+                    if (isset($fileUseDownload)) {
                         $pdfRenderingUrls = $canvas->getRenderingUrlsForFormat('application/pdf');
                         if (!empty($pdfRenderingUrls)) {
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseDownload] = $pdfRenderingUrls[0];
@@ -352,7 +351,9 @@ final class IiifManifest extends Document
      */
     public function getFileLocation($id)
     {
-        if ($id == null) return null;
+        if ($id == null) {
+            return null;
+        }
         $resource = $this->iiif->getContainedResourceById($id);
         if (isset($resource)) {
             if ($resource instanceof CanvasInterface) {
@@ -426,7 +427,6 @@ final class IiifManifest extends Document
     }
 
     protected function getLogicalStructureInfo(IiifResourceInterface $resource, $recursive = false, &$processedStructures = array()) {
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
         $details = array ();
         $details['id'] = $resource->getId();
         $details['dmdId'] = '';
@@ -442,7 +442,6 @@ final class IiifManifest extends Document
                 $details['type'] = $metadata['type'][0];
             }
         }
-        $dummy = array();
         $details['thumbnailId'] = $resource->getThumbnailUrl();
         $details['points'] = '';
         // Load strucural mapping
@@ -485,8 +484,7 @@ final class IiifManifest extends Document
                 foreach ($rangesToAdd as $range) {
                     $rootRanges[] = $range;
                 }
-                foreach ($rootRanges as $range)
-                {
+                foreach ($rootRanges as $range) {
                     if ((array_search($range->getId(), $processedStructures) == false)) {
                         $details['children'][] = $this->getLogicalStructureInfo($range, TRUE, $processedStructures);
                     }
@@ -530,7 +528,7 @@ final class IiifManifest extends Document
             }
             if (!empty($iiifResource->getMetadata())) {
                 $result['metadata'] = [];
-                foreach ($iiifResource->getMetadataForDisplay() as $metadata)  {
+                foreach ($iiifResource->getMetadataForDisplay() as $metadata) {
                     $result['metadata'][$metadata['label']] = $metadata['value'];
                 }
             }
@@ -684,11 +682,11 @@ final class IiifManifest extends Document
      *
      * @see Document::getParentDocumentUidForSaving()
      */
-    protected function getParentDocumentUidForSaving()
+    protected function getParentDocumentUidForSaving($pid, $core)
     {
         // Do nothing.
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -767,7 +765,7 @@ final class IiifManifest extends Document
         IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
         IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
         $resource = IiifHelper::loadIiifResource($content);
-        if ($resource != null ){
+        if ($resource != null ) {
             if ($resource instanceof ManifestInterface) {
                 $this->iiif = $resource;
                 return true;
@@ -863,7 +861,7 @@ final class IiifManifest extends Document
         IiifHelper::setUrlReader(IiifUrlReader::getInstance());
         IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
         IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
-        $resouce = IiifHelper::loadIiifResource($this->asJson);
+        $resource = IiifHelper::loadIiifResource($this->asJson);
         if ($resource != null && $resource instanceof ManifestInterface) {
             $this->asJson='';
             $this->iiif = $resource;

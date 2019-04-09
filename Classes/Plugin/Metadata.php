@@ -120,7 +120,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Get titledata?
         if (empty($metadata) || ($this->conf['rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
-            $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId ,$this->conf['pages']) : $this->doc->getTitleData($this->conf['pages']);
+            $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId, $this->conf['pages']) : $this->doc->getTitleData($this->conf['pages']);
             $data['_id'] = $this->doc->toplevelId;
             array_unshift($metadata, $data);
         }
@@ -179,7 +179,9 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                     // Reset content object's data array.
                     $this->cObj->data = $cObjData;
                     if (!is_array($group)) {
-                        if ($key == '_id') continue;
+                        if ($key == '_id') {
+                            continue;
+                        }
                         $this->cObj->data[$key] = $group;
                         if (IRI::isAbsoluteIri($this->cObj->data[$key])
                             && (($scheme = (new IRI($this->cObj->data[$key]))->getScheme()) == 'http' || $scheme == 'https')) {
@@ -193,7 +195,9 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                     } else {
                         // Load all the metadata values into the content object's data array.
                         foreach ($group as $label => $value) {
-                            if ($label == '_id') continue;
+                            if ($label == '_id') {
+                                continue;
+                            }
                             if (is_array($value)) {
                                 $this->cObj->data[$label] = implode($this->conf['separator'], $value);
                             } else {

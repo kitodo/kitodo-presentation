@@ -453,7 +453,7 @@ class ext_update {
         }
         return FALSE;
     }
-    
+
     protected function renameXpathToMetadataquery() {
         $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath metadataquery text NOT NULL;';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
@@ -470,7 +470,7 @@ class ext_update {
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
         }
-        $this->content .= $message->render();
+        $this->content .= Helper::renderFlashMessages();
         $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath_sorting metadataquery_sorting text NOT NULL;';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {

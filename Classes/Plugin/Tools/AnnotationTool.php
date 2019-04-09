@@ -27,7 +27,7 @@ use Kitodo\Dlf\Common\Helper;
  */
 class AnnotationTool extends AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugin/Tools/AnnotationTool.php';
-    
+
     /**
      * The main method of the PlugIn
      *
