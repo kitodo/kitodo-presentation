@@ -515,6 +515,8 @@ final class IiifManifest extends Document
      * @param boolean $withRelated: add related links / homepage to the return value
      *
      * @return array
+     *
+     * @todo This method is still in experimental; the method signature may change.
      */
     public function getManifestMetadata($id, $cPid = 0, $withDescription = true, $withRights = true, $withRelated = true) {
         if (!empty($this->originalMetadataArray[$id])) {
