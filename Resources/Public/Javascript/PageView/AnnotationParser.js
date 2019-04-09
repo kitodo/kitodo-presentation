@@ -64,9 +64,9 @@ DlfIiifAnnotationParser.prototype.generateId_ = function(width, height, hpos, vp
  */
 DlfIiifAnnotationParser.prototype.parseAnnotation = function(annotation) {
     var geometry = this.parseGeometry(annotation),
-    xywh = this.getXYWHForAnnotation(annotation)
-    id = this.generateId_(xywh.width, xywh.height, xywh.x1, xywh.y1),
-    feature = new ol.Feature(geometry);
+        xywh = this.getXYWHForAnnotation(annotation),
+        id = this.generateId_(xywh.width, xywh.height, xywh.x1, xywh.y1),
+        feature = new ol.Feature(geometry);
 
     feature.setId(id);
     feature.setProperties({
@@ -117,8 +117,8 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
         coordinatesRescale.push([( scale * listCoordinatesWithoutScale[0][i][0]),
             0 - (scale * listCoordinatesWithoutScale[0][i][1])]);
     };
-    listGeometry = new ol.geom.Polygon([coordinatesRescale]);
-    listFeature = new ol.Feature(listGeometry);
+    var listGeometry = new ol.geom.Polygon([coordinatesRescale]),
+        listFeature = new ol.Feature(listGeometry);
         
     listFeature.setId(annotationListId);
     listFeature.setProperties({

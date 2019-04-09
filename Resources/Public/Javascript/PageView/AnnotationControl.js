@@ -40,7 +40,7 @@ class DlfAnnotationControl {
         
         this.canvas = annotationContainers.canvas;
         
-        this.annotationData;        
+        this.annotationData = undefined;
         
         this.dic = $('#tx-dlf-tools-annotations').length > 0 && $('#tx-dlf-tools-annotations').attr('data-dic') ?
             dlfUtils.parseDataDic($('#tx-dlf-tools-annotations')) :
