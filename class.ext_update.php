@@ -377,7 +377,7 @@ class ext_update {
         );
         $this->content .= Helper::renderFlashMessages();
     }
-    
+
     protected function hasNoFormatForDocument() {
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -395,7 +395,7 @@ class ext_update {
         }
         return true;
     }
-    
+
     protected function updateDocumentAddFormat() {
         $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
@@ -414,7 +414,7 @@ class ext_update {
             $this->content .= Helper::renderFlashMessages();
             return;
         }
-        $this->content .= $message->render();
+        $this->content .= Helper::renderFlashMessages();
         $sqlQuery = 'UPDATE `tx_dlf_documents` SET `document_format`="METS" WHERE `document_format` IS NULL OR `document_format`="";';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
@@ -430,11 +430,11 @@ class ext_update {
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
             return;
-            
+
         }
         $this->content .= Helper::renderFlashMessages();
     }
-    
+
     protected function hasOldXpathColumnNames() {
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(

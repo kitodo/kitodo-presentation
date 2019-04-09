@@ -85,7 +85,7 @@ final class MetsDocument extends Document
      * @access protected
      */
     protected $formatsLoaded = FALSE;
-    
+
     /**
      * This holds the XML file's METS part as \SimpleXMLElement object
      *
@@ -93,7 +93,7 @@ final class MetsDocument extends Document
      * @access protected
      */
     protected $mets;
-    
+
     /**
      * This holds the whole XML file as \SimpleXMLElement object
      *
@@ -101,9 +101,9 @@ final class MetsDocument extends Document
      * @access protected
      */
     protected $xml;
-    
+
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::establishRecordId()
      */
@@ -121,9 +121,9 @@ final class MetsDocument extends Document
             }
         }
     }
-    
+
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getDownloadLocation()
      */
@@ -150,7 +150,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getFileLocation()
      */
@@ -165,7 +165,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getFileMimeType()
      */
@@ -180,7 +180,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getLogicalStructure()
      */
@@ -299,7 +299,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getMetadata()
      */
@@ -469,7 +469,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getRawText()
      */
@@ -497,7 +497,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::init()
      */
@@ -515,7 +515,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::loadLocation()
      */
@@ -577,7 +577,7 @@ final class MetsDocument extends Document
      * @see Document::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument) {
-        
+
         if ($preloadedDocument instanceof \SimpleXMLElement) {
             $this->xml = $preloadedDocument;
             return true;
@@ -694,7 +694,7 @@ final class MetsDocument extends Document
         }
         // Set current PID for metadata definitions.
     }
-    
+
     /**
      * This returns $this->mets via __get()
      *
@@ -761,7 +761,7 @@ final class MetsDocument extends Document
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getSmLinks()
      */
@@ -818,7 +818,7 @@ final class MetsDocument extends Document
         $this->asXML = $this->xml->asXML();
         return ['uid', 'pid', 'recordId', 'parentId', 'asXML'];
     }
-    
+
     /**
      * This magic method is used for setting a string value for the object
      *

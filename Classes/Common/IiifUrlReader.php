@@ -29,7 +29,7 @@ class IiifUrlReader implements UrlReaderInterface {
      * @var IiifUrlReader
      */
     protected static $instance;
-    
+
     /**
      *
      * {@inheritDoc}

@@ -45,26 +45,26 @@ final class IiifManifest extends Document
      * @access protected
      */
     protected $asJson = '';
-    
+
     /**
      * A PHP object representation of a IIIF manifest.
      * @var ManifestInterface
      */
     protected $iiif;
-    
+
     /**
      * 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif confrms to:
      * IIIF Metadata API 1, IIIF Presentation API 2 or 3
      * @var string
      */
     protected $iiifVersion;
-    
+
     /**
      * Document has already been analyzed if it contains fulltext for the Solr index
      * @var boolean
      */
     protected $hasFulltextSet = false;
-    
+
     /**
      * This holds the original manifest's parsed metadata array with their corresponding
      * resource (Manifest / Sequence / Range) ID as array key
@@ -73,13 +73,13 @@ final class IiifManifest extends Document
      * @access protected
      */
     protected $originalMetadataArray = array ();
-    
+
     /**
      * Holds the mime types of linked resources in the manifest (extreacted during parsing) for later use.
      * @var array
      */
     protected $mimeTypes = [];
-    
+
     /**
      * The extension key
      *
@@ -87,7 +87,7 @@ final class IiifManifest extends Document
      * @access public
      */
     public static $extKey = 'dlf';
-    
+
     /**
      * {@inheritDoc}
      * @see Document::establishRecordId()
