@@ -1,12 +1,13 @@
 Kitodo.Presentation
 ===================
 
-[![Join the chat at https://gitter.im/Kitodo/Presentation](https://badges.gitter.im/Kitodo/Presentation.svg)](https://gitter.im/Kitodo/Presentation?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Kitodo.Presentation is a feature-rich framework for building a METS-based digital library. It is part of the Kitodo Digital Library Suite.
 
 Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://typo3.org), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media. It implements international standards such as [IIIF Image API](http://iiif.io/api/image), [OAI Protocol for Metadata Harvesting](http://www.openarchives.org/OAI/openarchivesprotocol.html), [METS](http://www.loc.gov/standards/mets), [MODS](http://www.loc.gov/standards/mods), [TEI](http://www.tei-c.org), [ALTO](http://www.loc.gov/standards/alto), and can be configured to support any other descriptive XML format using simple XPath expressions.
 
+<a href="https://gitter.im/Kitodo/Presentation">
+  <img alt="Join the Gitter chat!" src="https://badges.gitter.im/Kitodo/Presentation.svg"/>
+</a>
 <a href="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master">
   <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master"/>
 </a>
