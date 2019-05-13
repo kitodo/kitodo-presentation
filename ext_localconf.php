@@ -47,14 +47,14 @@ if (!defined('DEVLOG_SEVERITY_ERROR')) {
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Validator::class, '_validator', 'list_type', FALSE);
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
-\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\FulltextTool::class, '_toolsFulltext', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsFulltext'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.toolsFulltext';
-\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageDownloadTool::class, '_toolsImageDownload', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsImageDownload'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.toolsImageDownload';
-\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageManipulationTool::class, '_toolsImageManipulation', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsImageManipulation'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.toolsImageManipulation';
-\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\PdfDownloadTool::class, '_toolsPdfDownload', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsPdfDownload'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.toolsPdfDownload';
+\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\FulltextTool::class, '_fulltexttool', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
+\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageDownloadTool::class, '_imagedownloadtool', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
+\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageManipulationTool::class, '_imagemanipulationtool', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagemanipulationtool';
+\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\PdfDownloadTool::class, '_pdfdownloadtool', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.pdfdownloadtool';
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
