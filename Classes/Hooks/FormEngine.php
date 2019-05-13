@@ -52,28 +52,12 @@ class FormEngine {
      * @return void
      */
     public function itemsProcFunc_collectionList(&$params, &$pObj) {
-        $pages = $params['row']['pages'];
-        if (!empty($pages)) {
-            foreach ($pages as $page) {
-                if ($page['uid'] > 0) {
-                    $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                        'label,uid',
-                        'tx_dlf_collections',
-                        'pid='.intval($page['uid'])
-                            .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
-                            .Helper::whereClause('tx_dlf_collections'),
-                        '',
-                        'label',
-                        ''
-                    );
-                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                            $params['items'][] = $resArray;
-                        }
-                    }
-                }
-            }
-        }
+        $this->itemsProcFunc_generateList(
+            $params,
+            'label,uid',
+            'tx_dlf_collections',
+            'label'
+        );
     }
 
     /**
@@ -87,29 +71,13 @@ class FormEngine {
      * @return void
      */
     public function itemsProcFunc_extendedSearchList(&$params, &$pObj) {
-        $pages = $params['row']['pages'];
-        if (!empty($pages)) {
-            foreach ($pages as $page) {
-                if ($page['uid'] > 0) {
-                    $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                        'label,index_name',
-                        'tx_dlf_metadata',
-                        'index_indexed=1'
-                            .' AND pid='.intval($page['uid'])
-                            .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
-                            .Helper::whereClause('tx_dlf_metadata'),
-                        '',
-                        'sorting',
-                        ''
-                    );
-                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                            $params['items'][] = $resArray;
-                        }
-                    }
-                }
-            }
-        }
+        $this->itemsProcFunc_generateList(
+            $params,
+            'label,index_name',
+            'tx_dlf_metadata',
+            'sorting',
+            'AND index_indexed=1'
+        );
     }
 
     /**
@@ -123,19 +91,42 @@ class FormEngine {
      * @return void
      */
     public function itemsProcFunc_facetsList(&$params, &$pObj) {
+        $this->itemsProcFunc_generateList(
+            $params,
+            'label,index_name',
+            'tx_dlf_metadata',
+            'sorting',
+            'AND is_facet=1'
+        );
+    }
+
+    /**
+     * Get list items from database
+     *
+     * @access protected
+     *
+     * @param array &$params: An array with parameters
+     * @param string $fields: Comma-separated list of fields to fetch
+     * @param string $table: Table name to fetch the items from
+     * @param string $sorting: Field to sort items by (optionally appended by 'ASC' or 'DESC')
+     * @param string $where: Additional WHERE clause
+     * @param boolean $localize: Add check for localized records?
+     *
+     * @return void
+     */
+    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = TRUE) {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
             foreach ($pages as $page) {
                 if ($page['uid'] > 0) {
                     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                        'label,index_name',
-                        'tx_dlf_metadata',
-                        'is_facet=1'
-                            .' AND pid='.intval($page['uid'])
-                            .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
-                            .Helper::whereClause('tx_dlf_metadata'),
+                        $fields,
+                        $table,
+                        '(pid='.intval($page['uid']).' '.$where.')'
+                            .($localize ? ' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)' : '')
+                            .Helper::whereClause($table),
                         '',
-                        'sorting',
+                        $sorting,
                         ''
                     );
                     if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -159,26 +150,12 @@ class FormEngine {
      * @return void
      */
     public function itemsProcFunc_libraryList(&$params, &$pObj) {
-        $page = $params['row']['pages'];
-        if (!empty($page)) {
-            if ($page > 0) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'label,uid',
-                    'tx_dlf_libraries',
-                    'pid='.intval($page)
-                        .' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)'
-                        .Helper::whereClause('tx_dlf_libraries'),
-                    '',
-                    'label',
-                    ''
-                );
-                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                    while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                        $params['items'][] = $resArray;
-                    }
-                }
-            }
-        }
+        $this->itemsProcFunc_generateList(
+            $params,
+            'label,uid',
+            'tx_dlf_libraries',
+            'label'
+        );
     }
 
     /**
@@ -192,25 +169,14 @@ class FormEngine {
      * @return void
      */
     public function itemsProcFunc_solrList(&$params, &$pObj) {
-        $page = $params['row']['pages'];
-        if (!empty($page)) {
-            if ($page > 0) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'label,uid',
-                    'tx_dlf_solrcores',
-                    'pid IN ('.intval($page).',0)'
-                        .Helper::whereClause('tx_dlf_solrcores'),
-                    '',
-                    'label',
-                    ''
-                );
-                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                    while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                        $params['items'][] = $resArray;
-                    }
-                }
-            }
-        }
+        $this->itemsProcFunc_generateList(
+            $params,
+            'label,uid',
+            'tx_dlf_solrcores',
+            'label',
+            'OR pid=0',
+            FALSE
+        );
     }
 
     /**
