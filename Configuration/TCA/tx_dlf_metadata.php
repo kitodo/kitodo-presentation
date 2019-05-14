@@ -48,7 +48,7 @@ return [
                     ['LLL:EXT:lang/locallang_general.xml:LGL.allLanguages', -1],
                     ['LLL:EXT:lang/locallang_general.xml:LGL.default_value', 0],
                 ],
-                'default' => 0
+                'default' => 0,
             ],
         ],
         'l18n_parent' => [
@@ -58,16 +58,17 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_dlf_metadata',
+                'foreign_table_where' => 'AND tx_dlf_metadata.pid=###CURRENT_PID### AND tx_dlf_metadata.sys_language_uid IN (-1,0) ORDER BY label ASC',
                 'items' => [
                     ['', 0],
                 ],
-                'foreign_table' => 'tx_dlf_metadata',
-                'foreign_table_where' => 'AND tx_dlf_metadata.pid=###CURRENT_PID### AND tx_dlf_metadata.sys_language_uid IN (-1,0) ORDER BY label ASC',
+                'default' => 0,
             ],
         ],
         'l18n_diffsource' => [
             'config' => [
-                'type' => 'passthrough'
+                'type' => 'passthrough',
             ],
         ],
         'hidden' => [
@@ -86,6 +87,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'index_name' => [
@@ -97,6 +99,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,uniqueInPid',
+                'default' => '',
             ],
         ],
         'format' => [
@@ -131,6 +134,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'wrap' => [
@@ -182,7 +186,7 @@ return [
                 'type' => 'input',
                 'size' => 5,
                 'max' => 64,
-                'default' => '1.00',
+                'default' => 1.0,
                 'eval' => 'double2',
             ],
         ],

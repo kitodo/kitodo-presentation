@@ -37,6 +37,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,unique',
+                'default' => '',
             ],
         ],
         'root' => [
@@ -46,6 +47,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,unique',
+                'default' => '',
             ],
         ],
         'namespace' => [
@@ -55,6 +57,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'required,nospace,unique',
+                'default' => '',
             ],
         ],
         'class' => [
@@ -64,6 +67,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'nospace,unique',
+                'default' => '',
             ],
         ],
     ],

@@ -37,6 +37,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'index_name' => [
@@ -46,6 +47,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'alphanum,unique',
+                'default' => '',
             ],
         ],
     ],

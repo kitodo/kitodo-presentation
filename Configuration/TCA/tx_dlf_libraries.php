@@ -55,16 +55,17 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_dlf_libraries',
+                'foreign_table_where' => 'AND tx_dlf_libraries.pid=###CURRENT_PID### AND tx_dlf_libraries.sys_language_uid IN (-1,0)',
                 'items' => [
                     ['', 0],
                 ],
-                'foreign_table' => 'tx_dlf_libraries',
-                'foreign_table_where' => 'AND tx_dlf_libraries.pid=###CURRENT_PID### AND tx_dlf_libraries.sys_language_uid IN (-1,0)',
+                'default' => 0,
             ],
         ],
         'l18n_diffsource' => [
             'config' => [
-                'type' => 'passthrough'
+                'type' => 'passthrough',
             ],
         ],
         'label' => [
@@ -75,6 +76,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'index_name' => [
@@ -85,6 +87,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,uniqueInPid',
+                'default' => '',
             ],
         ],
         'website' => [
@@ -95,6 +98,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'contact' => [
@@ -105,6 +109,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'image' => [
@@ -120,6 +125,7 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
+                'default' => '',
             ],
         ],
         'oai_label' => [
@@ -129,6 +135,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
+                'default' => '',
             ],
         ],
         'oai_base' => [
@@ -141,6 +148,7 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
+                'default' => 0,
             ],
         ],
         'opac_label' => [
@@ -150,6 +158,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
+                'default' => '',
             ],
         ],
         'opac_base' => [
@@ -160,6 +169,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'union_label' => [
@@ -169,6 +179,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
+                'default' => '',
             ],
         ],
         'union_base' => [
@@ -179,6 +190,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
     ],

@@ -39,6 +39,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'session_id' => [
@@ -46,8 +47,9 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'max' => 255,
+                'max' => 32,
                 'eval' => 'alphanum,unique',
+                'default' => '',
             ],
         ],
         'doc_ids' => [
@@ -57,13 +59,20 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'alphanum_x',
+                'default' => '',
             ],
         ],
         'fe_user_id' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.feUser',
             'config' => [
-                'type' => 'input',
-                'eval' => 'int,unique',
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'fe_users',
+                'foreign_table_where' => 'ORDER BY fe_users.username',
+                'size' => 1,
+                'minitems' => 1,
+                'maxitems' => 1,
+                'default' => 0,
             ],
         ],
     ],

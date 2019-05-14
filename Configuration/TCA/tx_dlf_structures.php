@@ -59,11 +59,12 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_dlf_structures',
+                'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY label ASC',
                 'items' => [
                     ['', 0],
                 ],
-                'foreign_table' => 'tx_dlf_structures',
-                'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY label ASC',
+                'default' => 0,
             ],
         ],
         'l18n_diffsource' => [
@@ -96,6 +97,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'index_name' => [
@@ -107,6 +109,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,uniqueInPid',
+                'default' => '',
             ],
         ],
         'oai_name' => [
@@ -118,6 +121,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'thumbnail' => [
