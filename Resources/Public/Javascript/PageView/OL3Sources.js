@@ -47,13 +47,15 @@ dlfViewerSource.findKey = function(obj, f, opt_this) {
  * @param {string} url
  */
 dlfViewerSource.tileLoadFunction = function(tileSize, tile, url) {
-    var img = tile.getImage();
+    var img = tile.getImage(),
+        tileWidth = Array.isArray(tileSize) ? tileSize[0] : tileSize,
+        tileHeight = Array.isArray(tileSize) ? tileSize[1] : tileSize;
     $(img).load(function() {
         if (img.naturalWidth > 0 &&
-          (img.naturalWidth != tileSize || img.naturalHeight != tileSize)) {
+          (img.naturalWidth != tileWidth || img.naturalHeight != tileHeight)) {
             var canvas = document.createElement('canvas');
-            canvas.width = tileSize;
-            canvas.height = tileSize;
+            canvas.width = tileWidth;
+            canvas.height = tileHeight;
 
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
@@ -79,66 +81,118 @@ dlfViewerSource.tileLoadFunction = function(tileSize, tile, url) {
 dlfViewerSource.IIIF = function(options) {
 
     // parse parameters
-    var url = options.url,
+    var url = options.url.replace(/info.json$/, ''),
+        version = options.version || 'version2',
         format = options.format !== undefined ? options.format : 'jpg',
-        quality = options.quality !== undefined ? options.quality : 'native',
+        quality = options.quality !== undefined ? options.quality : options.version === 'version1' ? 'native' : 'default',
         width = options.size[0],
         height = options.size[1],
-        tileSize = options.tileSize !== undefined ? options.tileSize : 256,
+        tileSize = options.tileSize,
         origin = options.crossOrigin !== undefined ? options.crossOrigin : '*',
         offset = options.offset !==  undefined ? options.offset : [0, 0],
         resolutions = $.extend([], options.resolutions),
-        projection = options.projection;
-
-    // sort resolutions because the spec does not specify any order
-    resolutions.sort(function(a, b) {
-        return a - b;
-    });
-    var ignoreScaleFactors = false,
+        sizes = options.sizes === undefined ? [] : options.sizes,
+        supports = options.supports === undefined ? [] : options.supports,
+        supportsListedSizes = sizes != undefined && Array.isArray(sizes) && sizes.length > 0,
+        supportsListedTiles = tileSize != undefined && (Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0),
+        supportsArbitraryTiling = supports != undefined && Array.isArray(supports) &&
+            (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
+            (supports.includes('sizeByWh') || supports.includes('sizeByH') ||
+            supports.includes('sizeByW') || supports.includes('sizeByPct')),
+        projection = options.projection,
+        tileWidth,
+        tileHeight,
         maxZoom;
 
-    // check if provided resolutions are consecutive powers to 2
-    for (var i=0; i < resolutions.length; i++) {
-        if (Math.pow(2,i) != resolutions[i]) {
-            ignoreScaleFactors = true;
-            break;
-        }
-    }
+    url += url.lastIndexOf('/') == url.length - 1 ? '' : '/';
+    // sort resolutions because the spec does not specify any order
+    resolutions.sort(function(a, b) {
+        return b - a;
+    });
 
-    // no resolutions are provided or they can't be continuously calculated with a zoomFactor of 2
-    if (resolutions.length == 0 || ignoreScaleFactors) {
-        maxZoom = Math.max(
-            Math.ceil( Math.log(width / tileSize) / Math.LN2),
-            Math.ceil( Math.log(height / tileSize) / Math.LN2)
-        );
-        // provide resolutions from 2^0 to 2^maxZoom
-        resolutions = [];
-        for (var i = 0; i <= maxZoom; i++) {
-            resolutions.push(Math.pow(2,i));
+    if (supportsListedTiles || supportsArbitraryTiling) {
+        if (tileSize != undefined) {
+            if (Number.isInteger(tileSize) && tileSize > 0) {
+              tileWidth = tileSize;
+              tileHeight = tileSize;
+            } else if (Array.isArray(tileSize) && tileSize.length > 0) {
+                if (tileSize.length == 1 || tileSize[1] == undefined && Number.isInteger(tileSize[0])) {
+                    tileWidth = tileSize[0];
+                    tileHeight = tileSize[0];
+                }
+                if (tileSize.length == 2) {
+                    if (Number.isInteger(tileSize[0]) && Number.isInteger(tileSize[1])) {
+                        tileWidth = tileSize[0];
+                        tileHeight = tileSize[1];
+                    } else if (tileSize[0] == undefined && Number.isInteger(tileSize[1])) {
+                        tileWidth = tileSize[1];
+                        tileHeight = tileSize[1];
+                    }
+                }
+            }
+        }
+        if (tileWidth === undefined || tileHeight === undefined) {
+            tileWidth = 256;
+            tileHeight = 256;
+        }
+        if (resolutions.length == 0) {
+            maxZoom = Math.max(
+                Math.ceil(Math.log(width / tileWidth) / Math.LN2),
+                Math.ceil(Math.log(height / tileHeight) / Math.LN2)
+            );
+            for (var i = maxZoom; i >= 0; i--) {
+                resolutions.push(Math.pow(2, i));
+           }
+         } else {
+            var maxScaleFactor = Math.max.apply(null, resolutions);
+            // TODO maxScaleFactor might not be a power to 2
+            maxZoom = Math.round(Math.log(maxScaleFactor) / Math.LN2);
         }
     } else {
-        var maxScaleFactor = Math.max.apply(null, resolutions);
-        maxZoom = Math.round(Math.log(maxScaleFactor) / Math.LN2);
+        // No tile support.
+        tileWidth = width;
+        tileHeight = height;
+        resolutions = [];
+        if (supportsListedSizes) {
+            /*
+             * 'sizes' provided. Use full region in different resolutions. Every
+             * resolution has only one tile.
+             */
+            sizes.sort(function(a, b) {
+                return a[0] - b[0];
+            });
+            maxZoom = -1;
+            var ignoredSizesIndex = [];
+            for (var i = 0; i < sizes.length; i++) {
+                var resolution = width / sizes[i][0];
+                if (resolutions.length > 0 && resolutions[resolutions.length - 1] == resolution) {
+                    ignoredSizesIndex.push(i);
+                    continue;
+                }
+                resolutions.push(resolution);
+                maxZoom++;
+            }
+            if (ignoredSizesIndex.length > 0) {
+                for (var j = 0; j < ignoredSizesIndex.length; j++) {
+                    sizes.splice(ignoredSizesIndex[j] - j, 1);
+                }
+            }
+        } else {
+            // No useful image information at all. Try pseudo tile with full image.
+            resolutions.push(1);
+            sizes.push([width, height]);
+            maxZoom = 0;
+        }
     }
-
-    var tierSizes = [];
-    for (var i = 0; i <= maxZoom; i++) {
-        var scale = Math.pow(2, maxZoom - i);
-        var width_ = Math.ceil(width / scale);
-        var height_ = Math.ceil(height / scale);
-        var tilesX_ = Math.ceil(width_ / tileSize);
-        var tilesY_ = Math.ceil(height_ / tileSize);
-        tierSizes.push([tilesX_, tilesY_]);
-    }
-
+    
     // define tilegrid with offset extent
     var extent = [offset[0], offset[1] - height, offset[0] + width, offset[1]];
     var tileGrid = new ol.tilegrid.TileGrid({
-            extent: extent,
-            resolutions: resolutions.reverse(),
-            origin: ol.extent.getTopLeft(extent),
-            tileSize: tileSize
-        });
+        extent: extent,
+        resolutions: resolutions,
+        origin: ol.extent.getTopLeft(extent),
+        tileSize: [tileWidth, tileHeight]
+    });
 
     /**
      * @this {ol.source.TileImage}
@@ -148,38 +202,85 @@ dlfViewerSource.IIIF = function(options) {
      * @return {string|undefined} Tile URL.
      */
     var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
-
-        var z = tileCoord[0];
-        if (maxZoom < z) {
-            return undefined;
+        var regionParam,
+            sizeParam;
+            zoom = tileCoord[0];
+        if (zoom > maxZoom) {
+            return;
         }
-
-        var sizes = tierSizes[z];
-        if (!sizes) {
-            return undefined;
+        var tileX = tileCoord[1],
+            tileY = -tileCoord[2] - 1,
+            scale = resolutions[zoom];
+        if (tileX === undefined || tileY === undefined || scale === undefined ||
+                tileX < 0 || Math.ceil(width / scale / tileWidth) <= tileX ||
+                tileY < 0 || Math.ceil(height / scale / tileHeight) <= tileY) {
+            return;
         }
-
-        var x = tileCoord[1];
-        var y = -tileCoord[2] - 1;
-        if (x < 0 || sizes[0] <= x || y < 0 || sizes[1] <= y) {
-            return undefined;
+        if (supportsArbitraryTiling || supportsListedTiles) {
+            var regionX = tileX * tileWidth * scale,
+                regionY = tileY * tileHeight * scale;
+            var regionW = tileWidth * scale,
+                regionH = tileHeight * scale,
+                sizeW = tileWidth,
+                sizeH = tileHeight;
+            if (regionX + regionW > width) {
+                regionW = width - regionX;
+            }
+            if (regionY + regionH > height) {
+                regionH = height - regionY;
+            }
+            if (regionX + tileWidth * scale > width) {
+                sizeW = Math.floor((width - regionX + scale - 1) / scale);
+            }
+            if (regionY + tileHeight * scale > height) {
+                sizeH = Math.floor((height - regionY + scale - 1) / scale);
+            }
+            if (regionX == 0 && regionW == width && regionY == 0 && regionH == height) {
+                // canonical full image region parameter is 'full', not 'x,y,w,h'
+                regionParam = 'full';
+            } else if (!supportsArbitraryTiling || supports.includes('regionByPx')) {
+                regionParam = regionX + ',' + regionY + ',' + regionW + ',' + regionH;
+            } else if (supports.includes('regionByPct')) {
+                var pctX = formatPercentage(regionX / width * 100),
+                    pctY = formatPercentage(regionY / height * 100),
+                    pctW = formatPercentage(regionW / width * 100),
+                    pctH = formatPercentage(regionH / height * 100);
+                regionParam = 'pct:' + pctX + ',' + pctY + ',' + pctW + ',' + pctH;
+            }
+            if (version == 'version3' && (!supportsArbitraryTiling || supports.includes('sizeByWh'))) {
+                sizeParam = sizeW + ',' + sizeH;
+            } else if (!supportsArbitraryTiling || supports.includes('sizeByW')) {
+                sizeParam = sizeW + ',';
+            } else if (supports.includes('sizeByH')) {
+                sizeParam = ',' + sizeH;
+            } else if (supports.includes('sizeByWh')) {
+                sizeParam = sizeW + ',' + sizeH;
+            } else if (supports.includes('sizeByPct')) {
+                sizeParam = 'pct:' + formatPercentage(100 / scale);
+            }
         } else {
-            var scale = Math.pow(2, maxZoom - z);
-            var tileBaseSize = tileSize * scale;
-            var minx = x * tileBaseSize;
-            var miny = y * tileBaseSize;
-            var maxx = Math.min(minx + tileBaseSize, width);
-            var maxy = Math.min(miny + tileBaseSize, height);
-
-            maxx = scale * Math.floor(maxx / scale);
-            maxy = scale * Math.floor(maxy / scale);
-
-            var query = '/' + minx + ',' + miny + ',' +
-              (maxx - minx) + ',' + (maxy - miny) +
-              '/pct:' + (100 / scale) + '/0/' + quality + '.' + format;
-
-            return url + query;
+            regionParam = 'full';
+            if (supportsListedSizes) {
+                var regionWidth = sizes[zoom][0],
+                    regionHeight = sizes[zoom][1];
+                if (version == 'version3') {
+                    if (regionWidth == width && regionHeight == height) {
+                        sizeParam = 'max';
+                    } else {
+                        sizeParam = regionWidth + ',' + regionHeight;
+                    }
+                } else {
+                    if (regionWidth == width) {
+                        sizeParam = 'full';
+                    } else {
+                        sizeParam = regionWidth + ',';
+                    }
+                }
+            } else {
+                sizeParam = version == 'version3' ? 'max' : 'full';
+            }
         }
+        return url + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format;
     };
 
     var tileImageParams = {
@@ -190,7 +291,7 @@ dlfViewerSource.IIIF = function(options) {
     };
 
     if (ol.has.CANVAS) {
-        tileImageParams.tileLoadFunction = dlfViewerSource.tileLoadFunction.bind(this, tileSize);
+        tileImageParams.tileLoadFunction = dlfViewerSource.tileLoadFunction.bind(this, [tileWidth, tileHeight]);
     }
 
     return new ol.source.TileImage(tileImageParams);
