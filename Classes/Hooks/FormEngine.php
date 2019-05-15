@@ -117,6 +117,9 @@ class FormEngine {
     protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = TRUE) {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
+            if (!is_array($pages)) {
+                $pages = [['uid' => $pages]];
+            }
             foreach ($pages as $page) {
                 if ($page['uid'] > 0) {
                     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
