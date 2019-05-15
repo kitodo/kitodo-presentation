@@ -600,7 +600,7 @@ dlfUtils.getIiifComplianceLevelProfile = function(jsonld, version) {
         }
     }
     return dlfUtils.iiifProfiles.none.none;
-}
+};
 
 /**
  * Fetches the image data for iip images source.

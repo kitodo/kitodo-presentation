@@ -203,7 +203,7 @@ dlfViewerSource.IIIF = function(options) {
      */
     var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
         var regionParam,
-            sizeParam;
+            sizeParam,
             zoom = tileCoord[0];
         if (zoom > maxZoom) {
             return;
@@ -211,7 +211,7 @@ dlfViewerSource.IIIF = function(options) {
         var tileX = tileCoord[1],
             tileY = -tileCoord[2] - 1,
             scale = resolutions[zoom];
-        if (tileX === undefined || tileY === undefined || scale === undefined ||
+        if (tileX === undefined || Number.isNaN(tileY) || scale === undefined ||
                 tileX < 0 || Math.ceil(width / scale / tileWidth) <= tileX ||
                 tileY < 0 || Math.ceil(height / scale / tileHeight) <= tileY) {
             return;
