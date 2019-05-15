@@ -11,6 +11,12 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 <a href="https://www.codacy.com/app/kitodo/kitodo-presentation">
   <img alt="Codacy Grade" src="https://api.codacy.com/project/badge/Grade/1291eba67cb744c9ad04a74883d45d84"/>
 </a>
+<a href="https://lgtm.com/projects/g/kitodo/kitodo-presentation/context:javascript">
+  <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/g/kitodo/kitodo-presentation.svg?logo=lgtm"/>
+</a>
+<a href="https://lgtm.com/projects/g/kitodo/kitodo-presentation/alerts/">
+  <img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/g/kitodo/kitodo-presentation.svg?logo=lgtm"/>
+</a>
 <a href="https://gitter.im/Kitodo/Presentation">
   <img alt="Join the Gitter chat!" src="https://badges.gitter.im/Kitodo/Presentation.svg"/>
 </a>
