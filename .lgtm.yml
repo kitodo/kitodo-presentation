@@ -6,12 +6,13 @@ path_classifiers:
     - exclude: / # ignore default classification for generated code
   library:
     - exclude: / # ignore default classification for library code
-    - Resources/Javascript/jPlayer
-    - Resources/Javascript/jQuery
-    - Resources/Javascript/jQueryUI
-    - Resources/Javascript/OpenLayers
+    - Resources/Public/Javascript/jPlayer
+    - Resources/Public/Javascript/jQuery
+    - Resources/Public/Javascript/jQueryUI
+    - Resources/Public/Javascript/OpenLayers
   template:
     - exclude: / # ignore default classification for templates
     - Resources/Private/Templates
   test:
     - exclude: / # ignore default classification for test code
+    - Tests/
