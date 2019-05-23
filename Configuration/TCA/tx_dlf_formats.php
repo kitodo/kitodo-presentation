@@ -54,7 +54,7 @@ return array (
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
-                'eval' => 'required,nospace,unique',
+                'eval' => 'required,nospace',
             ),
         ),
         'class' => array (
@@ -63,7 +63,7 @@ return array (
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
-                'eval' => 'nospace,alphanum_x,unique',
+                'eval' => 'nospace,alphanum_x',
             ),
         ),
     ),
