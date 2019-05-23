@@ -54,7 +54,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
-                'eval' => 'required,nospace,unique',
+                'eval' => 'required,nospace',
             ],
         ],
         'class' => [
@@ -63,7 +63,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 1024,
-                'eval' => 'nospace,unique',
+                'eval' => 'nospace',
             ],
         ],
     ],
