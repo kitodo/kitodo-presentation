@@ -81,11 +81,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
 
-            var quality;
-            tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
-                ? imageSourceObj.tilesize[0]
-                    : 256,
-            quality = imageSourceObj.qualities !== undefined && imageSourceObj.qualities.length > 0
+            var quality = imageSourceObj.qualities !== undefined && imageSourceObj.qualities.length > 0
                 ? $.inArray('color', imageSourceObj.qualities) >= 0
                     ? 'color'
                     : $.inArray('native', imageSourceObj.qualities) >= 0
@@ -96,12 +92,15 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
             layer = new ol.layer.Tile({
                 source: new dlfViewerSource.IIIF({
                     url: imageSourceObj.src,
+                    version: imageSourceObj.version,
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
                     resolutions: imageSourceObj.resolutions,
-                    tileSize: tileSize,
+                    tileSize: imageSourceObj.tilesize,
+                    sizes: imageSourceObj.sizes,
                     format: 'jpg',
                     quality: quality,
+                    supports: imageSourceObj.supports,
                     offset: [offsetWidth, 0],
                     projection: new ol.proj.Projection({
                         code: 'kitodo-image',
@@ -305,18 +304,27 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
     }).done(cb).fail(error);
 
     function cb(data) {
-        var mimetype = imageSourceObj.mimetype;
+        var mimetype = imageSourceObj.mimetype,
+            uri,
+            imageResource;
         if (dlfUtils.supportsIIIF(data)) {
-            if (data.protocol && data.protocol === 'http://iiif.io/api/image') {
-                var uri = decodeURI(data['@id']);
+            if (data['@context'] && data['@context'] === 'http://iiif.io/api/image/2/context.json') {
+                uri = decodeURI(data['@id']);
                 uri = dlfUtils.removeInfoJson(uri);
-                var imageResource = dlfUtils.buildImageV2(mimetype, uri, data);
+                imageResource = dlfUtils.buildImageV2(mimetype, uri, data);
+                deferredResponse.resolve(imageResource);
+            } else if (data['@context'] &&
+                (data['@context'] === 'http://iiif.io/api/image/3/context.json' ||
+                Array.isArray(data['@context']) && data['@context'].includes('http://iiif.io/api/image/3/context.json'))) {
+                uri = decodeURI(data['id']);
+                uri = dlfUtils.removeInfoJson(uri);
+                imageResource = dlfUtils.buildImageV3(mimetype, uri, data);
                 deferredResponse.resolve(imageResource);
             } else {
-                var _uri = imageSourceObj.url;
-                _uri = dlfUtils.removeInfoJson(_uri);
-                var _imageResource = dlfUtils.buildImageV1(mimetype, _uri, data);
-                deferredResponse.resolve(_imageResource);
+                uri = imageSourceObj.url;
+                uri = dlfUtils.removeInfoJson(uri);
+                imageResource = dlfUtils.buildImageV1(mimetype, uri, data);
+                deferredResponse.resolve(imageResource);
             }
         }
     }
@@ -353,7 +361,8 @@ dlfUtils.removeInfoJson = function removeInfoJson(uri) {
  */
 dlfUtils.supportsIIIF = function supportsIIIF(data) {
     // Version 2.0 and forwards
-    if (data.protocol && data.protocol === 'http://iiif.io/api/image') {
+    if (data.protocol && data.protocol === 'http://iiif.io/api/image' ||
+        data['@context'] && data['@context'] === "http://iiif.io/api/image/2/context.json") {
         return true;
         // Version 1.1
     } else if (data['@context'] && (
@@ -371,34 +380,106 @@ dlfUtils.supportsIIIF = function supportsIIIF(data) {
 };
 
 dlfUtils.iiifProfiles = {
-    'http://iiif.io/api/image/2/level1.json': {
-        formats: ['jpg'],
-        qualities: ['default']
+    version1: {
+        level0: {
+            supports: [],
+            formats: [],
+            qualities: ['native']
+        },
+        level1: {
+            supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
+            formats: ['jpg'],
+            qualities: ['native']
+        },
+        level2: {
+            supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
+                'sizeByConfinedWh', 'sizeByWh'],
+            formats: ['jpg', 'png'],
+            qualities: ['native', 'color', 'grey', 'bitonal']
+        }
     },
-    'http://iiif.io/api/image/2/level2.json': {
-        formats: ['jpg', 'png'],
-        qualities: ['default', 'bitonal']
+    version2: {
+        level0: {
+            supports: [],
+            formats: ['jpg'],
+            qualities: ['default']
+        },
+        level1: {
+            supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
+            formats: ['jpg'],
+            qualities: ['default']
+        },
+        level2: {
+            supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
+                'sizeByConfinedWh', 'sizeByDistortedWh', 'sizeByWh'],
+            formats: ['jpg', 'png'],
+            qualities: ['default', 'bitonal']
+        }
     },
-    'http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level1': {
-        formats: ['jpg'],
-        qualities: ['native']
+    version3: {
+        level0: {
+            supports: [],
+            formats: ['jpg'],
+            qualities: ['default']
+        },
+        level1: {
+            supports: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH'],
+            formats: ['jpg'],
+            qualities: ['default']
+        },
+        level2: {
+            supports: ['regionByPx', 'regionSquare', 'regionByPct',
+                'sizeByW', 'sizeByH', 'sizeByPct', 'sizeByConfinedWh', 'sizeByWh'],
+            formats: ['jpg'],
+            qualities: ['default', 'bitonal']
+        }
     },
-    'http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2': {
-        formats: ['jpg', 'png'],
-        qualities: ['native', 'color', 'grey', 'bitonal']
-    },
-    'http://library.stanford.edu/iiif/image-api/compliance.html#level1': {
-        formats: ['jpg'],
-        qualities: ['native']
-    },
-    'http://library.stanford.edu/iiif/image-api/compliance.html#level2': {
-        formats: ['jpg', 'png'],
-        qualities: ['native', 'color', 'grey', 'bitonal']
-    },
-    'none' : {
-        formats: [],
-        qualities: []
+    none: {
+        none: {
+            supports: [],
+            formats: [],
+            qualities: []
+        }
     }
+};
+
+/**
+ *
+ * @param mimetype
+ * @param uri
+ * @param jsonld
+ * @param jsonld.width
+ * @param jsonld.height
+ * @param jsonld.tiles
+ * @param jsonld.extraFormats
+ * @param jsonld.extraQualities
+ * @param jsonld.extraFeatures
+ * @param jsonld.profile
+ * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
+ */
+dlfUtils.buildImageV3 = function buildImageV2(mimetype, uri, jsonld) {
+    var levelProfile = this.getIiifComplianceLevelProfile(jsonld, 'version3');
+    return {
+        src: uri,
+        version: 'version3',
+        width: jsonld.width,
+        height: jsonld.height,
+        tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function(a) {
+            return a.width;
+        })[0], jsonld.tiles.map(function (a) {
+            return a.height == undefined ? a.width : a.height;
+        })[0]] : undefined,
+        sizes: jsonld.sizes === undefined ? undefined : jsonld.sizes.map(function(size) {
+            return [size.width, size.height];
+        }),
+        qualities: ['default'].concat(levelProfile.qualities).concat(jsonld.extraQualities === undefined ? [] : jsonld.extraQualities),
+        formats: ['jpg'].concat(levelProfile.formats).concat(jsonld.extraFormats === undefined ? [] : jsonld.extraFormats),
+        supports: levelProfile.supports.concat(jsonld.extraFeatures === undefined ? [] : jsonld.extraFeatures),
+        resolutions: jsonld.tiles !== undefined ? jsonld.tiles.map(function (a) {
+            return a.scaleFactors;
+        })[0] : [],
+        mimetype: mimetype
+    };
 };
 
 /**
@@ -414,25 +495,29 @@ dlfUtils.iiifProfiles = {
  * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
  */
 dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
-
     if (typeof jsonld.profile == "string") {
         jsonld.profile = [jsonld.profile, {}];
     }
     if (jsonld.profile !== undefined && jsonld.profile.length < 2) {
         jsonld.profile.push({});
     }
-    var levelProfile = jsonld.profile === undefined || dlfUtils.iiifProfiles[jsonld.profile[0]] === undefined ? dlfUtils.iiifProfiles['none'] : dlfUtils.iiifProfiles[jsonld.profile[0]];
+    var levelProfile = this.getIiifComplianceLevelProfile(jsonld, 'version2');
     return {
         src: uri,
+        version: 'version2',
         width: jsonld.width,
         height: jsonld.height,
-        tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function (a) {
+        tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function(a) {
             return a.width;
         })[0], jsonld.tiles.map(function (a) {
-            return a.height;
-        })[0]] : [256,256],
+            return a.height == undefined ? a.width : a.height;
+        })[0]] : undefined,
+        sizes: jsonld.sizes === undefined ? undefined : jsonld.sizes.map(function(size) {
+            return [size.width, size.height];
+        }),
         qualities: ['default'].concat(levelProfile.qualities).concat(jsonld.profile[1].qualities === undefined ? [] : jsonld.profile[1].qualities),
         formats: ['jpg'].concat(levelProfile.formats).concat(jsonld.profile[1].formats === undefined ? [] : jsonld.profile[1].formats),
+        supports: levelProfile.supports.concat(jsonld.profile[1].supports === undefined ? [] : jsonld.profile[1].supports),
         resolutions: jsonld.tiles !== undefined ? jsonld.tiles.map(function (a) {
             return a.scaleFactors;
         })[0] : [],
@@ -452,21 +537,69 @@ dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
  * @param jsonld.tile_height
  * @param jsonld.qualities
  * @param jsonld.formats
- * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
+ * @returns {{src: *, version, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
  */
 dlfUtils.buildImageV1 = function buildImageV1(mimetype, uri, jsonld) {
-
-    var levelProfile = jsonld.profile === undefined || dlfUtils.iiifProfiles[jsonld.profile] === undefined ? dlfUtils.iiifProfiles['none'] : dlfUtils.iiifProfiles[jsonld.profile];
+    var levelProfile = this.getIiifComplianceLevelProfile(jsonld, 'version1');
     return {
         src: uri,
+        version: 'version1',
         width: jsonld.width,
         height: jsonld.height,
-        tilesize: [jsonld.tile_width, jsonld.tile_height],
+        tilesize: jsonld.tile_width === undefined ? jsonld.tile_height === undefined ? undefined : jsonld.tile_height :
+            jsonld.tile_height === undefined ? jsonld.tile_width : [jsonld.tile_width, jsonld.tile_height],
         qualities: ['native'].concat(levelProfile.qualities).concat(jsonld.qualities === undefined ? [] : jsonld.qualities),
         formats: ['jpg'].concat(levelProfile.formats).concat(jsonld.formats === undefined ? [] : jsonld.formats),
+        supports:levelProfile.supports,
         resolutions: jsonld.scale_factors,
         mimetype: mimetype
     };
+};
+
+/**
+ *
+ * @param jsonld
+ * @param jsonld.profile
+ * @param version
+ * @returns string
+ */
+dlfUtils.getIiifComplianceLevelProfile = function(jsonld, version) {
+    var regexVersion1 = new RegExp('^https?\:\/\/library\.stanford\.edu\/iiif\/image-api\/(1\.1\/)?compliance\.html#level[0-2]$'),
+        regexVersion2 = new RegExp('^https?\:\/\/iiif\.io\/api\/image\/2\/level[0-2](\.json)?$'),
+        regexVersion3 = new RegExp('(^https?\:\/\/iiif\.io\/api\/image\/3\/level[0-2](\.json)?$)|(^level[0-2]$)'),
+        level;
+    if (jsonld.profile === undefined) {
+        return dlfUtils.iiifProfiles.none.none;
+    }
+    switch (version) {
+        case 'version1':
+            if (regexVersion1.test(jsonld.profile)) {
+                level = jsonld.profile;
+            }
+            break;
+        case 'version2':
+            if (typeof jsonld.profile == 'string' && regexVersion2.test(jsonld.profile)) {
+                level = jsonld.profile;
+            }
+            if (Array.isArray(jsonld.profile) && jsonld.profile.length >= 1 && typeof jsonld.profile[0] == 'string' && regexVersion2.test(jsonld.profile[0])) {
+                level = jsonld.profile[0];
+            }
+            break;
+        case 'version3':
+            if (regexVersion3.test(jsonld.profile)) {
+                level = jsonld.profile;
+            }
+            break;
+        default:
+    }
+    if (level !== undefined) {
+        level = level.match(/level[0-2](\.json)?$/);
+        level = Array.isArray(level) ? level[0].replace('.json', '') : undefined;
+        if (level !== undefined) {
+            return dlfUtils.iiifProfiles[version][level];
+        }
+    }
+    return dlfUtils.iiifProfiles.none.none;
 };
 
 /**

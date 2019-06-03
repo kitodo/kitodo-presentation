@@ -5,9 +5,6 @@ Kitodo.Presentation is a feature-rich framework for building a METS-based digita
 
 Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://typo3.org), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media. It implements international standards such as [IIIF Image API](http://iiif.io/api/image), [OAI Protocol for Metadata Harvesting](http://www.openarchives.org/OAI/openarchivesprotocol.html), [METS](http://www.loc.gov/standards/mets), [MODS](http://www.loc.gov/standards/mods), [TEI](http://www.tei-c.org), [ALTO](http://www.loc.gov/standards/alto), and can be configured to support any other descriptive XML format using simple XPath expressions.
 
-<a href="https://gitter.im/Kitodo/Presentation">
-  <img alt="Join the Gitter chat!" src="https://badges.gitter.im/Kitodo/Presentation.svg"/>
-</a>
 <a href="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master">
   <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master"/>
 </a>
@@ -15,10 +12,13 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
   <img alt="Codacy Grade" src="https://api.codacy.com/project/badge/Grade/1291eba67cb744c9ad04a74883d45d84"/>
 </a>
 <a href="https://lgtm.com/projects/g/kitodo/kitodo-presentation/context:javascript">
-  <img alt="LGTM Language Grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/kitodo/kitodo-presentation.svg?logo=lgtm&logoWidth=18"/>
+  <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/g/kitodo/kitodo-presentation.svg?logo=lgtm"/>
 </a>
 <a href="https://lgtm.com/projects/g/kitodo/kitodo-presentation/alerts/">
-  <img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/g/kitodo/kitodo-presentation.svg?logo=lgtm&logoWidth=18"/>
+  <img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/g/kitodo/kitodo-presentation.svg?logo=lgtm"/>
+</a>
+<a href="https://gitter.im/Kitodo/Presentation">
+  <img alt="Join the Gitter chat!" src="https://badges.gitter.im/Kitodo/Presentation.svg"/>
 </a>
 
 Requirements

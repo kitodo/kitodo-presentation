@@ -33,7 +33,7 @@ $(
 						var option = "";
 						$("arr[name='suggestion'] str", data).each(function(i) {
 							option = $(this).text();
-							option = option.replace(/(\?|!|:)/g, "\\\$1");
+							option = option.replace(/(\?|!|:|\\)/g, "\\\$1");
 							result.push(option);
 						});
 						return response(result);
