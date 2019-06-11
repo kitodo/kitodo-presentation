@@ -22,6 +22,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @abstract
  */
 abstract class Document {
     /**
