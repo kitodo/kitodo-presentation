@@ -245,7 +245,7 @@ final class IiifManifest extends Document
                 }
                 if (!empty($iiifAlto)) {
                     // FIXME use multiple possible alto files?
-                    $this->mimeTypes[$alto[0]] = "application/alto+xml";
+                    $this->mimeTypes[$iiifAlto[0]] = "application/alto+xml";
                     $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext] = $iiifAlto[0];
                     $this->hasFulltext = true;
                     $this->hasFulltextSet = true;
