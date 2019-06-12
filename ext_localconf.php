@@ -44,6 +44,8 @@ if (!defined('DEVLOG_SEVERITY_ERROR')) {
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Statistics::class, '_statistics', 'list_type', TRUE);
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\TableOfContents::class, '_tableofcontents', 'list_type', TRUE);
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Toolbox::class, '_toolbox', 'list_type', TRUE);
+\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Treeview::class, '_treeview', 'list_type', TRUE);
+\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\TreeviewFrontend::class, '_treeviewfrontend', 'list_type', TRUE);
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Validator::class, '_validator', 'list_type', FALSE);
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];

@@ -1,6 +1,14 @@
 page {
   includeJSLibs {
     jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-2.2.4.min.js
+    jsTree = EXT:dlf/vendor/vakata/jstree/dist/jstree.js
+    jsTree.disableCompression = 1
+    jsTree.excludeFromConcatenation = 1
+  }
+  includeCSS {
+    jsTree = EXT:dlf/vendor/vakata/jstree/dist/themes/default/style.css
+    jsTree.disableCompression = 1
+    jsTree.excludeFromConcatenation = 1
   }
   includeJSFooterlibs {
     jqueryUiMouseSlider = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
