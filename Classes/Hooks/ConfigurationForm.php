@@ -174,9 +174,9 @@ class ConfigurationForm {
             $data['tx_dlf_formats'][uniqid('NEW')] = array (
                 'pid' => 0,
                 'type' => 'IIIF1',
-                'root' => 'none',
+                'root' => 'IIIF1',
                 'namespace' => 'http://www.shared-canvas.org/ns/context.json',
-                'class' => 'none'
+                'class' => ''
             );
         }
         // Add IIIF Presentation 2 context
@@ -184,9 +184,9 @@ class ConfigurationForm {
             $data['tx_dlf_formats'][uniqid('NEW')] = array (
                 'pid' => 0,
                 'type' => 'IIIF2',
-                'root' => 'none',
+                'root' => 'IIIF2',
                 'namespace' => 'http://iiif.io/api/presentation/2/context.json',
-                'class' => 'none'
+                'class' => ''
             );
         }
         // Add IIIF Presentation 3 context
@@ -194,9 +194,9 @@ class ConfigurationForm {
             $data['tx_dlf_formats'][uniqid('NEW')] = array (
                 'pid' => 0,
                 'type' => 'IIIF3',
-                'root' => 'none',
+                'root' => 'IIIF3',
                 'namespace' => 'http://iiif.io/api/presentation/3/context.json',
-                'class' => 'none'
+                'class' => ''
             );
         }
         if (!empty($data)) {
