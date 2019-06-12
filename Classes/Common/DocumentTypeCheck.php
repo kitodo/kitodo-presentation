@@ -69,6 +69,10 @@ class DocumentTypeCheck {
             return '';
         }
         $toc = $this->doc->tableOfContents;
+        if ($this->doc instanceof IiifManifest && (!isset($toc[0]['type']) || array_search($toc[0]['type'], ['newspaper', 'year', 'issue']) !== FALSE)) {
+            // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types or if type is missing.
+            return '';
+        }
         /*
          * Get the document type
          *
@@ -85,7 +89,6 @@ class DocumentTypeCheck {
          */
         switch ($toc[0]['type']) {
             case 'newspaper':
-                // TODO Delegate to METS document method. Newspapers currently not supported for IIIF in Kitodo.Presentation.
                 $nodes_year = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]');
                 if (count($nodes_year) > 1) {
                     // Multiple years means this is a newspaper's anchor file.
