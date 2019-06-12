@@ -546,7 +546,10 @@ abstract class Document {
     }
 
     /**
-     * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas
+     * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas. Text might be
+     * given as ALTO for METS or as annotations or ALTO for IIIF resources. If IIIF plain text annotations
+     * with the motivation "painting" should be treated as full text representations, the extension has to be
+     * configured accordingly.
      *
      * @access public
      *
@@ -559,7 +562,8 @@ abstract class Document {
 
     /**
      * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas from an
-     * XML fulltext representation (ALTO).
+     * XML fulltext representation (currently only ALTO). For IIIF manifests, ALTO documents have
+     * to be given in the Canvas' / Manifest's "seeAlso" property.
      *
      * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
