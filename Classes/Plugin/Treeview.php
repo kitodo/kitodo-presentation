@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugin;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -9,20 +11,29 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Exception;
+
 /**
- * Plugin 'DLF: Tree View' for the 'dlf' extension.
+ * Plugin 'Basket' for the 'dlf' extension
  *
- * @author	Christopher Timm <timm@effective-webwork.de>
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
+ * @author Christopher Timm <timm@effective-webwork.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
-class tx_dlf_treeview extends tx_dlf_plugin {
+class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
+    public $scriptRelPath = 'Classes/Plugin/Treeview.php';
 
-    public $scriptRelPath = 'plugins/treeview/class.tx_dlf_treeview.php';
-
-
-    protected function prepareManuscriptData($solr, $query, $level, $collection) {
+    /**
+     * @param $solr
+     * @param $query
+     * @param $level
+     * @param $collection
+     * @return array|string
+     * @throws Exception
+     * This method preprocesses a hierachical structure based on signatures and returns the data as json
+     */
+    protected function prepareSignatureData($solr, $query, $level, $collection) {
 
         $query = tx_dlf_solr::escapeQueryKeepField($query, $this->conf['pages']);
 
@@ -97,7 +108,15 @@ class tx_dlf_treeview extends tx_dlf_plugin {
 
     }
 
-    protected function prepareAdressbookData($solr, $query, $level, $collection) {
+    /**
+     * @param $solr
+     * @param $query
+     * @param $level
+     * @param $collection
+     * @return array
+     *  This method preprocesses groups by years based on the configuration
+     */
+    protected function prepareGroupData($solr, $query, $level, $collection) {
 
         // Add filter query for collection restrictions.
         if ($this->conf['dataCollections']) {
@@ -164,10 +183,10 @@ class tx_dlf_treeview extends tx_dlf_plugin {
                     if (!empty($text)) {
 
                         $newLevelArray[] = array("id" => "1#" . $groupKey . "#".$groupKey,
-                                                "text" => $text,
-                                                "children" => true,
-                                                "a_attr" => array("href" => ""),
-                                                "icon" => false);
+                            "text" => $text,
+                            "children" => true,
+                            "a_attr" => array("href" => ""),
+                            "icon" => false);
                     }
 
                 } else {
@@ -251,10 +270,10 @@ class tx_dlf_treeview extends tx_dlf_plugin {
 
         if ($this->conf['dataFormatter']) {
             if($this->conf['dataFormatter'] == 'signature') {
-                $outputArray = $this->prepareManuscriptData($solr, $query, $level, $collection);
+                $outputArray = $this->prepareSignatureData($solr, $query, $level, $collection);
             }
             if($this->conf['dataFormatter'] == 'collection') {
-                $outputArray = $this->prepareAdressbookData($solr, $query, $level, $collection);
+                $outputArray = $this->prepareGroupData($solr, $query, $level, $collection);
             }
         }
 
@@ -280,8 +299,4 @@ class tx_dlf_treeview extends tx_dlf_plugin {
         exit;
 
     }
-
-
-
 }
-

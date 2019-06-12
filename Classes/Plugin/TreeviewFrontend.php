@@ -1,4 +1,6 @@
 <?php
+namespace Kitodo\Dlf\Plugin;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,15 +12,14 @@
  */
 
 /**
- * Plugin 'DLF: Tree View' for the 'dlf' extension.
+ * Plugin 'Basket' for the 'dlf' extension
  *
- * @author	Christopher Timm <timm@effective-webwork.de>
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
+ * @author Christopher Timm <timm@effective-webwork.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
-class tx_dlf_treeviewfrontend extends tx_dlf_plugin {
-
+class TreeviewFrontend extends \Kitodo\Dlf\Common\AbstractPlugin {
     public $scriptRelPath = 'plugins/treeviewfrontend/class.tx_dlf_treeviewfrontend.php';
 
     /**
@@ -101,6 +102,4 @@ class tx_dlf_treeviewfrontend extends tx_dlf_plugin {
         return $script;
 
     }
-
 }
-

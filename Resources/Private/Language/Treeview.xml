@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<T3locallang>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for plugin tx_dlf_treeview</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="tt_content.pi_flexform.apikey">API Key if more than one api is configured</label>
+            <label index="tt_content.pi_flexform.data_formatter">Static format for data output</label>
+            <label index="tt_content.pi_flexform.sheet_general">Options</label>
+            <label index="tt_content.pi_flexform.solrcore">Solr Core</label>
+            <label index="tt_content.pi_flexform.templateFile">Template file</label>
+            <label index="tt_content.pi_flexform.collections">Restrict to these collections</label>
+            <label index="tt_content.pi_flexform.field">Solr field</label>
+            <label index="tt_content.pi_flexform.explode">Character for level explode</label>
+            <label index="tt_content.pi_flexform.queryPrefix">Prefix for searching</label>
+            <label index="tt_content.pi_flexform.sorting">Sorting</label>
+            <label index="tt_content.pi_flexform.yearFrom">Year from</label>
+            <label index="tt_content.pi_flexform.yearTill">Year till</label>
+            <label index="tt_content.pi_flexform.yearRange">Year range</label>
+            <label index="nohits">Nothing found.</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="tt_content.pi_flexform.apikey">API Key für den Fall das mehrere APIs konfiguriert sind</label>
+            <label index="tt_content.pi_flexform.data_formatter">Art der Datenaufbereitung</label>
+            <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+            <label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
+            <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+            <label index="tt_content.pi_flexform.collections">Auf diese Kollektionen einschränken</label>
+            <label index="tt_content.pi_flexform.field">Solr Feld</label>
+            <label index="tt_content.pi_flexform.explode">Zeichen zur Auftrennung der Ebenen</label>
+            <label index="tt_content.pi_flexform.queryPrefix">Prefix für den Suchquery</label>
+            <label index="tt_content.pi_flexform.sorting">Sortierung</label>
+            <label index="tt_content.pi_flexform.yearFrom">Jahr von</label>
+            <label index="tt_content.pi_flexform.yearTill">Jahr bis</label>
+            <label index="tt_content.pi_flexform.yearRange">Jahr Abstand</label>
+            <label index="nohits">Keine Treffer.</label>
+        </languageKey>
+    </data>
+</T3locallang>
