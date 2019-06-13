@@ -16,8 +16,8 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 5,
-                'metadataquery' => '$.metadata.[?(@.label==\'Manifest Type\')].value',
-                'metadataquery_sorting' => '',
+                'xpath' => '$.metadata.[?(@.label==\'Manifest Type\')].value',
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -35,18 +35,18 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => 'concat(./mods:titleInfo/mods:nonSort," ",./mods:titleInfo/mods:title)',
-                'metadataquery_sorting' => './mods:titleInfo/mods:title',
+                'xpath' => 'concat(./mods:titleInfo/mods:nonSort," ",./mods:titleInfo/mods:title)',
+                'xpath_sorting' => './mods:titleInfo/mods:title',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:note[@type="caption"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:note[@type="caption"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => '$[label]',
-                'metadataquery_sorting' => '',
+                'xpath' => '$[label]',
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -64,8 +64,8 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:part/mods:detail/mods:number',
-                'metadataquery_sorting' => './mods:part[@type="host"]/@order',
+                'xpath' => './mods:part/mods:detail/mods:number',
+                'xpath_sorting' => './mods:part[@type="host"]/@order',
             ],
         ],
         'default_value' => '',
@@ -83,13 +83,13 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:name',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:name',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$.metadata.[?(@.label=='Author')].value",
-                'metadataquery_sorting' => '',
+                'xpath' => "$.metadata.[?(@.label=='Author')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -107,13 +107,13 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origPlace',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origPlace',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$.metadata.[?(@.label=='Place of publication')].value",
-                'metadataquery_sorting' => '',
+                'xpath' => "$.metadata.[?(@.label=='Place of publication')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -131,13 +131,13 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate',
-                'metadataquery_sorting' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate/@when',
+                'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate',
+                'xpath_sorting' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate/@when',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$.metadata.[?(@.label=='Date of publication')].value",
-                'metadataquery_sorting' => '',
+                'xpath' => "$.metadata.[?(@.label=='Date of publication')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -155,8 +155,8 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:language/mods:languageTerm',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:language/mods:languageTerm',
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -174,18 +174,18 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:classification',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:classification',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:msIdentifier/teihdr:collection',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:msIdentifier/teihdr:collection',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$.metadata.[?(@.label=='Collection')].value",
-                'metadataquery_sorting' => '',
+                'xpath' => "$.metadata.[?(@.label=='Collection')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -203,18 +203,18 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:name[./mods:role/mods:roleTerm="own"]/mods:displayForm',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:name[./mods:role/mods:roleTerm="own"]/mods:displayForm',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:publisher',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:publisher',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$.metadata.[?(@.label=='Owner')].value",
-                'metadataquery_sorting' => '',
+                'xpath' => "$.metadata.[?(@.label=='Owner')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -232,13 +232,13 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:identifier[@type="purl"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:identifier[@type="purl"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="purl"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="purl"]',
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -256,18 +256,18 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:identifier[@type="urn"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:identifier[@type="urn"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="urn"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="urn"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$.metadata.[?(@.label=='URN')].value",
-                'metadataquery_sorting' => '',
+                'xpath' => "$.metadata.[?(@.label=='URN')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -285,13 +285,13 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:identifier[@type="opac"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:identifier[@type="opac"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="opac"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="opac"]',
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -309,13 +309,13 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:identifier[@type="ppn"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:identifier[@type="ppn"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="mmid"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="mmid"]',
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -333,18 +333,18 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:recordInfo/mods:recordIdentifier',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:recordInfo/mods:recordIdentifier',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="recordIdentifier"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="recordIdentifier"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$['@id']",
-                'metadataquery_sorting' => '',
+                'xpath' => "$['@id']",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -362,18 +362,18 @@ $metadataDefaults = [
         'format' => [
             [
                 'encoded' => 1,
-                'metadataquery' => './mods:identifier[@type="kitodo"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './mods:identifier[@type="kitodo"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 2,
-                'metadataquery' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="kitodo"]',
-                'metadataquery_sorting' => '',
+                'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="kitodo"]',
+                'xpath_sorting' => '',
             ],
             [
                 'encoded' => 5,
-                'metadataquery' => "$.metadata.[?(@.label=='Kitodo')].value",
-                'metadataquery_sorting' => '',
+                'xpath' => "$.metadata.[?(@.label=='Kitodo')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',

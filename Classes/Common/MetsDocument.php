@@ -373,7 +373,7 @@ final class MetsDocument extends Document
             }
             // Get the additional metadata from database.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.metadataquery AS metadataquery,tx_dlf_metadataformat.metadataquery_sorting AS metadataquery_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
+                'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
                 'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
                 'tx_dlf_metadata.pid='.$cPid
                 .' AND tx_dlf_metadataformat.pid='.$cPid
@@ -393,8 +393,8 @@ final class MetsDocument extends Document
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 // Set metadata field's value(s).
                 if ($resArray['format'] > 0
-                    && !empty($resArray['metadataquery'])
-                    && ($values = $domXPath->evaluate($resArray['metadataquery'], $domNode))) {
+                    && !empty($resArray['xpath'])
+                    && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))) {
                     if ($values instanceof \DOMNodeList
                         && $values->length > 0) {
                         $metadata[$resArray['index_name']] = [];
@@ -414,8 +414,8 @@ final class MetsDocument extends Document
                 if (!empty($metadata[$resArray['index_name']])
                     && $resArray['is_sortable']) {
                     if ($resArray['format'] > 0
-                        && !empty($resArray['metadataquery_sorting'])
-                        && ($values = $domXPath->evaluate($resArray['metadataquery_sorting'], $domNode))) {
+                        && !empty($resArray['xpath_sorting'])
+                        && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))) {
                         if ($values instanceof \DOMNodeList
                             && $values->length > 0) {
                             $metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values->item(0)->nodeValue);

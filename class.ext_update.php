@@ -47,8 +47,6 @@ class ext_update {
             return TRUE;
         } elseif ($this->hasNoFormatForDocument()) {
             return TRUE;
-        } elseif ($this->hasOldXpathColumnNames()) {
-            return TRUE;
         }
         return FALSE;
     }
@@ -112,9 +110,6 @@ class ext_update {
         // add format field for tx_dlf_document to distinguish between METS and IIIF
         if ($this->hasNoFormatForDocument()) {
             $this->updateDocumentAddFormat();
-        }
-        if ($this->hasOldXpathColumnNames()) {
-            $this->renameXpathToMetadataquery();
         }
         return $this->content;
     }
@@ -435,57 +430,4 @@ class ext_update {
         $this->content .= Helper::renderFlashMessages();
     }
 
-    protected function hasOldXpathColumnNames() {
-        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'COLUMN_NAME',
-            'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME = "tx_dlf_metadataformat" AND TABLE_SCHEMA = "'.$database.'" AND COLUMN_NAME LIKE "xpath%"',
-            '',
-            '',
-            ''
-            );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            if ($resArray['COLUMN_NAME'] == 'xpath'
-                || $resArray['COLUMN_NAME'] == 'xpath_sorting') {
-                    return TRUE;
-            }
-        }
-        return FALSE;
-    }
-
-    protected function renameXpathToMetadataquery() {
-        $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath metadataquery text NOT NULL;';
-        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
-        if ($result) {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQueryOkay', TRUE),
-                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQuery', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-                );
-        } else {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQueryNotOkay', TRUE),
-                $GLOBALS['LANG']->getLL('update.renameXpathToMetdataQuery', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-                );
-        }
-        $this->content .= Helper::renderFlashMessages();
-        $sqlQuery = 'ALTER table tx_dlf_metadataformat CHANGE COLUMN xpath_sorting metadataquery_sorting text NOT NULL;';
-        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
-        if ($result) {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySortingOkay', TRUE),
-                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySorting', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-                );
-        } else {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySortingNotOkay', TRUE),
-                $GLOBALS['LANG']->getLL('update.renameXpathSortingToMetdataQuerySorting', TRUE),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-                );
-        }
-        $this->content .= Helper::renderFlashMessages();
-    }
 }

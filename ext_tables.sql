@@ -115,8 +115,8 @@ CREATE TABLE tx_dlf_metadataformat (
     deleted tinyint(4) DEFAULT '0' NOT NULL,
     parent_id int(11) DEFAULT '0' NOT NULL,
     encoded int(11) DEFAULT '0' NOT NULL,
-    metadataquery text NOT NULL,
-    metadataquery_sorting text NOT NULL,
+    xpath text NOT NULL,
+    xpath_sorting text NOT NULL,
     mandatory tinyint(4) DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
