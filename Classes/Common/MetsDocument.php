@@ -150,7 +150,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getFileLocation()
      */
@@ -165,7 +164,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getFileMimeType()
      */
@@ -180,7 +178,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getLogicalStructure()
      */
@@ -299,7 +296,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getMetadata()
      */
@@ -469,7 +465,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getRawText()
      */
@@ -497,7 +492,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::init()
      */
@@ -515,7 +509,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::loadLocation()
      */
@@ -539,6 +532,10 @@ final class MetsDocument extends Document
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Document::ensureHasFulltextIsSet()
+     */
     protected function ensureHasFulltextIsSet() {
         // Are the fileGrps already loaded?
         if (!$this->fileGrpsLoaded) {
@@ -547,7 +544,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::getParentDocumentUid()
      */
@@ -572,7 +568,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::setPreloadedDocument()
      */
@@ -586,7 +581,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::getDocument()
      */
@@ -685,6 +679,10 @@ final class MetsDocument extends Document
         return $this->fileGrps;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
+     */
     protected function prepareMetadataArray($cPid) {
         // Get all logical structure nodes with metadata.
         if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
@@ -706,6 +704,10 @@ final class MetsDocument extends Document
         return $this->mets;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Document::_getPhysicalStructure()
+     */
     protected function _getPhysicalStructure() {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
@@ -761,7 +763,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getSmLinks()
      */
@@ -778,7 +779,6 @@ final class MetsDocument extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
      */

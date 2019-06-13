@@ -49,6 +49,7 @@ final class IiifManifest extends Document
     /**
      * A PHP object representation of a IIIF manifest.
      * @var ManifestInterface
+     * @access protected
      */
     protected $iiif;
 
@@ -56,12 +57,14 @@ final class IiifManifest extends Document
      * 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif confrms to:
      * IIIF Metadata API 1, IIIF Presentation API 2 or 3
      * @var string
+     * @access protected
      */
     protected $iiifVersion;
 
     /**
      * Document has already been analyzed if it contains fulltext for the Solr index
      * @var boolean
+     * @access protected
      */
     protected $hasFulltextSet = false;
 
@@ -77,6 +80,7 @@ final class IiifManifest extends Document
     /**
      * Holds the mime types of linked resources in the manifest (extreacted during parsing) for later use.
      * @var array
+     * @access protected
      */
     protected $mimeTypes = [];
 
@@ -84,6 +88,7 @@ final class IiifManifest extends Document
      * The extension key
      *
      * @var string
+     * @static
      * @access public
      */
     public static $extKey = 'dlf';
@@ -143,6 +148,8 @@ final class IiifManifest extends Document
      * Returns a string representing the Metadata / Presentation API version which the IIIF resource
      * conforms to. This is used for example to extract metadata according to configured patterns.
      *
+     * @access public
+     *
      * @return string 'IIIF1' if the resource is a Metadata API 1 resource, 'IIIF2' / 'IIIF3' if
      * the resource is a Presentation API 2 / 3 resource
      */
@@ -163,6 +170,7 @@ final class IiifManifest extends Document
      * True if getUseGroups() has been called and $this-useGrps is loaded
      *
      * @var boolean
+     * @access protected
      */
     protected $useGrpsLoaded;
 
@@ -170,6 +178,7 @@ final class IiifManifest extends Document
      * Holds the configured useGrps as array.
      *
      * @var array
+     * @access protected
      */
     protected $useGrps;
 
@@ -179,8 +188,11 @@ final class IiifManifest extends Document
      * 'fileGrp's for thumbnails, downloads, audio, fulltext and the 'fileGrp's for images
      * can be requested with this method.
      *
+     * @access protected
+     *
      * @param string $use
-     * @return array|mixed
+     *
+     * @return array|string
      */
     protected function getUseGroups($use)
     {
@@ -332,7 +344,6 @@ final class IiifManifest extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::getDownloadLocation()
      */
@@ -426,6 +437,16 @@ final class IiifManifest extends Document
         return $details;
     }
 
+    /**
+     * Get the details about a IIIF resource (manifest or range) in the logical structure
+     *
+     * @access protected
+     *
+     * @param IiifResourceInterface $resource: IIIF resource, either a manifest or range.
+     * @param boolean $recursive: Whether to include the child elements
+     * @param array $processedStructures: IIIF resources that already have been processed
+     * @return array Logical structure array
+     */
     protected function getLogicalStructureInfo(IiifResourceInterface $resource, $recursive = false, &$processedStructures = array()) {
         $details = array ();
         $details['id'] = $resource->getId();
@@ -505,6 +526,8 @@ final class IiifManifest extends Document
     /**
      * Returns metadata for IIIF resources with the ID $id in there original form in
      * the manifest, but prepared for display to the user.
+     *
+     * @access public
      *
      * @param string $id: the ID of the IIIF resource
      * @param number $cPid: the configuration folder's id
@@ -632,7 +655,6 @@ final class IiifManifest extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::_getSmLinks()
      */
@@ -653,6 +675,13 @@ final class IiifManifest extends Document
         return $this->smLinks;
     }
 
+    /**
+     * Construct a link between a range and it's sub ranges and all contained canvases.
+     *
+     * @access private
+     *
+     * @param RangeInterface $range: Current range whose canvases shall be linked
+     */
     private function smLinkRangeCanvasesRecursively(RangeInterface $range) {
         // map range's canvases including all child ranges' canvases
         if (!$range->isTopRange()) {
@@ -668,6 +697,14 @@ final class IiifManifest extends Document
         }
     }
 
+    /**
+     * Link a single canvas to a containing range
+     *
+     * @access private
+     *
+     * @param CanvasInterface $canvas
+     * @param IiifResourceInterface $resource
+     */
     private function smLinkCanvasToResource(CanvasInterface $canvas, IiifResourceInterface $resource)
     {
         $this->smLinks['l2p'][$resource->getId()][] = $canvas->getId();
@@ -680,6 +717,8 @@ final class IiifManifest extends Document
      * Currently not supported for IIIF. Multivolume works _could_ be modelled
      * as IIIF Collections, but we can't tell them apart from actual collections.
      *
+     * @access protected
+     *
      * @see Document::getParentDocumentUidForSaving()
      */
     protected function getParentDocumentUidForSaving($pid, $core)
@@ -688,7 +727,6 @@ final class IiifManifest extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::getRawText()
      */
@@ -737,6 +775,10 @@ final class IiifManifest extends Document
     }
 
     /**
+     * Returns the underlying IiifResourceInterface.
+     *
+     * @access public
+     *
      * @return IiifResourceInterface
      */
     public function getIiif()
@@ -775,6 +817,10 @@ final class IiifManifest extends Document
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
+     */
     protected function prepareMetadataArray($cPid)
     {
         $id = $this->iiif->getId();
@@ -782,7 +828,6 @@ final class IiifManifest extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::setPreloadedDocument()
      */
@@ -795,7 +840,6 @@ final class IiifManifest extends Document
     }
 
     /**
-     *
      * {@inheritDoc}
      * @see Document::ensureHasFulltextIsSet()
      */
@@ -838,6 +882,10 @@ final class IiifManifest extends Document
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
+     */
     protected function _getToplevelId()
     {
         if (empty($this->toplevelId)) {

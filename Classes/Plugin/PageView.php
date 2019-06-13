@@ -55,6 +55,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      * Holds the current AnnotationLists / AnnotationPages
      *
      * @var array
+     * @access protected
      */
     protected $annotationContainers = array();
 
@@ -235,11 +236,13 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
     /**
      * Get all AnnotationPages / AnnotationLists that contain text Annotations with "painting" motivation
      *
+     * @access protected
+     *
      * @param integer    $page: the current page's number
      * @return array     An array containing the IRIs of the AnnotationLists / AnnotationPages as well as
      *                   some information about the canvas.
      */
-    public function getAnnotationContainers($page)
+    protected function getAnnotationContainers($page)
     {
         if ($this->doc instanceof IiifManifest) {
             $canvasId = $this->doc->physicalStructure[$page];

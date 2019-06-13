@@ -201,6 +201,7 @@ abstract class Document {
      * This holds the singleton object of the document
      *
      * @var array (\Kitodo\Dlf\Common\Document)
+     * @static
      * @access protected
      */
     protected static $registry = [];
@@ -302,6 +303,8 @@ abstract class Document {
      *
      * @access public
      *
+     * @static
+     *
      * @return void
      */
     public static function clearRegistry() {
@@ -311,11 +314,23 @@ abstract class Document {
 
     /**
      * This ensures that the recordId, if existent, is retrieved from the document.
+     *
+     * @access protected
+     *
+     * @abstract
+     *
      * @param integer $pid: ID of the configuration page with the recordId config
+     *
      */
     protected abstract function establishRecordId($pid);
 
     /**
+     * Source document PHP object which is represented by a Document instance
+     *
+     * @access protected
+     *
+     * @abstract
+     *
      * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
      * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
      */
@@ -324,7 +339,9 @@ abstract class Document {
     /**
      * This gets the location of a downloadable file for a physical page or track
      *
-     * @access	public
+     * @access public
+     *
+     * @abstract
      *
      * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
      *
@@ -337,6 +354,8 @@ abstract class Document {
      *
      * @access public
      *
+     * @abstract
+     *
      * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
      *
      * @return string The file's location as URL
@@ -348,6 +367,8 @@ abstract class Document {
      *
      * @access public
      *
+     * @abstract
+     *
      * @param string $id: The @ID attribute of the file node
      *
      * @return string The file's MIME type
@@ -358,6 +379,8 @@ abstract class Document {
      * This is a singleton class, thus an instance must be created by this method
      *
      * @access public
+     *
+     * @static
      *
      * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
      * @param integer $pid: If > 0, then only document with this PID gets loaded
@@ -496,6 +519,8 @@ abstract class Document {
      *
      * @access public
      *
+     * @abstract
+     *
      * @param string $id: The @ID attribute of the logical structure node (METS) or
      * the @id property of the Manifest / Range (IIIF)
      * @param boolean $recursive: Whether to include the child elements / resources
@@ -508,6 +533,8 @@ abstract class Document {
      * This extracts all the metadata for a logical structure node
      *
      * @access public
+     *
+     * @abstract
      *
      * @param string $id: The @ID attribute of the logical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
@@ -552,6 +579,8 @@ abstract class Document {
      * configured accordingly.
      *
      * @access public
+     *
+     * @abstract
      *
      * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
@@ -621,6 +650,8 @@ abstract class Document {
      *
      * @access public
      *
+     * @static
+     *
      * @param integer $uid: The UID of the document
      * @param boolean $recursive: Search superior documents for a title, too?
      *
@@ -681,6 +712,18 @@ abstract class Document {
         return $titledata;
     }
 
+    /**
+     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return it's depth.
+     *
+     * @access protected
+     *
+     * @param array $structure: logical structure array
+     * @param integer $depth: current tree depth
+     * @param string $logId: ID of the logical structure whose depth is requested
+     *
+     * @return integer|boolean: false if structure with $logId is not a child of this substructure,
+     * or the actual depth.
+     */
     protected function getTreeDepth($structure, $depth, $logId) {
         foreach ($structure as $element) {
             if ($element['id'] == $logId) {
@@ -695,6 +738,14 @@ abstract class Document {
         return false;
     }
 
+    /**
+     * Get the tree depth of a logical structure element within the table of content
+     *
+     * @access public
+     *
+     * @param string $logId: The id of the logical structure element whose depth is requested
+     * @return number|boolean tree depth as integer or FALSE if no element with $logId exists within the TOC.
+     */
     public function getStructureDepth($logId) {
         return $this->getTreeDepth($this->_getTableOfContents(), 1, $logId);
     }
@@ -704,12 +755,18 @@ abstract class Document {
      *
      * @access protected
      *
+     * @abstract
+     *
      * @return void
      */
     protected abstract function init();
 
     /**
      * Reuse any document object that might have been already loaded to determine wether document is METS or IIIF
+     *
+     * @access protected
+     *
+     * @abstract
      *
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
      *
@@ -719,6 +776,10 @@ abstract class Document {
 
     /**
      * METS/IIIF specific part of loading a location
+     *
+     * @access protected
+     *
+     * @abstract
      *
      * @param string $location: The URL of the file to load
      */
@@ -752,6 +813,10 @@ abstract class Document {
 
     /**
      * Analyze the document if it contains any fulltext that needs to be indexed.
+     *
+     * @access protected
+     *
+     * @abstract
      */
     protected abstract function ensureHasFulltextIsSet();
 
@@ -1074,6 +1139,11 @@ abstract class Document {
      * Get the ID of the parent document if the current document has one. Also save a parent document
      * to the database and the Solr index if their $pid and the current $pid differ.
      * Currently only applies to METS documents.
+     *
+     * @access protected
+     *
+     * @abstract
+     *
      * @return int The parent document's id.
      */
     protected abstract function getParentDocumentUidForSaving($pid, $core);
@@ -1101,6 +1171,15 @@ abstract class Document {
         return $this->location;
     }
 
+    /**
+     * Format specific part of building the document's metadata array
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param integer $cPid
+     */
     protected abstract function prepareMetadataArray($cPid);
 
     /**
@@ -1153,6 +1232,8 @@ abstract class Document {
      * This builds an array of the document's physical structure
      *
      * @access protected
+     *
+     * @abstract
      *
      * @return array Array of physical elements' id, type, label and file representations ordered
      * by @ORDER attribute / IIIF Sequence's Canvases
@@ -1231,6 +1312,8 @@ abstract class Document {
      * relation between IIIF Canvases and Manifests / Ranges in the same way
      *
      * @access protected
+     *
+     * @abstract
      *
      * @return array The links between logical and physical nodes / Range, Manifest and Canvas
      */
@@ -1325,6 +1408,8 @@ abstract class Document {
      * This returns the ID of the toplevel logical structure node
      *
      * @access protected
+     *
+     * @abstract
      *
      * @return string The logical structure node's ID
      */

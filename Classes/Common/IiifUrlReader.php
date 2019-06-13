@@ -26,6 +26,7 @@ class IiifUrlReader implements UrlReaderInterface {
     /**
      * Singleton instance of the class
      *
+     * @access protected
      * @var IiifUrlReader
      */
     protected static $instance;
@@ -41,6 +42,8 @@ class IiifUrlReader implements UrlReaderInterface {
 
     /**
      * Return a singleton instance.
+     *
+     * @static
      *
      * @return IiifUrlReader
      */
