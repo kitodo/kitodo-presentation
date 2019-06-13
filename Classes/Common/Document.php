@@ -116,14 +116,6 @@ abstract class Document {
     protected $metadataArrayLoaded = FALSE;
 
     /**
-     * This holds the XML file's METS part as \SimpleXMLElement object
-     *
-     * @var \SimpleXMLElement
-     * @access protected
-     */
-    protected $mets;
-
-    /**
      * The holds the total number of pages
      *
      * @var integer
@@ -1341,68 +1333,13 @@ abstract class Document {
      *
      * @access protected
      *
+     * @abstract
+     *
      * @param boolean $forceReload: Force reloading the thumbnail instead of returning the cached value
      *
      * @return string The document's thumbnail location
      */
-    protected function _getThumbnail($forceReload = FALSE) {
-        if (!$this->thumbnailLoaded
-            || $forceReload) {
-            // Retain current PID.
-            $cPid = ($this->cPid ? $this->cPid : $this->pid);
-            if (!$cPid) {
-                Helper::devLog('Invalid PID '.$cPid.' for structure definitions', DEVLOG_SEVERITY_ERROR);
-                $this->thumbnailLoaded = TRUE;
-                return $this->thumbnail;
-            }
-            // Load extension configuration.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            if (empty($extConf['fileGrpThumbs'])) {
-                Helper::devLog('No fileGrp for thumbnails specified', DEVLOG_SEVERITY_WARNING);
-                $this->thumbnailLoaded = TRUE;
-                return $this->thumbnail;
-            }
-            $strctId = $this->_getToplevelId();
-            $metadata = $this->getTitledata($cPid);
-            // Get structure element to get thumbnail from.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_structures.thumbnail AS thumbnail',
-                'tx_dlf_structures',
-                'tx_dlf_structures.pid='.intval($cPid)
-                    .' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures')
-                    .Helper::whereClause('tx_dlf_structures'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-                // Get desired thumbnail structure if not the toplevel structure itself.
-                if (!empty($resArray['thumbnail'])) {
-                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
-                    // TODO METS specific. Move somewhere else.
-                    // Check if this document has a structure element of the desired type.
-                    $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$strctType.'"]/@ID');
-                    if (!empty($strctIds)) {
-                        $strctId = (string) $strctIds[0];
-                    }
-                }
-                // Load smLinks.
-                $this->_getSmLinks();
-                // Get thumbnail location.
-                if ($this->_getPhysicalStructure()
-                    && !empty($this->smLinks['l2p'][$strctId])) {
-                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
-                } else {
-                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
-                }
-            } else {
-                Helper::devLog('No structure of type "'.$metadata['type'][0].'" found in database', DEVLOG_SEVERITY_ERROR);
-            }
-            $this->thumbnailLoaded = TRUE;
-        }
-        return $this->thumbnail;
-    }
+    protected abstract function _getThumbnail($forceReload = FALSE);
 
     /**
      * This returns the ID of the toplevel logical structure node

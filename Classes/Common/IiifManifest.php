@@ -884,6 +884,15 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
+     */
+    protected function _getThumbnail($forceReload = FALSE)
+    {
+        return $this->iiif->getThumbnailUrl();
+    }
+
+    /**
+     * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
      */
     protected function _getToplevelId()
