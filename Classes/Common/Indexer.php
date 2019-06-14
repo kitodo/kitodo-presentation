@@ -475,8 +475,7 @@ class Indexer {
                     return 1;
                 }
             }
-            if (!empty($physicalUnit['annotationContainers'])) {
-                $annotationContainerIds = $physicalUnit['annotationContainers'];
+            if (isset($annotationContainerIds) && !empty($annotationContainerIds)) {
                 foreach ($annotationContainerIds as $annotationContainerId) {
                     if (!empty($extConf['useragent'])) {
                         @ini_set('user_agent', $extConf['useragent']);
