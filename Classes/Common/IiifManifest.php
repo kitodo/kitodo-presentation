@@ -33,7 +33,9 @@ use Ubl\Iiif\Tools\IiifHelper;
  * represents a IIIF manifest in the conext of this TYPO3 extension.
  *
  * @author Lutz Helm <helm@ub.uni-leipzig.de>
- *
+ * @package	TYPO3
+ * @subpackage	tx_dlf
+ * @access	public
  */
 final class IiifManifest extends Document
 {
