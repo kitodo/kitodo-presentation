@@ -828,10 +828,10 @@ final class MetsDocument extends Document
                 // Get thumbnail location.
                 if ($this->_getPhysicalStructure()
                     && !empty($this->smLinks['l2p'][$strctId])) {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
-                    } else {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
-                    }
+                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
+                } else {
+                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
+                }
             } else {
                 Helper::devLog('No structure of type "'.$metadata['type'][0].'" found in database', DEVLOG_SEVERITY_ERROR);
             }
