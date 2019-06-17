@@ -236,9 +236,7 @@ final class IiifManifest extends Document
             $physSeq[0] = $iiifId;
             $this->physicalStructureInfo[$physSeq[0]]['id'] = $iiifId;
             $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = $iiifId;
-            // TODO Translation? Or use language "@none" / null?
             $this->physicalStructureInfo[$physSeq[0]]['label'] = $this->iiif->getLabelForDisplay();
-            // TODO Translation? Or use language "@none" / null?
             $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = $this->iiif->getLabelForDisplay();
             $this->physicalStructureInfo[$physSeq[0]]['type'] = 'physSequence';
             $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = null;
@@ -258,7 +256,7 @@ final class IiifManifest extends Document
                     $iiifAlto = $this->iiif->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", true);
                 }
                 if (!empty($iiifAlto)) {
-                    // FIXME use multiple possible alto files?
+                    // TODO use multiple possible alto files?
                     $this->mimeTypes[$iiifAlto[0]] = "application/alto+xml";
                     $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext] = $iiifAlto[0];
                     $this->hasFulltext = true;
@@ -287,7 +285,6 @@ final class IiifManifest extends Document
                     // populate structural metadata info
                     $elements[$canvasOrder] = $canvas->getId();
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['id']=$canvas->getId();
-                    // TODO check replacement
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['dmdId']=null;
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['label']=$canvas->getLabelForDisplay();
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['orderlabel']=$canvas->getLabelForDisplay();
@@ -312,7 +309,7 @@ final class IiifManifest extends Document
                             $alto = $canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", true);
                         }
                         if (!empty($alto)) {
-                            // FIXME use all possible alto files?
+                            // TODO use all possible alto files?
                             $this->mimeTypes[$alto[0]] = "application/alto+xml";
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseFulltext] = $alto[0];
                             $this->hasFulltext = true;
