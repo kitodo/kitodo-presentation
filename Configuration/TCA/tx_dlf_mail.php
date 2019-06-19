@@ -34,6 +34,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required',
+                'default' => '',
             ],
         ],
         'name' => [
@@ -42,7 +43,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => '',
+                'default' => '',
             ],
         ],
         'mail' => [
@@ -52,6 +53,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'unique',
+                'default' => '',
             ],
         ],
     ],

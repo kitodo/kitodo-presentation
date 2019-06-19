@@ -38,15 +38,23 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'user_id' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.user_id',
             'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'max' => 255,
-                'eval' => 'alphanum,unique',
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_cruser_id.none', 0],
+                ],
+                'foreign_table' => 'fe_users',
+                'foreign_table_where' => 'ORDER BY fe_users.username',
+                'size' => 1,
+                'minitems' => 1,
+                'maxitems' => 1,
+                'default' => 0,
             ],
         ],
         'file_name' => [
@@ -55,7 +63,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'alphanum,unique',
+                'eval' => 'alphanum_x,unique',
+                'default' => '',
             ],
         ],
         'count_pages' => [
@@ -64,7 +73,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'trim',
+                'eval' => 'num,int',
+                'default' => 0,
             ],
         ],
         'name' => [
@@ -72,8 +82,9 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'max' => 255,
+                'max' => 100,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ]
     ],

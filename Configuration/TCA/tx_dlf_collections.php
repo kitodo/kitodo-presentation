@@ -62,16 +62,17 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_dlf_collections',
+                'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0)',
                 'items' => [
                     ['', 0],
                 ],
-                'foreign_table' => 'tx_dlf_collections',
-                'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0)',
+                'default' => 0,
             ],
         ],
         'l18n_diffsource' => [
             'config' => [
-                'type' => 'passthrough'
+                'type' => 'passthrough',
             ],
         ],
         'hidden' => [
@@ -88,17 +89,18 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
+                'foreign_table' => 'fe_groups',
                 'items' => [
-                    ['LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1],
-                    ['LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2],
+                    ['LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', '-1'],
+                    ['LLL:EXT:lang/locallang_general.xml:LGL.any_login', '-2'],
                     ['LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--'],
                 ],
-                'foreign_table' => 'fe_groups',
                 'size' => 5,
                 'autoSizeMax' => 15,
                 'minitems' => 0,
                 'maxitems' => 20,
                 'exclusiveKeys' => '-1,-2',
+                'default' => '',
             ],
         ],
         'label' => [
@@ -109,6 +111,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'index_name' => [
@@ -120,6 +123,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,uniqueInPid',
+                'default' => '',
             ],
         ],
         'index_search' => [
@@ -131,6 +135,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'oai_name' => [
@@ -142,6 +147,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace,alphanum_x,uniqueInPid',
+                'default' => '',
             ],
         ],
         'description' => [
@@ -153,6 +159,7 @@ return [
                 'cols' => 30,
                 'rows' => 10,
                 'wrap' => 'virtual',
+                'default' => '',
             ],
             'defaultExtras' => 'richtext[undo,redo,cut,copy,paste,link,image,line,acronym,chMode,blockstylelabel,formatblock,blockstyle,textstylelabel,textstyle,bold,italic,unorderedlist,orderedlist]:rte_transform[mode=ts_css]',
         ],
@@ -167,6 +174,7 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
+                'default' => '',
             ],
         ],
         'priority' => [
@@ -186,6 +194,7 @@ return [
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
+                'eval' => 'num,int',
                 'default' => 3,
             ],
         ],
@@ -207,6 +216,7 @@ return [
                     'ident' => 'docs_colls',
                 ],
                 'MM_opposite_field' => 'collections',
+                'default' => 0,
             ],
         ],
         'owner' => [
@@ -224,6 +234,7 @@ return [
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
+                'default' => 0,
             ],
         ],
         'fe_cruser_id' => [
@@ -241,6 +252,7 @@ return [
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
+                'default' => 0,
             ],
         ],
         'fe_admin_lock' => [

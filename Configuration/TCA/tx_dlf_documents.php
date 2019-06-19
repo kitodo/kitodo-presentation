@@ -51,10 +51,10 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.starttime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
-                'max' => '20',
+                'size' => 13,
+                'max' => 20,
                 'eval' => 'datetime',
-                'default' => '0',
+                'default' => 0,
             ],
         ],
         'endtime' => [
@@ -62,10 +62,10 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.endtime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
-                'max' => '20',
+                'size' => 13,
+                'max' => 20,
                 'eval' => 'datetime',
-                'default' => '0',
+                'default' => 0,
             ],
         ],
         'fe_group' => [
@@ -75,8 +75,8 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => [
-                    ['LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', -1],
-                    ['LLL:EXT:lang/locallang_general.xml:LGL.any_login', -2],
+                    ['LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', '-1'],
+                    ['LLL:EXT:lang/locallang_general.xml:LGL.any_login', '-2'],
                     ['LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--'],
                 ],
                 'foreign_table' => 'fe_groups',
@@ -85,6 +85,7 @@ return [
                 'minitems' => 0,
                 'maxitems' => 20,
                 'exclusiveKeys' => '-1,-2',
+                'default' => '',
             ],
         ],
         'prod_id' => [
@@ -95,6 +96,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'location' => [
@@ -105,6 +107,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'required,uniqueInPid',
+                'default' => '',
             ],
         ],
         'record_id' => [
@@ -115,6 +118,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace,uniqueInPid',
+                'default' => '',
             ],
         ],
         'opac_id' => [
@@ -125,6 +129,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'union_id' => [
@@ -135,6 +140,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'urn' => [
@@ -145,6 +151,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'purl' => [
@@ -155,6 +162,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'title' => [
@@ -165,6 +173,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'title_sorting' => [
@@ -175,6 +184,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'author' => [
@@ -185,6 +195,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'year' => [
@@ -195,6 +206,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'place' => [
@@ -205,6 +217,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'thumbnail' => [
@@ -218,11 +231,13 @@ return [
         'metadata' => [
             'config' => [
                 'type' => 'passthrough',
+                'default' => '',
             ],
         ],
         'metadata_sorting' => [
             'config' => [
                 'type' => 'passthrough',
+                'default' => '',
             ],
         ],
         'structure' => [
@@ -236,6 +251,7 @@ return [
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
+                'default' => 0,
             ],
         ],
         'partof' => [
@@ -262,6 +278,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'volume_sorting' => [
@@ -272,6 +289,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'collections' => [
@@ -290,6 +308,7 @@ return [
                 'MM_match_fields' => [
                     'ident' => 'docs_colls',
                 ],
+                'default' => 0,
             ],
         ],
         'owner' => [
@@ -303,11 +322,13 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
+                'default' => 0,
             ],
         ],
         'solrcore' => [
             'config' => [
                 'type' => 'passthrough',
+                'default' => 0,
             ],
         ],
         'status' => [

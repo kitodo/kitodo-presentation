@@ -34,6 +34,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'print' => [
@@ -43,6 +44,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required',
+                'default' => '',
             ],
         ],
     ],

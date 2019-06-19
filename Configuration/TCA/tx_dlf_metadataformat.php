@@ -34,6 +34,7 @@ return [
         'parent_id' => [
             'config' => [
                 'type' => 'passthrough',
+                'default' => 0,
             ],
         ],
         'encoded' => [
@@ -47,6 +48,7 @@ return [
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
+                'default' => 0,
             ],
         ],
         'xpath' => [
@@ -57,6 +59,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'required,trim',
+                'default' => '',
             ],
         ],
         'xpath_sorting' => [
@@ -67,6 +70,7 @@ return [
                 'size' => 30,
                 'max' => 1024,
                 'eval' => 'trim',
+                'default' => '',
             ],
         ],
         'mandatory' => [
