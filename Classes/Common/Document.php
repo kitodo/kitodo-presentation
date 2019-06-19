@@ -11,6 +11,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
+use Ubl\Iiif\Tools\IiifHelper;
+
 /**
  * Document class for the 'dlf' extension
  *
@@ -19,17 +22,9 @@ namespace Kitodo\Dlf\Common;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @abstract
  */
-final class Document {
-    /**
-     * This holds the whole XML file as string for serialization purposes
-     * @see __sleep() / __wakeup()
-     *
-     * @var string
-     * @access protected
-     */
-    protected $asXML = '';
-
+abstract class Document {
     /**
      * This holds the PID for the configuration
      *
@@ -39,47 +34,12 @@ final class Document {
     protected $cPid = 0;
 
     /**
-     * This holds the XML file's dmdSec parts with their IDs as array key
-     *
-     * @var array
-     * @access protected
-     */
-    protected $dmdSec = [];
-
-    /**
-     * Are the METS file's dmdSecs loaded?
-     * @see $dmdSec
-     *
-     * @var boolean
-     * @access protected
-     */
-    protected $dmdSecLoaded = FALSE;
-
-    /**
      * The extension key
      *
      * @var string
      * @access public
      */
     public static $extKey = 'dlf';
-
-    /**
-     * This holds the file ID -> USE concordance
-     * @see _getFileGrps()
-     *
-     * @var array
-     * @access protected
-     */
-    protected $fileGrps = [];
-
-    /**
-     * Are the file groups loaded?
-     * @see $fileGrps
-     *
-     * @var boolean
-     * @access protected
-     */
-    protected $fileGrpsLoaded = FALSE;
 
     /**
      * This holds the configuration for all supported metadata encodings
@@ -104,16 +64,9 @@ final class Document {
     ];
 
     /**
-     * Are the available metadata formats loaded?
-     * @see $formats
-     *
-     * @var boolean
-     * @access protected
-     */
-    protected $formatsLoaded = FALSE;
-
-    /**
-     * Are there any fulltext files available?
+     * Are there any fulltext files available? This also includes IIIF text annotations
+     * with motivation 'painting' if Kitodo.Presentation is configured to store text
+     * annotations as fulltext.
      *
      * @var boolean
      * @access protected
@@ -145,7 +98,8 @@ final class Document {
     protected $logicalUnits = [];
 
     /**
-     * This holds the documents' parsed metadata array with their corresponding structMap//div's ID as array key
+     * This holds the documents' parsed metadata array with their corresponding
+     * structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
      *
      * @var array
      * @access protected
@@ -160,14 +114,6 @@ final class Document {
      * @access protected
      */
     protected $metadataArrayLoaded = FALSE;
-
-    /**
-     * This holds the XML file's METS part as \SimpleXMLElement object
-     *
-     * @var \SimpleXMLElement
-     * @access protected
-     */
-    protected $mets;
 
     /**
      * The holds the total number of pages
@@ -219,7 +165,8 @@ final class Document {
     protected $pid = 0;
 
     /**
-     * This holds the documents' raw text pages with their corresponding structMap//div's ID as array key
+     * This holds the documents' raw text pages with their corresponding
+     * structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
      *
      * @var array
      * @access protected
@@ -235,7 +182,7 @@ final class Document {
     protected $ready = FALSE;
 
     /**
-     * The METS file's record identifier
+     * The METS file's / IIIF manifest's record identifier
      *
      * @var string
      * @access protected
@@ -246,6 +193,7 @@ final class Document {
      * This holds the singleton object of the document
      *
      * @var array (\Kitodo\Dlf\Common\Document)
+     * @static
      * @access protected
      */
     protected static $registry = [];
@@ -319,7 +267,7 @@ final class Document {
     protected $thumbnailLoaded = FALSE;
 
     /**
-     * This holds the toplevel structure's @ID
+     * This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF).
      *
      * @var string
      * @access protected
@@ -347,6 +295,8 @@ final class Document {
      *
      * @access public
      *
+     * @static
+     *
      * @return void
      */
     public static function clearRegistry() {
@@ -355,53 +305,80 @@ final class Document {
     }
 
     /**
+     * This ensures that the recordId, if existent, is retrieved from the document.
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param integer $pid: ID of the configuration page with the recordId config
+     *
+     */
+    protected abstract function establishRecordId($pid);
+
+    /**
+     * Source document PHP object which is represented by a Document instance
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
+     * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
+     */
+    protected abstract function getDocument();
+
+    /**
+     * This gets the location of a downloadable file for a physical page or track
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
+     *
+     * @return string    The file's location as URL
+     */
+    public abstract function getDownloadLocation($id);
+
+    /**
      * This gets the location of a file representing a physical page or track
      *
      * @access public
      *
-     * @param string $id: The @ID attribute of the file node
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
      *
      * @return string The file's location as URL
      */
-    public function getFileLocation($id) {
-        if (!empty($id)
-            && ($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/mets:FLocat[@LOCTYPE="URL"]'))) {
-            return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
-        } else {
-            Helper::devLog('There is no file node with @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
-            return '';
-        }
-    }
+    public abstract function getFileLocation($id);
 
     /**
      * This gets the MIME type of a file representing a physical page or track
      *
      * @access public
      *
+     * @abstract
+     *
      * @param string $id: The @ID attribute of the file node
      *
      * @return string The file's MIME type
      */
-    public function getFileMimeType($id) {
-        if (!empty($id)
-            && ($mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/@MIMETYPE'))) {
-            return (string) $mimetype[0];
-        } else {
-            Helper::devLog('There is no file node with @ID "'.$id.'" or no MIME type specified', DEVLOG_SEVERITY_WARNING);
-            return '';
-        }
-    }
+    public abstract function getFileMimeType($id);
 
     /**
      * This is a singleton class, thus an instance must be created by this method
      *
      * @access public
      *
-     * @param mixed $uid: The unique identifier of the document to parse or URL of XML file
+     * @static
+     *
+     * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
      * @param integer $pid: If > 0, then only document with this PID gets loaded
      * @param boolean $forceReload: Force reloading the document instead of returning the cached instance
      *
-     * @return \Kitodo\Dlf\Common\Document Instance of this class
+     * @return \Kitodo\Dlf\Common\Document Instance of this class, either MetsDocument or IiifManifest
      */
     public static function &getInstance($uid, $pid = 0, $forceReload = FALSE) {
         // Sanitize input.
@@ -433,9 +410,86 @@ final class Document {
                 }
             }
         }
-        // Create new instance...
-        $instance = new self($uid, $pid);
-        // ...and save it to registry.
+        // Create new instance depending on format (METS or IIIF) ...
+        $documentFormat = null;
+        $xml = null;
+        $iiif = null;
+        // Try to get document format from database
+        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
+            $whereClause = 'tx_dlf_documents.uid='.intval($uid).Helper::whereClause('tx_dlf_documents');
+            if ($pid) {
+                $whereClause .= ' AND tx_dlf_documents.pid='.intval($pid);
+            }
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_dlf_documents.location AS location,tx_dlf_documents.document_format AS document_format',
+                'tx_dlf_documents',
+                $whereClause,
+                '',
+                '',
+                '1'
+                );
+
+            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+                for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
+                    $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+                    $documentFormat = $resArray['document_format'];
+                }
+            }
+
+        } else {
+            // Get document format from content of remote document
+            // Cast to string for safety reasons.
+            $location = (string) $uid;
+            // Try to load a file from the url
+            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location)) {
+                // Load extension configuration
+                $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+                // Set user-agent to identify self when fetching XML data.
+                if (!empty($extConf['useragent'])) {
+                    @ini_set('user_agent', $extConf['useragent']);
+                }
+                $content = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($location);
+                // TODO use single place to load xml
+                // Turn off libxml's error logging.
+                $libxmlErrors = libxml_use_internal_errors(TRUE);
+                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                // Try to load XML from file.
+                $xml = simplexml_load_string($content);
+                // reset entity loader setting
+                libxml_disable_entity_loader($previousValueOfEntityLoader);
+                // Reset libxml's error logging.
+                libxml_use_internal_errors($libxmlErrors);
+                if ($xml !== false) {
+                    /* @var $xml \SimpleXMLElement */
+                    $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
+                    $xpathResult = $xml->xpath('//mets:mets');
+                    $documentFormat = ($xpathResult !== false && count($xpathResult)>0) ? 'METS' : null;
+                } else {
+                    // Try to load file as IIIF resource instead.
+                    $contentAsJsonArray = json_decode($content, true);
+                    if ($contentAsJsonArray !== null) {
+                        // Load plugin configuration.
+                        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+                        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+                        IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
+                        IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
+                        $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
+                        if ($iiif instanceof IiifResourceInterface) {
+                            $documentFormat = 'IIIF';
+                        }
+                    }
+                }
+            }
+        }
+        // Sanitize input.
+        $pid = max(intval($pid), 0);
+        if ($documentFormat == 'METS') {
+            $instance = new MetsDocument($uid, $pid, $xml);
+        } elseif ($documentFormat == 'IIIF') {
+            $instance = new IiifManifest($uid, $pid, $iiif);
+        }
+        // Save instance to registry.
         if ($instance->ready) {
             self::$registry[md5($instance->uid)] = $instance;
             if ($instance->uid != $instance->location) {
@@ -457,298 +511,31 @@ final class Document {
      *
      * @access public
      *
-     * @param string $id: The @ID attribute of the logical structure node
-     * @param boolean $recursive: Whether to include the child elements
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the logical structure node (METS) or
+     * the @id property of the Manifest / Range (IIIF)
+     * @param boolean $recursive: Whether to include the child elements / resources
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    public function getLogicalStructure($id, $recursive = FALSE) {
-        $details = [];
-        // Is the requested logical unit already loaded?
-        if (!$recursive
-            && !empty($this->logicalUnits[$id])) {
-            // Yes. Return it.
-            return $this->logicalUnits[$id];
-        } elseif (!empty($id)) {
-            // Get specified logical unit.
-            $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
-        } else {
-            // Get all logical units at top level.
-            $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
-        }
-        if (!empty($divs)) {
-            if (!$recursive) {
-                // Get the details for the first xpath hit.
-                $details = $this->getLogicalStructureInfo($divs[0]);
-            } else {
-                // Walk the logical structure recursively and fill the whole table of contents.
-                foreach ($divs as $div) {
-                    $this->tableOfContents[] = $this->getLogicalStructureInfo($div, TRUE);
-                }
-            }
-        }
-        return $details;
-    }
-
-    /**
-     * This gets details about a logical structure element
-     *
-     * @access protected
-     *
-     * @param \SimpleXMLElement $structure: The logical structure node
-     * @param boolean $recursive: Whether to include the child elements
-     *
-     * @return array Array of the element's id, label, type and physical page indexes/mptr link
-     */
-    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, $recursive = FALSE) {
-        // Get attributes.
-        foreach ($structure->attributes() as $attribute => $value) {
-            $attributes[$attribute] = (string) $value;
-        }
-        // Load plugin configuration.
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-        // Extract identity information.
-        $details = [];
-        $details['id'] = $attributes['ID'];
-        $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
-        $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
-        $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
-        $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
-        $details['volume'] = '';
-        // Set volume information only if no label is set and this is the toplevel structure element.
-        if (empty($details['label'])
-            && $details['id'] == $this->_getToplevelId()) {
-            $metadata = $this->getMetadata($details['id']);
-            if (!empty($metadata['volume'][0])) {
-                $details['volume'] = $metadata['volume'][0];
-            }
-        }
-        $details['pagination'] = '';
-        $details['type'] = $attributes['TYPE'];
-        $details['thumbnailId'] = '';
-        // Load smLinks.
-        $this->_getSmLinks();
-        // Load physical structure.
-        $this->_getPhysicalStructure();
-        // Get the physical page or external file this structure element is pointing at.
-        $details['points'] = '';
-        // Is there a mptr node?
-        if (count($structure->children('http://www.loc.gov/METS/')->mptr)) {
-            // Yes. Get the file reference.
-            $details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-        } elseif (!empty($this->physicalStructure)
-            && array_key_exists($details['id'], $this->smLinks['l2p'])) { // Are there any physical elements and is this logical unit linked to at least one of them?
-            $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, TRUE)), 1);
-            if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
-                $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
-            }
-            // Get page/track number of the first page/track related to this structure element.
-            $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
-        } elseif ($details['id'] == $this->_getToplevelId()) { // Is this the toplevel structure element?
-            // Yes. Point to itself.
-            $details['points'] = 1;
-            if (!empty($this->physicalStructure)
-                && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']])) {
-                $details['thumbnailId'] = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']];
-            }
-        }
-        // Get the files this structure element is pointing at.
-        $details['files'] = [];
-        $fileUse = $this->_getFileGrps();
-        // Get the file representations from fileSec node.
-        foreach ($structure->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-            // Check if file has valid @USE attribute.
-            if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                $details['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-            }
-        }
-        // Keep for later usage.
-        $this->logicalUnits[$details['id']] = $details;
-        // Walk the structure recursively? And are there any children of the current element?
-        if ($recursive
-            && count($structure->children('http://www.loc.gov/METS/')->div)) {
-            $details['children'] = [];
-            foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
-                // Repeat for all children.
-                $details['children'][] = $this->getLogicalStructureInfo($child, TRUE);
-            }
-        }
-        return $details;
-    }
+    public abstract function getLogicalStructure($id, $recursive = FALSE);
 
     /**
      * This extracts all the metadata for a logical structure node
      *
      * @access public
      *
-     * @param string $id: The @ID attribute of the logical structure node
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the logical structure node (METS) or the @id property
+     * of the Manifest / Range (IIIF)
      * @param integer $cPid: The PID for the metadata definitions
      *                       (defaults to $this->cPid or $this->pid)
      *
-     * @return array The logical structure node's parsed metadata array
+     * @return array The logical structure node's / the IIIF resource's parsed metadata array
      */
-    public function getMetadata($id, $cPid = 0) {
-        // Make sure $cPid is a non-negative integer.
-        $cPid = max(intval($cPid), 0);
-        // If $cPid is not given, try to get it elsewhere.
-        if (!$cPid
-            && ($this->cPid || $this->pid)) {
-            // Retain current PID.
-            $cPid = ($this->cPid ? $this->cPid : $this->pid);
-        } elseif (!$cPid) {
-            Helper::devLog('Invalid PID '.$cPid.' for metadata definitions', DEVLOG_SEVERITY_WARNING);
-            return [];
-        }
-        // Get metadata from parsed metadata array if available.
-        if (!empty($this->metadataArray[$id])
-            && $this->metadataArray[0] == $cPid) {
-            return $this->metadataArray[$id];
-        }
-        // Initialize metadata array with empty values.
-        $metadata = [
-            'title' => [],
-            'title_sorting' => [],
-            'author' => [],
-            'place' => [],
-            'year' => [],
-            'prod_id' => [],
-            'record_id' => [],
-            'opac_id' => [],
-            'union_id' => [],
-            'urn' => [],
-            'purl' => [],
-            'type' => [],
-            'volume' => [],
-            'volume_sorting' => [],
-            'collection' => [],
-            'owner' => [],
-        ];
-        // Get the logical structure node's DMDID.
-        if (!empty($this->logicalUnits[$id])) {
-            $dmdId = $this->logicalUnits[$id]['dmdId'];
-        } else {
-            $dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@DMDID');
-            $dmdId = (string) $dmdId[0];
-        }
-        if (!empty($dmdId)) {
-            // Load available metadata formats and dmdSecs.
-            $this->loadFormats();
-            $this->_getDmdSec();
-            // Is this metadata format supported?
-            if (!empty($this->formats[$this->dmdSec[$dmdId]['type']])) {
-                if (!empty($this->formats[$this->dmdSec[$dmdId]['type']]['class'])) {
-                    $class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
-                    // Get the metadata from class.
-                    if (class_exists($class)
-                        && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof MetadataInterface) {
-                        $obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
-                    } else {
-                        Helper::devLog('Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', DEVLOG_SEVERITY_WARNING);
-                    }
-                }
-            } else {
-                Helper::devLog('Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', DEVLOG_SEVERITY_WARNING);
-                return [];
-            }
-            // Get the structure's type.
-            if (!empty($this->logicalUnits[$id])) {
-                $metadata['type'] = [$this->logicalUnits[$id]['type']];
-            } else {
-                $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@TYPE');
-                $metadata['type'] = [(string) $struct[0]];
-            }
-            // Get the additional metadata from database.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
-                'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
-                'tx_dlf_metadata.pid='.$cPid
-                    .' AND tx_dlf_metadataformat.pid='.$cPid
-                    .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
-                    .Helper::whereClause('tx_dlf_metadata', TRUE)
-                    .Helper::whereClause('tx_dlf_metadataformat')
-                    .Helper::whereClause('tx_dlf_formats'),
-                '',
-                '',
-                ''
-            );
-            // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
-            $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
-            $domXPath = new \DOMXPath($domNode->ownerDocument);
-            $this->registerNamespaces($domXPath);
-            // OK, now make the XPath queries.
-            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-                // Set metadata field's value(s).
-                if ($resArray['format'] > 0
-                    && !empty($resArray['xpath'])
-                    && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))) {
-                    if ($values instanceof \DOMNodeList
-                        && $values->length > 0) {
-                        $metadata[$resArray['index_name']] = [];
-                        foreach ($values as $value) {
-                            $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
-                        }
-                    } elseif (!($values instanceof \DOMNodeList)) {
-                        $metadata[$resArray['index_name']] = [trim((string) $values)];
-                    }
-                }
-                // Set default value if applicable.
-                if (empty($metadata[$resArray['index_name']][0])
-                    && strlen($resArray['default_value']) > 0) {
-                    $metadata[$resArray['index_name']] = [$resArray['default_value']];
-                }
-                // Set sorting value if applicable.
-                if (!empty($metadata[$resArray['index_name']])
-                    && $resArray['is_sortable']) {
-                    if ($resArray['format'] > 0
-                        && !empty($resArray['xpath_sorting'])
-                        && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))) {
-                        if ($values instanceof \DOMNodeList
-                            && $values->length > 0) {
-                            $metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values->item(0)->nodeValue);
-                        } elseif (!($values instanceof \DOMNodeList)) {
-                            $metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values);
-                        }
-                    }
-                    if (empty($metadata[$resArray['index_name'].'_sorting'][0])) {
-                        $metadata[$resArray['index_name'].'_sorting'][0] = $metadata[$resArray['index_name']][0];
-                    }
-                }
-            }
-            // Set title to empty string if not present.
-            if (empty($metadata['title'][0])) {
-                $metadata['title'][0] = '';
-                $metadata['title_sorting'][0] = '';
-            }
-            // Add collections from database to toplevel element if document is already saved.
-            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
-                && $id == $this->_getToplevelId()) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-                    'tx_dlf_collections.index_name AS index_name',
-                    'tx_dlf_documents',
-                    'tx_dlf_relations',
-                    'tx_dlf_collections',
-                    'AND tx_dlf_collections.pid='.intval($cPid)
-                        .' AND tx_dlf_documents.uid='.intval($this->uid)
-                        .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                        .' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
-                        .Helper::whereClause('tx_dlf_documents')
-                        .Helper::whereClause('tx_dlf_collections'),
-                    'tx_dlf_collections.index_name',
-                    '',
-                    ''
-                );
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-                    if (!in_array($resArray['index_name'], $metadata['collection'])) {
-                        $metadata['collection'][] = $resArray['index_name'];
-                    }
-                }
-            }
-        } else {
-            // There is no dmdSec for this structure node.
-            return [];
-        }
-        return $metadata;
-    }
+    public abstract function getMetadata($id, $cPid = 0);
 
     /**
      * This returns the first corresponding physical page number of a given logical page label
@@ -778,64 +565,74 @@ final class Document {
     }
 
     /**
-     * This extracts the raw text for a physical structure node
+     * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas. Text might be
+     * given as ALTO for METS or as annotations or ALTO for IIIF resources. If IIIF plain text annotations
+     * with the motivation "painting" should be treated as full text representations, the extension has to be
+     * configured accordingly.
      *
      * @access public
      *
-     * @param string $id: The @ID attribute of the physical structure node
+     * @abstract
      *
-     * @return string The physical structure node's raw text
+     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
+     * of the Manifest / Range (IIIF)
+     *
+     * @return string The physical structure node's / IIIF resource's raw text
      */
-    public function getRawText($id) {
+    public abstract function getRawText($id);
+
+    /**
+     * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas from an
+     * XML fulltext representation (currently only ALTO). For IIIF manifests, ALTO documents have
+     * to be given in the Canvas' / Manifest's "seeAlso" property.
+     *
+     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
+     * of the Manifest / Range (IIIF)
+     *
+     * @return string The physical structure node's / IIIF resource's raw text from XML
+     */
+    protected function getRawTextFromXml($id) {
         $rawText = '';
-        // Get text from raw text array if available.
-        if (!empty($this->rawTextArray[$id])) {
-            return $this->rawTextArray[$id];
+        // Load available text formats, ...
+        $this->loadFormats();
+        // ... physical structure ...
+        $this->_getPhysicalStructure();
+        // ... and extension configuration.
+        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        if (!empty($this->physicalStructureInfo[$id])) {
+            // Get fulltext file.
+            $file = $this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]);
+            // Turn off libxml's error logging.
+            $libxmlErrors = libxml_use_internal_errors(TRUE);
+            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+            $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+            // Load XML from file.
+            $rawTextXml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
+            // Reset entity loader setting.
+            libxml_disable_entity_loader($previousValueOfEntityLoader);
+            // Reset libxml's error logging.
+            libxml_use_internal_errors($libxmlErrors);
+            // Get the root element's name as text format.
+            $textFormat = strtoupper($rawTextXml->getName());
+        } else {
+            Helper::devLog('Invalid structure node @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
+            return $rawText;
         }
-        // Load fileGrps and check for fulltext files.
-        $this->_getFileGrps();
-        if ($this->hasFulltext) {
-            // Load available text formats, ...
-            $this->loadFormats();
-            // ... physical structure ...
-            $this->_getPhysicalStructure();
-            // ... and extension configuration.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            if (!empty($this->physicalStructureInfo[$id])) {
-                // Get fulltext file.
-                $file = $this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]);
-                // Turn off libxml's error logging.
-                $libxmlErrors = libxml_use_internal_errors(TRUE);
-                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
-                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-                // Load XML from file.
-                $rawTextXml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
-                // Reset entity loader setting.
-                libxml_disable_entity_loader($previousValueOfEntityLoader);
-                // Reset libxml's error logging.
-                libxml_use_internal_errors($libxmlErrors);
-                // Get the root element's name as text format.
-                $textFormat = strtoupper($rawTextXml->getName());
-            } else {
-                Helper::devLog('Invalid structure node @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
-                return $rawText;
-            }
-            // Is this text format supported?
-            if (!empty($this->formats[$textFormat])) {
-                if (!empty($this->formats[$textFormat]['class'])) {
-                    $class = $this->formats[$textFormat]['class'];
-                    // Get the raw text from class.
-                    if (class_exists($class)
-                        && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof FulltextInterface) {
-                        $rawText = $obj->getRawText($rawTextXml);
-                        $this->rawTextArray[$id] = $rawText;
-                    } else {
-                        Helper::devLog('Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', DEVLOG_SEVERITY_WARNING);
-                    }
+        // Is this text format supported?
+        if (!empty($this->formats[$textFormat])) {
+            if (!empty($this->formats[$textFormat]['class'])) {
+                $class = $this->formats[$textFormat]['class'];
+                // Get the raw text from class.
+                if (class_exists($class)
+                    && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof FulltextInterface) {
+                    $rawText = $obj->getRawText($rawTextXml);
+                    $this->rawTextArray[$id] = $rawText;
+                } else {
+                    Helper::devLog('Invalid class/method "'.$class.'->getRawText()" for text format "'.$textFormat.'"', DEVLOG_SEVERITY_WARNING);
                 }
-            } else {
-                Helper::devLog('Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
             }
+        } else {
+            Helper::devLog('Unsupported text format "'.$textFormat.'" in physical node with @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
         }
         return $rawText;
     }
@@ -844,6 +641,8 @@ final class Document {
      * This determines a title for the given document
      *
      * @access public
+     *
+     * @static
      *
      * @param integer $uid: The UID of the document
      * @param boolean $recursive: Search superior documents for a title, too?
@@ -884,17 +683,17 @@ final class Document {
     }
 
     /**
-     * This extracts all the metadata for the toplevel logical structure node
+     * This extracts all the metadata for the toplevel logical structure node / resource
      *
      * @access public
      *
      * @param integer $cPid: The PID for the metadata definitions
      *
-     * @return array The logical structure node's parsed metadata array
+     * @return array The logical structure node's / resource's parsed metadata array
      */
     public function getTitledata($cPid = 0) {
         $titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
-        // Set record identifier for METS file if not present.
+        // Set record identifier for METS file / IIIF manifest if not present.
         if (is_array($titledata)
             && array_key_exists('record_id', $titledata)) {
             if (!empty($this->recordId)
@@ -906,27 +705,80 @@ final class Document {
     }
 
     /**
+     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return it's depth.
+     *
+     * @access protected
+     *
+     * @param array $structure: logical structure array
+     * @param integer $depth: current tree depth
+     * @param string $logId: ID of the logical structure whose depth is requested
+     *
+     * @return integer|boolean: false if structure with $logId is not a child of this substructure,
+     * or the actual depth.
+     */
+    protected function getTreeDepth($structure, $depth, $logId) {
+        foreach ($structure as $element) {
+            if ($element['id'] == $logId) {
+                return $depth;
+            } elseif (array_key_exists('children', $element)) {
+                $foundInChildren = $this->getTreeDepth($element['children'], $depth + 1, $logId);
+                if ($foundInChildren!==false) {
+                    return $foundInChildren;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get the tree depth of a logical structure element within the table of content
+     *
+     * @access public
+     *
+     * @param string $logId: The id of the logical structure element whose depth is requested
+     * @return number|boolean tree depth as integer or FALSE if no element with $logId exists within the TOC.
+     */
+    public function getStructureDepth($logId) {
+        return $this->getTreeDepth($this->_getTableOfContents(), 1, $logId);
+    }
+
+    /**
      * This sets some basic class properties
      *
      * @access protected
      *
+     * @abstract
+     *
      * @return void
      */
-    protected function init() {
-        // Get METS node from XML file.
-        $this->registerNamespaces($this->xml);
-        $mets = $this->xml->xpath('//mets:mets');
-        if ($mets) {
-            $this->mets = $mets[0];
-            // Register namespaces.
-            $this->registerNamespaces($this->mets);
-        } else {
-            Helper::devLog('No METS part found in document with UID '.$this->uid, DEVLOG_SEVERITY_ERROR);
-        }
-    }
+    protected abstract function init();
 
     /**
-     * Load XML file from URL
+     * Reuse any document object that might have been already loaded to determine wether document is METS or IIIF
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
+     *
+     * @return boolean true if $preloadedDocument can actually be reused, false if it has to be loaded again
+     */
+    protected abstract function setPreloadedDocument($preloadedDocument);
+
+    /**
+     * METS/IIIF specific part of loading a location
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param string $location: The URL of the file to load
+     */
+    protected abstract function loadLocation($location);
+
+    /**
+     * Load XML file / IIIF resource from URL
      *
      * @access protected
      *
@@ -935,36 +787,30 @@ final class Document {
      * @return boolean TRUE on success or FALSE on failure
      */
     protected function load($location) {
-        // Load XML file.
+        // Load XML / JSON-LD file.
         if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location)) {
             // Load extension configuration
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
-            // Set user-agent to identify self when fetching XML data.
+            // Set user-agent to identify self when fetching XML / JSON-LD data.
             if (!empty($extConf['useragent'])) {
                 @ini_set('user_agent', $extConf['useragent']);
             }
-            // Turn off libxml's error logging.
-            $libxmlErrors = libxml_use_internal_errors(TRUE);
-            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-            $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-            // Load XML from file.
-            $xml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($location));
-            // reset entity loader setting
-            libxml_disable_entity_loader($previousValueOfEntityLoader);
-            // Reset libxml's error logging.
-            libxml_use_internal_errors($libxmlErrors);
-            // Set some basic properties.
-            if ($xml !== FALSE) {
-                $this->xml = $xml;
-                return TRUE;
-            } else {
-                Helper::devLog('Could not load XML file from "'.$location.'"', DEVLOG_SEVERITY_ERROR);
-            }
+            // the actual loading is format specific
+            return $this->loadLocation($location);
         } else {
             Helper::devLog('Invalid file location "'.$location.'" for document loading', DEVLOG_SEVERITY_ERROR);
         }
         return FALSE;
     }
+
+    /**
+     * Analyze the document if it contains any fulltext that needs to be indexed.
+     *
+     * @access protected
+     *
+     * @abstract
+     */
+    protected abstract function ensureHasFulltextIsSet();
 
     /**
      * Register all available data formats
@@ -1007,6 +853,7 @@ final class Document {
      * @return void
      */
     public function registerNamespaces(&$obj) {
+        // TODO Check usage. XML specific method does not seem to be used anywhere outside this class within the project, but it is public and may be used by extensions.
         $this->loadFormats();
         // Do we have a \SimpleXMLElement or \DOMXPath object?
         if ($obj instanceof \SimpleXMLElement) {
@@ -1177,21 +1024,7 @@ final class Document {
         }
         $metadata['owner'][0] = $ownerUid;
         // Get UID of parent document.
-        $partof = 0;
-        // Get the closest ancestor of the current document which has a MPTR child.
-        $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$this->_getToplevelId().'"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
-        if (!empty($parentMptr[0])) {
-            $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-            if ($parentLocation != $this->location) {
-                $parentDoc = self::getInstance($parentLocation, $pid);
-                if ($parentDoc->ready) {
-                    if ($parentDoc->pid != $pid) {
-                        $parentDoc->save($pid, $core);
-                    }
-                    $partof = $parentDoc->uid;
-                }
-            }
-        }
+        $partof = $this->getParentDocumentUidForSaving($pid, $core);
         // Use the date of publication or title as alternative sorting metric for parts of multi-part works.
         if (!empty($partof)) {
             if (empty($metadata['volume'][0])
@@ -1263,6 +1096,7 @@ final class Document {
             'owner' => $metadata['owner'][0],
             'solrcore' => $core,
             'status' => 0,
+            'document_format' => $metadata['document_format'][0],
         ];
         // Unhide hidden documents.
         if (!empty($conf['unhideOnIndex'])) {
@@ -1294,95 +1128,17 @@ final class Document {
     }
 
     /**
-     * This returns $this->cPid via __get()
+     * Get the ID of the parent document if the current document has one. Also save a parent document
+     * to the database and the Solr index if their $pid and the current $pid differ.
+     * Currently only applies to METS documents.
      *
      * @access protected
      *
-     * @return integer The PID of the metadata definitions
+     * @abstract
+     *
+     * @return int The parent document's id.
      */
-    protected function _getCPid() {
-        return $this->cPid;
-    }
-
-    /**
-     * This builds an array of the document's dmdSecs
-     *
-     * @access protected
-     *
-     * @return array Array of dmdSecs with their IDs as array key
-     */
-    protected function _getDmdSec() {
-        if (!$this->dmdSecLoaded) {
-            // Get available data formats.
-            $this->loadFormats();
-            // Get dmdSec nodes from METS.
-            $dmdIds = $this->mets->xpath('./mets:dmdSec/@ID');
-            foreach ($dmdIds as $dmdId) {
-                if ($type = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
-                    if (!empty($this->formats[(string) $type[0]])) {
-                        $type = (string) $type[0];
-                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="'.$type.'"]/mets:xmlData/'.strtolower($type).':'.$this->formats[$type]['rootElement']);
-                    }
-                } elseif ($type = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
-                    if (!empty($this->formats[(string) $type[0]])) {
-                        $type = (string) $type[0];
-                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="'.$type.'"]/mets:xmlData/'.strtolower($type).':'.$this->formats[$type]['rootElement']);
-                    }
-                }
-                if ($xml) {
-                    $this->dmdSec[(string) $dmdId]['type'] = $type;
-                    $this->dmdSec[(string) $dmdId]['xml'] = $xml[0];
-                    $this->registerNamespaces($this->dmdSec[(string) $dmdId]['xml']);
-                }
-            }
-            $this->dmdSecLoaded = TRUE;
-        }
-        return $this->dmdSec;
-    }
-
-    /**
-     * This builds the file ID -> USE concordance
-     *
-     * @access protected
-     *
-     * @return array Array of file use groups with file IDs
-     */
-    protected function _getFileGrps() {
-        if (!$this->fileGrpsLoaded) {
-            // Get configured USE attributes.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            $useGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrps']);
-            if (!empty($extConf['fileGrpThumbs'])) {
-                $useGrps[] = $extConf['fileGrpThumbs'];
-            }
-            if (!empty($extConf['fileGrpDownload'])) {
-                $useGrps[] = $extConf['fileGrpDownload'];
-            }
-            if (!empty($extConf['fileGrpFulltext'])) {
-                $useGrps[] = $extConf['fileGrpFulltext'];
-            }
-            if (!empty($extConf['fileGrpAudio'])) {
-                $useGrps[] = $extConf['fileGrpAudio'];
-            }
-            // Get all file groups.
-            $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
-            // Build concordance for configured USE attributes.
-            foreach ($fileGrps as $fileGrp) {
-                if (in_array((string) $fileGrp['USE'], $useGrps)) {
-                    foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
-                        $this->fileGrps[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
-                    }
-                }
-            }
-            // Are there any fulltext files available?
-            if (!empty($extConf['fileGrpFulltext'])
-                && in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
-                $this->hasFulltext = TRUE;
-            }
-            $this->fileGrpsLoaded = TRUE;
-        }
-        return $this->fileGrps;
-    }
+    protected abstract function getParentDocumentUidForSaving($pid, $core);
 
     /**
      * This returns $this->hasFulltext via __get()
@@ -1392,10 +1148,7 @@ final class Document {
      * @return boolean Are there any fulltext files available?
      */
     protected function _getHasFulltext() {
-        // Are the fileGrps already loaded?
-        if (!$this->fileGrpsLoaded) {
-            $this->_getFileGrps();
-        }
+        $this->ensureHasFulltextIsSet();
         return $this->hasFulltext;
     }
 
@@ -1409,6 +1162,17 @@ final class Document {
     protected function _getLocation() {
         return $this->location;
     }
+
+    /**
+     * Format specific part of building the document's metadata array
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param integer $cPid
+     */
+    protected abstract function prepareMetadataArray($cPid);
 
     /**
      * This builds an array of the document's metadata
@@ -1426,28 +1190,11 @@ final class Document {
         }
         if (!$this->metadataArrayLoaded
             || $this->metadataArray[0] != $cPid) {
-            // Get all logical structure nodes with metadata.
-            if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
-                foreach ($ids as $id) {
-                    $this->metadataArray[(string) $id] = $this->getMetadata((string) $id, $cPid);
-                }
-            }
-            // Set current PID for metadata definitions.
+            $this->prepareMetadataArray($cPid);
             $this->metadataArray[0] = $cPid;
             $this->metadataArrayLoaded = TRUE;
         }
         return $this->metadataArray;
-    }
-
-    /**
-     * This returns $this->mets via __get()
-     *
-     * @access protected
-     *
-     * @return \SimpleXMLElement The XML's METS part as \SimpleXMLElement object
-     */
-    protected function _getMets() {
-        return $this->mets;
     }
 
     /**
@@ -1478,68 +1225,19 @@ final class Document {
      *
      * @access protected
      *
-     * @return array Array of physical elements' id, type, label and file representations ordered by @ORDER attribute
+     * @abstract
+     *
+     * @return array Array of physical elements' id, type, label and file representations ordered
+     * by @ORDER attribute / IIIF Sequence's Canvases
      */
-    protected function _getPhysicalStructure() {
-        // Is there no physical structure array yet?
-        if (!$this->physicalStructureLoaded) {
-            // Does the document have a structMap node of type "PHYSICAL"?
-            $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div');
-            if ($elementNodes) {
-                // Get file groups.
-                $fileUse = $this->_getFileGrps();
-                // Get the physical sequence's metadata.
-                $physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
-                $physSeq[0] = (string) $physNode[0]['ID'];
-                $this->physicalStructureInfo[$physSeq[0]]['id'] = (string) $physNode[0]['ID'];
-                $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['label'] = (isset($physNode[0]['LABEL']) ? (string) $physNode[0]['LABEL'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['type'] = (string) $physNode[0]['TYPE'];
-                $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = (isset($physNode[0]['CONTENTIDS']) ? (string) $physNode[0]['CONTENTIDS'] : '');
-                // Get the file representations from fileSec node.
-                foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                    // Check if file has valid @USE attribute.
-                    if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-                    }
-                }
-                // Build the physical elements' array from the physical structMap node.
-                foreach ($elementNodes as $elementNode) {
-                    $elements[(int) $elementNode['ORDER']] = (string) $elementNode['ID'];
-                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = (string) $elementNode['ID'];
-                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['dmdId'] = (isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '');
-                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['label'] = (isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '');
-                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['orderlabel'] = (isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '');
-                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['type'] = (string) $elementNode['TYPE'];
-                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['contentIds'] = (isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '');
-                    // Get the file representations from fileSec node.
-                    foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                        // Check if file has valid @USE attribute.
-                        if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                            $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-                        }
-                    }
-                }
-                // Sort array by keys (= @ORDER).
-                if (ksort($elements)) {
-                    // Set total number of pages/tracks.
-                    $this->numPages = count($elements);
-                    // Merge and re-index the array to get nice numeric indexes.
-                    $this->physicalStructure = array_merge($physSeq, $elements);
-                }
-            }
-            $this->physicalStructureLoaded = TRUE;
-        }
-        return $this->physicalStructure;
-    }
+    protected abstract function _getPhysicalStructure();
 
     /**
      * This gives an array of the document's physical structure metadata
      *
      * @access protected
      *
-     * @return array Array of elements' type, label and file representations ordered by @ID attribute
+     * @return array Array of elements' type, label and file representations ordered by @ID attribute / Canvas order
      */
     protected function _getPhysicalStructureInfo() {
         // Is there no physical structure array yet?
@@ -1577,7 +1275,7 @@ final class Document {
      *
      * @access protected
      *
-     * @return mixed The METS file's record identifier
+     * @return mixed The METS file's / IIIF manifest's record identifier
      */
     protected function _getRecordId() {
         return $this->recordId;
@@ -1602,30 +1300,23 @@ final class Document {
     }
 
     /**
-     * This returns the smLinks between logical and physical structMap
+     * This returns the smLinks between logical and physical structMap (METS) and models the
+     * relation between IIIF Canvases and Manifests / Ranges in the same way
      *
      * @access protected
      *
-     * @return array The links between logical and physical nodes
+     * @abstract
+     *
+     * @return array The links between logical and physical nodes / Range, Manifest and Canvas
      */
-    protected function _getSmLinks() {
-        if (!$this->smLinksLoaded) {
-            $smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
-            foreach ($smLinks as $smLink) {
-                $this->smLinks['l2p'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
-                $this->smLinks['p2l'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->to][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->from;
-            }
-            $this->smLinksLoaded = TRUE;
-        }
-        return $this->smLinks;
-    }
+    protected abstract function _getSmLinks();
 
     /**
      * This builds an array of the document's logical structure
      *
      * @access protected
      *
-     * @return array Array of structure nodes' id, label, type and physical page indexes/mptr link with original hierarchy preserved
+     * @return array Array of structure nodes' id, label, type and physical page indexes/mptr / Canvas link with original hierarchy preserved
      */
     protected function _getTableOfContents() {
         // Is there no logical structure array yet?
@@ -1642,97 +1333,24 @@ final class Document {
      *
      * @access protected
      *
+     * @abstract
+     *
      * @param boolean $forceReload: Force reloading the thumbnail instead of returning the cached value
      *
      * @return string The document's thumbnail location
      */
-    protected function _getThumbnail($forceReload = FALSE) {
-        if (!$this->thumbnailLoaded
-            || $forceReload) {
-            // Retain current PID.
-            $cPid = ($this->cPid ? $this->cPid : $this->pid);
-            if (!$cPid) {
-                Helper::devLog('Invalid PID '.$cPid.' for structure definitions', DEVLOG_SEVERITY_ERROR);
-                $this->thumbnailLoaded = TRUE;
-                return $this->thumbnail;
-            }
-            // Load extension configuration.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            if (empty($extConf['fileGrpThumbs'])) {
-                Helper::devLog('No fileGrp for thumbnails specified', DEVLOG_SEVERITY_WARNING);
-                $this->thumbnailLoaded = TRUE;
-                return $this->thumbnail;
-            }
-            $strctId = $this->_getToplevelId();
-            $metadata = $this->getTitledata($cPid);
-            // Get structure element to get thumbnail from.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_structures.thumbnail AS thumbnail',
-                'tx_dlf_structures',
-                'tx_dlf_structures.pid='.intval($cPid)
-                    .' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures')
-                    .Helper::whereClause('tx_dlf_structures'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-                // Get desired thumbnail structure if not the toplevel structure itself.
-                if (!empty($resArray['thumbnail'])) {
-                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
-                    // Check if this document has a structure element of the desired type.
-                    $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$strctType.'"]/@ID');
-                    if (!empty($strctIds)) {
-                        $strctId = (string) $strctIds[0];
-                    }
-                }
-                // Load smLinks.
-                $this->_getSmLinks();
-                // Get thumbnail location.
-                if ($this->_getPhysicalStructure()
-                    && !empty($this->smLinks['l2p'][$strctId])) {
-                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
-                } else {
-                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
-                }
-            } else {
-                Helper::devLog('No structure of type "'.$metadata['type'][0].'" found in database', DEVLOG_SEVERITY_ERROR);
-            }
-            $this->thumbnailLoaded = TRUE;
-        }
-        return $this->thumbnail;
-    }
+    protected abstract function _getThumbnail($forceReload = FALSE);
 
     /**
      * This returns the ID of the toplevel logical structure node
      *
      * @access protected
      *
+     * @abstract
+     *
      * @return string The logical structure node's ID
      */
-    protected function _getToplevelId() {
-        if (empty($this->toplevelId)) {
-            // Get all logical structure nodes with metadata, but without associated METS-Pointers.
-            if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
-                // Load smLinks.
-                $this->_getSmLinks();
-                foreach ($divs as $div) {
-                    $id = (string) $div['ID'];
-                    // Are there physical structure nodes for this logical structure?
-                    if (array_key_exists($id, $this->smLinks['l2p'])) {
-                        // Yes. That's what we're looking for.
-                        $this->toplevelId = $id;
-                        break;
-                    } elseif (empty($this->toplevelId)) {
-                        // No. Remember this anyway, but keep looking for a better one.
-                        $this->toplevelId = $id;
-                    }
-                }
-            }
-        }
-        return $this->toplevelId;
-    }
+    protected abstract function _getToplevelId();
 
     /**
      * This returns $this->uid via __get()
@@ -1776,36 +1394,28 @@ final class Document {
      *
      * @param integer $uid: The UID of the document to parse or URL to XML file
      * @param integer $pid: If > 0, then only document with this PID gets loaded
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
+     * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
      */
-    protected function __construct($uid, $pid) {
+    protected function __construct($uid, $pid, $preloadedDocument) {
         // Prepare to check database for the requested document.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
             $whereClause = 'tx_dlf_documents.uid='.intval($uid).Helper::whereClause('tx_dlf_documents');
         } else {
-            // Try to load METS file.
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($uid)
-                && $this->load($uid)) {
+            // Try to load METS file / IIIF manifest.
+            if ($this->setPreloadedDocument($preloadedDocument)
+                || (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($uid)
+                && $this->load($uid))) {
                 // Initialize core METS object.
                 $this->init();
-                if ($this->mets !== NULL) {
+                if ($this->getDocument() !== NULL) {
                     // Cast to string for safety reasons.
                     $location = (string) $uid;
-                    // Check for METS object @ID.
-                    if (!empty($this->mets['OBJID'])) {
-                        $this->recordId = (string) $this->mets['OBJID'];
-                    }
-                    // Get hook objects.
-                    $hookObjects = Helper::getHookObjects('Classes/Common/Document.php');
-                    // Apply hooks.
-                    foreach ($hookObjects as $hookObj) {
-                        if (method_exists($hookObj, 'construct_postProcessRecordId')) {
-                            $hookObj->construct_postProcessRecordId($this->xml, $this->recordId);
-                        }
-                    }
+                    $this->establishRecordId($pid);
                 } else {
-                    // No METS part found.
+                    // No METS / IIIF part found.
                     return;
                 }
             } else {
@@ -1838,13 +1448,13 @@ final class Document {
             list ($this->uid, $this->pid, $this->recordId, $this->parentId, $this->thumbnail, $this->location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
             $this->thumbnailLoaded = TRUE;
             // Load XML file if necessary...
-            if ($this->mets === NULL
+            if ($this->getDocument() === NULL
                 && $this->load($this->location)) {
                 // ...and set some basic properties.
                 $this->init();
             }
-            // Do we have a METS object now?
-            if ($this->mets !== NULL) {
+            // Do we have a METS / IIIF object now?
+            if ($this->getDocument() !== NULL) {
                 // Set new location if necessary.
                 if (!empty($location)) {
                     $this->location = $location;
@@ -1852,7 +1462,7 @@ final class Document {
                 // Document ready!
                 $this->ready = TRUE;
             }
-        } elseif ($this->mets !== NULL) {
+        } elseif ($this->getDocument() !== NULL) {
             // Set location as UID for documents not in database.
             $this->uid = $location;
             $this->location = $location;
@@ -1900,59 +1510,6 @@ final class Document {
             Helper::devLog('There is no setter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
         } else {
             $this->$method($value);
-        }
-    }
-
-    /**
-     * This magic method is executed prior to any serialization of the object
-     * @see __wakeup()
-     *
-     * @access public
-     *
-     * @return array Properties to be serialized
-     */
-    public function __sleep() {
-        // \SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
-        $this->asXML = $this->xml->asXML();
-        return ['uid', 'pid', 'recordId', 'parentId', 'asXML'];
-    }
-
-    /**
-     * This magic method is used for setting a string value for the object
-     *
-     * @access public
-     *
-     * @return string String representing the METS object
-     */
-    public function __toString() {
-        $xml = new \DOMDocument('1.0', 'utf-8');
-        $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), TRUE));
-        $xml->formatOutput = TRUE;
-        return $xml->saveXML();
-    }
-
-    /**
-     * This magic method is executed after the object is deserialized
-     * @see __sleep()
-     *
-     * @access public
-     *
-     * @return void
-     */
-    public function __wakeup() {
-        // Turn off libxml's error logging.
-        $libxmlErrors = libxml_use_internal_errors(TRUE);
-        // Reload XML from string.
-        $xml = @simplexml_load_string($this->asXML);
-        // Reset libxml's error logging.
-        libxml_use_internal_errors($libxmlErrors);
-        if ($xml !== FALSE) {
-            $this->asXML = '';
-            $this->xml = $xml;
-            // Rebuild the unserializable properties.
-            $this->init();
-        } else {
-            Helper::devLog('Could not load XML after deserialization', DEVLOG_SEVERITY_ERROR);
         }
     }
 }

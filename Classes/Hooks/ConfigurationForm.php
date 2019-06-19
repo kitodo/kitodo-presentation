@@ -122,7 +122,10 @@ class ConfigurationForm {
         $nsDefined = [
             'MODS' => FALSE,
             'TEIHDR' => FALSE,
-            'ALTO' => FALSE
+            'ALTO' => FALSE,
+            'IIIF1' => FALSE,
+            'IIIF2' => FALSE,
+            'IIIF3' => FALSE
         ];
         // Check existing format specifications.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -165,6 +168,36 @@ class ConfigurationForm {
                 'namespace' => 'http://www.loc.gov/standards/alto/ns-v2#',
                 'class' => 'Kitodo\\\\Dlf\\\\Format\\\\Alto'
             ];
+        }
+        // Add IIIF Metadata API 1 context
+        if (!$nsDefined['IIIF1']) {
+            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+                'pid' => 0,
+                'type' => 'IIIF1',
+                'root' => 'IIIF1',
+                'namespace' => 'http://www.shared-canvas.org/ns/context.json',
+                'class' => ''
+            );
+        }
+        // Add IIIF Presentation 2 context
+        if (!$nsDefined['IIIF2']) {
+            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+                'pid' => 0,
+                'type' => 'IIIF2',
+                'root' => 'IIIF2',
+                'namespace' => 'http://iiif.io/api/presentation/2/context.json',
+                'class' => ''
+            );
+        }
+        // Add IIIF Presentation 3 context
+        if (!$nsDefined['IIIF3']) {
+            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+                'pid' => 0,
+                'type' => 'IIIF3',
+                'root' => 'IIIF3',
+                'namespace' => 'http://iiif.io/api/presentation/3/context.json',
+                'class' => ''
+            );
         }
         if (!empty($data)) {
             // Process changes.

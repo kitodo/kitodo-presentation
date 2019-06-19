@@ -69,6 +69,12 @@
             <label index="update.solariumSolrUpdateNotOkay">...failed for core %s! Please check your Solr configuration.</label>
             <label index="update.FormatClasses">Switching format classes to namespaces...</label>
             <label index="update.FormatClassesOkay">...successfully completed! Please check all format records in the page tree's root.</label>
+			<label index="update.documentAddFormat">Add document format column...</label>
+			<label index="update.documentAddFormatOkay">...successfully completed!</label>
+			<label index="update.documentAddFormatNotOkay">...incomplete! Please add column document_format for table tx_dlf_document manually.</label>
+			<label index="update.documentSetFormatForOldEntries">Set document format for existing entries to 'METS'...</label>
+			<label index="update.documentSetFormatForOldEntriesOkay">...successfully completed!</label>
+			<label index="update.documentSetFormatForOldEntriesNotOkay">...incomplete! Please set missing tx_dlf_document.document_format values to 'METS'.</label>
             <label index="solr.connected">Connection established!</label>
             <label index="solr.status">The status code returned by Apache Solr is &lt;strong&gt;%s&lt;/strong&gt;.</label>
             <label index="solr.notConnected">Connection failed!</label>
@@ -139,6 +145,12 @@
             <label index="update.solariumSolrUpdateNotOkay">...für Kern %s fehlgeschlagen! Bitte überprüfen Sie die Solr-Konfiguration.</label>
             <label index="update.FormatClasses">Format-Klassen auf Namensräume umstellen...</label>
             <label index="update.FormatClassesOkay">...erfolgreich beendet! Bitte prüfen Sie dennoch alle Formateinträge im Wurzelknoten des Seitenbaums.</label>
+			<label index="update.documentAddFormat">Füge Format-Spalte zu Dokument-Tabelle hinzu...</label>
+			<label index="update.documentAddFormatOkay">...erfolgreich beendet!</label>
+			<label index="update.documentAddFormatNotOkay">...abgebrochen! Bitte fügen Sie die Spalte document_format manuell zur Tabelle table tx_dlf_document hinzu.</label>
+			<label index="update.documentSetFormatForOldEntries">Setze das Format für bestehende Dokumente auf 'METS'...</label>
+			<label index="update.documentSetFormatForOldEntriesOkay">...erfolgreich beendet!</label>
+			<label index="update.documentSetFormatForOldEntriesNotOkay">...abgebrochen! Bitte in der Tabelle tx_dlf_document.document_format 'METS'.</label>
             <label index="solr.connected">Verbindung hergestellt!</label>
             <label index="solr.status">Apache Solr gibt den Statuscode &lt;strong&gt;%s&lt;/strong&gt; zurück.</label>
             <label index="solr.notConnected">Verbindung fehlgeschlagen!</label>

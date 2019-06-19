@@ -69,6 +69,10 @@ class DocumentTypeCheck {
             return '';
         }
         $toc = $this->doc->tableOfContents;
+        if ($this->doc instanceof IiifManifest && (!isset($toc[0]['type']) || array_search($toc[0]['type'], ['newspaper', 'year', 'issue']) !== FALSE)) {
+            // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types or if type is missing.
+            return '';
+        }
         /*
          * Get the document type
          *

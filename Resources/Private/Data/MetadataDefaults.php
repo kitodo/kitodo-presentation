@@ -13,7 +13,13 @@
 // @see http://dfg-viewer.de/en/profile-of-the-metadata/
 $metadataDefaults = [
     'type' => [
-        'format' => [],
+        'format' => [
+            [
+                'encoded' => 5,
+                'xpath' => '$.metadata.[?(@.label==\'Manifest Type\')].value',
+                'xpath_sorting' => '',
+            ],
+        ],
         'default_value' => '',
         'wrap' => '',
         'index_tokenized' => 0,
@@ -35,6 +41,11 @@ $metadataDefaults = [
             [
                 'encoded' => 2,
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:note[@type="caption"]',
+                'xpath_sorting' => '',
+            ],
+            [
+                'encoded' => 5,
+                'xpath' => '$[label]',
                 'xpath_sorting' => '',
             ],
         ],
@@ -75,6 +86,11 @@ $metadataDefaults = [
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:name',
                 'xpath_sorting' => '',
             ],
+            [
+                'encoded' => 5,
+                'xpath' => "$.metadata.[?(@.label=='Author')].value",
+                'xpath_sorting' => '',
+            ],
         ],
         'default_value' => '',
         'wrap' => '',
@@ -92,6 +108,11 @@ $metadataDefaults = [
             [
                 'encoded' => 2,
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origPlace',
+                'xpath_sorting' => '',
+            ],
+            [
+                'encoded' => 5,
+                'xpath' => "$.metadata.[?(@.label=='Place of publication')].value",
                 'xpath_sorting' => '',
             ],
         ],
@@ -112,6 +133,11 @@ $metadataDefaults = [
                 'encoded' => 2,
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate',
                 'xpath_sorting' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate/@when',
+            ],
+            [
+                'encoded' => 5,
+                'xpath' => "$.metadata.[?(@.label=='Date of publication')].value",
+                'xpath_sorting' => '',
             ],
         ],
         'default_value' => '',
@@ -156,6 +182,11 @@ $metadataDefaults = [
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:msIdentifier/teihdr:collection',
                 'xpath_sorting' => '',
             ],
+            [
+                'encoded' => 5,
+                'xpath' => "$.metadata.[?(@.label=='Collection')].value",
+                'xpath_sorting' => '',
+            ],
         ],
         'default_value' => '',
         'wrap' => '',
@@ -178,6 +209,11 @@ $metadataDefaults = [
             [
                 'encoded' => 2,
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:publisher',
+                'xpath_sorting' => '',
+            ],
+            [
+                'encoded' => 5,
+                'xpath' => "$.metadata.[?(@.label=='Owner')].value",
                 'xpath_sorting' => '',
             ],
         ],
@@ -226,6 +262,11 @@ $metadataDefaults = [
             [
                 'encoded' => 2,
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="urn"]',
+                'xpath_sorting' => '',
+            ],
+            [
+                'encoded' => 5,
+                'xpath' => "$.metadata.[?(@.label=='URN')].value",
                 'xpath_sorting' => '',
             ],
         ],
@@ -300,6 +341,11 @@ $metadataDefaults = [
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="recordIdentifier"]',
                 'xpath_sorting' => '',
             ],
+            [
+                'encoded' => 5,
+                'xpath' => "$['@id']",
+                'xpath_sorting' => '',
+            ],
         ],
         'default_value' => '',
         'wrap' => '',
@@ -322,6 +368,11 @@ $metadataDefaults = [
             [
                 'encoded' => 2,
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="kitodo"]',
+                'xpath_sorting' => '',
+            ],
+            [
+                'encoded' => 5,
+                'xpath' => "$.metadata.[?(@.label=='Kitodo')].value",
                 'xpath_sorting' => '',
             ],
         ],

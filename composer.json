@@ -36,6 +36,7 @@
     "typo3/cms-css-styled-content": "^8.7",
     "typo3/cms-tstemplate": "^8.7",
     "pagemachine/typo3-composer-legacy-cli": "^1.0",
+    "ubl/php-iiif-prezi-reader": "0.2.0",
     "solarium/solarium": "^4.2"
   },
   "replace": {

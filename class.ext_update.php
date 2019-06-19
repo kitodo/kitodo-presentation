@@ -45,6 +45,8 @@ class ext_update {
             return TRUE;
         } elseif (count($this->oldFormatClasses())) {
             return TRUE;
+        } elseif ($this->hasNoFormatForDocument()) {
+            return TRUE;
         }
         return FALSE;
     }
@@ -105,6 +107,10 @@ class ext_update {
         if (count($this->oldFormatClasses())) {
             $this->updateFormatClasses();
         }
+        // add format field for tx_dlf_document to distinguish between METS and IIIF
+        if ($this->hasNoFormatForDocument()) {
+            $this->updateDocumentAddFormat();
+        }
         return $this->content;
     }
 
@@ -121,7 +127,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
             'tx_dlf_formats',
-            'tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
+            'tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
                 .Helper::whereClause('tx_dlf_formats'),
             '',
             '',
@@ -366,4 +372,62 @@ class ext_update {
         );
         $this->content .= Helper::renderFlashMessages();
     }
+
+    protected function hasNoFormatForDocument() {
+        $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'COLUMN_NAME',
+            'INFORMATION_SCHEMA.COLUMNS',
+            'TABLE_NAME = "tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND COLUMN_NAME = "document_format"',
+            '',
+            '',
+            ''
+            );
+        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            if ($resArray['COLUMN_NAME'] == 'document_format') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected function updateDocumentAddFormat() {
+        $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
+        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+        if ($result) {
+            Helper::addMessage(
+                $GLOBALS['LANG']->getLL('update.documentAddFormatOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+                );
+        } else {
+            Helper::addMessage(
+                $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                );
+            $this->content .= Helper::renderFlashMessages();
+            return;
+        }
+        $this->content .= Helper::renderFlashMessages();
+        $sqlQuery = 'UPDATE `tx_dlf_documents` SET `document_format`="METS" WHERE `document_format` IS NULL OR `document_format`="";';
+        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+        if ($result) {
+            Helper::addMessage(
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+               );
+        } else {
+            Helper::addMessage(
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesNotOkay', TRUE),
+                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                );
+            return;
+
+        }
+        $this->content .= Helper::renderFlashMessages();
+    }
+
 }

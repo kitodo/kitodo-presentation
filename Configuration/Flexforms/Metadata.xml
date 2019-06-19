@@ -129,6 +129,61 @@
                             </config>
                         </TCEforms>
                     </rootline>
+                    <originalIiifMetadata>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.originalIiifMetadata</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </originalIiifMetadata>
+                    <iiifMetadataWrap>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.iiifMetadataWrap</label>
+                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <config>
+                                <type>text</type>
+                                <default>key.wrap = &lt;dt&gt;|&lt;/dt&gt;&#13;value.required = 1&#13;value.wrap = &lt;dd&gt;|&lt;/dd&gt;</default>
+                            </config>
+                        </TCEforms>
+                    </iiifMetadataWrap>
+                    <displayIiifDescription>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifDescription</label>
+                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </displayIiifDescription>
+                    <displayIiifRights>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifRights</label>
+                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </displayIiifRights>
+                    <displayIiifLinks>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifLinks</label>
+                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </displayIiifLinks>
                     <separator>
                         <TCEforms>
                             <exclude>1</exclude>

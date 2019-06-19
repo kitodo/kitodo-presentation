@@ -35,6 +35,7 @@ CREATE TABLE tx_dlf_documents (
     owner int(11) DEFAULT '0' NOT NULL,
     solrcore int(11) DEFAULT '0' NOT NULL,
     status tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    document_format varchar(100) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid),

@@ -49,6 +49,8 @@ if (!defined('DEVLOG_SEVERITY_ERROR')) {
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\FulltextTool::class, '_fulltexttool', '', TRUE);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
+\Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\AnnotationTool::class, '_annotationtool', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.annotationtool';
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageDownloadTool::class, '_imagedownloadtool', '', TRUE);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageManipulationTool::class, '_imagemanipulationtool', '', TRUE);
@@ -58,7 +60,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['too
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/Document.php']['hookClass'][] = \Kitodo\Dlf\Hooks\KitodoProductionHacks::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/MetsDocument.php']['hookClass'][] = \Kitodo\Dlf\Hooks\KitodoProductionHacks::class;
 // Register command line scripts.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = [
     function () {
