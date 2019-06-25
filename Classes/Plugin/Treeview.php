@@ -284,9 +284,6 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $content = json_encode($outputArray);
 
-        // Clean output buffer.
-//        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
-
         // Send headers.
         header('HTTP/1.1 200 OK');
         header('Cache-Control: no-cache');
