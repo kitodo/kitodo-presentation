@@ -274,10 +274,10 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         if ($this->conf['dataFormatter']) {
-            if($this->conf['dataFormatter'] == 'signature') {
+            if ($this->conf['dataFormatter'] == 'signature') {
                 $outputArray = $this->prepareSignatureData($solr, $query, $level, $collection);
             }
-            if($this->conf['dataFormatter'] == 'collection') {
+            if ($this->conf['dataFormatter'] == 'collection') {
                 $outputArray = $this->prepareGroupData($solr, $query, $level, $collection);
             }
         }
