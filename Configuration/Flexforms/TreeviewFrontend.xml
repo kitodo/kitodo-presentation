@@ -16,14 +16,14 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/plugins/treeview/locallang.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/TreeviewFrontend.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
                     <apikey>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/treeviewfrontend/locallang.xml:tt_content.pi_flexform.apikey</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/TreeviewFrontend.xml:tt_content.pi_flexform.apikey</label>
                             <config>
                                 <type>input</type>
                                 <size>10</size>
@@ -35,7 +35,7 @@
                     <requestUri>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/treeviewfrontend/locallang.xml:tt_content.pi_flexform.requestUri</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/TreeviewFrontend.xml:tt_content.pi_flexform.requestUri</label>
                             <config>
                                 <type>input</type>
                                 <size>50</size>
@@ -47,7 +47,7 @@
                     <id>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/treeviewfrontend/locallang.xml:tt_content.pi_flexform.id</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/TreeviewFrontend.xml:tt_content.pi_flexform.id</label>
                             <config>
                                 <type>input</type>
                                 <size>10</size>
@@ -59,31 +59,31 @@
                     <query>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/treeviewfrontend/locallang.xml:tt_content.pi_flexform.query</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/TreeviewFrontend.xml:tt_content.pi_flexform.query</label>
                             <config>
                                 <type>input</type>
                                 <size>10</size>
                                 <max>30</max>
-                                <eval></eval>
+                                <eval>trim</eval>
                             </config>
                         </TCEforms>
                     </query>
                     <level>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/treeviewfrontend/locallang.xml:tt_content.pi_flexform.level</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/TreeviewFrontend.xml:tt_content.pi_flexform.level</label>
                             <config>
                                 <type>input</type>
                                 <size>10</size>
                                 <max>30</max>
-                                <eval></eval>
+                                <eval>trim</eval>
                             </config>
                         </TCEforms>
                     </level>
                     <templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/plugins/treeviewfrontend/locallang.xml:tt_content.pi_flexform.templateFile</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/TreeviewFrontend.xml:tt_content.pi_flexform.templateFile</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>

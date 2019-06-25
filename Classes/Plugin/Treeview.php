@@ -12,6 +12,8 @@ namespace Kitodo\Dlf\Plugin;
  */
 
 use Exception;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
 
 /**
  * Plugin 'Basket' for the 'dlf' extension
@@ -35,7 +37,7 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function prepareSignatureData($solr, $query, $level, $collection) {
 
-        $query = tx_dlf_solr::escapeQueryKeepField($query, $this->conf['pages']);
+        $query = Solr::escapeQueryKeepField($query, $this->conf['pages']);
 
         if ($query == null) {
             throw new Exception('Missing query argument');
@@ -49,12 +51,13 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $solr->params = $params;
 
-        $results = $solr->search_raw($solrField . ':"' . $query . '"');
+        $results = $solr->search_raw($solrField . ':' . $query . '');
 
         $levelArray = array();
         $titles = array();
 
         foreach ($results as $document) {
+
             $exploded = explode($explodeChar, $document->{$solrField});
 
             $concatLevels = "";
@@ -89,12 +92,14 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                 if ($level == 0) {
                     if (strpos($titles[$subQuery], $explodeChar)) {
-                        // this removes the last part of the signature from the title
+                        if ($this->conf['removeFromTitle']) {
+                            // this removes the last part of the signature from the title
 
-                        $endOfTitle = strrchr($titles[$subQuery], "LH");
-                        $endOfShelfmark = strstr($endOfTitle, $explodeChar);
+                            $endOfTitle = strrchr($titles[$subQuery], $this->conf['removeFromTitle']);
+                            $endOfShelfmark = strstr($endOfTitle, $explodeChar);
 
-                        $title = str_replace($endOfShelfmark, '', $titles[$subQuery]);
+                            $title = str_replace($endOfShelfmark, '', $titles[$subQuery]);
+                        }
                     }
                 } else {
                     $title = trim($item, $explodeChar);
@@ -126,8 +131,8 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             foreach ($collIds as $collId) {
 
-                $collIndexNames[] = tx_dlf_solr::escapeQuery(tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
-                $collectionNames[] = tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']);
+                $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+                $collectionNames[] = Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['pages']);
             }
 
             // Last value is fake and used for distinction in $this->addCurrentCollection()
@@ -236,7 +241,7 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
         $collection = $this->piVars['collection'];
 
         // Instantiate search object.
-        $solr = tx_dlf_solr::getInstance($this->conf['solrcore']);
+        $solr = Solr::getInstance($this->conf['solrcore']);
 
         if (!$solr->ready) {
 
@@ -259,7 +264,7 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             foreach ($collIds as $collId) {
 
-                $collIndexNames[] = tx_dlf_solr::escapeQuery(tx_dlf_helper::getIndexName(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+                $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
 
             }
 
@@ -280,7 +285,7 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
         $content = json_encode($outputArray);
 
         // Clean output buffer.
-        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
+//        \TYPO3\CMS\Core\Utility\GeneralUtility::cleanOutputBuffers();
 
         // Send headers.
         header('HTTP/1.1 200 OK');

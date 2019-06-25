@@ -23,7 +23,11 @@
             <label index="tt_content.pi_flexform.collections">Restrict to these collections</label>
             <label index="tt_content.pi_flexform.field">Solr field</label>
             <label index="tt_content.pi_flexform.explode">Character for level explode</label>
+            <label index="tt_content.pi_flexform.leafFieldOutput">Defines the field which is used for the last leaf</label>
+            <label index="tt_content.pi_flexform.removeFromTitle">Characters that should be removed from title</label>
             <label index="tt_content.pi_flexform.queryPrefix">Prefix for searching</label>
+            <label index="tt_content.pi_flexform.regexOutput">regex - Each part wrapped by () are displayed</label>
+            <label index="tt_content.pi_flexform.regexOutputDelimiter">regex delimiter - Example: 1890 - 1900 "(firstMatch) delimiter (secondMatch)"</label>
             <label index="tt_content.pi_flexform.sorting">Sorting</label>
             <label index="tt_content.pi_flexform.yearFrom">Year from</label>
             <label index="tt_content.pi_flexform.yearTill">Year till</label>
@@ -39,7 +43,11 @@
             <label index="tt_content.pi_flexform.collections">Auf diese Kollektionen einschränken</label>
             <label index="tt_content.pi_flexform.field">Solr Feld</label>
             <label index="tt_content.pi_flexform.explode">Zeichen zur Auftrennung der Ebenen</label>
+            <label index="tt_content.pi_flexform.leafFieldOutput">Feld welches zur Anzeige des letzten Blatts verwendet werden soll</label>
+            <label index="tt_content.pi_flexform.removeFromTitle">Zeichen die im Titel entfernt werden sollen</label>
             <label index="tt_content.pi_flexform.queryPrefix">Prefix für den Suchquery</label>
+            <label index="tt_content.pi_flexform.regexOutput">Regex - Jeder Teil des Regex mit () wird angezeigt</label>
+            <label index="tt_content.pi_flexform.regexOutputDelimiter">Regex Trennzeichen - Beispiel: 1890 - 1900 "(1. Treffer) Trennzeichen (2. Treffer)"</label>
             <label index="tt_content.pi_flexform.sorting">Sortierung</label>
             <label index="tt_content.pi_flexform.yearFrom">Jahr von</label>
             <label index="tt_content.pi_flexform.yearTill">Jahr bis</label>

@@ -164,6 +164,8 @@
             <label index="tt_content.dlf_statistics">DLF: Statistics</label>
             <label index="tt_content.dlf_tableofcontents">DLF: Table of Contents</label>
             <label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
+            <label index="tt_content.dlf_treeview">DLF: API Treeview</label>
+            <label index="tt_content.dlf_treeviewfrontend">DLF: Frontend Treeview</label>
             <label index="tt_content.dlf_validator">DLF: Validator</label>
             <label index="config.metadataFormats">Default metadata namespaces</label>
             <label index="config.cliDispatcher">CLI Dispatcher</label>
@@ -338,6 +340,8 @@
             <label index="tt_content.dlf_statistics">DLF: Statistik</label>
             <label index="tt_content.dlf_tableofcontents">DLF: Inhaltsverzeichnis</label>
             <label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
+            <label index="tt_content.dlf_treeview">DLF: API für Baumdarstellung</label>
+            <label index="tt_content.dlf_treeviewfrontend">DLF: Frontend Baumdarstellung</label>
             <label index="tt_content.dlf_validator">DLF: Validator</label>
             <label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
             <label index="config.cliDispatcher">CLI Dispatcher</label>
