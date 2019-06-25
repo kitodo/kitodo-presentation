@@ -567,7 +567,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         );
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            while($collection = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+            while ($collection = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
                 $facetCollectionArray[] = $collection[0];
             }
         }
