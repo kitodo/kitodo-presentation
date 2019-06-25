@@ -553,20 +553,21 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         $facet = $results->getFacetSet();
 
         $facetCollectionArray = array();
-        foreach (\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['facetCollections'], TRUE) as $facetCollection) {
 
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_collections.index_name AS index_name',
-                'tx_dlf_collections',
-                'tx_dlf_collections.uid='.intval($facetCollection)
-                .Helper::whereClause('tx_dlf_collections'),
-                '',
-                '',
-                ''
-            );
+        // replace everything expect numbers and comma
+        $facetCollections = preg_replace('/[^0-9|,]/', '', $this->conf['facetCollections']);
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'tx_dlf_collections.index_name AS index_name',
+            'tx_dlf_collections',
+            'tx_dlf_collections.uid IN (' . $facetCollections . ')'
+            .Helper::whereClause('tx_dlf_collections'),
+            '',
+            '',
+            ''
+        );
 
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                $collection = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            while($collection = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
                 $facetCollectionArray[] = $collection[0];
             }
         }
