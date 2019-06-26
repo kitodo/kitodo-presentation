@@ -91,7 +91,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($this->piVars['pointer'] > 0) {
             $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], TRUE).$separator;
         } else {
-            $output = $this->pi_getLL('prevPage', '&lt;', TRUE).$separator;
+            $output = '<span class="first-page not-active">'.$this->pi_getLL('prevPage', '&lt;', TRUE).'</span>'.$separator;
         }
         $i = 0;
         // Add links to pages.
@@ -100,7 +100,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
                 if ($this->piVars['pointer'] != $i) {
                     $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], TRUE).$separator;
                 } else {
-                    $output .= sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1).$separator;
+                    $output .= '<span class="act-page">'.sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1).'</span>'.$separator;
                 }
                 $skip = TRUE;
             } elseif ($skip == TRUE) {
@@ -113,7 +113,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($this->piVars['pointer'] < $maxPages - 1) {
             $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1], TRUE);
         } else {
-            $output .= $this->pi_getLL('nextPage', '&gt;', TRUE);
+            $output .= '<span class="next-page not-active">'.$this->pi_getLL('nextPage', '&gt;', TRUE).'</span>';
         }
         return $output;
     }
