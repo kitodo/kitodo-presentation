@@ -91,7 +91,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($this->piVars['pointer'] > 0) {
             $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], TRUE).$separator;
         } else {
-            $output = '<span class="first-page not-active">'.$this->pi_getLL('prevPage', '&lt;', TRUE).'</span>'.$separator;
+            $output = '<span class="prev-page not-active">'.$this->pi_getLL('prevPage', '&lt;', TRUE).'</span>'.$separator;
         }
         $i = 0;
         // Add links to pages.
