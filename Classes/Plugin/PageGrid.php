@@ -104,7 +104,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
                 }
                 $skip = TRUE;
             } elseif ($skip == TRUE) {
-                $output .= $this->pi_getLL('skip', '...', TRUE).$separator;
+                $output .= '<span class="skipped">'.$this->pi_getLL('skip', '...', TRUE).'</span>'.$separator;
                 $skip = FALSE;
             }
             $i++;
