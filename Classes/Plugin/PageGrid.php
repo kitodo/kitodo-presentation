@@ -100,7 +100,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
                 if ($this->piVars['pointer'] != $i) {
                     $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], TRUE).$separator;
                 } else {
-                    $output .= '<span class="act-page">'.sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1).'</span>'.$separator;
+                    $output .= '<span class="active">'.sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1).'</span>'.$separator;
                 }
                 $skip = TRUE;
             } elseif ($skip == TRUE) {
