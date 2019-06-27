@@ -555,7 +555,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         $facetCollectionArray = array();
 
         // replace everything expect numbers and comma
-        $facetCollections = preg_replace('/[^0-9|,]/', '', $this->conf['facetCollections']);
+        $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_collections.index_name AS index_name',
             'tx_dlf_collections',
