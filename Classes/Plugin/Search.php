@@ -187,7 +187,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             return '';
         }
         // Quit without doing anything if no facets are selected.
-        if (empty($this->conf['facets'])) {
+        if (empty($this->conf['facets']) && empty($this->conf['facetCollections'])) {
             return '';
         }
         // Get facets from plugin configuration.
@@ -551,6 +551,27 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         $selectQuery = $solr->service->createSelect($search['params']);
         $results = $solr->service->select($selectQuery);
         $facet = $results->getFacetSet();
+
+        $facetCollectionArray = array();
+
+        // replace everything expect numbers and comma
+        $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'tx_dlf_collections.index_name AS index_name',
+            'tx_dlf_collections',
+            'tx_dlf_collections.uid IN (' . $facetCollections . ')'
+            .Helper::whereClause('tx_dlf_collections'),
+            '',
+            '',
+            ''
+        );
+
+        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            while ($collection = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+                $facetCollectionArray[] = $collection[0];
+            }
+        }
+
         // Process results.
         foreach ($facet as $field => $values) {
             $entryArray = [];
@@ -563,6 +584,12 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             $i = 0;
             foreach ($values as $value => $count) {
                 if ($count > 0) {
+                    // check if facet collection configuration exists
+                    if (!empty($this->conf['facetCollections'])) {
+                        if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
+                            continue;
+                        }
+                    }
                     $entryArray['count']++;
                     if ($entryArray['ITEM_STATE'] == 'NO') {
                         $entryArray['ITEM_STATE'] = 'IFSUB';
