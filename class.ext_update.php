@@ -293,7 +293,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
-            'deleted=0',
+            Helper::whereClause('tx_dlf_solrcores'),
             '',
             '',
             ''
@@ -320,7 +320,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
-            'deleted=0',
+            Helper::whereClause('tx_dlf_solrcores'),
             '',
             '',
             ''
@@ -378,7 +378,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'COLUMN_NAME',
             'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME = "tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND COLUMN_NAME = "document_format"',
+            'TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND COLUMN_NAME="document_format"',
             '',
             '',
             ''
