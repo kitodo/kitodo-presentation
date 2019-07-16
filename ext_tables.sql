@@ -67,6 +67,7 @@ CREATE TABLE tx_dlf_structures (
 
     PRIMARY KEY (uid),
     KEY (pid),
+    KEY (sys_language_uid),
     KEY (index_name)
 );
 
@@ -102,7 +103,12 @@ CREATE TABLE tx_dlf_metadata (
 
     PRIMARY KEY (uid),
     KEY (pid),
-    KEY (index_name)
+    KEY (sys_language_uid),
+    KEY (index_name),
+    KEY (index_autocomplete),
+    KEY (is_sortable),
+    KEY (is_facet),
+    KEY (is_listed)
 );
 
 --
@@ -193,8 +199,10 @@ CREATE TABLE tx_dlf_collections (
 
     PRIMARY KEY (uid),
     KEY (pid),
+    KEY (sys_language_uid),
     KEY (index_name),
-    KEY (oai_name)
+    KEY (oai_name),
+    KEY (pid,fe_cruser_id)
 );
 
 --
@@ -224,6 +232,7 @@ CREATE TABLE tx_dlf_libraries (
 
     PRIMARY KEY (uid),
     KEY (pid),
+    KEY (sys_language_uid),
     KEY (index_name)
 );
 
@@ -274,7 +283,8 @@ CREATE TABLE tx_dlf_basket (
     doc_ids varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid)
+    KEY (pid),
+    KEY (sys_language_uid)
 );
 
 --
