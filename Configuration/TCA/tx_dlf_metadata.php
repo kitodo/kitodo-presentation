@@ -132,7 +132,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'max' => 1024,
+                'max' => 255,
                 'eval' => 'trim',
                 'default' => '',
             ],
@@ -185,7 +185,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 5,
-                'max' => 64,
+                'max' => 5,
                 'default' => 1.0,
                 'eval' => 'double2',
             ],
