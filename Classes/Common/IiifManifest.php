@@ -112,15 +112,17 @@ final class IiifManifest extends Document
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadataformat.xpath AS querypath',
                 'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
-                'tx_dlf_metadata.pid='.$pid.' AND tx_dlf_metadataformat.pid='.$pid.' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid'
-                .' AND tx_dlf_metadata.index_name="record_id" AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
-                .Helper::whereClause('tx_dlf_metadata', TRUE)
-                .Helper::whereClause('tx_dlf_metadataformat')
-                .Helper::whereClause('tx_dlf_formats'),
+                'tx_dlf_metadata.pid='.intval($pid)
+                    .' AND tx_dlf_metadataformat.pid='.intval($pid)
+                    .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid'
+                    .' AND tx_dlf_metadata.index_name="record_id" AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
+                    .Helper::whereClause('tx_dlf_metadata', TRUE)
+                    .Helper::whereClause('tx_dlf_metadataformat')
+                    .Helper::whereClause('tx_dlf_formats'),
                 '',
                 '',
                 ''
-                );
+            );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                 for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
                     $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -609,12 +611,14 @@ final class IiifManifest extends Document
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
             'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
-            'tx_dlf_metadata.pid='.$cPid.' AND tx_dlf_metadataformat.pid='.$cPid.' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
-            .Helper::whereClause('tx_dlf_metadata', TRUE).Helper::whereClause('tx_dlf_metadataformat').Helper::whereClause('tx_dlf_formats'),
+            'tx_dlf_metadata.pid='.intval($cPid)
+                .' AND tx_dlf_metadataformat.pid='.intval($cPid)
+                .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
+                .Helper::whereClause('tx_dlf_metadata', TRUE).Helper::whereClause('tx_dlf_metadataformat').Helper::whereClause('tx_dlf_formats'),
             '',
             '',
             ''
-            );
+        );
         $iiifResource = $this->iiif->getContainedResourceById($id);
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Set metadata field's value(s).

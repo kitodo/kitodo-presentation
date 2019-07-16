@@ -427,15 +427,13 @@ abstract class Document {
                 '',
                 '',
                 '1'
-                );
-
+            );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                 for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
                     $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
                     $documentFormat = $resArray['document_format'];
                 }
             }
-
         } else {
             // Get document format from content of remote document
             // Cast to string for safety reasons.

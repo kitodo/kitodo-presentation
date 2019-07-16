@@ -204,9 +204,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
             }
             // Check for existing structure configuration.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'uid',
+                'tx_dlf_structures.uid AS uid',
                 'tx_dlf_structures',
-                'pid='.intval($this->id)
+                'tx_dlf_structures.pid='.intval($this->id)
                     .Helper::whereClause('tx_dlf_structures')
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -227,9 +227,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
             }
             // Check for existing metadata configuration.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'uid',
+                'tx_dlf_metadata.uid AS uid',
                 'tx_dlf_metadata',
-                'pid='.intval($this->id)
+                'tx_dlf_metadata.pid='.intval($this->id)
                     .Helper::whereClause('tx_dlf_metadata')
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
@@ -250,9 +250,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
             }
             // Check for existing Solr core.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'uid,pid',
+                'tx_dlf_solrcores.uid AS uid,tx_dlf_solrcores.pid AS pid',
                 'tx_dlf_solrcores',
-                'pid IN ('.intval($this->id).',0)'
+                'tx_dlf_solrcores.pid IN ('.intval($this->id).',0)'
                     .Helper::whereClause('tx_dlf_solrcores')
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
