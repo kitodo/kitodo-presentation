@@ -394,8 +394,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
                 .' AND tx_dlf_metadata.pid='.intval($this->conf['pages'])
                 .Helper::whereClause('tx_dlf_metadata'),
             '',
-            'tx_dlf_metadata.sorting ASC',
-            ''
+            'tx_dlf_metadata.sorting ASC'
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             if ($resArray['is_listed']) {

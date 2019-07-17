@@ -560,10 +560,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             'tx_dlf_collections.index_name AS index_name',
             'tx_dlf_collections',
             'tx_dlf_collections.uid IN (' . $facetCollections . ')'
-                .Helper::whereClause('tx_dlf_collections'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_collections')
         );
 
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {

@@ -824,10 +824,7 @@ abstract class Document {
                 'tx_dlf_formats.type AS type,tx_dlf_formats.root AS root,tx_dlf_formats.namespace AS namespace,tx_dlf_formats.class AS class',
                 'tx_dlf_formats',
                 'tx_dlf_formats.pid=0'
-                    .Helper::whereClause('tx_dlf_formats'),
-                '',
-                '',
-                ''
+                    .Helper::whereClause('tx_dlf_formats')
             );
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 // Update format registry.
@@ -936,10 +933,7 @@ abstract class Document {
             'tx_dlf_collections',
             'tx_dlf_collections.pid='.intval($pid)
                 .' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
-                .Helper::whereClause('tx_dlf_collections'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_collections')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $collUid[$resArray['index_name']] = $resArray['uid'];
@@ -1051,10 +1045,7 @@ abstract class Document {
             'tx_dlf_metadata',
             '(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1)'
                 .' AND tx_dlf_metadata.pid='.intval($pid)
-                .Helper::whereClause('tx_dlf_metadata'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_metadata')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             if (!empty($metadata[$resArray['index_name']])) {

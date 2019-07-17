@@ -225,8 +225,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                     .' AND (sys_language_uid IN (-1,0) OR (sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND l18n_parent = 0))'
                     .Helper::whereClause('tx_dlf_metadata'),
                 '',
-                'tx_dlf_metadata.sorting',
-                ''
+                'tx_dlf_metadata.sorting'
             );
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
@@ -247,10 +246,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'tx_dlf_collections.index_name AS index_name',
                 'tx_dlf_collections',
                 'tx_dlf_collections.pid='.intval($this->conf['pages'])
-                    .Helper::whereClause('tx_dlf_collections'),
-                '',
-                '',
-                ''
+                    .Helper::whereClause('tx_dlf_collections')
             );
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 $collList[] = $resArray['index_name'];

@@ -105,8 +105,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                 .' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))'
                 .Helper::whereClause('tx_dlf_collections'),
             '',
-            $orderBy,
-            ''
+            $orderBy
         );
         $count = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
         $content = '';
@@ -267,10 +266,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             'tx_dlf_documents',
             'tx_dlf_documents.pid='.intval($this->conf['pages'])
                 .' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'
-                .Helper::whereClause('tx_dlf_documents'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_documents')
         );
         $toplevel = [];
         $subparts = [];

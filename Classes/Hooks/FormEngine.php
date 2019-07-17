@@ -129,8 +129,7 @@ class FormEngine {
                             .($localize ? ' AND ('.$table.'.sys_language_uid IN (-1,0) OR '.$table.'.l18n_parent=0)' : '')
                             .Helper::whereClause($table),
                         '',
-                        $sorting,
-                        ''
+                        $sorting
                     );
                     if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {

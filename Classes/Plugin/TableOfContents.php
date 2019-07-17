@@ -200,8 +200,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'tx_dlf_documents,tx_dlf_structures',
                 $whereClause,
                 '',
-                'tx_dlf_documents.volume_sorting',
-                ''
+                'tx_dlf_documents.volume_sorting'
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
                 $menuArray[0]['ITEM_STATE'] = 'CURIFSUB';

@@ -67,8 +67,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 .' AND tx_dlf_documents.partof='.intval($this->doc->uid)
                 .Helper::whereClause('tx_dlf_documents'),
             '',
-            'title ASC',
-            ''
+            'tx_dlf_documents.title_sorting ASC'
         );
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -263,8 +262,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 .' AND tx_dlf_documents.partof='.intval($this->doc->uid)
                 .Helper::whereClause('tx_dlf_documents'),
             '',
-            'title ASC',
-            ''
+            'tx_dlf_documents.title_sorting ASC'
         );
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {

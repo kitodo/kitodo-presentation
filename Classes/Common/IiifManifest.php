@@ -118,10 +118,7 @@ final class IiifManifest extends Document
                     .' AND tx_dlf_metadata.index_name="record_id" AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
                     .Helper::whereClause('tx_dlf_metadata', TRUE)
                     .Helper::whereClause('tx_dlf_metadataformat')
-                    .Helper::whereClause('tx_dlf_formats'),
-                '',
-                '',
-                ''
+                    .Helper::whereClause('tx_dlf_formats')
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                 for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
@@ -614,10 +611,7 @@ final class IiifManifest extends Document
             'tx_dlf_metadata.pid='.intval($cPid)
                 .' AND tx_dlf_metadataformat.pid='.intval($cPid)
                 .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
-                .Helper::whereClause('tx_dlf_metadata', TRUE).Helper::whereClause('tx_dlf_metadataformat').Helper::whereClause('tx_dlf_formats'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_metadata', TRUE).Helper::whereClause('tx_dlf_metadataformat').Helper::whereClause('tx_dlf_formats')
         );
         $iiifResource = $this->iiif->getContainedResourceById($id);
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {

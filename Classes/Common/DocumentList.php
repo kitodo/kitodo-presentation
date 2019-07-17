@@ -157,10 +157,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     'tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata',
                     'tx_dlf_documents',
                     '(tx_dlf_documents.uid='.intval($record['uid']).' OR tx_dlf_documents.partof='.intval($record['uid']).')'
-                        .Helper::whereClause('tx_dlf_documents'),
-                    '',
-                    '',
-                    ''
+                        .Helper::whereClause('tx_dlf_documents')
                 );
                 // Process results.
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -520,8 +517,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                         .' AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid'])
                         .Helper::whereClause('tx_dlf_metadata'),
                     '',
-                    'tx_dlf_metadata.sorting ASC',
-                    ''
+                    'tx_dlf_metadata.sorting ASC'
                 );
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                     $this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['index_tokenized'] ? 't' : 'u').'s'.($resArray['index_indexed'] ? 'i' : 'u');

@@ -297,10 +297,7 @@ class Indexer {
                 'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.index_indexed AS index_indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.index_autocomplete AS index_autocomplete,tx_dlf_metadata.index_boost AS index_boost',
                 'tx_dlf_metadata',
                 'tx_dlf_metadata.pid='.intval($pid)
-                    .Helper::whereClause('tx_dlf_metadata'),
-                '',
-                '',
-                ''
+                    .Helper::whereClause('tx_dlf_metadata')
             );
             while ($indexing = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 if ($indexing['index_tokenized']) {

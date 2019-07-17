@@ -380,10 +380,7 @@ final class MetsDocument extends Document
                     .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
                     .Helper::whereClause('tx_dlf_metadata', TRUE)
                     .Helper::whereClause('tx_dlf_metadataformat')
-                    .Helper::whereClause('tx_dlf_formats'),
-                '',
-                '',
-                ''
+                    .Helper::whereClause('tx_dlf_formats')
             );
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
@@ -447,9 +444,7 @@ final class MetsDocument extends Document
                         .' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
                         .Helper::whereClause('tx_dlf_documents')
                         .Helper::whereClause('tx_dlf_collections'),
-                    'tx_dlf_collections.index_name',
-                    '',
-                    ''
+                    'tx_dlf_collections.index_name'
                 );
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                     if (!in_array($resArray['index_name'], $metadata['collection'])) {

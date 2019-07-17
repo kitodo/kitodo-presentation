@@ -71,10 +71,7 @@ class ext_update {
             'tx_dlf_metadata',
             'tx_dlf_metadata.format=0'
                 .' AND NOT tx_dlf_metadata.xpath=""'
-                .Helper::whereClause('tx_dlf_metadata'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_metadata')
         );
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -128,10 +125,7 @@ class ext_update {
             'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
             'tx_dlf_formats',
             'tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
-                .Helper::whereClause('tx_dlf_formats'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_formats')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $oldRecords[$resArray['uid']] = $resArray['type'];
@@ -150,10 +144,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'column_name',
             'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME = "tx_dlf_metadata"',
-            '',
-            '',
-            ''
+            'TABLE_NAME = "tx_dlf_metadata"'
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             if ($resArray['column_name'] == 'tokenized'
@@ -240,10 +231,7 @@ class ext_update {
                 'tx_dlf_metadata.uid AS uid,tx_dlf_metadata.pid AS pid,tx_dlf_metadata.cruser_id AS cruser_id,tx_dlf_metadata.encoded AS encoded,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.xpath_sorting AS xpath_sorting',
                 'tx_dlf_metadata',
                 'tx_dlf_metadata.uid IN ('.implode(',', $metadataUids).')'
-                    .Helper::whereClause('tx_dlf_metadata'),
-                '',
-                '',
-                ''
+                    .Helper::whereClause('tx_dlf_metadata')
             );
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 $newId = uniqid('NEW');
@@ -293,10 +281,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
-            Helper::whereClause('tx_dlf_solrcores'),
-            '',
-            '',
-            ''
+            Helper::whereClause('tx_dlf_solrcores')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Instantiate search object.
@@ -320,10 +305,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
-            Helper::whereClause('tx_dlf_solrcores'),
-            '',
-            '',
-            ''
+            Helper::whereClause('tx_dlf_solrcores')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Instantiate search object.
@@ -378,11 +360,8 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'COLUMN_NAME',
             'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND COLUMN_NAME="document_format"',
-            '',
-            '',
-            ''
-            );
+            'TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND COLUMN_NAME="document_format"'
+        );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             if ($resArray['COLUMN_NAME'] == 'document_format') {
                 return false;

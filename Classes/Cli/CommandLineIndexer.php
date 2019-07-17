@@ -110,10 +110,7 @@ class CommandLineIndexer extends \TYPO3\CMS\Core\Controller\CommandLineControlle
                         .' AND tx_dlf_collections.pid='.intval($this->cli_args['-pid'][0])
                         .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
                         .Helper::whereClause('tx_dlf_documents')
-                        .Helper::whereClause('tx_dlf_collections'),
-                    '',
-                    '',
-                    ''
+                        .Helper::whereClause('tx_dlf_collections')
                 );
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                     // Get the document...

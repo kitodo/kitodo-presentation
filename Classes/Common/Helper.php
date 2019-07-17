@@ -733,7 +733,7 @@ class Helper {
                 .self::whereClause($table, TRUE),
             '',
             '',
-            ''
+            '1'
         );
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
             // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
@@ -747,7 +747,7 @@ class Helper {
                     .self::whereClause($table, TRUE),
                 '',
                 '',
-                ''
+                '1'
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                 // If there is an translated content element, overwrite the received $index_name.
@@ -769,10 +769,7 @@ class Helper {
                     $table,
                     $table.'.pid='.$pid
                         .$additionalWhere
-                        .self::whereClause($table, TRUE),
-                    '',
-                    '',
-                    ''
+                        .self::whereClause($table, TRUE)
                 );
                 if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                     while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
