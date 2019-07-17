@@ -426,8 +426,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
                 .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
                 .$where
                 .Helper::whereClause('tx_dlf_collections'),
-            'tx_dlf_documents.uid',
-            'tx_dlf_documents.tstamp',
+            '',
+            '',
             '1'
         );
         if (!$GLOBALS['TYPO3_DB']->sql_num_rows($record)) {
@@ -495,10 +495,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             'tx_dlf_libraries',
             'tx_dlf_libraries.pid='.intval($this->conf['pages'])
                 .' AND tx_dlf_libraries.uid='.intval($this->conf['library'])
-                .Helper::whereClause('tx_dlf_libraries'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_libraries')
         );
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -698,8 +695,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
                 .$where
                 .Helper::whereClause('tx_dlf_collections'),
             'tx_dlf_collections.oai_name',
-            'tx_dlf_collections.oai_name',
-            ''
+            'tx_dlf_collections.oai_name'
         );
         if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
             return $this->error('noSetHierarchy');

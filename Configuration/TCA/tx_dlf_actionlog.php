@@ -72,7 +72,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'max' => 255,
+                'max' => 11,
                 'eval' => 'num,int',
                 'default' => 0,
             ],

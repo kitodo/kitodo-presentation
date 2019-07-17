@@ -133,10 +133,7 @@ class Solr {
                 'tx_dlf_metadata.index_indexed=1'
                     .' AND tx_dlf_metadata.pid='.intval($pid)
                     .' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'
-                    .Helper::whereClause('tx_dlf_metadata'),
-                '',
-                '',
-                ''
+                    .Helper::whereClause('tx_dlf_metadata')
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {

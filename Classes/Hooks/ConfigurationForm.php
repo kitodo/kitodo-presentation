@@ -129,7 +129,7 @@ class ConfigurationForm {
         ];
         // Check existing format specifications.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'type',
+            'tx_dlf_formats.type AS type',
             'tx_dlf_formats',
             '1=1'
                 .Helper::whereClause('tx_dlf_formats')

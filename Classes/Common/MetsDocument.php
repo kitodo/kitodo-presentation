@@ -376,15 +376,12 @@ final class MetsDocument extends Document
                 'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
                 'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
                 'tx_dlf_metadata.pid='.$cPid
-                .' AND tx_dlf_metadataformat.pid='.$cPid
-                .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
-                .Helper::whereClause('tx_dlf_metadata', TRUE)
-                .Helper::whereClause('tx_dlf_metadataformat')
-                .Helper::whereClause('tx_dlf_formats'),
-                '',
-                '',
-                ''
-                );
+                    .' AND tx_dlf_metadataformat.pid='.$cPid
+                    .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
+                    .Helper::whereClause('tx_dlf_metadata', TRUE)
+                    .Helper::whereClause('tx_dlf_metadataformat')
+                    .Helper::whereClause('tx_dlf_formats')
+            );
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
@@ -442,15 +439,13 @@ final class MetsDocument extends Document
                     'tx_dlf_relations',
                     'tx_dlf_collections',
                     'AND tx_dlf_collections.pid='.intval($cPid)
-                    .' AND tx_dlf_documents.uid='.intval($this->uid)
-                    .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                    .' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
-                    .Helper::whereClause('tx_dlf_documents')
-                    .Helper::whereClause('tx_dlf_collections'),
-                    'tx_dlf_collections.index_name',
-                    '',
-                    ''
-                    );
+                        .' AND tx_dlf_documents.uid='.intval($this->uid)
+                        .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
+                        .' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
+                        .Helper::whereClause('tx_dlf_documents')
+                        .Helper::whereClause('tx_dlf_collections'),
+                    'tx_dlf_collections.index_name'
+                );
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                     if (!in_array($resArray['index_name'], $metadata['collection'])) {
                         $metadata['collection'][] = $resArray['index_name'];
@@ -806,12 +801,12 @@ final class MetsDocument extends Document
                 'tx_dlf_structures.thumbnail AS thumbnail',
                 'tx_dlf_structures',
                 'tx_dlf_structures.pid='.intval($cPid)
-                .' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures')
-                .Helper::whereClause('tx_dlf_structures'),
+                    .' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures')
+                    .Helper::whereClause('tx_dlf_structures'),
                 '',
                 '',
                 '1'
-                );
+            );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                 $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
                 // Get desired thumbnail structure if not the toplevel structure itself.

@@ -140,8 +140,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             '1=1'
                 .Helper::whereClause('tx_dlf_mail'),
             '',
-            'tx_dlf_mail.sorting',
-            ''
+            'tx_dlf_mail.sorting'
         );
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultMail) > 0) {
             $mailForm = '<select name="tx_dlf[mail_action]">';
@@ -167,10 +166,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             '*',
             'tx_dlf_printer',
             '1=1'
-                .Helper::whereClause('tx_dlf_printer'),
-            '',
-            '',
-            ''
+                .Helper::whereClause('tx_dlf_printer')
         );
         $printForm = '';
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultPrinter) > 0) {

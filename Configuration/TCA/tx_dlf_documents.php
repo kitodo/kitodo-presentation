@@ -105,7 +105,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'max' => 1024,
+                'max' => 255,
                 'eval' => 'required,uniqueInPid',
                 'default' => '',
             ],

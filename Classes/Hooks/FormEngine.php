@@ -125,12 +125,11 @@ class FormEngine {
                     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                         $fields,
                         $table,
-                        '(pid='.intval($page['uid']).' '.$where.')'
-                            .($localize ? ' AND (sys_language_uid IN (-1,0) OR l18n_parent=0)' : '')
+                        '('.$table.'.pid='.intval($page['uid']).' '.$where.')'
+                            .($localize ? ' AND ('.$table.'.sys_language_uid IN (-1,0) OR '.$table.'.l18n_parent=0)' : '')
                             .Helper::whereClause($table),
                         '',
-                        $sorting,
-                        ''
+                        $sorting
                     );
                     if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {

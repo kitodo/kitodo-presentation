@@ -7,39 +7,41 @@ CREATE TABLE tx_dlf_documents (
     tstamp int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
-    hidden tinyint(4) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
+    hidden smallint(6) DEFAULT '0' NOT NULL,
     starttime int(11) DEFAULT '0' NOT NULL,
     endtime int(11) DEFAULT '0' NOT NULL,
     fe_group varchar(100) DEFAULT '' NOT NULL,
-    prod_id tinytext NOT NULL,
-    location text NOT NULL,
-    record_id tinytext NOT NULL,
-    opac_id tinytext NOT NULL,
-    union_id tinytext NOT NULL,
-    urn tinytext NOT NULL,
-    purl tinytext NOT NULL,
+    prod_id varchar(255) DEFAULT '' NOT NULL,
+    location varchar(255) DEFAULT '' NOT NULL,
+    record_id varchar(255) DEFAULT '' NOT NULL,
+    opac_id varchar(255) DEFAULT '' NOT NULL,
+    union_id varchar(255) DEFAULT '' NOT NULL,
+    urn varchar(255) DEFAULT '' NOT NULL,
+    purl varchar(255) DEFAULT '' NOT NULL,
     title text NOT NULL,
     title_sorting text NOT NULL,
-    author tinytext NOT NULL,
-    year tinytext NOT NULL,
-    place tinytext NOT NULL,
-    thumbnail text NOT NULL,
-    metadata longtext NOT NULL,
-    metadata_sorting longtext NOT NULL,
+    author varchar(255) DEFAULT '' NOT NULL,
+    year varchar(255) DEFAULT '' NOT NULL,
+    place varchar(255) DEFAULT '' NOT NULL,
+    thumbnail varchar(255) DEFAULT '' NOT NULL,
+    metadata text NOT NULL,
+    metadata_sorting text NOT NULL,
     structure int(11) DEFAULT '0' NOT NULL,
     partof int(11) DEFAULT '0' NOT NULL,
-    volume tinytext NOT NULL,
-    volume_sorting tinytext NOT NULL,
+    volume varchar(255) DEFAULT '' NOT NULL,
+    volume_sorting varchar(255) DEFAULT '' NOT NULL,
     collections int(11) DEFAULT '0' NOT NULL,
     owner int(11) DEFAULT '0' NOT NULL,
     solrcore int(11) DEFAULT '0' NOT NULL,
-    status tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    status smallint(6) unsigned DEFAULT '0' NOT NULL,
     document_format varchar(100) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid),
-    INDEX partof (partof)
+    KEY (pid),
+    KEY (location),
+    KEY (record_id),
+    KEY (partof)
 );
 
 --
@@ -51,21 +53,22 @@ CREATE TABLE tx_dlf_structures (
     tstamp int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
-    hidden tinyint(4) DEFAULT '0' NOT NULL,
-    toplevel tinyint(4) DEFAULT '0' NOT NULL,
-    label tinytext NOT NULL,
-    index_name tinytext NOT NULL,
-    oai_name tinytext NOT NULL,
+    hidden smallint(6) DEFAULT '0' NOT NULL,
+    toplevel smallint(6) DEFAULT '0' NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
+    index_name varchar(255) DEFAULT '' NOT NULL,
+    oai_name varchar(255) DEFAULT '' NOT NULL,
     thumbnail int(11) DEFAULT '0' NOT NULL,
-    status tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid),
-    INDEX index_name (index_name(32))
+    KEY (pid),
+    KEY (sys_language_uid),
+    KEY (index_name)
 );
 
 --
@@ -77,30 +80,35 @@ CREATE TABLE tx_dlf_metadata (
     tstamp int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
-    hidden tinyint(4) DEFAULT '0' NOT NULL,
+    hidden smallint(6) DEFAULT '0' NOT NULL,
     sorting int(11) DEFAULT '0' NOT NULL,
-    label tinytext NOT NULL,
-    index_name tinytext NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
+    index_name varchar(255) DEFAULT '' NOT NULL,
     format int(11) DEFAULT '0' NOT NULL,
-    default_value text NOT NULL,
+    default_value varchar(255) DEFAULT '' NOT NULL,
     wrap text NOT NULL,
-    index_tokenized tinyint(4) DEFAULT '0' NOT NULL,
-    index_stored tinyint(4) DEFAULT '0' NOT NULL,
-    index_indexed tinyint(4) DEFAULT '0' NOT NULL,
+    index_tokenized smallint(6) DEFAULT '0' NOT NULL,
+    index_stored smallint(6) DEFAULT '0' NOT NULL,
+    index_indexed smallint(6) DEFAULT '0' NOT NULL,
     index_boost float(4,2) DEFAULT '1.00' NOT NULL,
-    is_sortable tinyint(4) DEFAULT '0' NOT NULL,
-    is_facet tinyint(4) DEFAULT '0' NOT NULL,
-    is_listed tinyint(4) DEFAULT '0' NOT NULL,
-    index_autocomplete tinyint(4) DEFAULT '0' NOT NULL,
-    status tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    is_sortable smallint(6) DEFAULT '0' NOT NULL,
+    is_facet smallint(6) DEFAULT '0' NOT NULL,
+    is_listed smallint(6) DEFAULT '0' NOT NULL,
+    index_autocomplete smallint(6) DEFAULT '0' NOT NULL,
+    status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid),
-    INDEX index_name (index_name(32))
+    KEY (pid),
+    KEY (sys_language_uid),
+    KEY (index_name),
+    KEY (index_autocomplete),
+    KEY (is_sortable),
+    KEY (is_facet),
+    KEY (is_listed)
 );
 
 --
@@ -112,16 +120,16 @@ CREATE TABLE tx_dlf_metadataformat (
     tstamp int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     parent_id int(11) DEFAULT '0' NOT NULL,
     encoded int(11) DEFAULT '0' NOT NULL,
-    xpath text NOT NULL,
-    xpath_sorting text NOT NULL,
-    mandatory tinyint(4) DEFAULT '0' NOT NULL,
+    xpath varchar(255) DEFAULT '' NOT NULL,
+    xpath_sorting varchar(255) DEFAULT '' NOT NULL,
+    mandatory smallint(6) DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid),
-    INDEX parent_id (parent_id)
+    KEY (pid),
+    KEY (parent_id)
 );
 
 --
@@ -133,14 +141,14 @@ CREATE TABLE tx_dlf_formats (
     tstamp int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
-    type tinytext NOT NULL,
-    root tinytext NOT NULL,
-    namespace text NOT NULL,
-    class text NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
+    type varchar(255) DEFAULT '' NOT NULL,
+    root varchar(255) DEFAULT '' NOT NULL,
+    namespace varchar(255) DEFAULT '' NOT NULL,
+    class varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
+    KEY (pid)
 );
 
 --
@@ -152,13 +160,13 @@ CREATE TABLE tx_dlf_solrcores (
     tstamp int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
-    label tinytext NOT NULL,
-    index_name tinytext NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
+    index_name varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid),
-    INDEX index_name (index_name(32))
+    KEY (pid),
+    KEY (index_name)
 );
 
 --
@@ -171,27 +179,30 @@ CREATE TABLE tx_dlf_collections (
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
     fe_cruser_id int(11) DEFAULT '0' NOT NULL,
-    fe_admin_lock tinyint(4) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    fe_admin_lock smallint(6) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
-    hidden tinyint(4) DEFAULT '0' NOT NULL,
+    hidden smallint(6) DEFAULT '0' NOT NULL,
     fe_group varchar(100) DEFAULT '' NOT NULL,
-    label text NOT NULL,
-    index_name tinytext NOT NULL,
-    index_search text NOT NULL,
-    oai_name tinytext NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
+    index_name varchar(255) DEFAULT '' NOT NULL,
+    index_search varchar(255) DEFAULT '' NOT NULL,
+    oai_name varchar(255) DEFAULT '' NOT NULL,
     description text NOT NULL,
     thumbnail text NOT NULL,
-    priority tinyint(4) DEFAULT '3' NOT NULL,
+    priority smallint(6) DEFAULT '3' NOT NULL,
     documents int(11) DEFAULT '0' NOT NULL,
     owner int(11) DEFAULT '0' NOT NULL,
-    status tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid),
-    INDEX index_name (index_name(32))
+    KEY (pid),
+    KEY (sys_language_uid),
+    KEY (index_name),
+    KEY (oai_name),
+    KEY (pid,fe_cruser_id)
 );
 
 --
@@ -203,25 +214,26 @@ CREATE TABLE tx_dlf_libraries (
     tstamp int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
-    label tinytext NOT NULL,
-    index_name tinytext NOT NULL,
-    website tinytext NOT NULL,
-    contact tinytext NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
+    index_name varchar(255) DEFAULT '' NOT NULL,
+    website varchar(255) DEFAULT '' NOT NULL,
+    contact varchar(255) DEFAULT '' NOT NULL,
     image mediumblob NOT NULL,
-    oai_label tinytext NOT NULL,
+    oai_label varchar(255) DEFAULT '' NOT NULL,
     oai_base int(11) DEFAULT '0' NOT NULL,
-    opac_label tinytext NOT NULL,
-    opac_base tinytext NOT NULL,
-    union_label tinytext NOT NULL,
-    union_base tinytext NOT NULL,
+    opac_label varchar(255) DEFAULT '' NOT NULL,
+    opac_base varchar(255) DEFAULT '' NOT NULL,
+    union_label varchar(255) DEFAULT '' NOT NULL,
+    union_base varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid),
-    INDEX index_name (index_name(32))
+    KEY (pid),
+    KEY (sys_language_uid),
+    KEY (index_name)
 );
 
 --
@@ -230,12 +242,12 @@ CREATE TABLE tx_dlf_libraries (
 CREATE TABLE tx_dlf_tokens (
     uid int(11) NOT NULL auto_increment,
     tstamp int(11) DEFAULT '0' NOT NULL,
-    token tinytext NOT NULL,
-    options longtext NOT NULL,
+    token varchar(255) DEFAULT '' NOT NULL,
+    options text NOT NULL,
     ident varchar(30) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY token (token(13))
+    KEY (token)
 );
 
 --
@@ -251,8 +263,7 @@ CREATE TABLE tx_dlf_relations (
     ident varchar(30) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY uid_local (uid_local),
-    KEY uid_foreign (uid_foreign)
+    KEY (uid_local,uid_foreign,ident)
 );
 
 --
@@ -262,18 +273,18 @@ CREATE TABLE tx_dlf_basket (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
-    label tinytext NOT NULL,
-    session_id varchar(32) DEFAULT '' NOT NULL,
     fe_user_id int(11) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
-    doc_ids longtext  NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
+    session_id varchar(32) DEFAULT '' NOT NULL,
+    doc_ids varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
-
+    KEY (pid),
+    KEY (sys_language_uid)
 );
 
 --
@@ -282,13 +293,12 @@ CREATE TABLE tx_dlf_basket (
 CREATE TABLE tx_dlf_printer (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     print varchar(255) DEFAULT '' NOT NULL,
-    label text NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
-
+    KEY (pid)
 );
 
 --
@@ -297,15 +307,14 @@ CREATE TABLE tx_dlf_printer (
 CREATE TABLE tx_dlf_mail (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
-    mail varchar(100) DEFAULT '' NOT NULL,
-    name varchar(100) DEFAULT '' NOT NULL,
-    label text NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     sorting int(11) DEFAULT '0' NOT NULL,
+    mail varchar(255) DEFAULT '' NOT NULL,
+    name varchar(255) DEFAULT '' NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
-
+    KEY (pid)
 );
 
 --
@@ -315,14 +324,13 @@ CREATE TABLE tx_dlf_actionlog (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
     user_id int(11) DEFAULT '0' NOT NULL,
-    file_name text NOT NULL,
+    file_name varchar(255) DEFAULT '' NOT NULL,
     count_pages int(11) DEFAULT '0' NOT NULL,
     name varchar(100) DEFAULT '' NOT NULL,
-    label text NOT NULL,
-    deleted tinyint(4) DEFAULT '0' NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY parent (pid)
-
+    KEY (pid)
 );

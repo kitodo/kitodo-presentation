@@ -726,28 +726,28 @@ class Helper {
          * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
         // First fetch the uid of the received index_name
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'uid, l18n_parent',
+            $table.'.uid AS uid,'.$table.'.l18n_parent AS l18n_parent',
             $table,
-            'pid='.$pid
-                .' AND index_name="'.$index_name.'"'
+            $table.'.pid='.$pid
+                .' AND '.$table.'.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($index_name, $table)
                 .self::whereClause($table, TRUE),
             '',
             '',
-            ''
+            '1'
         );
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
             // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
             $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'index_name',
+                $table.'.index_name AS index_name',
                 $table,
-                'pid='.$pid
-                    .' AND uid='.$resArray['l18n_parent']
-                    .' AND sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content)
+                $table.'.pid='.$pid
+                    .' AND '.$table.'.uid='.$resArray['l18n_parent']
+                    .' AND '.$table.'.sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content)
                     .self::whereClause($table, TRUE),
                 '',
                 '',
-                ''
+                '1'
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                 // If there is an translated content element, overwrite the received $index_name.
@@ -759,20 +759,17 @@ class Helper {
         if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
-                $additionalWhere = ' AND sys_language_uid IN (-1,0)';
+                $additionalWhere = ' AND '.$table.'.sys_language_uid IN (-1,0)';
                 if ($GLOBALS['TSFE']->sys_language_content > 0) {
-                    $additionalWhere = ' AND (sys_language_uid IN (-1,0) OR (sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content).' AND l18n_parent=0))';
+                    $additionalWhere = ' AND ('.$table.'.sys_language_uid IN (-1,0) OR ('.$table.'.sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content).' AND '.$table.'.l18n_parent=0))';
                 }
                 // Get labels from database.
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                     '*',
                     $table,
-                    'pid='.$pid
+                    $table.'.pid='.$pid
                         .$additionalWhere
-                        .self::whereClause($table, TRUE),
-                    '',
-                    '',
-                    ''
+                        .self::whereClause($table, TRUE)
                 );
                 if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
                     while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {

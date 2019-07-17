@@ -84,9 +84,6 @@ class DataHandler {
                     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                         '*',
                         'tx_dlf_solrcores',
-                        '',
-                        '',
-                        '',
                         ''
                     );
                     // Get first unused core number.
