@@ -77,27 +77,28 @@ class DocumentTypeCheck {
          * Get the document type
          *
          * 1. newspaper
-         *    case 1) - type=newspaper
+         *    case 1) - type=newspaper|ephemera
          *            - children array ([0], [1], [2], ...) -> type = year --> Newspaper Anchor File
-         *    case 2) - type=newspaper
+         *    case 2) - type=newspaper|ephemera
          *            - children array ([0]) --> type = year
          *            - children array ([0], [1], [2], ...) --> type = month --> Year Anchor File
-         *    case 3) - type=newspaper
+         *    case 3) - type=newspaper|ephemera
          *            - children array ([0]) --> type = year
          *            - children array ([0]) --> type = month
          *            - children array ([0], [1], [2], ...) --> type = day --> Issue
          */
         switch ($toc[0]['type']) {
             case 'newspaper':
-                $nodes_year = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]');
+            case 'ephemera':
+                $nodes_year = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]');
                 if (count($nodes_year) > 1) {
                     // Multiple years means this is a newspaper's anchor file.
                     return 'newspaper';
                 } else {
-                    $nodes_month = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]/mets:div[@TYPE="month"]');
-                    $nodes_day = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]/mets:div[@TYPE="month"]/mets:div[@TYPE="day"]');
-                    $nodes_issue = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]');
-                    $nodes_issue_current = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]/@DMDID');
+                    $nodes_month = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]/mets:div[@TYPE="month"]');
+                    $nodes_day = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]/mets:div[@TYPE="month"]/mets:div[@TYPE="day"]');
+                    $nodes_issue = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]');
+                    $nodes_issue_current = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]/@DMDID');
                     if (count($nodes_year) == 1
                         && count($nodes_issue) == 0) {
                         // It's possible to have only one year in the newspaper's anchor file.
