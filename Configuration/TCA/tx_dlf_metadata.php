@@ -129,7 +129,7 @@ return array (
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
-                'max' => 1024,
+                'max' => 255,
                 'eval' => 'trim',
             ),
         ),
@@ -181,7 +181,7 @@ return array (
             'config' => array (
                 'type' => 'input',
                 'size' => 5,
-                'max' => 64,
+                'max' => 5,
                 'default' => '1.00',
                 'eval' => 'double2',
             ),

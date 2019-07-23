@@ -55,7 +55,7 @@ return array (
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
-                'max' => 1024,
+                'max' => 255,
                 'eval' => 'required,trim',
             ),
         ),
@@ -65,7 +65,7 @@ return array (
             'config' => array (
                 'type' => 'input',
                 'size' => 30,
-                'max' => 1024,
+                'max' => 255,
                 'eval' => 'trim',
             ),
         ),
