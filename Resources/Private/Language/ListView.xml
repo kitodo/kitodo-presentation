@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<T3locallang>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for plugin ListView</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="tt_content.pi_flexform.sheet_general">Options</label>
+            <label index="tt_content.pi_flexform.limit">Documents per page</label>
+            <label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
+            <label index="tt_content.pi_flexform.getTitle">Show title of parent document if document has no title itself</label>
+            <label index="tt_content.pi_flexform.templateFile">Template file</label>
+            <label index="tt_content.pi_flexform.basketButton">Show basket add button</label>
+            <label index="tt_content.pi_flexform.targetBasket">Target page (with "DLF: Basket" plugin)</label>
+            <label index="nohits">Nothing found.</label>
+            <label index="count">Entries %d to %d of %d.</label>
+            <label index="prevPage">&lt;</label>
+            <label index="nextPage">&gt;</label>
+            <label index="page">%d</label>
+            <label index="separator"> - </label>
+            <label index="skip">...</label>
+            <label index="orderBy">Order by: </label>
+            <label index="relevance">relevance</label>
+            <label index="direction">Direction: </label>
+            <label index="direction.asc">ascending</label>
+            <label index="direction.desc">descending</label>
+            <label index="noTitle">[no title]</label>
+            <label index="addBasket">Add to basket</label>
+            <label index="hits">%d hits found in %d documents.</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+            <label index="tt_content.pi_flexform.limit">Dokumente pro Seite</label>
+            <label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
+            <label index="tt_content.pi_flexform.getTitle">Bei Bedarf Titel des übergeordneten Dokuments anzeigen</label>
+            <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+            <label index="tt_content.pi_flexform.basketButton">Zeige Warenkorb Button an</label>
+            <label index="tt_content.pi_flexform.targetBasket">Zielseite (mit Plugin "DLF: Warenkorb")</label>
+            <label index="nohits">Keine Treffer.</label>
+            <label index="count">Einträge %d bis %d von %d.</label>
+            <label index="prevPage">&lt;</label>
+            <label index="nextPage">&gt;</label>
+            <label index="page">%d</label>
+            <label index="separator"> - </label>
+            <label index="skip">...</label>
+            <label index="orderBy">Sortieren nach: </label>
+            <label index="relevance">Relevanz</label>
+            <label index="direction">Richtung: </label>
+            <label index="direction.asc">aufsteigend</label>
+            <label index="direction.desc">absteigend</label>
+            <label index="noTitle">[kein Titel]</label>
+            <label index="addBasket">Zum Warenkorb hinzufügen</label>
+            <label index="hits">Die Suche ergab %d Treffer in %d Dokumenten.</label>
+        </languageKey>
+    </data>
+</T3locallang>

@@ -1,0 +1,54 @@
+plugin.tx_dlf_tableofcontents.menuConf {
+    expAll = 0
+    1 = TMENU
+    1 {
+        noBlur = 1
+        wrap = <ul>|</ul>
+        NO = 1
+        NO {
+            stdWrap {
+                htmlSpecialChars = 1
+                htmlSpecialChars.preserveEntities = 1
+                crop = 55 | &nbsp;... | 1
+                ifEmpty {
+                    field = type
+                    append.fieldRequired = volume
+                    append = TEXT
+                    append.field = volume
+                    append.wrap = &nbsp;|
+                }
+                dataWrap = <span class="tx-dlf-toc-title">|</span> <span class="tx-dlf-toc-pagination">{field:pagination}</span>
+            }
+            allWrap.cObject = TEXT
+            allWrap.cObject {
+                insertData = 1
+                value = |
+                override.cObject = TEXT
+                override.cObject {
+                    value = |<span class="tx-dlf-basket-button">{field:basketButtonHref}</span>
+                    if {
+                        isTrue.field = basketButtonHref
+                    }
+                }
+            }
+            doNotLinkIt.field = doNotLinkIt
+            ATagTitle.field = type // orderlabel
+            wrapItemAndSub = <li class="tx-dlf-toc-no">|</li>
+        }
+        IFSUB < .NO
+        IFSUB.wrapItemAndSub = <li class="tx-dlf-toc-no tx-dlf-toc-ifsub">|</li>
+        CUR < .NO
+        CUR.wrapItemAndSub = <li class="tx-dlf-toc-cur">|</li>
+        CURIFSUB < .NO
+        CURIFSUB.wrapItemAndSub = <li class="tx-dlf-toc-cur tx-dlf-toc-ifsub">|</li>
+        ACT < .NO
+        ACT.wrapItemAndSub = <li class="tx-dlf-toc-act">|</li>
+        ACTIFSUB < .NO
+        ACTIFSUB.wrapItemAndSub = <li class="tx-dlf-toc-act tx-dlf-toc-ifsub">|</li>
+    }
+    2 < .1
+    3 < .2
+    4 < .3
+    5 < .4
+    6 < .5
+}

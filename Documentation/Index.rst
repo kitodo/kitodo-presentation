@@ -13,54 +13,54 @@ Kitodo.Presentation
 
 .. only:: html
 
-	:Classification:
-		dlf
+    :Classification:
+        dlf
 
-	:Version:
-		|release|
+    :Version:
+        |release|
 
-	:Language:
-		en
+    :Language:
+        en
 
-	:Description:
-		Kitodo.Presentation is a powerful framework for building a METS-based digital library.
-		It is highly customizable through a user-friendly backend and flexible design templates.
+    :Description:
+        Kitodo.Presentation is a powerful framework for building a METS-based digital library.
+        It is highly customizable through a user-friendly backend and flexible design templates.
 
-	:Keywords:
-		kitodo,digital framework,digitization,viewer,library,METS,OAI-PMH
+    :Keywords:
+        kitodo,digital framework,digitization,viewer,library,METS,OAI-PMH
 
-	:Copyright:
-		###YEAR###
+    :Copyright:
+        ###YEAR###
 
-	:Author:
-		Kitodo. Key to digital objects e.V.
+    :Author:
+        Kitodo. Key to digital objects e.V.
 
-	:Email:
-		contact@kitodo.org
+    :Email:
+        contact@kitodo.org
 
-	:License:
-		This document is published under the Open Content License
-		available from http://www.opencontent.org/opl.shtml
+    :License:
+        This document is published under the Open Content License
+        available from http://www.opencontent.org/opl.shtml
 
-	:Rendered:
-		|today|
+    :Rendered:
+        |today|
 
-	The content of this document is related to TYPO3,
-	a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
+    The content of this document is related to TYPO3,
+    a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
 
-	**Table of Contents**
+    **Table of Contents**
 
 .. toctree::
-	:maxdepth: 5
-	:titlesonly:
-	:glob:
+    :maxdepth: 5
+    :titlesonly:
+    :glob:
 
-	Introduction/Index
-	Administrator/Index
-	Configuration/Index
-	Plugins/Index
-	Community/Index
+    Introduction/Index
+    Administrator/Index
+    Configuration/Index
+    Plugins/Index
+    Community/Index
 
-	.. Administrator/Index
-	.. Developer/Index
-	.. Targets
+    .. Administrator/Index
+    .. Developer/Index
+    .. Targets

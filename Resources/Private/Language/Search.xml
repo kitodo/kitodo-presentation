@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<T3locallang>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for plugin Search</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="tt_content.pi_flexform.sheet_general">Options</label>
+            <label index="tt_content.pi_flexform.facetCollections">Use only this collections as facet</label>
+            <label index="tt_content.pi_flexform.fulltext">Enable fulltext search?</label>
+            <label index="tt_content.pi_flexform.fulltext.yes">yes</label>
+            <label index="tt_content.pi_flexform.fulltext.no">no</label>
+            <label index="tt_content.pi_flexform.solrcore">Solr Core</label>
+            <label index="tt_content.pi_flexform.extSearch.slotCount">Number of search slots</label>
+            <label index="tt_content.pi_flexform.extSearch.fields">Fields for extended search</label>
+            <label index="tt_content.pi_flexform.collections">Restrict search to these collections</label>
+            <label index="tt_content.pi_flexform.searchIn">Restrict search to current document or collection?</label>
+            <label index="tt_content.pi_flexform.searchIn.none">none</label>
+            <label index="tt_content.pi_flexform.searchIn.document">document only</label>
+            <label index="tt_content.pi_flexform.searchIn.collection">collection only</label>
+            <label index="tt_content.pi_flexform.searchIn.all">both</label>
+            <label index="tt_content.pi_flexform.facets">Show these facets</label>
+            <label index="tt_content.pi_flexform.limitFacets">Maximum facet values</label>
+            <label index="tt_content.pi_flexform.resetFacets">Allow to reset facets</label>
+            <label index="tt_content.pi_flexform.sortingFacets">Facet sorting</label>
+            <label index="tt_content.pi_flexform.sortingFacets.count">Count (highest count first)</label>
+            <label index="tt_content.pi_flexform.sortingFacets.index">Lexicographic by indexed term (alphabetically for terms in the ASCII range)</label>
+            <label index="tt_content.pi_flexform.suggest">Show search suggestions</label>
+            <label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
+            <label index="tt_content.pi_flexform.targetPidPageView">Target page (with "DLF: Page View" plugin)</label>
+            <label index="tt_content.pi_flexform.separator">Separator for metadata in TS array</label>
+            <label index="tt_content.pi_flexform.templateFile">Template file</label>
+            <label index="tt_content.pi_flexform.showLogicalPageField">Show field for logical page?</label>
+            <label index="tt_content.pi_flexform.showSingleResult">Show single result in Page View?</label>
+            <label index="label.query">Search for:</label>
+            <label index="label.submit">Search</label>
+            <label index="label.inFulltext">in fulltext</label>
+            <label index="label.inMetadata">in metadata</label>
+            <label index="label.logicalPage">Page</label>
+            <label index="search">Search</label>
+            <label index="for"> for "%s"</label>
+            <label index="in"> in "%s"</label>
+            <label index="AND">and</label>
+            <label index="OR">or</label>
+            <label index="NOT">not</label>
+            <label index="resetFacet">Reset selection (%s)</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+            <label index="tt_content.pi_flexform.facetCollections">Folgende Kollektionen als Facetten anzeigen</label>
+            <label index="tt_content.pi_flexform.fulltext">Volltext-Suche aktivieren?</label>
+            <label index="tt_content.pi_flexform.fulltext.yes">ja</label>
+            <label index="tt_content.pi_flexform.fulltext.no">nein</label>
+            <label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
+            <label index="tt_content.pi_flexform.extSearch.slotCount">Anzahl Suchfelder</label>
+            <label index="tt_content.pi_flexform.extSearch.fields">Felder für erweiterte Suche</label>
+            <label index="tt_content.pi_flexform.collections">Suche auf diese Kollektionen einschränken</label>
+            <label index="tt_content.pi_flexform.searchIn">Suche auf aktuelle/s Kollektion/Dokument einschränken?</label>
+            <label index="tt_content.pi_flexform.searchIn.none">nein</label>
+            <label index="tt_content.pi_flexform.searchIn.document">nur Dokument</label>
+            <label index="tt_content.pi_flexform.searchIn.collection">nur Kollektion</label>
+            <label index="tt_content.pi_flexform.searchIn.all">beides</label>
+            <label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
+            <label index="tt_content.pi_flexform.limitFacets">Maximale Facettenwerte</label>
+            <label index="tt_content.pi_flexform.resetFacets">Facetten zurücksetzen erlauben</label>
+            <label index="tt_content.pi_flexform.sortingFacets">Facetten Sortierung</label>
+            <label index="tt_content.pi_flexform.sortingFacets.count">Anzahl (höchste Anzahl zuerst)</label>
+            <label index="tt_content.pi_flexform.sortingFacets.index">Lexikographisch nach indexiertem Begriff (alphabetisch für Begriffe im ASCII-Bereich)</label>            
+            <label index="tt_content.pi_flexform.suggest">Suchvorschläge anzeigen</label>
+            <label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
+            <label index="tt_content.pi_flexform.targetPidPageView">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
+            <label index="tt_content.pi_flexform.separator">Trennzeichen für Metadaten im TS-Array</label>
+            <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+            <label index="tt_content.pi_flexform.showLogicalPageField">Feld für logische Seite anzeigen?</label>
+            <label index="tt_content.pi_flexform.showSingleResult">Einzelnes Ergebnis in Seitenansicht anzeigen?</label>
+            <label index="label.query">Suchen nach:</label>
+            <label index="label.submit">Suchen</label>
+            <label index="label.inFulltext">im Volltext</label>
+            <label index="label.inMetadata">in Metadaten</label>
+            <label index="label.logicalPage">Seite</label>
+            <label index="search">Suche</label>
+            <label index="for"> nach "%s"</label>
+            <label index="in"> in "%s"</label>
+            <label index="AND">und</label>
+            <label index="OR">oder</label>
+            <label index="NOT">nicht</label>
+            <label index="resetFacet">Auswahl entfernen (%s)</label>
+        </languageKey>
+    </data>
+</T3locallang>

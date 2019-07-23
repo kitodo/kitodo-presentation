@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<T3locallang>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for plugin PageView</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="tt_content.pi_flexform.basketButton">Show basket button</label>
+            <label index="tt_content.pi_flexform.sheet_general">Options</label>
+            <label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected page</label>
+            <label index="tt_content.pi_flexform.features">Map features</label>
+            <label index="tt_content.pi_flexform.features.overviewmap">Overview Image</label>
+            <label index="tt_content.pi_flexform.features.zoompanel">Zoom Panel</label>
+            <label index="tt_content.pi_flexform.elementId">@ID value of the HTML element for the page view</label>
+            <label index="tt_content.pi_flexform.templateFile">Template file</label>
+            <label index="tt_content.pi_flexform.useInternalProxy">Use Internal Proxy</label>
+            <label index="tt_content.pi_flexform.crop">Enable cropping</label>
+            <label index="tt_content.pi_flexform.magnifier">Activate magnifier</label>
+            <label index="tt_content.pi_flexform.rotation">Add rotation buttons</label>
+            <label index="tt_content.pi_flexform.targetBasket">Target page (with "DLF: Basket" plugin)</label>
+            <label index="editMode">Set cutout</label>
+            <label index="editRemove">Remove cutout</label>
+            <label index="magnifier">Magnifier</label>
+            <label index="addBasket">Add to basket</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="tt_content.pi_flexform.basketButton">Warenkorb Button anzeigen</label>
+            <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
+            <label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Seite anzeigen</label>
+            <label index="tt_content.pi_flexform.features">Bedienelemente</label>
+            <label index="tt_content.pi_flexform.features.overviewmap">Übersichtsbild</label>
+            <label index="tt_content.pi_flexform.features.zoompanel">Zoom-Knöpfe</label>
+            <label index="tt_content.pi_flexform.elementId">@ID-Wert des HTML-Elements für die Seitenansicht</label>
+            <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+            <label index="tt_content.pi_flexform.useInternalProxy">Internen Proxy verwenden</label>
+            <label index="tt_content.pi_flexform.crop">Funktion zum Erstellen eines Bildausschnitts aktivieren</label>
+            <label index="tt_content.pi_flexform.magnifier">Lupenfunktion aktivieren</label>
+            <label index="tt_content.pi_flexform.rotation">Rotations-Knöpfe hinzufügen</label>
+            <label index="tt_content.pi_flexform.targetBasket">Zielseite (mit Plugin "DLF: Warenkorb")</label>
+            <label index="editMode">Ausschnitt auswählen</label>
+            <label index="editRemove">Ausschnitt entfernen</label>
+            <label index="magnifier">Lupe</label>
+            <label index="addBasket">Zum Warenkorb hinzufügen</label>
+        </languageKey>
+    </data>
+</T3locallang>

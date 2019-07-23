@@ -1,75 +1,59 @@
 {
   "name": "kitodo/presentation",
   "description": "Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.",
-  "homepage": "https://www.kitodo.org/",
+  "type": "typo3-cms-extension",
+  "homepage": "https://www.kitodo.org",
+  "readme": "README.md",
+  "license": ["GPL-3.0-or-later"],
   "authors": [
     {
       "name": "Kitodo. Key to digital objects e.V.",
       "email": "contact@kitodo.org",
-      "homepage": "https://www.kitodo.org/",
+      "homepage": "https://www.kitodo.org",
       "role": "provider"
     },
     {
       "name": "Sebastian Meyer",
       "email": "sebastian.meyer@slub-dresden.de",
-      "homepage": "https://www.slub-dresden.de/",
+      "homepage": "https://www.slub-dresden.de",
       "role": "maintainer"
     }
   ],
-  "license": "GPL-3.0-or-later",
-  "type": "typo3-cms-extension",
-  "version": "2.2.0",
+  "support": {
+    "issues": "https://github.com/kitodo/kitodo-presentation/issues",
+    "source": "https://github.com/kitodo/kitodo-presentation",
+    "docs": "https://docs.typo3.org/typo3cms/extensions/dlf/"
+  },
   "require": {
-    "typo3/cms": "^7.6",
-    "solarium/solarium" : "^4.0"
+    "php": "^7.0",
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-openssl": "*",
+    "ext-simplexml": "*",
+    "typo3/cms-core": "^8.7.8",
+    "typo3/cms-css-styled-content": "^8.7.8",
+    "typo3/cms-tstemplate": "^8.7.8",
+    "pagemachine/typo3-composer-legacy-cli": "^1.0",
+    "ubl/php-iiif-prezi-reader": "0.2.0",
+    "solarium/solarium": "^4.2"
   },
   "replace": {
     "dlf": "self.version",
     "typo3-ter/dlf": "self.version"
   },
+  "suggest": {
+    "devlog/devlog": "^3.0"
+  },
   "autoload": {
-    "classmap": [
-      "cli/class.tx_dlf_cli.php",
-      "common/class.tx_dlf_alto.php",
-      "common/class.tx_dlf_document.php",
-      "common/class.tx_dlf_format.php",
-      "common/class.tx_dlf_fulltext.php",
-      "common/class.tx_dlf_helper.php",
-      "common/class.tx_dlf_indexing.php",
-      "common/class.tx_dlf_list.php",
-      "common/class.tx_dlf_mods.php",
-      "common/class.tx_dlf_module.php",
-      "common/class.tx_dlf_plugin.php",
-      "common/class.tx_dlf_solr.php",
-      "common/class.tx_dlf_teihdr.php",
-      "hooks/class.tx_dlf_doctype.php",
-      "hooks/class.tx_dlf_em.php",
-      "hooks/class.tx_dlf_hacks.php",
-      "hooks/class.tx_dlf_tceforms.php",
-      "hooks/class.tx_dlf_tcemain.php",
-      "modules/indexing/index.php",
-      "modules/newclient/index.php",
-      "plugins/audioplayer/class.tx_dlf_audioplayer.php",
-      "plugins/basket/class.tx_dlf_basket.php",
-      "plugins/collection/class.tx_dlf_collection.php",
-      "plugins/feeds/class.tx_dlf_feeds.php",
-      "plugins/listview/class.tx_dlf_listview.php",
-      "plugins/metadata/class.tx_dlf_metadata.php",
-      "plugins/navigation/class.tx_dlf_navigation.php",
-      "plugins/newspaper/class.tx_dlf_newspaper.php",
-      "plugins/oai/class.tx_dlf_oai.php",
-      "plugins/pagegrid/class.tx_dlf_pagegrid.php",
-      "plugins/pageview/class.tx_dlf_pageview.php",
-      "plugins/search/class.tx_dlf_search.php",
-      "plugins/search/class.tx_dlf_search_suggest.php",
-      "plugins/statistics/class.tx_dlf_statistics.php",
-      "plugins/toc/class.tx_dlf_toc.php",
-      "plugins/toolbox/class.tx_dlf_toolbox.php",
-      "plugins/toolbox/tools/pdf/class.tx_dlf_toolsPdf.php",
-      "plugins/toolbox/tools/fulltext/class.tx_dlf_toolsFulltext.php",
-      "plugins/toolbox/tools/imagemanipulation/class.tx_dlf_toolsImagemanipulation.php",
-      "plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php",
-      "plugins/validator/class.tx_dlf_validator.php"
-    ]
+    "psr-4": {
+      "Kitodo\\Dlf\\": "Classes/"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "dlf"
+    }
   }
 }
