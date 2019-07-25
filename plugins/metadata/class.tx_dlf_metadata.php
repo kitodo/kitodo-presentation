@@ -385,7 +385,7 @@ class tx_dlf_metadata extends tx_dlf_plugin {
 
                     }
 
-                } while (count($metadata[$index_name]));
+                } while (is_array($metadata[$index_name]) && count($metadata[$index_name]));
 
                 if (!empty($parsedValue)) {
 
