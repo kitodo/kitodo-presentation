@@ -38,10 +38,10 @@ CREATE TABLE tx_dlf_documents (
     document_format varchar(100) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (location),
-    KEY (record_id),
-    KEY (partof)
+    KEY parent (pid),
+    KEY location (location),
+    KEY record_id (record_id),
+    KEY partof (partof)
 );
 
 --
@@ -66,9 +66,9 @@ CREATE TABLE tx_dlf_structures (
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (sys_language_uid),
-    KEY (index_name)
+    KEY parent (pid),
+    KEY language (l18n_parent,sys_language_uid),
+    KEY index_name (index_name)
 );
 
 --
@@ -102,13 +102,13 @@ CREATE TABLE tx_dlf_metadata (
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (sys_language_uid),
-    KEY (index_name),
-    KEY (index_autocomplete),
-    KEY (is_sortable),
-    KEY (is_facet),
-    KEY (is_listed)
+    KEY parent (pid),
+    KEY language (l18n_parent,sys_language_uid),
+    KEY index_name (index_name),
+    KEY index_autocomplete (index_autocomplete),
+    KEY is_sortable (is_sortable),
+    KEY is_facet (is_facet),
+    KEY is_listed (is_listed)
 );
 
 --
@@ -128,8 +128,8 @@ CREATE TABLE tx_dlf_metadataformat (
     mandatory smallint(6) DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (parent_id)
+    KEY parent (pid),
+    KEY parent_id (parent_id)
 );
 
 --
@@ -148,7 +148,7 @@ CREATE TABLE tx_dlf_formats (
     class varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid)
+    KEY parent (pid)
 );
 
 --
@@ -165,8 +165,8 @@ CREATE TABLE tx_dlf_solrcores (
     index_name varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (index_name)
+    KEY parent (pid),
+    KEY index_name (index_name)
 );
 
 --
@@ -198,11 +198,11 @@ CREATE TABLE tx_dlf_collections (
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (sys_language_uid),
-    KEY (index_name),
-    KEY (oai_name),
-    KEY (pid,fe_cruser_id)
+    KEY parent (pid),
+    KEY language (l18n_parent,sys_language_uid),
+    KEY index_name (index_name),
+    KEY oid_name (oai_name),
+    KEY pid_cruser (pid,fe_cruser_id)
 );
 
 --
@@ -231,9 +231,9 @@ CREATE TABLE tx_dlf_libraries (
     union_base varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (sys_language_uid),
-    KEY (index_name)
+    KEY parent (pid),
+    KEY language (l18n_parent,sys_language_uid),
+    KEY index_name (index_name)
 );
 
 --
@@ -247,7 +247,7 @@ CREATE TABLE tx_dlf_tokens (
     ident varchar(30) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (token)
+    KEY token (token)
 );
 
 --
@@ -263,7 +263,7 @@ CREATE TABLE tx_dlf_relations (
     ident varchar(30) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (uid_local,uid_foreign,ident)
+    KEY local_foreign (uid_local,uid_foreign,ident)
 );
 
 --
@@ -283,8 +283,8 @@ CREATE TABLE tx_dlf_basket (
     doc_ids varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid),
-    KEY (sys_language_uid)
+    KEY parent (pid),
+    KEY language (l18n_parent,sys_language_uid)
 );
 
 --
@@ -298,7 +298,7 @@ CREATE TABLE tx_dlf_printer (
     label varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid)
+    KEY parent (pid)
 );
 
 --
@@ -314,7 +314,7 @@ CREATE TABLE tx_dlf_mail (
     label varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid)
+    KEY parent (pid)
 );
 
 --
@@ -332,5 +332,5 @@ CREATE TABLE tx_dlf_actionlog (
     label varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
-    KEY (pid)
+    KEY parent (pid)
 );
