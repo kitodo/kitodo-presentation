@@ -152,9 +152,12 @@ return [
         ],
         'description' => [
             'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank',
+            'l10n_mode' => 'mergeIfNotBlank', // deprecated in 8.7 but kept for upgrade wizard
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.description',
             'config' => [
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true
+                ],
                 'type' => 'text',
                 'cols' => 30,
                 'rows' => 10,
