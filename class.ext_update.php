@@ -281,7 +281,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
-            Helper::whereClause('tx_dlf_solrcores')
+            '1=1'.Helper::whereClause('tx_dlf_solrcores')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Instantiate search object.
@@ -305,7 +305,7 @@ class ext_update {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
-            Helper::whereClause('tx_dlf_solrcores')
+            '1=1'.Helper::whereClause('tx_dlf_solrcores')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Instantiate search object.
