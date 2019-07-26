@@ -27,7 +27,6 @@ return [
             'disabled' => 'hidden',
             'fe_group' => 'fe_group',
         ],
-        'requestUpdate' => 'sys_language_uid',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfcollections.png',
         'rootLevel' => 0,
         'dividers2tabs' => 2,
@@ -53,6 +52,7 @@ return [
                     ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
                 ],
                 'default' => 0,
+                'onchange' => 'reload',
             ],
         ],
         'l18n_parent' => [

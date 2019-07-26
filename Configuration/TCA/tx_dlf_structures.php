@@ -28,7 +28,6 @@ return [
         'rootLevel' => 0,
         'dividers2tabs' => 2,
         'searchFields' => 'label,index_name,oai_name',
-        'requestUpdate' => 'toplevel',
     ],
     'feInterface' => [
         'fe_admin_fieldList' => '',
@@ -87,6 +86,7 @@ return [
             'config' => [
                 'type' => 'check',
                 'default' => 0,
+                'onchange' => 'reload',
             ],
         ],
         'label' => [
