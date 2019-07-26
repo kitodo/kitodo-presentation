@@ -77,7 +77,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.tab1, label;;;;1-1-1, session_id;;;;2-2-2, doc_ids;;;;2-2-2, fe_user_id;;;;2-2-2'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.tab1,label,session_id,doc_ids,fe_user_id'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

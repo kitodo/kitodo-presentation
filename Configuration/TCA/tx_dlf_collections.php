@@ -282,7 +282,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab1, label,--palette--;;1;;1-1-1, description,--palette--;;2;;2-2-2, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab3, hidden;;;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4, fe_cruser_id,--palette--;;3'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab1,label,--palette--;;1,description,--palette--;;2,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab3,hidden,fe_group,status,owner,fe_cruser_id,--palette--;;3'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'index_name, --linebreak--, index_search, --linebreak--, oai_name', 'canNotCollapse' => 1],

@@ -244,7 +244,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab1, label,--palette--;;1;;1-1-1, format;;;;2-2-2, default_value;;;;3-3-3, wrap, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab2, sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab3, hidden;;;;1-1-1, status;;;;2-2-2'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab1,label,--palette--;;1,format,default_value,wrap,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab3,hidden,status'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'index_name, --linebreak--, index_tokenized, index_stored, index_indexed, index_boost, --linebreak--, is_sortable, is_facet, is_listed, index_autocomplete', 'canNotCollapse' => 1],

@@ -49,7 +49,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.tab1, label;;;;1-1-1, print;;;;2-2-2'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.tab1,label,print'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

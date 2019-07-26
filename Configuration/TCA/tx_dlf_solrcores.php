@@ -52,7 +52,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.tab1, label;;;;1-1-1, index_name;;;;2-2-2'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.tab1,label,index_name'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

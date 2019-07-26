@@ -58,7 +58,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.tab1, label;;;;1-1-1, name;;;;2-2-2, mail;;;;2-2-2'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.tab1,label,name,mail'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],
