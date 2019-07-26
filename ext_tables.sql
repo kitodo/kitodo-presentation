@@ -201,7 +201,7 @@ CREATE TABLE tx_dlf_collections (
     KEY parent (pid),
     KEY language (l18n_parent,sys_language_uid),
     KEY index_name (index_name),
-    KEY oid_name (oai_name),
+    KEY oai_name (oai_name),
     KEY pid_cruser (pid,fe_cruser_id)
 );
 
