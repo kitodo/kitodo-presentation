@@ -151,8 +151,9 @@ return [
                 'wrap' => 'off',
                 'eval' => 'trim',
                 'default' => "key.wrap = <dt>|</dt>\nvalue.required = 1\nvalue.wrap = <dd>|</dd>",
+                'fixedFont' => true,
+                'enableTabulator' => true
             ],
-            'defaultExtras' => 'nowrap:fixed-font:enable-tab',
         ],
         'index_tokenized' => [
             'exclude' => 1,
