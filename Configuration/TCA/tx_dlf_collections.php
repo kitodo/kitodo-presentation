@@ -160,8 +160,8 @@ return [
                 'rows' => 10,
                 'wrap' => 'virtual',
                 'default' => '',
+                'enableRichtext' => true,
             ],
-            'defaultExtras' => 'richtext[undo,redo,cut,copy,paste,link,image,line,acronym,chMode,blockstylelabel,formatblock,blockstyle,textstylelabel,textstyle,bold,italic,unorderedlist,orderedlist]:rte_transform[mode=ts_css]',
         ],
         'thumbnail' => [
             'exclude' => 1,
