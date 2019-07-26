@@ -262,7 +262,6 @@ return [
                 'allowed' => 'tx_dlf_documents',
                 'prepend_tname' => 0,
                 'size' => 1,
-                'selectedListStyle' => 'width:400px;',
                 'minitems' => 0,
                 'maxitems' => 1,
                 'disable_controls' => 'browser,delete',
