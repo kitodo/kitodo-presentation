@@ -264,9 +264,14 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-                'disable_controls' => 'browser,delete',
                 'default' => 0,
                 'readOnly' => 1,
+                'fieldControl' => [
+                    'elementBrowser' => [
+                        'disabled' => true
+                    ]
+                ],
+                'hideDeleteIcon' => true
             ],
         ],
         'volume' => [
