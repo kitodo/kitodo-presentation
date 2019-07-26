@@ -367,7 +367,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,title,--palette--;;1,author,year,place,structure,document_format,--palette--;;2,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,location,record_id,prod_id,oai_id,opac_id,union_id,urn,purl,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,hidden,--palette--;;3,fe_group,status,owner'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,title,--palette--;;1,author,year,place,structure,document_format,--palette--;;2,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,location,record_id,prod_id,oai_id,opac_id,union_id,urn,purl,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,hidden,--palette--;;3,fe_group,status,owner'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'title_sorting', 'canNotCollapse' => 1],
