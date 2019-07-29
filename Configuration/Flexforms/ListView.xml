@@ -23,7 +23,7 @@
                     <pages>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:lang/locallang_general.xml:LGL.startingpoint</label>
+                            <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>

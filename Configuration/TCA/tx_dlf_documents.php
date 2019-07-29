@@ -40,7 +40,7 @@ return [
     'columns' => [
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'default' => 0,
@@ -48,36 +48,36 @@ return [
         ],
         'starttime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.starttime',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
-                'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
             ],
         ],
         'endtime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.endtime',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
-                'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
             ],
         ],
         'fe_group' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.fe_group',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => [
-                    ['LLL:EXT:lang/locallang_general.xml:LGL.hide_at_login', '-1'],
-                    ['LLL:EXT:lang/locallang_general.xml:LGL.any_login', '-2'],
-                    ['LLL:EXT:lang/locallang_general.xml:LGL.usergroups', '--div--'],
+                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
+                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
+                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
                 ],
                 'foreign_table' => 'fe_groups',
                 'size' => 5,
@@ -262,12 +262,16 @@ return [
                 'allowed' => 'tx_dlf_documents',
                 'prepend_tname' => 0,
                 'size' => 1,
-                'selectedListStyle' => 'width:400px;',
                 'minitems' => 0,
                 'maxitems' => 1,
-                'disable_controls' => 'browser,delete',
                 'default' => 0,
                 'readOnly' => 1,
+                'fieldControl' => [
+                    'elementBrowser' => [
+                        'disabled' => true
+                    ]
+                ],
+                'hideDeleteIcon' => true
             ],
         ],
         'volume' => [
@@ -363,7 +367,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1, title,--palette--;;1;;1-1-1, author, year, place, structure, document_format,--palette--;;2;;2-2-2, collections;;;;3-3-3, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2, location;;;;1-1-1, record_id, prod_id;;;;2-2-2, oai_id;;;;3-3-3, opac_id, union_id, urn, purl;;;;4-4-4, --div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3, hidden,--palette--;;3;;1-1-1, fe_group;;;;2-2-2, status;;;;3-3-3, owner;;;;4-4-4'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,title,--palette--;;1,author,year,place,structure,document_format,--palette--;;2,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,location,record_id,prod_id,oai_id,opac_id,union_id,urn,purl,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,hidden,--palette--;;3,fe_group,status,owner'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'title_sorting', 'canNotCollapse' => 1],
