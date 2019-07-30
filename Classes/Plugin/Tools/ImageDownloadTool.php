@@ -37,7 +37,9 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
     public function main($content, $conf) {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
-        $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
+        if (!empty($this->cObj->data)) {
+            $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
+        }
         // Load current document.
         $this->loadDocument();
         if ($this->doc === NULL
