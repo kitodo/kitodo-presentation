@@ -37,7 +37,7 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin {
     public function main($content, $conf) {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
-        if (!empty($this->cObj->data)) {
+        if (!empty($this->cObj->data['conf'])) {
             $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
         }
         // Load template file.
