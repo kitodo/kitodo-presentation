@@ -132,14 +132,14 @@ class ReindexCommand extends Command
             $documents = $this->getDocumentsToProceed($input->getOption('coll'), $startingPoint);
         }
 
-        foreach ($documents as $document) {
+        foreach ($documents as $id => $document) {
             $doc = Document::getInstance($document, $startingPoint, TRUE);
             if ($doc->ready) {
                 if ($dryRun) {
-                    $io->writeln('DRY RUN: Would index ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
+                    $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
                 } else {
                     if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:m:s') . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
+                        $io->writeln(date('Y-m-d H:m:s') . ' ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
                     }
                     // ...and save it to the database...
                     if (!$doc->save($startingPoint, $solrCoreUid)) {

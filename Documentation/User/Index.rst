@@ -188,3 +188,12 @@ collections or even to reindex all documents on the given page.::
        script may check the return value of the CLI job. This is always 0 on
        success and 1 on failure.
    :Example:
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Show each processed documents uid and location with timestamp and
+       amount of processed/all documents.
+   :Example:
