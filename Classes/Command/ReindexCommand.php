@@ -105,7 +105,7 @@ class ReindexCommand extends Command
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
                 foreach ($allSolrCores as $index_name => $uid) {
-                  $output_solrCores .= ' ' . $uid . ' : ' . $index_name ."\n";
+                    $output_solrCores .= ' ' . $uid . ' : ' . $index_name ."\n";
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid solr core ("'. $input->getOption('solr') . '") given. ' . "No valid cores found on PID " . $startingPoint .".\n" . $output_solrCores);
@@ -188,7 +188,7 @@ class ReindexCommand extends Command
         return $solrCores;
     }
 
-  /**
+    /**
      * Fetches all documents with given collection.
      *
      * @param string $collId a comma separated list of collection uids
@@ -256,36 +256,35 @@ class ReindexCommand extends Command
     }
 
     /**
-       * Fetches all documents of given page.
-       *
-       * @param int $pageId the uid of the solr record
-       *
-       * @return array array of valid solr cores
-       */
-      protected function getAllDocuments(int $pageId): array
-      {
-          /** @var QueryBuilder $queryBuilder */
-          $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-              ->getQueryBuilderForTable('tx_dlf_documents');
+     * Fetches all documents of given page.
+     *
+     * @param int $pageId the uid of the solr record
+     *
+     * @return array array of valid solr cores
+     */
+    protected function getAllDocuments(int $pageId): array
+    {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
 
-          $documents = [];
-          $pageId = (int)$pageId;
-          $result = $queryBuilder
-              ->select('uid')
-              ->from('tx_dlf_documents')
-              -> where(
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_documents.pid',
-                    $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
-                )
+        $documents = [];
+        $pageId = (int)$pageId;
+        $result = $queryBuilder
+            ->select('uid')
+            ->from('tx_dlf_documents')
+            -> where(
+              $queryBuilder->expr()->eq(
+                  'tx_dlf_documents.pid',
+                  $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
               )
-              ->orderBy('tx_dlf_documents.uid', 'ASC')
-              ->execute();
+            )
+            ->orderBy('tx_dlf_documents.uid', 'ASC')
+            ->execute();
 
-          while ($record = $result->fetch()) {
-              $documents[] = $record['uid'];
-          }
-          return $documents;
-      }
-
+        while ($record = $result->fetch()) {
+            $documents[] = $record['uid'];
+        }
+        return $documents;
+    }
 }

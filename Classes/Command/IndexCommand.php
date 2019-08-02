@@ -98,7 +98,7 @@ class IndexCommand extends Command
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
                 foreach ($allSolrCores as $index_name => $uid) {
-                  $output_solrCores .= ' ' . $uid . ' : ' . $index_name ."\n";
+                    $output_solrCores .= ' ' . $uid . ' : ' . $index_name ."\n";
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid solr core ("'. $input->getOption('solr') . '") given. ' . "No valid cores found on PID " . $startingPoint .".\n" . $output_solrCores);
