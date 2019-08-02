@@ -59,4 +59,5 @@ Kitodo.Presentation
     Administrator/Index
     Configuration/Index
     Plugins/Index
+    User/Index
     Community/Index

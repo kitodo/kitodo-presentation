@@ -46,7 +46,7 @@ class IndexCommand extends Command
                 'doc',
                 'd',
                 InputOption::VALUE_REQUIRED,
-                'UID or (properly encoded) URL of the document.'
+                'UID or URL of the document.'
             )
             ->addOption(
                 'pid',
