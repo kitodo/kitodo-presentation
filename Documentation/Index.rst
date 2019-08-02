@@ -60,7 +60,3 @@ Kitodo.Presentation
     Configuration/Index
     Plugins/Index
     Community/Index
-
-    .. Administrator/Index
-    .. Developer/Index
-    .. Targets

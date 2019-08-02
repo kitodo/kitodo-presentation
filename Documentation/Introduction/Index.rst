@@ -106,7 +106,7 @@ Some examples of Kitodo.Presentation in action on the `digital collection of SLU
 
    Mscr.Dresd.A.180.d
 
-   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/162147/7/>`_
+   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/162147/7/>`__
 
 .. figure:: ../Images/Introduction/KitodoPresentation-SLUB-DresdenDaily.PNG
    :width: 500px
@@ -114,7 +114,7 @@ Some examples of Kitodo.Presentation in action on the `digital collection of SLU
 
    Newspaper an Other Periodicals
 
-   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/120620/1/>`_
+   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/120620/1/>`__
 
 .. figure:: ../Images/Introduction/KitodoPresentation-SLUB-Kalenderansicht.PNG
    :width: 500px
@@ -122,7 +122,7 @@ Some examples of Kitodo.Presentation in action on the `digital collection of SLU
 
    Calendar for Digitised Newspapers
 
-   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/120676/1/>`_
+   Find this document in `SLUB digital collections. <http://digital.slub-dresden.de/werkansicht/dlf/120676/1/>`__
 
 .. figure:: ../Images/Introduction/KitodoPresentation-SLUB-Volltexte.PNG
    :width: 500px
