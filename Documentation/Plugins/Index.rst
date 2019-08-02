@@ -38,7 +38,7 @@ The audioplayer plugin is only active if the selected document has a valid audio
 
 Properties
 ^^^^^^^^^^
-:typoscript:`plugin.AudioPlayer.`
+:typoscript:`plugin.tx_dlf_audioplayer.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -90,7 +90,7 @@ ID value of the HTML element for the audio player.
 Basket
 ------
 
-:typoscript:`plugin.Basket.`
+:typoscript:`plugin.tx_dlf_basket.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -171,7 +171,7 @@ Basket
 Calendar
 ---------
 
-:typoscript:`plugin.Calendar.`
+:typoscript:`plugin.tx_dlf_calendar.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -202,7 +202,7 @@ Collection
 
 The collection plugin shows one collection, all collections or selected collections.
 
-:typoscript:`plugin.Collection.`
+:typoscript:`plugin.tx_dlf_collection.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -269,7 +269,7 @@ The collection plugin shows one collection, all collections or selected collecti
 Feeds
 -----
 
-:typoscript:`plugin.tx_dlf_feed.`
+:typoscript:`plugin.tx_dlf_feeds.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -342,7 +342,7 @@ Feeds
 List View
 ---------
 
-:typoscript:`plugin.ListView.`
+:typoscript:`plugin.tx_dlf_listview.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -404,7 +404,7 @@ List View
 Metadata
 --------
 
-:typoscript:`plugin.Metadata.`
+:typoscript:`plugin.tx_dlf_metadata.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -480,7 +480,7 @@ Metadata
 Navigation
 ----------
 
-:typoscript:`plugin.Navigation.`
+:typoscript:`plugin.tx_dlf_navigation.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -521,7 +521,7 @@ Navigation
 OAI-PMH
 -------
 
-:typoscript:`plugin.OaiPmh.`
+:typoscript:`plugin.tx_dlf_oaipmh.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -583,7 +583,7 @@ OAI-PMH
 Page Grid
 ---------
 
-:typoscript:`plugin.PageGrid.`
+:typoscript:`plugin.tx_dlf_pagegrid.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -631,7 +631,7 @@ Page Grid
 Page View
 ---------
 
-:typoscript:`plugin.PageView.`
+:typoscript:`plugin.tx_dlf_pageview.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -714,7 +714,7 @@ Page View
 Search
 ------
 
-:typoscript:`plugin.Search.`
+:typoscript:`plugin.tx_dlf_search.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -839,7 +839,7 @@ Search
 Statistics
 ----------
 
-:typoscript:`plugin.Statistics.`
+:typoscript:`plugin.tx_dlf_statistics.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -873,7 +873,7 @@ Statistics
 Table Of Contents
 -----------------
 
-:typoscript:`plugin.TableOfContents.`
+:typoscript:`plugin.tx_dlf_tableofcontents.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -929,7 +929,7 @@ Toolbox
 -------
 
 
-:typoscript:`plugin.Toolbox.`
+:typoscript:`plugin.tx_dlf_toolbox.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -940,6 +940,8 @@ Toolbox
        Data type
    :Default:
        Default
+   :Values:
+       Values
 
  - :Property:
        pages_
@@ -952,6 +954,12 @@ Toolbox
    :Data Type:
        :ref:`t3tsref:data-type-list`
    :Default:
+   :Values:
+       * tx_dlf_annotationtool
+       * tx_dlf_fulltexttool
+       * tx_dlf_imagedownloadtool
+       * tx_dlf_imagemanipulationtool
+       * tx_dlf_pdfdownloadtool
 
  - :Property:
        fileGrpsImageDownload
