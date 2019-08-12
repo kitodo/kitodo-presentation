@@ -139,15 +139,15 @@ class ReindexCommand extends Command
                     $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
                 } else {
                     if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:m:s') . ' ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
+                        $io->writeln(date('Y-m-d H:i:s') . ' ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
                     }
                     // ...and save it to the database...
                     if (!$doc->save($startingPoint, $solrCoreUid)) {
-                        $io->error('ERROR: Document "'.$input->getOption('doc').'" not saved and indexed.');
+                        $io->error('ERROR: Document "'.$id.'" not saved and indexed.');
                     }
                 }
             } else {
-                $io->error('ERROR: Document "'.$input->getOption('doc').'" could not be loaded.');
+                $io->error('ERROR: Document "'.$id.'" could not be loaded.');
             }
         }
 
