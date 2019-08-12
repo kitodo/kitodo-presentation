@@ -386,5 +386,24 @@ $metadataDefaults = [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+    ],
+    'coordinates' => [
+        'format' => [
+            [
+                'encoded' => 1,
+                'xpath' => './mods:subject/mods:cartographics/mods:coordinates',
+                'xpath_sorting' => '',
+            ],
+        ],
+        'default_value' => '',
+        'wrap' => '',
+        'index_tokenized' => 0,
+        'index_stored' => 0,
+        'index_indexed' => 0,
+        'index_boost' => 1.00,
+        'is_sortable' => 0,
+        'is_facet' => 0,
+        'is_listed' => 0,
+        'index_autocomplete' => 0,
     ]
 ];

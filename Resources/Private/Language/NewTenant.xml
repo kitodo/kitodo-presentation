@@ -126,6 +126,7 @@
             <label index="collection">Collection(s)</label>
             <label index="owner">Owner</label>
             <label index="language">Language</label>
+            <label index="coordinates">Coordinates</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="mlang_tabs_tab">Neuer Mandant</label>
@@ -239,6 +240,7 @@
             <label index="collection">Sammlung(en)</label>
             <label index="owner">Besitzer</label>
             <label index="language">Sprache</label>
+            <label index="coordinates">Geoinformationen</label>
         </languageKey>
     </data>
 </T3locallang>
