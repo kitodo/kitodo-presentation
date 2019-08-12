@@ -149,6 +149,8 @@ class ReindexCommand extends Command
             } else {
                 $io->error('ERROR: Document "'.$id.'" could not be loaded.');
             }
+            // Clear document registry to prevent memory exhaustion.
+            Document::clearRegistry();
         }
 
         $io->success('All done!');
