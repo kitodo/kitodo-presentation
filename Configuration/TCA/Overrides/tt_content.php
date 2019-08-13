@@ -90,12 +90,12 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_toolbox'
 // Plugin "treeview".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_treeview'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_treeview'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_treeview', 'dlf_treeview'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_treeview', 'dlf_treeview'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_treeview', 'FILE:EXT:'.'dlf/Configuration/Flexforms/Treeview.xml');
 // Plugin "treeview frontend".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_treeviewfrontend'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_treeviewfrontend'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(array ('LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_treeviewfrontend', 'dlf_treeviewfrontend'), 'list_type', 'dlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_treeviewfrontend', 'dlf_treeviewfrontend'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_treeviewfrontend', 'FILE:EXT:'.'dlf/Configuration/Flexforms/TreeviewFrontend.xml');
 // Plugin "validator".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_validator'] = 'layout,select_key,pages,recursive';

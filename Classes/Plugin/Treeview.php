@@ -16,7 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 
 /**
- * Plugin 'Basket' for the 'dlf' extension
+ * Plugin 'Treeview' for the 'dlf' extension
  *
  * @author Christopher Timm <timm@effective-webwork.de>
  * @package TYPO3
@@ -27,107 +27,20 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
     public $scriptRelPath = 'Classes/Plugin/Treeview.php';
 
     /**
-     * @param $solr
-     * @param $query
-     * @param $level
-     * @param $collection
-     * @return array|string
-     * @throws Exception
-     * This method preprocesses a hierachical structure based on signatures and returns the data as json
+     * This method preprocesses groups by years based on the configuration
+     *
+     * @param object $solr: Solr Object
+     * @param string $query: Query string for the configured solr field
+     * @param string $level: Level for the nested search
+     * @return array|string: Returns each element found to return it as json
      */
-    protected function prepareSignatureData($solr, $query, $level, $collection) {
-
-        $query = Solr::escapeQueryKeepField($query, $this->conf['pages']);
-
-        if ($query == null) {
-            throw new Exception('Missing query argument');
-            return '';
-        }
-
-        $solrField = $this->conf['field'];
-        $explodeChar = $this->conf['explode'];
-
-        $params['sort'] = array($solrField => 'asc');
-
-        $solr->params = $params;
-
-        $results = $solr->search_raw($solrField . ':' . $query . '');
-
-        $levelArray = array();
-        $titles = array();
-
-        foreach ($results as $document) {
-
-            $exploded = explode($explodeChar, $document->{$solrField});
-
-            $concatLevels = "";
-            for ($i = 0; $i <= $level; $i++) {
-                $concatLevels .= $exploded[$i] . $explodeChar;
-            }
-
-            $levelArray[$document->purl] = $concatLevels;
-            $titles[$concatLevels] = $document->title;
-
-        }
-        $levelArray = array_unique($levelArray);
-
-        uasort($levelArray, 'strnatcmp');
-
-        foreach ($levelArray as $key => $item) {
-
-            if ($item !== null) {
-                $subQuery = $item;
-                $title = $titles[$subQuery];
-
-                $subResults = $solr->search_raw($solrField . ':"' . $subQuery . '"');
-
-                $counter = count($subResults);
-                if ($counter > 1) {
-                    $childrenAvailable = true;
-                    $linkAttrArray = array("href" => "");
-                } else {
-                    $childrenAvailable = false;
-                    $linkAttrArray = array("href" => $key);
-                }
-
-                if ($level == 0) {
-                    if (strpos($titles[$subQuery], $explodeChar)) {
-                        if ($this->conf['removeFromTitle']) {
-                            // this removes the last part of the signature from the title
-
-                            $endOfTitle = strrchr($titles[$subQuery], $this->conf['removeFromTitle']);
-                            $endOfShelfmark = strstr($endOfTitle, $explodeChar);
-
-                            $title = str_replace($endOfShelfmark, '', $titles[$subQuery]);
-                        }
-                    }
-                } else {
-                    $title = trim($item, $explodeChar);
-                }
-
-                $newLevelArray[] = array("id" => $level . '#' . trim($subQuery), "text" => $title, "children" => $childrenAvailable, "a_attr" => $linkAttrArray, "icon" => false);
-            }
-        }
-
-        return $newLevelArray;
-
-    }
-
-    /**
-     * @param $solr
-     * @param $query
-     * @param $level
-     * @param $collection
-     * @return array
-     *  This method preprocesses groups by years based on the configuration
-     */
-    protected function prepareGroupData($solr, $query, $level, $collection) {
+    protected function prepareGroupData($solr, $query, $level) {
 
         // Add filter query for collection restrictions.
         if ($this->conf['dataCollections']) {
 
             $collIds = explode(',', $this->conf['dataCollections']);
-            $collIndexNames = array ();
+            $collIndexNames = [];
 
             foreach ($collIds as $collId) {
 
@@ -145,13 +58,13 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($level == 0) {
             foreach ($collectionNames as $collectionName) {
-                $newLevelArray[] = array("id" => "0##" . $collectionName, "text" => $collectionName, "children" => true, "a_attr" => array("href" => ""), "icon" => false);
+                $newLevelArray[] = ["id" => "0##" . $collectionName, "text" => $collectionName, "children" => true, "a_attr" => ["href" => ""], "icon" => false];
             }
         } else {
 
-            $selectParams = array(
+            $selectParams = [
                 'rows' => 0
-            );
+            ];
 
             $querySelect = $solr->service->createSelect($selectParams);
 
@@ -187,11 +100,11 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
                     if (!empty($text)) {
 
-                        $newLevelArray[] = array("id" => "1#" . $groupKey . "#".$groupKey,
+                        $newLevelArray[] = ["id" => "1#" . $groupKey . "#".$groupKey,
                             "text" => $text,
                             "children" => true,
-                            "a_attr" => array("href" => ""),
-                            "icon" => false);
+                            "a_attr" => ["href" => ""],
+                            "icon" => false];
                     }
 
                 } else {
@@ -201,14 +114,101 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
                         $outputField = $this->conf['leafFieldOutput'];
                         $text = $document->$outputField;
 
-                        $newLevelArray[] = array("id" => "2#" . $document->record_id . "#".$groupKey,
+                        $newLevelArray[] = ["id" => "2#" . $document->record_id . "#".$groupKey,
                             "text" => $text,
                             "children" => false,
                             "a_attr" => array("href" => $document->purl),
-                            "icon" => false);
+                            "icon" => false];
                     }
                 }
 
+            }
+        }
+
+        return $newLevelArray;
+
+    }
+
+    /**
+     * This method preprocesses a hierachical structure based on signatures and returns the data as json
+     *
+     * @param object $solr: Solr Object
+     * @param string $query: Query string for the configured solr field
+     * @param string $level: Level for the nested search
+     * @return array|string: Returns each element found to return it as json
+     * @throws Exception
+     */
+    protected function prepareSignatureData($solr, $query, $level) {
+
+        $query = Solr::escapeQueryKeepField($query, $this->conf['pages']);
+
+        if ($query == null) {
+            throw new Exception('Missing query argument');
+            return '';
+        }
+
+        $solrField = $this->conf['field'];
+        $explodeChar = $this->conf['explode'];
+
+        $params['sort'] = [$solrField => 'asc'];
+
+        $solr->params = $params;
+
+        $results = $solr->search_raw($solrField . ':"' . $query . '"');
+
+        $levelArray = [];
+        $titles = [];
+
+        foreach ($results as $document) {
+
+            $exploded = explode($explodeChar, $document->{$solrField});
+
+            $concatLevels = "";
+            for ($i = 0; $i <= $level; $i++) {
+                $concatLevels .= $exploded[$i] . $explodeChar;
+            }
+
+            $levelArray[$document->purl] = $concatLevels;
+            $titles[$concatLevels] = $document->title;
+
+        }
+        $levelArray = array_unique($levelArray);
+
+        uasort($levelArray, 'strnatcmp');
+
+        foreach ($levelArray as $key => $item) {
+
+            if ($item !== null) {
+                $subQuery = $item;
+                $title = $titles[$subQuery];
+
+                $subResults = $solr->search_raw($solrField . ':"' . $subQuery . '"');
+
+                $counter = count($subResults);
+                if ($counter > 1) {
+                    $childrenAvailable = true;
+                    $linkAttrArray = ["href" => ""];
+                } else {
+                    $childrenAvailable = false;
+                    $linkAttrArray = ["href" => $key];
+                }
+
+                if ($level == 0) {
+                    if (strpos($titles[$subQuery], $explodeChar)) {
+                        if ($this->conf['removeFromTitle']) {
+                            // this removes the last part of the signature from the title
+
+                            $endOfTitle = strrchr($titles[$subQuery], $this->conf['removeFromTitle']);
+                            $endOfShelfmark = strstr($endOfTitle, $explodeChar);
+
+                            $title = str_replace($endOfShelfmark, '', $titles[$subQuery]);
+                        }
+                    }
+                } else {
+                    $title = trim($item, $explodeChar);
+                }
+
+                $newLevelArray[] = ["id" => $level . '#' . trim($subQuery), "text" => $title, "children" => $childrenAvailable, "a_attr" => $linkAttrArray, "icon" => false];
             }
         }
 
@@ -225,6 +225,7 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @param	array		$conf: The PlugIn configuration
      *
      * @return	string		The content that is displayed on the website
+     * @throws Exception
      */
     public function main($content, $conf) {
 
@@ -260,7 +261,7 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
             $collIds = explode(',', $this->conf['collections']);
 
-            $collIndexNames = array ();
+            $collIndexNames = [];
 
             foreach ($collIds as $collId) {
 
@@ -275,10 +276,10 @@ class Treeview extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($this->conf['dataFormatter']) {
             if ($this->conf['dataFormatter'] == 'signature') {
-                $outputArray = $this->prepareSignatureData($solr, $query, $level, $collection);
+                $outputArray = $this->prepareSignatureData($solr, $query, $level);
             }
             if ($this->conf['dataFormatter'] == 'collection') {
-                $outputArray = $this->prepareGroupData($solr, $query, $level, $collection);
+                $outputArray = $this->prepareGroupData($solr, $query, $level);
             }
         }
 

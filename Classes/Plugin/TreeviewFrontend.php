@@ -12,7 +12,7 @@ namespace Kitodo\Dlf\Plugin;
  */
 
 /**
- * Plugin 'Basket' for the 'dlf' extension
+ * Plugin 'Treeview Frontend' for the 'dlf' extension
  *
  * @author Christopher Timm <timm@effective-webwork.de>
  * @package TYPO3
@@ -30,7 +30,7 @@ class TreeviewFrontend extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @param	string		$content: The PlugIn content
      * @param	array		$conf: The PlugIn configuration
      *
-     * @return	string		The content that is displayed on the website
+     * @return	string		Returns a div and javascript for jsTree
      */
     public function main($content, $conf)
     {
