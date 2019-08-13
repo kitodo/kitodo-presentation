@@ -1,12 +1,12 @@
 page {
   includeJSLibs {
     jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-2.2.4.min.js
-    jsTree = EXT:dlf/vendor/vakata/jstree/dist/jstree.js
+    jsTree = EXT:dlf/Resources/Public/Javascript/jsTree/jstree.min.js
     jsTree.disableCompression = 1
     jsTree.excludeFromConcatenation = 1
   }
   includeCSS {
-    jsTree = EXT:dlf/vendor/vakata/jstree/dist/themes/default/style.css
+    jsTree = EXT:dlf/Resources/Public/Javascript/jsTree/themes/default/style.css
     jsTree.disableCompression = 1
     jsTree.excludeFromConcatenation = 1
   }

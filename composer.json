@@ -37,8 +37,7 @@
     "typo3/cms-tstemplate": "^8.7",
     "pagemachine/typo3-composer-legacy-cli": "^1.0",
     "ubl/php-iiif-prezi-reader": "0.2.0",
-    "solarium/solarium": "^4.2",
-    "vakata/jstree": "^3.3.0"
+    "solarium/solarium": "^4.2"
   },
   "replace": {
     "dlf": "self.version",
