@@ -44,7 +44,7 @@ class tx_dlf_toc extends tx_dlf_plugin {
         $entryArray = array ();
 
         // Set "title", "volume", "type" and "pagination" from $entry array.
-        $entryArray['title'] = $entry['label'];
+        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
 
         $entryArray['volume'] = $entry['volume'];
 
