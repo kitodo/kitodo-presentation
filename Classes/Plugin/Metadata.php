@@ -310,17 +310,20 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                                 // Sanitize value for output.
                                 $value = htmlspecialchars($value);
                             }
-                            // Hook for getting a customized value (requested by SBB).
-                            foreach ($this->hookObjects as $hookObj) {
-                                if (method_exists($hookObj, 'printMetadata_customizeMetadata')) {
-                                    $hookObj->printMetadata_customizeMetadata($value);
-                                }
-                            }
-                            $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
+
                             if (!empty($value)) {
+                                // Hook for getting a customized value (requested by SBB).
+                                foreach ($this->hookObjects as $hookObj) {
+                                    if (method_exists($hookObj, 'printMetadata_customizeMetadata')) {
+                                        $hookObj->printMetadata_customizeMetadata($value);
+                                    }
+                                }
+                                $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
+
                                 $parsedValue .= $value;
                             }
                         } while (count($metadata[$index_name]));
+
                         if (!empty($parsedValue)) {
                             $field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
                             $field .= $parsedValue;
