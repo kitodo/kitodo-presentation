@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * eID search suggestions for plugin 'Search' of the 'dlf' extension
@@ -37,16 +38,13 @@ class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      * @return string XML response of search suggestions
      */
     public function main($content = '', $conf = []) {
-        if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted') != ''
-            && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed') != '') {
-            $core = Helper::decrypt(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('encrypted'), \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hashed'));
+        if (GeneralUtility::_GP('encrypted') != ''
+            && GeneralUtility::_GP('hashed') != '') {
+            $core = Helper::decrypt(GeneralUtility::_GP('encrypted'), GeneralUtility::_GP('hashed'));
         }
         if (!empty($core)) {
-            $url = trim(Solr::getSolrUrl($core), '/').'/suggest/?wt=xml&q='.Solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
-            if ($stream = fopen($url, 'r')) {
-                $output = stream_get_contents($stream);
-                fclose($stream);
-            }
+            $url = trim(Solr::getSolrUrl($core), '/').'/suggest/?wt=xml&q='.Solr::escapeQuery(GeneralUtility::_GP('q'));
+            $output = GeneralUtility::getUrl($url);
         }
         echo $output;
     }
