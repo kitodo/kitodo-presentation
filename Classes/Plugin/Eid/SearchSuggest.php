@@ -44,10 +44,10 @@ class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         if (!empty($core)) {
             $url = trim(Solr::getSolrUrl($core), '/').'/suggest/?wt=xml&q='.Solr::escapeQuery(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('q'));
             if ($stream = fopen($url, 'r')) {
-                $content .= stream_get_contents($stream);
+                $output = stream_get_contents($stream);
                 fclose($stream);
             }
         }
-        echo $content;
+        echo $output;
     }
 }
