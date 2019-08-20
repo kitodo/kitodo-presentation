@@ -45,7 +45,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function getMenuEntry(array $entry, $recursive = FALSE) {
         $entryArray = [];
         // Set "title", "volume", "type" and "pagination" from $entry array.
-        $entryArray['title'] = $entry['label'];
+        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
         $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
