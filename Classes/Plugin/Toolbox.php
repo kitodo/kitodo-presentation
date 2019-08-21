@@ -46,15 +46,15 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
             'piVars' => $this->piVars,
         ];
         // Get template subpart for tools.
-        $subpart = $this->cObj->getSubpart($this->template, '###TOOLS###');
+        $subpart = $this->templateService->getSubpart($this->template, '###TOOLS###');
         $tools = explode(',', $this->conf['tools']);
         // Add the tools to the toolbox.
         foreach ($tools as $tool) {
             $tool = trim($tool);
             $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
             $cObj->data = $data;
-            $content .= $this->cObj->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])]);
+            $content .= $this->templateService->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])]);
         }
-        return $this->pi_wrapInBaseClass($this->cObj->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
+        return $this->pi_wrapInBaseClass($this->templateService->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
     }
 }

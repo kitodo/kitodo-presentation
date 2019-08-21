@@ -186,7 +186,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         $markerArray['###ROTATE_LEFT###'] = $this->pi_getLL('rotate-left', '', TRUE);
         $markerArray['###ROTATE_RIGHT###'] = $this->pi_getLL('rotate-right', '', TRUE);
         $markerArray['###ROTATE_RESET###'] = $this->pi_getLL('rotate-reset', '', TRUE);
-        $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 

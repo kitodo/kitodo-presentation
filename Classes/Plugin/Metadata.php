@@ -154,7 +154,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Load template file.
         $this->getTemplate();
         $output = '';
-        $subpart['block'] = $this->cObj->getSubpart($this->template, '###BLOCK###');
+        $subpart['block'] = $this->templateService->getSubpart($this->template, '###BLOCK###');
         // Get list of metadata to show.
         $metaList = [];
         if ($useOriginalIiifManifestMetadata) {
@@ -214,7 +214,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                             $markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
                         }
                     }
-                    $output .= $this->cObj->substituteMarkerArray($subpart['block'], $markerArray);
+                    $output .= $this->templateService->substituteMarkerArray($subpart['block'], $markerArray);
                 }
             }
         } else {
@@ -328,9 +328,9 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                         }
                     }
                 }
-                $output .= $this->cObj->substituteMarkerArray($subpart['block'], $markerArray);
+                $output .= $this->templateService->substituteMarkerArray($subpart['block'], $markerArray);
             }
         }
-        return $this->cObj->substituteSubpart($this->template, '###BLOCK###', $output, TRUE);
+        return $this->templateService->substituteSubpart($this->template, '###BLOCK###', $output, TRUE);
     }
 }

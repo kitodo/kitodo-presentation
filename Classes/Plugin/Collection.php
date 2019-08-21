@@ -197,9 +197,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Don't cache the output.
             $this->setCache(FALSE);
         }
-        $entry = $this->cObj->getSubpart($this->template, '###ENTRY###');
+        $entry = $this->templateService->getSubpart($this->template, '###ENTRY###');
         foreach ($markerArray as $marker) {
-            $content .= $this->cObj->substituteMarkerArray($entry, $marker);
+            $content .= $this->templateService->substituteMarkerArray($entry, $marker);
         }
         // Hook for getting custom collection hierarchies/subentries (requested by SBB).
         foreach ($this->hookObjects as $hookObj) {
@@ -207,7 +207,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['templateFile'], $content, $markerArray);
             }
         }
-        return $this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE);
+        return $this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, TRUE);
     }
 
     /**

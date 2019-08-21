@@ -106,7 +106,7 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
         $markerArray = [
             '###PLAYER_JS###' => $this->addPlayerJS()
         ];
-        $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 }

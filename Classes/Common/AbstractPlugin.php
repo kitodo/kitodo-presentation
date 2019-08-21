@@ -11,6 +11,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Abstract plugin class for the 'dlf' extension
  *
@@ -45,6 +48,14 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     protected $template = '';
 
     /**
+     * This holds the plugin's service for template
+     *
+     * @var MarkerBasedTemplateService
+     * @access protected
+     */
+    protected $templateService;
+
+    /**
      * Read and parse the template file
      *
      * @access protected
@@ -53,13 +64,21 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return void
      */
-    protected function getTemplate($part = '###TEMPLATE###') {
+    protected function getTemplate($part = '###TEMPLATE###', $directory = '') {
+        $this->templateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
+
         if (!empty($this->conf['templateFile'])) {
             // Load template file from configuration.
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
+            $this->template = $this->templateService->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
         } else {
+            if (empty($directory)) {
+                $templateLocation = 'EXT:'.$this->extKey.'/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
+            } else {
+                $templateLocation = 'EXT:'.$this->extKey.'/Resources/Private/Templates/'. $directory . '/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
+            }
+
             // Load default template file.
-            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/Resources/Private/Templates/'.Helper::getUnqualifiedClassName(get_class($this)).'.tmpl'), $part);
+            $this->template = $this->templateService->getSubpart($this->cObj->fileResource($templateLocation), $part);
         }
     }
 
@@ -200,7 +219,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      * @return array The resulting typoscript array
      */
     protected function parseTS($string = '') {
-        $parser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
+        $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
         $parser->parse($string);
         return $parser->setup;
     }

@@ -205,7 +205,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
             $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
             $markerArray['###BASKETBUTTON###'] = $link;
         }
-        return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###SUBTEMPLATE###', $subpart, TRUE), $markerArray);
+        return $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($template['entry'], '###SUBTEMPLATE###', $subpart, TRUE), $markerArray);
     }
 
     /**
@@ -374,9 +374,9 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
                 $markerArray['###SUBBASKETBUTTON###'] = $link;
             }
-            $content .= $this->cObj->substituteMarkerArray($template['subentry'], $markerArray);
+            $content .= $this->templateService->substituteMarkerArray($template['subentry'], $markerArray);
         }
-        return $this->cObj->substituteSubpart($this->cObj->getSubpart($this->template, '###SUBTEMPLATE###'), '###SUBENTRY###', $content, TRUE);
+        return $this->templateService->substituteSubpart($this->templateService->getSubpart($this->template, '###SUBTEMPLATE###'), '###SUBENTRY###', $content, TRUE);
     }
 
     /**
@@ -483,8 +483,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Load template file.
         $this->getTemplate();
-        $subpartArray['entry'] = $this->cObj->getSubpart($this->template, '###ENTRY###');
-        $subpartArray['subentry'] = $this->cObj->getSubpart($this->template, '###SUBENTRY###');
+        $subpartArray['entry'] = $this->templateService->getSubpart($this->template, '###ENTRY###');
+        $subpartArray['subentry'] = $this->templateService->getSubpart($this->template, '###SUBENTRY###');
         // Set some variable defaults.
         if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= $this->list->metadata['options']['numberOfToplevelHits']) {
             $this->piVars['pointer'] = max(intval($this->piVars['pointer']), 0);
@@ -516,7 +516,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $markerArray['###PAGEBROWSER###'] = $this->getPageBrowser();
         $markerArray['###SORTING###'] = $this->getSortingForm();
-        $content = $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE), $markerArray);
+        $content = $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, TRUE), $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 }

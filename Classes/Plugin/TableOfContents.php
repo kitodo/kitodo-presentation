@@ -130,7 +130,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
         $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\TableOfContents::class.'->makeMenuArray';
         $TSconfig = Helper::mergeRecursiveWithOverrule($this->conf['menuConf.'], $TSconfig);
         $markerArray['###TOCMENU###'] = $this->cObj->cObjGetSingle('HMENU', $TSconfig);
-        $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 
