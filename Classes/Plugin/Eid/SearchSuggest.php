@@ -13,7 +13,7 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * eID search suggestions for plugin 'Search' of the 'dlf' extension
