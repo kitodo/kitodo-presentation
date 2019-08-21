@@ -69,6 +69,9 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
             '',
             'tx_dlf_documents.title_sorting ASC'
         );
+
+        $issues = [];
+
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $issues[] = [
