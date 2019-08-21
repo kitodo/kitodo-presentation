@@ -339,7 +339,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
             '###VIEWER_JS###' => $this->addViewerJS()
         ];
         $markerArray = array_merge($markerArray, $this->addInteraction(), $this->addBasketForm());
-        $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 }

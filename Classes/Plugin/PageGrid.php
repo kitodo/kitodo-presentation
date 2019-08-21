@@ -68,7 +68,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
             'title' => $markerArray['###PAGINATION###']
         ];
         $markerArray['###THUMBNAIL###'] = $this->cObj->typoLink($thumbnail, $linkConf);
-        return $this->cObj->substituteMarkerArray($template, $markerArray);
+        return $this->templateService->substituteMarkerArray($template, $markerArray);
     }
 
     /**
@@ -142,7 +142,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Load template file.
         $this->getTemplate();
-        $entryTemplate = $this->cObj->getSubpart($this->template, '###ENTRY###');
+        $entryTemplate = $this->templateService->getSubpart($this->template, '###ENTRY###');
         if (empty($entryTemplate)) {
             Helper::devLog('No template subpart for list entry found', DEVLOG_SEVERITY_WARNING);
             // Quit without doing anything if required variables are not set.
@@ -183,7 +183,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Render page browser.
         $markerArray['###PAGEBROWSER###'] = $this->getPageBrowser();
         // Merge everything with template.
-        $content = $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($this->template, '###ENTRY###', $content, TRUE), $markerArray);
+        $content = $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, TRUE), $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 }

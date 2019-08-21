@@ -41,7 +41,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->setCache(FALSE);
         // Load template file.
         $this->getTemplate();
-        $subpartArray['entry'] = $this->cObj->getSubpart($this->template, '###ENTRY###');
+        $subpartArray['entry'] = $this->templateService->getSubpart($this->template, '###ENTRY###');
         $markerArray['###JS###'] = '';
         // get user session
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
@@ -199,7 +199,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         } else {
             $markerArray['###BASKET###'] = '';
         }
-        $content = $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($this->template, '###ENTRY###', $entries, TRUE), $markerArray);
+        $content = $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($this->template, '###ENTRY###', $entries, TRUE), $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 
@@ -248,7 +248,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         // return one entry
         $markerArray['###CONTROLS###'] = $controlMark;
         $markerArray['###NUMBER###'] = $docData['record_id'];
-        return $this->cObj->substituteMarkerArray($this->cObj->substituteSubpart($template['entry'], '###ENTRY###', '', TRUE), $markerArray);
+        return $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($template['entry'], '###ENTRY###', '', TRUE), $markerArray);
     }
 
     /**

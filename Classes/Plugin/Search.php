@@ -168,7 +168,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 '###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field tx-dlf-search-field-'.$i.'" name="'.$this->prefixId.'[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
                 '###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query tx-dlf-search-query-'.$i.'" type="text" name="'.$this->prefixId.'[extQuery]['.$i.']" />'
             ];
-            $extendedSearch .= $this->cObj->substituteMarkerArray($this->cObj->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
+            $extendedSearch .= $this->templateService->substituteMarkerArray($this->templateService->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
         }
         return $extendedSearch;
     }
@@ -358,7 +358,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Get additional fields for extended search.
             $extendedSearch = $this->addExtendedSearch();
             // Display search form.
-            $content .= $this->cObj->substituteSubpart($this->cObj->substituteMarkerArray($this->template, $markerArray), '###EXT_SEARCH_ENTRY###', $extendedSearch);
+            $content .= $this->templateService->substituteSubpart($this->templateService->substituteMarkerArray($this->template, $markerArray), '###EXT_SEARCH_ENTRY###', $extendedSearch);
             return $this->pi_wrapInBaseClass($content);
         } else {
             // Instantiate search object.

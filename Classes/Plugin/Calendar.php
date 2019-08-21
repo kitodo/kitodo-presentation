@@ -87,10 +87,10 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $allIssues = [];
         // Get subpart templates.
-        $subparts['list'] = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
-        $subparts['month'] = $this->cObj->getSubpart($this->template, '###CALMONTH###');
-        $subparts['week'] = $this->cObj->getSubpart($subparts['month'], '###CALWEEK###');
-        $subparts['singleday'] = $this->cObj->getSubpart($subparts['list'], '###SINGLEDAY###');
+        $subparts['list'] = $this->templateService->getSubpart($this->template, '###ISSUELIST###');
+        $subparts['month'] = $this->templateService->getSubpart($this->template, '###CALMONTH###');
+        $subparts['week'] = $this->templateService->getSubpart($subparts['month'], '###CALWEEK###');
+        $subparts['singleday'] = $this->templateService->getSubpart($subparts['list'], '###SINGLEDAY###');
         // Build calendar for given year.
         $year = date('Y', strtotime($issues[0]['year']));
         $subPartContent = '';
@@ -184,12 +184,12 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                     }
                 }
                 // Fill the weeks.
-                $subWeekPartContent .= $this->cObj->substituteMarkerArray($subparts['week'], $weekArray);
+                $subWeekPartContent .= $this->templateService->substituteMarkerArray($subparts['week'], $weekArray);
             }
             // Fill the month markers.
-            $subPartContent .= $this->cObj->substituteMarkerArray($subparts['month'], $markerArray);
+            $subPartContent .= $this->templateService->substituteMarkerArray($subparts['month'], $markerArray);
             // Fill the week markers with the week entries.
-            $subPartContent = $this->cObj->substituteSubpart($subPartContent, '###CALWEEK###', $subWeekPartContent);
+            $subPartContent = $this->templateService->substituteSubpart($subPartContent, '###CALWEEK###', $subWeekPartContent);
         }
         // Link to years overview
         $linkConf = [
@@ -213,9 +213,9 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
             foreach ($issues as $issue) {
                 $markerArrayDay['###ITEMS###'] .= $issue;
             }
-            $subPartContentList .= $this->cObj->substituteMarkerArray($subparts['singleday'], $markerArrayDay);
+            $subPartContentList .= $this->templateService->substituteMarkerArray($subparts['singleday'], $markerArrayDay);
         }
-        $this->template = $this->cObj->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
+        $this->template = $this->templateService->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
         if (count($allIssues) < 6) {
             $listViewActive = TRUE;
         } else {
@@ -229,8 +229,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
             '###LABEL_CALENDAR###' => $this->pi_getLL('label.view_calendar'),
             '###LABEL_LIST_VIEW###' => $this->pi_getLL('label.view_list'),
         ];
-        $this->template = $this->cObj->substituteMarkerArray($this->template, $markerArray);
-        return $this->cObj->substituteSubpart($this->template, '###CALMONTH###', $subPartContent);
+        $this->template = $this->templateService->substituteMarkerArray($this->template, $markerArray);
+        return $this->templateService->substituteSubpart($this->template, '###CALMONTH###', $subPartContent);
     }
 
     /**
@@ -254,7 +254,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Load template file.
         $this->getTemplate('###TEMPLATEYEAR###');
         // Get subpart templates
-        $subparts['year'] = $this->cObj->getSubpart($this->template, '###LISTYEAR###');
+        $subparts['year'] = $this->templateService->getSubpart($this->template, '###LISTYEAR###');
         // Get the title of the anchor file
         $titleAnchor = $this->doc->getTitle($this->doc->uid);
         // Get all children of anchor. This should be the year anchor documents
@@ -286,7 +286,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $yearArray = [
                     '###YEARNAME###' => $this->cObj->typoLink($year['title'], $linkConf),
                 ];
-                $subYearPartContent .= $this->cObj->substituteMarkerArray($subparts['year'], $yearArray);
+                $subYearPartContent .= $this->templateService->substituteMarkerArray($subparts['year'], $yearArray);
             }
         }
         // link to years overview (should be itself here)
@@ -301,8 +301,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
             '###LABEL_CHOOSE_YEAR###' => $this->pi_getLL('label.please_choose_year'),
             '###CALALLYEARS###' => $allYearsLink
         ];
-        $this->template = $this->cObj->substituteMarkerArray($this->template, $markerArray);
+        $this->template = $this->templateService->substituteMarkerArray($this->template, $markerArray);
         // Fill the week markers
-        return $this->cObj->substituteSubpart($this->template, '###LISTYEAR###', $subYearPartContent);
+        return $this->templateService->substituteSubpart($this->template, '###LISTYEAR###', $subYearPartContent);
     }
 }
