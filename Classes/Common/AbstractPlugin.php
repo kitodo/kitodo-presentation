@@ -50,7 +50,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     /**
      * This holds the plugin's service for template
      *
-     * @var MarkerBasedTemplateService
+     * @var \TYPO3\CMS\Core\Service\MarkerBasedTemplateService
      * @access protected
      */
     protected $templateService;
