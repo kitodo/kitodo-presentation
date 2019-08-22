@@ -116,7 +116,7 @@ class ext_update {
      *
      * @access protected
      *
-     * @return boolean true if old format classes exist
+     * @return array containing old format classes
      */
     protected function oldFormatClasses() {
         $oldRecords = [];
@@ -134,7 +134,7 @@ class ext_update {
     }
 
     /**
-     * Check for old index related colums
+     * Check for old index related columns
      *
      * @access protected
      *
