@@ -15,6 +15,8 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
@@ -80,14 +82,17 @@ class DataHandler {
                     break;
                 // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                        ->getQueryBuilderForTable('tx_dlf_solrcores');
+
                     // Get number of existing cores.
-                    $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                        '*',
-                        'tx_dlf_solrcores',
-                        ''
-                    );
+                    $result = $queryBuilder
+                        ->select('*')
+                        ->from('tx_dlf_solrcores')
+                        ->execute();
+
                     // Get first unused core number.
-                    $coreNumber = Solr::solrGetCoreNumber($GLOBALS['TYPO3_DB']->sql_num_rows($result));
+                    $coreNumber = Solr::solrGetCoreNumber(count($result->fetchAll()));
                     // Get Solr credentials.
                     $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
                     $solrInfo = Solr::getSolrConnectionInfo();
@@ -123,6 +128,9 @@ class DataHandler {
                     break;
             }
         } elseif ($status == 'update') {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
+
             switch ($table) {
                 // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
@@ -134,18 +142,21 @@ class DataHandler {
                         && $fieldArray['index_stored'] == 0
                         && !isset($fieldArray['is_listed'])) {
                         // Get current configuration.
-                        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                            $table.'.is_listed AS is_listed',
-                            $table,
-                            $table.'.uid='.intval($id)
-                                .Helper::whereClause($table),
-                            '',
-                            '',
-                            '1'
-                        );
-                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+                        $result = $queryBuilder
+                            ->select($table.'.is_listed AS is_listed')
+                            ->from($table)
+                            ->where(
+                                $queryBuilder->expr()->eq($table.'.uid', intval($id)),
+                                Helper::whereExpression($table)
+                            )
+                            ->setMaxResults(1)
+                            ->execute();
+
+                        $allResults = $result->fetchAll();
+
+                        if (count($allResults) == 1) {
                             // Reset storing to current.
-                            list ($fieldArray['index_stored']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+                            list ($fieldArray['index_stored']) = $allResults[0];
                         }
                     }
                     // Index field in index if it should be used for auto-completion.
@@ -156,18 +167,21 @@ class DataHandler {
                         && $fieldArray['index_indexed'] == 0
                         && !isset($fieldArray['index_autocomplete'])) {
                         // Get current configuration.
-                        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                            $table.'.index_autocomplete AS index_autocomplete',
-                            $table,
-                            $table.'.uid='.intval($id)
-                                .Helper::whereClause($table),
-                            '',
-                            '',
-                            '1'
-                        );
-                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+                        $result = $queryBuilder
+                            ->select($table.'.index_autocomplete AS index_autocomplete')
+                            ->from($table)
+                            ->where(
+                                $queryBuilder->expr()->eq($table.'.uid', intval($id)),
+                                Helper::whereExpression($table)
+                            )
+                            ->setMaxResults(1)
+                            ->execute();
+
+                        $allResults = $result->fetchAll();
+
+                        if (count($allResults) == 1) {
                             // Reset indexing to current.
-                            list ($fieldArray['index_indexed']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+                            list ($fieldArray['index_indexed']) = $allResults[0];
                         }
                     }
                 // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
@@ -179,18 +193,21 @@ class DataHandler {
                             $fieldArray = [];
                         } else {
                             // Get current index name.
-                            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                                $table.'.index_name AS index_name',
-                                $table,
-                                $table.'.uid='.intval($id)
-                                    .Helper::whereClause($table),
-                                '',
-                                '',
-                                '1'
-                            );
-                            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+                            $result = $queryBuilder
+                                ->select($table.'.index_autocomplete AS index_autocomplete')
+                                ->from($table)
+                                ->where(
+                                    $queryBuilder->expr()->eq($table.'.uid', intval($id)),
+                                    Helper::whereExpression($table)
+                                )
+                                ->setMaxResults(1)
+                                ->execute();
+
+                            $allResults = $result->fetchAll();
+
+                            if (count($allResults) == 1) {
                                 // Reset index name to current.
-                                list ($fieldArray['index_name']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+                                list ($fieldArray['index_name']) = $allResults[0];
                             }
                         }
                         Helper::devLog('Prevented change of index_name for UID '.$id.' in table "'.$table.'"', DEVLOG_SEVERITY_NOTICE);

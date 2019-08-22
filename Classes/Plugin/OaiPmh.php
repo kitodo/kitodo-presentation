@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'OAI-PMH Interface' for the 'dlf' extension
@@ -165,17 +167,23 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:format', 'application/mets+xml'));
         $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:type', 'Text'));
         if (!empty($metadata['partof'])) {
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.record_id',
-                'tx_dlf_documents',
-                'tx_dlf_documents.uid='.intval($metadata['partof'])
-                    .Helper::whereClause('tx_dlf_documents'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                $partof = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $result = $queryBuilder
+                ->select('tx_dlf_documents.record_id')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($metadata['partof'])),
+                    Helper::whereExpression('tx_dlf_documents')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) == 1) {
+                $partof = $allResults[0];
                 $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:relation', htmlspecialchars($partof['record_id'], ENT_NOQUOTES, 'UTF-8')));
             }
         }
@@ -378,21 +386,28 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return string Substitution for subpart "###RESPONSE###"
      */
     protected function resume() {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_tokens');
+
         // Get resumption token.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_tokens.options AS options',
-            'tx_dlf_tokens',
-            'tx_dlf_tokens.ident="oai"'
-                .' AND tx_dlf_tokens.token='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['resumptionToken'], 'tx_dlf_tokens'),
-            '',
-            '',
-            '1'
-        );
-        if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+        $result = $queryBuilder
+            ->select('tx_dlf_tokens.options AS options')
+            ->from('tx_dlf_tokens')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', '"oai"'),
+                $queryBuilder->expr()->eq('tx_dlf_tokens.token', $queryBuilder->expr()->literal($this->piVars['resumptionToken'])),
+                Helper::whereExpression('tx_dlf_structures')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($result) > 1) {
             // No resumption token found or resumption token expired.
             return $this->error('badResumptionToken');
         }
-        $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+        $resArray = $allResults[0];
         $resultSet = unserialize($resArray['options']);
         return $this->generateOutputForDocumentList($resultSet);
     }
@@ -490,15 +505,28 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Use default values for an installation with incomplete plugin configuration.
         $adminEmail = 'unknown@example.org';
         $repositoryName = 'Kitodo.Presentation OAI-PMH Interface (default configuration)';
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_libraries.oai_label AS oai_label,tx_dlf_libraries.contact AS contact',
-            'tx_dlf_libraries',
-            'tx_dlf_libraries.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_libraries.uid='.intval($this->conf['library'])
-                .Helper::whereClause('tx_dlf_libraries')
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_libraries');
+
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_libraries.oai_label AS oai_label',
+                'tx_dlf_libraries.contact AS contact'
+            )
+            ->from('tx_dlf_libraries')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['library'])),
+                Helper::whereExpression('tx_dlf_libraries')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            $resArray = $allResults[0];
             $adminEmail = htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES);
             $repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
         } else {
@@ -506,16 +534,24 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Get earliest datestamp. Use a default value if that fails.
         $earliestDatestamp = '0000-00-00T00:00:00Z';
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.tstamp AS tstamp',
-            'tx_dlf_documents',
-            'tx_dlf_documents.pid='.intval($this->conf['pages']),
-            '',
-            'tx_dlf_documents.tstamp ASC',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            list ($timestamp) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
+
+        $result = $queryBuilder
+            ->select('tx_dlf_documents.tstamp AS tstamp')
+            ->from('tx_dlf_documents')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages']))
+            )
+            ->orderBy('tx_dlf_documents.tstamp')
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            list ($timestamp) = $allResults[0];
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
         } else {
             Helper::devLog('No records found with PID '.$this->conf['pages'], DEVLOG_SEVERITY_NOTICE);
@@ -566,7 +602,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage());
         }
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
         $resultSet->add($documentSet);
         $resultSet->metadata = [
@@ -590,20 +626,28 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             if (empty($this->piVars['identifier']) || count($this->piVars) > 2) {
                 return $this->error('badArgument');
             }
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
             // Check given identifier.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.*',
-                'tx_dlf_documents',
-                'tx_dlf_documents.pid='.intval($this->conf['pages'])
-                    .' AND tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents'),
-                '',
-                '',
-                '1'
-            );
-            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            $result = $queryBuilder
+                ->select('tx_dlf_documents.*')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['identifier']))
+                )
+                ->orderBy('tx_dlf_documents.tstamp')
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) < 1) {
                 return $this->error('idDoesNotExist');
             }
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+            $resArray = $allResults[0];
         }
         // Add metadata formats node.
         $ListMetadaFormats = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListMetadataFormats');
@@ -674,6 +718,9 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return string Substitution for subpart "###RESPONSE###"
      */
     protected function verbListSets() {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_collections');
+
         // Check for invalid arguments.
         if (count($this->piVars) > 1) {
             if (!empty($this->piVars['resumptionToken'])) {
@@ -684,24 +731,32 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $where = '';
         if (!$this->conf['show_userdefined']) {
-            $where = ' AND tx_dlf_collections.fe_cruser_id=0';
+            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
         }
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_collections.oai_name AS oai_name,tx_dlf_collections.label AS label',
-            'tx_dlf_collections',
-            'tx_dlf_collections.sys_language_uid IN (-1,0)'
-                .' AND NOT tx_dlf_collections.oai_name=""'
-                .' AND tx_dlf_collections.pid='.intval($this->conf['pages'])
-                .$where
-                .Helper::whereClause('tx_dlf_collections'),
-            'tx_dlf_collections.oai_name',
-            'tx_dlf_collections.oai_name'
-        );
-        if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_collections.oai_name AS oai_name',
+                'tx_dlf_collections.label AS label'
+            )
+            ->from('tx_dlf_collections')
+            ->where(
+                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', array(-1, 0)),
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', ''),
+                $where,
+                Helper::whereExpression('tx_dlf_collections')
+            )
+            ->orderBy('tx_dlf_collections.oai_name')
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) < 1) {
             return $this->error('noSetHierarchy');
         }
         $ListSets = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListSets');
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        while ($resArray = $result->fetch()) {
             $set = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'set');
             $set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($resArray['oai_name'], ENT_NOQUOTES, 'UTF-8')));
             $set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setName', htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
@@ -719,29 +774,40 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @throws \Exception
      */
     protected function fetchDocumentUIDs() {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_collections');
+
         $solr_query = '';
+        $where = '';
         if (!$this->conf['show_userdefined']) {
-            $where = ' AND tx_dlf_collections.fe_cruser_id=0';
+            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
         }
         // Check "set" for valid value.
         if (!empty($this->piVars['set'])) {
             // For SOLR we need the index_name of the collection,
             // For DB Query we need the UID of the collection
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.uid AS uid, tx_dlf_collections.index_search as index_query ',
-                'tx_dlf_collections',
-                'tx_dlf_collections.pid='.intval($this->conf['pages'])
-                    .' AND tx_dlf_collections.oai_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['set'], 'tx_dlf_collections')
-                    .$where
-                    .Helper::whereClause('tx_dlf_collections'),
-                '',
-                '',
-                '1'
-            );
-            if (!$GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_collections.index_name AS index_name',
+                    'tx_dlf_collections.uid AS uid',
+                    'tx_dlf_collections.index_search as index_query'
+                )
+                ->from('tx_dlf_collections')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.oai_name', $queryBuilder->expr()->literal($this->piVars['set'])),
+                    $where,
+                    Helper::whereExpression('tx_dlf_collections')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) < 1) {
                 throw new \Exception('noSetHierarchy');
             }
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+            $resArray = $allResults[0];
             if ($resArray['index_query'] != "") {
                 $solr_query .= '('.$resArray['index_query'].')';
             } else {

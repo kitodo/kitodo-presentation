@@ -11,6 +11,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Helper class for the 'dlf' extension
  *
@@ -298,25 +301,33 @@ class Helper {
             self::devLog('Invalid UID "'.$uid.'" or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
             return '';
         }
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+
         $where = '';
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
             $pid = max(intval($pid), 0);
-            $where = ' AND '.$table.'.pid='.$pid;
+            $where = $queryBuilder->expr()->eq($table.'.pid', $pid);
         }
+
         // Get index_name from database.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            $table.'.index_name AS index_name',
-            $table,
-            $table.'.uid='.$uid
-                .$where
-                .self::whereClause($table),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+        $result = $queryBuilder
+            ->select($table.'.index_name AS index_name')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq($table.'.uid=', $uid),
+                $where,
+                self::whereExpression($table)
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            $resArray = $allResults[0];
             return $resArray['index_name'];
         } else {
             self::devLog('No "index_name" with UID '.$uid.' and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
@@ -426,26 +437,32 @@ class Helper {
             self::devLog('Invalid UID '.$index_name.' or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
             return '';
         }
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+
         $where = '';
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
             $pid = max(intval($pid), 0);
-            $where = ' AND '.$table.'.pid='.$pid;
+            $where = $queryBuilder->expr()->eq($table.'.pid', $pid);
         }
         // Get index_name from database.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            $table.'.uid AS uid',
-            $table,
-            $table.'.index_name="'.$index_name.'"'
-                .$where
-                .self::whereClause($table),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-            return $resArray['uid'];
+        $result = $queryBuilder
+            ->select($table.'.uid AS uid')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq($table.'.index_name', $queryBuilder->expr()->literal($index_name)),
+                $where,
+                self::whereExpression($table)
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            return $allResults[0]['uid'];
         } else {
             self::devLog('No UID for given index_name "'.$index_name.'" and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
             return '';
@@ -596,7 +613,7 @@ class Helper {
         if (TYPO3_MODE === 'BE'
             && $GLOBALS['BE_USER']->isAdmin()) {
             // Instantiate TYPO3 core engine.
-            $dataHandler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+            $dataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
             // Load data and command arrays.
             $dataHandler->start($data, $cmd);
             // Process command map first if default order is reversed.
@@ -631,7 +648,7 @@ class Helper {
      * @return string All flash messages in the queue rendered as HTML.
      */
     public static function renderFlashMessages($queue = 'kitodo.default.flashMessages') {
-        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         // \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup() uses htmlspecialchars()
         // on all messages, but we have messages with HTML tags. Therefore we copy the official
@@ -724,55 +741,79 @@ class Helper {
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
          * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
          * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+
         // First fetch the uid of the received index_name
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            $table.'.uid AS uid,'.$table.'.l18n_parent AS l18n_parent',
-            $table,
-            $table.'.pid='.$pid
-                .' AND '.$table.'.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($index_name, $table)
-                .self::whereClause($table, TRUE),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+        $result = $queryBuilder
+            ->select(
+                $table.'.uid AS uid',
+                $table.'.l18n_parent AS l18n_parent')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq($table.'.pid', $pid),
+                $queryBuilder->expr()->eq($table.'.index_name', $queryBuilder->expr()->literal($index_name)),
+                self::whereExpression($table, TRUE)
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
             // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                $table.'.index_name AS index_name',
-                $table,
-                $table.'.pid='.$pid
-                    .' AND '.$table.'.uid='.$resArray['l18n_parent']
-                    .' AND '.$table.'.sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content)
-                    .self::whereClause($table, TRUE),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
+            $resArray = $allResults[0];
+
+            $result = $queryBuilder
+                ->select($table.'.index_name AS index_name')
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq($table.'.pid', $pid),
+                    $queryBuilder->expr()->eq($table.'.uid', $resArray['l18n_parent']),
+                    $queryBuilder->expr()->eq($table.'.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content)),
+                    self::whereExpression($table, TRUE)
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) == 1) {
                 // If there is an translated content element, overwrite the received $index_name.
-                $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-                $index_name = $resArray['index_name'];
+                $index_name = $allResults[0]['index_name'];
             }
         }
+
         // Check if we already got a translation.
         if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
-                $additionalWhere = ' AND '.$table.'.sys_language_uid IN (-1,0)';
+                $additionalWhere = $queryBuilder->expr()->in($table.'.sys_language_uid', array(-1, 0));
                 if ($GLOBALS['TSFE']->sys_language_content > 0) {
-                    $additionalWhere = ' AND ('.$table.'.sys_language_uid IN (-1,0) OR ('.$table.'.sys_language_uid='.intval($GLOBALS['TSFE']->sys_language_content).' AND '.$table.'.l18n_parent=0))';
+                    $additionalWhere = $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->orX(
+                            $queryBuilder->expr()->in($table.'.sys_language_uid', array(-1, 0)),
+                            $queryBuilder->expr()->eq($table.'.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content))
+                        ),
+                        $queryBuilder->expr()->eq($table.'.l18n_parent', 0)
+                    );
                 }
+
                 // Get labels from database.
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    '*',
-                    $table,
-                    $table.'.pid='.$pid
-                        .$additionalWhere
-                        .self::whereClause($table, TRUE)
-                );
-                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                    while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                $result = $queryBuilder
+                    ->select('*')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->eq($table.'.pid', $pid),
+                        $additionalWhere,
+                        self::whereExpression($table, TRUE)
+                    )
+                    ->setMaxResults(10000)
+                    ->execute();
+
+                if ($result->rowCount() > 0) {
+                    while ($resArray = $result->fetch()) {
                         // Overlay localized labels if available.
                         if ($GLOBALS['TSFE']->sys_language_content > 0) {
                             $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
@@ -788,6 +829,7 @@ class Helper {
                 self::devLog('No translations available for table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
             }
         }
+
         if (!empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
             return $labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name];
         } else {
@@ -820,7 +862,7 @@ class Helper {
             if (is_object($GLOBALS['TSFE']->sys_page)) {
                 return $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
             } else {
-                $pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+                $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
                 $GLOBALS['TSFE']->includeTCA();
                 return $pageRepository->enableFields($table, $ignoreHide);
             }
@@ -829,6 +871,53 @@ class Helper {
         } else {
             self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
             return ' AND 1=-1';
+        }
+    }
+
+    /**
+     * This returns the additional WHERE expression of a table based on its TCA configuration
+     *
+     * @access public
+     *
+     * @param string $table: Table name as defined in TCA
+     * @param boolean $showHidden: Ignore the hidden flag?
+     *
+     * @return string Additional WHERE expression
+     */
+    public static function whereExpression($table, $showHidden = FALSE) {
+        $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table)
+            ->expr();
+
+        if (TYPO3_MODE === 'FE') {
+            // Table "tx_dlf_formats" always has PID 0.
+            if ($table == 'tx_dlf_formats') {
+                return $expressionBuilder->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
+            }
+
+            // Should we ignore the record's hidden flag?
+            $ignoreHide = -1;
+            if ($showHidden) {
+                $ignoreHide = 1;
+            }
+
+            // $GLOBALS['TSFE']->sys_page is not always available in frontend.
+            if (is_object($GLOBALS['TSFE']->sys_page)) {
+                $expression = $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
+            } else {
+                $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+                $GLOBALS['TSFE']->includeTCA();
+                $expression = $pageRepository->enableFields($table, $ignoreHide);
+            }
+            if (!empty($expression)) {
+                return substr($expression, strlen(' AND '));
+            }
+            return $expression;
+        } elseif (TYPO3_MODE === 'BE') {
+            return $expressionBuilder->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
+        } else {
+            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+            return '1=-1';
         }
     }
 

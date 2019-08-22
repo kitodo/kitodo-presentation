@@ -11,6 +11,10 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+
 /**
  * List class for the 'dlf' extension
  *
@@ -91,7 +95,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @return void
      */
     public function add(array $elements, $position = -1) {
-        $position = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($position, 0, $this->count, $this->count);
+        $position = MathUtility::forceIntegerInRange($position, 0, $this->count, $this->count);
         if (!empty($elements)) {
             array_splice($this->elements, $position, 0, $elements);
             $this->count = count($this->elements);
@@ -152,29 +156,41 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             // Check if it's a list of database records or Solr documents.
             if (!empty($this->metadata['options']['source'])
                 && $this->metadata['options']['source'] == 'collection') {
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+
                 // Get document's thumbnail and metadata from database.
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'tx_dlf_documents.uid AS uid,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.metadata AS metadata',
-                    'tx_dlf_documents',
-                    '(tx_dlf_documents.uid='.intval($record['uid']).' OR tx_dlf_documents.partof='.intval($record['uid']).')'
-                        .Helper::whereClause('tx_dlf_documents')
-                );
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_documents.uid AS uid',
+                        'tx_dlf_documents.thumbnail AS thumbnail',
+                        'tx_dlf_documents.metadata AS metadata'
+                    )
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $queryBuilder->expr()->orX(
+                            $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($record['uid'])),
+                            $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($record['uid']))),
+                        Helper::whereExpression('tx_dlf_documents')
+                    )
+                    ->execute();
+
                 // Process results.
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                while ($resArray = $result->fetch()) {
                     // Prepare document's metadata.
                     $metadata = unserialize($resArray['metadata']);
                     if (!empty($metadata['type'][0])
-                        && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['type'][0])) {
+                        && MathUtility::canBeInterpretedAsInteger($metadata['type'][0])) {
                         $metadata['type'][0] = Helper::getIndexNameFromUid($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
                     }
                     if (!empty($metadata['owner'][0])
-                        && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])) {
+                        && MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])) {
                         $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
                     }
                     if (!empty($metadata['collection'])
                         && is_array($metadata['collection'])) {
                         foreach ($metadata['collection'] as $i => $collection) {
-                            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($collection)) {
+                            if (MathUtility::canBeInterpretedAsInteger($collection)) {
                                 $metadata['collection'][$i] = Helper::getIndexNameFromUid($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
                             }
                         }
@@ -509,17 +525,25 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if (!$this->solr) {
             // Connect to Solr server.
             if ($this->solr = Solr::getInstance($this->metadata['options']['core'])) {
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_metadata');
+
                 // Load index configuration.
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_indexed AS index_indexed',
-                    'tx_dlf_metadata',
-                    'tx_dlf_metadata.is_listed=1'
-                        .' AND tx_dlf_metadata.pid='.intval($this->metadata['options']['pid'])
-                        .Helper::whereClause('tx_dlf_metadata'),
-                    '',
-                    'tx_dlf_metadata.sorting ASC'
-                );
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_metadata.index_name AS index_name',
+                        'tx_dlf_metadata.index_tokenized AS index_tokenized',
+                        'tx_dlf_metadata.index_indexed AS index_indexed'
+                    )
+                    ->from('tx_dlf_metadata')
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', intval($this->metadata['options']['pid'])),
+                        Helper::whereExpression('tx_dlf_metadata')
+                    )
+                    ->orderBy('tx_dlf_metadata.sorting', 'ASC')
+                    ->execute();
+
+                while ($resArray = $result->fetch()) {
                     $this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['index_tokenized'] ? 't' : 'u').'s'.($resArray['index_indexed'] ? 'i' : 'u');
                 }
                 // Add static fields.

@@ -11,6 +11,7 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -150,18 +151,24 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
                 $this->doc->cPid = $this->conf['pages'];
             }
         } elseif (!empty($this->piVars['recordId'])) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
             // Get UID of document with given record identifier.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.uid',
-                'tx_dlf_documents',
-                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents')
-                    .Helper::whereClause('tx_dlf_documents'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
-                list ($this->piVars['id']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+            $result = $queryBuilder
+                ->select('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['recordId'])),
+                    Helper::whereExpression('tx_dlf_documents')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) == 1) {
+                list ($this->piVars['id']) = $allResults[0];
                 // Set superglobal $_GET array and unset variables to avoid infinite looping.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
                 unset ($this->piVars['recordId'], $_GET[$this->prefixId]['recordId']);

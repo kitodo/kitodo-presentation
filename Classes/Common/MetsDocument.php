@@ -14,6 +14,9 @@ use Ubl\Iiif\Services\AbstractImageService;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * MetsDocument class for the 'dlf' extension.
  *
@@ -796,19 +799,26 @@ final class MetsDocument extends Document
             }
             $strctId = $this->_getToplevelId();
             $metadata = $this->getTitledata($cPid);
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_structures');
+
             // Get structure element to get thumbnail from.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_structures.thumbnail AS thumbnail',
-                'tx_dlf_structures',
-                'tx_dlf_structures.pid='.intval($cPid)
-                    .' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures')
-                    .Helper::whereClause('tx_dlf_structures'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+            $result = $queryBuilder
+                ->select('tx_dlf_structures.thumbnail AS thumbnail')
+                ->from('tx_dlf_structures')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($cPid)),
+                    $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
+                    Helper::whereExpression('tx_dlf_structures')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) == 1) {
+                $resArray = $allResults[0];
                 // Get desired thumbnail structure if not the toplevel structure itself.
                 if (!empty($resArray['thumbnail'])) {
                     $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $cPid);

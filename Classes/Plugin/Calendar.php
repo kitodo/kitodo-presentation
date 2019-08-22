@@ -12,6 +12,8 @@ namespace Kitodo\Dlf\Plugin;
  */
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Calendar' for the 'dlf' extension
@@ -59,21 +61,30 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Load template file.
         $this->getTemplate('###TEMPLATECALENDAR###');
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
+
         // Get all children of year anchor.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.uid AS uid, tx_dlf_documents.title AS title, tx_dlf_documents.year AS year',
-            'tx_dlf_documents',
-            'tx_dlf_documents.structure='.Helper::getUidFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid)
-                .' AND tx_dlf_documents.partof='.intval($this->doc->uid)
-                .Helper::whereClause('tx_dlf_documents'),
-            '',
-            'tx_dlf_documents.title_sorting ASC'
-        );
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_documents.uid AS uid',
+                'tx_dlf_documents.title AS title',
+                'tx_dlf_documents.year AS year'
+            )
+            ->from('tx_dlf_documents')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid)),
+                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
+                Helper::whereExpression('tx_dlf_documents')
+            )
+            ->orderBy('tx_dlf_documents.title_sorting')
+            ->execute();
 
         $issues = [];
 
         // Process results.
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        while ($resArray = $result->fetch()) {
             $issues[] = [
                 'uid' => $resArray['uid'],
                 'title' => $resArray['title'],
@@ -257,18 +268,27 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         $subparts['year'] = $this->templateService->getSubpart($this->template, '###LISTYEAR###');
         // Get the title of the anchor file
         $titleAnchor = $this->doc->getTitle($this->doc->uid);
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
+
         // Get all children of anchor. This should be the year anchor documents
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.uid AS uid, tx_dlf_documents.title AS title',
-            'tx_dlf_documents',
-            'tx_dlf_documents.structure='.Helper::getUidFromIndexName('year', 'tx_dlf_structures', $this->doc->pid)
-                .' AND tx_dlf_documents.partof='.intval($this->doc->uid)
-                .Helper::whereClause('tx_dlf_documents'),
-            '',
-            'tx_dlf_documents.title_sorting ASC'
-        );
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_documents.uid AS uid',
+                'tx_dlf_documents.title AS title'
+            )
+            ->from('tx_dlf_documents')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('year', 'tx_dlf_structures', $this->doc->pid)),
+                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
+                Helper::whereExpression('tx_dlf_documents')
+            )
+            ->orderBy('tx_dlf_documents.title_sorting')
+            ->execute();
+
         // Process results.
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        while ($resArray = $result->fetch()) {
             $years[] = [
                 'title' => $resArray['title'],
                 'uid' => $resArray['uid']
