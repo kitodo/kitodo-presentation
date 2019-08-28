@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -62,6 +63,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Load template file.
         $this->getTemplate('###TEMPLATECALENDAR###');
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -269,6 +271,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Get the title of the anchor file
         $titleAnchor = $this->doc->getTitle($this->doc->uid);
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 

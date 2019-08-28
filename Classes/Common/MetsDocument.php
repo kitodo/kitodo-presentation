@@ -1,6 +1,7 @@
 <?php
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
 
@@ -800,6 +801,7 @@ final class MetsDocument extends Document
             $strctId = $this->_getToplevelId();
             $metadata = $this->getTitledata($cPid);
 
+            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_structures');
 

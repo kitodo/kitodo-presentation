@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -136,6 +137,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             $markerArray['###COUNT###'] = sprintf($this->pi_getLL('count'), 0);
         }
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_mail');
 
@@ -493,6 +495,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         // send mail
         $mailId = $this->piVars['mail_action'];
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_mail');
 
@@ -592,6 +595,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         // get printer data
         $printerId = $this->piVars['print_action'];
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_printer');
 

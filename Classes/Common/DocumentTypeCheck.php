@@ -12,6 +12,7 @@ namespace Kitodo\Dlf\Common;
  */
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -150,6 +151,7 @@ class DocumentTypeCheck {
                 Helper::devLog('Failed to load document with UID '.$this->piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($this->piVars['recordId'])) {
+            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -158,7 +160,7 @@ class DocumentTypeCheck {
                 ->select('tx_dlf_documents.uid')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents')),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['recordId'])),
                     Helper::whereExpression('tx_documents')
                 )
                 ->setMaxResults(1)

@@ -12,6 +12,7 @@ namespace Kitodo\Dlf\Common;
  */
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -156,6 +157,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             // Check if it's a list of database records or Solr documents.
             if (!empty($this->metadata['options']['source'])
                 && $this->metadata['options']['source'] == 'collection') {
+                /** @var QueryBuilder $queryBuilder */
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -525,6 +527,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if (!$this->solr) {
             // Connect to Solr server.
             if ($this->solr = Solr::getInstance($this->metadata['options']['core'])) {
+                /** @var QueryBuilder $queryBuilder */
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_metadata');
 

@@ -15,6 +15,7 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -75,6 +76,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return string The list of collections ready to output
      */
     protected function showCollectionList() {
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 
@@ -244,6 +246,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return void
      */
     protected function showSingleCollection($id) {
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 

@@ -12,6 +12,7 @@ namespace Kitodo\Dlf\Common;
  */
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
@@ -130,6 +131,7 @@ class Indexer {
                 $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
 
+                /** @var QueryBuilder $queryBuilder */
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -300,6 +302,7 @@ class Indexer {
      */
     protected static function loadIndexConf($pid) {
         if (!self::$fieldsLoaded) {
+            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_metadata');
 

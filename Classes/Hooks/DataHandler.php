@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -82,6 +83,7 @@ class DataHandler {
                     break;
                 // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
+                    /** @var QueryBuilder $queryBuilder */
                     $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                         ->getQueryBuilderForTable('tx_dlf_solrcores');
 
@@ -128,6 +130,7 @@ class DataHandler {
                     break;
             }
         } elseif ($status == 'update') {
+            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table);
 

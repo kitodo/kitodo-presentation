@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,6 +41,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return void
      */
     protected function addAutocompleteJS() {
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -563,6 +565,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // replace everything expect numbers and comma
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 

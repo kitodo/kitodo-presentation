@@ -15,6 +15,7 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -167,6 +168,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:format', 'application/mets+xml'));
         $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:type', 'Text'));
         if (!empty($metadata['partof'])) {
+            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -386,6 +388,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return string Substitution for subpart "###RESPONSE###"
      */
     protected function resume() {
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_tokens');
 
@@ -506,6 +509,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $adminEmail = 'unknown@example.org';
         $repositoryName = 'Kitodo.Presentation OAI-PMH Interface (default configuration)';
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_libraries');
 
@@ -627,6 +631,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
                 return $this->error('badArgument');
             }
 
+            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -718,6 +723,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return string Substitution for subpart "###RESPONSE###"
      */
     protected function verbListSets() {
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 
@@ -774,6 +780,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @throws \Exception
      */
     protected function fetchDocumentUIDs() {
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 

@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Module;
 
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -205,6 +206,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 }
             }
 
+            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_structures');
 

@@ -12,6 +12,7 @@ namespace Kitodo\Dlf\Common;
  */
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -302,6 +303,7 @@ class Helper {
             return '';
         }
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);
 
@@ -438,6 +440,7 @@ class Helper {
             return '';
         }
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);
 
@@ -742,6 +745,7 @@ class Helper {
          * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
          * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
 
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);
 
