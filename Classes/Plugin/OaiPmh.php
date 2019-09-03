@@ -406,7 +406,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $allResults = $result->fetchAll();
 
-        if (count($result) > 1) {
+        if (count($allResults) > 1) {
             // No resumption token found or resumption token expired.
             return $this->error('badResumptionToken');
         }
