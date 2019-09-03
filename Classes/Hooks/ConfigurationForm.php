@@ -84,34 +84,6 @@ class ConfigurationForm {
     }
 
     /**
-     * Make sure a CLI dispatcher is available.
-     *
-     * @access public
-     *
-     * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
-     *
-     * @return string Message informing the user of success or failure
-     */
-    public function checkCliDispatcher(&$params, &$pObj) {
-        // Check if CLI dispatcher is executable.
-        if (is_executable(PATH_typo3.'cli_dispatch.phpsh')) {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('cliDispatcher.cliOkayMsg'),
-                $GLOBALS['LANG']->getLL('cliDispatcher.cliOkay'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-            );
-        } else {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('cliDispatcher.cliNotOkayMsg'),
-                $GLOBALS['LANG']->getLL('cliDispatcher.cliNotOkay'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
-            );
-        }
-        return Helper::renderFlashMessages();
-    }
-
-    /**
      * Make sure the essential namespaces are defined.
      *
      * @access public
