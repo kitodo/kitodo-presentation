@@ -13,6 +13,9 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Feeds' for the 'dlf' extension
@@ -47,22 +50,30 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Add channel element.
         $channel = $rss->createElement('channel');
         $channel->appendChild($rss->createElement('title', htmlspecialchars($this->conf['title'], ENT_NOQUOTES, 'UTF-8')));
-        $channel->appendChild($rss->createElement('link', htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->pi_linkTP_keepPIvars_url()), ENT_NOQUOTES, 'UTF-8')));
+        $channel->appendChild($rss->createElement('link', htmlspecialchars(GeneralUtility::locationHeaderUrl($this->pi_linkTP_keepPIvars_url()), ENT_NOQUOTES, 'UTF-8')));
         if (!empty($this->conf['description'])) {
             $channel->appendChild($rss->createElement('description', htmlspecialchars($this->conf['description'], ENT_QUOTES, 'UTF-8')));
         }
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_libraries.label AS label',
-            'tx_dlf_libraries',
-            'tx_dlf_libraries.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_libraries.uid='.intval($this->conf['library'])
-                .Helper::whereClause('tx_dlf_libraries'),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_structures');
+
+        $result = $queryBuilder
+            ->select('tx_dlf_libraries.label AS label')
+            ->from('tx_dlf_libraries')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['library'])),
+                Helper::whereExpression('tx_dlf_libraries')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            $resArray = $allResults[0];
             $channel->appendChild($rss->createElement('copyright', htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
         }
         $channel->appendChild($rss->createElement('pubDate', date('r', $GLOBALS['EXEC_TIME'])));

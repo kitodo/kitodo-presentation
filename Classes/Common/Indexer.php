@@ -11,6 +11,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
 
@@ -127,17 +130,24 @@ class Indexer {
                 $updateQuery = self::$solr->service->createUpdate();
                 $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
+
+                /** @var QueryBuilder $queryBuilder */
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+
                 // Get document title from database.
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'tx_dlf_documents.title AS title',
-                    'tx_dlf_documents',
-                    'tx_dlf_documents.uid='.intval($doc->uid)
-                        .Helper::whereClause('tx_dlf_documents'),
-                    '',
-                    '',
-                    '1'
-                );
-                $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+                $result = $queryBuilder
+                    ->select('tx_dlf_documents.title AS title')
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($doc->uid)),
+                        Helper::whereExpression('tx_dlf_documents')
+                    )
+                    ->setMaxResults(1)
+                    ->execute();
+
+                $allResults = $result->fetchAll();
+                $resArray = $allResults[0];
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     if (!$errors) {
                         Helper::addMessage(
@@ -292,14 +302,31 @@ class Indexer {
      */
     protected static function loadIndexConf($pid) {
         if (!self::$fieldsLoaded) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_metadata');
+
             // Get the metadata indexing options.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.index_tokenized AS index_tokenized,tx_dlf_metadata.index_stored AS index_stored,tx_dlf_metadata.index_indexed AS index_indexed,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.is_facet AS is_facet,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.index_autocomplete AS index_autocomplete,tx_dlf_metadata.index_boost AS index_boost',
-                'tx_dlf_metadata',
-                'tx_dlf_metadata.pid='.intval($pid)
-                    .Helper::whereClause('tx_dlf_metadata')
-            );
-            while ($indexing = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_metadata.index_name AS index_name',
+                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
+                    'tx_dlf_metadata.index_stored AS index_stored',
+                    'tx_dlf_metadata.index_indexed AS index_indexed',
+                    'tx_dlf_metadata.is_sortable AS is_sortable',
+                    'tx_dlf_metadata.is_facet AS is_facet',
+                    'tx_dlf_metadata.is_listed AS is_listed',
+                    'tx_dlf_metadata.index_autocomplete AS index_autocomplete',
+                    'tx_dlf_metadata.index_boost AS index_boost'
+                )
+                ->from('tx_dlf_metadata')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
+                    Helper::whereExpression('tx_dlf_metadata')
+                )
+                ->execute();
+
+            while ($indexing = $result->fetch()) {
                 if ($indexing['index_tokenized']) {
                     self::$fields['tokenized'][] = $indexing['index_name'];
                 }

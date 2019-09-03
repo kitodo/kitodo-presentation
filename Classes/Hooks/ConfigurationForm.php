@@ -13,6 +13,9 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\TypoScript\ConfigurationForm
@@ -127,14 +130,22 @@ class ConfigurationForm {
             'IIIF2' => FALSE,
             'IIIF3' => FALSE
         ];
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_collections');
+
         // Check existing format specifications.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_formats.type AS type',
-            'tx_dlf_formats',
-            '1=1'
-                .Helper::whereClause('tx_dlf_formats')
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        $result = $queryBuilder
+            ->select('tx_dlf_formats.type AS type')
+            ->from('tx_dlf_formats')
+            ->where(
+                '1=1',
+                Helper::whereExpression('tx_dlf_formats')
+            )
+            ->execute();
+
+        while ($resArray = $result->fetch()) {
             $nsDefined[$resArray['type']] = TRUE;
         }
         // Build data array.

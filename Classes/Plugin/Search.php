@@ -16,6 +16,9 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Search' for the 'dlf' extension
@@ -38,18 +41,23 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return void
      */
     protected function addAutocompleteJS() {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
+
         // Check if there are any metadata to suggest.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_metadata.*',
-            'tx_dlf_metadata',
-            'tx_dlf_metadata.index_autocomplete=1'
-                .' AND tx_dlf_metadata.pid='.intval($this->conf['pages'])
-                .Helper::whereClause('tx_dlf_metadata'),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+        $result = $queryBuilder
+            ->select('tx_dlf_metadata.*')
+            ->from('tx_dlf_metadata')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_metadata.index_autocomplete', 1),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages'])),
+                Helper::whereExpression('tx_dlf_metadata')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        if ($result->rowCount() == 1) {
             $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Search/Suggester.js"></script>';
         } else {
             Helper::devLog('No metadata fields configured for search suggestions', DEVLOG_SEVERITY_WARNING);
@@ -65,7 +73,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function addCurrentCollection() {
         // Load current collection.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $list = GeneralUtility::makeInstance(DocumentList::class);
         if (!empty($list->metadata['options']['source'])
             && $list->metadata['options']['source'] == 'collection') {
             // Get collection's UID.
@@ -93,7 +101,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      */
     protected function addCurrentDocument() {
         // Load current list object.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $list = GeneralUtility::makeInstance(DocumentList::class);
         // Load current document.
         if (!empty($this->piVars['id'])
             && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
@@ -158,7 +166,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Get field selector options.
         $fieldSelectorOptions = '';
-        $searchFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
+        $searchFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
         foreach ($searchFields as $searchField) {
             $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
         }
@@ -192,7 +200,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Get facets from plugin configuration.
         $facets = [];
-        foreach (\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
+        foreach (GeneralUtility::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
             $facets[$facet.'_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
         }
         // Render facets menu.
@@ -324,7 +332,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!isset($this->piVars['query'])
             && empty($this->piVars['extQuery'])) {
             // Extract query and filter from last search.
-            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+            $list = GeneralUtility::makeInstance(DocumentList::class);
             if (!empty($list->metadata['searchString'])) {
                 if ($list->metadata['options']['source'] == 'search') {
                     $search['query'] = $list->metadata['searchString'];
@@ -392,7 +400,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             if (!empty($this->piVars['extQuery'])
                 && is_array($this->piVars['extQuery'])) {
                 $allowedOperators = ['AND', 'OR', 'NOT'];
-                $allowedFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
+                $allowedFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
                 for ($i = 0; $i < count($this->piVars['extQuery']); $i++) {
                     if (!empty($this->piVars['extQuery'][$i])) {
                         if (in_array($this->piVars['extOperator'][$i], $allowedOperators)
@@ -484,9 +492,9 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                     $additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
                 }
             }
-            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
+            $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
             // Send headers.
-            header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
+            header('Location: '.GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
             exit;
         }
     }
@@ -516,7 +524,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             ]
         ];
         // Extract query and filter from last search.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $list = GeneralUtility::makeInstance(DocumentList::class);
         if (!empty($list->metadata['options']['source'])) {
             if ($list->metadata['options']['source'] == 'search') {
                 $search['query'] = $list->metadata['options']['select'];
@@ -556,17 +564,22 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         // replace everything expect numbers and comma
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_collections.index_name AS index_name',
-            'tx_dlf_collections',
-            'tx_dlf_collections.uid IN (' . $facetCollections . ')'
-                .Helper::whereClause('tx_dlf_collections')
-        );
 
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            while ($collection = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                $facetCollectionArray[] = $collection[0];
-            }
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_collections');
+
+        $result = $queryBuilder
+            ->select('tx_dlf_collections.index_name AS index_name')
+            ->from('tx_dlf_collections')
+            ->where(
+                $queryBuilder->expr()->in('tx_dlf_collections.uid', $facetCollections),
+                Helper::whereExpression('tx_dlf_collections')
+            )
+            ->execute();
+
+        while ($collection = $result->fetch()) {
+            $facetCollectionArray[] = $collection[0];
         }
 
         // Process results.

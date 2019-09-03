@@ -14,6 +14,9 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Context\IRI;
 
 /**
@@ -218,16 +221,33 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                 }
             }
         } else {
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.wrap AS wrap,tx_dlf_metadata.sys_language_uid AS sys_language_uid',
-                'tx_dlf_metadata',
-                'tx_dlf_metadata.pid='.intval($this->conf['pages'])
-                    .' AND (sys_language_uid IN (-1,0) OR (sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND l18n_parent = 0))'
-                    .Helper::whereClause('tx_dlf_metadata'),
-                '',
-                'tx_dlf_metadata.sorting'
-            );
-            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_metadata');
+
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_metadata.index_name AS index_name',
+                    'tx_dlf_metadata.is_listed AS is_listed',
+                    'tx_dlf_metadata.wrap AS wrap',
+                    'tx_dlf_metadata.sys_language_uid AS sys_language_uid'
+                )
+                ->from('tx_dlf_metadata')
+                ->where(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->orX(
+                            $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', array(-1, 0)),
+                            $queryBuilder->expr()->eq('tx_dlf_metadata.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
+                        ),
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
+                    ),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages'])),
+                    Helper::whereExpression('tx_dlf_metadata')
+                )
+                ->orderBy('tx_dlf_metadata.sorting')
+                ->execute();
+
+            while ($resArray = $result->fetch()) {
                 if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
                     $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
                 }
@@ -240,15 +260,22 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                     }
                 }
             }
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_collections');
+
             // Get list of collections to show.
             $collList = [];
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_collections.index_name AS index_name',
-                'tx_dlf_collections',
-                'tx_dlf_collections.pid='.intval($this->conf['pages'])
-                    .Helper::whereClause('tx_dlf_collections')
-            );
-            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            $result = $queryBuilder
+                ->select('tx_dlf_collections.index_name AS index_name')
+                ->from('tx_dlf_collections')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
+                    Helper::whereExpression('tx_dlf_collections')
+                )
+                ->execute();
+
+            while ($resArray = $result->fetch()) {
                 $collList[] = $resArray['index_name'];
             }
             // Save original data array.

@@ -13,6 +13,9 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Basket' for the 'dlf' extension
@@ -133,19 +136,26 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         } else {
             $markerArray['###COUNT###'] = sprintf($this->pi_getLL('count'), 0);
         }
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_mail');
+
         // get mail addresses
-        $resultMail = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            '*',
-            'tx_dlf_mail',
-            '1=1'
-                .Helper::whereClause('tx_dlf_mail'),
-            '',
-            'tx_dlf_mail.sorting'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultMail) > 0) {
+        $resultMail = $queryBuilder
+            ->select('*')
+            ->from('tx_dlf_mail')
+            ->where(
+                '1=1',
+                Helper::whereExpression('tx_dlf_mail')
+            )
+            ->orderBy('tx_dlf_mail.sorting')
+            ->execute();
+
+        if ($resultMail->countRow() > 0) {
             $mailForm = '<select name="tx_dlf[mail_action]">';
             $mailForm .= '<option value="">'.$this->pi_getLL('chooseMail', '', TRUE).'</option>';
-            while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail)) {
+            while ($row = $resultMail->fetch()) {
                 $mailForm .= '<option value="'.$row['uid'].'">'.$row['name'].' ('.$row['mail'].')</option>';
             }
             $mailForm .= '</select><input type="submit">';
@@ -161,18 +171,25 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
    </select>
    <input type="submit">
   ';
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_printer');
+
         // get mail addresses
-        $resultPrinter = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            '*',
-            'tx_dlf_printer',
-            '1=1'
-                .Helper::whereClause('tx_dlf_printer')
-        );
+        $resultPrinter = $queryBuilder
+            ->select('*')
+            ->from('tx_dlf_printer')
+            ->where(
+                '1=1',
+                Helper::whereExpression('tx_dlf_printer')
+            )
+            ->execute();
+
         $printForm = '';
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($resultPrinter) > 0) {
+        if ($resultPrinter->countRow() > 0) {
             $printForm = '<select name="tx_dlf[print_action]">';
             $printForm .= '<option value="">'.$this->pi_getLL('choosePrinter', '', TRUE).'</option>';
-            while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter)) {
+            while ($row = $resultPrinter->fetch()) {
                 $printForm .= '<option value="'.$row['uid'].'">'.$row['label'].'</option>';
             }
             $printForm .= '</select><input type="submit" />';
@@ -477,17 +494,24 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
     protected function sendMail() {
         // send mail
         $mailId = $this->piVars['mail_action'];
-        // get id from db and send selected doc downloadlink
-        $resultMail = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            '*',
-            'tx_dlf_mail',
-            'tx_dlf_mail.uid='.intval($mailId)
-                .Helper::whereClause('tx_dlf_mail'),
-            '',
-            '',
-            '1'
-        );
-        $mailData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultMail);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_mail');
+
+        // get id from db and send selected doc download link
+        $resultMail = $queryBuilder
+            ->select('*')
+            ->from('tx_dlf_mail')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_mail.uid', intval($mailId)),
+                Helper::whereExpression('tx_dlf_mail')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $resultMail->fetchAll();
+        $mailData = $allResults[0];
         $mailText = $this->pi_getLL('mailBody', '', TRUE)."\n";
         $numberOfPages = 0;
         $pdfUrl = $this->conf['pdfdownload'];
@@ -570,17 +594,24 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // get printer data
         $printerId = $this->piVars['print_action'];
-        // get id from db and send selected doc downloadlink
-        $resultPrinter = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            '*',
-            'tx_dlf_printer',
-            'tx_dlf_printer.uid='.intval($printerId)
-                .Helper::whereClause('tx_dlf_basket'),
-            '',
-            '',
-            '1'
-        );
-        $printerData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resultPrinter);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_printer');
+
+        // get id from db and send selected doc download link
+        $resultPrinter = $queryBuilder
+            ->select('*')
+            ->from('tx_dlf_printer')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_printer.uid', intval($printerId)),
+                Helper::whereExpression('tx_dlf_printer')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $resultPrinter->fetchAll();
+        $printerData = $allResults[0];
         // printer is selected
         if ($printerData) {
             $pdfUrl = $printerData['print'];

@@ -11,6 +11,10 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
 use Ubl\Iiif\Tools\IiifHelper;
 
@@ -415,38 +419,56 @@ abstract class Document {
         $xml = null;
         $iiif = null;
         // Try to get document format from database
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-            $whereClause = 'tx_dlf_documents.uid='.intval($uid).Helper::whereClause('tx_dlf_documents');
+        if (MathUtility::canBeInterpretedAsInteger($uid)) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $queryBuilder
+                ->select(
+                    'tx_dlf_documents.location AS location',
+                    'tx_dlf_documents.document_format AS document_format'
+                )
+                ->from('tx_dlf_documents');
+
+            // Get UID of document with given record identifier.
             if ($pid) {
-                $whereClause .= ' AND tx_dlf_documents.pid='.intval($pid);
+                $queryBuilder
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid)),
+                        Helper::whereExpression('tx_dlf_documents')
+                    );
+            } else {
+                $queryBuilder
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
+                        Helper::whereExpression('tx_dlf_documents')
+                    );
             }
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.location AS location,tx_dlf_documents.document_format AS document_format',
-                'tx_dlf_documents',
-                $whereClause,
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
-                    $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-                    $documentFormat = $resArray['document_format'];
-                }
+
+            $result = $queryBuilder
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) == 1) {
+                $documentFormat = $allResults[0]['document_format'];
             }
         } else {
             // Get document format from content of remote document
             // Cast to string for safety reasons.
             $location = (string) $uid;
             // Try to load a file from the url
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location)) {
+            if (GeneralUtility::isValidUrl($location)) {
                 // Load extension configuration
                 $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
                 // Set user-agent to identify self when fetching XML data.
                 if (!empty($extConf['useragent'])) {
                     @ini_set('user_agent', $extConf['useragent']);
                 }
-                $content = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($location);
+                $content = GeneralUtility::getUrl($location);
                 // TODO use single place to load xml
                 // Turn off libxml's error logging.
                 $libxmlErrors = libxml_use_internal_errors(TRUE);
@@ -652,18 +674,28 @@ abstract class Document {
         // Sanitize input.
         $uid = max(intval($uid), 0);
         if ($uid) {
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.title,tx_dlf_documents.partof',
-                'tx_dlf_documents',
-                'tx_dlf_documents.uid='.$uid
-                    .Helper::whereClause('tx_dlf_documents'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_documents.title',
+                    'tx_dlf_documents.partof'
+                )
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $uid),
+                    Helper::whereExpression('tx_dlf_documents')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) == 1) {
                 // Get title information.
-                list ($title, $partof) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+                list ($title, $partof) = $allResults[0];
                 // Search parent documents recursively for a title?
                 if ($recursive
                     && empty($title)
@@ -819,14 +851,26 @@ abstract class Document {
      */
     protected function loadFormats() {
         if (!$this->formatsLoaded) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_formats');
+
             // Get available data formats from database.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_formats.type AS type,tx_dlf_formats.root AS root,tx_dlf_formats.namespace AS namespace,tx_dlf_formats.class AS class',
-                'tx_dlf_formats',
-                'tx_dlf_formats.pid=0'
-                    .Helper::whereClause('tx_dlf_formats')
-            );
-            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_formats.type AS type',
+                    'tx_dlf_formats.root AS root',
+                    'tx_dlf_formats.namespace AS namespace',
+                    'tx_dlf_formats.class AS class'
+                )
+                ->from('tx_dlf_formats')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0),
+                    Helper::whereExpression('tx_dlf_formats')
+                )
+                ->execute();
+
+            while ($resArray = $result->fetch()) {
                 // Update format registry.
                 $this->formats[$resArray['type']] = [
                     'rootElement' => $resArray['root'],
@@ -908,36 +952,56 @@ abstract class Document {
         }
         // Load plugin configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_structures');
+
         // Get UID for structure type.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_structures.uid AS uid',
-            'tx_dlf_structures',
-            'tx_dlf_structures.pid='.intval($pid)
-                .' AND tx_dlf_structures.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures')
-                .Helper::whereClause('tx_dlf_structures'),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            list ($structure) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+        $result = $queryBuilder
+            ->select('tx_dlf_structures.uid AS uid')
+            ->from('tx_dlf_structures')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($pid)),
+                $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
+                Helper::whereExpression('tx_dlf_structures')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            list ($structure) = $allResults[0];
         } else {
-            Helper::devLog('Could not identify document/structure type "'.$GLOBALS['TYPO3_DB']->fullQuoteStr($metadata['type'][0], 'tx_dlf_structures').'"', DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('Could not identify document/structure type "'.$queryBuilder->expr()->literal($metadata['type'][0]).'"', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
         $metadata['type'][0] = $structure;
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_collections');
+
         // Get UIDs for collections.
-        $collections = [];
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.uid AS uid',
-            'tx_dlf_collections',
-            'tx_dlf_collections.pid='.intval($pid)
-                .' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
-                .Helper::whereClause('tx_dlf_collections')
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_collections.index_name AS index_name',
+                'tx_dlf_collections.uid AS uid'
+            )
+            ->from('tx_dlf_collections')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($pid)),
+                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', array(-1, 0)),
+                Helper::whereExpression('tx_dlf_collections')
+            )
+            ->execute();
+
+        while ($resArray = $result->fetch()) {
             $collUid[$resArray['index_name']] = $resArray['uid'];
         }
+
+        $collections = [];
+
         foreach ($metadata['collection'] as $collection) {
             if (!empty($collUid[$collection])) {
                 // Add existing collection's UID.
@@ -971,20 +1035,28 @@ abstract class Document {
             }
         }
         $metadata['collection'] = $collections;
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_libraries');
+
         // Get UID for owner.
         $owner = !empty($metadata['owner'][0]) ? $metadata['owner'][0] : 'default';
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_libraries.uid AS uid',
-            'tx_dlf_libraries',
-            'tx_dlf_libraries.pid='.intval($pid)
-                .' AND tx_dlf_libraries.index_name='.$GLOBALS['TYPO3_DB']->fullQuoteStr($owner, 'tx_dlf_libraries')
-                .Helper::whereClause('tx_dlf_libraries'),
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            list ($ownerUid) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+
+        $result = $queryBuilder
+            ->select('tx_dlf_libraries.uid AS uid')
+            ->from('tx_dlf_libraries')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($pid)),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.index_name', $queryBuilder->expr()->literal($owner)),
+                Helper::whereExpression('tx_dlf_libraries')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            list ($ownerUid) = $allResults[0];
         } else {
             // Insert new library.
             $libNewUid = uniqid('NEW');
@@ -1037,17 +1109,32 @@ abstract class Document {
                 }
             }
         }
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+
         // Get metadata for lists and sorting.
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_metadata.index_name AS index_name',
+                'tx_dlf_metadata.is_listed AS is_listed',
+                'tx_dlf_metadata.is_sortable AS is_sortable'
+            )
+            ->from('tx_dlf_metadata')
+            ->where(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
+                Helper::whereExpression('tx_dlf_metadata')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
         $listed = [];
         $sortable = [];
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
-            'tx_dlf_metadata',
-            '(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1)'
-                .' AND tx_dlf_metadata.pid='.intval($pid)
-                .Helper::whereClause('tx_dlf_metadata')
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+
+        while ($resArray = $result->fetch()) {
             if (!empty($metadata[$resArray['index_name']])) {
                 if ($resArray['is_listed']) {
                     $listed[$resArray['index_name']] = $metadata[$resArray['index_name']];
@@ -1389,13 +1476,19 @@ abstract class Document {
      * @return void
      */
     protected function __construct($uid, $pid, $preloadedDocument) {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
+
         // Prepare to check database for the requested document.
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-            $whereClause = 'tx_dlf_documents.uid='.intval($uid).Helper::whereClause('tx_dlf_documents');
+        if (MathUtility::canBeInterpretedAsInteger($uid)) {
+            $whereClause = $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
+                Helper::whereExpression('tx_dlf_documents')
+            );
         } else {
             // Try to load METS file / IIIF manifest.
-            if ($this->setPreloadedDocument($preloadedDocument)
-                || (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($uid)
+            if ($this->setPreloadedDocument($preloadedDocument) || (GeneralUtility::isValidUrl($uid)
                 && $this->load($uid))) {
                 // Initialize core METS object.
                 $this->init();
@@ -1414,7 +1507,13 @@ abstract class Document {
             if (!empty($location)
                 && !empty($this->recordId)) {
                 // Try to match record identifier or location (both should be unique).
-                $whereClause = '(tx_dlf_documents.location='.$GLOBALS['TYPO3_DB']->fullQuoteStr($location, 'tx_dlf_documents').' OR tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->recordId, 'tx_dlf_documents').')'.Helper::whereClause('tx_dlf_documents');
+                $whereClause = $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.location', $queryBuilder->expr()->literal($location)),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->recordId))
+                    ),
+                    Helper::whereExpression('tx_dlf_documents')
+                );
             } else {
                 // Can't persistently identify document, don't try to match at all.
                 $whereClause = '1=-1';
@@ -1422,19 +1521,29 @@ abstract class Document {
         }
         // Check for PID if needed.
         if ($pid) {
-            $whereClause .= ' AND tx_dlf_documents.pid='.intval($pid);
+            $whereClause = $queryBuilder->expr()->andX(
+                $whereClause,
+                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid))
+            );
         }
         // Get document PID and location from database.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.uid AS uid,tx_dlf_documents.pid AS pid,tx_dlf_documents.record_id AS record_id,tx_dlf_documents.partof AS partof,tx_dlf_documents.thumbnail AS thumbnail,tx_dlf_documents.location AS location',
-            'tx_dlf_documents',
-            $whereClause,
-            '',
-            '',
-            '1'
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-            list ($this->uid, $this->pid, $this->recordId, $this->parentId, $this->thumbnail, $this->location) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_documents.uid AS uid',
+                'tx_dlf_documents.pid AS pid',
+                'tx_dlf_documents.record_id AS record_id',
+                'tx_dlf_documents.partof AS partof',
+                'tx_dlf_documents.thumbnail AS thumbnail',
+                'tx_dlf_documents.location AS location')
+            ->from('tx_dlf_documents')
+            ->where($whereClause)
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            list ($this->uid, $this->pid, $this->recordId, $this->parentId, $this->thumbnail, $this->location) = $allResults[0];
             $this->thumbnailLoaded = TRUE;
             // Load XML file if necessary...
             if ($this->getDocument() === NULL

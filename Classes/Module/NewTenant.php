@@ -12,6 +12,9 @@ namespace Kitodo\Dlf\Module;
  */
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Module 'New Tenant' for the 'dlf' extension.
@@ -202,14 +205,22 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                     $this->$_method();
                 }
             }
+
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_structures');
+
             // Check for existing structure configuration.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_structures.uid AS uid',
-                'tx_dlf_structures',
-                'tx_dlf_structures.pid='.intval($this->id)
-                    .Helper::whereClause('tx_dlf_structures')
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            $result = $queryBuilder
+                ->select('tx_dlf_structures.uid AS uid')
+                ->from('tx_dlf_structures')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($this->id)),
+                    Helper::whereExpression('tx_dlf_structures')
+                )
+                ->execute();
+
+            if ($result->rowCount() > 0) {
                 // Fine.
                 Helper::addMessage(
                     Helper::getMessage('flash.structureOkayMsg'),
@@ -218,7 +229,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 );
             } else {
                 // Configuration missing.
-                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
+                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
                 Helper::addMessage(
                     sprintf(Helper::getMessage('flash.structureNotOkayMsg'), $_url),
                     Helper::getMessage('flash.structureNotOkay', TRUE),
@@ -226,13 +237,16 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 );
             }
             // Check for existing metadata configuration.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadata.uid AS uid',
-                'tx_dlf_metadata',
-                'tx_dlf_metadata.pid='.intval($this->id)
-                    .Helper::whereClause('tx_dlf_metadata')
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            $result = $queryBuilder
+                ->select('tx_dlf_metadata.uid AS uid')
+                ->from('tx_dlf_metadata')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->id)),
+                    Helper::whereExpression('tx_dlf_metadata')
+                )
+                ->execute();
+
+            if ($result->rowCount() > 0) {
                 // Fine.
                 Helper::addMessage(
                     Helper::getMessage('flash.metadataOkayMsg'),
@@ -241,7 +255,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 );
             } else {
                 // Configuration missing.
-                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
+                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
                 Helper::addMessage(
                     sprintf(Helper::getMessage('flash.metadataNotOkayMsg'), $_url),
                     Helper::getMessage('flash.metadataNotOkay', TRUE),
@@ -249,14 +263,22 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 );
             }
             // Check for existing Solr core.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_solrcores.uid AS uid,tx_dlf_solrcores.pid AS pid',
-                'tx_dlf_solrcores',
-                'tx_dlf_solrcores.pid IN ('.intval($this->id).',0)'
-                    .Helper::whereClause('tx_dlf_solrcores')
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_solrcores.uid AS uid',
+                    'tx_dlf_solrcores.pid AS pid'
+                )
+                ->from('tx_dlf_solrcores')
+                ->where(
+                    $queryBuilder->expr()->in('tx_dlf_solrcores.pid', array(intval($this->id), 0)),
+                    Helper::whereExpression('tx_dlf_solrcores')
+                )
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) > 0) {
+                $resArray = $allResults[0];
                 if ($resArray['pid']) {
                     // Fine.
                     Helper::addMessage(
@@ -266,7 +288,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                     );
                 } else {
                     // Default core available, but this is deprecated.
-                    $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
+                    $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                     Helper::addMessage(
                         sprintf(Helper::getMessage('flash.solrcoreDeprecatedMsg'), $_url),
                         Helper::getMessage('flash.solrcoreDeprecatedOkay', TRUE),
@@ -275,7 +297,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
                 }
             } else {
                 // Solr core missing.
-                $_url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
+                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                 Helper::addMessage(
                     sprintf(Helper::getMessage('flash.solrcoreMissingMsg'), $_url),
                     Helper::getMessage('flash.solrcoreMissing', TRUE),

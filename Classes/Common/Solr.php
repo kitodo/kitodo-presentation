@@ -11,6 +11,10 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Solr class for the 'dlf' extension
  *
@@ -125,21 +129,32 @@ class Solr {
     public static function escapeQueryKeepField($query, $pid) {
         // Is there a field query?
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_structures');
+
             // Get all indexed fields.
             $fields = [];
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadata.index_name,tx_dlf_metadata.index_tokenized,tx_dlf_metadata.index_stored',
-                'tx_dlf_metadata',
-                'tx_dlf_metadata.index_indexed=1'
-                    .' AND tx_dlf_metadata.pid='.intval($pid)
-                    .' AND (tx_dlf_metadata.sys_language_uid IN (-1,0) OR tx_dlf_metadata.l18n_parent=0)'
-                    .Helper::whereClause('tx_dlf_metadata')
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
-                    $fields[] = $resArray[0].'_'.($resArray[1] ? 't' : 'u').($resArray[2] ? 's' : 'u').'i';
-                }
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_metadata.index_name',
+                    'tx_dlf_metadata.index_tokenized',
+                    'tx_dlf_metadata.index_stored')
+                ->from('tx_dlf_metadata')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', array(-1, 0)),
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
+                    ),
+                    Helper::whereExpression('tx_dlf_metadata')
+                )
+                ->execute();
+
+            while ($resArray = $result->fetch()) {
+                $fields[] = $resArray[0] . '_' . ($resArray[1] ? 't' : 'u') . ($resArray[2] ? 's' : 'u') . 'i';
             }
+
             // Check if queried field is valid.
             $splitQuery = explode(':', $query, 2);
             if (in_array($splitQuery[0], $fields)) {

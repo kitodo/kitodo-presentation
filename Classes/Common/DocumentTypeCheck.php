@@ -11,6 +11,10 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Document Type Checker for usage as Typoscript Condition
  * @see dlf/ext_localconf.php->user_dlf_docTypeCheck()
@@ -147,18 +151,24 @@ class DocumentTypeCheck {
                 Helper::devLog('Failed to load document with UID '.$this->piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($this->piVars['recordId'])) {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
             // Get UID of document with given record identifier.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.uid',
-                'tx_dlf_documents',
-                'tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['recordId'], 'tx_dlf_documents')
-                    .Helper::whereClause('tx_dlf_documents'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
-                list ($this->piVars['id']) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+            $result = $queryBuilder
+                ->select('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['recordId'])),
+                    Helper::whereExpression('tx_documents')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+            if (count($allResults) == 1) {
+                list ($this->piVars['id']) = $allResults[0];
                 // Set superglobal $_GET array.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
                 // Unset variable to avoid infinite looping.
@@ -180,6 +190,6 @@ class DocumentTypeCheck {
      */
     public function __construct() {
         // Load current plugin parameters.
-        $this->piVars = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefixId);
+        $this->piVars = GeneralUtility::_GPmerged($this->prefixId);
     }
 }

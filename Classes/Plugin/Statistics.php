@@ -12,6 +12,9 @@ namespace Kitodo\Dlf\Plugin;
  */
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Statistics' for the 'dlf' extension
@@ -77,14 +80,21 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'tx_dlf_documents.uid'
             );
         } else {
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
             // Include all collections.
-            $resultTitles = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents',
-                'tx_dlf_documents.pid='.intval($this->conf['pages'])
-                    .' AND tx_dlf_documents.partof=0'
-                    .Helper::whereClause('tx_dlf_documents')
-            );
+            $resultTitles = $queryBuilder
+                ->select('tx_dlf_documents.uid AS uid')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
+                    Helper::whereExpression('tx_dlf_documents')
+                )
+                ->execute();
+
             $resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents',
@@ -93,7 +103,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
                     .Helper::whereClause('tx_dlf_documents')
             );
         }
-        $countTitles = $GLOBALS['TYPO3_DB']->sql_num_rows($resultTitles);
+        $countTitles = $resultTitles->rowCount();
         $countVolumes = $GLOBALS['TYPO3_DB']->sql_num_rows($resultVolumes);
         // Set replacements.
         $replace = [

@@ -15,6 +15,9 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'List View' for the 'dlf' extension
@@ -387,16 +390,30 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return void
      */
     protected function loadConfig() {
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadata.wrap AS wrap,tx_dlf_metadata.is_listed AS is_listed,tx_dlf_metadata.is_sortable AS is_sortable',
-            'tx_dlf_metadata',
-            '(tx_dlf_metadata.is_listed=1 OR tx_dlf_metadata.is_sortable=1)'
-                .' AND tx_dlf_metadata.pid='.intval($this->conf['pages'])
-                .Helper::whereClause('tx_dlf_metadata'),
-            '',
-            'tx_dlf_metadata.sorting ASC'
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_metadata.index_name AS index_name',
+                'tx_dlf_metadata.wrap AS wrap',
+                'tx_dlf_metadata.is_listed AS is_listed',
+                'tx_dlf_metadata.is_sortable AS is_sortable'
+            )
+            ->from('tx_dlf_metadata')
+            ->where(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)
+                ),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages'])),
+                Helper::whereExpression('tx_dlf_metadata')
+            )
+            ->orderBy('tx_dlf_metadata.sorting')
+            ->execute();
+
+        while ($resArray = $result->fetch()) {
             if ($resArray['is_listed']) {
                 $this->metadata[$resArray['index_name']] = [
                     'wrap' => $resArray['wrap'],

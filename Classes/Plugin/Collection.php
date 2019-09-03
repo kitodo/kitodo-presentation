@@ -14,6 +14,9 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Collection' for the 'dlf' extension
@@ -73,7 +76,11 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return string The list of collections ready to output
      */
     protected function showCollectionList() {
-        $selectedCollections = 'tx_dlf_collections.uid != 0';
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_collections');
+
+        $selectedCollections = $queryBuilder->expr()->neq('tx_dlf_collections.uid', 0);
         $orderBy = 'tx_dlf_collections.label';
         $showUserDefinedColls = '';
         // Handle collections set by configuration.
@@ -82,36 +89,55 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                 && empty($this->conf['dont_show_single'])) {
                 $this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
             }
-            $selectedCollections = 'tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+            $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']));
             $orderBy = 'FIELD(tx_dlf_collections.uid,'.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
         }
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
-            $showUserDefinedColls = ' AND tx_dlf_collections.fe_cruser_id=0';
+            $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
         } elseif ($this->conf['show_userdefined'] > 0) {
             if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
-                $showUserDefinedColls = ' AND tx_dlf_collections.fe_cruser_id='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
+                $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', intval($GLOBALS['TSFE']->fe_user->user['uid']));
             } else {
-                $showUserDefinedColls = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+                $showUserDefinedColls = $queryBuilder->expr()->neq('tx_dlf_collections.fe_cruser_id', 0);
             }
         }
+
         // Get collections.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_collections.index_name AS index_name,tx_dlf_collections.index_search as index_query,tx_dlf_collections.uid AS uid,tx_dlf_collections.sys_language_uid AS sys_language_uid,tx_dlf_collections.label AS label,tx_dlf_collections.thumbnail AS thumbnail,tx_dlf_collections.description AS description,tx_dlf_collections.priority AS priority',
-            'tx_dlf_collections',
-            $selectedCollections
-                .$showUserDefinedColls
-                .' AND tx_dlf_collections.pid='.intval($this->conf['pages'])
-                .' AND (tx_dlf_collections.sys_language_uid IN (-1,0) OR (tx_dlf_collections.sys_language_uid = '.$GLOBALS['TSFE']->sys_language_uid.' AND tx_dlf_collections.l18n_parent = 0))'
-                .Helper::whereClause('tx_dlf_collections'),
-            '',
-            $orderBy
-        );
-        $count = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_collections.index_name AS index_name',
+                'tx_dlf_collections.index_search as index_query',
+                'tx_dlf_collections.uid AS uid',
+                'tx_dlf_collections.sys_language_uid AS sys_language_uid',
+                'tx_dlf_collections.label AS label',
+                'tx_dlf_collections.thumbnail AS thumbnail',
+                'tx_dlf_collections.description AS description',
+                'tx_dlf_collections.priority AS priority'
+            )
+            ->from('tx_dlf_collections')
+            ->where(
+                $selectedCollections,
+                $showUserDefinedColls,
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', array(-1, 0)),
+                        $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
+                    ),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
+                ),
+                Helper::whereExpression('tx_dlf_collections')
+            )
+            ->orderBy($orderBy)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        $count = count($allResults);
         $content = '';
-        if ($count == 1
-            && empty($this->conf['dont_show_single'])) {
-            $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+        if ($count == 1 && empty($this->conf['dont_show_single'])) {
+            $resArray = $allResults[0];
             $this->showSingleCollection(intval($resArray['uid']));
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
@@ -119,7 +145,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         $params['fields'] = 'uid,partof';
         $params['sort'] = ['uid' => 'asc'];
         $collections = [];
-        while ($collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        while ($collectionData = $result->fetch()) {
             if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
                 $collections[$collectionData['uid']] = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
             } else {
@@ -220,27 +246,42 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return void
      */
     protected function showSingleCollection($id) {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_collections');
+
         $additionalWhere = '';
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
-            $additionalWhere = ' AND tx_dlf_collections.fe_cruser_id=0';
+            $additionalWhere = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
         } elseif ($this->conf['show_userdefined'] > 0) {
-            $additionalWhere = ' AND NOT tx_dlf_collections.fe_cruser_id=0';
+            $additionalWhere = $queryBuilder->expr()->neq('tx_dlf_collections.fe_cruser_id', 0);
         }
+
         // Get collection information from DB
-        $collection = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_collections.index_name AS index_name, tx_dlf_collections.index_search as index_search, tx_dlf_collections.label AS collLabel, tx_dlf_collections.description AS collDesc, tx_dlf_collections.thumbnail AS collThumb, tx_dlf_collections.fe_cruser_id',
-            'tx_dlf_collections',
-            'tx_dlf_collections.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_collections.uid='.intval($id)
-                .$additionalWhere
-                .Helper::whereClause('tx_dlf_collections'),
-            '',
-            '',
-            '1'
-        );
+        $collection = $queryBuilder
+            ->select(
+                'tx_dlf_collections.index_name AS index_name',
+                'tx_dlf_collections.index_search as index_search',
+                'tx_dlf_collections.label AS collLabel',
+                'tx_dlf_collections.description AS collDesc',
+                'tx_dlf_collections.thumbnail AS collThumb',
+                'tx_dlf_collections.fe_cruser_id'
+            )
+            ->from('tx_dlf_collections')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_collections.uid', intval($id)),
+                $additionalWhere,
+                $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0),
+                Helper::whereExpression('tx_dlf_collections')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
         // Fetch corresponding document UIDs from Solr.
-        $collectionData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($collection);
+        $allResults = $collection->fetchAll();
+        $collectionData = $allResults[0];
         if ($collectionData['index_search'] != '') {
             $solr_query = '('.$collectionData['index_search'].')';
         } else {
@@ -261,18 +302,26 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $documentSet = array_unique($documentSet);
         // Fetch document info for UIDs in $documentSet from DB
-        $documents = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.uid AS uid, tx_dlf_documents.metadata_sorting AS metadata_sorting, tx_dlf_documents.volume_sorting AS volume_sorting, tx_dlf_documents.partof AS partof',
-            'tx_dlf_documents',
-            'tx_dlf_documents.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_documents.uid IN ('.implode(',', $documentSet).')'
-                .Helper::whereClause('tx_dlf_documents')
-        );
+        $documents = $queryBuilder
+            ->select(
+                'tx_dlf_documents.uid AS uid',
+                'tx_dlf_documents.metadata_sorting AS metadata_sorting',
+                'tx_dlf_documents.volume_sorting AS volume_sorting',
+                'tx_dlf_documents.partof AS partof'
+            )
+            ->from('tx_dlf_documents')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->in('tx_dlf_documents.uid', $documentSet),
+                Helper::whereExpression('tx_dlf_documents')
+            )
+            ->execute();
+
         $toplevel = [];
         $subparts = [];
         $listMetadata = [];
         // Process results.
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($documents)) {
+        while ($resArray = $documents->fetch()) {
             if (empty($l10nOverlay)) {
                 $l10nOverlay = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
             }
