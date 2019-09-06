@@ -104,7 +104,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Get collections.
-        $result = $queryBuilder
+        $queryBuilder
             ->select(
                 'tx_dlf_collections.index_name AS index_name',
                 'tx_dlf_collections.index_search as index_query',
@@ -129,12 +129,10 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                 ),
                 Helper::whereExpression('tx_dlf_collections')
             )
-            ->orderBy($orderBy)
-            ->execute();
+            ->orderBy($orderBy);
 
-        $allResults = $result->fetchAll();
-
-        $count = count($allResults);
+        $result = $queryBuilder->execute();
+        $count = $queryBuilder->count('uid')->execute()->fetchColumn(0);
         $content = '';
         if ($count == 1 && empty($this->conf['dont_show_single'])) {
             $resArray = $allResults[0];
