@@ -319,7 +319,7 @@ class Helper {
             ->select($table.'.index_name AS index_name')
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq($table.'.uid=', $uid),
+                $queryBuilder->expr()->eq($table.'.uid', $uid),
                 $where,
                 self::whereExpression($table)
             )
