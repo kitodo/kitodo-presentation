@@ -135,7 +135,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         $count = $queryBuilder->count('uid')->execute()->fetchColumn(0);
         $content = '';
         if ($count == 1 && empty($this->conf['dont_show_single'])) {
-            $resArray = $allResults[0];
+            $resArray = $result->fetch();
             $this->showSingleCollection(intval($resArray['uid']));
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
