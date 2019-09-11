@@ -89,8 +89,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                 && empty($this->conf['dont_show_single'])) {
                 $this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
             }
-            $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']));
-            $orderBy = 'FIELD(tx_dlf_collections.uid,'.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+            $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])));
         }
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
@@ -149,6 +148,14 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             } else {
                 $collections[$collectionData['uid']] = $collectionData;
             }
+        }
+        // Sort collections according to flexform configuration
+        if ($this->conf['collections']) {
+            $sortedCollections = [];
+            foreach (GeneralUtility::intExplode(',', $this->conf['collections']) as $uid) {
+                $sortedCollections[$uid] = $collections[$uid];
+            }
+            $collections = $sortedCollections;
         }
         $markerArray = [];
         // Process results.
