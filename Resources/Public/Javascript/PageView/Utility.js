@@ -564,9 +564,9 @@ dlfUtils.buildImageV1 = function buildImageV1(mimetype, uri, jsonld) {
  * @returns string
  */
 dlfUtils.getIiifComplianceLevelProfile = function(jsonld, version) {
-    var regexVersion1 = new RegExp('^https?\:\/\/library\.stanford\.edu\/iiif\/image-api\/(1\.1\/)?compliance\.html#level[0-2]$'),
-        regexVersion2 = new RegExp('^https?\:\/\/iiif\.io\/api\/image\/2\/level[0-2](\.json)?$'),
-        regexVersion3 = new RegExp('(^https?\:\/\/iiif\.io\/api\/image\/3\/level[0-2](\.json)?$)|(^level[0-2]$)'),
+    var regexVersion1 = new RegExp('^https?\\:\\/\\/library\\.stanford\\.edu\\/iiif\\/image-api\\/(1\\.1\\/)?compliance\\.html#level[0-2]$'),
+        regexVersion2 = new RegExp('^https?\\:\\/\\/iiif\\.io\\/api\\/image\\/2\\/level[0-2](\\.json)?$'),
+        regexVersion3 = new RegExp('(^https?\\:\\/\\/iiif\\.io\\/api\\/image\\/3\\/level[0-2](\\.json)?$)|(^level[0-2]$)'),
         level;
     if (jsonld.profile === undefined) {
         return dlfUtils.iiifProfiles.none.none;
