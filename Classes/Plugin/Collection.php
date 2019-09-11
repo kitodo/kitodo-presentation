@@ -149,11 +149,13 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $collections[$collectionData['uid']] = $collectionData;
             }
         }
+        // Sort collections according to flexform configuration
         if ($this->conf['collections']) {
-            foreach(GeneralUtility::intExplode(',', $this->conf['collections']) as $uid) {
-                $newCollections[$uid] = $collections[$uid];
+            $sortedCollections = [];
+            foreach (GeneralUtility::intExplode(',', $this->conf['collections']) as $uid) {
+                $sortedCollections[$uid] = $collections[$uid];
             }
-            $collections = $newCollections;
+            $collections = $sortedCollections;
         }
         $markerArray = [];
         // Process results.
