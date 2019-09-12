@@ -1121,7 +1121,6 @@ abstract class Document {
                 $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
                 Helper::whereExpression('tx_dlf_metadata')
             )
-            ->setMaxResults(1)
             ->execute();
 
         $listed = [];
