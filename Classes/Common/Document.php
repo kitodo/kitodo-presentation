@@ -451,10 +451,8 @@ abstract class Document {
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) == 1) {
-                $documentFormat = $allResults[0]['document_format'];
+            if ($resArray = $result->fetch()) {
+                $documentFormat = $resArray['document_format'];
             }
         } else {
             // Get document format from content of remote document
@@ -691,11 +689,10 @@ abstract class Document {
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) == 1) {
+            if ($resArray = $result->fetch()) {
                 // Get title information.
-                list ($title, $partof) = $allResults[0];
+                $title = $resArray['title'];
+                $partof = $resArray['partof'];
                 // Search parent documents recursively for a title?
                 if ($recursive
                     && empty($title)
@@ -969,10 +966,8 @@ abstract class Document {
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
-
-        if (count($allResults) == 1) {
-            list ($structure) = $allResults[0];
+        if ($resArray = $result->fetch()) {
+            $structure = $resArray['uid'];
         } else {
             Helper::devLog('Could not identify document/structure type "'.$queryBuilder->expr()->literal($metadata['type'][0]).'"', DEVLOG_SEVERITY_ERROR);
             return FALSE;
@@ -1053,10 +1048,8 @@ abstract class Document {
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
-
-        if (count($allResults) == 1) {
-            list ($ownerUid) = $allResults[0];
+        if ($resArray = $result->fetch()) {
+            $ownerUid = $resArray['uid'];
         } else {
             // Insert new library.
             $libNewUid = uniqid('NEW');
@@ -1540,10 +1533,13 @@ abstract class Document {
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
-
-        if (count($allResults) == 1) {
-            list ($this->uid, $this->pid, $this->recordId, $this->parentId, $this->thumbnail, $this->location) = $allResults[0];
+        if ($resArray = $result->fetch()) {
+            $this->uid = $resArray['uid'];
+            $this->pid = $resArray['pid'];
+            $this->recordId = $resArray['record_id'];
+            $this->uid = $resArray['uid'];
+            $this->thumbnail = $resArray['thumbnail'];
+            $this->location = $resArray['location'];
             $this->thumbnailLoaded = TRUE;
             // Load XML file if necessary...
             if ($this->getDocument() === NULL

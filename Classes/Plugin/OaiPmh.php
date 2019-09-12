@@ -554,8 +554,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $allResults = $result->fetchAll();
 
-        if (count($allResults) == 1) {
-            list ($timestamp) = $allResults[0];
+        if ($resArray = $result->fetch()) {
+            $timestamp = $resArray['tstamp'];
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
         } else {
             Helper::devLog('No records found with PID '.$this->conf['pages'], DEVLOG_SEVERITY_NOTICE);

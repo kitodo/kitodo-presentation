@@ -158,7 +158,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
 
             // Get UID of document with given record identifier.
             $result = $queryBuilder
-                ->select('tx_dlf_documents.uid')
+                ->select('tx_dlf_documents.uid AS uid')
                 ->from('tx_dlf_documents')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['recordId'])),
@@ -167,10 +167,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) == 1) {
-                list ($this->piVars['id']) = $allResults[0];
+            if ($resArray = $result->fetch()) {
+                $this->piVars['id'] = $resArray['uid'];
                 // Set superglobal $_GET array and unset variables to avoid infinite looping.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
                 unset ($this->piVars['recordId'], $_GET[$this->prefixId]['recordId']);

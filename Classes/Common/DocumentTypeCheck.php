@@ -157,7 +157,7 @@ class DocumentTypeCheck {
 
             // Get UID of document with given record identifier.
             $result = $queryBuilder
-                ->select('tx_dlf_documents.uid')
+                ->select('tx_dlf_documents.uid AS uid')
                 ->from('tx_dlf_documents')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['recordId'])),
@@ -167,8 +167,8 @@ class DocumentTypeCheck {
                 ->execute();
 
             $allResults = $result->fetchAll();
-            if (count($allResults) == 1) {
-                list ($this->piVars['id']) = $allResults[0];
+            if ($resArray = $result->fetch()) {
+                $this->piVars['id'] = $resArray['uid'];
                 // Set superglobal $_GET array.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
                 // Unset variable to avoid infinite looping.
