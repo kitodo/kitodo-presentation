@@ -155,11 +155,9 @@ class DataHandler {
                             ->setMaxResults(1)
                             ->execute();
 
-                        $allResults = $result->fetchAll();
-
-                        if (count($allResults) == 1) {
+                        if ($resArray = $result->fetch()) {
                             // Reset storing to current.
-                            list ($fieldArray['index_stored']) = $allResults[0];
+                            $fieldArray['index_stored'] = $resArray['is_listed'];
                         }
                     }
                     // Index field in index if it should be used for auto-completion.
@@ -180,11 +178,9 @@ class DataHandler {
                             ->setMaxResults(1)
                             ->execute();
 
-                        $allResults = $result->fetchAll();
-
-                        if (count($allResults) == 1) {
+                        if ($resArray = $this->fetch()) {
                             // Reset indexing to current.
-                            list ($fieldArray['index_indexed']) = $allResults[0];
+                            $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
                     }
                 // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
@@ -206,11 +202,9 @@ class DataHandler {
                                 ->setMaxResults(1)
                                 ->execute();
 
-                            $allResults = $result->fetchAll();
-
-                            if (count($allResults) == 1) {
-                                // Reset index name to current.
-                                list ($fieldArray['index_name']) = $allResults[0];
+                            if ($resArray = $this->fetch()) {
+                                // Reset indexing to current.
+                                $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                             }
                         }
                         Helper::devLog('Prevented change of index_name for UID '.$id.' in table "'.$table.'"', DEVLOG_SEVERITY_NOTICE);

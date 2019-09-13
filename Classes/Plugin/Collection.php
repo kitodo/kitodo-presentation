@@ -285,8 +285,12 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             ->execute();
 
         // Fetch corresponding document UIDs from Solr.
-        $allResults = $collection->fetchAll();
-        $collectionData = $allResults[0];
+        if ($resArray = $collection->fetch()) {
+            $collectionData = $resArray;
+        } else {
+            Helper::devLog('No collection with UID '.$id.' found.', DEVLOG_SEVERITY_WARNING);
+            return;
+        }
         if ($collectionData['index_search'] != '') {
             $solr_query = '('.$collectionData['index_search'].')';
         } else {
