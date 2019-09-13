@@ -166,7 +166,6 @@ class DocumentTypeCheck {
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
             if ($resArray = $result->fetch()) {
                 $this->piVars['id'] = $resArray['uid'];
                 // Set superglobal $_GET array.

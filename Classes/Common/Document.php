@@ -1536,7 +1536,7 @@ abstract class Document {
             $this->uid = $resArray['uid'];
             $this->pid = $resArray['pid'];
             $this->recordId = $resArray['record_id'];
-            $this->uid = $resArray['uid'];
+            $this->parentId = $resArray['partof'];
             $this->thumbnail = $resArray['thumbnail'];
             $this->location = $resArray['location'];
             $this->thumbnailLoaded = TRUE;
