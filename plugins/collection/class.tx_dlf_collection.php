@@ -197,9 +197,9 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             }
 
-            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0', $params);
+            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0 AND toplevel:true', $params);
 
-            $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $params);
+            $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0 AND toplevel:true', $params);
 
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collection['titles'] = array ();
@@ -370,7 +370,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         } else {
 
-            $solr_query .= 'collection:("'.$collectionData['index_name'].'")';
+            $solr_query .= 'collection:("'.$collectionData['index_name'].'") AND toplevel:true';
 
         }
 
@@ -398,7 +398,11 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         foreach ($solrResult as $doc) {
 
-            $documentSet[] = $doc->uid;
+            if ($this->doc) {
+
+                $documentSet[] = $doc->uid;
+
+            }
 
         }
 
