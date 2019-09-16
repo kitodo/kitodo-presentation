@@ -398,7 +398,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         foreach ($solrResult as $doc) {
 
-            if ($this->doc) {
+            if ($doc->uid) {
 
                 $documentSet[] = $doc->uid;
 
