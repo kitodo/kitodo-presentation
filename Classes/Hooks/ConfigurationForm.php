@@ -129,7 +129,7 @@ class ConfigurationForm {
                 'type' => 'MODS',
                 'root' => 'mods',
                 'namespace' => 'http://www.loc.gov/mods/v3',
-                'class' => 'Kitodo\\\\Dlf\\\\Format\\\\Mods'
+                'class' => 'Kitodo\\Dlf\\Format\\Mods'
             ];
         }
         // Add TEIHDR namespace.
@@ -139,7 +139,7 @@ class ConfigurationForm {
                 'type' => 'TEIHDR',
                 'root' => 'teiHeader',
                 'namespace' => 'http://www.tei-c.org/ns/1.0',
-                'class' => 'Kitodo\\\\Dlf\\\\Format\\\\TeiHeader'
+                'class' => 'Kitodo\\Dlf\\Format\\TeiHeader'
             ];
         }
         // Add ALTO namespace.
@@ -149,7 +149,7 @@ class ConfigurationForm {
                 'type' => 'ALTO',
                 'root' => 'alto',
                 'namespace' => 'http://www.loc.gov/standards/alto/ns-v2#',
-                'class' => 'Kitodo\\\\Dlf\\\\Format\\\\Alto'
+                'class' => 'Kitodo\\Dlf\\Format\\Alto'
             ];
         }
         // Add IIIF Metadata API 1 context
