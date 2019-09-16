@@ -127,10 +127,10 @@ return array (
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_search',
             'config' => array (
-            'type' => 'text',
-                'cols' => 30,
-                'rows' => 5,
-                'eval' => '',
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
             ),
         ),
         'oai_name' => array (

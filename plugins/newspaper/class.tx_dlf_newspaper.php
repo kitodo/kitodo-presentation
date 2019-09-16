@@ -82,7 +82,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
             'tx_dlf_documents',
             '(tx_dlf_documents.structure='.tx_dlf_helper::getIdFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
             '',
-            'title ASC',
+            'tx_dlf_documents.title_sorting ASC',
             ''
         );
 
