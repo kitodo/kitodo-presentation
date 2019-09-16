@@ -166,8 +166,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             } else {
                 $solr_query .= 'collection:("'.$collection['index_name'].'")';
             }
-            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0', $params);
-            $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0', $params);
+            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0 AND toplevel:true', $params);
+            $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0 AND toplevel:true', $params);
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collection['titles'] = [];
             foreach ($partOfNothing as $doc) {
@@ -294,7 +294,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($collectionData['index_search'] != '') {
             $solr_query = '('.$collectionData['index_search'].')';
         } else {
-            $solr_query = 'collection:("'.$collectionData['index_name'].'")';
+            $solr_query = 'collection:("'.$collectionData['index_name'].'") AND toplevel:true';
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
@@ -307,7 +307,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Initialize array
         $documentSet = [];
         foreach ($solrResult as $doc) {
-            $documentSet[] = $doc->uid;
+            if ($doc->uid) {
+                $documentSet[] = $doc->uid;
+            }
         }
         $documentSet = array_unique($documentSet);
         // Fetch document info for UIDs in $documentSet from DB
