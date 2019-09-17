@@ -22,6 +22,7 @@ limitations under the License.
         <fieldType name="int" class="solr.IntPointField" positionIncrementGap="0"/>
         <!-- Use dates of the form 1995-12-31Z23:59:49Z for this field. -->
         <fieldType name="date" class="solr.DatePointField" positionIncrementGap="0"/>
+        <fieldType name="geojson" class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="Geo3D" geo="true" planetModel="WGS84" format="GeoJSON"/>
         <fieldType name="standard" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
                 <tokenizer class="solr.StandardTokenizerFactory" />
@@ -137,6 +138,8 @@ limitations under the License.
         <field name="location" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
         <!-- Associated collection(s) of the document. -->
         <field name="collection" type="string" indexed="true" stored="true" required="true" multiValued="true" default="" />
+        <!-- GeoJson data -->
+        <field name="geom" type="geojson" indexed="true" stored="true" required="false" multiValued="false"/>
 
         <!--
             The following dynamic fields define all possible field variants.

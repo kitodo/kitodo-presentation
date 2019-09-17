@@ -400,6 +400,10 @@ class Indexer {
             $solrDoc->setField('location', $doc->location);
             $solrDoc->setField('urn', $metadata['urn']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+            $coordinates = json_decode($metadata['coordinates'][0]);
+            if (is_object($coordinates)) {
+                  $solrDoc->setField('geom', json_encode($coordinates->features[0]));
+            }
             $autocomplete = [];
             foreach ($metadata as $index_name => $data) {
                 if (!empty($data)
