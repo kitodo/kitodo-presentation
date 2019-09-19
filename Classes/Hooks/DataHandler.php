@@ -178,7 +178,7 @@ class DataHandler {
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $this->fetch()) {
+                        if ($resArray = $result->fetch()) {
                             // Reset indexing to current.
                             $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
@@ -202,7 +202,7 @@ class DataHandler {
                                 ->setMaxResults(1)
                                 ->execute();
 
-                            if ($resArray = $this->fetch()) {
+                            if ($resArray = $result->fetch()) {
                                 // Reset indexing to current.
                                 $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                             }
