@@ -137,9 +137,9 @@ class Solr {
             $fields = [];
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_metadata.index_name',
-                    'tx_dlf_metadata.index_tokenized',
-                    'tx_dlf_metadata.index_stored')
+                    'tx_dlf_metadata.index_name AS index_name',
+                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
+                    'tx_dlf_metadata.index_stored AS index_stored')
                 ->from('tx_dlf_metadata')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
@@ -153,7 +153,7 @@ class Solr {
                 ->execute();
 
             while ($resArray = $result->fetch()) {
-                $fields[] = $resArray[0] . '_' . ($resArray[1] ? 't' : 'u') . ($resArray[2] ? 's' : 'u') . 'i';
+                $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';
             }
 
             // Check if queried field is valid.
