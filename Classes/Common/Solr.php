@@ -131,7 +131,7 @@ class Solr {
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
             /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_structures');
+                ->getQueryBuilderForTable('tx_dlf_metadata');
 
             // Get all indexed fields.
             $fields = [];
@@ -143,6 +143,7 @@ class Solr {
                 ->from('tx_dlf_metadata')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
                     $queryBuilder->expr()->orX(
                         $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', array(-1, 0)),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
