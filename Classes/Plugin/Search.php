@@ -369,32 +369,26 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             $content .= $this->templateService->substituteSubpart($this->templateService->substituteMarkerArray($this->template, $markerArray), '###EXT_SEARCH_ENTRY###', $extendedSearch);
             return $this->pi_wrapInBaseClass($content);
         } else {
-            // Instantiate search object.
-            $solr = Solr::getInstance($this->conf['solrcore']);
-            if (!$solr->ready) {
-                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
-                return $content;
-            }
             // Build label for result list.
             $label = $this->pi_getLL('search', '', TRUE);
             if (!empty($this->piVars['query'])) {
-                $label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), $this->piVars['query']));
+                $label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), trim($this->piVars['query'])));
             }
             // Prepare query parameters.
             $params = [];
             $matches = [];
             // Set search query.
             if ((!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext']))
-                || preg_match('/fulltext:\((.*)\)/', $this->piVars['query'], $matches)) {
+                || preg_match('/fulltext:\((.*)\)/', trim($this->piVars['query']), $matches)) {
                 // If the query already is a fulltext query e.g using the facets
                 $this->piVars['query'] = empty($matches[1]) ? $this->piVars['query'] : $matches[1];
                 // Search in fulltext field if applicable. query must not be empty!
                 if (!empty($this->piVars['query'])) {
-                    $query = 'fulltext:('.Solr::escapeQuery($this->piVars['query']).')';
+                    $query = 'fulltext:('.Solr::escapeQuery(trim($this->piVars['query'])).')';
                 }
             } else {
                 // Retain given search field if valid.
-                $query = Solr::escapeQueryKeepField($this->piVars['query'], $this->conf['pages']);
+                $query = Solr::escapeQueryKeepField(trim($this->piVars['query']), $this->conf['pages']);
             }
             // Add extended search query.
             if (!empty($this->piVars['extQuery'])
