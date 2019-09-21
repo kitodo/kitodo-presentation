@@ -248,6 +248,10 @@ $structureDefaults = [
         'toplevel' => 0,
         'oai_name' => ''
     ],
+    'page' => [
+        'toplevel' => 0,
+        'oai_name' => '',
+    ],
     'paper' => [
         'toplevel' => 1,
         'oai_name' => '',
