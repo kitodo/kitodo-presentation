@@ -297,64 +297,62 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
             $markerArray['###SUBPREVIEW###'] = '';
             $imgAlt = '';
             foreach ($this->metadata as $index_name => $metaConf) {
-                if (!empty($subpart['metadata'][$index_name])) {
-                    $parsedValue = '';
-                    $fieldwrap = $this->getFieldWrap($index_name, $metaConf['wrap']);
-                    do {
-                        $value = @array_shift($subpart['metadata'][$index_name]);
-                        // Link title to pageview.
-                        if ($index_name == 'title') {
-                            // Get title of parent document if needed.
-                            if (empty($value) && $this->conf['getTitle']) {
-                                $superiorTitle = Document::getTitle($subpart['uid'], TRUE);
-                                if (!empty($superiorTitle)) {
-                                    $value = '['.$superiorTitle.']';
-                                }
+                $parsedValue = '';
+                $fieldwrap = $this->getFieldWrap($index_name, $metaConf['wrap']);
+                do {
+                    $value = @array_shift($subpart['metadata'][$index_name]);
+                    // Link title to pageview.
+                    if ($index_name == 'title') {
+                        // Get title of parent document if needed.
+                        if (empty($value) && $this->conf['getTitle']) {
+                            $superiorTitle = Document::getTitle($subpart['uid'], TRUE);
+                            if (!empty($superiorTitle)) {
+                                $value = '['.$superiorTitle.']';
                             }
-                            // Set fake title if still not present.
-                            if (empty($value)) {
-                                $value = $noTitle;
-                            }
-                            $imgAlt = htmlspecialchars($value);
-                            $additionalParams = [
-                                'id' => $subpart['uid'],
-                                'page' => $subpart['page'],
-                                'highlight_word' => $highlight_word
-                            ];
-                            if (!empty($this->piVars['logicalPage'])) {
-                                $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
-                            }
-                            $conf = [
-                                // we don't want cHash in case of search parameters
-                                'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
-                                'parameter' => $this->conf['targetPid'],
-                                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
-                            ];
-                            $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
-                        } elseif ($index_name == 'owner' && !empty($value)) { // Translate name of holding library.
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
-                        } elseif ($index_name == 'type' && !empty($value)) { // Translate document type.
-                            $_value = $value;
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
-                            // Add page number for single pages.
-                            if ($_value == 'page') {
-                                $value .= ' '.intval($subpart['page']);
-                            }
-                        } elseif ($index_name == 'language' && !empty($value)) { // Translate ISO 639 language code.
-                            $value = htmlspecialchars(Helper::getLanguageName($value));
-                        } elseif (!empty($value)) {
-                            $value = htmlspecialchars($value);
                         }
-                        $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
-                        if (!empty($value)) {
-                            $parsedValue .= $value;
+                        // Set fake title if still not present.
+                        if (empty($value)) {
+                            $value = $noTitle;
                         }
-                    } while (count($subpart['metadata'][$index_name]));
-                    if (!empty($parsedValue)) {
-                        $field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
-                        $field .= $parsedValue;
-                        $markerArray['###SUBMETADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+                        $imgAlt = htmlspecialchars($value);
+                        $additionalParams = [
+                            'id' => $subpart['uid'],
+                            'page' => $subpart['page'],
+                            'highlight_word' => $highlight_word
+                        ];
+                        if (!empty($this->piVars['logicalPage'])) {
+                            $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
+                        }
+                        $conf = [
+                            // we don't want cHash in case of search parameters
+                            'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
+                            'parameter' => $this->conf['targetPid'],
+                            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+                        ];
+                        $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
+                    } elseif ($index_name == 'owner' && !empty($value)) { // Translate name of holding library.
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                    } elseif ($index_name == 'type' && !empty($value)) { // Translate document type.
+                        $_value = $value;
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        // Add page number for single pages.
+                        if ($_value == 'page') {
+                            $value .= ' '.intval($subpart['page']);
+                        }
+                    } elseif ($index_name == 'language' && !empty($value)) { // Translate ISO 639 language code.
+                        $value = htmlspecialchars(Helper::getLanguageName($value));
+                    } elseif (!empty($value)) {
+                        $value = htmlspecialchars($value);
                     }
+                    $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
+                    if (!empty($value)) {
+                        $parsedValue .= $value;
+                    }
+                } while (is_array($subpart['metadata'][$index_name]) && count($subpart['metadata'][$index_name]) > 0);
+                if (!empty($parsedValue)) {
+                    $field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
+                    $field .= $parsedValue;
+                    $markerArray['###SUBMETADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
                 }
             }
             // Add thumbnail.
