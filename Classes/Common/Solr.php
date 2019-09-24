@@ -365,14 +365,24 @@ class Solr {
         $parameters['rows'] = $this->limit;
         // Set query.
         $parameters['query'] = $query;
-        // Perform search.
-        $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
-        $result = $this->service->select($selectQuery);
-        $resultSet = [];
-        foreach ($result as $doc) {
-            $resultSet[] = $doc;
+
+        // calculate cache identifier
+        $cacheIdentifier = hash('md5', print_r(array_merge($this->params, $parameters),1));
+        $cache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('kitodo_solr');
+
+        if (($entry = $cache->get($cacheIdentifier)) === FALSE) {
+            $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
+            $result = $this->service->select($selectQuery);
+            $resultSet = [];
+            foreach ($result as $doc) {
+                $resultSet[] = $doc;
+            }
+            $entry = $resultSet;
+
+            // Save value in cache
+            $cache->set($cacheIdentifier, $entry);
         }
-        return $resultSet;
+        return $entry;
     }
 
     /**
