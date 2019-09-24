@@ -64,42 +64,42 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @access protected
      *
-     * @return string Viewer script tags ready for output
+     * @return void
      */
     protected function addViewerJS() {
-        $output = [];
+
+        $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
         // Add OpenLayers library.
-        $output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3.css">';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/glif.min.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3-dlf.js"></script>';
+        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3.css');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/glif.min.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3-dlf.js');
         // Add viewer library.
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/Utility.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3Styles.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3Sources.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AltoParser.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/ImageManipulationControl.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/FulltextControl.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AnnotationParser.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AnnotationControl.js"></script>';
-        $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/PageView.js"></script>';
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/Utility.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3Styles.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3Sources.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AltoParser.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/ImageManipulationControl.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/FulltextControl.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AnnotationParser.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AnnotationControl.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/PageView.js');
         // Add viewer configuration.
-        $output[] = '
-            <script id="tx-dlf-pageview-initViewer" type="text/javascript">
-                $(document).ready(function() {
-                    if (dlfUtils.exists(dlfViewer)) {
-                        tx_dlf_viewer = new dlfViewer({
-                            controls: ["'.implode('", "', $this->controls).'"],
-                            div: "'.$this->conf['elementId'].'",
-                            images: '.json_encode($this->images).',
-                            fulltexts: '.json_encode($this->fulltexts).',
-                            annotationContainers: '.json_encode($this->annotationContainers).',
-                            useInternalProxy: '.($this->conf['useInternalProxy'] ? 1 : 0).'
-                        });
-                    }
-                });
-            </script>';
-        return implode("\n", $output);
+        $viewerConfiguration = '
+            $(document).ready(function() {
+                if (dlfUtils.exists(dlfViewer)) {
+                    tx_dlf_viewer = new dlfViewer({
+                        controls: ["'.implode('", "', $this->controls).'"],
+                        div: "'.$this->conf['elementId'].'",
+                        images: '.json_encode($this->images).',
+                        fulltexts: '.json_encode($this->fulltexts).',
+                        annotationContainers: '.json_encode($this->annotationContainers).',
+                        useInternalProxy: '.($this->conf['useInternalProxy'] ? 1 : 0).'
+                    });
+                }
+            });
+            ';
+        $pageRenderer->addJsFooterInlineCode('kitodo-pageview-configuration', $viewerConfiguration);
     }
 
     /**
@@ -335,10 +335,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Get the controls for the map.
         $this->controls = explode(',', $this->conf['features']);
         // Fill in the template markers.
-        $markerArray = [
-            '###VIEWER_JS###' => $this->addViewerJS()
-        ];
-        $markerArray = array_merge($markerArray, $this->addInteraction(), $this->addBasketForm());
+        $this->addViewerJS();
+        $markerArray = array_merge($this->addInteraction(), $this->addBasketForm());
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
