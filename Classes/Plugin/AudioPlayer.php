@@ -41,11 +41,24 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
         $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
         // Add AudioPlayer library.
         $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css');
+        $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', '#tx-dlf-audio { width: 100px; height: 100px; }');
         $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js');
         $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js');
         // Add AudioPlayer configuration.
-        $pageRenderer->addJscInlineBlock('kitodo-audioplayer-configuration', '#tx-dlf-audio { width: 100px; height: 100px; }');
-        $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $viewerConfiguration);
+        $audioplayerConfiguration = '
+                $(document).ready(function() {
+                    AudioPlayer = new dlfAudioPlayer({
+                        audio: {
+                            mimeType: "'.$this->audio['mimetype'].'",
+                            title: "'.$this->audio['label'].'",
+                            url:  "'.$this->audio['url'].'"
+                        },
+                        parentElId: "tx-dlf-audio",
+                        swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                    });
+                });
+        ';
+        $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $audioplayerConfiguration);
     }
 
     /**
