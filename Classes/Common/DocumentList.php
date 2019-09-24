@@ -540,7 +540,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     )
                     ->from('tx_dlf_metadata')
                     ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', intval($this->metadata['options']['pid'])),
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->metadata['options']['pid'])),
                         Helper::whereExpression('tx_dlf_metadata')
                     )
                     ->orderBy('tx_dlf_metadata.sorting', 'ASC')

@@ -82,6 +82,7 @@
             <label index="note">Note</label>
             <label index="official_notification">Official Notification</label>
             <label index="ornament">Ornament</label>
+            <label index="page">Page</label>
             <label index="paper">Paper</label>
             <label index="paste_down">Paste Down</label>
             <label index="periodical">Periodical</label>
@@ -196,6 +197,7 @@
             <label index="note">Vermerk</label>
             <label index="official_notification">Bescheid</label>
             <label index="ornament">Buchschmuck</label>
+            <label index="page">Seite</label>
             <label index="paper">Vortrag</label>
             <label index="paste_down">Spiegel</label>
             <label index="periodical">Peridica</label>

@@ -326,10 +326,7 @@ class Helper {
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
-
-        if (count($allResults) == 1) {
-            $resArray = $allResults[0];
+        if ($resArray = $result->fetch()) {
             return $resArray['index_name'];
         } else {
             self::devLog('No "index_name" with UID '.$uid.' and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
