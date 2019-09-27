@@ -65,7 +65,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
-        $this->getTemplate();
+        $this->getTemplate('###TEMPLATE###', '', true);
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
         if (!empty($fullTextFile)) {
             $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:'.$this->pi_getLL('fulltext-on', '', TRUE).';fulltext-off:'.$this->pi_getLL('fulltext-off', '', TRUE).'">&nbsp;</a>';
@@ -73,6 +73,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">'.$this->pi_getLL('fulltext-not-available', '', TRUE).'</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $this->pi_wrapInBaseClass($content);
+        return $content;
+//        return $this->pi_wrapInBaseClass($content);
     }
 }

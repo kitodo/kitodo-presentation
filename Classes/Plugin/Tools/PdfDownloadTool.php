@@ -65,13 +65,14 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
-        $this->getTemplate();
+        $this->getTemplate('###TEMPLATE###', '', true);
         // Get single page downloads.
         $markerArray['###PAGE###'] = $this->getPageLink();
         // Get work download.
         $markerArray['###WORK###'] = $this->getWorkLink();
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $this->pi_wrapInBaseClass($content);
+        return $content;
+//        return $this->pi_wrapInBaseClass($content);
     }
 
     /**
