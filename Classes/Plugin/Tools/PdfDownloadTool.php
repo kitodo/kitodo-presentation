@@ -72,7 +72,6 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         $markerArray['###WORK###'] = $this->getWorkLink();
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $content;
-//        return $this->pi_wrapInBaseClass($content);
     }
 
     /**

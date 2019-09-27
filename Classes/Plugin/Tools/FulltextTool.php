@@ -74,6 +74,5 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $content;
-//        return $this->pi_wrapInBaseClass($content);
     }
 }

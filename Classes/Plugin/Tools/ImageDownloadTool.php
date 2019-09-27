@@ -71,7 +71,6 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         $markerArray['###IMAGE_RIGHT###'] = $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'] + 1, $this->pi_getLL('rightPage', '')) : '';
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $content;
-//        return $this->pi_wrapInBaseClass($content);
     }
 
     /**
