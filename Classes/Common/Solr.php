@@ -110,7 +110,7 @@ class Solr {
         $helper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
         // Escape query phrase or term.
         if (preg_match('/^".*"$/', $query)) {
-            return '"'.$helper->escapePhrase(trim($query, '"')).'"';
+            return $helper->escapePhrase(trim($query, '"'));
         } else {
             return $helper->escapeTerm($query);
         }
