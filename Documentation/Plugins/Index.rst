@@ -960,6 +960,13 @@ Toolbox
        * tx_dlf_imagedownloadtool
        * tx_dlf_imagemanipulationtool
        * tx_dlf_pdfdownloadtool
+       * tx_dlf_searchindocumenttool
+
+ - :Property:
+       solrcore
+   :Data Type:
+       :ref:`t3tsref:data-type-integer`
+   :Default:
 
  - :Property:
        fileGrpsImageDownload
