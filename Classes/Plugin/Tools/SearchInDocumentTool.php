@@ -56,6 +56,14 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Quit without doing anything if required variables are not set.
             return $content;
         }
+
+        // Quit if no fulltext file is present
+        $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
+        if (empty($fullTextFile)) {
+           return $content;
+        }
+
+
         // Load template file.
         $this->getTemplate();
 
