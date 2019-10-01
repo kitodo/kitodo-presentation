@@ -58,7 +58,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             ->execute();
 
         if ($result->rowCount() == 1) {
-            $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_search_suggest'] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Search/Suggester.js"></script>';
+            $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Search/Suggester.js');
         } else {
             Helper::devLog('No metadata fields configured for search suggestions', DEVLOG_SEVERITY_WARNING);
         }

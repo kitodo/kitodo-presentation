@@ -1,3 +1,11 @@
+config {
+  # concatenate all JavaScript files by default
+  concatenateJs = 1
+  # concatenate all CSS files by default
+  concatenateCss = 1
+}
+
+
 page {
   includeJSLibs {
     jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-2.2.4.min.js
