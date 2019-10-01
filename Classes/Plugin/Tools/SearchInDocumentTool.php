@@ -64,7 +64,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
 
         // Load template file.
-        $this->getTemplate();
+        $this->getTemplate('###TEMPLATE###', '', TRUE);
 
         // Configure @action URL for form.
         $linkConf = array(
