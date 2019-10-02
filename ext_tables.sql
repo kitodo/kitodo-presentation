@@ -124,7 +124,7 @@ CREATE TABLE tx_dlf_metadataformat (
     parent_id int(11) DEFAULT '0' NOT NULL,
     encoded int(11) DEFAULT '0' NOT NULL,
     xpath varchar(1024) DEFAULT '' NOT NULL,
-    xpath_sorting varchar(255) DEFAULT '' NOT NULL,
+    xpath_sorting varchar(1024) DEFAULT '' NOT NULL,
     mandatory smallint(6) DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
