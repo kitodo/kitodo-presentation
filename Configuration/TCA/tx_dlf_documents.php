@@ -296,6 +296,61 @@ return [
                 'default' => '',
             ],
         ],
+        'license' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.license',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'terms' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.terms',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'restrictions' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.restrictions',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'out_of_print' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.out_of_print',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 1024,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'rights_info' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.rights_info',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 1024,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
         'collections' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.collections',

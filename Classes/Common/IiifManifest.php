@@ -601,6 +601,11 @@ final class IiifManifest extends Document
             'type' => array (),
             'volume' => array (),
             'volume_sorting' => array (),
+            'license' => array (),
+            'terms' => array (),
+            'restrictions' => array (),
+            'out_of_print' => array (),
+            'rights_info' => array (),
             'collection' => array (),
             'owner' => array (),
         );

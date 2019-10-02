@@ -150,6 +150,9 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!empty($metadata['purl'])) {
             $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8')));
         }
+        if (!empty($metadata['prod_id'])) {
+            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', 'kitodo:production:'.htmlspecialchars($metadata['prod_id'], ENT_NOQUOTES, 'UTF-8')));
+        }
         if (!empty($metadata['urn'])) {
             $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8')));
         }
@@ -188,6 +191,21 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $partof = $allResults[0];
                 $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:relation', htmlspecialchars($partof['record_id'], ENT_NOQUOTES, 'UTF-8')));
             }
+        }
+        if (!empty($metadata['license'])) {
+            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights', htmlspecialchars($metadata['license'], ENT_NOQUOTES, 'UTF-8')));
+        }
+        if (!empty($metadata['terms'])) {
+            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights', htmlspecialchars($metadata['terms'], ENT_NOQUOTES, 'UTF-8')));
+        }
+        if (!empty($metadata['restrictions'])) {
+            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights', htmlspecialchars($metadata['restrictions'], ENT_NOQUOTES, 'UTF-8')));
+        }
+        if (!empty($metadata['out_of_print'])) {
+            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights', htmlspecialchars($metadata['out_of_print'], ENT_NOQUOTES, 'UTF-8')));
+        }
+        if (!empty($metadata['rights_info'])) {
+            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights', htmlspecialchars($metadata['rights_info'], ENT_NOQUOTES, 'UTF-8')));
         }
         return $oai_dc;
     }
