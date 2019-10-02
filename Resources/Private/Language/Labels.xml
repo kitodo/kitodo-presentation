@@ -149,6 +149,7 @@
             <label index="tx_dlf_toolbox.imagedownloadtool">Image Download</label>
             <label index="tx_dlf_toolbox.imagemanipulationtool">Image Manipulation</label>
             <label index="tx_dlf_toolbox.pdfdownloadtool">PDF Download</label>
+            <label index="tx_dlf_toolbox.searchindocumenttool">Search in Document</label>
             <label index="tt_content.dlf_audioplayer">DLF: Audio Player</label>
             <label index="tt_content.dlf_basket">DLF: Basket</label>
             <label index="tt_content.dlf_calendar">DLF: Calendar</label>
@@ -322,6 +323,7 @@
             <label index="tx_dlf_toolbox.imagedownloadtool">Bild-Download</label>
             <label index="tx_dlf_toolbox.imagemanipulationtool">Bildbearbeitung</label>
             <label index="tx_dlf_toolbox.pdfdownloadtool">PDF-Download</label>
+            <label index="tx_dlf_toolbox.searchindocumenttool">Suche im Dokument</label>
             <label index="tt_content.dlf_audioplayer">DLF: Audioplayer</label>
             <label index="tt_content.dlf_basket">DLF: Warenkorb</label>
             <label index="tt_content.dlf_calendar">DLF: Kalender</label>
