@@ -20,7 +20,7 @@ function nextResultPage(rows) {
     var newstart = parseInt(currentstart) + rows;
     $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(newstart);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 /**
  * This function decreases the start parameter of the search form and submits
@@ -35,7 +35,7 @@ function previousResultPage(rows) {
     var newstart = (currentstart > rows) ? (currentstart - rows) : 0;
     $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(newstart);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 /**
  * This function resets the start parameter on new queries.
@@ -44,7 +44,7 @@ function previousResultPage(rows) {
  */
 function resetStart() {
     $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(0);
-};
+}
 
 $(document).ready(function() {
     $("#tx-dlf-search-in-document-form").submit(function( event ) {
@@ -73,21 +73,21 @@ $(document).ready(function() {
               } else {
                   for (var i=0; i < data.response.docs.length; i++) {
 
-                      var link_current = $(location).attr('href');
-                      var link_base = link_current.substring(0, link_current.indexOf('?'));
-                      var link_params = link_current.substring(link_base.length + 1, link_current.length);
-                      var link_id = link_params.match(/id=(\d)*/g);
+                      var linkCurrent = $(location).attr('href');
+                      var linkBase = linkCurrent.substring(0, linkCurrent.indexOf('?'));
+                      var linkParams = linkCurrent.substring(linkBase.length + 1, linkCurrent.length);
+                      var linkId = linkParams.match(/id=(\d)*/g);
 
-                      if (link_id) {
-                        link_params = link_id + '&';
+                      if (linkId) {
+                        linkParams = linkId + '&';
                       } else {
-                        link_params = '&';
+                        linkParams = '&';
                       }
 
                       var searchHit = data.highlighting[data.response.docs[i].id].fulltext.toString();
                       searchHit = searchHit.substring(searchHit.indexOf('<em>')+4,searchHit.indexOf('</em>'));
 
-                      var newlink = link_base + '?' + (link_params
+                      var newlink = linkBase + '?' + (linkParams
                       + 'tx_dlf[id]=' + data.response.docs[i].uid
                       + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchHit)
                       + '&tx_dlf[page]=' + (data.response.docs[i].page));
@@ -97,7 +97,7 @@ $(document).ready(function() {
                       }
                   }
                   // sort by page as this cannot be done with current solr schema
-                  resultItems.sort(function(a, b){return a-b});
+                  resultItems.sort(function(a, b){return a-b;});
                   resultItems.forEach(function(item, index){
                       resultList += '<li>' + item + '</li>';
                   });
