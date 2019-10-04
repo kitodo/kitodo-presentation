@@ -33,72 +33,72 @@ class tx_dlf_toolsSearchindocument extends tx_dlf_plugin {
      */
     public function main($content, $conf) {
 
-      $this->init($conf);
+        $this->init($conf);
 
-      if (!empty($this->cObj->data['conf'])) {
-          // Merge configuration with conf array of toolbox.
-          $this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
-      }
+        if (!empty($this->cObj->data['conf'])) {
+            // Merge configuration with conf array of toolbox.
+            $this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+        }
 
-      $this->addSearchInDocumentJS();
+        $this->addSearchInDocumentJS();
 
-      // Load current document.
-      $this->loadDocument();
+        // Load current document.
+        $this->loadDocument();
 
-      if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpFulltext']) || empty($this->conf['solrcore'])) {
+        if ($this->doc === NULL || $this->doc->numPages < 1 || empty($this->conf['fileGrpFulltext']) || empty($this->conf['solrcore'])) {
 
-          // Quit without doing anything if required variables are not set.
-          return $content;
+            // Quit without doing anything if required variables are not set.
+            return $content;
 
-      }
+        }
 
-      // Quit if no fulltext file is present
-      $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
+        // Quit if no fulltext file is present
+        $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
 
-      if (empty($fullTextFile)) {
+        if (empty($fullTextFile)) {
 
-          return $content;
+            return $content;
 
-      }
+        }
 
-      // Load template file.
-      if (!empty($this->conf['toolTemplateFile'])) {
+        // Load template file.
+        if (!empty($this->conf['toolTemplateFile'])) {
 
-          $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['toolTemplateFile']), '###TEMPLATE###');
 
-      } else {
+        } else {
 
-          $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/searchindocument/template.tmpl'), '###TEMPLATE###');
+            $this->template = $this->cObj->getSubpart($this->cObj->fileResource('EXT:dlf/plugins/toolbox/tools/searchindocument/template.tmpl'), '###TEMPLATE###');
 
-      }
+        }
 
-      // Configure @action URL for form.
-      $linkConf = array(
-          'parameter' => $GLOBALS['TSFE']->id,
-          'forceAbsoluteUrl' => 1
-      );
+        // Configure @action URL for form.
+        $linkConf = array(
+            'parameter' => $GLOBALS['TSFE']->id,
+            'forceAbsoluteUrl' => 1
+        );
 
-      $encryptedSolr = $this->getEncryptedCoreName();
+        $encryptedSolr = $this->getEncryptedCoreName();
 
-      // Fill markers.
-      $markerArray = array(
-          '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
-          '###LABEL_QUERY###' => $this->pi_getLL('label.query'),
-          '###LABEL_DELETE_SEARCH###' => $this->pi_getLL('label.delete_search'),
-          '###LABEL_LOADING###' => $this->pi_getLL('label.loading'),
-          '###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
-          '###LABEL_SEARCH_IN_DOCUMENT###' => $this->pi_getLL('label.searchInDocument'),
-          '###LABEL_NEXT###' => $this->pi_getLL('label.next'),
-          '###LABEL_PREVIOUS###' => $this->pi_getLL('label.previous'),
-          '###LABEL_PAGE###' => $this->pi_getLL('label.logicalPage'),
-          '###CURRENT_DOCUMENT###' => $this->doc->uid,
-          '###SOLR_ENCRYPTED###' => isset($encryptedSolr['encrypted']) ? $encryptedSolr['encrypted'] : '',
-          '###SOLR_HASH###' => isset($encryptedSolr['hash']) ? $encryptedSolr['hash'] : '',
-      );
+        // Fill markers.
+        $markerArray = array(
+            '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
+            '###LABEL_QUERY###' => $this->pi_getLL('label.query'),
+            '###LABEL_DELETE_SEARCH###' => $this->pi_getLL('label.delete_search'),
+            '###LABEL_LOADING###' => $this->pi_getLL('label.loading'),
+            '###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
+            '###LABEL_SEARCH_IN_DOCUMENT###' => $this->pi_getLL('label.searchInDocument'),
+            '###LABEL_NEXT###' => $this->pi_getLL('label.next'),
+            '###LABEL_PREVIOUS###' => $this->pi_getLL('label.previous'),
+            '###LABEL_PAGE###' => $this->pi_getLL('label.logicalPage'),
+            '###CURRENT_DOCUMENT###' => $this->doc->uid,
+            '###SOLR_ENCRYPTED###' => isset($encryptedSolr['encrypted']) ? $encryptedSolr['encrypted'] : '',
+            '###SOLR_HASH###' => isset($encryptedSolr['hash']) ? $encryptedSolr['hash'] : '',
+        );
 
-      $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
+        $content .= $this->cObj->substituteMarkerArray($this->template, $markerArray);
 
-      return $this->pi_wrapInBaseClass($content);
+        return $this->pi_wrapInBaseClass($content);
     }
 
     /**
