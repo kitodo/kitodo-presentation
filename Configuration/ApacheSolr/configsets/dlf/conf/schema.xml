@@ -19,10 +19,10 @@ limitations under the License.
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
         <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" />
-        <fieldType name="int" class="solr.IntPointField" positionIncrementGap="0"/>
+        <fieldType name="int" class="solr.IntPointField" positionIncrementGap="0" />
         <!-- Use dates of the form 1995-12-31Z23:59:49Z for this field. -->
-        <fieldType name="date" class="solr.DatePointField" positionIncrementGap="0"/>
-        <fieldType name="geojson" class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="Geo3D" geo="true" planetModel="WGS84" format="GeoJSON"/>
+        <fieldType name="date" class="solr.DatePointField" positionIncrementGap="0" />
+        <fieldType name="geojson" class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="Geo3D" geo="true" planetModel="WGS84" format="GeoJSON" />
         <fieldType name="standard" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
                 <tokenizer class="solr.StandardTokenizerFactory" />
@@ -43,7 +43,7 @@ limitations under the License.
         <fieldType name="fulltext" class="solr.TextField" positionIncrementGap="100">
             <analyzer type="index">
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
-                <filter class="solr.FlattenGraphFilterFactory"/>
+                <filter class="solr.FlattenGraphFilterFactory" />
                 <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
                 <!-- For more precise, but less flexible matching, set generateWordParts="0" and generateNumberParts="0". -->
                 <filter class="solr.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1" />
@@ -101,7 +101,7 @@ limitations under the License.
         <!-- Unique identifier for the document in the index. -->
         <field name="id" type="string" indexed="true" stored="true" required="true" />
         <!-- Unique identifier for the document (or its top-level parent) in the TYPO3 database. -->
-        <field name="uid" type="int" indexed="true" stored="true" required="true" default="0" docValues="true"/>
+        <field name="uid" type="int" indexed="true" stored="true" required="true" default="0" docValues="true" />
         <!-- PageID for the document (or its top-level parent) in the TYPO3 database. -->
         <field name="pid" type="int" indexed="true" stored="false" required="true" default="0" />
         <!-- Image number where this document starts. -->
@@ -138,8 +138,12 @@ limitations under the License.
         <field name="location" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
         <!-- Associated collection(s) of the document. -->
         <field name="collection" type="string" indexed="true" stored="true" required="true" multiValued="true" default="" />
-        <!-- GeoJson data -->
-        <field name="geom" type="geojson" indexed="true" stored="true" required="false" multiValued="false"/>
+        <!-- License, Term of Use, and Access Restrictions (should be URIs). -->
+        <field name="license" type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="terms" type="string" indexed="true" stored="true" multiValued="true" />
+        <field name="restrictions" type="string" indexed="true" stored="true" multiValued="true" />
+        <!-- GeoJSON geometry for spatial search. -->
+        <field name="geom" type="geojson" indexed="true" stored="true" multiValued="false" />
 
         <!--
             The following dynamic fields define all possible field variants.

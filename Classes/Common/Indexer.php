@@ -399,6 +399,9 @@ class Indexer {
             $solrDoc->setField('purl', $metadata['purl'][0]);
             $solrDoc->setField('location', $doc->location);
             $solrDoc->setField('urn', $metadata['urn']);
+            $solrDoc->setField('license', $metadata['license']);
+            $solrDoc->setField('terms', $metadata['terms']);
+            $solrDoc->setField('restrictions', $metadata['restrictions']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
             $coordinates = json_decode($metadata['coordinates'][0]);
             if (is_object($coordinates)) {
