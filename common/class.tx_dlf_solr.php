@@ -108,7 +108,7 @@ class tx_dlf_solr {
         // Escape query phrase or term.
         if (preg_match('/^".*"$/', $query)) {
 
-            return '"'.$helper->escapePhrase(trim($query, '"')).'"';
+            return $helper->escapePhrase(trim($query, '"'));
 
         } else {
 
@@ -469,7 +469,7 @@ class tx_dlf_solr {
         }
 
         return $resultSet;
- 
+
     }
 
     /**

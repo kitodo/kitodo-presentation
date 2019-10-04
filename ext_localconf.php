@@ -59,6 +59,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CM
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/imagedownload/class.tx_dlf_toolsImagedownload.php', '_toolsImagedownload', '', TRUE);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsImagedownload'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsImagedownload';
 
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'plugins/toolbox/tools/searchindocument/class.tx_dlf_toolsSearchindocument.php', '_toolsSearchindocument', '', TRUE);
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/plugins/toolbox/tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_toolsSearchindocument'] = 'LLL:EXT:dlf/locallang.xml:tx_dlf_toolbox.toolsSearchindocument';
+
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:'.$_EXTKEY.'/hooks/class.tx_dlf_tcemain.php:tx_dlf_tcemain';
 
@@ -73,6 +76,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = 'EXT:'.$_EXTKEY.'/plugins/search/class.tx_dlf_search_suggest.php';
 
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_geturl_eid'] = 'EXT:'.$_EXTKEY.'/plugins/pageview/class.tx_dlf_geturl_eid.php';
+
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_geturl_eid'] = 'EXT:'.$_EXTKEY.'/plugins/pageview/class.tx_dlf_geturl_eid.php';
+
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_in_document_eid'] = 'EXT:'.$_EXTKEY.'/plugins/toolbox/tools/searchindocument/class.tx_dlf_search_in_document_eid.php';
 
 if (TYPO3_MODE === 'FE') {
 
