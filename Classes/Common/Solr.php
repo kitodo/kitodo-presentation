@@ -368,21 +368,22 @@ class Solr {
 
         // calculate cache identifier
         $cacheIdentifier = hash('md5', print_r(array_merge($this->params, $parameters),1));
-        $cache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('kitodo_solr');
+        $cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('kitodo_solr');
 
+        $resultSet = [];
         if (($entry = $cache->get($cacheIdentifier)) === FALSE) {
             $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
             $result = $this->service->select($selectQuery);
-            $resultSet = [];
             foreach ($result as $doc) {
                 $resultSet[] = $doc;
             }
-            $entry = $resultSet;
-
             // Save value in cache
-            $cache->set($cacheIdentifier, $entry);
+            $cache->set($cacheIdentifier, $resultSet);
+        } else {
+            // return cache hit
+            $resultSet = $entry;
         }
-        return $entry;
+        return $resultSet;
     }
 
     /**
