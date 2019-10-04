@@ -296,6 +296,61 @@ return [
                 'default' => '',
             ],
         ],
+        'license' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.license',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'terms' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.terms',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'restrictions' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.restrictions',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'out_of_print' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.out_of_print',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 1024,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'rights_info' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.rights_info',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 1024,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
         'collections' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.collections',
@@ -367,11 +422,17 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,title,--palette--;;1,author,year,place,structure,document_format,--palette--;;2,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,location,record_id,prod_id,oai_id,opac_id,union_id,urn,purl,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,hidden,--palette--;;3,fe_group,status,owner'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,--palette--;;1,author,--palette--;;2,structure,--palette--;;3,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,--palette--;;4,--palette--;;5,--palette--;;6,--palette--;;7,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,--palette--;;8,hidden,--palette--;;9,fe_group,status,owner,license,'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'title_sorting', 'canNotCollapse' => 1],
-        '2' => ['showitem' => 'partof, thumbnail, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1],
-        '3' => ['showitem' => 'starttime, endtime', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'title, title_sorting, --linebreak--, thumbnail', 'canNotCollapse' => 1],
+        '2' => ['showitem' => 'year, place', 'canNotCollapse' => 1],
+        '3' => ['showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1],
+        '4' => ['showitem' => 'location, document_format', 'canNotCollapse' => 1],
+        '5' => ['showitem' => 'record_id, prod_id', 'canNotCollapse' => 1],
+        '6' => ['showitem' => 'opac_id, union_id', 'canNotCollapse' => 1],
+        '7' => ['showitem' => 'urn, purl', 'canNotCollapse' => 1],
+        '8' => ['showitem' => 'license, terms, --linebreak--, restrictions, rights_info, --linebreak--, out_of_print', 'canNotCollapse' => 1],
+        '9' => ['showitem' => 'starttime, endtime', 'canNotCollapse' => 1],
     ]
 ];

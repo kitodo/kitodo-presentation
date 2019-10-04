@@ -45,6 +45,11 @@
             <label index="tx_dlf_documents.partof">Part of ...</label>
             <label index="tx_dlf_documents.volume">Number of Volume</label>
             <label index="tx_dlf_documents.volume_sorting">Number of Volume (Sorting)</label>
+            <label index="tx_dlf_documents.license">License</label>
+            <label index="tx_dlf_documents.terms">Terms of Use</label>
+            <label index="tx_dlf_documents.restrictions">Restrictions on Access</label>
+            <label index="tx_dlf_documents.out_of_print">Out Of Print Works</label>
+            <label index="tx_dlf_documents.rights_info">Rights Information</label>
             <label index="tx_dlf_documents.collections">Collections</label>
             <label index="tx_dlf_documents.owner">Owner</label>
             <label index="tx_dlf_documents.status">Status</label>
@@ -219,6 +224,11 @@
             <label index="tx_dlf_documents.partof">Übergeordnete Einheit</label>
             <label index="tx_dlf_documents.volume">Bandnummer</label>
             <label index="tx_dlf_documents.volume_sorting">Bandnummer (Sortierung)</label>
+            <label index="tx_dlf_documents.license">Lizenz</label>
+            <label index="tx_dlf_documents.terms">Nutzungsbedingungen</label>
+            <label index="tx_dlf_documents.restrictions">Zugriffsinformationen</label>
+            <label index="tx_dlf_documents.out_of_print">Vergriffene Werke</label>
+            <label index="tx_dlf_documents.rights_info">Rechteinformation</label>
             <label index="tx_dlf_documents.collections">Sammlungen</label>
             <label index="tx_dlf_documents.owner">Besitzer</label>
             <label index="tx_dlf_documents.status">Status</label>
