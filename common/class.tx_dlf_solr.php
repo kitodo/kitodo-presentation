@@ -456,15 +456,30 @@ class tx_dlf_solr {
         // Set query.
         $parameters['query'] = $query;
 
-        // Perform search.
-        $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
-        $result = $this->service->select($selectQuery);
+        // calculate cache identifier
+        $cacheIdentifier = hash('md5', print_r(array_merge($this->params, $parameters), 1));
+        $cache = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('kitodo_solr');
 
-        $resultSet = array ();
+        $resultSet = [];
 
-        foreach ($result as $doc) {
+        if (($entry = $cache->get($cacheIdentifier)) === FALSE) {
 
-            $resultSet[] = $doc;
+            $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
+            $result = $this->service->select($selectQuery);
+
+            foreach ($result as $doc) {
+
+                $resultSet[] = $doc;
+
+            }
+
+            // Save value in cache
+            $cache->set($cacheIdentifier, $resultSet);
+
+        } else {
+
+            // return cache hit
+            $resultSet = $entry;
 
         }
 
