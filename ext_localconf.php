@@ -81,6 +81,18 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_geturl_eid'] = 'EXT:'.$
 
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_in_document_eid'] = 'EXT:'.$_EXTKEY.'/plugins/toolbox/tools/searchindocument/class.tx_dlf_search_in_document_eid.php';
 
+// add caching framework for Solr queries
+if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr'] = array();
+}
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['backend'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\SimpleFileBackend';
+}
+// set defaultLifeTime to 1 day (87600s)
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['options']['defaultLifeTime'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['options']['defaultLifeTime'] = 87600;
+}
+
 if (TYPO3_MODE === 'FE') {
 
     /**
