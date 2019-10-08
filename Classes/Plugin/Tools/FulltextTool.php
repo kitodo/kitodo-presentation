@@ -73,6 +73,6 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">'.$this->pi_getLL('fulltext-not-available', '', TRUE).'</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $content;
+        return $this->pi_wrapInBaseClass($content);
     }
 }

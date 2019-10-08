@@ -80,6 +80,7 @@ class AnnotationTool extends AbstractPlugin {
             $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">'.$this->pi_getLL('annotations-not-available', '', TRUE).'</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $content;
+        return $this->pi_wrapInBaseClass($content);
+
     }
 }
