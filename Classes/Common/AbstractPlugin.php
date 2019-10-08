@@ -66,12 +66,16 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return void
      */
-    protected function getTemplate($part = '###TEMPLATE###', $directory = '') {
+    protected function getTemplate($part = '###TEMPLATE###', $directory = '', $tool = FALSE) {
         $this->templateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
-
         if (!empty($this->conf['templateFile'])) {
             // Load template file from configuration.
-            $this->template = $this->templateService->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
+            if ($tool) {
+                $templateLocation = 'EXT:'.$this->extKey.'/Resources/Private/Templates/'.Helper::getUnqualifiedClassName(get_class($this)).'.tmpl';
+                $this->template = $this->templateService->getSubpart($this->cObj->fileResource($templateLocation), $part);
+            } else {
+                $this->template = $this->templateService->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
+            }
         } else {
             if (empty($directory)) {
                 $templateLocation = 'EXT:'.$this->extKey.'/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
