@@ -69,6 +69,10 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
                     ksort($name);
                     $metadata['author'][$i] = trim(implode(', ', $name));
                 }
+                // Append "valueURI" to name using Unicode unit separator.
+                if (isset($authors[$i]['valueURI'])) {
+                    $metadata['author'][$i] .= chr(31).(string) $authors[$i]['valueURI'];
+                }
             }
         }
         // Get "place" and "place_sorting".

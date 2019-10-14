@@ -371,6 +371,11 @@ class Indexer {
         $errors = 0;
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
+        // Remove appended "valueURI" from authors' names for indexing.
+        foreach ($metadata['author'] as $i => $author) {
+            $splitName = explode(chr(31), $author);
+            $metadata['author'][$i] = $splitName[0];
+        }
         if (!empty($metadata)) {
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();

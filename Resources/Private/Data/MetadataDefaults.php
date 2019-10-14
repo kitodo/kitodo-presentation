@@ -93,7 +93,7 @@ $metadataDefaults = [
             ],
         ],
         'default_value' => '',
-        'wrap' => '',
+        'wrap' => "key.wrap = <dt class=\"tx-dlf-metadata-author\">|</dt>\nvalue.required = 1\nvalue.split.token.char = 31\nvalue.split.cObjNum = 1,2\nvalue.split.1 = LOAD_REGISTER\nvalue.split.1.tx_dlf_metadata_author_name.current = 1\nvalue.split.2 = COA\nvalue.split.2.1 = LOAD_REGISTER\nvalue.split.2.1.tx_dlf_metadata_author_uri.current = 1\nvalue.split.2.2 = TEXT\nvalue.split.2.2.value = {register:tx_dlf_metadata_author_name}\nvalue.split.2.2.value.stdWrap.insertData = 1\nvalue.split.2.2.value.stdWrap.typolink.parameter = {register:tx_dlf_metadata_author_uri}\nvalue.split.2.2.value.stdWrap.typolink.parameter.insertData = 1\nvalue.split.2.2.value.stdWrap.typolink.ifNotEmpty = 1\nvalue.wrap = <dd class=\"tx-dlf-metadata-author\">|</dd>",
         'index_tokenized' => 1,
         'index_stored' => 1,
         'index_indexed' => 1,
