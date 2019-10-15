@@ -338,7 +338,7 @@ class tx_dlf_tcemain {
 
                                 if ($doc->ready) {
 
-                                    $doc->save($doc->pid, $core);
+                                    tx_dlf_indexing::add($doc, $core);
 
                                 } else {
 
@@ -424,7 +424,7 @@ class tx_dlf_tcemain {
 
                         if ($doc->ready) {
 
-                            $doc->save($doc->pid, $core);
+                            tx_dlf_indexing::add($doc, $core);
 
                         } else {
 
