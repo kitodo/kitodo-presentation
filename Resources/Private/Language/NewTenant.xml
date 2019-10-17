@@ -53,6 +53,7 @@
             <label index="endsheet">Endsheet</label>
             <label index="engraved_titlepage">Engraved Titlepage</label>
             <label index="entry">Entry</label>
+            <label index="ephemera">Ephemera</label>
             <label index="fascicle">Fascicle</label>
             <label index="file">File</label>
             <label index="folder">Folder</label>
@@ -168,6 +169,7 @@
             <label index="endsheet">Vorsatz</label>
             <label index="engraved_titlepage">Kupfertitel</label>
             <label index="entry">Eintrag</label>
+            <label index="ephemera">Konzertprogramm</label>
             <label index="fascicle">Faszikel</label>
             <label index="file">Akte</label>
             <label index="folder">Mappe</label>
