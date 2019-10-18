@@ -193,9 +193,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         $subparts['singleday'] = $this->cObj->getSubpart($subparts['list'], '###SINGLEDAY###');
 
-        // Build calendar for given year.
-        // $year = date('Y', strtotime($issues[0]['year']));
-
         for ($i = 0; $i <= 11; $i++) {
 
             $markerArray = array (
@@ -442,16 +439,16 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
     }
     
     function setVolumeFromMets(&$resArray) {
-            if ( empty($resArray['volume']) ) {
-                $yearDoc = & tx_dlf_document::getInstance($resArray['uid'], $pid);
-                if ( $yearDoc->ready==true ) {
-                    $metadata = $yearDoc->getTitledata();
-                    if ( !empty($metadata['volume'][0]) ) {
-                        $resArray['volume'] = $metadata['volume'][0];
-                        return true;
-                    }
+        if ( empty($resArray['volume']) ) {
+            $yearDoc = & tx_dlf_document::getInstance($resArray['uid'], $pid);
+            if ( $yearDoc->ready==true ) {
+                $metadata = $yearDoc->getTitledata();
+                if ( !empty($metadata['volume'][0]) ) {
+                    $resArray['volume'] = $metadata['volume'][0];
+                    return true;
                 }
             }
+        }
     }
 
 }

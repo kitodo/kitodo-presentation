@@ -952,19 +952,19 @@ final class tx_dlf_document {
      *
      * @access	public
      *
-     * @param	array	$titledata: the tiledata array
+     * @param	array	$tiledata: the tiledata array
      *
      */
-    protected function setTitledataFromMets(&$metadata) {
-        if ( empty($metadata['year'][0]) ) {
+    protected function setTitledataFromMets(&$tiledata) {
+        if ( empty($tiledata['year'][0]) ) {
             $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ADMID]'); // search first admid section
             if (!empty($divs)) {
                 $details = $this->getLogicalStructureInfo($divs[0]);
                 if ( $details['type'] == 'year' ) {
                     // eg (mets v2.3.1): TYPE=“year“ ORDERLABEL=”1983/1984” LABEL=“Spielzeit 1983/1984“
-                    $metadata['year'][0] = $metadata['volume'][0] = $metadata['volume_sorting'][0] = $details['orderlabel'];
+                    $tiledata['year'][0] = $tiledata['volume'][0] = $tiledata['volume_sorting'][0] = $details['orderlabel'];
                     if ( !empty( $details['label'] ) ) {
-                         $metadata['volume'][0] = $details['label'];
+                         $tiledata['volume'][0] = $details['label'];
                     }
                 }
             }
