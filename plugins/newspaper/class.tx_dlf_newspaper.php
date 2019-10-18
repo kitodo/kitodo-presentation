@@ -25,6 +25,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
     public $scriptRelPath = 'plugins/newspaper/class.tx_dlf_newspaper.php';
     
     private $allIssues = array ();
+    private $calendarRenderStart = false;
 
     /**
      * The main method of the PlugIn
@@ -244,6 +245,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
                         $currentMonth = date('n', $currentDayTime);
 
                         if (is_array($calendarIssues[$currentMonth])) {
+                            $this->calendarRenderStart = true;
 
                             foreach ($calendarIssues[$currentMonth] as $id => $day) {
 
@@ -322,11 +324,14 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
             }
 
-            // Fill the month markers.
-            $subPartContent .= $this->cObj->substituteMarkerArray($subparts['month'], $markerArray);
+            // render calender only if a issue in this month is present
+            if (  $this->calendarRenderStart === true ) {
+                // Fill the month markers.
+                $subPartContent .= $this->cObj->substituteMarkerArray($subparts['month'], $markerArray);
 
-            // Fill the week markers with the week entries.
-            $subPartContent = $this->cObj->substituteSubpart($subPartContent, '###CALWEEK###', $subWeekPartContent);
+                // Fill the week markers with the week entries.
+                $subPartContent = $this->cObj->substituteSubpart($subPartContent, '###CALWEEK###', $subWeekPartContent);
+            }
         }
         return $subPartContent;
     }
