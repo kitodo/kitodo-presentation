@@ -948,6 +948,30 @@ final class tx_dlf_document {
     }
 
     /**
+     * This sets the titledata based from mets in year files.
+     *
+     * @access	public
+     *
+     * @param	array	$titledata: the tiledata array
+     *
+     */
+    protected function setTitledataFromMets(&$metadata) {
+        if ( empty($metadata['year'][0]) ) {
+            $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ADMID]'); // search first admid section
+            if (!empty($divs)) {
+                $details = $this->getLogicalStructureInfo($divs[0]);
+                if ( $details['type'] == 'year' ) {
+                    // eg (mets v2.3.1): TYPE=“year“ ORDERLABEL=”1983/1984” LABEL=“Spielzeit 1983/1984“
+                    $metadata['year'][0] = $metadata['volume'][0] = $metadata['volume_sorting'][0] = $details['orderlabel'];
+                    if ( !empty( $details['label'] ) ) {
+                         $metadata['volume'][0] = $details['label'];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * This returns the first corresponding physical page number of a given logical page label
      *
      * @access	public
@@ -1178,6 +1202,7 @@ final class tx_dlf_document {
 
         $titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
 
+        $this->setTitledataFromMets($titledata);
         // Set record identifier for METS file if not present.
         if (is_array($titledata) && array_key_exists('record_id', $titledata)) {
 
