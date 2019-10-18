@@ -962,7 +962,7 @@ final class tx_dlf_document {
                 $details = $this->getLogicalStructureInfo($divs[0]);
                 if ( $details['type'] == 'year' ) {
                     // eg (mets v2.3.1): TYPE=“year“ ORDERLABEL=”1983/1984” LABEL=“Spielzeit 1983/1984“
-                    $tiledata['year'][0] = $tiledata['volume'][0] = $tiledata['volume_sorting'][0] = $details['orderlabel'];
+                    $tiledata['year'][0] = $tiledata['title'][0] = $tiledata['volume'][0] = $tiledata['volume_sorting'][0] = $details['orderlabel'];
                     if ( !empty( $details['label'] ) ) {
                          $tiledata['volume'][0] = $details['label'];
                     }
@@ -1203,6 +1203,7 @@ final class tx_dlf_document {
         $titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
 
         $this->setTitledataFromMets($titledata);
+
         // Set record identifier for METS file if not present.
         if (is_array($titledata) && array_key_exists('record_id', $titledata)) {
 
