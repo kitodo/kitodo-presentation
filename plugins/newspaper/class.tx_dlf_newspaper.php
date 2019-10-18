@@ -23,7 +23,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
     public $extKey = 'dlf';
 
     public $scriptRelPath = 'plugins/newspaper/class.tx_dlf_newspaper.php';
-    
+
     private $allIssues = array ();
     private $calendarRenderStart = false;
 
@@ -91,7 +91,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            $this->setVolumeFromMets($resArray);
 
             $issues[] = array (
                 'uid' => $resArray['uid'],
@@ -101,16 +100,24 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         }
 
-        // 	We need an array of issues with month number as key.
+        // We need an array of issues with month number as key.
         $calendarIssuesByYear = array ();
         foreach ($issues as $issue) {
             $dateTs = strtotime($issue['year']);
             $calendarIssuesByYear[date('Y', $dateTs)][date('n', $dateTs)][date('j', $dateTs)][] = $issue;
         }
 
-        $subPartContent .= '';
+        $subPartContent = '';
+        $firstMonth = 1;
+        $lastMonth = 12;
         foreach ($calendarIssuesByYear as $year => $calendarIssues) {
-            $subPartContent .= $this->getCalendarYear($calendarIssues, $year);
+            // show calendar from first issue in case of seasons
+            if (empty($conf['showEmptyMonths'])) {
+                $firstMonth = key($calendarIssues);
+                end($calendarIssues);
+                $lastMonth = key($calendarIssues);
+            }
+            $subPartContent .= $this->getCalendarYear($calendarIssues, $year, $firstMonth, $lastMonth);
         }
 
         // Link to years overview
@@ -134,7 +141,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         $yearLink = $this->cObj->typoLink($title, $linkConf);
 
-        
+
         // Get subpart templates.
         $subparts['list'] = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
         $subparts['singleday'] = $this->cObj->getSubpart($subparts['list'], '###SINGLEDAY###');
@@ -182,8 +189,18 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         return $this->cObj->substituteSubpart($this->template, '###CALMONTH###', $subPartContent);
 
     }
-    
-    public function getCalendarYear($calendarIssues, $year) {
+
+    /**
+     * Get all month calendars for a given year
+     *
+     * @access private
+     *
+     * @param array $calendarIssues all issues
+     * @param int $year calendar for which year
+     * @param int $firstMonth - January - 1, February - 2, ..., December - 12
+     * @param int $lastMonth - January - 1, February - 2, ..., December - 12
+     */
+    private function getCalendarYear($calendarIssues, $year, $firstMonth = 1, $lastMonth = 12) {
 
         // Get subpart templates.
         $subparts['list'] = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
@@ -194,7 +211,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         $subparts['singleday'] = $this->cObj->getSubpart($subparts['list'], '###SINGLEDAY###');
 
-        for ($i = 0; $i <= 11; $i++) {
+        for ($i = $firstMonth; $i <= $lastMonth; $i++) {
 
             $markerArray = array (
                 '###DAYMON_NAME###' => strftime('%a', strtotime('last Monday')),
@@ -204,13 +221,14 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
                 '###DAYFRI_NAME###' => strftime('%a', strtotime('last Friday')),
                 '###DAYSAT_NAME###' => strftime('%a', strtotime('last Saturday')),
                 '###DAYSUN_NAME###' => strftime('%a', strtotime('last Sunday')),
-                '###MONTHNAME###' 	=> strftime('%B', strtotime($year.'-'.($i + 1).'-1')) . ' - ' . $year
+                '###MONTHNAME###' => strftime('%B', strtotime($year.'-'.$i.'-1')) . ' ' . $year,
+                '###CALYEAR###' => ($i == $firstMonth) ? '<div class="year">' . $year . '</div>' : ''
             );
 
             // Reset week content of new month.
             $subWeekPartContent = '';
 
-            $firstOfMonth = strtotime($year.'-'.($i + 1).'-1');
+            $firstOfMonth = strtotime($year.'-'.$i.'-1');
             $lastOfMonth = strtotime('last day of', ($firstOfMonth));
             $firstOfMonthStart = strtotime('last Monday', $firstOfMonth);
 
@@ -245,7 +263,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
                         $currentMonth = date('n', $currentDayTime);
 
                         if (is_array($calendarIssues[$currentMonth])) {
-                            $this->calendarRenderStart = true;
 
                             foreach ($calendarIssues[$currentMonth] as $id => $day) {
 
@@ -324,14 +341,11 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
             }
 
-            // render calender only if a issue in this month is present
-            if (  $this->calendarRenderStart === true ) {
-                // Fill the month markers.
-                $subPartContent .= $this->cObj->substituteMarkerArray($subparts['month'], $markerArray);
+            // Fill the month markers.
+            $subPartContent .= $this->cObj->substituteMarkerArray($subparts['month'], $markerArray);
 
-                // Fill the week markers with the week entries.
-                $subPartContent = $this->cObj->substituteSubpart($subPartContent, '###CALWEEK###', $subWeekPartContent);
-            }
+            // Fill the week markers with the week entries.
+            $subPartContent = $this->cObj->substituteSubpart($subPartContent, '###CALWEEK###', $subWeekPartContent);
         }
         return $subPartContent;
     }
@@ -390,15 +404,11 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         // Process results.
         $arraySort = false;
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            if ( $this->setVolumeFromMets($resArray) ) $arraySort = true;
             $years[ $resArray['volume'] ] = array (
                 'title' => $resArray['volume'],
                 'uid' => $resArray['uid']
             );
-
         }
-
-        if ( $arraySort===true ) ksort($years);
 
         $subYearPartContent = '';
 
@@ -441,19 +451,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         // fill the week markers
         return $this->cObj->substituteSubpart($this->template, '###LISTYEAR###', $subYearPartContent);
 
-    }
-    
-    function setVolumeFromMets(&$resArray) {
-        if ( empty($resArray['volume']) ) {
-            $yearDoc = & tx_dlf_document::getInstance($resArray['uid'], $pid);
-            if ( $yearDoc->ready==true ) {
-                $metadata = $yearDoc->getTitledata();
-                if ( !empty($metadata['volume'][0]) ) {
-                    $resArray['volume'] = $metadata['volume'][0];
-                    return true;
-                }
-            }
-        }
     }
 
 }
