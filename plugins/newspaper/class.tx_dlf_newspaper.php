@@ -25,7 +25,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
     public $scriptRelPath = 'plugins/newspaper/class.tx_dlf_newspaper.php';
 
     private $allIssues = array ();
-    private $calendarRenderStart = false;
 
     /**
      * The main method of the PlugIn
@@ -141,7 +140,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         $yearLink = $this->cObj->typoLink($title, $linkConf);
 
-
         // Get subpart templates.
         $subparts['list'] = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
         $subparts['singleday'] = $this->cObj->getSubpart($subparts['list'], '###SINGLEDAY###');
@@ -165,7 +163,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         $this->template = $this->cObj->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
 
-        if (count($allIssues) < 6) {
+        if (count($this->allIssues) < 6) {
 
             $listViewActive = TRUE;
 
@@ -402,7 +400,6 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         );
 
         // Process results.
-        $arraySort = false;
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $years[ $resArray['volume'] ] = array (
                 'title' => $resArray['volume'],
