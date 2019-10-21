@@ -391,7 +391,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         // get all children of anchor. this should be the year anchor documents
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.uid AS uid, tx_dlf_documents.volume AS volume',
+            'tx_dlf_documents.uid AS uid, tx_dlf_documents.volume AS volume, tx_dlf_documents.volume_sorting AS volume_sorting',
             'tx_dlf_documents',
             '(tx_dlf_documents.structure='.tx_dlf_helper::getIdFromIndexName('year', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
             '',
