@@ -974,6 +974,12 @@ abstract class Document {
         }
         $metadata['type'][0] = $structure;
 
+        // Remove appended "valueURI" from authors' names for storing in database.
+        foreach ($metadata['author'] as $i => $author) {
+            $splitName = explode(chr(31), $author);
+            $metadata['author'][$i] = $splitName[0];
+        }
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 

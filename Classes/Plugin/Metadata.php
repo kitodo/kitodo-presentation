@@ -150,10 +150,11 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @access protected
      *
      * @param array $metadataArray: The metadata array
+     * @param boolean $useOriginalIiifManifestMetadata: Output IIIF metadata as simple key/value pairs?
      *
      * @return string The metadata array ready for output
      */
-    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = false) {
+    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = FALSE) {
         // Load template file.
         $this->getTemplate();
         $output = '';
