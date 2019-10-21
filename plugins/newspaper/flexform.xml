@@ -46,7 +46,7 @@
                         <label>LLL:EXT:dlf/plugins/newspaper/locallang.xml:tt_content.pi_flexform.showEmptyMonths</label>
                         <config>
                           <type>check</type>
-                          <default>0</default>
+                          <default>1</default>
                         </config>
                       </TCEforms>
                     </showEmptyMonths>
