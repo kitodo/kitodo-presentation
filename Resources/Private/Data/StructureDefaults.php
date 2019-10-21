@@ -132,6 +132,10 @@ $structureDefaults = [
         'toplevel' => 0,
         'oai_name' => ''
     ],
+    'ephemera' => [
+        'toplevel' => 1,
+        'oai_name' => ''
+    ],
     'fascicle' => [
         'toplevel' => 0,
         'oai_name' => ''
