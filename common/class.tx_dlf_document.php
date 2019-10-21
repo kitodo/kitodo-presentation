@@ -342,6 +342,32 @@ final class tx_dlf_document {
     protected $xml;
 
     /**
+     * This adds metadata from METS structural map to metadata array.
+     *
+     * @access	public
+     *
+     * @param	array	&$metadata: The metadata array to extend
+     * @param	string	$id: The @ID attribute of the logical structure node
+     *
+     * @return  void
+     */
+    public function addMetadataFromMets(&$metadata, $id) {
+        $details = $this->getLogicalStructureInfo($id);
+        if (!empty($details)) {
+            if (empty($metadata['volume_sorting'][0])) {
+                $metadata['volume_sorting'][0] = !empty($details['orderlabel']) ? $details['orderlabel'] : $details['label'];
+            }
+            if (empty($metadata['volume'][0])) {
+                $metadata['volume'][0] = !empty($details['label']) ? $details['label'] : $details['orderlabel'];
+            }
+            // Set publication date to @ORDERLABEL only for calendar.
+            if ($details['type'] == 'year' && empty($metadata['year'][0])) {
+                $metadata['year'][0] = $details['orderlabel'];
+            }
+        }
+    }
+
+    /**
      * This clears the static registry to prevent memory exhaustion
      *
      * @access	public
@@ -948,30 +974,6 @@ final class tx_dlf_document {
     }
 
     /**
-     * This sets the titledata based from mets in year files.
-     *
-     * @access	public
-     *
-     * @param	array	$tiledata: the tiledata array
-     *
-     */
-    protected function setTitledataFromMets(&$tiledata) {
-        if ( empty($tiledata['year'][0]) ) {
-            $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ADMID]'); // search first admid section
-            if (!empty($divs)) {
-                $details = $this->getLogicalStructureInfo($divs[0]);
-                if ( $details['type'] == 'year' ) {
-                    // eg (mets v2.3.1): TYPE=“year“ ORDERLABEL=”1983/1984” LABEL=“Spielzeit 1983/1984“
-                    $tiledata['year'][0] = $tiledata['title'][0] = $tiledata['volume'][0] = $tiledata['volume_sorting'][0] = $details['orderlabel'];
-                    if ( !empty( $details['label'] ) ) {
-                         $tiledata['volume'][0] = $details['label'];
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * This returns the first corresponding physical page number of a given logical page label
      *
      * @access	public
@@ -1202,7 +1204,8 @@ final class tx_dlf_document {
 
         $titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
 
-        $this->setTitledataFromMets($titledata);
+        // Add information from METS structural map to titledata array.
+        $this->addMetadataFromMets($titledata, $this->_getToplevelId());
 
         // Set record identifier for METS file if not present.
         if (is_array($titledata) && array_key_exists('record_id', $titledata)) {
