@@ -69,7 +69,7 @@ class AnnotationTool extends AbstractPlugin {
             $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
-        $this->getTemplate('###TEMPLATE###', '', TRUE);
+        $this->getTemplate();
         $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['annotationContainers'];
         if ($annotationContainers != null && sizeof($annotationContainers)>0) {
             $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:'

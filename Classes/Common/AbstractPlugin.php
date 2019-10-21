@@ -66,26 +66,16 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return void
      */
-    protected function getTemplate($part = '###TEMPLATE###', $directory = '', $tool = FALSE) {
+    protected function getTemplate($part = '###TEMPLATE###') {
         $this->templateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
         if (!empty($this->conf['templateFile'])) {
             // Load template file from configuration.
-            if ($tool) {
-                $templateLocation = 'EXT:'.$this->extKey.'/Resources/Private/Templates/'.Helper::getUnqualifiedClassName(get_class($this)).'.tmpl';
-                $this->template = $this->templateService->getSubpart($this->cObj->fileResource($templateLocation), $part);
-            } else {
-                $this->template = $this->templateService->getSubpart($this->cObj->fileResource($this->conf['templateFile']), $part);
-            }
+            $templateFile = $this->conf['templateFile'];
         } else {
-            if (empty($directory)) {
-                $templateLocation = 'EXT:'.$this->extKey.'/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
-            } else {
-                $templateLocation = 'EXT:'.$this->extKey.'/Resources/Private/Templates/'. $directory . '/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
-            }
-
-            // Load default template file.
-            $this->template = $this->templateService->getSubpart($this->cObj->fileResource($templateLocation), $part);
+            // Load default template from extension.
+            $templateFile = 'EXT:'.$this->extKey.'/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
         }
+        $this->template = $this->templateService->getSubpart($this->cObj->fileResource($templateFile), $part);
     }
 
     /**

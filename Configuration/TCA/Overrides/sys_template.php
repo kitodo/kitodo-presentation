@@ -21,10 +21,15 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
     'Configuration/TypoScript/Search/',
-    'Search Facets'
+    'Search Facets Configuration'
 );
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
     'Configuration/TypoScript/TableOfContents/',
-    'Table of Contents'
+    'Table of Contents Menu Configuration'
+);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'Configuration/TypoScript/Toolbox/',
+    'Toolbox Default Tool Templates'
 );
