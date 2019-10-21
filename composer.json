@@ -24,7 +24,6 @@
     "solarium/solarium" : "^4.0"
   },
   "replace": {
-    "dlf": "self.version",
     "typo3-ter/dlf": "self.version"
   },
   "autoload": {
