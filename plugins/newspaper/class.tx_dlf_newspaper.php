@@ -93,7 +93,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
             $issues[] = array (
                 'uid' => $resArray['uid'],
-                'title' => $resArray['title'] ? $resArray['title'] : (strftime('%x', strtotime($resArray['volume']))),
+                'title' => !empty($resArray['title']) ? $resArray['title'] : !empty($resArray['volume']) ? $resArray['volume'] : (strftime('%x', strtotime($resArray['volume_sorting']))),
                 'year' => $resArray['year']
             );
 
