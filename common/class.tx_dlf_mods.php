@@ -95,6 +95,11 @@ class tx_dlf_mods implements tx_dlf_format {
 
                 }
 
+                // Append "valueURI" to name using Unicode unit separator.
+                if (isset($authors[$i]['valueURI'])) {
+                    $metadata['author'][$i] .= chr(31).(string) $authors[$i]['valueURI'];
+                }
+
             }
 
         }
