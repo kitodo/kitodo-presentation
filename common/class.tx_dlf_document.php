@@ -352,7 +352,7 @@ final class tx_dlf_document {
      * @return  void
      */
     public function addMetadataFromMets(&$metadata, $id) {
-        $details = $this->getLogicalStructureInfo($id);
+        $details = $this->getLogicalStructure($id);
         if (!empty($details)) {
             if (empty($metadata['volume_sorting'][0])) {
                 $metadata['volume_sorting'][0] = !empty($details['orderlabel']) ? $details['orderlabel'] : $details['label'];
