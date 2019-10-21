@@ -64,7 +64,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
-        $this->getTemplate('###TEMPLATE###', '', TRUE);
+        $this->getTemplate();
         // Get left or single page download.
         $markerArray['###IMAGE_LEFT###'] = $this->piVars['double'] == 1 ? $this->getImage($this->piVars['page'], $this->pi_getLL('leftPage', '')) : $this->getImage($this->piVars['page'], $this->pi_getLL('singlePage', ''));
         // Get right page download.
