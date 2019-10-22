@@ -145,7 +145,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         );
 
         $titleData = $this->doc->getTitledata();
-        $title = empty($titleData['title'][0]) ? $titleData['volume'][0] : $titleData['title'][0];
+        $title = empty($titleData['mets_orderlabel'][0]) ? $titleData['mets_orderlabel'][0] : $titleData['mets_label'][0];
 
         $yearLink = $this->cObj->typoLink($title, $linkConf);
 
