@@ -39,6 +39,28 @@ dlfViewerSource.findKey = function(obj, f, opt_this) {
 };
 
 /**
+ * Polyfill for Number.isInteger
+ */
+Number.isInteger = Number.isInteger || function(value) {
+    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+};
+
+/**
+ * Polyfill for Number.isNaN
+ */
+Number.isNaN = Number.isNaN || function(value) {
+    return value !== null && (value != value || +value != value);
+};
+
+/**
+ * Polyfill for Array.prototype.includes
+ */
+Array.prototype.includes = Array.prototype.includes || function(value) {
+    return this.indexOf(value) > -1;
+}
+
+
+/**
  * OpenLayers 3 TileLoadFunction based on the work of Klokan Technologies GmbH (http://www.klokantech.com) and
  * the IIIFViewer. See: https://github.com/klokantech/iiifviewer/blob/master/src/iiifsource.js
  *
