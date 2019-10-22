@@ -411,7 +411,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $years[] = array (
-                'title' => !empty($resArray['label']) ? $resArray['label'] : $resArray['orderlabel'],
+                'title' => !empty($resArray['label']) ? $resArray['label'] : !empty($resArray['orderlabel']) ? $resArray['orderlabel'] : $resArray['title'],
                 'uid' => $resArray['uid']
             );
         }
