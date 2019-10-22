@@ -145,7 +145,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         );
 
         $titleData = $this->doc->getTitledata();
-        $title = empty($titleData['mets_orderlabel'][0]) ? $titleData['mets_orderlabel'][0] : $titleData['mets_label'][0];
+        $title = !empty($titleData['mets_orderlabel'][0]) ? $titleData['mets_orderlabel'][0] : $titleData['mets_label'][0];
 
         $yearLink = $this->cObj->typoLink($title, $linkConf);
 
@@ -411,7 +411,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $years[] = array (
-                'title' => !empty($resArray['label']) ? $resArray['label'] : !empty($resArray['orderlabel']) ? $resArray['orderlabel'] : $resArray['title'],
+                'title' => !empty($resArray['label']) ? $resArray['label'] : (!empty($resArray['orderlabel']) ? $resArray['orderlabel'] : $resArray['title']),
                 'uid' => $resArray['uid']
             );
         }
