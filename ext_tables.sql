@@ -33,6 +33,8 @@ CREATE TABLE tx_dlf_documents (
     volume_sorting varchar(255) DEFAULT '' NOT NULL,
     collections int(11) DEFAULT '0' NOT NULL,
     owner int(11) DEFAULT '0' NOT NULL,
+    mets_label varchar(255) DEFAULT '' NOT NULL,
+    mets_orderlabel varchar(255) DEFAULT '' NOT NULL,
     solrcore int(11) DEFAULT '0' NOT NULL,
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
 

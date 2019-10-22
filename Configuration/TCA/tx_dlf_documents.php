@@ -305,6 +305,26 @@ return array (
                 'maxitems' => 1,
             ),
         ),
+        'mets_label' => array (
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.mets_label',
+            'config' => array (
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+            ),
+        ),
+        'mets_orderlabel' => array (
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_documents.mets_orderlabel',
+            'config' => array (
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+            ),
+        ),
         'solrcore' => array (
             'config' => array (
                 'type' => 'passthrough',
@@ -331,7 +351,7 @@ return array (
     ),
     'palettes' => array (
         '1' => array ('showitem' => 'title_sorting', 'canNotCollapse' => 1),
-        '2' => array ('showitem' => 'partof, thumbnail, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1),
+        '2' => array ('showitem' => 'partof, thumbnail, --linebreak--, volume, volume_sorting, --linebreak--, mets_label, mets_orderlabel', 'canNotCollapse' => 1),
         '3' => array ('showitem' => 'starttime, endtime', 'canNotCollapse' => 1),
     )
 );

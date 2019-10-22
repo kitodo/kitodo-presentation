@@ -80,20 +80,29 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         // Get all children of year anchor.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.uid AS uid, tx_dlf_documents.volume AS volume, tx_dlf_documents.title AS title, tx_dlf_documents.year AS year',
+            'tx_dlf_documents.uid AS uid, tx_dlf_documents.mets_label AS label, tx_dlf_documents.mets_orderlabel AS orderlabel, tx_dlf_documents.title AS title, tx_dlf_documents.year AS year',
             'tx_dlf_documents',
             '(tx_dlf_documents.structure='.tx_dlf_helper::getIdFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
             '',
-            'tx_dlf_documents.volume_sorting ASC',
+            'tx_dlf_documents.mets_orderlabel ASC',
             ''
         );
 
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 
+            if (!empty($resArray['title'])) {
+                $title = $resArray['title'];
+            } else {
+                $title = !empty($resArray['label']) ? $resArray['label'] : $resArray['orderlabel'];
+                if (strtotime($title) !== FALSE) {
+                    $title = strftime('%x', strtotime($title));
+                }
+            }
+
             $issues[] = array (
                 'uid' => $resArray['uid'],
-                'title' => !empty($resArray['title']) ? $resArray['title'] : strtotime($resArray['volume']) !== FALSE ? strftime('%x', strtotime($resArray['volume'])) : $resArray['volume'],
+                'title' => $title,
                 'year' => $resArray['year']
             );
 
@@ -391,18 +400,18 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         // get all children of anchor. this should be the year anchor documents
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_documents.uid AS uid, tx_dlf_documents.volume AS volume, tx_dlf_documents.volume_sorting AS volume_sorting',
+            'tx_dlf_documents.uid AS uid, tx_dlf_documents.mets_label AS label, tx_dlf_documents.mets_orderlabel AS orderlabel',
             'tx_dlf_documents',
             '(tx_dlf_documents.structure='.tx_dlf_helper::getIdFromIndexName('year', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
             '',
-            'tx_dlf_documents.volume_sorting ASC',
+            'tx_dlf_documents.mets_orderlabel ASC',
             ''
         );
 
         // Process results.
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            $years[ $resArray['volume'] ] = array (
-                'title' => !empty($resArray['volume']) ? $resArray['volume'] : $resArray['volume_sorting'],
+            $years[] = array (
+                'title' => !empty($resArray['label']) ? $resArray['label'] : $resArray['orderlabel'],
                 'uid' => $resArray['uid']
             );
         }
@@ -411,7 +420,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
         if (count($years) > 0) {
 
-            foreach ($years as $id => $year) {
+            foreach ($years as $year) {
 
                 $linkConf = array (
                     'useCacheHash' => 1,

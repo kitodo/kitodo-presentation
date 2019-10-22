@@ -354,12 +354,8 @@ final class tx_dlf_document {
     public function addMetadataFromMets(&$metadata, $id) {
         $details = $this->getLogicalStructure($id);
         if (!empty($details)) {
-            if (empty($metadata['volume_sorting'][0])) {
-                $metadata['volume_sorting'][0] = !empty($details['orderlabel']) ? $details['orderlabel'] : $details['label'];
-            }
-            if (empty($metadata['volume'][0])) {
-                $metadata['volume'][0] = !empty($details['label']) ? $details['label'] : $details['orderlabel'];
-            }
+            $metadata['mets_label'][0] = $details['label'];
+            $metadata['mets_orderlabel'][0] = $details['orderlabel'];
             // Set publication date to @ORDERLABEL only for calendar.
             if ($details['type'] == 'year' && empty($metadata['year'][0])) {
                 $metadata['year'][0] = $details['orderlabel'];
@@ -608,6 +604,8 @@ final class tx_dlf_document {
 
         $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
 
+        $details['order'] = (isset($attributes['ORDER']) ? $attributes['ORDER'] : '');
+
         $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
 
         $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
@@ -778,6 +776,8 @@ final class tx_dlf_document {
             'volume_sorting' => array (),
             'collection' => array (),
             'owner' => array (),
+            'mets_label' => array (),
+            'mets_orderlabel' => array (),
         );
 
         // Get the logical structure node's DMDID.
@@ -1791,6 +1791,8 @@ final class tx_dlf_document {
             'volume_sorting' => $metadata['volume_sorting'][0],
             'collections' => $metadata['collection'],
             'owner' => $metadata['owner'][0],
+            'mets_label' => $metadata['mets_label'][0],
+            'mets_orderlabel' => $metadata['mets_orderlabel'][0],
             'solrcore' => $core,
             'status' => 0,
         );
@@ -2147,6 +2149,8 @@ final class tx_dlf_document {
 
                 $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
 
+                $this->physicalStructureInfo[$physSeq[0]]['order'] = (isset($physNode[0]['ORDER']) ? (string) $physNode[0]['ORDER'] : '');
+
                 $this->physicalStructureInfo[$physSeq[0]]['label'] = (isset($physNode[0]['LABEL']) ? (string) $physNode[0]['LABEL'] : '');
 
                 $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
@@ -2175,6 +2179,8 @@ final class tx_dlf_document {
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = (string) $elementNode['ID'];
 
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['dmdId'] = (isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '');
+
+                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['order'] = (isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '');
 
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['label'] = (isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '');
 
