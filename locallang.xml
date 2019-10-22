@@ -47,6 +47,8 @@
 			<label index="tx_dlf_documents.volume_sorting">Number of Volume (Sorting)</label>
 			<label index="tx_dlf_documents.collections">Collections</label>
 			<label index="tx_dlf_documents.owner">Owner</label>
+			<label index="tx_dlf_documents.mets_label">METS @LABEL</label>
+			<label index="tx_dlf_documents.mets_orderlabel">METS @ORDERLABEL</label>
 			<label index="tx_dlf_documents.status">Status</label>
 			<label index="tx_dlf_documents.status.default">default</label>
 			<label index="tx_dlf_documents.tab1">Titledata</label>
@@ -145,7 +147,7 @@
 			<label index="tx_dlf_toolbox.toolsFulltext">Fulltext</label>
 			<label index="tx_dlf_toolbox.toolsImagemanipulation">Image Manipulation</label>
 			<label index="tx_dlf_toolbox.toolsImagedownload">Image Download</label>
-      <label index="tx_dlf_toolbox.toolsSearchindocument">Search in Document</label>
+            <label index="tx_dlf_toolbox.toolsSearchindocument">Search in Document</label>
 			<label index="tt_content.dlf_audioplayer">DLF: Audio Player</label>
 			<label index="tt_content.dlf_basket">DLF: Basket</label>
 			<label index="tt_content.dlf_collection">DLF: Collection</label>
@@ -261,6 +263,8 @@
 			<label index="tx_dlf_documents.volume_sorting">Bandnummer (Sortierung)</label>
 			<label index="tx_dlf_documents.collections">Sammlungen</label>
 			<label index="tx_dlf_documents.owner">Besitzer</label>
+			<label index="tx_dlf_documents.mets_label">METS @LABEL</label>
+			<label index="tx_dlf_documents.mets_orderlabel">METS @ORDERLABEL</label>
 			<label index="tx_dlf_documents.status">Status</label>
 			<label index="tx_dlf_documents.status.default">Standard</label>
 			<label index="tx_dlf_documents.tab1">Titeldaten</label>
@@ -359,7 +363,7 @@
 			<label index="tx_dlf_toolbox.toolsFulltext">Volltext</label>
 			<label index="tx_dlf_toolbox.toolsImagemanipulation">Bildbearbeitung</label>
 			<label index="tx_dlf_toolbox.toolsImagedownload">Bild-Download</label>
-      <label index="tx_dlf_toolbox.toolsSearchindocument">Suche im Dokument</label>
+            <label index="tx_dlf_toolbox.toolsSearchindocument">Suche im Dokument</label>
 			<label index="tt_content.dlf_audioplayer">DLF: Audioplayer</label>
 			<label index="tt_content.dlf_basket">DLF: Warenkorb</label>
 			<label index="tt_content.dlf_collection">DLF: Kollektion</label>

@@ -40,6 +40,16 @@
                             </config>
                         </TCEforms>
                     </pages>
+                    <showEmptyMonths>
+                      <TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/plugins/newspaper/locallang.xml:tt_content.pi_flexform.showEmptyMonths</label>
+                        <config>
+                          <type>check</type>
+                          <default>1</default>
+                        </config>
+                      </TCEforms>
+                    </showEmptyMonths>
                     <templateFile>
                         <TCEforms>
                             <exclude>1</exclude>

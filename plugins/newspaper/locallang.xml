@@ -17,6 +17,7 @@
         <languageKey index="default" type="array">
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
+            <label index="tt_content.pi_flexform.showEmptyMonths">Show months without issues in calendar?</label>
             <label index="allYears">All years overview - </label>
             <label index="label.please_choose_year">Please choose a year first.</label>
             <label index="label.view_calendar">Calendar</label>
@@ -25,6 +26,7 @@
         <languageKey index="de" type="array">
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
+            <label index="tt_content.pi_flexform.showEmptyMonths">Zeige Monate ohne Ausgaben im Kalender?</label>
             <label index="allYears">Jahrgangsübersicht - </label>
             <label index="label.please_choose_year">Bitte wählen Sie zunächst einen Jahrgang aus.</label>
             <label index="label.view_calendar">Kalender</label>
