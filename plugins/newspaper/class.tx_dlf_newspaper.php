@@ -115,6 +115,9 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
             $calendarIssuesByYear[date('Y', $dateTs)][date('n', $dateTs)][date('j', $dateTs)][] = $issue;
         }
 
+        // make sure the years are in proper consecutive order
+        ksort($calendarIssuesByYear);
+
         $subPartContent = '';
         $firstMonth = 1;
         $lastMonth = 12;
