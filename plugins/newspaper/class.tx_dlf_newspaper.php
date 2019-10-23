@@ -102,7 +102,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
 
             $issues[] = array (
                 'uid' => $resArray['uid'],
-                'title' => !empty($title) ? $title : $resArray['year'],
+                'title' => $title,
                 'year' => $resArray['year']
             );
 
