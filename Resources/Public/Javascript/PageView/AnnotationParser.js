@@ -53,7 +53,7 @@ var DlfIiifAnnotationParser = function(opt_imageObj, opt_width, opt_height, opt_
  */
 DlfIiifAnnotationParser.prototype.generateId_ = function(width, height, hpos, vpos) {
     var heigt_ = isNaN(height) ? '0' : height;
-    return '' + width + '_' + heigt_ + '_' + hpos + '_' + vpos;
+    return 'anno_' + width + '_' + heigt_ + '_' + hpos + '_' + vpos;
 };
 
 /**
