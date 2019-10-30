@@ -608,6 +608,8 @@ final class IiifManifest extends Document
             'rights_info' => array (),
             'collection' => array (),
             'owner' => array (),
+            'mets_label' => array (),
+            'mets_orderlabel' => array (),
         );
         $metadata['document_format'][] = 'IIIF';
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(

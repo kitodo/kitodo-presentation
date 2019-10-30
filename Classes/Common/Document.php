@@ -720,6 +720,10 @@ abstract class Document {
      */
     public function getTitledata($cPid = 0) {
         $titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
+        // Add information from METS structural map to titledata array.
+        if ($this instanceof MetsDocument) {
+            $this->addMetadataFromMets($titledata, $this->_getToplevelId());
+        }
         // Set record identifier for METS file / IIIF manifest if not present.
         if (is_array($titledata)
             && array_key_exists('record_id', $titledata)) {
@@ -1172,6 +1176,8 @@ abstract class Document {
             'out_of_print' => $metadata['out_of_print'][0],
             'rights_info' => $metadata['rights_info'][0],
             'collections' => $metadata['collection'],
+            'mets_label' => $metadata['mets_label'][0],
+            'mets_orderlabel' => $metadata['mets_orderlabel'][0],
             'owner' => $metadata['owner'][0],
             'solrcore' => $core,
             'status' => 0,
