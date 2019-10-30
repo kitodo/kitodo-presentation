@@ -106,6 +106,24 @@ final class MetsDocument extends Document
     protected $xml;
 
     /**
+     * This adds metadata from METS structural map to metadata array.
+     *
+     * @access	public
+     *
+     * @param	array	&$metadata: The metadata array to extend
+     * @param	string	$id: The @ID attribute of the logical structure node
+     *
+     * @return  void
+     */
+    public function addMetadataFromMets(&$metadata, $id) {
+        $details = $this->getLogicalStructure($id);
+        if (!empty($details)) {
+            $metadata['mets_label'][0] = $details['label'];
+            $metadata['mets_orderlabel'][0] = $details['orderlabel'];
+        }
+    }
+
+    /**
      *
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::establishRecordId()
@@ -233,6 +251,7 @@ final class MetsDocument extends Document
         $details = [];
         $details['id'] = $attributes['ID'];
         $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
+        $details['order'] = (isset($attributes['ORDER']) ? $attributes['ORDER'] : '');
         $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
         $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
         $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
@@ -342,6 +361,8 @@ final class MetsDocument extends Document
             'rights_info' => [],
             'collection' => [],
             'owner' => [],
+            'mets_label' => [],
+            'mets_orderlabel' => [],
             'document_format' => [],
         ];
         $metadata['document_format'][] = 'METS';
@@ -724,6 +745,7 @@ final class MetsDocument extends Document
                 $physSeq[0] = (string) $physNode[0]['ID'];
                 $this->physicalStructureInfo[$physSeq[0]]['id'] = (string) $physNode[0]['ID'];
                 $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
+                $this->physicalStructureInfo[$physSeq[0]]['order'] = (isset($physNode[0]['ORDER']) ? (string) $physNode[0]['ORDER'] : '');
                 $this->physicalStructureInfo[$physSeq[0]]['label'] = (isset($physNode[0]['LABEL']) ? (string) $physNode[0]['LABEL'] : '');
                 $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
                 $this->physicalStructureInfo[$physSeq[0]]['type'] = (string) $physNode[0]['TYPE'];
@@ -740,6 +762,7 @@ final class MetsDocument extends Document
                     $elements[(int) $elementNode['ORDER']] = (string) $elementNode['ID'];
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = (string) $elementNode['ID'];
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['dmdId'] = (isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '');
+                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['order'] = (isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '');
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['label'] = (isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '');
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['orderlabel'] = (isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '');
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['type'] = (string) $elementNode['TYPE'];

@@ -351,6 +351,28 @@ return [
                 'default' => '',
             ],
         ],
+        'mets_label' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.mets_label',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
+        'mets_orderlabel' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.mets_orderlabel',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'trim',
+                'default' => '',
+            ],
+        ],
         'collections' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.collections',
@@ -425,9 +447,9 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,--palette--;;1,author,--palette--;;2,structure,--palette--;;3,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,--palette--;;4,--palette--;;5,--palette--;;6,--palette--;;7,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,--palette--;;8,hidden,--palette--;;9,fe_group,status,owner,license,'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'title, title_sorting, --linebreak--, thumbnail', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'title, title_sorting, --linebreak--, mets_label, thumbnail', 'canNotCollapse' => 1],
         '2' => ['showitem' => 'year, place', 'canNotCollapse' => 1],
-        '3' => ['showitem' => 'partof, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1],
+        '3' => ['showitem' => 'partof, mets_orderlabel, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1],
         '4' => ['showitem' => 'location, document_format', 'canNotCollapse' => 1],
         '5' => ['showitem' => 'record_id, prod_id', 'canNotCollapse' => 1],
         '6' => ['showitem' => 'opac_id, union_id', 'canNotCollapse' => 1],
