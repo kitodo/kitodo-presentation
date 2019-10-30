@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -24,7 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Statistics.php';
 
     /**
@@ -37,7 +39,8 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Turn cache on.
         $this->setCache(TRUE);
@@ -56,13 +59,13 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'tx_dlf_documents',
                 'tx_dlf_relations',
                 'tx_dlf_collections',
-                'AND tx_dlf_documents.pid='.intval($this->conf['pages'])
-                    .' AND tx_dlf_collections.pid='.intval($this->conf['pages'])
-                    .' AND tx_dlf_documents.partof=0'
-                    .' AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')'
-                    .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                    .Helper::whereClause('tx_dlf_documents')
-                    .Helper::whereClause('tx_dlf_collections'),
+                'AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
+                    . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
+                    . ' AND tx_dlf_documents.partof=0'
+                    . ' AND tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')'
+                    . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
+                    . Helper::whereClause('tx_dlf_documents')
+                    . Helper::whereClause('tx_dlf_collections'),
                 'tx_dlf_documents.uid'
             );
             $resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
@@ -70,13 +73,13 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'tx_dlf_documents',
                 'tx_dlf_relations',
                 'tx_dlf_collections',
-                'AND tx_dlf_documents.pid='.intval($this->conf['pages'])
-                    .' AND tx_dlf_collections.pid='.intval($this->conf['pages'])
-                    .' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.Helper::whereClause('tx_dlf_documents').')'
-                    .' AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')'
-                    .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                    .Helper::whereClause('tx_dlf_documents')
-                    .Helper::whereClause('tx_dlf_collections'),
+                'AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
+                    . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
+                    . ' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0' . Helper::whereClause('tx_dlf_documents') . ')'
+                    . ' AND tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')'
+                    . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
+                    . Helper::whereClause('tx_dlf_documents')
+                    . Helper::whereClause('tx_dlf_collections'),
                 'tx_dlf_documents.uid'
             );
         } else {
@@ -98,9 +101,9 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
             $resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents',
-                'tx_dlf_documents.pid='.intval($this->conf['pages'])
-                    .' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0'.Helper::whereClause('tx_dlf_documents').')'
-                    .Helper::whereClause('tx_dlf_documents')
+                'tx_dlf_documents.pid=' . intval($this->conf['pages'])
+                    . ' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0' . Helper::whereClause('tx_dlf_documents') . ')'
+                    . Helper::whereClause('tx_dlf_documents')
             );
         }
         $countTitles = $resultTitles->rowCount();
@@ -112,8 +115,8 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin {
                 '###VOLUMES###'
             ],
             'value' => [
-                $countTitles.($countTitles > 1 ? $this->pi_getLL('titles', '', TRUE) : $this->pi_getLL('title', '', TRUE)),
-                $countVolumes.($countVolumes > 1 ? $this->pi_getLL('volumes', '', TRUE) : $this->pi_getLL('volume', '', TRUE))
+                $countTitles . ($countTitles > 1 ? $this->pi_getLL('titles', '', TRUE) : $this->pi_getLL('title', '', TRUE)),
+                $countVolumes . ($countVolumes > 1 ? $this->pi_getLL('volumes', '', TRUE) : $this->pi_getLL('volume', '', TRUE))
             ]
         ];
         // Apply replacements.

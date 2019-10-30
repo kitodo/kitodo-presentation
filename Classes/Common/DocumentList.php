@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -25,7 +26,8 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @subpackage dlf
  * @access public
  */
-class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Core\SingletonInterface {
+class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Core\SingletonInterface
+{
     /**
      * This holds the number of documents in the list
      * @see \Countable
@@ -95,7 +97,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function add(array $elements, $position = -1) {
+    public function add(array $elements, $position = -1)
+    {
         $position = MathUtility::forceIntegerInRange($position, 0, $this->count, $this->count);
         if (!empty($elements)) {
             array_splice($this->elements, $position, 0, $elements);
@@ -111,7 +114,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return integer The number of elements in the list
      */
-    public function count() {
+    public function count()
+    {
         return $this->count;
     }
 
@@ -123,11 +127,12 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return array The current element
      */
-    public function current() {
+    public function current()
+    {
         if ($this->valid()) {
             return $this->getRecord($this->elements[$this->position]);
         } else {
-            Helper::devLog('Invalid position "'.$this->position.'" for list element', DEVLOG_SEVERITY_NOTICE);
+            Helper::devLog('Invalid position "' . $this->position . '" for list element', DEVLOG_SEVERITY_NOTICE);
             return;
         }
     }
@@ -141,9 +146,12 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return mixed The element's full record
      */
-    protected function getRecord($element) {
-        if (is_array($element)
-            && array_keys($element) == ['u', 'h', 's', 'p']) {
+    protected function getRecord($element)
+    {
+        if (
+            is_array($element)
+            && array_keys($element) == ['u', 'h', 's', 'p']
+        ) {
             // Return already processed record if possible.
             if (!empty($this->records[$element['u']])) {
                 return $this->records[$element['u']];
@@ -155,8 +163,10 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                 'subparts' => $element['p']
             ];
             // Check if it's a list of database records or Solr documents.
-            if (!empty($this->metadata['options']['source'])
-                && $this->metadata['options']['source'] == 'collection') {
+            if (
+                !empty($this->metadata['options']['source'])
+                && $this->metadata['options']['source'] == 'collection'
+            ) {
                 /** @var QueryBuilder $queryBuilder */
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_documents');
@@ -172,7 +182,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     ->where(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($record['uid'])),
-                            $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($record['uid']))),
+                            $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($record['uid']))
+                        ),
                         Helper::whereExpression('tx_dlf_documents')
                     )
                     ->execute();
@@ -181,16 +192,22 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                 while ($resArray = $result->fetch()) {
                     // Prepare document's metadata.
                     $metadata = unserialize($resArray['metadata']);
-                    if (!empty($metadata['type'][0])
-                        && MathUtility::canBeInterpretedAsInteger($metadata['type'][0])) {
+                    if (
+                        !empty($metadata['type'][0])
+                        && MathUtility::canBeInterpretedAsInteger($metadata['type'][0])
+                    ) {
                         $metadata['type'][0] = Helper::getIndexNameFromUid($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
                     }
-                    if (!empty($metadata['owner'][0])
-                        && MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])) {
+                    if (
+                        !empty($metadata['owner'][0])
+                        && MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])
+                    ) {
                         $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
                     }
-                    if (!empty($metadata['collection'])
-                        && is_array($metadata['collection'])) {
+                    if (
+                        !empty($metadata['collection'])
+                        && is_array($metadata['collection'])
+                    ) {
                         foreach ($metadata['collection'] as $i => $collection) {
                             if (MathUtility::canBeInterpretedAsInteger($collection)) {
                                 $metadata['collection'][$i] = Helper::getIndexNameFromUid($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
@@ -211,14 +228,16 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                         ];
                     }
                 }
-            } elseif (!empty($this->metadata['options']['source'])
-                && $this->metadata['options']['source'] == 'search') {
+            } elseif (
+                !empty($this->metadata['options']['source'])
+                && $this->metadata['options']['source'] == 'search'
+            ) {
                 if ($this->solrConnect()) {
                     $params = [];
                     // Restrict the fields to the required ones
                     $params['fields'] = 'uid,id,toplevel,thumbnail,page';
                     foreach ($this->solrConfig as $solr_name) {
-                        $params['fields'] .= ','.$solr_name;
+                        $params['fields'] .= ',' . $solr_name;
                     }
                     // If it is a fulltext search, enable highlighting.
                     if ($this->metadata['fulltextSearch']) {
@@ -240,15 +259,15 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     // Extend filter query to get all documents with the same UID.
                     foreach ($params['filterquery'] as $key => $value) {
                         if (isset($value['query'])) {
-                            $params['filterquery'][$key]['query'] = $value['query'].' OR toplevel:true';
+                            $params['filterquery'][$key]['query'] = $value['query'] . ' OR toplevel:true';
                         }
                     }
                     // Add filter query to get all documents with the required uid.
-                    $params['filterquery'][] = ['query' => 'uid:'.Solr::escapeQuery($record['uid'])];
+                    $params['filterquery'][] = ['query' => 'uid:' . Solr::escapeQuery($record['uid'])];
                     // Add sorting.
                     $params['sort'] = $this->metadata['options']['params']['sort'];
                     // Set query.
-                    $params['query'] = $this->metadata['options']['select'].' OR toplevel:true';
+                    $params['query'] = $this->metadata['options']['select'] . ' OR toplevel:true';
                     // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
                     $selectQuery = $this->solr->service->createSelect($params);
                     $result = $this->solr->service->select($selectQuery);
@@ -300,7 +319,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return integer The current position
      */
-    public function key() {
+    public function key()
+    {
         return $this->position;
     }
 
@@ -314,19 +334,23 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function move($position, $steps) {
+    public function move($position, $steps)
+    {
         $position = intval($position);
         // Check if list position is valid.
-        if ($position < 0
-            || $position >= $this->count) {
-            Helper::devLog('Invalid position "'.$position.'" for element moving', DEVLOG_SEVERITY_WARNING);
+        if (
+            $position < 0
+            || $position >= $this->count
+        ) {
+            Helper::devLog('Invalid position "' . $position . '" for element moving', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $steps = intval($steps);
         // Check if moving given amount of steps is possible.
         if (($position + $steps) < 0
-            || ($position + $steps) >= $this->count) {
-            Helper::devLog('Invalid steps "'.$steps.'" for moving element at position "'.$position.'"', DEVLOG_SEVERITY_WARNING);
+            || ($position + $steps) >= $this->count
+        ) {
+            Helper::devLog('Invalid steps "' . $steps . '" for moving element at position "' . $position . '"', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $element = $this->remove($position);
@@ -342,7 +366,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function moveUp($position) {
+    public function moveUp($position)
+    {
         $this->move($position, -1);
     }
 
@@ -355,7 +380,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function moveDown($position) {
+    public function moveDown($position)
+    {
         $this->move($position, 1);
     }
 
@@ -367,7 +393,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function next() {
+    public function next()
+    {
         $this->position++;
     }
 
@@ -381,7 +408,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return boolean Does the given offset exist?
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         return isset($this->elements[$offset]);
     }
 
@@ -395,11 +423,12 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return array The element at the given offset
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         if ($this->offsetExists($offset)) {
             return $this->getRecord($this->elements[$offset]);
         } else {
-            Helper::devLog('Invalid offset "'.$offset.'" for list element', DEVLOG_SEVERITY_NOTICE);
+            Helper::devLog('Invalid offset "' . $offset . '" for list element', DEVLOG_SEVERITY_NOTICE);
             return;
         }
     }
@@ -415,7 +444,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($offset)) {
             $this->elements[$offset] = $value;
         } else {
@@ -435,11 +465,14 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return array The removed element
      */
-    public function remove($position) {
+    public function remove($position)
+    {
         $position = intval($position);
-        if ($position < 0
-            || $position >= $this->count) {
-            Helper::devLog('Invalid position "'.$position.'" for element removing', DEVLOG_SEVERITY_WARNING);
+        if (
+            $position < 0
+            || $position >= $this->count
+        ) {
+            Helper::devLog('Invalid position "' . $position . '" for element removing', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $removed = array_splice($this->elements, $position, 1);
@@ -457,11 +490,14 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return array The indizes of the removed elements
      */
-    public function removeRange($position, $length) {
+    public function removeRange($position, $length)
+    {
         $position = intval($position);
-        if ($position < 0
-            || $position >= $this->count) {
-            Helper::devLog('Invalid position "'.$position.'" for element removing', DEVLOG_SEVERITY_WARNING);
+        if (
+            $position < 0
+            || $position >= $this->count
+        ) {
+            Helper::devLog('Invalid position "' . $position . '" for element removing', DEVLOG_SEVERITY_WARNING);
             return;
         }
         $removed = array_splice($this->elements, $position, $length);
@@ -476,7 +512,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function reset() {
+    public function reset()
+    {
         $this->elements = [];
         $this->records = [];
         $this->metadata = [];
@@ -492,7 +529,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function rewind() {
+    public function rewind()
+    {
         $this->position = 0;
     }
 
@@ -505,7 +543,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function save($pid = 0) {
+    public function save($pid = 0)
+    {
         $pid = max(intval($pid), 0);
         // If no PID is given, save to the user's session instead
         if ($pid > 0) {
@@ -522,7 +561,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return boolean TRUE on success or FALSE on failure
      */
-    protected function solrConnect() {
+    protected function solrConnect()
+    {
         // Get Solr instance.
         if (!$this->solr) {
             // Connect to Solr server.
@@ -548,7 +588,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     ->execute();
 
                 while ($resArray = $result->fetch()) {
-                    $this->solrConfig[$resArray['index_name']] = $resArray['index_name'].'_'.($resArray['index_tokenized'] ? 't' : 'u').'s'.($resArray['index_indexed'] ? 'i' : 'u');
+                    $this->solrConfig[$resArray['index_name']] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . 's' . ($resArray['index_indexed'] ? 'i' : 'u');
                 }
                 // Add static fields.
                 $this->solrConfig['type'] = 'type';
@@ -569,13 +609,14 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function sort($by, $asc = TRUE) {
+    public function sort($by, $asc = TRUE)
+    {
         $newOrder = [];
         $nonSortable = [];
         foreach ($this->elements as $num => $element) {
             // Is this element sortable?
             if (!empty($element['s'][$by])) {
-                $newOrder[$element['s'][$by].str_pad($num, 6, '0', STR_PAD_LEFT)] = $element;
+                $newOrder[$element['s'][$by] . str_pad($num, 6, '0', STR_PAD_LEFT)] = $element;
             } else {
                 $nonSortable[] = $element;
             }
@@ -606,8 +647,9 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function offsetUnset($offset) {
-        unset ($this->elements[$offset]);
+    public function offsetUnset($offset)
+    {
+        unset($this->elements[$offset]);
         // Re-number the elements.
         $this->elements = array_values($this->elements);
         $this->count = count($this->elements);
@@ -621,7 +663,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return boolean Is the current list position valid?
      */
-    public function valid() {
+    public function valid()
+    {
         return isset($this->elements[$this->position]);
     }
 
@@ -632,7 +675,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return array The list's metadata
      */
-    protected function _getMetadata() {
+    protected function _getMetadata()
+    {
         return $this->metadata;
     }
 
@@ -645,7 +689,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    protected function _setMetadata(array $metadata = []) {
+    protected function _setMetadata(array $metadata = [])
+    {
         $this->metadata = $metadata;
     }
 
@@ -659,9 +704,12 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function __construct(array $elements = [], array $metadata = []) {
-        if (empty($elements)
-            && empty($metadata)) {
+    public function __construct(array $elements = [], array $metadata = [])
+    {
+        if (
+            empty($elements)
+            && empty($metadata)
+        ) {
             // Let's check the user's session.
             $sessionData = Helper::loadFromSession(get_class($this));
             // Restore list from session data.
@@ -690,7 +738,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    protected function __clone() {}
+    protected function __clone()
+    { }
 
     /**
      * This magic method is called each time an invisible property is referenced from the object
@@ -701,11 +750,14 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return mixed Value of $this->$var
      */
-    public function __get($var) {
-        $method = '_get'.ucfirst($var);
-        if (!property_exists($this, $var)
-            || !method_exists($this, $method)) {
-            Helper::devLog('There is no getter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
+    public function __get($var)
+    {
+        $method = '_get' . ucfirst($var);
+        if (
+            !property_exists($this, $var)
+            || !method_exists($this, $method)
+        ) {
+            Helper::devLog('There is no getter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
             return;
         } else {
             return $this->$method();
@@ -722,11 +774,14 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function __set($var, $value) {
-        $method = '_set'.ucfirst($var);
-        if (!property_exists($this, $var)
-            || !method_exists($this, $method)) {
-            Helper::devLog('There is no setter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
+    public function __set($var, $value)
+    {
+        $method = '_set' . ucfirst($var);
+        if (
+            !property_exists($this, $var)
+            || !method_exists($this, $method)
+        ) {
+            Helper::devLog('There is no setter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
         } else {
             $this->$method($value);
         }
@@ -740,7 +795,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return array Properties to be serialized
      */
-    public function __sleep() {
+    public function __sleep()
+    {
         return ['elements', 'metadata'];
     }
 
@@ -752,7 +808,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function __wakeup() {
+    public function __wakeup()
+    {
         $this->count = count($this->elements);
     }
 }

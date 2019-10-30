@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Hooks;
 
 /**
@@ -19,7 +20,8 @@ namespace Kitodo\Dlf\Hooks;
  * @subpackage dlf
  * @access public
  */
-class KitodoProductionHacks {
+class KitodoProductionHacks
+{
     /**
      * Hook for \Kitodo\Dlf\Common\MetsDocument::establishRecordId()
      * When using Kitodo.Production the record identifier is saved only in MODS, but not
@@ -32,7 +34,8 @@ class KitodoProductionHacks {
      *
      * @return void
      */
-    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$record_id) {
+    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$record_id)
+    {
         if (!$record_id) {
             $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
@@ -52,7 +55,7 @@ class KitodoProductionHacks {
                 if (empty($id)) {
                     $id = (string) $divs[0]['DMDID'];
                 }
-                $recordIds = $xml->xpath('//mets:dmdSec[@ID="'.$id.'"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
+                $recordIds = $xml->xpath('//mets:dmdSec[@ID="' . $id . '"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
                 if (!empty($recordIds[0])) {
                     $record_id = (string) $recordIds[0];
                 }

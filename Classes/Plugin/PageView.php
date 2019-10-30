@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -24,7 +25,8 @@ use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
  * @subpackage dlf
  * @access public
  */
-class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
+class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/PageView.php';
 
     /**
@@ -66,37 +68,38 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function addViewerJS() {
+    protected function addViewerJS()
+    {
 
         $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
         // Add OpenLayers library.
-        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3.css');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/glif.min.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/OpenLayers/ol3-dlf.js');
+        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/OpenLayers/ol3.css');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/OpenLayers/glif.min.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/OpenLayers/ol3-dlf.js');
         // Add viewer library.
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/Utility.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3Styles.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/OL3Sources.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AltoParser.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/ImageManipulationControl.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/FulltextControl.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/Utility.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/OL3.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/OL3Styles.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/OL3Sources.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/AltoParser.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/ImageManipulationControl.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/FulltextControl.js');
         if ($this->doc instanceof IiifManifest) {
-            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AnnotationParser.js');
-            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/AnnotationControl.js');
+            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/AnnotationParser.js');
+            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/AnnotationControl.js');
         }
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/PageView/PageView.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/PageView/PageView.js');
         // Add viewer configuration.
         $viewerConfiguration = '
             $(document).ready(function() {
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({
-                        controls: ["'.implode('", "', $this->controls).'"],
-                        div: "'.$this->conf['elementId'].'",
-                        images: '.json_encode($this->images).',
-                        fulltexts: '.json_encode($this->fulltexts).',
-                        annotationContainers: '.json_encode($this->annotationContainers).',
-                        useInternalProxy: '.($this->conf['useInternalProxy'] ? 1 : 0).'
+                        controls: ["' . implode('", "', $this->controls) . '"],
+                        div: "' . $this->conf['elementId'] . '",
+                        images: ' . json_encode($this->images) . ',
+                        fulltexts: ' . json_encode($this->fulltexts) . ',
+                        annotationContainers: ' . json_encode($this->annotationContainers) . ',
+                        useInternalProxy: ' . ($this->conf['useInternalProxy'] ? 1 : 0) . '
                     });
                 }
             });
@@ -111,18 +114,19 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array Marker array
      */
-    protected function addInteraction() {
+    protected function addInteraction()
+    {
         $markerArray = [];
         if ($this->piVars['id']) {
             if ($this->conf['crop']) {
-                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">'.$this->pi_getLL('editMode', '', TRUE).'</a>';
-                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">'.$this->pi_getLL('editRemove', '', TRUE).'</a>';
+                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">' . $this->pi_getLL('editMode', '', TRUE) . '</a>';
+                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">' . $this->pi_getLL('editRemove', '', TRUE) . '</a>';
             } else {
                 $markerArray['###EDITBUTTON###'] = '';
                 $markerArray['###EDITREMOVE###'] = '';
             }
             if ($this->conf['magnifier']) {
-                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">'.$this->pi_getLL('magnifier', '', TRUE).'</a>';
+                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">' . $this->pi_getLL('magnifier', '', TRUE) . '</a>';
             } else {
                 $markerArray['###MAGNIFIER###'] = '';
             }
@@ -137,7 +141,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array Marker array
      */
-    protected function addBasketForm() {
+    protected function addBasketForm()
+    {
         $markerArray = [];
         // Add basket button
         if ($this->conf['basketButton'] && $this->conf['targetBasket'] && $this->piVars['id']) {
@@ -154,15 +159,15 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', TRUE, FALSE),
                 'title' => $label
             ];
-            $output = '<form id="addToBasketForm" action="'.$this->cObj->typoLink_URL($basketConf).'" method="post">';
-            $output .= '<input type="hidden" name="tx_dlf[startpage]" id="startpage" value="'.$this->piVars['page'].'">';
-            $output .= '<input type="hidden" name="tx_dlf[endpage]" id="endpage" value="'.$this->piVars['page'].'">';
+            $output = '<form id="addToBasketForm" action="' . $this->cObj->typoLink_URL($basketConf) . '" method="post">';
+            $output .= '<input type="hidden" name="tx_dlf[startpage]" id="startpage" value="' . $this->piVars['page'] . '">';
+            $output .= '<input type="hidden" name="tx_dlf[endpage]" id="endpage" value="' . $this->piVars['page'] . '">';
             $output .= '<input type="hidden" name="tx_dlf[startX]" id="startX">';
             $output .= '<input type="hidden" name="tx_dlf[startY]" id="startY">';
             $output .= '<input type="hidden" name="tx_dlf[endX]" id="endX">';
             $output .= '<input type="hidden" name="tx_dlf[endY]" id="endY">';
             $output .= '<input type="hidden" name="tx_dlf[rotation]" id="rotation">';
-            $output .= '<button id="submitBasketForm" onclick="this.form.submit()">'.$label.'</button>';
+            $output .= '<button id="submitBasketForm" onclick="this.form.submit()">' . $label . '</button>';
             $output .= '</form>';
             $output .= '<script>';
             $output .= '$(document).ready(function() { $("#submitBasketForm").click(function() { $("#addToBasketForm").submit(); }); });';
@@ -183,7 +188,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array URL and MIME type of image file
      */
-    protected function getImage($page) {
+    protected function getImage($page)
+    {
         $image = [];
         // Get @USE value of METS fileGrp.
         $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrps']);
@@ -195,14 +201,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
                     // Configure @action URL for form.
                     $linkConf = [
                         'parameter' => $GLOBALS['TSFE']->id,
-                        'additionalParams' => '&eID=tx_dlf_pageview_proxy&url='.urlencode($image['url']),
+                        'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($image['url']),
                     ];
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
                 }
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 break;
             } else {
-                Helper::devLog('File not found in fileGrp "'.$fileGrp.'"', DEVLOG_SEVERITY_WARNING);
+                Helper::devLog('File not found in fileGrp "' . $fileGrp . '"', DEVLOG_SEVERITY_WARNING);
             }
         }
         return $image;
@@ -217,7 +223,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array URL and MIME type of fulltext file
      */
-    protected function getFulltext($page) {
+    protected function getFulltext($page)
+    {
         $fulltext = [];
         // Get fulltext link.
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']])) {
@@ -225,12 +232,12 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
             // Configure @action URL for form.
             $linkConf = [
                 'parameter' => $GLOBALS['TSFE']->id,
-                'additionalParams' => '&eID=tx_dlf_pageview_proxy&url='.urlencode($fulltext['url']),
+                'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
             ];
             $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
             $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
         } else {
-            Helper::devLog('File not found in fileGrp "'.$this->conf['fileGrpFulltext'].'"', DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpFulltext'] . '"', DEVLOG_SEVERITY_WARNING);
         }
         return $fulltext;
     }
@@ -252,7 +259,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
-                if ($canvas!=null && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
+                if ($canvas != null && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     $annotationContainers = array();
                     /*
                      *  TODO Analyzing the annotations on the server side requires loading the annotation lists / pages
@@ -264,8 +271,10 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                         if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
                             foreach ($textAnnotations as $annotation) {
-                                if ($annotation->getBody()->getFormat() == "text/plain"
-                                    && $annotation->getBody()->getChars() != null) {
+                                if (
+                                    $annotation->getBody()->getFormat() == "text/plain"
+                                    && $annotation->getBody()->getChars() != null
+                                ) {
                                     $annotationListData = [];
                                     $annotationListData["uri"] = $annotationContainer->getId();
                                     $annotationListData["label"] = $annotationContainer->getLabelForDisplay();
@@ -281,7 +290,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
                             "width" => $canvas->getWidth(),
                             "height" => $canvas->getHeight(),
                         ],
-                        "annotationContainers"=>$annotationContainers
+                        "annotationContainers" => $annotationContainers
                     ];
                     return $result;
                 }
@@ -300,12 +309,15 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL
-            || $this->doc->numPages < 1) {
+        if (
+            $this->doc === NULL
+            || $this->doc->numPages < 1
+        ) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {

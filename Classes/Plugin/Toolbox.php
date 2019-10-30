@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -19,7 +20,8 @@ namespace Kitodo\Dlf\Plugin;
  * @subpackage dlf
  * @access public
  */
-class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Toolbox.php';
 
     /**
@@ -32,7 +34,8 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Quit without doing anything if required variable is not set.
         if (empty($this->piVars['id'])) {
@@ -53,7 +56,7 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin {
             $tool = trim($tool);
             $cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
             $cObj->data = $data;
-            $content .= $this->templateService->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool.'.'])]);
+            $content .= $this->templateService->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool . '.'])]);
         }
         return $this->pi_wrapInBaseClass($this->templateService->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
     }

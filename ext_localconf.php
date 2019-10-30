@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,23 +11,23 @@
  */
 
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 // Define constants.
 if (!defined('DEVLOG_SEVERITY_OK')) {
-    define ('DEVLOG_SEVERITY_OK', -1);
+    define('DEVLOG_SEVERITY_OK', -1);
 }
 if (!defined('DEVLOG_SEVERITY_INFO')) {
-    define ('DEVLOG_SEVERITY_INFO', 0);
+    define('DEVLOG_SEVERITY_INFO', 0);
 }
 if (!defined('DEVLOG_SEVERITY_NOTICE')) {
-    define ('DEVLOG_SEVERITY_NOTICE', 1);
+    define('DEVLOG_SEVERITY_NOTICE', 1);
 }
 if (!defined('DEVLOG_SEVERITY_WARNING')) {
-    define ('DEVLOG_SEVERITY_WARNING', 2);
+    define('DEVLOG_SEVERITY_WARNING', 2);
 }
 if (!defined('DEVLOG_SEVERITY_ERROR')) {
-    define ('DEVLOG_SEVERITY_ERROR', 3);
+    define('DEVLOG_SEVERITY_ERROR', 3);
 }
 // Register plugins.
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\AudioPlayer::class, '_audioplayer', 'list_type', TRUE);
@@ -48,36 +49,34 @@ if (!defined('DEVLOG_SEVERITY_ERROR')) {
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\FulltextTool::class, '_fulltexttool', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\AnnotationTool::class, '_annotationtool', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.annotationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.annotationtool';
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageDownloadTool::class, '_imagedownloadtool', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageManipulationTool::class, '_imagemanipulationtool', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagemanipulationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagemanipulationtool';
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\PdfDownloadTool::class, '_pdfdownloadtool', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.pdfdownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.pdfdownloadtool';
 \Kitodo\Dlf\Hooks\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\SearchInDocumentTool::class, '_searchindocumenttool', '', TRUE);
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY).'_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.searchindocumenttool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.searchindocumenttool';
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/MetsDocument.php']['hookClass'][] = \Kitodo\Dlf\Hooks\KitodoProductionHacks::class;
 // Register AJAX eID handlers.
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = \Kitodo\Dlf\Plugin\Eid\SearchSuggest::class.'::main';
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_in_document'] = \Kitodo\Dlf\Plugin\Eid\SearchInDocument::class.'::main';
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Plugin\Eid\PageViewProxy::class.'::main';
-
-// add caching framework for Solr queries
-if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr'] = array();
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = \Kitodo\Dlf\Plugin\Eid\SearchSuggest::class . '::main';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_in_document'] = \Kitodo\Dlf\Plugin\Eid\SearchInDocument::class . '::main';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Plugin\Eid\PageViewProxy::class . '::main';
+// Use Caching Framework for Solr queries
+if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr'] = [];
 }
-if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['backend'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\SimpleFileBackend';
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\SimpleFileBackend';
 }
-// set defaultLifeTime to 1 day (87600s)
-if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['options']['defaultLifeTime'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['kitodo_solr']['options']['defaultLifeTime'] = 87600;
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'] = 87600; // 87600 seconds = 1 day
 }
 // Register Typoscript user function.
 if (TYPO3_MODE === 'FE') {
@@ -91,7 +90,8 @@ if (TYPO3_MODE === 'FE') {
      *
      * @return boolean TRUE if document type matches, FALSE if not
      */
-    function user_dlf_docTypeCheck($type) {
+    function user_dlf_docTypeCheck($type)
+    {
         $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Common\DocumentTypeCheck::class);
         return ($hook->getDocType() === $type);
     }

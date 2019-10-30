@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -24,7 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Calendar.php';
 
     /**
@@ -37,7 +39,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         // Nothing to do here.
         return $content;
     }
@@ -52,7 +55,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function calendar($content, $conf) {
+    public function calendar($content, $conf)
+    {
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
@@ -116,16 +120,16 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 '###DAYFRI_NAME###' => strftime('%a', strtotime('last Friday')),
                 '###DAYSAT_NAME###' => strftime('%a', strtotime('last Saturday')),
                 '###DAYSUN_NAME###' => strftime('%a', strtotime('last Sunday')),
-                '###MONTHNAME###'  => strftime('%B', strtotime($year.'-'.($i + 1).'-1'))
+                '###MONTHNAME###'  => strftime('%B', strtotime($year . '-' . ($i + 1) . '-1'))
             ];
             // Reset week content of new month.
             $subWeekPartContent = '';
-            $firstOfMonth = strtotime($year.'-'.($i + 1).'-1');
+            $firstOfMonth = strtotime($year . '-' . ($i + 1) . '-1');
             $lastOfMonth = strtotime('last day of', ($firstOfMonth));
             $firstOfMonthStart = strtotime('last Monday', $firstOfMonth);
             // There are never more than 6 weeks in a month.
             for ($j = 0; $j <= 5; $j++) {
-                $firstDayOfWeek = strtotime('+ '.$j.' Week', $firstOfMonthStart);
+                $firstDayOfWeek = strtotime('+ ' . $j . ' Week', $firstOfMonthStart);
                 $weekArray = [
                     '###DAYMON###' => '&nbsp;',
                     '###DAYTUE###' => '&nbsp;',
@@ -137,9 +141,11 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 ];
                 // Every week has seven days. ;-)
                 for ($k = 0; $k <= 6; $k++) {
-                    $currentDayTime = strtotime('+ '.$k.' Day', $firstDayOfWeek);
-                    if ($currentDayTime >= $firstOfMonth
-                        && $currentDayTime <= $lastOfMonth) {
+                    $currentDayTime = strtotime('+ ' . $k . ' Day', $firstDayOfWeek);
+                    if (
+                        $currentDayTime >= $firstOfMonth
+                        && $currentDayTime <= $lastOfMonth
+                    ) {
                         $dayLinks = '';
                         $dayLinksText = [];
                         $dayLinksList = '';
@@ -153,7 +159,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                                         $linkConf = [
                                             'useCacheHash' => 1,
                                             'parameter' => $this->conf['targetPid'],
-                                            'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($issue['uid']),
+                                            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($issue['uid']),
                                             'ATagParams' => ' class="title"',
                                         ];
                                         $dayLinksText[] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
@@ -165,13 +171,13 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                             if (!empty($dayLinksText)) {
                                 $dayLinksList = '<ul>';
                                 foreach ($dayLinksText as $link) {
-                                    $dayLinksList .= '<li>'.$link.'</li>';
+                                    $dayLinksList .= '<li>' . $link . '</li>';
                                 }
                                 $dayLinksList .= '</ul>';
                             }
-                            $dayLinkDiv = '<div class="issues"><h4>'.strftime('%d', $currentDayTime).'</h4><div>'.$dayLinksList.'</div></div>';
+                            $dayLinkDiv = '<div class="issues"><h4>' . strftime('%d', $currentDayTime) . '</h4><div>' . $dayLinksList . '</div></div>';
                         }
-                        switch (strftime('%w', strtotime('+ '.$k.' Day', $firstDayOfWeek))) {
+                        switch (strftime('%w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
                             case '0':
                                 $weekArray['###DAYSUN###'] = ((int) $dayLinks === (int) date('j', $currentDayTime)) ? $dayLinkDiv : strftime('%d', $currentDayTime);
                                 break;
@@ -208,14 +214,14 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($this->doc->parentId),
+            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
         ];
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE).' '.$this->doc->getTitle($this->doc->parentId), $linkConf);
+        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
         // Link to current year.
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($this->doc->uid),
+            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->uid),
         ];
         $yearLink = $this->cObj->typoLink($year, $linkConf);
         $subPartContentList = '';
@@ -256,7 +262,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function years($content, $conf) {
+    public function years($content, $conf)
+    {
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
@@ -303,8 +310,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $linkConf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetPid'],
-                    'additionalParams' => '&'.$this->prefixId.'[id]='.urlencode($year['uid']),
-                    'title' => $titleAnchor.': '.$year['title']
+                    'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($year['uid']),
+                    'title' => $titleAnchor . ': ' . $year['title']
                 ];
                 $yearArray = [
                     '###YEARNAME###' => $this->cObj->typoLink($year['title'], $linkConf),
@@ -316,9 +323,9 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin {
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&'.$this->prefixId.'[id]='.$this->doc->uid,
+            'additionalParams' => '&' . $this->prefixId . '[id]=' . $this->doc->uid,
         ];
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE).' '.$this->doc->getTitle($this->doc->uid), $linkConf);
+        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE) . ' ' . $this->doc->getTitle($this->doc->uid), $linkConf);
         // Fill markers.
         $markerArray = [
             '###LABEL_CHOOSE_YEAR###' => $this->pi_getLL('label.please_choose_year'),

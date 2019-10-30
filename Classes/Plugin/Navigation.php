@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -22,7 +23,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Navigation.php';
 
     /**
@@ -32,7 +34,8 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Link to the list view ready to output
      */
-    protected function getLinkToListview() {
+    protected function getLinkToListview()
+    {
         if (!empty($this->conf['targetPid'])) {
             // Load the list.
             $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
@@ -56,23 +59,24 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Page selector ready to output
      */
-    protected function getPageSelector() {
+    protected function getPageSelector()
+    {
         // Configure @action URL for form.
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id
         ];
-        $output = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+        $output = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
         // Add plugin variables.
         foreach ($this->piVars as $piVar => $value) {
             if ($piVar != 'page' && $piVar != 'DATA' && !empty($value)) {
-                $output .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
+                $output .= '<input type="hidden" name="' . $this->prefixId . '[' . $piVar . ']" value="' . $value . '" />';
             }
         }
         // Add page selector.
-        $uniqId = uniqid(Helper::getUnqualifiedClassName(get_class($this)).'-');
-        $output .= '<label for="'.$uniqId.'">'.$this->pi_getLL('selectPage', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[page]" onchange="javascript:this.form.submit();"'.($this->doc->numPages < 1 ? ' disabled="disabled"' : '').'>';
+        $uniqId = uniqid(Helper::getUnqualifiedClassName(get_class($this)) . '-');
+        $output .= '<label for="' . $uniqId . '">' . $this->pi_getLL('selectPage', '', TRUE) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[page]" onchange="javascript:this.form.submit();"' . ($this->doc->numPages < 1 ? ' disabled="disabled"' : '') . '>';
         for ($i = 1; $i <= $this->doc->numPages; $i++) {
-            $output .= '<option value="'.$i.'"'.($this->piVars['page'] == $i ? ' selected="selected"' : '').'>['.$i.']'.($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel'] ? ' - '.htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel']) : '').'</option>';
+            $output .= '<option value="' . $i . '"' . ($this->piVars['page'] == $i ? ' selected="selected"' : '') . '>[' . $i . ']' . ($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel']) : '') . '</option>';
         }
         $output .= '</select></div></form>';
         return $output;
@@ -88,7 +92,8 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Turn cache on.
         $this->setCache(TRUE);
@@ -107,8 +112,10 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
                 }
                 // Set default values if not set.
                 // $this->piVars['page'] may be integer or string (physical structure @ID)
-                if ((int) $this->piVars['page'] > 0
-                    || empty($this->piVars['page'])) {
+                if (
+                    (int) $this->piVars['page'] > 0
+                    || empty($this->piVars['page'])
+                ) {
                     $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
                 } else {
                     $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -127,37 +134,37 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($this->piVars['page'] > 1) {
             $markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', TRUE), ['page' => 1]);
         } else {
-            $markerArray['###FIRST###'] = '<span>'.$this->pi_getLL('firstPage', '', TRUE).'</span>';
+            $markerArray['###FIRST###'] = '<span>' . $this->pi_getLL('firstPage', '', TRUE) . '</span>';
         }
         // Link back X pages.
         if ($this->piVars['page'] > $pageSteps) {
             $markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps), ['page' => $this->piVars['page'] - $pageSteps]);
         } else {
-            $markerArray['###BACK###'] = '<span>'.sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps).'</span>';
+            $markerArray['###BACK###'] = '<span>' . sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps) . '</span>';
         }
         // Link to previous page.
         if ($this->piVars['page'] > (1 + $this->piVars['double'])) {
             $markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', TRUE), ['page' => $this->piVars['page'] - (1 + $this->piVars['double'])]);
         } else {
-            $markerArray['###PREVIOUS###'] = '<span>'.$this->pi_getLL('prevPage', '', TRUE).'</span>';
+            $markerArray['###PREVIOUS###'] = '<span>' . $this->pi_getLL('prevPage', '', TRUE) . '</span>';
         }
         // Link to next page.
         if ($this->piVars['page'] < ($this->doc->numPages - $this->piVars['double'])) {
             $markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', TRUE), ['page' => $this->piVars['page'] + (1 + $this->piVars['double'])]);
         } else {
-            $markerArray['###NEXT###'] = '<span>'.$this->pi_getLL('nextPage', '', TRUE).'</span>';
+            $markerArray['###NEXT###'] = '<span>' . $this->pi_getLL('nextPage', '', TRUE) . '</span>';
         }
         // Link forward X pages.
         if ($this->piVars['page'] <= ($this->doc->numPages - $pageSteps)) {
             $markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps), ['page' => $this->piVars['page'] + $pageSteps]);
         } else {
-            $markerArray['###FORWARD###'] = '<span>'.sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps).'</span>';
+            $markerArray['###FORWARD###'] = '<span>' . sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps) . '</span>';
         }
         // Link to last page.
         if ($this->piVars['page'] < $this->doc->numPages) {
             $markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', TRUE), ['page' => $this->doc->numPages]);
         } else {
-            $markerArray['###LAST###'] = '<span>'.$this->pi_getLL('lastPage', '', TRUE).'</span>';
+            $markerArray['###LAST###'] = '<span>' . $this->pi_getLL('lastPage', '', TRUE) . '</span>';
         }
         // Add double page switcher.
         if ($this->doc->numPages > 0) {
@@ -169,11 +176,11 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
             if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
                 $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', TRUE), ['page' => $this->piVars['page'] + 1]);
             } else {
-                $markerArray['###DOUBLEPAGE+1###'] = '<span>'.$this->pi_getLL('doublePage+1', '', TRUE).'</span>';
+                $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', TRUE) . '</span>';
             }
         } else {
-            $markerArray['###DOUBLEPAGE###'] = '<span>'.$this->pi_getLL('doublePageOn', '', TRUE).'</span>';
-            $markerArray['###DOUBLEPAGE+1###'] = '<span>'.$this->pi_getLL('doublePage+1', '', TRUE).'</span>';
+            $markerArray['###DOUBLEPAGE###'] = '<span>' . $this->pi_getLL('doublePageOn', '', TRUE) . '</span>';
+            $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', TRUE) . '</span>';
         }
         // Add page selector.
         $markerArray['###PAGESELECT###'] = $this->getPageSelector();
@@ -201,7 +208,8 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Typolink ready to output
      */
-    protected function makeLink($label, array $overrulePIvars = [], $aTagParams = '') {
+    protected function makeLink($label, array $overrulePIvars = [], $aTagParams = '')
+    {
         // Merge plugin variables with new set of values.
         if (is_array($this->piVars)) {
             $piVars = $this->piVars;

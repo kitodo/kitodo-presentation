@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -26,7 +27,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Collection.php';
 
     /**
@@ -47,7 +49,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Turn cache on.
         $this->setCache(TRUE);
@@ -75,7 +78,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The list of collections ready to output
      */
-    protected function showCollectionList() {
+    protected function showCollectionList()
+    {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
@@ -85,8 +89,10 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         $showUserDefinedColls = '';
         // Handle collections set by configuration.
         if ($this->conf['collections']) {
-            if (count(explode(',', $this->conf['collections'])) == 1
-                && empty($this->conf['dont_show_single'])) {
+            if (
+                count(explode(',', $this->conf['collections'])) == 1
+                && empty($this->conf['dont_show_single'])
+            ) {
                 $this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
             }
             $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])));
@@ -162,12 +168,12 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         foreach ($collections as $collection) {
             $solr_query = '';
             if ($collection['index_query'] != '') {
-                $solr_query .= '('.$collection['index_query'].')';
+                $solr_query .= '(' . $collection['index_query'] . ')';
             } else {
-                $solr_query .= 'collection:("'.$collection['index_name'].'")';
+                $solr_query .= 'collection:("' . $collection['index_name'] . '")';
             }
-            $partOfNothing = $solr->search_raw($solr_query.' AND partof:0 AND toplevel:true', $params);
-            $partOfSomething = $solr->search_raw($solr_query.' AND NOT partof:0 AND toplevel:true', $params);
+            $partOfNothing = $solr->search_raw($solr_query . ' AND partof:0 AND toplevel:true', $params);
+            $partOfSomething = $solr->search_raw($solr_query . ' AND NOT partof:0 AND toplevel:true', $params);
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collection['titles'] = [];
             foreach ($partOfNothing as $doc) {
@@ -203,14 +209,14 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($collection['label']), $conf);
             // Add feed link if applicable.
             if (!empty($this->conf['targetFeed'])) {
-                $img = '<img src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Icons/txdlffeeds.png" alt="'.$this->pi_getLL('feedAlt', '', TRUE).'" title="'.$this->pi_getLL('feedTitle', '', TRUE).'" />';
+                $img = '<img src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . $this->pi_getLL('feedAlt', '', TRUE) . '" title="' . $this->pi_getLL('feedTitle', '', TRUE) . '" />';
                 $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, [$this->prefixId => ['collection' => $collection['uid']]], FALSE, $this->conf['targetFeed']);
             } else {
                 $markerArray[$_key]['###FEED###'] = '';
             }
             // Add thumbnail.
             if (!empty($collection['thumbnail'])) {
-                $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="'.htmlspecialchars($collection['label']).'" src="'.$collection['thumbnail'].'" />';
+                $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="' . htmlspecialchars($collection['label']) . '" src="' . $collection['thumbnail'] . '" />';
             } else {
                 $markerArray[$_key]['###THUMBNAIL###'] = '';
             }
@@ -218,9 +224,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
             $markerArray[$_key]['###DESCRIPTION###'] = $this->pi_RTEcssText($collection['description']);
             // Build statistic's output.
             $labelTitles = $this->pi_getLL((count($collection['titles']) > 1 ? 'titles' : 'title'), '', FALSE);
-            $markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars(count($collection['titles']).$labelTitles);
+            $markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars(count($collection['titles']) . $labelTitles);
             $labelVolumes = $this->pi_getLL((count($collection['volumes']) > 1 ? 'volumes' : 'volume'), '', FALSE);
-            $markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars(count($collection['volumes']).$labelVolumes);
+            $markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars(count($collection['volumes']) . $labelVolumes);
         }
         // Randomize sorting?
         if (!empty($this->conf['randomize'])) {
@@ -250,7 +256,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function showSingleCollection($id) {
+    protected function showSingleCollection($id)
+    {
         /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         /** @var QueryBuilder $queryBuilder */
@@ -289,13 +296,13 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         if ($resArray = $collection->fetch()) {
             $collectionData = $resArray;
         } else {
-            Helper::devLog('No collection with UID '.$id.' found.', DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('No collection with UID ' . $id . ' found.', DEVLOG_SEVERITY_WARNING);
             return;
         }
         if ($collectionData['index_search'] != '') {
-            $solr_query = '('.$collectionData['index_search'].')';
+            $solr_query = '(' . $collectionData['index_search'] . ')';
         } else {
-            $solr_query = 'collection:("'.$collectionData['index_name'].'") AND toplevel:true';
+            $solr_query = 'collection:("' . $collectionData['index_name'] . '") AND toplevel:true';
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
@@ -348,7 +355,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
                         'source' => 'collection',
                         'select' => $id,
                         'userid' => $collectionData['userid'],
-                        'params' => ['filterquery' => [['query' => 'collection_faceting:("'.$collectionData['index_name'].'")']]],
+                        'params' => ['filterquery' => [['query' => 'collection_faceting:("' . $collectionData['index_name'] . '")']]],
                         'core' => '',
                         'pid' => $this->conf['pages'],
                         'order' => 'title',
@@ -398,7 +405,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Clean output buffer.
         ob_end_clean();
         // Send headers.
-        header('Location: '.\TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(['parameter' => $this->conf['targetPid']])));
+        header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(['parameter' => $this->conf['targetPid']])));
         exit;
     }
 }

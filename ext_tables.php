@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -17,7 +18,7 @@ if (TYPO3_MODE === 'BE') {
         '',
         '',
         [
-            'routeTarget' => \Kitodo\Dlf\Module\NewTenant::class.'::main',
+            'routeTarget' => \Kitodo\Dlf\Module\NewTenant::class . '::main',
             'access' => 'admin',
             'name' => 'tools_dlfNewTenantModule',
             'icon' => 'EXT:dlf/Resources/Public/Images/NewTenant.svg',

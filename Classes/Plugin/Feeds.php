@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -25,7 +26,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Feeds.php';
 
     /**
@@ -38,7 +40,8 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Don't cache the output.
         $this->setCache(FALSE);
@@ -79,27 +82,29 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
         $channel->appendChild($rss->createElement('pubDate', date('r', $GLOBALS['EXEC_TIME'])));
         $channel->appendChild($rss->createElement('generator', htmlspecialchars($this->conf['useragent'], ENT_NOQUOTES, 'UTF-8')));
         // Add item elements.
-        if (!$this->conf['excludeOther']
+        if (
+            !$this->conf['excludeOther']
             || empty($this->piVars['collection'])
-            || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])) {
+            || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])
+        ) {
             $additionalWhere = '';
             // Check for pre-selected collections.
             if (!empty($this->piVars['collection'])) {
-                $additionalWhere = ' AND tx_dlf_collections.uid='.intval($this->piVars['collection']);
+                $additionalWhere = ' AND tx_dlf_collections.uid=' . intval($this->piVars['collection']);
             } elseif (!empty($this->conf['collections'])) {
-                $additionalWhere = ' AND tx_dlf_collections.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']).')';
+                $additionalWhere = ' AND tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')';
             }
             $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
                 'tx_dlf_documents.uid AS uid,tx_dlf_documents.partof AS partof,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.record_id AS guid,tx_dlf_documents.tstamp AS tstamp,tx_dlf_documents.crdate AS crdate',
                 'tx_dlf_documents',
                 'tx_dlf_relations',
                 'tx_dlf_collections',
-                'AND tx_dlf_documents.pid='.intval($this->conf['pages'])
-                    .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                    .' AND tx_dlf_collections.pid='.intval($this->conf['pages'])
-                    .$additionalWhere
-                    .Helper::whereClause('tx_dlf_documents')
-                    .Helper::whereClause('tx_dlf_collections'),
+                'AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
+                    . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
+                    . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
+                    . $additionalWhere
+                    . Helper::whereClause('tx_dlf_documents')
+                    . Helper::whereClause('tx_dlf_collections'),
                 'tx_dlf_documents.uid',
                 'tx_dlf_documents.tstamp DESC',
                 intval($this->conf['limit'])
@@ -111,15 +116,16 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
                     $title = '';
                     // Get title of superior document.
                     if ((empty($resArray['title']) || !empty($this->conf['prependSuperiorTitle']))
-                        && !empty($resArray['partof'])) {
+                        && !empty($resArray['partof'])
+                    ) {
                         $superiorTitle = Document::getTitle($resArray['partof'], TRUE);
                         if (!empty($superiorTitle)) {
-                            $title .= '['.$superiorTitle.']';
+                            $title .= '[' . $superiorTitle . ']';
                         }
                     }
                     // Get title of document.
                     if (!empty($resArray['title'])) {
-                        $title .= ' '.$resArray['title'];
+                        $title .= ' ' . $resArray['title'];
                     }
                     // Set default title if empty.
                     if (empty($title)) {
@@ -127,13 +133,13 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
                     }
                     // Append volume information.
                     if (!empty($resArray['volume'])) {
-                        $title .= ', '.$this->pi_getLL('volume').' '.$resArray['volume'];
+                        $title .= ', ' . $this->pi_getLL('volume') . ' ' . $resArray['volume'];
                     }
                     // Is this document new or updated?
                     if ($resArray['crdate'] == $resArray['tstamp']) {
-                        $title = $this->pi_getLL('new').' '.trim($title);
+                        $title = $this->pi_getLL('new') . ' ' . trim($title);
                     } else {
-                        $title = $this->pi_getLL('update').' '.trim($title);
+                        $title = $this->pi_getLL('update') . ' ' . trim($title);
                     }
                     $item->appendChild($rss->createElement('title', htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8')));
                     // Add link.
@@ -164,10 +170,10 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Send headers.
         header('HTTP/1.1 200 OK');
         header('Cache-Control: no-cache');
-        header('Content-Length: '.strlen($content));
+        header('Content-Length: ' . strlen($content));
         header('Content-Type: application/rss+xml; charset=utf-8');
-        header('Date: '.date('r', $GLOBALS['EXEC_TIME']));
-        header('Expires: '.date('r', $GLOBALS['EXEC_TIME']));
+        header('Date: ' . date('r', $GLOBALS['EXEC_TIME']));
+        header('Expires: ' . date('r', $GLOBALS['EXEC_TIME']));
         echo $content;
         exit;
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Command;
 
 /**
@@ -10,6 +11,7 @@ namespace Kitodo\Dlf\Command;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,11 +22,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use Kitodo\Dlf\Common\Document;
-use Kitodo\Dlf\Common\Helper;
-
 
 /**
- * Index single document into database and solr.
+ * Index single document into database and Solr.
  */
 class IndexCommand extends Command
 {
@@ -34,7 +34,7 @@ class IndexCommand extends Command
     public function configure()
     {
         $this
-            ->setDescription('Index single document into database and solr.')
+            ->setDescription('Index single document into database and Solr.')
             ->setHelp('')
             ->addOption(
                 'dry-run',
@@ -58,7 +58,7 @@ class IndexCommand extends Command
                 'solr',
                 's',
                 InputOption::VALUE_REQUIRED,
-                '[UID|index name] of the Solr core the document should be added to.'
+                '[UID|index_name] of the Solr core the document should be added to.'
             );
     }
 
@@ -80,7 +80,7 @@ class IndexCommand extends Command
 
         $startingPoint = 0;
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('pid'))) {
-            $startingPoint = MathUtility::forceIntegerInRange((int)$input->getOption('pid'), 0);
+            $startingPoint = MathUtility::forceIntegerInRange((int) $input->getOption('pid'), 0);
         }
         if ($startingPoint == 0) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
@@ -90,21 +90,22 @@ class IndexCommand extends Command
         if ($input->getOption('solr')) {
             $allSolrCores = $this->getSolrCores($startingPoint);
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('solr'))) {
-                $solrCoreUid = MathUtility::forceIntegerInRange((int)$input->getOption('solr'), 0);
+                $solrCoreUid = MathUtility::forceIntegerInRange((int) $input->getOption('solr'), 0);
             } else {
                 $solrCoreName = $input->getOption('solr');
                 $solrCoreUid = $allSolrCores[$solrCoreName];
             }
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
+                $output_solrCores = [];
                 foreach ($allSolrCores as $index_name => $uid) {
-                    $output_solrCores .= ' ' . $uid . ' : ' . $index_name ."\n";
+                    $output_solrCores[] = $uid . ' : ' . $index_name;
                 }
                 if (empty($output_solrCores)) {
-                    $io->error('ERROR: No valid solr core ("'. $input->getOption('solr') . '") given. ' . "No valid cores found on PID " . $startingPoint .".\n" . $output_solrCores);
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $startingPoint . ".\n");
                     exit(1);
                 } else {
-                    $io->error('ERROR: No valid solr core ("'. $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . $output_solrCores);
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
                     exit(1);
                 }
             }
@@ -113,8 +114,10 @@ class IndexCommand extends Command
             exit(1);
         }
 
-        if (!MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))
-            && !GeneralUtility::isValidUrl($input->getOption('doc'))) {
+        if (
+            !MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))
+            && !GeneralUtility::isValidUrl($input->getOption('doc'))
+        ) {
             $io->error('ERROR: "' . $input->getOption('doc') . '" is not a valid document UID or URL for --doc|-d.');
             exit(1);
         }
@@ -123,19 +126,19 @@ class IndexCommand extends Command
         $doc = Document::getInstance($input->getOption('doc'), $startingPoint, TRUE);
         if ($doc->ready) {
             if ($dryRun) {
-                $io->section('DRY RUN: Would index ' . $doc->uid . ' '. $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
+                $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
             } else {
                 if ($io->isVerbose()) {
-                    $io->section('Will index ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
+                    $io->section('Indexing ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 // ...and save it to the database...
                 if (!$doc->save($startingPoint, $solrCoreUid)) {
-                    $io->error('ERROR: Document "'.$input->getOption('doc').'" not saved and indexed.');
+                    $io->error('ERROR: Document "' . $input->getOption('doc') . '" not saved and indexed.');
                     exit(1);
                 }
             }
         } else {
-            $io->error('ERROR: Document "'.$input->getOption('doc').'" could not be loaded.');
+            $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
             exit(1);
         }
 
@@ -157,7 +160,7 @@ class IndexCommand extends Command
             ->getQueryBuilderForTable('tx_dlf_solrcores');
 
         $solrCores = [];
-        $pageId = (int)$pageId;
+        $pageId = (int) $pageId;
         $result = $queryBuilder
             ->select('uid', 'index_name')
             ->from('tx_dlf_solrcores')

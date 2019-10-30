@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -19,7 +20,8 @@ namespace Kitodo\Dlf\Plugin;
  * @subpackage dlf
  * @access public
  */
-class Validator extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Validator extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Validator.php';
 
     /**
@@ -32,7 +34,8 @@ class Validator extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Disable caching for this plugin.
         $this->setCache(FALSE);

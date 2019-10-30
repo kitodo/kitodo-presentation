@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Hooks;
 
 /**
@@ -27,7 +28,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class DataHandler {
+class DataHandler
+{
     /**
      * Field post-processing hook for the process_datamap() method.
      *
@@ -41,18 +43,21 @@ class DataHandler {
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj) {
+    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj)
+    {
         if ($status == 'new') {
             switch ($table) {
-                // Field post-processing for table "tx_dlf_documents".
+                    // Field post-processing for table "tx_dlf_documents".
                 case 'tx_dlf_documents':
                     // Set sorting field if empty.
-                    if (empty($fieldArray['title_sorting'])
-                        && !empty($fieldArray['title'])) {
+                    if (
+                        empty($fieldArray['title_sorting'])
+                        && !empty($fieldArray['title'])
+                    ) {
                         $fieldArray['title_sorting'] = $fieldArray['title'];
                     }
                     break;
-                // Field post-processing for table "tx_dlf_metadata".
+                    // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
                     // Store field in index if it should appear in lists.
                     if (!empty($fieldArray['is_listed'])) {
@@ -62,18 +67,22 @@ class DataHandler {
                     if (!empty($fieldArray['index_autocomplete'])) {
                         $fieldArray['index_indexed'] = 1;
                     }
-                // Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
+                    // Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
                 case 'tx_dlf_collections':
                 case 'tx_dlf_libraries':
                 case 'tx_dlf_structures':
                     // Set label as index name if empty.
-                    if (empty($fieldArray['index_name'])
-                        && !empty($fieldArray['label'])) {
+                    if (
+                        empty($fieldArray['index_name'])
+                        && !empty($fieldArray['label'])
+                    ) {
                         $fieldArray['index_name'] = $fieldArray['label'];
                     }
                     // Set index name as label if empty.
-                    if (empty($fieldArray['label'])
-                        && !empty($fieldArray['index_name'])) {
+                    if (
+                        empty($fieldArray['label'])
+                        && !empty($fieldArray['index_name'])
+                    ) {
                         $fieldArray['label'] = $fieldArray['index_name'];
                     }
                     // Ensure that index names don't get mixed up with sorting values.
@@ -81,7 +90,7 @@ class DataHandler {
                         $fieldArray['index_name'] .= '0';
                     }
                     break;
-                // Field post-processing for table "tx_dlf_solrcores".
+                    // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
                     /** @var QueryBuilder $queryBuilder */
                     $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -99,9 +108,11 @@ class DataHandler {
                     $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
                     $solrInfo = Solr::getSolrConnectionInfo();
                     // Prepend username and password to hostname.
-                    if ($solrInfo['username']
-                        && $solrInfo['password']) {
-                        $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
+                    if (
+                        $solrInfo['username']
+                        && $solrInfo['password']
+                    ) {
+                        $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
                     } else {
                         $host = $solrInfo['host'];
                     }
@@ -113,18 +124,20 @@ class DataHandler {
                     ]);
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
-                    $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml&action=CREATE&name=dlfCore'.$coreNumber.'&instanceDir=dlfCore'.$coreNumber.'&dataDir=data&configSet=dlf';
+                    $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml&action=CREATE&name=dlfCore' . $coreNumber . '&instanceDir=dlfCore' . $coreNumber . '&dataDir=data&configSet=dlf';
                     $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
                     // Process response.
                     if ($response) {
                         $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-                        if ($status
-                            && $status[0] == 0) {
-                            $fieldArray['index_name'] = 'dlfCore'.$coreNumber;
+                        if (
+                            $status
+                            && $status[0] == 0
+                        ) {
+                            $fieldArray['index_name'] = 'dlfCore' . $coreNumber;
                             return;
                         }
                     }
-                    Helper::devLog('Could not create new Apache Solr core "dlfCore'.$coreNumber.'"', DEVLOG_SEVERITY_ERROR);
+                    Helper::devLog('Could not create new Apache Solr core "dlfCore' . $coreNumber . '"', DEVLOG_SEVERITY_ERROR);
                     // Solr core could not be created, thus unset field array.
                     $fieldArray = [];
                     break;
@@ -135,21 +148,23 @@ class DataHandler {
                 ->getQueryBuilderForTable($table);
 
             switch ($table) {
-                // Field post-processing for table "tx_dlf_metadata".
+                    // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
                     // Store field in index if it should appear in lists.
                     if (!empty($fieldArray['is_listed'])) {
                         $fieldArray['index_stored'] = 1;
                     }
-                    if (isset($fieldArray['index_stored'])
+                    if (
+                        isset($fieldArray['index_stored'])
                         && $fieldArray['index_stored'] == 0
-                        && !isset($fieldArray['is_listed'])) {
+                        && !isset($fieldArray['is_listed'])
+                    ) {
                         // Get current configuration.
                         $result = $queryBuilder
-                            ->select($table.'.is_listed AS is_listed')
+                            ->select($table . '.is_listed AS is_listed')
                             ->from($table)
                             ->where(
-                                $queryBuilder->expr()->eq($table.'.uid', intval($id)),
+                                $queryBuilder->expr()->eq($table . '.uid', intval($id)),
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
@@ -164,15 +179,17 @@ class DataHandler {
                     if (!empty($fieldArray['index_autocomplete'])) {
                         $fieldArray['index_indexed'] = 1;
                     }
-                    if (isset($fieldArray['index_indexed'])
+                    if (
+                        isset($fieldArray['index_indexed'])
                         && $fieldArray['index_indexed'] == 0
-                        && !isset($fieldArray['index_autocomplete'])) {
+                        && !isset($fieldArray['index_autocomplete'])
+                    ) {
                         // Get current configuration.
                         $result = $queryBuilder
-                            ->select($table.'.index_autocomplete AS index_autocomplete')
+                            ->select($table . '.index_autocomplete AS index_autocomplete')
                             ->from($table)
                             ->where(
-                                $queryBuilder->expr()->eq($table.'.uid', intval($id)),
+                                $queryBuilder->expr()->eq($table . '.uid', intval($id)),
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
@@ -183,7 +200,7 @@ class DataHandler {
                             $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
                     }
-                // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
+                    // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
                 case 'tx_dlf_structures':
                     // The index name should not be changed in production.
                     if (isset($fieldArray['index_name'])) {
@@ -193,10 +210,10 @@ class DataHandler {
                         } else {
                             // Get current index name.
                             $result = $queryBuilder
-                                ->select($table.'.index_autocomplete AS index_autocomplete')
+                                ->select($table . '.index_autocomplete AS index_autocomplete')
                                 ->from($table)
                                 ->where(
-                                    $queryBuilder->expr()->eq($table.'.uid', intval($id)),
+                                    $queryBuilder->expr()->eq($table . '.uid', intval($id)),
                                     Helper::whereExpression($table)
                                 )
                                 ->setMaxResults(1)
@@ -207,7 +224,7 @@ class DataHandler {
                                 $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                             }
                         }
-                        Helper::devLog('Prevented change of index_name for UID '.$id.' in table "'.$table.'"', DEVLOG_SEVERITY_NOTICE);
+                        Helper::devLog('Prevented change of index_name for UID ' . $id . ' in table "' . $table . '"', DEVLOG_SEVERITY_NOTICE);
                     }
                     break;
             }
@@ -227,33 +244,36 @@ class DataHandler {
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, $pObj) {
+    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, $pObj)
+    {
         if ($status == 'update') {
             switch ($table) {
-                // After database operations for table "tx_dlf_documents".
+                    // After database operations for table "tx_dlf_documents".
                 case 'tx_dlf_documents':
                     // Delete/reindex document in Solr if "hidden" status or collections have changed.
-                    if (isset($fieldArray['hidden'])
-                        || isset($fieldArray['collections'])) {
+                    if (
+                        isset($fieldArray['hidden'])
+                        || isset($fieldArray['collections'])
+                    ) {
                         // Get Solr core.
                         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             'tx_dlf_solrcores.uid,tx_dlf_documents.hidden',
                             'tx_dlf_solrcores,tx_dlf_documents',
                             'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore'
-                                .' AND tx_dlf_documents.uid='.intval($id)
-                                .Helper::whereClause('tx_dlf_solrcores'),
+                                . ' AND tx_dlf_documents.uid=' . intval($id)
+                                . Helper::whereClause('tx_dlf_solrcores'),
                             '',
                             '',
                             '1'
                         );
                         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                            list ($core, $hidden) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+                            list($core, $hidden) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                             if ($hidden) {
                                 // Establish Solr connection.
                                 if ($solr = Solr::getInstance($core)) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
-                                    $updateQuery->addDeleteQuery('uid:'.$id);
+                                    $updateQuery->addDeleteQuery('uid:' . $id);
                                     $updateQuery->addCommit();
                                     $solr->service->update($updateQuery);
                                 }
@@ -263,7 +283,7 @@ class DataHandler {
                                 if ($doc->ready) {
                                     Indexer::add($doc, $core);
                                 } else {
-                                    Helper::devLog('Failed to re-index document with UID '.$id, DEVLOG_SEVERITY_ERROR);
+                                    Helper::devLog('Failed to re-index document with UID ' . $id, DEVLOG_SEVERITY_ERROR);
                                 }
                             }
                         }
@@ -286,22 +306,25 @@ class DataHandler {
      *
      * @return void
      */
-    public function processCmdmap_postProcess($command, $table, $id, $value, $pObj) {
-        if (in_array($command, ['move', 'delete', 'undelete'])
-            && $table == 'tx_dlf_documents') {
+    public function processCmdmap_postProcess($command, $table, $id, $value, $pObj)
+    {
+        if (
+            in_array($command, ['move', 'delete', 'undelete'])
+            && $table == 'tx_dlf_documents'
+        ) {
             // Get Solr core.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_solrcores.uid',
                 'tx_dlf_solrcores,tx_dlf_documents',
                 'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore'
-                    .' AND tx_dlf_documents.uid='.intval($id)
-                    .Helper::whereClause('tx_dlf_solrcores'),
+                    . ' AND tx_dlf_documents.uid=' . intval($id)
+                    . Helper::whereClause('tx_dlf_solrcores'),
                 '',
                 '',
                 '1'
             );
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                list ($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+                list($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
                 switch ($command) {
                     case 'move':
                     case 'delete':
@@ -309,7 +332,7 @@ class DataHandler {
                         if ($solr = Solr::getInstance($core)) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
-                            $updateQuery->addDeleteQuery('uid:'.$id);
+                            $updateQuery->addDeleteQuery('uid:' . $id);
                             $updateQuery->addCommit();
                             $solr->service->update($updateQuery);
                             if ($command == 'delete') {
@@ -322,7 +345,7 @@ class DataHandler {
                         if ($doc->ready) {
                             Indexer::add($doc, $core);
                         } else {
-                            Helper::devLog('Failed to re-index document with UID '.$id, DEVLOG_SEVERITY_ERROR);
+                            Helper::devLog('Failed to re-index document with UID ' . $id, DEVLOG_SEVERITY_ERROR);
                         }
                         break;
                 }

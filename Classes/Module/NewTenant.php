@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Module;
 
 /**
@@ -24,7 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
+class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
+{
     protected $markerArray = [
         'CSH' => '',
         'MOD_MENU' => '',
@@ -38,9 +40,10 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
      *
      * @return void
      */
-    protected function cmdAddMetadata() {
+    protected function cmdAddMetadata()
+    {
         // Include metadata definition file.
-        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey).'Resources/Private/Data/MetadataDefaults.php');
+        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/MetadataDefaults.php');
         $i = 0;
         // Build data array.
         foreach ($metadataDefaults as $index_name => $values) {
@@ -95,11 +98,12 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
      *
      * @return void
      */
-    protected function cmdAddSolrCore() {
+    protected function cmdAddSolrCore()
+    {
         // Build data array.
         $data['tx_dlf_solrcores'][uniqid('NEW')] = [
             'pid' => intval($this->id),
-            'label' => $GLOBALS['LANG']->getLL('solrcore').' (PID '.$this->id.')',
+            'label' => $GLOBALS['LANG']->getLL('solrcore') . ' (PID ' . $this->id . ')',
             'index_name' => '',
         ];
         $_ids = Helper::processDBasAdmin($data);
@@ -128,9 +132,10 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
      *
      * @return void
      */
-    protected function cmdAddStructure() {
+    protected function cmdAddStructure()
+    {
         // Include structure definition file.
-        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey).'Resources/Private/Data/StructureDefaults.php');
+        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
         // Build data array.
         foreach ($structureDefaults as $index_name => $values) {
             $data['tx_dlf_structures'][uniqid('NEW')] = [
@@ -171,7 +176,8 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
      *
      * @return \Psr\Http\Message\ResponseInterface The response object
      */
-    public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response) {
+    public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response)
+    {
         $this->response = $response;
         // Initialize module.
         $this->MCONF = [
@@ -198,9 +204,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule {
             // Should we do something?
             if (!empty($this->CMD)) {
                 // Sanitize input...
-                $_method = 'cmd'.ucfirst($this->CMD);
+                $_method = 'cmd' . ucfirst($this->CMD);
                 // ...and unset to prevent infinite looping.
-                unset ($this->CMD);
+                unset($this->CMD);
                 if (method_exists($this, $_method)) {
                     $this->$_method();
                 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -19,7 +20,8 @@ namespace Kitodo\Dlf\Plugin;
  * @subpackage dlf
  * @access public
  */
-class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
+class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/AudioPlayer.php';
 
     /**
@@ -37,24 +39,25 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function addPlayerJS() {
+    protected function addPlayerJS()
+    {
         $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
         // Add AudioPlayer library.
-        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css');
+        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css');
         $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', '#tx-dlf-audio { width: 100px; height: 100px; }');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js');
         // Add AudioPlayer configuration.
         $audioplayerConfiguration = '
                 $(document).ready(function() {
                     AudioPlayer = new dlfAudioPlayer({
                         audio: {
-                            mimeType: "'.$this->audio['mimetype'].'",
-                            title: "'.$this->audio['label'].'",
-                            url:  "'.$this->audio['url'].'"
+                            mimeType: "' . $this->audio['mimetype'] . '",
+                            title: "' . $this->audio['label'] . '",
+                            url:  "' . $this->audio['url'] . '"
                         },
                         parentElId: "tx-dlf-audio",
-                        swfPath: "'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                        swfPath: "' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
                     });
                 });
         ';
@@ -71,19 +74,24 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL
-            || $this->doc->numPages < 1) {
+        if (
+            $this->doc === NULL
+            || $this->doc->numPages < 1
+        ) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])) {
+            if (
+                (int) $this->piVars['page'] > 0
+                || empty($this->piVars['page'])
+            ) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);

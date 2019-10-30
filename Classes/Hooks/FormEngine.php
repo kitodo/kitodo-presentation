@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Hooks;
 
 /**
@@ -21,7 +22,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class FormEngine {
+class FormEngine
+{
     /**
      * Helper to display document's thumbnail for table "tx_dlf_documents"
      *
@@ -32,11 +34,12 @@ class FormEngine {
      *
      * @return string HTML <img> tag for thumbnail
      */
-    public function displayThumbnail(&$params, &$pObj) {
+    public function displayThumbnail(&$params, &$pObj)
+    {
         // Simulate TCA field type "passthrough".
-        $output = '<input type="hidden" name="'.$params['itemFormElName'].'" value="'.$params['itemFormElValue'].'" />';
+        $output = '<input type="hidden" name="' . $params['itemFormElName'] . '" value="' . $params['itemFormElValue'] . '" />';
         if (!empty($params['itemFormElValue'])) {
-            $output .= '<img alt="" src="'.$params['itemFormElValue'].'" />';
+            $output .= '<img alt="" src="' . $params['itemFormElValue'] . '" />';
         }
         return $output;
     }
@@ -51,7 +54,8 @@ class FormEngine {
      *
      * @return void
      */
-    public function itemsProcFunc_collectionList(&$params, &$pObj) {
+    public function itemsProcFunc_collectionList(&$params, &$pObj)
+    {
         $this->itemsProcFunc_generateList(
             $params,
             'label,uid',
@@ -70,7 +74,8 @@ class FormEngine {
      *
      * @return void
      */
-    public function itemsProcFunc_extendedSearchList(&$params, &$pObj) {
+    public function itemsProcFunc_extendedSearchList(&$params, &$pObj)
+    {
         $this->itemsProcFunc_generateList(
             $params,
             'label,index_name',
@@ -90,7 +95,8 @@ class FormEngine {
      *
      * @return void
      */
-    public function itemsProcFunc_facetsList(&$params, &$pObj) {
+    public function itemsProcFunc_facetsList(&$params, &$pObj)
+    {
         $this->itemsProcFunc_generateList(
             $params,
             'label,index_name',
@@ -114,7 +120,8 @@ class FormEngine {
      *
      * @return void
      */
-    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = TRUE) {
+    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = TRUE)
+    {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
             if (!is_array($pages)) {
@@ -125,9 +132,9 @@ class FormEngine {
                     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                         $fields,
                         $table,
-                        '('.$table.'.pid='.intval($page['uid']).' '.$where.')'
-                            .($localize ? ' AND ('.$table.'.sys_language_uid IN (-1,0) OR '.$table.'.l18n_parent=0)' : '')
-                            .Helper::whereClause($table),
+                        '(' . $table . '.pid=' . intval($page['uid']) . ' ' . $where . ')'
+                            . ($localize ? ' AND (' . $table . '.sys_language_uid IN (-1,0) OR ' . $table . '.l18n_parent=0)' : '')
+                            . Helper::whereClause($table),
                         '',
                         $sorting
                     );
@@ -151,7 +158,8 @@ class FormEngine {
      *
      * @return void
      */
-    public function itemsProcFunc_libraryList(&$params, &$pObj) {
+    public function itemsProcFunc_libraryList(&$params, &$pObj)
+    {
         $this->itemsProcFunc_generateList(
             $params,
             'label,uid',
@@ -170,7 +178,8 @@ class FormEngine {
      *
      * @return void
      */
-    public function itemsProcFunc_solrList(&$params, &$pObj) {
+    public function itemsProcFunc_solrList(&$params, &$pObj)
+    {
         $this->itemsProcFunc_generateList(
             $params,
             'label,uid',
@@ -191,7 +200,8 @@ class FormEngine {
      *
      * @return void
      */
-    public function itemsProcFunc_toolList(&$params, &$pObj) {
+    public function itemsProcFunc_toolList(&$params, &$pObj)
+    {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
             $params['items'][] = [$GLOBALS['LANG']->sL($label), $class];
         }

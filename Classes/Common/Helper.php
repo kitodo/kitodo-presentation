@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -24,7 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Helper {
+class Helper
+{
     /**
      * The extension key
      *
@@ -54,7 +56,8 @@ class Helper {
      *
      * @return \TYPO3\CMS\Core\Messaging\FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage($message, $title, $severity, $session = FALSE, $queue = 'kitodo.default.flashMessages') {
+    public static function addMessage($message, $title, $severity, $session = FALSE, $queue = 'kitodo.default.flashMessages')
+    {
         $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
@@ -79,7 +82,8 @@ class Helper {
      *
      * @return boolean Is $id a valid GNL identifier of the given $type?
      */
-    public static function checkIdentifier($id, $type) {
+    public static function checkIdentifier($id, $type)
+    {
         $digits = substr($id, 0, 8);
         $checksum = 0;
         for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
@@ -114,7 +118,7 @@ class Helper {
                 if (!preg_match('/[0-9]{8}-[0-9]{1}/i', $id)) {
                     return FALSE;
                 } elseif ($checksum == 10) {
-                    return self::checkIdentifier(($digits + 1).substr($id, -2, 2), 'SWD');
+                    return self::checkIdentifier(($digits + 1) . substr($id, -2, 2), 'SWD');
                 } elseif (substr($id, -1, 1) != $checksum) {
                     return FALSE;
                 }
@@ -144,10 +148,13 @@ class Helper {
      *
      * @return mixed The decrypted value or NULL on error
      */
-    public static function decrypt($encrypted, $hash) {
+    public static function decrypt($encrypted, $hash)
+    {
         $decrypted = NULL;
-        if (empty($encrypted)
-            || empty($hash)) {
+        if (
+            empty($encrypted)
+            || empty($hash)
+        ) {
             self::devLog('Invalid parameters given for decryption', DEVLOG_SEVERITY_ERROR);
             return;
         }
@@ -158,9 +165,9 @@ class Helper {
         $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, openssl_cipher_iv_length('BF-CFB'));
         $decrypted = openssl_decrypt($encrypted, 'BF-CFB', substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), 0, $iv);
         $salt = substr($hash, 0, 10);
-        $hashed = $salt.substr(sha1($salt.$decrypted), -10);
+        $hashed = $salt . substr(sha1($salt . $decrypted), -10);
         if ($hashed !== $hash) {
-            self::devLog('Invalid hash "'.$hash.'" given for decryption', DEVLOG_SEVERITY_WARNING);
+            self::devLog('Invalid hash "' . $hash . '" given for decryption', DEVLOG_SEVERITY_WARNING);
             return;
         }
         return $decrypted;
@@ -177,7 +184,8 @@ class Helper {
      *
      * @return void
      */
-    public static function devLog($message, $severity = 0) {
+    public static function devLog($message, $severity = 0)
+    {
         if (TYPO3_DLOG) {
             $stacktrace = debug_backtrace(0, 2);
             // Set some defaults.
@@ -185,7 +193,7 @@ class Helper {
             $args = [];
             $data = [];
             if (!empty($stacktrace[1])) {
-                $caller = $stacktrace[1]['class'].$stacktrace[1]['type'].$stacktrace[1]['function'];
+                $caller = $stacktrace[1]['class'] . $stacktrace[1]['type'] . $stacktrace[1]['function'];
                 foreach ($stacktrace[1]['args'] as $arg) {
                     if (is_bool($arg)) {
                         $args[] = ($arg ? 'TRUE' : 'FALSE');
@@ -197,14 +205,14 @@ class Helper {
                         $args[] = '[data]';
                         $data[] = $arg;
                     } elseif (is_object($arg)) {
-                        $args[] = '['.get_class($arg).']';
+                        $args[] = '[' . get_class($arg) . ']';
                         $data[] = $arg;
                     }
                 }
             }
-            $arguments = '('.implode(', ', $args).')';
+            $arguments = '(' . implode(', ', $args) . ')';
             $additionalData = (empty($data) ? FALSE : $data);
-            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('['.$caller.$arguments.'] '.$message, self::$extKey, $severity, $additionalData);
+            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[' . $caller . $arguments . '] ' . $message, self::$extKey, $severity, $additionalData);
         }
     }
 
@@ -217,7 +225,8 @@ class Helper {
      *
      * @return array Array with encrypted string and control hash
      */
-    public static function encrypt($string) {
+    public static function encrypt($string)
+    {
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
             self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
             return;
@@ -225,7 +234,7 @@ class Helper {
         $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, openssl_cipher_iv_length('BF-CFB'));
         $encrypted = openssl_encrypt($string, 'BF-CFB', substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), 0, $iv);
         $salt = substr(md5(uniqid(rand(), TRUE)), 0, 10);
-        $hash = $salt.substr(sha1($salt.$string), -10);
+        $hash = $salt . substr(sha1($salt . $string), -10);
         return ['encrypted' => $encrypted, 'hash' => $hash];
     }
 
@@ -238,7 +247,8 @@ class Helper {
      *
      * @return string The unqualified class name
      */
-    public static function getUnqualifiedClassName($qualifiedClassname) {
+    public static function getUnqualifiedClassName($qualifiedClassname)
+    {
         $nameParts = explode('\\', $qualifiedClassname);
         return end($nameParts);
     }
@@ -252,7 +262,8 @@ class Helper {
      *
      * @return string The cleaned up string
      */
-    public static function getCleanString($string) {
+    public static function getCleanString($string)
+    {
         // Convert to lowercase.
         $string = strtolower($string);
         // Remove non-alphanumeric characters.
@@ -273,10 +284,11 @@ class Helper {
      *
      * @return array Array of hook objects for the class
      */
-    public static function getHookObjects($scriptRelPath) {
+    public static function getHookObjects($scriptRelPath)
+    {
         $hookObjects = [];
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey.'/'.$scriptRelPath]['hookClass'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey.'/'.$scriptRelPath]['hookClass'] as $classRef) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
             }
         }
@@ -294,12 +306,15 @@ class Helper {
      *
      * @return string "index_name" for the given UID
      */
-    public static function getIndexNameFromUid($uid, $table, $pid = -1) {
+    public static function getIndexNameFromUid($uid, $table, $pid = -1)
+    {
         // Sanitize input.
         $uid = max(intval($uid), 0);
-        if (!$uid
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
-            self::devLog('Invalid UID "'.$uid.'" or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
+        if (
+            !$uid
+            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
+        ) {
+            self::devLog('Invalid UID "' . $uid . '" or table "' . $table . '"', DEVLOG_SEVERITY_ERROR);
             return '';
         }
 
@@ -311,15 +326,15 @@ class Helper {
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
             $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table.'.pid', $pid);
+            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
         }
 
         // Get index_name from database.
         $result = $queryBuilder
-            ->select($table.'.index_name AS index_name')
+            ->select($table . '.index_name AS index_name')
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq($table.'.uid', $uid),
+                $queryBuilder->expr()->eq($table . '.uid', $uid),
                 $where,
                 self::whereExpression($table)
             )
@@ -329,7 +344,7 @@ class Helper {
         if ($resArray = $result->fetch()) {
             return $resArray['index_name'];
         } else {
-            self::devLog('No "index_name" with UID '.$uid.' and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
+            self::devLog('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -343,13 +358,14 @@ class Helper {
      *
      * @return string Localized full name of language or unchanged input
      */
-    public static function getLanguageName($code) {
+    public static function getLanguageName($code)
+    {
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
         if (preg_match('/^[a-z]{3}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/Data/iso-639-2b.xml';
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey) . 'Resources/Private/Data/iso-639-2b.xml';
         } elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey).'Resources/Private/Data/iso-639-1.xml';
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey) . 'Resources/Private/Data/iso-639-1.xml';
         } else {
             // No ISO code, return unchanged.
             return $code;
@@ -366,13 +382,13 @@ class Helper {
                 $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639, FALSE);
             }
         } else {
-            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return $code;
         }
         if (!empty($lang)) {
             return $lang;
         } else {
-            self::devLog('Language code "'.$code.'" not found in ISO-639 table', DEVLOG_SEVERITY_NOTICE);
+            self::devLog('Language code "' . $code . '" not found in ISO-639 table', DEVLOG_SEVERITY_NOTICE);
             return $code;
         }
     }
@@ -388,7 +404,8 @@ class Helper {
      *
      * @return string The translated string or the given key on failure
      */
-    public static function getMessage($key, $hsc = FALSE, $default = '') {
+    public static function getMessage($key, $hsc = FALSE, $default = '')
+    {
         // Set initial output to default value.
         $translated = (string) $default;
         // Load common messages file.
@@ -399,7 +416,7 @@ class Helper {
             } elseif (TYPO3_MODE === 'BE') {
                 self::$messages = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
             } else {
-                self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+                self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             }
         }
         // Get translation.
@@ -409,7 +426,7 @@ class Helper {
             } elseif (TYPO3_MODE === 'BE') {
                 $translated = $GLOBALS['LANG']->getLLL($key, self::$messages, FALSE);
             } else {
-                self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+                self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             }
         }
         // Escape HTML characters if applicable.
@@ -430,10 +447,13 @@ class Helper {
      *
      * @return string "uid" for the given index_name
      */
-    public static function getUidFromIndexName($index_name, $table, $pid = -1) {
-        if (!$index_name
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])) {
-            self::devLog('Invalid UID '.$index_name.' or table "'.$table.'"', DEVLOG_SEVERITY_ERROR);
+    public static function getUidFromIndexName($index_name, $table, $pid = -1)
+    {
+        if (
+            !$index_name
+            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
+        ) {
+            self::devLog('Invalid UID ' . $index_name . ' or table "' . $table . '"', DEVLOG_SEVERITY_ERROR);
             return '';
         }
 
@@ -445,14 +465,14 @@ class Helper {
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
             $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table.'.pid', $pid);
+            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
         }
         // Get index_name from database.
         $result = $queryBuilder
-            ->select($table.'.uid AS uid')
+            ->select($table . '.uid AS uid')
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq($table.'.index_name', $queryBuilder->expr()->literal($index_name)),
+                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($index_name)),
                 $where,
                 self::whereExpression($table)
             )
@@ -464,7 +484,7 @@ class Helper {
         if (count($allResults) == 1) {
             return $allResults[0]['uid'];
         } else {
-            self::devLog('No UID for given index_name "'.$index_name.'" and PID '.$pid.' found in table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
+            self::devLog('No UID for given index_name "' . $index_name . '" and PID ' . $pid . ' found in table "' . $table . '"', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -480,7 +500,8 @@ class Helper {
      *
      * @return string Uniform Resource Name as string
      */
-    public static function getURN($base, $id) {
+    public static function getURN($base, $id)
+    {
         $concordance = [
             '0' => 1,
             '1' => 2,
@@ -521,7 +542,7 @@ class Helper {
             '-' => 39,
             ':' => 17,
         ];
-        $urn = strtolower($base.$id);
+        $urn = strtolower($base . $id);
         if (preg_match('/[^a-z0-9:-]/', $urn)) {
             self::devLog('Invalid chars in given parameters', DEVLOG_SEVERITY_WARNING);
             return '';
@@ -535,7 +556,7 @@ class Helper {
             $checksum += ($i + 1) * intval(substr($digits, $i, 1));
         }
         $checksum = substr(intval($checksum / intval(substr($digits, -1, 1))), -1, 1);
-        return $base.$id.$checksum;
+        return $base . $id . $checksum;
     }
 
     /**
@@ -547,7 +568,8 @@ class Helper {
      *
      * @return boolean Is $id a valid PPN?
      */
-    public static function isPPN($id) {
+    public static function isPPN($id)
+    {
         return self::checkIdentifier($id, 'PPN');
     }
 
@@ -560,11 +582,12 @@ class Helper {
      *
      * @return mixed Session value for given key or NULL on failure
      */
-    public static function loadFromSession($key) {
+    public static function loadFromSession($key)
+    {
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {
-            self::devLog('Invalid key "'.$key.'" for session data retrieval', DEVLOG_SEVERITY_WARNING);
+            self::devLog('Invalid key "' . $key . '" for session data retrieval', DEVLOG_SEVERITY_WARNING);
             return;
         }
         // Get the session data.
@@ -573,7 +596,7 @@ class Helper {
         } elseif (TYPO3_MODE === 'BE') {
             return $GLOBALS['BE_USER']->getSessionData($key);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return;
         }
     }
@@ -592,12 +615,13 @@ class Helper {
      *
      * @return array Merged array
      */
-    public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = TRUE, $includeEmptyValues = TRUE, $enableUnsetFeature = TRUE) {
+    public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = TRUE, $includeEmptyValues = TRUE, $enableUnsetFeature = TRUE)
+    {
         \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
         return $original;
     }
 
-     /**
+    /**
      * Process a data and/or command map with TYPO3 core engine as admin.
      *
      * @access public
@@ -609,16 +633,21 @@ class Helper {
      *
      * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
      */
-    public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = FALSE, $cmdFirst = FALSE) {
-        if (TYPO3_MODE === 'BE'
-            && $GLOBALS['BE_USER']->isAdmin()) {
+    public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = FALSE, $cmdFirst = FALSE)
+    {
+        if (
+            TYPO3_MODE === 'BE'
+            && $GLOBALS['BE_USER']->isAdmin()
+        ) {
             // Instantiate TYPO3 core engine.
             $dataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
             // Load data and command arrays.
             $dataHandler->start($data, $cmd);
             // Process command map first if default order is reversed.
-            if (!empty($cmd)
-                && $cmdFirst) {
+            if (
+                !empty($cmd)
+                && $cmdFirst
+            ) {
                 $dataHandler->process_cmdmap();
             }
             // Process data map.
@@ -627,8 +656,10 @@ class Helper {
                 $dataHandler->process_datamap();
             }
             // Process command map if processing order is not reversed.
-            if (!empty($cmd)
-                && !$cmdFirst) {
+            if (
+                !empty($cmd)
+                && !$cmdFirst
+            ) {
                 $dataHandler->process_cmdmap();
             }
             return $dataHandler->substNEWwithIDs;
@@ -647,7 +678,8 @@ class Helper {
      *
      * @return string All flash messages in the queue rendered as HTML.
      */
-    public static function renderFlashMessages($queue = 'kitodo.default.flashMessages') {
+    public static function renderFlashMessages($queue = 'kitodo.default.flashMessages')
+    {
         $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         // \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup() uses htmlspecialchars()
@@ -660,19 +692,19 @@ class Helper {
             foreach ($flashMessages as $flashMessage) {
                 $messageTitle = $flashMessage->getTitle();
                 $markup = [];
-                $markup[] = '<div class="alert '.htmlspecialchars($flashMessage->getClass()).'">';
+                $markup[] = '<div class="alert ' . htmlspecialchars($flashMessage->getClass()) . '">';
                 $markup[] = '    <div class="media">';
                 $markup[] = '        <div class="media-left">';
                 $markup[] = '            <span class="fa-stack fa-lg">';
                 $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
-                $markup[] = '                <i class="fa fa-'.htmlspecialchars($flashMessage->getIconName()).' fa-stack-1x"></i>';
+                $markup[] = '                <i class="fa fa-' . htmlspecialchars($flashMessage->getIconName()) . ' fa-stack-1x"></i>';
                 $markup[] = '            </span>';
                 $markup[] = '        </div>';
                 $markup[] = '        <div class="media-body">';
                 if (!empty($messageTitle)) {
-                    $markup[] = '            <h4 class="alert-title">'.htmlspecialchars($messageTitle).'</h4>';
+                    $markup[] = '            <h4 class="alert-title">' . htmlspecialchars($messageTitle) . '</h4>';
                 }
-                $markup[] = '            <p class="alert-message">'.$flashMessage->getMessage().'</p>'; // Removed htmlspecialchars() here.
+                $markup[] = '            <p class="alert-message">' . $flashMessage->getMessage() . '</p>'; // Removed htmlspecialchars() here.
                 $markup[] = '        </div>';
                 $markup[] = '    </div>';
                 $markup[] = '</div>';
@@ -693,11 +725,12 @@ class Helper {
      *
      * @return boolean TRUE on success, FALSE on failure
      */
-    public static function saveToSession($value, $key) {
+    public static function saveToSession($value, $key)
+    {
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {
-            self::devLog('Invalid key "'.$key.'" for session data saving', DEVLOG_SEVERITY_WARNING);
+            self::devLog('Invalid key "' . $key . '" for session data saving', DEVLOG_SEVERITY_WARNING);
             return FALSE;
         }
         // Save value in session data.
@@ -709,7 +742,7 @@ class Helper {
             $GLOBALS['BE_USER']->setAndSaveSessionData($key, $value);
             return TRUE;
         } else {
-            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
     }
@@ -725,13 +758,14 @@ class Helper {
      *
      * @return string Localized label for $index_name
      */
-    public static function translate($index_name, $table, $pid) {
+    public static function translate($index_name, $table, $pid)
+    {
         // Load labels into static variable for future use.
         static $labels = [];
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {
-            self::devLog('Invalid PID '.$pid.' for translation', DEVLOG_SEVERITY_WARNING);
+            self::devLog('Invalid PID ' . $pid . ' for translation', DEVLOG_SEVERITY_WARNING);
             return $index_name;
         }
         // Check if "index_name" is an UID.
@@ -749,12 +783,13 @@ class Helper {
         // First fetch the uid of the received index_name
         $result = $queryBuilder
             ->select(
-                $table.'.uid AS uid',
-                $table.'.l18n_parent AS l18n_parent')
+                $table . '.uid AS uid',
+                $table . '.l18n_parent AS l18n_parent'
+            )
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq($table.'.pid', $pid),
-                $queryBuilder->expr()->eq($table.'.index_name', $queryBuilder->expr()->literal($index_name)),
+                $queryBuilder->expr()->eq($table . '.pid', $pid),
+                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($index_name)),
                 self::whereExpression($table, TRUE)
             )
             ->setMaxResults(1)
@@ -767,12 +802,12 @@ class Helper {
             $resArray = $allResults[0];
 
             $result = $queryBuilder
-                ->select($table.'.index_name AS index_name')
+                ->select($table . '.index_name AS index_name')
                 ->from($table)
                 ->where(
-                    $queryBuilder->expr()->eq($table.'.pid', $pid),
-                    $queryBuilder->expr()->eq($table.'.uid', $resArray['l18n_parent']),
-                    $queryBuilder->expr()->eq($table.'.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content)),
+                    $queryBuilder->expr()->eq($table . '.pid', $pid),
+                    $queryBuilder->expr()->eq($table . '.uid', $resArray['l18n_parent']),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content)),
                     self::whereExpression($table, TRUE)
                 )
                 ->setMaxResults(1)
@@ -790,14 +825,14 @@ class Helper {
         if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
-                $additionalWhere = $queryBuilder->expr()->in($table.'.sys_language_uid', array(-1, 0));
+                $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', array(-1, 0));
                 if ($GLOBALS['TSFE']->sys_language_content > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
-                            $queryBuilder->expr()->in($table.'.sys_language_uid', array(-1, 0)),
-                            $queryBuilder->expr()->eq($table.'.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content))
+                            $queryBuilder->expr()->in($table . '.sys_language_uid', array(-1, 0)),
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content))
                         ),
-                        $queryBuilder->expr()->eq($table.'.l18n_parent', 0)
+                        $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
                 }
 
@@ -806,7 +841,7 @@ class Helper {
                     ->select('*')
                     ->from($table)
                     ->where(
-                        $queryBuilder->expr()->eq($table.'.pid', $pid),
+                        $queryBuilder->expr()->eq($table . '.pid', $pid),
                         $additionalWhere,
                         self::whereExpression($table, TRUE)
                     )
@@ -824,10 +859,10 @@ class Helper {
                         }
                     }
                 } else {
-                    self::devLog('No translation with PID '.$pid.' available in table "'.$table.'" or translation not accessible', DEVLOG_SEVERITY_NOTICE);
+                    self::devLog('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible', DEVLOG_SEVERITY_NOTICE);
                 }
             } else {
-                self::devLog('No translations available for table "'.$table.'"', DEVLOG_SEVERITY_WARNING);
+                self::devLog('No translations available for table "' . $table . '"', DEVLOG_SEVERITY_WARNING);
             }
         }
 
@@ -848,7 +883,8 @@ class Helper {
      *
      * @return string Additional WHERE clause
      */
-    public static function whereClause($table, $showHidden = FALSE) {
+    public static function whereClause($table, $showHidden = FALSE)
+    {
         if (TYPO3_MODE === 'FE') {
             // Table "tx_dlf_formats" always has PID 0.
             if ($table == 'tx_dlf_formats') {
@@ -870,7 +906,7 @@ class Helper {
         } elseif (TYPO3_MODE === 'BE') {
             return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return ' AND 1=-1';
         }
     }
@@ -885,7 +921,8 @@ class Helper {
      *
      * @return string Additional WHERE expression
      */
-    public static function whereExpression($table, $showHidden = FALSE) {
+    public static function whereExpression($table, $showHidden = FALSE)
+    {
         $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table)
             ->expr();
@@ -917,7 +954,7 @@ class Helper {
         } elseif (TYPO3_MODE === 'BE') {
             return $expressionBuilder->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "'.TYPO3_MODE.'"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return '1=-1';
         }
     }
@@ -927,5 +964,6 @@ class Helper {
      *
      * @access private
      */
-    private function __construct() {}
+    private function __construct()
+    { }
 }

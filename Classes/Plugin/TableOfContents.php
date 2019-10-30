@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -21,7 +22,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
+class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/TableOfContents.php';
 
     /**
@@ -42,7 +44,8 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array HMENU array for menu entry
      */
-    protected function getMenuEntry(array $entry, $recursive = FALSE) {
+    protected function getMenuEntry(array $entry, $recursive = FALSE)
+    {
         $entryArray = [];
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
@@ -54,25 +57,29 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'NO';
         // Build menu links based on the $entry['points'] array.
-        if (!empty($entry['points'])
-            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($entry['points'])) {
+        if (
+            !empty($entry['points'])
+            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($entry['points'])
+        ) {
             $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['page' => $entry['points']], TRUE, FALSE, $this->conf['targetPid']);
             $entryArray['doNotLinkIt'] = 0;
             if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', TRUE) . '</a>';
             }
-        } elseif (!empty($entry['points'])
-            && is_string($entry['points'])) {
+        } elseif (
+            !empty($entry['points'])
+            && is_string($entry['points'])
+        ) {
             $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['points'], 'page' => 1], TRUE, FALSE, $this->conf['targetPid']);
             $entryArray['doNotLinkIt'] = 0;
             if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', TRUE) . '</a>';
             }
         } elseif (!empty($entry['targetUid'])) {
             $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['targetUid'], 'page' => 1], TRUE, FALSE, $this->conf['targetPid']);
             $entryArray['doNotLinkIt'] = 0;
             if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="'.$this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], TRUE, FALSE, $this->conf['targetBasket']).'">'.$this->pi_getLL('basketButton', '', TRUE).'</a>';
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], TRUE, FALSE, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', TRUE) . '</a>';
             }
         }
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
@@ -80,17 +87,21 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
             $entryArray['ITEM_STATE'] = 'CUR';
         }
         // Build sub-menu if available and called recursively.
-        if ($recursive == TRUE
-            && !empty($entry['children'])) {
+        if (
+            $recursive == TRUE
+            && !empty($entry['children'])
+        ) {
             // Build sub-menu only if one of the following conditions apply:
             // 1. "expAll" is set for menu
             // 2. Current menu node is in rootline
             // 3. Current menu node points to another file
             // 4. Current menu node has no corresponding images
-            if (!empty($this->conf['menuConf.']['expAll'])
+            if (
+                !empty($this->conf['menuConf.']['expAll'])
                 || $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
-                || empty($this->doc->smLinks['l2p'][$entry['id']])) {
+                || empty($this->doc->smLinks['l2p'][$entry['id']])
+            ) {
                 $entryArray['_SUB_MENU'] = [];
                 foreach ($entry['children'] as $child) {
                     // Set "ITEM_STATE" to "ACT" if this entry points to current page and has sub-entries pointing to the same page.
@@ -101,7 +112,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
                 }
             }
             // Append "IFSUB" to "ITEM_STATE" if this entry has sub-entries.
-            $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'].'IFSUB');
+            $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'] . 'IFSUB');
         }
         return $entryArray;
     }
@@ -116,7 +127,8 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['menuConf.'])) {
@@ -127,7 +139,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->getTemplate();
         $TSconfig = [];
         $TSconfig['special'] = 'userfunction';
-        $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\TableOfContents::class.'->makeMenuArray';
+        $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\TableOfContents::class . '->makeMenuArray';
         $TSconfig = Helper::mergeRecursiveWithOverrule($this->conf['menuConf.'], $TSconfig);
         $markerArray['###TOCMENU###'] = $this->cObj->cObjGetSingle('HMENU', $TSconfig);
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
@@ -144,7 +156,8 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array HMENU array
      */
-    public function makeMenuArray($content, $conf) {
+    public function makeMenuArray($content, $conf)
+    {
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
@@ -159,8 +172,10 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
             // Set default values for page if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])) {
+            if (
+                (int) $this->piVars['page'] > 0
+                || empty($this->piVars['page'])
+            ) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -169,14 +184,20 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
-        if ($this->doc->physicalStructure
-            || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->doc->uid)) {
+        if (
+            $this->doc->physicalStructure
+            || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->doc->uid)
+        ) {
             // Get all logical units the current page or track is a part of.
-            if (!empty($this->piVars['page'])
-                && $this->doc->physicalStructure) {
+            if (
+                !empty($this->piVars['page'])
+                && $this->doc->physicalStructure
+            ) {
                 $this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]], (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page']]]);
-                if (!empty($this->piVars['double'])
-                    && $this->piVars['page'] < $this->doc->numPages) {
+                if (
+                    !empty($this->piVars['double'])
+                    && $this->piVars['page'] < $this->doc->numPages
+                ) {
                     $this->activeEntries = array_merge($this->activeEntries, (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page'] + 1]]);
                 }
             }
@@ -190,9 +211,9 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $menuArray[] = $this->getMenuEntry($entry, FALSE);
             }
             // Get all child documents from database.
-            $whereClause = 'tx_dlf_documents.partof='.intval($this->doc->uid).' AND tx_dlf_documents.structure=tx_dlf_structures.uid AND tx_dlf_structures.pid='.$this->doc->pid.Helper::whereClause('tx_dlf_documents').Helper::whereClause('tx_dlf_structures');
+            $whereClause = 'tx_dlf_documents.partof=' . intval($this->doc->uid) . ' AND tx_dlf_documents.structure=tx_dlf_structures.uid AND tx_dlf_structures.pid=' . $this->doc->pid . Helper::whereClause('tx_dlf_documents') . Helper::whereClause('tx_dlf_structures');
             if ($this->conf['excludeOther']) {
-                $whereClause .= ' AND tx_dlf_documents.pid='.intval($this->conf['pages']);
+                $whereClause .= ' AND tx_dlf_documents.pid=' . intval($this->conf['pages']);
             }
             // Build table of contents from database.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(

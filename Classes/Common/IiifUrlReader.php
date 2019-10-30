@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -22,7 +23,8 @@ use Ubl\Iiif\Tools\UrlReaderInterface;
  * @author Lutz Helm <helm@ub.uni-leipzig.de>
  *
  */
-class IiifUrlReader implements UrlReaderInterface {
+class IiifUrlReader implements UrlReaderInterface
+{
     /**
      * Singleton instance of the class
      *
@@ -36,7 +38,8 @@ class IiifUrlReader implements UrlReaderInterface {
      * {@inheritDoc}
      * @see \Ubl\Iiif\Tools\UrlReaderInterface::getContent()
      */
-    public function getContent($url) {
+    public function getContent($url)
+    {
         return GeneralUtility::getUrl($url);
     }
 
@@ -47,7 +50,8 @@ class IiifUrlReader implements UrlReaderInterface {
      *
      * @return IiifUrlReader
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (!isset(self::$instance)) {
             self::$instance = new IiifUrlReader();
         }

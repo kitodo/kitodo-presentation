@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Format;
 
 /**
@@ -19,7 +20,8 @@ namespace Kitodo\Dlf\Format;
  * @subpackage dlf
  * @access public
  */
-class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
+class Mods implements \Kitodo\Dlf\Common\MetadataInterface
+{
     /**
      * This extracts the essential MODS metadata from XML
      *
@@ -30,7 +32,8 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata) {
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
+    {
         $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
         // Get "author" and "author_sorting".
         $authors = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="aut"]');
@@ -49,17 +52,25 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
                     $name = [];
                     $k = 4;
                     foreach ($nameParts as $namePart) {
-                        if (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'family') {
+                        if (
+                            isset($namePart['type'])
+                            && (string) $namePart['type'] == 'family'
+                        ) {
                             $name[0] = (string) $namePart;
-                        } elseif (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'given') {
+                        } elseif (
+                            isset($namePart['type'])
+                            && (string) $namePart['type'] == 'given'
+                        ) {
                             $name[1] = (string) $namePart;
-                        } elseif (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'termsOfAddress') {
+                        } elseif (
+                            isset($namePart['type'])
+                            && (string) $namePart['type'] == 'termsOfAddress'
+                        ) {
                             $name[2] = (string) $namePart;
-                        } elseif (isset($namePart['type'])
-                            && (string) $namePart['type'] == 'date') {
+                        } elseif (
+                            isset($namePart['type'])
+                            && (string) $namePart['type'] == 'date'
+                        ) {
                             $name[3] = (string) $namePart;
                         } else {
                             $name[$k] = (string) $namePart;
@@ -71,7 +82,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
                 }
                 // Append "valueURI" to name using Unicode unit separator.
                 if (isset($authors[$i]['valueURI'])) {
-                    $metadata['author'][$i] .= chr(31).(string) $authors[$i]['valueURI'];
+                    $metadata['author'][$i] .= chr(31) . (string) $authors[$i]['valueURI'];
                 }
             }
         }
@@ -108,8 +119,10 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface {
                 $metadata['year'][] = (string) $year;
                 if (!$metadata['year_sorting'][0]) {
                     $year_sorting = str_ireplace('x', '5', preg_replace('/[^\d.x]/i', '', (string) $year));
-                    if (strpos($year_sorting, '.')
-                        || strlen($year_sorting) < 3) {
+                    if (
+                        strpos($year_sorting, '.')
+                        || strlen($year_sorting) < 3
+                    ) {
                         $year_sorting = ((intval(trim($year_sorting, '.')) - 1) * 100) + 50;
                     }
                     $metadata['year_sorting'][0] = intval($year_sorting);

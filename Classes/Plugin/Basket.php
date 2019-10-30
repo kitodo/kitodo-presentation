@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -25,7 +26,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Basket.php';
 
     /**
@@ -38,7 +40,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Don't cache the output.
         $this->setCache(FALSE);
@@ -53,8 +56,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             $query = $GLOBALS['TYPO3_DB']->SELECTquery(
                 '*',
                 'tx_dlf_basket',
-                'tx_dlf_basket.fe_user_id='.intval($insertArray['fe_user_id'])
-                    .Helper::whereClause('tx_dlf_basket'),
+                'tx_dlf_basket.fe_user_id=' . intval($insertArray['fe_user_id'])
+                    . Helper::whereClause('tx_dlf_basket'),
                 '',
                 '',
                 '1'
@@ -66,8 +69,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             $query = $GLOBALS['TYPO3_DB']->SELECTquery(
                 '*',
                 'tx_dlf_basket',
-                'tx_dlf_basket.session_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($sessionId, 'tx_dlf_basket')
-                    .Helper::whereClause('tx_dlf_basket'),
+                'tx_dlf_basket.session_id=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($sessionId, 'tx_dlf_basket')
+                    . Helper::whereClause('tx_dlf_basket'),
                 '',
                 '',
                 '1'
@@ -87,8 +90,10 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         $basketData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
         $piVars = $this->piVars;
         // action add to basket
-        if (!empty($this->piVars['id'])
-            && $this->piVars['addToBasket']) {
+        if (
+            !empty($this->piVars['id'])
+            && $this->piVars['addToBasket']
+        ) {
             $returnData = $this->addToBasket($this->piVars, $basketData);
             $basketData = $returnData['basketData'];
             $markerArray['###JS###'] = $returnData['jsOutput'];
@@ -154,9 +159,9 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($resultMail->countRow() > 0) {
             $mailForm = '<select name="tx_dlf[mail_action]">';
-            $mailForm .= '<option value="">'.$this->pi_getLL('chooseMail', '', TRUE).'</option>';
+            $mailForm .= '<option value="">' . $this->pi_getLL('chooseMail', '', TRUE) . '</option>';
             while ($row = $resultMail->fetch()) {
-                $mailForm .= '<option value="'.$row['uid'].'">'.$row['name'].' ('.$row['mail'].')</option>';
+                $mailForm .= '<option value="' . $row['uid'] . '">' . $row['name'] . ' (' . $row['mail'] . ')</option>';
             }
             $mailForm .= '</select><input type="submit">';
         }
@@ -165,9 +170,9 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         // remove action form
         $markerArray['###REMOVEACTION###'] = '
    <select name="tx_dlf[basket_action]">
-    <option value="">'.$this->pi_getLL('chooseAction', '', TRUE).'</option>
-    <option value="open">'.$this->pi_getLL('download', '', TRUE).'</option>
-    <option value="remove">'.$this->pi_getLL('remove', '', TRUE).'</option>
+    <option value="">' . $this->pi_getLL('chooseAction', '', TRUE) . '</option>
+    <option value="open">' . $this->pi_getLL('download', '', TRUE) . '</option>
+    <option value="remove">' . $this->pi_getLL('remove', '', TRUE) . '</option>
    </select>
    <input type="submit">
   ';
@@ -188,9 +193,9 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         $printForm = '';
         if ($resultPrinter->countRow() > 0) {
             $printForm = '<select name="tx_dlf[print_action]">';
-            $printForm .= '<option value="">'.$this->pi_getLL('choosePrinter', '', TRUE).'</option>';
+            $printForm .= '<option value="">' . $this->pi_getLL('choosePrinter', '', TRUE) . '</option>';
             while ($row = $resultPrinter->fetch()) {
-                $printForm .= '<option value="'.$row['uid'].'">'.$row['label'].'</option>';
+                $printForm .= '<option value="' . $row['uid'] . '">' . $row['label'] . '</option>';
             }
             $printForm .= '</select><input type="submit" />';
         }
@@ -230,7 +235,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string One basket entry
      */
-    protected function getEntry($data, $template) {
+    protected function getEntry($data, $template)
+    {
         if (is_object($data)) {
             $data = get_object_vars($data);
         }
@@ -244,23 +250,23 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         $rotation = $data['rotation'];
         $docData = $this->getDocumentData($id, $data);
         $markerArray['###BASKETDATA###'] = $docData['downloadLink'];
-        $arrayKey = $id.'_'.$startpage;
+        $arrayKey = $id . '_' . $startpage;
         if (isset($startX)) {
-            $arrayKey .= '_'.$startX;
+            $arrayKey .= '_' . $startX;
         }
         if (isset($endX)) {
-            $arrayKey .= '_'.$endX;
+            $arrayKey .= '_' . $endX;
         }
-        $controlMark = '<input value="'.$id.'" name="tx_dlf[selected]['.$arrayKey.'][id]" type="checkbox">';
-        $controlMark .= '<input value="'.$startpage.'" name="tx_dlf[selected]['.$arrayKey.'][startpage]" type="hidden">';
-        $controlMark .= '<input value="'.$endpage.'" name="tx_dlf[selected]['.$arrayKey.'][endpage]" type="hidden">';
+        $controlMark = '<input value="' . $id . '" name="tx_dlf[selected][' . $arrayKey . '][id]" type="checkbox">';
+        $controlMark .= '<input value="' . $startpage . '" name="tx_dlf[selected][' . $arrayKey . '][startpage]" type="hidden">';
+        $controlMark .= '<input value="' . $endpage . '" name="tx_dlf[selected][' . $arrayKey . '][endpage]" type="hidden">';
         // add hidden fields for detail information
         if ($startX) {
-            $controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][startX]" value="'.$startX.'">';
-            $controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][startY]"  value="'.$startY.'">';
-            $controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][endX]"  value="'.$endX.'">';
-            $controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][endY]"  value="'.$endY.'">';
-            $controlMark .= '<input type="hidden" name="tx_dlf[selected]['.$arrayKey.'][rotation]"  value="'.$rotation.'">';
+            $controlMark .= '<input type="hidden" name="tx_dlf[selected][' . $arrayKey . '][startX]" value="' . $startX . '">';
+            $controlMark .= '<input type="hidden" name="tx_dlf[selected][' . $arrayKey . '][startY]"  value="' . $startY . '">';
+            $controlMark .= '<input type="hidden" name="tx_dlf[selected][' . $arrayKey . '][endX]"  value="' . $endX . '">';
+            $controlMark .= '<input type="hidden" name="tx_dlf[selected][' . $arrayKey . '][endY]"  value="' . $endY . '">';
+            $controlMark .= '<input type="hidden" name="tx_dlf[selected][' . $arrayKey . '][rotation]"  value="' . $rotation . '">';
         }
         // return one entry
         $markerArray['###CONTROLS###'] = $controlMark;
@@ -278,7 +284,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array Basket data and Javascript output
      */
-    protected function addToBasket($_piVars, $basketData) {
+    protected function addToBasket($_piVars, $basketData)
+    {
         $output = '';
         if (!$_piVars['startpage']) {
             $page = 0;
@@ -315,12 +322,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             if ($_piVars['addToBasket'] == 'list') {
                 $documentItem['endpage'] = $document->numPages;
             }
-            $arrayKey = $documentItem['id'].'_'.$page;
+            $arrayKey = $documentItem['id'] . '_' . $page;
             if (!empty($documentItem['startX'])) {
-                $arrayKey .= '_'.$documentItem['startX'];
+                $arrayKey .= '_' . $documentItem['startX'];
             }
             if (!empty($documentItem['endX'])) {
-                $arrayKey .= '_'.$documentItem['endX'];
+                $arrayKey .= '_' . $documentItem['endX'];
             }
             // do not add more than one identical object
             if (!in_array($arrayKey, $items)) {
@@ -339,14 +346,14 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
                     // remove parameter endpage
                     $pdfParams = str_replace(",##endpage##", '', $pdfParams);
                 }
-                $pdfGenerateUrl = $this->conf['pdfgenerate'].$pdfParams;
+                $pdfGenerateUrl = $this->conf['pdfgenerate'] . $pdfParams;
                 if ($this->conf['pregeneration']) {
                     // send ajax request to webapp
                     $output .= '
      <script>
       $(document).ready(function(){
        $.ajax({
-         url: "'.$pdfGenerateUrl.'",
+         url: "' . $pdfGenerateUrl . '",
        }).done(function() {
        });
       });
@@ -354,7 +361,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
                 }
             }
             $update = ['doc_ids' => json_encode($items)];
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
+            $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid=' . intval($basketData['uid']), $update);
             $basketData['doc_ids'] = $items;
         }
         return ['basketData' => $basketData, 'jsOutput' => $output];
@@ -370,19 +377,20 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array basket data
      */
-    protected function removeFromBasket($_piVars, $basketData) {
+    protected function removeFromBasket($_piVars, $basketData)
+    {
         if (!empty($basketData['doc_ids'])) {
             $items = $basketData['doc_ids'];
             $items = get_object_vars($items);
         }
         foreach ($_piVars['selected'] as $value) {
             if (isset($value['id'])) {
-                $arrayKey = $value['id'].'_'.$value['startpage'];
+                $arrayKey = $value['id'] . '_' . $value['startpage'];
                 if (isset($value['startX'])) {
-                    $arrayKey .= '_'.$value['startX'];
+                    $arrayKey .= '_' . $value['startX'];
                 }
                 if (isset($value['endX'])) {
-                    $arrayKey .= '_'.$value['endX'];
+                    $arrayKey .= '_' . $value['endX'];
                 }
                 if (isset($items[$arrayKey])) {
                     unset($items[$arrayKey]);
@@ -394,7 +402,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         } else {
             $update = ['doc_ids' => json_encode($items)];
         }
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid='.intval($basketData['uid']), $update);
+        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid=' . intval($basketData['uid']), $update);
         $basketData['doc_ids'] = $items;
         return $basketData;
     }
@@ -409,15 +417,16 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array basket data
      */
-    protected function openFromBasket($_piVars, $basketData) {
+    protected function openFromBasket($_piVars, $basketData)
+    {
         $pdfUrl = $this->conf['pdfgenerate'];
         foreach ($this->piVars['selected'] as $docValue) {
             if ($docValue['id']) {
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
-                $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+                $pdfUrl .= $docData['urlParams'] . $this->conf['pdfparamseparator'];
             }
         }
-        header('Location: '.$pdfUrl);
+        header('Location: ' . $pdfUrl);
         ob_end_flush();
         exit;
     }
@@ -431,7 +440,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return mixed download url or false
      */
-    protected function getDocumentData($id, $data) {
+    protected function getDocumentData($id, $data)
+    {
         // get document instance to load further information
         $document = Document::getInstance($id, 0);
         if ($document) {
@@ -450,7 +460,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             $urlParams = str_replace("##endx##", $data['endX'] === "" ? "" : intval($data['endX']), $urlParams);
             $urlParams = str_replace("##endy##", $data['endY'] === "" ? "" : intval($data['endY']), $urlParams);
             $urlParams = str_replace("##rotation##", $data['rotation'] === "" ? "" : intval($data['rotation']), $urlParams);
-            $downloadUrl = $this->conf['pdfgenerate'].$urlParams;
+            $downloadUrl = $this->conf['pdfgenerate'] . $urlParams;
             $title = $document->getTitle($id, TRUE);
             if (empty($title)) {
                 $title = $this->pi_getLL('noTitle', '', TRUE);
@@ -459,15 +469,15 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             $info = '';
             if ($data['startX'] != '' && $data['endX'] != '') {
                 // cutout
-                $info .= $this->pi_getLL('cutout', '', TRUE).' ';
+                $info .= $this->pi_getLL('cutout', '', TRUE) . ' ';
             }
             if ($data['startpage'] == $data['endpage']) {
                 // One page
-                $info .= $this->pi_getLL('page', '', TRUE).' '.$data['startpage'];
+                $info .= $this->pi_getLL('page', '', TRUE) . ' ' . $data['startpage'];
             } else {
-                $info .= $this->pi_getLL('page', '', TRUE).' '.$data['startpage'].'-'.$data['endpage'];
+                $info .= $this->pi_getLL('page', '', TRUE) . ' ' . $data['startpage'] . '-' . $data['endpage'];
             }
-            $downloadLink = '<a href="'.$downloadUrl.'" target="_blank">'.$title.'</a> ('.$info.')';
+            $downloadLink = '<a href="' . $downloadUrl . '" target="_blank">' . $title . '</a> (' . $info . ')';
             if ($data['startpage'] == $data['endpage']) {
                 $pageNums = 1;
             } else {
@@ -491,7 +501,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function sendMail() {
+    protected function sendMail()
+    {
         // send mail
         $mailId = $this->piVars['mail_action'];
 
@@ -512,7 +523,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         $allResults = $resultMail->fetchAll();
         $mailData = $allResults[0];
-        $mailText = $this->pi_getLL('mailBody', '', TRUE)."\n";
+        $mailText = $this->pi_getLL('mailBody', '', TRUE) . "\n";
         $numberOfPages = 0;
         $pdfUrl = $this->conf['pdfdownload'];
         // prepare links
@@ -520,7 +531,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             if ($docValue['id']) {
                 $explodeId = explode("_", $docValue['id']);
                 $docData = $this->getDocumentData($explodeId[0], $docValue);
-                $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+                $pdfUrl .= $docData['urlParams'] . $this->conf['pdfparamseparator'];
                 $pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
                 if ($pages === 0) {
                     $numberOfPages = $numberOfPages + 1;
@@ -531,7 +542,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Remove leading/tailing pdfparamseperator
         $pdfUrl = trim($pdfUrl, $this->conf['pdfparamseparator']);
-        $mailBody = $mailText.$pdfUrl;
+        $mailBody = $mailText . $pdfUrl;
         // Get hook objects.
         $hookObjects = Helper::getHookObjects($this->scriptRelPath);
         // Hook for getting a customized mail body.
@@ -564,12 +575,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             // internal user
             $insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
             $insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-            $insertArray['label'] = 'Mail: '.$mailData['mail'];
+            $insertArray['label'] = 'Mail: ' . $mailData['mail'];
         } else {
             // external user
             $insertArray['user_id'] = 0;
             $insertArray['name'] = 'n/a';
-            $insertArray['label'] = 'Mail: '.$mailData['mail'];
+            $insertArray['label'] = 'Mail: ' . $mailData['mail'];
         }
         // add action to protocol
         $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_actionlog', $insertArray);
@@ -582,13 +593,14 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function printDocument() {
+    protected function printDocument()
+    {
         $pdfUrl = $this->conf['pdfprint'];
         $numberOfPages = 0;
         foreach ($this->piVars['selected'] as $docId => $docValue) {
             if ($docValue['id']) {
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
-                $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+                $pdfUrl .= $docData['urlParams'] . $this->conf['pdfparamseparator'];
                 $numberOfPages += $docData['pageNums'];
             }
         }
@@ -620,7 +632,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
                 if ($docValue['id']) {
                     $explodeId = explode("_", $docId);
                     $docData = $this->getDocumentData($explodeId[0], $docValue);
-                    $pdfUrl .= $docData['urlParams'].$this->conf['pdfparamseparator'];
+                    $pdfUrl .= $docData['urlParams'] . $this->conf['pdfparamseparator'];
                     $numberOfPages += $docData['pageNums'];
                 }
             }
@@ -637,16 +649,16 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin {
             // internal user
             $insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
             $insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-            $insertArray['label'] = 'Print: '.$printerData['label'];
+            $insertArray['label'] = 'Print: ' . $printerData['label'];
         } else {
             // external user
             $insertArray['user_id'] = 0;
             $insertArray['name'] = 'n/a';
-            $insertArray['label'] = 'Print: '.$printerData['label'];
+            $insertArray['label'] = 'Print: ' . $printerData['label'];
         }
         // add action to protocol
         $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_actionlog', $insertArray);
-        header('Location: '.$pdfUrl);
+        header('Location: ' . $pdfUrl);
         ob_end_flush();
         exit;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -225,7 +226,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.thumbnail',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \Kitodo\Dlf\Hooks\FormEngine::class.'->displayThumbnail',
+                'userFunc' => \Kitodo\Dlf\Hooks\FormEngine::class . '->displayThumbnail',
             ],
         ],
         'metadata' => [
