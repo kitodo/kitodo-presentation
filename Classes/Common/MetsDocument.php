@@ -116,7 +116,8 @@ final class MetsDocument extends Document
      *
      * @return  void
      */
-    public function addMetadataFromMets(&$metadata, $id) {
+    public function addMetadataFromMets(&$metadata, $id)
+    {
         $details = $this->getLogicalStructure($id);
         if (!empty($details)) {
             $metadata['mets_label'][0] = $details['label'];

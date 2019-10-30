@@ -495,7 +495,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     return $content;
                 }
                 // Set search parameters.
-                $solr->cPid =  $listMetadata['options']['pid'];
+                $solr->cPid = $listMetadata['options']['pid'];
                 $solr->params = $listMetadata['options']['params'];
                 // Perform search.
                 $this->list = $solr->search();
