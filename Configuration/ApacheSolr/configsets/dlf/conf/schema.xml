@@ -42,6 +42,7 @@ limitations under the License.
         </fieldType>
         <fieldType name="fulltext" class="solr.TextField" positionIncrementGap="100">
             <analyzer type="index">
+                <charFilter class="solr.HTMLStripCharFilterFactory" />
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.FlattenGraphFilterFactory" />
                 <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
