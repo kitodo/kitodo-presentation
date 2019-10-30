@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
@@ -21,7 +22,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
+class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Tools/ImageDownloadTool.php';
 
     /**
@@ -34,7 +36,8 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         if (!empty($this->cObj->data['conf'])) {
@@ -42,9 +45,11 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL
+        if (
+            $this->doc === NULL
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpsImageDownload'])) {
+            || empty($this->conf['fileGrpsImageDownload'])
+        ) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -55,8 +60,10 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])) {
+            if (
+                (int) $this->piVars['page'] > 0
+                || empty($this->piVars['page'])
+            ) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -83,7 +90,8 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Link to image file with given label
      */
-    protected function getImage($page, $label) {
+    protected function getImage($page, $label)
+    {
         $image = [];
         // Get @USE value of METS fileGrp.
         $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpsImageDownload']);
@@ -104,13 +112,13 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
                 }
                 $linkConf = [
                     'parameter' => $image['url'],
-                    'title' => $label.' '.$mimetypeLabel,
+                    'title' => $label . ' ' . $mimetypeLabel,
                     'additionalParams' => '',
                 ];
-                $imageLink = $this->cObj->typoLink($label.' '.$mimetypeLabel, $linkConf);
+                $imageLink = $this->cObj->typoLink($label . ' ' . $mimetypeLabel, $linkConf);
                 break;
             } else {
-                Helper::devLog('File not found in fileGrp "'.$fileGrp.'"', DEVLOG_SEVERITY_WARNING);
+                Helper::devLog('File not found in fileGrp "' . $fileGrp . '"', DEVLOG_SEVERITY_WARNING);
             }
         }
         return $imageLink;

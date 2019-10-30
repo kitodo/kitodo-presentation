@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
@@ -25,7 +26,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class AnnotationTool extends AbstractPlugin {
+class AnnotationTool extends AbstractPlugin
+{
     /**
      * @access public
      * @var string
@@ -42,7 +44,8 @@ class AnnotationTool extends AbstractPlugin {
      *
      * @return string  The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         if (!empty($this->cObj->data['conf'])) {
@@ -71,13 +74,13 @@ class AnnotationTool extends AbstractPlugin {
         // Load template file.
         $this->getTemplate();
         $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['annotationContainers'];
-        if ($annotationContainers != null && sizeof($annotationContainers)>0) {
+        if ($annotationContainers != NULL && sizeof($annotationContainers) > 0) {
             $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:'
-                .$this->pi_getLL('annotations-on', '', TRUE).';annotations-off:'
-                    .$this->pi_getLL('annotations-off', '', TRUE).'">&nbsp;</a>';
-                    // TODO selector for different motivations
+                . $this->pi_getLL('annotations-on', '', TRUE) . ';annotations-off:'
+                . $this->pi_getLL('annotations-off', '', TRUE) . '">&nbsp;</a>';
+            // TODO selector for different motivations
         } else {
-            $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">'.$this->pi_getLL('annotations-not-available', '', TRUE).'</span>';
+            $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">' . $this->pi_getLL('annotations-not-available', '', TRUE) . '</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);

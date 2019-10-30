@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -26,7 +27,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
+class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/OaiPmh.php';
 
     /**
@@ -76,11 +78,12 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function deleteExpiredTokens() {
+    protected function deleteExpiredTokens()
+    {
         // Delete expired resumption tokens.
         $GLOBALS['TYPO3_DB']->exec_DELETEquery(
             'tx_dlf_tokens',
-            'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.tstamp<'.intval($GLOBALS['EXEC_TIME'] - $this->conf['expired'])
+            'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.tstamp<' . intval($GLOBALS['EXEC_TIME'] - $this->conf['expired'])
         );
         if ($GLOBALS['TYPO3_DB']->sql_affected_rows() === -1) {
             // Deletion failed.
@@ -97,7 +100,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML node to add to the OAI response
      */
-    protected function error($type) {
+    protected function error($type)
+    {
         $this->error = TRUE;
         $error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', htmlspecialchars($this->pi_getLL($type, $type, FALSE), ENT_NOQUOTES, 'UTF-8'));
         $error->setAttribute('code', $type);
@@ -111,7 +115,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function getUrlParams() {
+    protected function getUrlParams()
+    {
         $allowedParams = [
             'verb',
             'identifier',
@@ -141,17 +146,18 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML node to add to the OAI response
      */
-    protected function getDcData(array $metadata) {
+    protected function getDcData(array $metadata)
+    {
         $oai_dc = $this->oai->createElementNS($this->formats['oai_dc']['namespace'], 'oai_dc:dc');
         $oai_dc->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:dc', 'http://purl.org/dc/elements/1.1/');
         $oai_dc->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $oai_dc->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', $this->formats['oai_dc']['namespace'].' '.$this->formats['oai_dc']['schema']);
+        $oai_dc->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', $this->formats['oai_dc']['namespace'] . ' ' . $this->formats['oai_dc']['schema']);
         $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['record_id'], ENT_NOQUOTES, 'UTF-8')));
         if (!empty($metadata['purl'])) {
             $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8')));
         }
         if (!empty($metadata['prod_id'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', 'kitodo:production:'.htmlspecialchars($metadata['prod_id'], ENT_NOQUOTES, 'UTF-8')));
+            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', 'kitodo:production:' . htmlspecialchars($metadata['prod_id'], ENT_NOQUOTES, 'UTF-8')));
         }
         if (!empty($metadata['urn'])) {
             $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier', htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8')));
@@ -220,7 +226,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML node to add to the OAI response
      */
-    protected function getEpicurData(array $metadata) {
+    protected function getEpicurData(array $metadata)
+    {
         // Define all XML elements with or without qualified namespace.
         if (empty($this->conf['unqualified_epicur'])) {
             $epicur = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:epicur');
@@ -248,7 +255,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Add attributes and build XML tree.
         $epicur->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $epicur->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', $this->formats['epicur']['namespace'].' '.$this->formats['epicur']['schema']);
+        $epicur->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation', $this->formats['epicur']['namespace'] . ' ' . $this->formats['epicur']['schema']);
         // Do we update an URN or register a new one?
         if ($metadata['tstamp'] == $metadata['crdate']) {
             $update->setAttribute('type', 'urn_new');
@@ -283,7 +290,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML node to add to the OAI response
      */
-    protected function getMetsData(array $metadata) {
+    protected function getMetsData(array $metadata)
+    {
         $mets = NULL;
         // Load METS file.
         $xml = new \DOMDocument();
@@ -294,10 +302,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
                 // Import node into \DOMDocument.
                 $mets = $this->oai->importNode($root->item(0), TRUE);
             } else {
-                Helper::devLog('No METS part found in document with location "'.$metadata['location'].'"', DEVLOG_SEVERITY_ERROR);
+                Helper::devLog('No METS part found in document with location "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
             }
         } else {
-            Helper::devLog('Could not load XML file from "'.$metadata['location'].'"', DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('Could not load XML file from "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
         }
         if ($mets === NULL) {
             $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!', FALSE), ENT_NOQUOTES, 'UTF-8'));
@@ -315,7 +323,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         // Initialize plugin.
         $this->init($conf);
         // Turn cache off.
@@ -330,17 +339,17 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!empty($this->conf['stylesheet'])) {
             // Resolve "EXT:" prefix in file path.
             if (substr($this->conf['stylesheet'], 0, 4) == 'EXT:') {
-                list ($extKey, $filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
+                list($extKey, $filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
                 if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey)) {
-                    $this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($extKey).$filePath;
+                    $this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($extKey) . $filePath;
                 }
             }
             $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
         } else {
             // Use default stylesheet if no custom stylesheet is given.
-            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Stylesheets/OaiPmh.xsl');
+            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
         }
-        $this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.htmlspecialchars($stylesheet, ENT_NOQUOTES, 'UTF-8').'"'));
+        $this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="' . htmlspecialchars($stylesheet, ENT_NOQUOTES, 'UTF-8') . '"'));
         // Create root element.
         $root = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'OAI-PMH');
         $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
@@ -390,10 +399,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Send headers.
         header('HTTP/1.1 200 OK');
         header('Cache-Control: no-cache');
-        header('Content-Length: '.strlen($content));
+        header('Content-Length: ' . strlen($content));
         header('Content-Type: text/xml; charset=utf-8');
-        header('Date: '.date('r', $GLOBALS['EXEC_TIME']));
-        header('Expires: '.date('r', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
+        header('Date: ' . date('r', $GLOBALS['EXEC_TIME']));
+        header('Expires: ' . date('r', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
         echo $content;
         exit;
     }
@@ -405,7 +414,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Substitution for subpart "###RESPONSE###"
      */
-    protected function resume() {
+    protected function resume()
+    {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_tokens');
@@ -440,7 +450,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Substitution for subpart "###RESPONSE###"
      */
-    protected function verbGetRecord() {
+    protected function verbGetRecord()
+    {
         if (count($this->piVars) != 3 || empty($this->piVars['metadataPrefix']) || empty($this->piVars['identifier'])) {
             return $this->error('badArgument');
         }
@@ -456,12 +467,12 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
-            'AND tx_dlf_documents.record_id='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents')
-                .' AND tx_dlf_documents.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_collections.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                .$where
-                .Helper::whereClause('tx_dlf_collections'),
+            'AND tx_dlf_documents.record_id=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents')
+                . ' AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
+                . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
+                . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
+                . $where
+                . Helper::whereClause('tx_dlf_collections'),
             '',
             '',
             '1'
@@ -483,8 +494,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         $headerNode->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
         // Handle deleted documents.
         // TODO: Use TYPO3 API functions here!
-        if ($resArray['deleted']
-            || $resArray['hidden']) {
+        if (
+            $resArray['deleted']
+            || $resArray['hidden']
+        ) {
             $headerNode->setAttribute('status', 'deleted');
             $recordNode->appendChild($headerNode);
         } else {
@@ -517,7 +530,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML node to add to the OAI response
      */
-    protected function verbIdentify() {
+    protected function verbIdentify()
+    {
         // Check for invalid arguments.
         if (count($this->piVars) > 1) {
             return $this->error('badArgument');
@@ -576,7 +590,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             $timestamp = $resArray['tstamp'];
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
         } else {
-            Helper::devLog('No records found with PID '.$this->conf['pages'], DEVLOG_SEVERITY_NOTICE);
+            Helper::devLog('No records found with PID ' . $this->conf['pages'], DEVLOG_SEVERITY_NOTICE);
         }
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
@@ -602,7 +616,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Substitution for subpart "###RESPONSE###"
      */
-    protected function verbListIdentifiers() {
+    protected function verbListIdentifiers()
+    {
         // If we have a resumption token we can continue our work
         if (!empty($this->piVars['resumptionToken'])) {
             // "resumptionToken" is an exclusive argument.
@@ -641,7 +656,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML node to add to the OAI response
      */
-    protected function verbListMetadataFormats() {
+    protected function verbListMetadataFormats()
+    {
         $resArray = [];
         // Check for invalid arguments.
         if (count($this->piVars) > 1) {
@@ -700,7 +716,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Substitution for subpart "###RESPONSE###"
      */
-    protected function verbListRecords() {
+    protected function verbListRecords()
+    {
         // Check for invalid arguments.
         if (!empty($this->piVars['resumptionToken'])) {
             // "resumptionToken" is an exclusive argument.
@@ -740,7 +757,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Substitution for subpart "###RESPONSE###"
      */
-    protected function verbListSets() {
+    protected function verbListSets()
+    {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
@@ -765,7 +783,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             )
             ->from('tx_dlf_collections')
             ->where(
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', array(-1, 0)),
+                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
                 $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
                 $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', ''),
                 $where,
@@ -797,7 +815,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      * @return array Array of matching records
      * @throws \Exception
      */
-    protected function fetchDocumentUIDs() {
+    protected function fetchDocumentUIDs()
+    {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
@@ -834,9 +853,9 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
             $resArray = $allResults[0];
             if ($resArray['index_query'] != "") {
-                $solr_query .= '('.$resArray['index_query'].')';
+                $solr_query .= '(' . $resArray['index_query'] . ')';
             } else {
-                $solr_query .= 'collection:'.'"'.$resArray['index_name'].'"';
+                $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
             }
         } else {
             // If no set is specified we have to query for all collections
@@ -844,18 +863,20 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Check for required fields.
         foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
-            $solr_query .= ' NOT '.$required.':""';
+            $solr_query .= ' NOT ' . $required . ':""';
         }
         // toplevel="true" is always required
-        $solr_query .= ' AND toplevel:"true"';
+        $solr_query .= ' AND toplevel:true';
         $from = "*";
         // Check "from" for valid value.
         if (!empty($this->piVars['from'])) {
             // Is valid format?
-            if (is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))) {
+            if (
+                is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%dT%H:%M:%SZ'))
+                || is_array($date_array = strptime($this->piVars['from'], '%Y-%m-%d'))
+            ) {
                 $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
-                $from = date("Y-m-d", $timestamp).'T'.date("H:i:s", $timestamp).'.000Z';
+                $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
             } else {
                 throw new \Exception('badArgument');
             }
@@ -864,10 +885,12 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Check "until" for valid value.
         if (!empty($this->piVars['until'])) {
             // Is valid format?
-            if (is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))) {
+            if (
+                is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%dT%H:%M:%SZ'))
+                || is_array($date_array = strptime($this->piVars['until'], '%Y-%m-%d'))
+            ) {
                 $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'], $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
-                $until = date("Y-m-d", $timestamp).'T'.date("H:i:s", $timestamp).'.999Z';
+                $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
                 if ($from != "*" && $from > $until) {
                     throw new \Exception('badArgument');
                 }
@@ -876,13 +899,15 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
         }
         // Check "from" and "until" for same granularity.
-        if (!empty($this->piVars['from'])
-            && !empty($this->piVars['until'])) {
+        if (
+            !empty($this->piVars['from'])
+            && !empty($this->piVars['until'])
+        ) {
             if (strlen($this->piVars['from']) != strlen($this->piVars['until'])) {
                 throw new \Exception('badArgument');
             }
         }
-        $solr_query .= ' AND timestamp:['.$from.' TO '.$until.']';
+        $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
         $documentSet = [];
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (intval($this->conf['solr_limit']) > 0) {
@@ -913,7 +938,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML of enriched records
      */
-    protected function generateOutputForDocumentList(DocumentList $documentListSet) {
+    protected function generateOutputForDocumentList(DocumentList $documentListSet)
+    {
         $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
         $verb = $this->piVars['verb'];
         $documents = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
@@ -921,11 +947,11 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             'tx_dlf_documents',
             'tx_dlf_relations',
             'tx_dlf_collections',
-            'AND tx_dlf_documents.uid IN ('.implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)).')'
-                .' AND tx_dlf_documents.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_collections.pid='.intval($this->conf['pages'])
-                .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                .Helper::whereClause('tx_dlf_collections'),
+            'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)) . ')'
+                . ' AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
+                . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
+                . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
+                . Helper::whereClause('tx_dlf_collections'),
             'tx_dlf_documents.uid',
             'tx_dlf_documents.tstamp',
             $this->conf['limit']
@@ -938,8 +964,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
             $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp', gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
             // Check if document is deleted or hidden.
             // TODO: Use TYPO3 API functions here!
-            if ($resArray['deleted']
-                || $resArray['hidden']) {
+            if (
+                $resArray['deleted']
+                || $resArray['hidden']
+            ) {
                 // Add "deleted" status.
                 $header->setAttribute('status', 'deleted');
                 if ($verb == 'ListRecords') {
@@ -997,7 +1025,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return \DOMElement XML for resumption token
      */
-    protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet) {
+    protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet)
+    {
         if ($documentListSet->count() != 0) {
             $token = uniqid();
             $GLOBALS['TYPO3_DB']->exec_INSERTquery(

@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -29,7 +30,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
+class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/ListView.php';
 
     /**
@@ -71,7 +73,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The rendered page browser ready for output
      */
-    protected function getPageBrowser() {
+    protected function getPageBrowser()
+    {
         // Get overall number of pages.
         $maxPages = intval(ceil($this->list->metadata['options']['numberOfToplevelHits'] / $this->conf['limit']));
         // Return empty pagebrowser if there is just one page.
@@ -82,9 +85,9 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         $separator = $this->pi_getLL('separator', ' - ', TRUE);
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1], TRUE).$separator;
+            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1], TRUE) . $separator;
         } else {
-            $output = $this->pi_getLL('prevPage', '&lt;', TRUE).$separator;
+            $output = $this->pi_getLL('prevPage', '&lt;', TRUE) . $separator;
         }
         $i = 0;
         $skip = NULL;
@@ -92,13 +95,13 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         while ($i < $maxPages) {
             if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
                 if ($this->piVars['pointer'] != $i) {
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i], TRUE).$separator;
+                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i], TRUE) . $separator;
                 } else {
-                    $output .= sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1).$separator;
+                    $output .= sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1) . $separator;
                 }
                 $skip = TRUE;
             } elseif ($skip === TRUE) {
-                $output .= $this->pi_getLL('skip', '...', TRUE).$separator;
+                $output .= $this->pi_getLL('skip', '...', TRUE) . $separator;
                 $skip = FALSE;
             }
             $i++;
@@ -122,7 +125,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The rendered entry ready for output
      */
-    protected function getEntry($number, $template) {
+    protected function getEntry($number, $template)
+    {
         $markerArray['###NUMBER###'] = $number + 1;
         $markerArray['###METADATA###'] = '';
         $markerArray['###THUMBNAIL###'] = '';
@@ -143,7 +147,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
                         if (empty($value) && $this->conf['getTitle']) {
                             $superiorTitle = Document::getTitle($this->list[$number]['uid'], TRUE);
                             if (!empty($superiorTitle)) {
-                                $value = '['.$superiorTitle.']';
+                                $value = '[' . $superiorTitle . ']';
                             }
                         }
                         // Set fake title if still not present.
@@ -187,7 +191,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Add thumbnail.
         if (!empty($this->list[$number]['thumbnail'])) {
-            $markerArray['###THUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$this->list[$number]['thumbnail'].'" />';
+            $markerArray['###THUMBNAIL###'] = '<img alt="' . $imgAlt . '" src="' . $this->list[$number]['thumbnail'] . '" />';
         }
         // Add preview.
         if (!empty($this->list[$number]['preview'])) {
@@ -221,7 +225,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array The parsed fieldwrap
      */
-    private function getFieldWrap($index_name, $wrap) {
+    private function getFieldWrap($index_name, $wrap)
+    {
         if (isset($this->fieldwrap[$index_name])) {
             return $this->fieldwrap[$index_name];
         } else {
@@ -236,7 +241,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The rendered sorting dialog ready for output
      */
-    protected function getSortingForm() {
+    protected function getSortingForm()
+    {
         // Return nothing if there are no sortable metadata fields.
         if (!count($this->sortables)) {
             return '';
@@ -251,28 +257,28 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
             $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['logicalPage' => $this->piVars['logicalPage']], '', TRUE, FALSE);
         }
         // Build HTML form.
-        $sorting = '<form action="'.$this->cObj->typoLink_URL($linkConf).'" method="get"><div><input type="hidden" name="id" value="'.$GLOBALS['TSFE']->id.'" />';
+        $sorting = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
         foreach ($this->piVars as $piVar => $value) {
             if ($piVar != 'order' && $piVar != 'DATA' && !empty($value)) {
-                $sorting .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
+                $sorting .= '<input type="hidden" name="' . $this->prefixId . '[' . $piVar . ']" value="' . $value . '" />';
             }
         }
         // Select sort field.
-        $uniqId = uniqid($prefix.'-');
-        $sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('orderBy', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[order]" onchange="javascript:this.form.submit();">';
+        $uniqId = uniqid($prefix . '-');
+        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('orderBy', '', TRUE) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[order]" onchange="javascript:this.form.submit();">';
         // Add relevance sorting if this is a search result list.
         if ($this->list->metadata['options']['source'] == 'search') {
-            $sorting .= '<option value="score"'.(($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '').'>'.$this->pi_getLL('relevance', '', TRUE).'</option>';
+            $sorting .= '<option value="score"' . (($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '') . '>' . $this->pi_getLL('relevance', '', TRUE) . '</option>';
         }
         foreach ($this->sortables as $index_name => $label) {
-            $sorting .= '<option value="'.$index_name.'"'.(($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
+            $sorting .= '<option value="' . $index_name . '"' . (($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '') . '>' . htmlspecialchars($label) . '</option>';
         }
         $sorting .= '</select>';
         // Select sort direction.
-        $uniqId = uniqid($prefix.'-');
-        $sorting .= '<label for="'.$uniqId.'">'.$this->pi_getLL('direction', '', TRUE).'</label><select id="'.$uniqId.'" name="'.$this->prefixId.'[asc]" onchange="javascript:this.form.submit();">';
-        $sorting .= '<option value="1" '.($this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '').'>'.$this->pi_getLL('direction.asc', '', TRUE).'</option>';
-        $sorting .= '<option value="0" '.(!$this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '').'>'.$this->pi_getLL('direction.desc', '', TRUE).'</option>';
+        $uniqId = uniqid($prefix . '-');
+        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('direction', '', TRUE) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[asc]" onchange="javascript:this.form.submit();">';
+        $sorting .= '<option value="1" ' . ($this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.asc', '', TRUE) . '</option>';
+        $sorting .= '<option value="0" ' . (!$this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.desc', '', TRUE) . '</option>';
         $sorting .= '</select></div></form>';
         return $sorting;
     }
@@ -287,7 +293,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The rendered entries ready for output
      */
-    protected function getSubEntries($number, $template) {
+    protected function getSubEntries($number, $template)
+    {
         $content = '';
         $noTitle = $this->pi_getLL('noTitle');
         $highlight_word = preg_replace('/\s\s+/', ';', $this->list->metadata['searchString']);
@@ -307,7 +314,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
                         if (empty($value) && $this->conf['getTitle']) {
                             $superiorTitle = Document::getTitle($subpart['uid'], TRUE);
                             if (!empty($superiorTitle)) {
-                                $value = '['.$superiorTitle.']';
+                                $value = '[' . $superiorTitle . ']';
                             }
                         }
                         // Set fake title if still not present.
@@ -337,7 +344,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
                         $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
                         // Add page number for single pages.
                         if ($_value == 'page') {
-                            $value .= ' '.intval($subpart['page']);
+                            $value .= ' ' . intval($subpart['page']);
                         }
                     } elseif ($index_name == 'language' && !empty($value)) { // Translate ISO 639 language code.
                         $value = htmlspecialchars(Helper::getLanguageName($value));
@@ -357,7 +364,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
             // Add thumbnail.
             if (!empty($subpart['thumbnail'])) {
-                $markerArray['###SUBTHUMBNAIL###'] = '<img alt="'.$imgAlt.'" src="'.$subpart['thumbnail'].'" />';
+                $markerArray['###SUBTHUMBNAIL###'] = '<img alt="' . $imgAlt . '" src="' . $subpart['thumbnail'] . '" />';
             }
             // Add preview.
             if (!empty($subpart['preview'])) {
@@ -387,7 +394,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function loadConfig() {
+    protected function loadConfig()
+    {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
@@ -434,7 +442,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Don't cache the output.
         $this->setCache(FALSE);
@@ -443,16 +452,18 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         $currentEntry = $this->piVars['pointer'] * $this->conf['limit'];
         $lastEntry = ($this->piVars['pointer'] + 1) * $this->conf['limit'];
         // Check if it's a list of database records or Solr documents.
-        if (!empty($this->list->metadata['options']['source'])
+        if (
+            !empty($this->list->metadata['options']['source'])
             && $this->list->metadata['options']['source'] == 'collection'
             && ((!empty($this->piVars['order']) && $this->piVars['order'] != $this->list->metadata['options']['order'])
-                || (isset($this->piVars['asc']) && $this->piVars['asc'] != $this->list->metadata['options']['order.asc']))) {
+                || (isset($this->piVars['asc']) && $this->piVars['asc'] != $this->list->metadata['options']['order.asc']))
+        ) {
             // Order list by given field.
-            $this->list->sort($this->piVars['order'], (boolean) $this->piVars['asc']);
+            $this->list->sort($this->piVars['order'], (bool) $this->piVars['asc']);
             // Update list's metadata.
             $listMetadata = $this->list->metadata;
             $listMetadata['options']['order'] = $this->piVars['order'];
-            $listMetadata['options']['order.asc'] = (boolean) $this->piVars['asc'];
+            $listMetadata['options']['order.asc'] = (bool) $this->piVars['asc'];
             $this->list->metadata = $listMetadata;
             // Save updated list.
             $this->list->save();
@@ -463,11 +474,12 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
             $listMetadata = $this->list->metadata;
             // Sort the list if applicable.
             if ((!empty($this->piVars['order']) && $this->piVars['order'] != $listMetadata['options']['order'])
-                || (isset($this->piVars['asc']) && $this->piVars['asc'] != $listMetadata['options']['order.asc'])) {
+                || (isset($this->piVars['asc']) && $this->piVars['asc'] != $listMetadata['options']['order.asc'])
+            ) {
                 // Update list's metadata.
-                $listMetadata['options']['params']['sort'] = [$this->piVars['order']."_sorting" => (boolean) $this->piVars['asc']?'asc':'desc'];
+                $listMetadata['options']['params']['sort'] = [$this->piVars['order'] . "_sorting" => (bool) $this->piVars['asc'] ? 'asc' : 'desc'];
                 $listMetadata['options']['order'] = $this->piVars['order'];
-                $listMetadata['options']['order.asc'] = (boolean) $this->piVars['asc'];
+                $listMetadata['options']['order.asc'] = (bool) $this->piVars['asc'];
                 // Reset pointer.
                 $this->piVars['pointer'] = 0;
             }
@@ -489,7 +501,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $this->list = $solr->search();
             }
             // Add list description
-            $listMetadata['description'] = '<p class="tx-dlf-search-numHits">'.htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $this->list->metadata['options']['numberOfHits'], $this->list->metadata['options']['numberOfToplevelHits'])).'</p>';
+            $listMetadata['description'] = '<p class="tx-dlf-search-numHits">' . htmlspecialchars(sprintf($this->pi_getLL('hits', ''), $this->list->metadata['options']['numberOfHits'], $this->list->metadata['options']['numberOfToplevelHits'])) . '</p>';
             $this->list->metadata = $listMetadata;
             // Save updated list.
             $this->list->save();
@@ -518,12 +530,12 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin {
         $markerArray['###LISTTITLE###'] = $this->list->metadata['label'];
         $markerArray['###LISTDESCRIPTION###'] = $this->list->metadata['description'];
         if (!empty($this->list->metadata['thumbnail'])) {
-            $markerArray['###LISTTHUMBNAIL###'] = '<img alt="" src="'.$this->list->metadata['thumbnail'].'" />';
+            $markerArray['###LISTTHUMBNAIL###'] = '<img alt="" src="' . $this->list->metadata['thumbnail'] . '" />';
         } else {
             $markerArray['###LISTTHUMBNAIL###'] = '';
         }
         if ($currentEntry) {
-            $currentEntry =  ($this->piVars['pointer'] * $this->conf['limit']) + 1;
+            $currentEntry = ($this->piVars['pointer'] * $this->conf['limit']) + 1;
             $lastEntry = ($this->piVars['pointer'] * $this->conf['limit']) + $this->conf['limit'];
             $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), $currentEntry, $lastEntry < $this->list->metadata['options']['numberOfToplevelHits'] ? $lastEntry : $this->list->metadata['options']['numberOfToplevelHits'], $this->list->metadata['options']['numberOfToplevelHits']));
         } else {

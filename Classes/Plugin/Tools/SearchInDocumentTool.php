@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
@@ -23,7 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
+class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Tools/SearchInDocumentTool.php';
 
     /**
@@ -36,7 +38,8 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
 
         $this->init($conf);
 
@@ -49,10 +52,12 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL
+        if (
+            $this->doc === NULL
             || $this->doc->numPages < 1
             || empty($this->conf['fileGrpFulltext'])
-            || empty($this->conf['solrcore'])) {
+            || empty($this->conf['solrcore'])
+        ) {
             // Quit without doing anything if required variables are not set.
             return $content;
         }
@@ -67,14 +72,14 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->getTemplate();
 
         // Configure @action URL for form.
-        $linkConf = array(
+        $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1
-        );
+        ];
 
         $encryptedSolr = $this->getEncryptedCoreName();
         // Fill markers.
-        $markerArray = array(
+        $markerArray = [
             '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
             '###LABEL_QUERY###' => $this->pi_getLL('label.query'),
             '###LABEL_DELETE_SEARCH###' => $this->pi_getLL('label.delete_search'),
@@ -87,7 +92,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             '###CURRENT_DOCUMENT###' => $this->doc->uid,
             '###SOLR_ENCRYPTED###' => isset($encryptedSolr['encrypted']) ? $encryptedSolr['encrypted'] : '',
             '###SOLR_HASH###' => isset($encryptedSolr['hash']) ? $encryptedSolr['hash'] : '',
-        );
+        ];
 
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
@@ -100,9 +105,10 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function addSearchInDocumentJS() {
+    protected function addSearchInDocumentJS()
+    {
         $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Search/SearchInDocument.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/Search/SearchInDocument.js');
     }
 
     /**
@@ -112,7 +118,8 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array with encrypted core name and hash
      */
-    protected function getEncryptedCoreName() {
+    protected function getEncryptedCoreName()
+    {
         // Get core name.
         $name = Helper::getIndexNameFromUid($this->conf['solrcore'], 'tx_dlf_solrcores');
         // Encrypt core name.

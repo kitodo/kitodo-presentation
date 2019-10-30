@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Hooks;
 
 /**
@@ -25,7 +26,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class ConfigurationForm {
+class ConfigurationForm
+{
     /**
      * This holds the current configuration
      *
@@ -44,17 +46,20 @@ class ConfigurationForm {
      *
      * @return string Message informing the user of success or failure
      */
-    public function checkSolrConnection(&$params, &$pObj) {
+    public function checkSolrConnection(&$params, &$pObj)
+    {
         $solrInfo = Solr::getSolrConnectionInfo();
         // Prepend username and password to hostname.
-        if (!empty($solrInfo['username'])
-            && !empty($solrInfo['password'])) {
-            $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
+        if (
+            !empty($solrInfo['username'])
+            && !empty($solrInfo['password'])
+        ) {
+            $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
         } else {
             $host = $solrInfo['host'];
         }
         // Build request URI.
-        $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml';
+        $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml';
         $context = stream_context_create([
             'http' => [
                 'method' => 'GET',
@@ -93,7 +98,8 @@ class ConfigurationForm {
      *
      * @return string Message informing the user of success or failure
      */
-    public function checkMetadataFormats(&$params, &$pObj) {
+    public function checkMetadataFormats(&$params, &$pObj)
+    {
         $nsDefined = [
             'MODS' => FALSE,
             'TEIHDR' => FALSE,
@@ -154,33 +160,33 @@ class ConfigurationForm {
         }
         // Add IIIF Metadata API 1 context
         if (!$nsDefined['IIIF1']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+            $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'IIIF1',
                 'root' => 'IIIF1',
                 'namespace' => 'http://www.shared-canvas.org/ns/context.json',
                 'class' => ''
-            );
+            ];
         }
         // Add IIIF Presentation 2 context
         if (!$nsDefined['IIIF2']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+            $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'IIIF2',
                 'root' => 'IIIF2',
                 'namespace' => 'http://iiif.io/api/presentation/2/context.json',
                 'class' => ''
-            );
+            ];
         }
         // Add IIIF Presentation 3 context
         if (!$nsDefined['IIIF3']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = array (
+            $data['tx_dlf_formats'][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'IIIF3',
                 'root' => 'IIIF3',
                 'namespace' => 'http://iiif.io/api/presentation/3/context.json',
                 'class' => ''
-            );
+            ];
         }
         if (!empty($data)) {
             // Process changes.
@@ -215,7 +221,8 @@ class ConfigurationForm {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         // Load localization file.
         $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
         // Get current configuration.

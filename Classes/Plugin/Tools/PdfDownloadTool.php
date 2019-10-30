@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
@@ -22,7 +23,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
+class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Tools/PdfDownloadTool.php';
 
     /**
@@ -35,7 +37,8 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         if (!empty($this->cObj->data['conf'])) {
@@ -43,9 +46,11 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL
+        if (
+            $this->doc === NULL
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpDownload'])) {
+            || empty($this->conf['fileGrpDownload'])
+        ) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -56,8 +61,10 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])) {
+            if (
+                (int) $this->piVars['page'] > 0
+                || empty($this->piVars['page'])
+            ) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -81,7 +88,8 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Link to downloadable page
      */
-    protected function getPageLink() {
+    protected function getPageLink()
+    {
         $page1Link = '';
         $page2Link = '';
         $pageNumber = $this->piVars['page'];
@@ -92,17 +100,21 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             $page1Link = $this->doc->getFileLocation($file);
         }
         // Get second page, too, if double page view is activated.
-        if ($this->piVars['double']
-            && $pageNumber < $this->doc->numPages) {
+        if (
+            $this->piVars['double']
+            && $pageNumber < $this->doc->numPages
+        ) {
             $details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]];
             $file = $details['files'][$this->conf['fileGrpDownload']];
             if (!empty($file)) {
                 $page2Link = $this->doc->getFileLocation($file);
             }
         }
-        if (empty($page1Link)
-            && empty($page2Link)) {
-            Helper::devLog('File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', DEVLOG_SEVERITY_WARNING);
+        if (
+            empty($page1Link)
+            && empty($page2Link)
+        ) {
+            Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
         }
         // Wrap URLs with HTML.
         if (!empty($page1Link)) {
@@ -115,7 +127,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!empty($page2Link)) {
             $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''), ['parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')]);
         }
-        return $page1Link.$page2Link;
+        return $page1Link . $page2Link;
     }
 
     /**
@@ -125,7 +137,8 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string Link to downloadable work
      */
-    protected function getWorkLink() {
+    protected function getWorkLink()
+    {
         $workLink = '';
         // Get work link.
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']])) {
@@ -140,7 +153,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         if (!empty($workLink)) {
             $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), ['parameter' => $workLink, 'title' => $this->pi_getLL('work', '')]);
         } else {
-            Helper::devLog('File not found in fileGrp "'.$this->conf['fileGrpDownload'].'"', DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
         }
         return $workLink;
     }

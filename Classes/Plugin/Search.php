@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -30,7 +31,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Search extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Search.php';
 
     /**
@@ -40,7 +42,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return void
      */
-    protected function addAutocompleteJS() {
+    protected function addAutocompleteJS()
+    {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
@@ -59,7 +62,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
 
         if ($result->rowCount() == 1) {
             $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'Resources/Public/Javascript/Search/Suggester.js');
+            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/Search/Suggester.js');
         } else {
             Helper::devLog('No metadata fields configured for search suggestions', DEVLOG_SEVERITY_WARNING);
         }
@@ -72,23 +75,28 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string HTML input fields with current document's UID and parent ID
      */
-    protected function addCurrentCollection() {
+    protected function addCurrentCollection()
+    {
         // Load current collection.
         $list = GeneralUtility::makeInstance(DocumentList::class);
-        if (!empty($list->metadata['options']['source'])
-            && $list->metadata['options']['source'] == 'collection') {
+        if (
+            !empty($list->metadata['options']['source'])
+            && $list->metadata['options']['source'] == 'collection'
+        ) {
             // Get collection's UID.
-            return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$list->metadata['options']['select'].'" />';
+            return '<input type="hidden" name="' . $this->prefixId . '[collection]" value="' . $list->metadata['options']['select'] . '" />';
         } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
             // Get collection's UID from search metadata.
             foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
                 $facetKeyVal = explode(':', $facet['query'], 2);
-                if ($facetKeyVal[0] == 'collection_faceting'
-                    && !strpos($facetKeyVal[1], '" OR "')) {
+                if (
+                    $facetKeyVal[0] == 'collection_faceting'
+                    && !strpos($facetKeyVal[1], '" OR "')
+                ) {
                     $collectionId = Helper::getUidFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
                 }
             }
-            return '<input type="hidden" name="'.$this->prefixId.'[collection]" value="'.$collectionId.'" />';
+            return '<input type="hidden" name="' . $this->prefixId . '[collection]" value="' . $collectionId . '" />';
         }
         return '';
     }
@@ -100,16 +108,19 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string HTML input fields with current document's UID and parent ID
      */
-    protected function addCurrentDocument() {
+    protected function addCurrentDocument()
+    {
         // Load current list object.
         $list = GeneralUtility::makeInstance(DocumentList::class);
         // Load current document.
-        if (!empty($this->piVars['id'])
-            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
+        if (
+            !empty($this->piVars['id'])
+            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
+        ) {
             $this->loadDocument();
             // Get document's UID or parent ID.
             if ($this->doc->ready) {
-                return '<input type="hidden" name="'.$this->prefixId.'[id]" value="'.($this->doc->parentId > 0 ? $this->doc->parentId : $this->doc->uid).'" />';
+                return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . ($this->doc->parentId > 0 ? $this->doc->parentId : $this->doc->uid) . '" />';
             }
         } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
             // Get document's UID from search metadata.
@@ -119,7 +130,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                     $documentId = (int) substr($facetKeyVal[1], 1, strpos($facetKeyVal[1], ')'));
                 }
             }
-            return '<input type="hidden" name="'.$this->prefixId.'[id]" value="'.$documentId.'" />';
+            return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . $documentId . '" />';
         }
         return '';
     }
@@ -131,7 +142,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string HTML input fields with encrypted core name and hash
      */
-    protected function addEncryptedCoreName() {
+    protected function addEncryptedCoreName()
+    {
         // Get core name.
         $name = Helper::getIndexNameFromUid($this->conf['solrcore'], 'tx_dlf_solrcores');
         // Encrypt core name.
@@ -140,7 +152,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Add encrypted fields to search form.
         if (is_array($name)) {
-            return '<input type="hidden" name="'.$this->prefixId.'[encrypted]" value="'.$name['encrypted'].'" /><input type="hidden" name="'.$this->prefixId.'[hashed]" value="'.$name['hash'].'" />';
+            return '<input type="hidden" name="' . $this->prefixId . '[encrypted]" value="' . $name['encrypted'] . '" /><input type="hidden" name="' . $this->prefixId . '[hashed]" value="' . $name['hash'] . '" />';
         } else {
             return '';
         }
@@ -153,29 +165,32 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The extended search form or an empty string
      */
-    protected function addExtendedSearch() {
+    protected function addExtendedSearch()
+    {
         $extendedSearch = '';
         // Quit without doing anything if no fields for extended search are selected.
-        if (empty($this->conf['extendedSlotCount'])
-            || empty($this->conf['extendedFields'])) {
+        if (
+            empty($this->conf['extendedSlotCount'])
+            || empty($this->conf['extendedFields'])
+        ) {
             return $extendedSearch;
         }
         // Get operator options.
         $operatorOptions = '';
         foreach (['AND', 'OR', 'NOT'] as $operator) {
-            $operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-'.$operator.'" value="'.$operator.'">'.$this->pi_getLL($operator, '', TRUE).'</option>';
+            $operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-' . $operator . '" value="' . $operator . '">' . $this->pi_getLL($operator, '', TRUE) . '</option>';
         }
         // Get field selector options.
         $fieldSelectorOptions = '';
         $searchFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
         foreach ($searchFields as $searchField) {
-            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-'.$searchField.'" value="'.$searchField.'">'.Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']).'</option>';
+            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-' . $searchField . '" value="' . $searchField . '">' . Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']) . '</option>';
         }
         for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
             $markerArray = [
-                '###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator tx-dlf-search-operator-'.$i.'" name="'.$this->prefixId.'[extOperator]['.$i.']">'.$operatorOptions.'</select>',
-                '###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field tx-dlf-search-field-'.$i.'" name="'.$this->prefixId.'[extField]['.$i.']">'.$fieldSelectorOptions.'</select>',
-                '###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query tx-dlf-search-query-'.$i.'" type="text" name="'.$this->prefixId.'[extQuery]['.$i.']" />'
+                '###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator tx-dlf-search-operator-' . $i . '" name="' . $this->prefixId . '[extOperator][' . $i . ']">' . $operatorOptions . '</select>',
+                '###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field tx-dlf-search-field-' . $i . '" name="' . $this->prefixId . '[extField][' . $i . ']">' . $fieldSelectorOptions . '</select>',
+                '###EXT_SEARCH_FIELDQUERY###' => '<input class="tx-dlf-search-query tx-dlf-search-query-' . $i . '" type="text" name="' . $this->prefixId . '[extQuery][' . $i . ']" />'
             ];
             $extendedSearch .= $this->templateService->substituteMarkerArray($this->templateService->getSubpart($this->template, '###EXT_SEARCH_ENTRY###'), $markerArray);
         }
@@ -189,7 +204,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string HTML output of facets menu
      */
-    protected function addFacetsMenu() {
+    protected function addFacetsMenu()
+    {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['facetsConf.'])) {
             Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
@@ -202,12 +218,12 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         // Get facets from plugin configuration.
         $facets = [];
         foreach (GeneralUtility::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
-            $facets[$facet.'_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
+            $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
         }
         // Render facets menu.
         $TSconfig = [];
         $TSconfig['special'] = 'userfunction';
-        $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\Search::class.'->makeFacetsMenuArray';
+        $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\Search::class . '->makeFacetsMenuArray';
         $TSconfig['special.']['facets'] = $facets;
         $TSconfig['special.']['limit'] = max(intval($this->conf['limitFacets']), 1);
         $TSconfig = Helper::mergeRecursiveWithOverrule($this->conf['facetsConf.'], $TSconfig);
@@ -223,14 +239,15 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string HTML output of fulltext switch
      */
-    protected function addFulltextSwitch($isFulltextSearch = 0) {
+    protected function addFulltextSwitch($isFulltextSearch = 0)
+    {
         $output = '';
         // Check for plugin configuration.
         if (!empty($this->conf['fulltext'])) {
-            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="'.$this->prefixId.'[fulltext]" value="0" '.($isFulltextSearch == 0 ? 'checked="checked"' : '').' />';
-            $output .= ' <label for="tx-dlf-search-fulltext-no">'.$this->pi_getLL('label.inMetadata', '').'</label>';
-            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="'.$this->prefixId.'[fulltext]" value="1" '.($isFulltextSearch == 1 ? 'checked="checked"' : '').'/>';
-            $output .= ' <label for="tx-dlf-search-fulltext-yes">'.$this->pi_getLL('label.inFulltext', '').'</label>';
+            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" ' . ($isFulltextSearch == 0 ? 'checked="checked"' : '') . ' />';
+            $output .= ' <label for="tx-dlf-search-fulltext-no">' . $this->pi_getLL('label.inMetadata', '') . '</label>';
+            $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" ' . ($isFulltextSearch == 1 ? 'checked="checked"' : '') . '/>';
+            $output .= ' <label for="tx-dlf-search-fulltext-yes">' . $this->pi_getLL('label.inFulltext', '') . '</label>';
         }
         return $output;
     }
@@ -242,12 +259,13 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string HTML output of logical page field
      */
-    protected function addLogicalPage() {
+    protected function addLogicalPage()
+    {
         $output = '';
         // Check for plugin configuration.
         if (!empty($this->conf['showLogicalPageField'])) {
-            $output .= ' <label for="tx-dlf-search-logical-page">'.$this->pi_getLL('label.logicalPage', '').': </label>';
-            $output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="'.$this->prefixId.'[logicalPage]" />';
+            $output .= ' <label for="tx-dlf-search-logical-page">' . $this->pi_getLL('label.logicalPage', '') . ': </label>';
+            $output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="' . $this->prefixId . '[logicalPage]" />';
         }
         return $output;
     }
@@ -265,7 +283,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array The array for the facet's menu entry
      */
-    protected function getFacetsMenuEntry($field, $value, $count, $search, &$state) {
+    protected function getFacetsMenuEntry($field, $value, $count, $search, &$state)
+    {
         $entryArray = [];
         // Translate value.
         if ($field == 'owner_faceting') {
@@ -287,7 +306,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         $entryArray['doNotLinkIt'] = 0;
         // Check if facet is already selected.
         $queryColumn = array_column($search['params']['filterquery'], 'query');
-        $index = array_search($field.':("'.Solr::escapeQuery($value).'")', $queryColumn);
+        $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
         if ($index !== FALSE) {
             // Facet is selected, thus remove it from filter.
             unset($queryColumn[$index]);
@@ -304,7 +323,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
         } else {
             // Facet is not selected, thus add it to filter.
-            $queryColumn[] = $field.':("'.Solr::escapeQuery($value).'")';
+            $queryColumn[] = $field . ':("' . Solr::escapeQuery($value) . '")';
             $entryArray['ITEM_STATE'] = 'NO';
         }
         $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['query' => $search['query'], 'fq' => $queryColumn]);
@@ -321,7 +340,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Disable caching for this plugin.
         $this->setCache(FALSE);
@@ -330,8 +350,10 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
             return $content;
         }
-        if (!isset($this->piVars['query'])
-            && empty($this->piVars['extQuery'])) {
+        if (
+            !isset($this->piVars['query'])
+            && empty($this->piVars['extQuery'])
+        ) {
             // Extract query and filter from last search.
             $list = GeneralUtility::makeInstance(DocumentList::class);
             if (!empty($list->metadata['searchString'])) {
@@ -355,7 +377,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
                 '###LABEL_QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : $this->pi_getLL('label.query')),
                 '###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
-                '###FIELD_QUERY###' => $this->prefixId.'[query]',
+                '###FIELD_QUERY###' => $this->prefixId . '[query]',
                 '###QUERY###' => (!empty($search['query']) ? $search['query'] : ''),
                 '###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
                 '###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
@@ -380,30 +402,35 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             $matches = [];
             // Set search query.
             if ((!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext']))
-                || preg_match('/fulltext:\((.*)\)/', trim($this->piVars['query']), $matches)) {
+                || preg_match('/fulltext:\((.*)\)/', trim($this->piVars['query']), $matches)
+            ) {
                 // If the query already is a fulltext query e.g using the facets
                 $this->piVars['query'] = empty($matches[1]) ? $this->piVars['query'] : $matches[1];
                 // Search in fulltext field if applicable. query must not be empty!
                 if (!empty($this->piVars['query'])) {
-                    $query = 'fulltext:('.Solr::escapeQuery(trim($this->piVars['query'])).')';
+                    $query = 'fulltext:(' . Solr::escapeQuery(trim($this->piVars['query'])) . ')';
                 }
             } else {
                 // Retain given search field if valid.
                 $query = Solr::escapeQueryKeepField(trim($this->piVars['query']), $this->conf['pages']);
             }
             // Add extended search query.
-            if (!empty($this->piVars['extQuery'])
-                && is_array($this->piVars['extQuery'])) {
+            if (
+                !empty($this->piVars['extQuery'])
+                && is_array($this->piVars['extQuery'])
+            ) {
                 $allowedOperators = ['AND', 'OR', 'NOT'];
                 $allowedFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
                 for ($i = 0; $i < count($this->piVars['extQuery']); $i++) {
                     if (!empty($this->piVars['extQuery'][$i])) {
-                        if (in_array($this->piVars['extOperator'][$i], $allowedOperators)
-                            && in_array($this->piVars['extField'][$i], $allowedFields)) {
+                        if (
+                            in_array($this->piVars['extOperator'][$i], $allowedOperators)
+                            && in_array($this->piVars['extField'][$i], $allowedFields)
+                        ) {
                             if (!empty($query)) {
-                                $query .= ' '.$this->piVars['extOperator'][$i].' ';
+                                $query .= ' ' . $this->piVars['extOperator'][$i] . ' ';
                             }
-                            $query .= Indexer::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']).':('.Solr::escapeQuery($this->piVars['extQuery'][$i]).')';
+                            $query .= Indexer::getIndexFieldName($this->piVars['extField'][$i], $this->conf['pages']) . ':(' . Solr::escapeQuery($this->piVars['extQuery'][$i]) . ')';
                         }
                     }
                 }
@@ -415,21 +442,29 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                 }
             }
             // Add filter query for in-document searching.
-            if ($this->conf['searchIn'] == 'document'
-                || $this->conf['searchIn'] == 'all') {
-                if (!empty($this->piVars['id'])
-                    && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])) {
-                    $params['filterquery'][]['query'] = 'uid:('.$this->piVars['id'].') OR partof:('.$this->piVars['id'].')';
+            if (
+                $this->conf['searchIn'] == 'document'
+                || $this->conf['searchIn'] == 'all'
+            ) {
+                if (
+                    !empty($this->piVars['id'])
+                    && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
+                ) {
+                    $params['filterquery'][]['query'] = 'uid:(' . $this->piVars['id'] . ') OR partof:(' . $this->piVars['id'] . ')';
                     $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
                 }
             }
             // Add filter query for in-collection searching.
-            if ($this->conf['searchIn'] == 'collection'
-                || $this->conf['searchIn'] == 'all') {
-                if (!empty($this->piVars['collection'])
-                    && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])) {
+            if (
+                $this->conf['searchIn'] == 'collection'
+                || $this->conf['searchIn'] == 'all'
+            ) {
+                if (
+                    !empty($this->piVars['collection'])
+                    && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])
+                ) {
                     $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
-                    $params['filterquery'][]['query'] = 'collection_faceting:("'.Solr::escapeQuery($index_name).'")';
+                    $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
                     $label .= sprintf($this->pi_getLL('in', '', TRUE), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
                 }
             }
@@ -441,7 +476,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
                     $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
                 }
                 // Last value is fake and used for distinction in $this->addCurrentCollection()
-                $params['filterquery'][]['query'] = 'collection_faceting:("'.implode('" OR "', $collIndexNames).'" OR "FakeValueForDistinction")';
+                $params['filterquery'][]['query'] = 'collection_faceting:("' . implode('" OR "', $collIndexNames) . '" OR "FakeValueForDistinction")';
             }
             // Set some query parameters.
             $params['query'] = $query;
@@ -489,7 +524,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
             $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
             // Send headers.
-            header('Location: '.GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
+            header('Location: ' . GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
             exit;
         }
     }
@@ -504,7 +539,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return array HMENU array
      */
-    public function makeFacetsMenuArray($content, $conf) {
+    public function makeFacetsMenuArray($content, $conf)
+    {
         $this->init($conf);
         $menuArray = [];
         // Set default value for facet search.
@@ -555,7 +591,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin {
         $results = $solr->service->select($selectQuery);
         $facet = $results->getFacetSet();
 
-        $facetCollectionArray = array();
+        $facetCollectionArray = [];
 
         // replace everything expect numbers and comma
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);

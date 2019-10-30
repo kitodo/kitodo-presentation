@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Eid;
 
 /**
@@ -19,7 +20,8 @@ namespace Kitodo\Dlf\Plugin\Eid;
  * @subpackage dlf
  * @access public
  */
-class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Eid/PageViewProxy.php';
 
     /**
@@ -32,16 +34,17 @@ class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      *
      * @return string
      */
-    public function main($content = '', $conf = []) {
+    public function main($content = '', $conf = [])
+    {
         $this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
         $header = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('header');
         $url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
         $fetchedData = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0));
         // Add some header tags
-        header('Last-Modified: '.gmdate("D, d M Y H:i:s").'GMT');
+        header('Last-Modified: ' . gmdate("D, d M Y H:i:s") . 'GMT');
         header('Cache-Control: max-age=3600, must-revalidate');
-        header('Content-Length: '.strlen($fetchedData));
-        header('Content-Type: '.finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
+        header('Content-Length: ' . strlen($fetchedData));
+        header('Content-Type: ' . finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
         // Get last modified date from request header
         $fetchedHeader = explode("\n", \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, 2));
         foreach ($fetchedHeader as $headerline) {

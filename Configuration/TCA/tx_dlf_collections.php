@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -156,14 +157,14 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.description',
             'config' => [
                 'behaviour' => [
-                    'allowLanguageSynchronization' => true
+                    'allowLanguageSynchronization' => TRUE
                 ],
                 'type' => 'text',
                 'cols' => 30,
                 'rows' => 10,
                 'wrap' => 'virtual',
                 'default' => '',
-                'enableRichtext' => true,
+                'enableRichtext' => TRUE,
             ],
         ],
         'thumbnail' => [

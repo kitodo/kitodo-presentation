@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
@@ -22,7 +23,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
+class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Tools/FulltextTool.php';
 
     /**
@@ -35,7 +37,8 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         if (!empty($this->cObj->data['conf'])) {
@@ -43,9 +46,11 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL
+        if (
+            $this->doc === NULL
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpFulltext'])) {
+            || empty($this->conf['fileGrpFulltext'])
+        ) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -56,8 +61,10 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
             }
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])) {
+            if (
+                (int) $this->piVars['page'] > 0
+                || empty($this->piVars['page'])
+            ) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -68,9 +75,9 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         $this->getTemplate();
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
         if (!empty($fullTextFile)) {
-            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:'.$this->pi_getLL('fulltext-on', '', TRUE).';fulltext-off:'.$this->pi_getLL('fulltext-off', '', TRUE).'">&nbsp;</a>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:' . $this->pi_getLL('fulltext-on', '', TRUE) . ';fulltext-off:' . $this->pi_getLL('fulltext-off', '', TRUE) . '">&nbsp;</a>';
         } else {
-            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">'.$this->pi_getLL('fulltext-not-available', '', TRUE).'</span>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . $this->pi_getLL('fulltext-not-available', '', TRUE) . '</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);

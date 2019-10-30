@@ -1,9 +1,9 @@
 Kitodo.Presentation
 ===================
 
-Kitodo.Presentation is a feature-rich framework for building a METS-based digital library. It is part of the Kitodo Digital Library Suite.
+Kitodo.Presentation is a feature-rich framework for building a METS- or IIIF-based digital library. It is part of the Kitodo Digital Library Suite.
 
-Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://typo3.org), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media. It implements international standards such as [IIIF Image API](https://iiif.io/api/image), [IIIF Presentation API](https://iiif.io/api/presentation), [OAI Protocol for Metadata Harvesting](http://www.openarchives.org/OAI/openarchivesprotocol.html), [METS](http://www.loc.gov/standards/mets), [MODS](http://www.loc.gov/standards/mods), [TEI](http://www.tei-c.org), [ALTO](http://www.loc.gov/standards/alto), and can be configured to support any other descriptive XML format using simple XPath expressions.
+Kitodo.Presentation is highly customizable through a user-friendly backend and flexible design templates. Since it is based on the great free and open source Content Management System [TYPO3](https://typo3.org), it integrates perfectly with your website and can easily be managed by editors. Kitodo.Presentation provides a comprehensive toolset covering all requirements for presenting digitized media. It implements international standards such as [IIIF Image API](https://iiif.io/api/image), [IIIF Presentation API](https://iiif.io/api/presentation), [OAI Protocol for Metadata Harvesting](http://www.openarchives.org/OAI/openarchivesprotocol.html), [METS](http://www.loc.gov/standards/mets), [MODS](http://www.loc.gov/standards/mods), [TEI](http://www.tei-c.org), [ALTO](http://www.loc.gov/standards/alto), and can be configured to support any other descriptive XML format using simple XPath expressions. With Kitodo.Presentation you can publish digitized books, manuscripts, periodicals, newspapers, archival materials, audio and video.
 
 <a href="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master">
   <img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master"/>
@@ -26,10 +26,10 @@ Requirements
 
 Kitodo.Presentation requires [TYPO3 8 LTS](https://get.typo3.org/8) with at least [PHP 7.0+](https://secure.php.net). It uses [MySQL 5.7+](https://www.mysql.com) or [MariaDB 10.2+](https://mariadb.com) as database and [Apache Solr 7.0+](https://lucene.apache.org/solr) via [Solarium 4.2+](http://www.solarium-project.org/) as search engine backend.
 
-Kitodo. Digital Library Modules
--------------------------------
+Kitodo. Key to digital objects
+------------------------------
 
-[Kitodo](https://github.com/kitodo) is an open source software suite intended to support mass digitization projects for cultural heritage institutions. Kitodo is widely-used and cooperatively maintained by major German libraries and digitization service providers. The software implements international standards such as METS, MODS, ALTO, TEI, and other formats maintained by the Library of Congress. Kitodo consists of several independent modules serving different purposes such as controlling the digitization workflow, enriching descriptive and structural metadata, and presenting the results to the public in a modern and convenient way.
+[Kitodo](https://github.com/kitodo) is an open source software suite intended to support mass digitization projects for cultural heritage institutions. Kitodo is widely-used and cooperatively maintained by major German libraries and digitization service providers. The software implements international standards such as IIIF, METS, MODS, ALTO, TEI, and other formats maintained by the [Library of Congress](https://loc.gov/standards). Kitodo consists of several independent modules serving different purposes such as controlling the digitization workflow, enriching descriptive and structural metadata, and presenting the results to the public in a modern and convenient way.
 
 To get more information, visit the [Kitodo homepage](https://www.kitodo.org). You can also follow Kitodo News on [Twitter](https://twitter.com/kitodo_org).
 

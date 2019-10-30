@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Format;
 
 /**
@@ -19,7 +20,8 @@ namespace Kitodo\Dlf\Format;
  * @subpackage dlf
  * @access public
  */
-class Alto implements \Kitodo\Dlf\Common\FulltextInterface {
+class Alto implements \Kitodo\Dlf\Common\FulltextInterface
+{
     /**
      * This extracts the fulltext data from ALTO XML
      *
@@ -29,7 +31,8 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface {
      *
      * @return string The raw unformatted fulltext
      */
-    public function getRawText(\SimpleXMLElement $xml) {
+    public function getRawText(\SimpleXMLElement $xml)
+    {
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
         // Get all (presumed) words of the text.
         $words = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String/@CONTENT');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -143,7 +144,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.wrap',
             'config' => [
                 'behaviour' => [
-                    'allowLanguageSynchronization' => true
+                    'allowLanguageSynchronization' => TRUE
                 ],
                 'type' => 'text',
                 'cols' => 48,
@@ -151,8 +152,8 @@ return [
                 'wrap' => 'off',
                 'eval' => 'trim',
                 'default' => "key.wrap = <dt>|</dt>\nvalue.required = 1\nvalue.wrap = <dd>|</dd>",
-                'fixedFont' => true,
-                'enableTabulator' => true
+                'fixedFont' => TRUE,
+                'enableTabulator' => TRUE
             ],
         ],
         'index_tokenized' => [

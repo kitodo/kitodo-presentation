@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -20,7 +21,8 @@ use Kitodo\Dlf\Common\Solr;
  * @subpackage dlf
  * @access public
  */
-class ext_update {
+class ext_update
+{
     /**
      * This holds the output ready to return
      *
@@ -36,7 +38,8 @@ class ext_update {
      *
      * @return boolean Should the update option be shown?
      */
-    public function access() {
+    public function access()
+    {
         if (count($this->getMetadataConfig())) {
             return TRUE;
         } elseif ($this->oldIndexRelatedTableNames()) {
@@ -58,7 +61,8 @@ class ext_update {
      *
      * @return array Array of UIDs of outdated records
      */
-    protected function getMetadataConfig() {
+    protected function getMetadataConfig()
+    {
         $uids = [];
         // check if tx_dlf_metadata.xpath exists anyhow
         $fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
@@ -70,8 +74,8 @@ class ext_update {
             'tx_dlf_metadata.uid AS uid',
             'tx_dlf_metadata',
             'tx_dlf_metadata.format=0'
-                .' AND NOT tx_dlf_metadata.xpath=""'
-                .Helper::whereClause('tx_dlf_metadata')
+                . ' AND NOT tx_dlf_metadata.xpath=""'
+                . Helper::whereClause('tx_dlf_metadata')
         );
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -88,7 +92,8 @@ class ext_update {
      *
      * @return string The content that is displayed on the website
      */
-    public function main() {
+    public function main()
+    {
         // Load localization file.
         $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
         // Update the metadata configuration.
@@ -118,14 +123,15 @@ class ext_update {
      *
      * @return array containing old format classes
      */
-    protected function oldFormatClasses() {
+    protected function oldFormatClasses()
+    {
         $oldRecords = [];
         // Get all records with outdated configuration.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
             'tx_dlf_formats',
             'tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
-                .Helper::whereClause('tx_dlf_formats')
+                . Helper::whereClause('tx_dlf_formats')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $oldRecords[$resArray['uid']] = $resArray['type'];
@@ -140,19 +146,22 @@ class ext_update {
      *
      * @return boolean TRUE if old index related columns exist
      */
-    protected function oldIndexRelatedTableNames() {
+    protected function oldIndexRelatedTableNames()
+    {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'column_name',
             'INFORMATION_SCHEMA.COLUMNS',
             'TABLE_NAME = "tx_dlf_metadata"'
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            if ($resArray['column_name'] == 'tokenized'
+            if (
+                $resArray['column_name'] == 'tokenized'
                 || $resArray['column_name'] == 'stored'
                 || $resArray['column_name'] == 'indexed'
                 || $resArray['column_name'] == 'boost'
-                || $resArray['column_name'] == 'autocomplete') {
-                    return TRUE;
+                || $resArray['column_name'] == 'autocomplete'
+            ) {
+                return TRUE;
             }
         }
     }
@@ -164,13 +173,14 @@ class ext_update {
      *
      * @return void
      */
-    protected function renameIndexRelatedColumns() {
+    protected function renameIndexRelatedColumns()
+    {
         $sqlQuery = 'UPDATE tx_dlf_metadata'
-            .' SET `index_tokenized` = `tokenized`'
-            .', `index_stored` = `stored`'
-            .', `index_indexed` = `indexed`'
-            .', `index_boost` = `boost`'
-            .', `index_autocomplete` = `autocomplete`';
+            . ' SET `index_tokenized` = `tokenized`'
+            . ', `index_stored` = `stored`'
+            . ', `index_indexed` = `indexed`'
+            . ', `index_boost` = `boost`'
+            . ', `index_autocomplete` = `autocomplete`';
         // Copy the content of the old tables to the new ones
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
@@ -196,7 +206,8 @@ class ext_update {
      *
      * @return void
      */
-    protected function updateFormatClasses() {
+    protected function updateFormatClasses()
+    {
         $oldRecords = $this->oldFormatClasses();
         $newValues = [
             'ALTO' => 'Kitodo\\\\Dlf\\\\Format\\\\Alto', // Those are effectively single backslashes
@@ -204,7 +215,7 @@ class ext_update {
             'TEIHDR' => 'Kitodo\\\\Dlf\\\\Format\\\\TeiHeader'
         ];
         foreach ($oldRecords as $uid => $type) {
-            $sqlQuery = 'UPDATE tx_dlf_formats SET class="'.$newValues[$type].'" WHERE uid='.$uid;
+            $sqlQuery = 'UPDATE tx_dlf_formats SET class="' . $newValues[$type] . '" WHERE uid=' . $uid;
             $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         }
         Helper::addMessage(
@@ -222,7 +233,8 @@ class ext_update {
      *
      * @return void
      */
-    protected function updateMetadataConfig() {
+    protected function updateMetadataConfig()
+    {
         $metadataUids = $this->getMetadataConfig();
         if (!empty($metadataUids)) {
             $data = [];
@@ -230,8 +242,8 @@ class ext_update {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.uid AS uid,tx_dlf_metadata.pid AS pid,tx_dlf_metadata.cruser_id AS cruser_id,tx_dlf_metadata.encoded AS encoded,tx_dlf_metadata.xpath AS xpath,tx_dlf_metadata.xpath_sorting AS xpath_sorting',
                 'tx_dlf_metadata',
-                'tx_dlf_metadata.uid IN ('.implode(',', $metadataUids).')'
-                    .Helper::whereClause('tx_dlf_metadata')
+                'tx_dlf_metadata.uid IN (' . implode(',', $metadataUids) . ')'
+                    . Helper::whereClause('tx_dlf_metadata')
             );
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 $newId = uniqid('NEW');
@@ -250,7 +262,7 @@ class ext_update {
             if (!empty($data)) {
                 // Process datamap.
                 $substUids = Helper::processDBasAdmin($data);
-                unset ($data);
+                unset($data);
                 if (!empty($substUids)) {
                     Helper::addMessage(
                         $GLOBALS['LANG']->getLL('update.metadataConfigOkay', TRUE),
@@ -276,13 +288,14 @@ class ext_update {
      *
      * @return boolean
      */
-    protected function solariumSolrUpdateRequired() {
+    protected function solariumSolrUpdateRequired()
+    {
         // Get all Solr cores that were not deleted.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
             '1=1'
-                .Helper::whereClause('tx_dlf_solrcores')
+                . Helper::whereClause('tx_dlf_solrcores')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Instantiate search object.
@@ -301,13 +314,14 @@ class ext_update {
      *
      * @return void
      */
-    protected function doSolariumSolrUpdate() {
+    protected function doSolariumSolrUpdate()
+    {
         // Get all Solr cores that were not deleted.
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'index_name',
             'tx_dlf_solrcores',
             '1=1'
-                .Helper::whereClause('tx_dlf_solrcores')
+                . Helper::whereClause('tx_dlf_solrcores')
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Instantiate search object.
@@ -316,9 +330,11 @@ class ext_update {
                 $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
                 $solrInfo = Solr::getSolrConnectionInfo();
                 // Prepend username and password to hostname.
-                if ($solrInfo['username']
-                    && $solrInfo['password']) {
-                    $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
+                if (
+                    $solrInfo['username']
+                    && $solrInfo['password']
+                ) {
+                    $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
                 } else {
                     $host = $solrInfo['host'];
                 }
@@ -330,13 +346,15 @@ class ext_update {
                 ]);
                 // Build request for adding new Solr core.
                 // @see http://wiki.apache.org/solr/CoreAdmin
-                $url = $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/admin/cores?wt=xml&action=CREATE&name='.$resArray['index_name'].'&instanceDir='.$resArray['index_name'].'&dataDir=data&configSet=dlf';
+                $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml&action=CREATE&name=' . $resArray['index_name'] . '&instanceDir=' . $resArray['index_name'] . '&dataDir=data&configSet=dlf';
                 $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
                 // Process response.
                 if ($response) {
                     $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-                    if ($status
-                        && $status[0] == 0) {
+                    if (
+                        $status
+                        && $status[0] == 0
+                    ) {
                         continue;
                     }
                 }
@@ -357,22 +375,24 @@ class ext_update {
         $this->content .= Helper::renderFlashMessages();
     }
 
-    protected function hasNoFormatForDocument() {
+    protected function hasNoFormatForDocument()
+    {
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'COLUMN_NAME',
             'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="'.$database.'" AND COLUMN_NAME="document_format"'
+            'TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="' . $database . '" AND COLUMN_NAME="document_format"'
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             if ($resArray['COLUMN_NAME'] == 'document_format') {
-                return false;
+                return FALSE;
             }
         }
-        return true;
+        return TRUE;
     }
 
-    protected function updateDocumentAddFormat() {
+    protected function updateDocumentAddFormat()
+    {
         $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
@@ -380,13 +400,13 @@ class ext_update {
                 $GLOBALS['LANG']->getLL('update.documentAddFormatOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-                );
+            );
         } else {
             Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentAddFormat', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-                );
+            );
             $this->content .= Helper::renderFlashMessages();
             return;
         }
@@ -398,17 +418,15 @@ class ext_update {
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-               );
+            );
         } else {
             Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesNotOkay', TRUE),
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', TRUE),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-                );
+            );
             return;
-
         }
         $this->content .= Helper::renderFlashMessages();
     }
-
 }

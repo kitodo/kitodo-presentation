@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Tools;
 
 /**
@@ -21,7 +22,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin {
+class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Tools/ImageManipulationTool.php';
 
     /**
@@ -34,7 +36,8 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Merge configuration with conf array of toolbox.
         if (!empty($this->cObj->data['conf'])) {
@@ -42,7 +45,7 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin {
         }
         // Load template file.
         $this->getTemplate();
-        $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:'.$this->pi_getLL('imagemanipulation-on', '', TRUE).';imagemanipulation-off:'.$this->pi_getLL('imagemanipulation-off', '', TRUE).';reset:'.$this->pi_getLL('reset', '', TRUE).';saturation:'.$this->pi_getLL('saturation', '', TRUE).';hue:'.$this->pi_getLL('hue', '', TRUE).';contrast:'.$this->pi_getLL('contrast', '', TRUE).';brightness:'.$this->pi_getLL('brightness', '', TRUE).';invert:'.$this->pi_getLL('invert', '', TRUE).'" title="'.$this->pi_getLL('no-support', '', TRUE).'"></span>';
+        $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:' . $this->pi_getLL('imagemanipulation-on', '', TRUE) . ';imagemanipulation-off:' . $this->pi_getLL('imagemanipulation-off', '', TRUE) . ';reset:' . $this->pi_getLL('reset', '', TRUE) . ';saturation:' . $this->pi_getLL('saturation', '', TRUE) . ';hue:' . $this->pi_getLL('hue', '', TRUE) . ';contrast:' . $this->pi_getLL('contrast', '', TRUE) . ';brightness:' . $this->pi_getLL('brightness', '', TRUE) . ';invert:' . $this->pi_getLL('invert', '', TRUE) . '" title="' . $this->pi_getLL('no-support', '', TRUE) . '"></span>';
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -128,7 +129,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::establishRecordId()
      */
-    protected function establishRecordId($pid) {
+    protected function establishRecordId($pid)
+    {
         // Check for METS object @ID.
         if (!empty($this->mets['OBJID'])) {
             $this->recordId = (string) $this->mets['OBJID'];
@@ -148,24 +150,24 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getDownloadLocation()
      */
-    public function getDownloadLocation($id) {
+    public function getDownloadLocation($id)
+    {
         $fileMimeType = $this->getFileMimeType($id);
         $fileLocation = $this->getFileLocation($id);
         if ($fileMimeType == "application/vnd.kitodo.iiif") {
-            $fileLocation = strrpos($fileLocation, "info.json") == strlen($fileLocation) - 9 ? $fileLocation :
-            strrpos($fileLocation, "/") == strlen($fileLocation) ? $fileLocation."info.json" : $fileLocation."/info.json";
+            $fileLocation = strrpos($fileLocation, "info.json") == strlen($fileLocation) - 9 ? $fileLocation : strrpos($fileLocation, "/") == strlen($fileLocation) ? $fileLocation . "info.json" : $fileLocation . "/info.json";
             $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $service = IiifHelper::loadIiifResource($fileLocation);
-            if ($service != null && $service instanceof AbstractImageService) {
+            if ($service != NULL && $service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
         } elseif ($fileMimeType = "application/vnd.netfpx") {
-            $baseURL = $fileLocation.(strpos($fileLocation, "?") === false ? "?" : "");
+            $baseURL = $fileLocation . (strpos($fileLocation, "?") === FALSE ? "?" : "");
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
-            return $baseURL."&CVT=jpeg";
+            return $baseURL . "&CVT=jpeg";
         }
         return $fileLocation;
     }
@@ -174,12 +176,15 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getFileLocation()
      */
-    public function getFileLocation($id) {
-        if (!empty($id)
-            && ($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/mets:FLocat[@LOCTYPE="URL"]'))) {
-                return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
+    public function getFileLocation($id)
+    {
+        if (
+            !empty($id)
+            && ($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]'))
+        ) {
+            return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
         } else {
-            Helper::devLog('There is no file node with @ID "'.$id.'"', DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('There is no file node with @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -188,12 +193,15 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getFileMimeType()
      */
-    public function getFileMimeType($id) {
-        if (!empty($id)
-            && ($mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="'.$id.'"]/@MIMETYPE'))) {
-                return (string) $mimetype[0];
+    public function getFileMimeType($id)
+    {
+        if (
+            !empty($id)
+            && ($mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/@MIMETYPE'))
+        ) {
+            return (string) $mimetype[0];
         } else {
-            Helper::devLog('There is no file node with @ID "'.$id.'" or no MIME type specified', DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('There is no file node with @ID "' . $id . '" or no MIME type specified', DEVLOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -202,16 +210,19 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getLogicalStructure()
      */
-    public function getLogicalStructure($id, $recursive = FALSE) {
+    public function getLogicalStructure($id, $recursive = FALSE)
+    {
         $details = [];
         // Is the requested logical unit already loaded?
-        if (!$recursive
-            && !empty($this->logicalUnits[$id])) {
+        if (
+            !$recursive
+            && !empty($this->logicalUnits[$id])
+        ) {
             // Yes. Return it.
             return $this->logicalUnits[$id];
         } elseif (!empty($id)) {
             // Get specified logical unit.
-            $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]');
+            $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]');
         } else {
             // Get all logical units at top level.
             $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
@@ -240,7 +251,8 @@ final class MetsDocument extends Document
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, $recursive = FALSE) {
+    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, $recursive = FALSE)
+    {
         // Get attributes.
         foreach ($structure->attributes() as $attribute => $value) {
             $attributes[$attribute] = (string) $value;
@@ -257,8 +269,10 @@ final class MetsDocument extends Document
         $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
         $details['volume'] = '';
         // Set volume information only if no label is set and this is the toplevel structure element.
-        if (empty($details['label'])
-            && $details['id'] == $this->_getToplevelId()) {
+        if (
+            empty($details['label'])
+            && $details['id'] == $this->_getToplevelId()
+        ) {
             $metadata = $this->getMetadata($details['id']);
             if (!empty($metadata['volume'][0])) {
                 $details['volume'] = $metadata['volume'][0];
@@ -277,8 +291,10 @@ final class MetsDocument extends Document
         if (count($structure->children('http://www.loc.gov/METS/')->mptr)) {
             // Yes. Get the file reference.
             $details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-        } elseif (!empty($this->physicalStructure)
-            && array_key_exists($details['id'], $this->smLinks['l2p'])) { // Are there any physical elements and is this logical unit linked to at least one of them?
+        } elseif (
+            !empty($this->physicalStructure)
+            && array_key_exists($details['id'], $this->smLinks['l2p'])
+        ) { // Are there any physical elements and is this logical unit linked to at least one of them?
             $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, TRUE)), 1);
             if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
                 $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
@@ -288,8 +304,10 @@ final class MetsDocument extends Document
         } elseif ($details['id'] == $this->_getToplevelId()) { // Is this the toplevel structure element?
             // Yes. Point to itself.
             $details['points'] = 1;
-            if (!empty($this->physicalStructure)
-            && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']])) {
+            if (
+                !empty($this->physicalStructure)
+                && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']])
+            ) {
                 $details['thumbnailId'] = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']];
             }
         }
@@ -306,8 +324,10 @@ final class MetsDocument extends Document
         // Keep for later usage.
         $this->logicalUnits[$details['id']] = $details;
         // Walk the structure recursively? And are there any children of the current element?
-        if ($recursive
-            && count($structure->children('http://www.loc.gov/METS/')->div)) {
+        if (
+            $recursive
+            && count($structure->children('http://www.loc.gov/METS/')->div)
+        ) {
             $details['children'] = [];
             foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
                 // Repeat for all children.
@@ -321,21 +341,26 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getMetadata()
      */
-    public function getMetadata($id, $cPid = 0) {
+    public function getMetadata($id, $cPid = 0)
+    {
         // Make sure $cPid is a non-negative integer.
         $cPid = max(intval($cPid), 0);
         // If $cPid is not given, try to get it elsewhere.
-        if (!$cPid
-            && ($this->cPid || $this->pid)) {
+        if (
+            !$cPid
+            && ($this->cPid || $this->pid)
+        ) {
             // Retain current PID.
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
         } elseif (!$cPid) {
-            Helper::devLog('Invalid PID '.$cPid.' for metadata definitions', DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('Invalid PID ' . $cPid . ' for metadata definitions', DEVLOG_SEVERITY_WARNING);
             return [];
         }
         // Get metadata from parsed metadata array if available.
-        if (!empty($this->metadataArray[$id])
-            && $this->metadataArray[0] == $cPid) {
+        if (
+            !empty($this->metadataArray[$id])
+            && $this->metadataArray[0] == $cPid
+        ) {
             return $this->metadataArray[$id];
         }
         // Initialize metadata array with empty values.
@@ -370,7 +395,7 @@ final class MetsDocument extends Document
         if (!empty($this->logicalUnits[$id])) {
             $dmdId = $this->logicalUnits[$id]['dmdId'];
         } else {
-            $dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@DMDID');
+            $dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@DMDID');
             $dmdId = (string) $dmdId[0];
         }
         if (!empty($dmdId)) {
@@ -382,34 +407,36 @@ final class MetsDocument extends Document
                 if (!empty($this->formats[$this->dmdSec[$dmdId]['type']]['class'])) {
                     $class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
                     // Get the metadata from class.
-                    if (class_exists($class)
-                        && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof MetadataInterface) {
+                    if (
+                        class_exists($class)
+                        && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof MetadataInterface
+                    ) {
                         $obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
                     } else {
-                        Helper::devLog('Invalid class/method "'.$class.'->extractMetadata()" for metadata format "'.$this->dmdSec[$dmdId]['type'].'"', DEVLOG_SEVERITY_WARNING);
+                        Helper::devLog('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->dmdSec[$dmdId]['type'] . '"', DEVLOG_SEVERITY_WARNING);
                     }
                 }
             } else {
-                Helper::devLog('Unsupported metadata format "'.$this->dmdSec[$dmdId]['type'].'" in dmdSec with @ID "'.$dmdId.'"', DEVLOG_SEVERITY_WARNING);
+                Helper::devLog('Unsupported metadata format "' . $this->dmdSec[$dmdId]['type'] . '" in dmdSec with @ID "' . $dmdId . '"', DEVLOG_SEVERITY_WARNING);
                 return [];
             }
             // Get the structure's type.
             if (!empty($this->logicalUnits[$id])) {
                 $metadata['type'] = [$this->logicalUnits[$id]['type']];
             } else {
-                $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$id.'"]/@TYPE');
+                $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@TYPE');
                 $metadata['type'] = [(string) $struct[0]];
             }
             // Get the additional metadata from database.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
                 'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
-                'tx_dlf_metadata.pid='.$cPid
-                    .' AND tx_dlf_metadataformat.pid='.$cPid
-                    .' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type='.$GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats').') OR tx_dlf_metadata.format=0)'
-                    .Helper::whereClause('tx_dlf_metadata', TRUE)
-                    .Helper::whereClause('tx_dlf_metadataformat')
-                    .Helper::whereClause('tx_dlf_formats')
+                'tx_dlf_metadata.pid=' . $cPid
+                    . ' AND tx_dlf_metadataformat.pid=' . $cPid
+                    . ' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats') . ') OR tx_dlf_metadata.format=0)'
+                    . Helper::whereClause('tx_dlf_metadata', TRUE)
+                    . Helper::whereClause('tx_dlf_metadataformat')
+                    . Helper::whereClause('tx_dlf_formats')
             );
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
@@ -418,11 +445,15 @@ final class MetsDocument extends Document
             // OK, now make the XPath queries.
             while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
                 // Set metadata field's value(s).
-                if ($resArray['format'] > 0
+                if (
+                    $resArray['format'] > 0
                     && !empty($resArray['xpath'])
-                    && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))) {
-                    if ($values instanceof \DOMNodeList
-                        && $values->length > 0) {
+                    && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))
+                ) {
+                    if (
+                        $values instanceof \DOMNodeList
+                        && $values->length > 0
+                    ) {
                         $metadata[$resArray['index_name']] = [];
                         foreach ($values as $value) {
                             $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
@@ -432,25 +463,33 @@ final class MetsDocument extends Document
                     }
                 }
                 // Set default value if applicable.
-                if (empty($metadata[$resArray['index_name']][0])
-                    && strlen($resArray['default_value']) > 0) {
+                if (
+                    empty($metadata[$resArray['index_name']][0])
+                    && strlen($resArray['default_value']) > 0
+                ) {
                     $metadata[$resArray['index_name']] = [$resArray['default_value']];
                 }
                 // Set sorting value if applicable.
-                if (!empty($metadata[$resArray['index_name']])
-                    && $resArray['is_sortable']) {
-                    if ($resArray['format'] > 0
+                if (
+                    !empty($metadata[$resArray['index_name']])
+                    && $resArray['is_sortable']
+                ) {
+                    if (
+                        $resArray['format'] > 0
                         && !empty($resArray['xpath_sorting'])
-                        && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))) {
-                        if ($values instanceof \DOMNodeList
-                            && $values->length > 0) {
-                            $metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values->item(0)->nodeValue);
+                        && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))
+                    ) {
+                        if (
+                            $values instanceof \DOMNodeList
+                            && $values->length > 0
+                        ) {
+                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
                         } elseif (!($values instanceof \DOMNodeList)) {
-                            $metadata[$resArray['index_name'].'_sorting'][0] = trim((string) $values);
+                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values);
                         }
                     }
-                    if (empty($metadata[$resArray['index_name'].'_sorting'][0])) {
-                        $metadata[$resArray['index_name'].'_sorting'][0] = $metadata[$resArray['index_name']][0];
+                    if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
+                        $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
                     }
                 }
             }
@@ -460,19 +499,21 @@ final class MetsDocument extends Document
                 $metadata['title_sorting'][0] = '';
             }
             // Add collections from database to toplevel element if document is already saved.
-            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
-                && $id == $this->_getToplevelId()) {
+            if (
+                \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
+                && $id == $this->_getToplevelId()
+            ) {
                 $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
                     'tx_dlf_collections.index_name AS index_name',
                     'tx_dlf_documents',
                     'tx_dlf_relations',
                     'tx_dlf_collections',
-                    'AND tx_dlf_collections.pid='.intval($cPid)
-                        .' AND tx_dlf_documents.uid='.intval($this->uid)
-                        .' AND tx_dlf_relations.ident='.$GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                        .' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
-                        .Helper::whereClause('tx_dlf_documents')
-                        .Helper::whereClause('tx_dlf_collections'),
+                    'AND tx_dlf_collections.pid=' . intval($cPid)
+                        . ' AND tx_dlf_documents.uid=' . intval($this->uid)
+                        . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
+                        . ' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
+                        . Helper::whereClause('tx_dlf_documents')
+                        . Helper::whereClause('tx_dlf_collections'),
                     'tx_dlf_collections.index_name'
                 );
                 while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -492,7 +533,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getRawText()
      */
-    public function getRawText($id) {
+    public function getRawText($id)
+    {
         $rawText = '';
         // Get text from raw text array if available.
         if (!empty($this->rawTextArray[$id])) {
@@ -512,14 +554,15 @@ final class MetsDocument extends Document
      */
     public function getStructureDepth($logId)
     {
-        return count($this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$logId.'"]/ancestor::*'));
+        return count($this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*'));
     }
 
     /**
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::init()
      */
-    protected function init() {
+    protected function init()
+    {
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);
         $mets = $this->xml->xpath('//mets:mets');
@@ -528,7 +571,7 @@ final class MetsDocument extends Document
             // Register namespaces.
             $this->registerNamespaces($this->mets);
         } else {
-            Helper::devLog('No METS part found in document with UID '.$this->uid, DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('No METS part found in document with UID ' . $this->uid, DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -536,7 +579,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::loadLocation()
      */
-    protected function loadLocation($location) {
+    protected function loadLocation($location)
+    {
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(TRUE);
         // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
@@ -552,7 +596,7 @@ final class MetsDocument extends Document
             $this->xml = $xml;
             return TRUE;
         } else {
-            Helper::devLog('Could not load XML file from "'.$location.'"', DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('Could not load XML file from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -560,7 +604,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::ensureHasFulltextIsSet()
      */
-    protected function ensureHasFulltextIsSet() {
+    protected function ensureHasFulltextIsSet()
+    {
         // Are the fileGrps already loaded?
         if (!$this->fileGrpsLoaded) {
             $this->_getFileGrps();
@@ -575,7 +620,7 @@ final class MetsDocument extends Document
     {
         $partof = 0;
         // Get the closest ancestor of the current document which has a MPTR child.
-        $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="'.$this->_getToplevelId().'"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
+        $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->_getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
         if (!empty($parentMptr[0])) {
             $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
             if ($parentLocation != $this->location) {
@@ -595,20 +640,22 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see Document::setPreloadedDocument()
      */
-    protected function setPreloadedDocument($preloadedDocument) {
+    protected function setPreloadedDocument($preloadedDocument)
+    {
 
         if ($preloadedDocument instanceof \SimpleXMLElement) {
             $this->xml = $preloadedDocument;
-            return true;
+            return TRUE;
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * {@inheritDoc}
      * @see Document::getDocument()
      */
-    protected function getDocument() {
+    protected function getDocument()
+    {
         return $this->mets;
     }
 
@@ -619,7 +666,8 @@ final class MetsDocument extends Document
      *
      * @return integer The PID of the metadata definitions
      */
-    protected function _getCPid() {
+    protected function _getCPid()
+    {
         return $this->cPid;
     }
 
@@ -630,22 +678,23 @@ final class MetsDocument extends Document
      *
      * @return array Array of dmdSecs with their IDs as array key
      */
-    protected function _getDmdSec() {
+    protected function _getDmdSec()
+    {
         if (!$this->dmdSecLoaded) {
             // Get available data formats.
             $this->loadFormats();
             // Get dmdSec nodes from METS.
             $dmdIds = $this->mets->xpath('./mets:dmdSec/@ID');
             foreach ($dmdIds as $dmdId) {
-                if ($type = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
+                if ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
                     if (!empty($this->formats[(string) $type[0]])) {
                         $type = (string) $type[0];
-                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="'.$type.'"]/mets:xmlData/'.strtolower($type).':'.$this->formats[$type]['rootElement']);
+                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
                     }
-                } elseif ($type = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
+                } elseif ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
                     if (!empty($this->formats[(string) $type[0]])) {
                         $type = (string) $type[0];
-                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="'.(string) $dmdId.'"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="'.$type.'"]/mets:xmlData/'.strtolower($type).':'.$this->formats[$type]['rootElement']);
+                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
                     }
                 }
                 if ($xml) {
@@ -666,7 +715,8 @@ final class MetsDocument extends Document
      *
      * @return array Array of file use groups with file IDs
      */
-    protected function _getFileGrps() {
+    protected function _getFileGrps()
+    {
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
@@ -694,9 +744,11 @@ final class MetsDocument extends Document
                 }
             }
             // Are there any fulltext files available?
-            if (!empty($extConf['fileGrpFulltext'])
-                && in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
-                    $this->hasFulltext = TRUE;
+            if (
+                !empty($extConf['fileGrpFulltext'])
+                && in_array($extConf['fileGrpFulltext'], $this->fileGrps)
+            ) {
+                $this->hasFulltext = TRUE;
             }
             $this->fileGrpsLoaded = TRUE;
         }
@@ -707,7 +759,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
      */
-    protected function prepareMetadataArray($cPid) {
+    protected function prepareMetadataArray($cPid)
+    {
         // Get all logical structure nodes with metadata.
         if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
             foreach ($ids as $id) {
@@ -724,7 +777,8 @@ final class MetsDocument extends Document
      *
      * @return \SimpleXMLElement The XML's METS part as \SimpleXMLElement object
      */
-    protected function _getMets() {
+    protected function _getMets()
+    {
         return $this->mets;
     }
 
@@ -732,7 +786,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getPhysicalStructure()
      */
-    protected function _getPhysicalStructure() {
+    protected function _getPhysicalStructure()
+    {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
             // Does the document have a structMap node of type "PHYSICAL"?
@@ -792,7 +847,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getSmLinks()
      */
-    protected function _getSmLinks() {
+    protected function _getSmLinks()
+    {
         if (!$this->smLinksLoaded) {
             $smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
             foreach ($smLinks as $smLink) {
@@ -808,13 +864,16 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
      */
-    protected function _getThumbnail($forceReload = FALSE) {
-        if (!$this->thumbnailLoaded
-            || $forceReload) {
+    protected function _getThumbnail($forceReload = FALSE)
+    {
+        if (
+            !$this->thumbnailLoaded
+            || $forceReload
+        ) {
             // Retain current PID.
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
             if (!$cPid) {
-                Helper::devLog('Invalid PID '.$cPid.' for structure definitions', DEVLOG_SEVERITY_ERROR);
+                Helper::devLog('Invalid PID ' . $cPid . ' for structure definitions', DEVLOG_SEVERITY_ERROR);
                 $this->thumbnailLoaded = TRUE;
                 return $this->thumbnail;
             }
@@ -852,7 +911,7 @@ final class MetsDocument extends Document
                 if (!empty($resArray['thumbnail'])) {
                     $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
                     // Check if this document has a structure element of the desired type.
-                    $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="'.$strctType.'"]/@ID');
+                    $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="' . $strctType . '"]/@ID');
                     if (!empty($strctIds)) {
                         $strctId = (string) $strctIds[0];
                     }
@@ -860,14 +919,16 @@ final class MetsDocument extends Document
                 // Load smLinks.
                 $this->_getSmLinks();
                 // Get thumbnail location.
-                if ($this->_getPhysicalStructure()
-                    && !empty($this->smLinks['l2p'][$strctId])) {
+                if (
+                    $this->_getPhysicalStructure()
+                    && !empty($this->smLinks['l2p'][$strctId])
+                ) {
                     $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
                 } else {
                     $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
                 }
             } else {
-                Helper::devLog('No structure of type "'.$metadata['type'][0].'" found in database', DEVLOG_SEVERITY_ERROR);
+                Helper::devLog('No structure of type "' . $metadata['type'][0] . '" found in database', DEVLOG_SEVERITY_ERROR);
             }
             $this->thumbnailLoaded = TRUE;
         }
@@ -878,7 +939,8 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
      */
-    protected function _getToplevelId() {
+    protected function _getToplevelId()
+    {
         if (empty($this->toplevelId)) {
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
             if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
@@ -909,7 +971,8 @@ final class MetsDocument extends Document
      *
      * @return array Properties to be serialized
      */
-    public function __sleep() {
+    public function __sleep()
+    {
         // \SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
         return ['uid', 'pid', 'recordId', 'parentId', 'asXML'];
@@ -922,7 +985,8 @@ final class MetsDocument extends Document
      *
      * @return string String representing the METS object
      */
-    public function __toString() {
+    public function __toString()
+    {
         $xml = new \DOMDocument('1.0', 'utf-8');
         $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), TRUE));
         $xml->formatOutput = TRUE;
@@ -937,7 +1001,8 @@ final class MetsDocument extends Document
      *
      * @return void
      */
-    public function __wakeup() {
+    public function __wakeup()
+    {
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(TRUE);
         // Reload XML from string.

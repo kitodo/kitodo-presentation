@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -24,7 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class Solr {
+class Solr
+{
     /**
      * This holds the core name
      *
@@ -106,7 +108,8 @@ class Solr {
      *
      * @return string The escaped query string
      */
-    public static function escapeQuery($query) {
+    public static function escapeQuery($query)
+    {
         $helper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
         // Escape query phrase or term.
         if (preg_match('/^".*"$/', $query)) {
@@ -126,7 +129,8 @@ class Solr {
      *
      * @return string The escaped query string
      */
-    public static function escapeQueryKeepField($query, $pid) {
+    public static function escapeQueryKeepField($query, $pid)
+    {
         // Is there a field query?
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
             /** @var QueryBuilder $queryBuilder */
@@ -139,13 +143,14 @@ class Solr {
                 ->select(
                     'tx_dlf_metadata.index_name AS index_name',
                     'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored')
+                    'tx_dlf_metadata.index_stored AS index_stored'
+                )
                 ->from('tx_dlf_metadata')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', array(-1, 0)),
+                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
                     ),
                     Helper::whereExpression('tx_dlf_metadata')
@@ -159,12 +164,14 @@ class Solr {
             // Check if queried field is valid.
             $splitQuery = explode(':', $query, 2);
             if (in_array($splitQuery[0], $fields)) {
-                $query = $splitQuery[0].':('.self::escapeQuery(trim($splitQuery[1], '()')).')';
+                $query = $splitQuery[0] . ':(' . self::escapeQuery(trim($splitQuery[1], '()')) . ')';
             } else {
                 $query = self::escapeQuery($query);
             }
-        } elseif (!empty($query)
-            && $query !== '*') {
+        } elseif (
+            !empty($query)
+            && $query !== '*'
+        ) {
             // Don't escape plain asterisk search.
             $query = self::escapeQuery($query);
         }
@@ -180,19 +187,22 @@ class Solr {
      *
      * @return \Kitodo\Dlf\Common\Solr Instance of this class
      */
-    public static function getInstance($core) {
+    public static function getInstance($core)
+    {
         // Get core name if UID is given.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
             $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
         }
         // Check if core is set.
         if (empty($core)) {
-            Helper::devLog('Invalid core name "'.$core.'" for Apache Solr', DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('Invalid core name "' . $core . '" for Apache Solr', DEVLOG_SEVERITY_ERROR);
             return;
         }
         // Check if there is an instance in the registry already.
-        if (is_object(self::$registry[$core])
-            && self::$registry[$core] instanceof self) {
+        if (
+            is_object(self::$registry[$core])
+            && self::$registry[$core] instanceof self
+        ) {
             // Return singleton instance if available.
             return self::$registry[$core];
         }
@@ -216,7 +226,8 @@ class Solr {
      *
      * @return string The connection parameters for a specific Solr core
      */
-    public static function getSolrConnectionInfo() {
+    public static function getSolrConnectionInfo()
+    {
         $solrInfo = [];
         // Extract extension configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
@@ -245,17 +256,20 @@ class Solr {
      *
      * @return string The request URL for a specific Solr core
      */
-    public static function getSolrUrl($core = '') {
+    public static function getSolrUrl($core = '')
+    {
         // Get Solr connection information.
         $solrInfo = self::getSolrConnectionInfo();
-        if ($solrInfo['username']
-            && $solrInfo['password']) {
-            $host = $solrInfo['username'].':'.$solrInfo['password'].'@'.$solrInfo['host'];
+        if (
+            $solrInfo['username']
+            && $solrInfo['password']
+        ) {
+            $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
         } else {
             $host = $solrInfo['host'];
         }
         // Return entire request URL.
-        return $solrInfo['scheme'].'://'.$host.':'.$solrInfo['port'].'/'.$solrInfo['path'].'/'.$core;
+        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/' . $core;
     }
 
     /**
@@ -267,10 +281,11 @@ class Solr {
      *
      * @return integer First unused core number found
      */
-    public static function solrGetCoreNumber($start = 0) {
+    public static function solrGetCoreNumber($start = 0)
+    {
         $start = max(intval($start), 0);
         // Check if core already exists.
-        if (self::getInstance('dlfCore'.$start) === NULL) {
+        if (self::getInstance('dlfCore' . $start) === NULL) {
             return $start;
         } else {
             return self::solrGetCoreNumber($start + 1);
@@ -284,7 +299,8 @@ class Solr {
      *
      * @return \Kitodo\Dlf\Common\DocumentList The result list
      */
-    public function search() {
+    public function search()
+    {
         $toplevel = [];
         // Take over query parameters.
         $params = $this->params;
@@ -304,13 +320,13 @@ class Solr {
         // Extend filter query to get all documents with the same uids.
         foreach ($params['filterquery'] as $key => $value) {
             if (isset($value['query'])) {
-                $params['filterquery'][$key]['query'] = '{!join from=uid to=uid}'.$value['query'];
+                $params['filterquery'][$key]['query'] = '{!join from=uid to=uid}' . $value['query'];
             }
         }
         // Set filter query to just get toplevel documents.
         $params['filterquery'][] = ['query' => 'toplevel:true'];
         // Set join query to get all documents with the same uids.
-        $params['query'] = '{!join from=uid to=uid}'.$params['query'];
+        $params['query'] = '{!join from=uid to=uid}' . $params['query'];
         // Perform search to determine the total number of toplevel hits and fetch the required rows.
         $selectQuery = $this->service->createSelect($params);
         $results = $this->service->select($selectQuery);
@@ -359,7 +375,8 @@ class Solr {
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($query = '', $parameters = []) {
+    public function search_raw($query = '', $parameters = [])
+    {
         // Set additional query parameters.
         $parameters['start'] = 0;
         $parameters['rows'] = $this->limit;
@@ -393,7 +410,8 @@ class Solr {
      *
      * @return integer The max number of results
      */
-    protected function _getLimit() {
+    protected function _getLimit()
+    {
         return $this->limit;
     }
 
@@ -404,7 +422,8 @@ class Solr {
      *
      * @return integer Total number of hits for last search
      */
-    protected function _getNumberOfHits() {
+    protected function _getNumberOfHits()
+    {
         return $this->numberOfHits;
     }
 
@@ -415,7 +434,8 @@ class Solr {
      *
      * @return boolean Is the search instantiated successfully?
      */
-    protected function _getReady() {
+    protected function _getReady()
+    {
         return $this->ready;
     }
 
@@ -426,7 +446,8 @@ class Solr {
      *
      * @return \Solarium\Client Apache Solr service object
      */
-    protected function _getService() {
+    protected function _getService()
+    {
         return $this->service;
     }
 
@@ -439,7 +460,8 @@ class Solr {
      *
      * @return void
      */
-    protected function _setCPid($value) {
+    protected function _setCPid($value)
+    {
         $this->cPid = max(intval($value), 0);
     }
 
@@ -452,7 +474,8 @@ class Solr {
      *
      * @return void
      */
-    protected function _setLimit($value) {
+    protected function _setLimit($value)
+    {
         $this->limit = max(intval($value), 0);
     }
 
@@ -465,7 +488,8 @@ class Solr {
      *
      * @return void
      */
-    protected function _setParams(array $value) {
+    protected function _setParams(array $value)
+    {
         $this->params = $value;
     }
 
@@ -478,11 +502,14 @@ class Solr {
      *
      * @return mixed Value of $this->$var
      */
-    public function __get($var) {
-        $method = '_get'.ucfirst($var);
-        if (!property_exists($this, $var)
-            || !method_exists($this, $method)) {
-            Helper::devLog('There is no getter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
+    public function __get($var)
+    {
+        $method = '_get' . ucfirst($var);
+        if (
+            !property_exists($this, $var)
+            || !method_exists($this, $method)
+        ) {
+            Helper::devLog('There is no getter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
             return;
         } else {
             return $this->$method();
@@ -499,11 +526,14 @@ class Solr {
      *
      * @return void
      */
-    public function __set($var, $value) {
-        $method = '_set'.ucfirst($var);
-        if (!property_exists($this, $var)
-            || !method_exists($this, $method)) {
-            Helper::devLog('There is no setter function for property "'.$var.'"', DEVLOG_SEVERITY_WARNING);
+    public function __set($var, $value)
+    {
+        $method = '_set' . ucfirst($var);
+        if (
+            !property_exists($this, $var)
+            || !method_exists($this, $method)
+        ) {
+            Helper::devLog('There is no setter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
         } else {
             $this->$method($value);
         }
@@ -518,7 +548,8 @@ class Solr {
      *
      * @return void
      */
-    protected function __construct($core) {
+    protected function __construct($core)
+    {
         $solrInfo = self::getSolrConnectionInfo();
         $config = [
             'endpoint' => [
@@ -526,7 +557,7 @@ class Solr {
                     'scheme' => $solrInfo['scheme'],
                     'host' => $solrInfo['host'],
                     'port' => $solrInfo['port'],
-                    'path' => '/'.$solrInfo['path'].'/',
+                    'path' => '/' . $solrInfo['path'] . '/',
                     'core' => $core,
                     'username' => $solrInfo['username'],
                     'password' => $solrInfo['password'],

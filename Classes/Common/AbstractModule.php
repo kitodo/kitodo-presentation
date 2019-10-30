@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -20,7 +21,8 @@ namespace Kitodo\Dlf\Common;
  * @access public
  * @abstract
  */
-abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
+abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+{
     public $extKey = 'dlf';
     public $prefixId = 'tx_dlf';
 
@@ -93,11 +95,12 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      *
      * @return void
      */
-    protected function printContent() {
+    protected function printContent()
+    {
         $this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
-        $this->doc->setModuleTemplate('EXT:'.$this->extKey.'/Resources/Private/Templates/'.Helper::getUnqualifiedClassName(get_class($this)).'.tmpl');
+        $this->doc->setModuleTemplate('EXT:' . $this->extKey . '/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl');
         $this->doc->backPath = $GLOBALS['BACK_PATH'];
-        $this->doc->bodyTagAdditions = 'class="ext-'.$this->extKey.'-modules"';
+        $this->doc->bodyTagAdditions = 'class="ext-' . $this->extKey . '-modules"';
         $this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
         // Add Javascript for function menu.
         $this->doc->JScode .= '<script type="text/javascript">script_ended = 0;function jumpToUrl(URL) { document.location = URL; }</script>';
@@ -107,7 +110,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
         $this->content .= $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
         // Set defaults for menu.
         if (empty($this->markerArray['CSH'])) {
-            $this->markerArray['CSH'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_'.$GLOBALS['MCONF']['name'], 'csh', $GLOBALS['BACK_PATH'], '', TRUE);
+            $this->markerArray['CSH'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_' . $GLOBALS['MCONF']['name'], 'csh', $GLOBALS['BACK_PATH'], '', TRUE);
         }
         if (empty($this->markerArray['MOD_MENU'])) {
             $this->markerArray['MOD_MENU'] = \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']);
@@ -124,8 +127,9 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
      *
      * @return void
      */
-    public function __construct() {
-        $GLOBALS['LANG']->includeLLFile('EXT:'.$this->extKey.'/Resources/Private/Language/'.Helper::getUnqualifiedClassName(get_class($this)).'.xml');
+    public function __construct()
+    {
+        $GLOBALS['LANG']->includeLLFile('EXT:' . $this->extKey . '/Resources/Private/Language/' . Helper::getUnqualifiedClassName(get_class($this)) . '.xml');
         $this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
         $this->data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefixId);
     }

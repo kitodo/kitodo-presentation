@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -25,7 +26,8 @@ use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
  * @subpackage dlf
  * @access public
  */
-class Indexer {
+class Indexer
+{
     /**
      * The extension key
      *
@@ -86,7 +88,8 @@ class Indexer {
      *
      * @return integer 0 on success or 1 on failure
      */
-    public static function add(Document &$doc, $core = 0) {
+    public static function add(Document &$doc, $core = 0)
+    {
         if (in_array($doc->uid, self::$processedDocs)) {
             return 0;
         } elseif (self::solrConnect($core, $doc->pid)) {
@@ -97,7 +100,7 @@ class Indexer {
                 if ($parent->ready) {
                     $errors = self::add($parent, $core);
                 } else {
-                    Helper::devLog('Could not load parent document with UID '.$doc->parentId, DEVLOG_SEVERITY_ERROR);
+                    Helper::devLog('Could not load parent document with UID ' . $doc->parentId, DEVLOG_SEVERITY_ERROR);
                     return 1;
                 }
             }
@@ -106,7 +109,7 @@ class Indexer {
                 self::$processedDocs[] = $doc->uid;
                 // Delete old Solr documents.
                 $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addDeleteQuery('uid:'.$doc->uid);
+                $updateQuery->addDeleteQuery('uid:' . $doc->uid);
                 self::$solr->service->update($updateQuery);
                 // Index every logical unit as separate Solr document.
                 foreach ($doc->tableOfContents as $logicalUnit) {
@@ -169,13 +172,13 @@ class Indexer {
             } catch (\Exception $e) {
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
                     );
                 }
-                Helper::devLog('Apache Solr threw exception: "'.$e->getMessage().'"', DEVLOG_SEVERITY_ERROR);
+                Helper::devLog('Apache Solr threw exception: "' . $e->getMessage() . '"', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
         } else {
@@ -201,7 +204,8 @@ class Indexer {
      *
      * @return integer 0 on success or 1 on failure
      */
-    public static function delete($uid) {
+    public static function delete($uid)
+    {
         // Sanitize input.
         $uid = max(intval($uid), 0);
         // Get Solr core for document.
@@ -209,32 +213,32 @@ class Indexer {
             'tx_dlf_solrcores.uid AS uid,tx_dlf_documents.title AS title',
             'tx_dlf_solrcores,tx_dlf_documents',
             'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore'
-                .' AND tx_dlf_documents.uid='.$uid
-                .Helper::whereClause('tx_dlf_solrcores'),
+                . ' AND tx_dlf_documents.uid=' . $uid
+                . Helper::whereClause('tx_dlf_solrcores'),
             '',
             '',
             '1'
         );
         if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            list ($core, $title) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+            list($core, $title) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
             // Establish Solr connection.
             if (self::solrConnect($core)) {
                 try {
                     // Delete Solr document.
                     $updateQuery = self::$solr->service->createUpdate();
-                    $updateQuery->addDeleteQuery('uid:'.$uid);
+                    $updateQuery->addDeleteQuery('uid:' . $uid);
                     $updateQuery->addCommit();
                     self::$solr->service->update($updateQuery);
                 } catch (\Exception $e) {
                     if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                         Helper::addMessage(
-                            Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                            Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
                             Helper::getMessage('flash.error', TRUE),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                             TRUE
                         );
                     }
-                    Helper::devLog('Apache Solr threw exception: "'.$e->getMessage().'"', DEVLOG_SEVERITY_ERROR);
+                    Helper::devLog('Apache Solr threw exception: "' . $e->getMessage() . '"', DEVLOG_SEVERITY_ERROR);
                     return 1;
                 }
             } else {
@@ -259,7 +263,7 @@ class Indexer {
             }
             return 0;
         } else {
-            Helper::devLog('Invalid UID '.$uid.' for document deletion', DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('Invalid UID ' . $uid . ' for document deletion', DEVLOG_SEVERITY_ERROR);
             return 1;
         }
     }
@@ -274,11 +278,12 @@ class Indexer {
      *
      * @return string The field's dynamic index name
      */
-    public static function getIndexFieldName($index_name, $pid = 0) {
+    public static function getIndexFieldName($index_name, $pid = 0)
+    {
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {
-            Helper::devLog('Invalid PID '.$pid.' for metadata configuration', DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('Invalid PID ' . $pid . ' for metadata configuration', DEVLOG_SEVERITY_ERROR);
             return '';
         }
         // Load metadata configuration.
@@ -287,7 +292,7 @@ class Indexer {
         $suffix = (in_array($index_name, self::$fields['tokenized']) ? 't' : 'u');
         $suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
         $suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
-        $index_name .= '_'.$suffix;
+        $index_name .= '_' . $suffix;
         return $index_name;
     }
 
@@ -300,7 +305,8 @@ class Indexer {
      *
      * @return void
      */
-    protected static function loadIndexConf($pid) {
+    protected static function loadIndexConf($pid)
+    {
         if (!self::$fieldsLoaded) {
             /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -330,12 +336,16 @@ class Indexer {
                 if ($indexing['index_tokenized']) {
                     self::$fields['tokenized'][] = $indexing['index_name'];
                 }
-                if ($indexing['index_stored']
-                    || $indexing['is_listed']) {
+                if (
+                    $indexing['index_stored']
+                    || $indexing['is_listed']
+                ) {
                     self::$fields['stored'][] = $indexing['index_name'];
                 }
-                if ($indexing['index_indexed']
-                    || $indexing['index_autocomplete']) {
+                if (
+                    $indexing['index_indexed']
+                    || $indexing['index_autocomplete']
+                ) {
                     self::$fields['indexed'][] = $indexing['index_name'];
                 }
                 if ($indexing['is_sortable']) {
@@ -367,7 +377,8 @@ class Indexer {
      *
      * @return integer 0 on success or 1 on failure
      */
-    protected static function processLogical(Document &$doc, array $logicalUnit) {
+    protected static function processLogical(Document &$doc, array $logicalUnit)
+    {
         $errors = 0;
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
@@ -381,7 +392,7 @@ class Indexer {
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = $updateQuery->createDocument();
             // Create unique identifier from document's UID and unit's XML ID.
-            $solrDoc->setField('id', $doc->uid.$logicalUnit['id']);
+            $solrDoc->setField('id', $doc->uid . $logicalUnit['id']);
             $solrDoc->setField('uid', $doc->uid);
             $solrDoc->setField('pid', $doc->pid);
             if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
@@ -410,20 +421,22 @@ class Indexer {
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
             $coordinates = json_decode($metadata['coordinates'][0]);
             if (is_object($coordinates)) {
-                  $solrDoc->setField('geom', json_encode($coordinates->features[0]));
+                $solrDoc->setField('geom', json_encode($coordinates->features[0]));
             }
             $autocomplete = [];
             foreach ($metadata as $index_name => $data) {
-                if (!empty($data)
-                    && substr($index_name, -8) !== '_sorting') {
+                if (
+                    !empty($data)
+                    && substr($index_name, -8) !== '_sorting'
+                ) {
                     $solrDoc->setField(self::getIndexFieldName($index_name, $doc->pid), $data, self::$fields['fieldboost'][$index_name]);
                     if (in_array($index_name, self::$fields['sortables'])) {
                         // Add sortable fields to index.
-                        $solrDoc->setField($index_name.'_sorting', $metadata[$index_name.'_sorting'][0]);
+                        $solrDoc->setField($index_name . '_sorting', $metadata[$index_name . '_sorting'][0]);
                     }
                     if (in_array($index_name, self::$fields['facets'])) {
                         // Add facets to index.
-                        $solrDoc->setField($index_name.'_faceting', $data);
+                        $solrDoc->setField($index_name . '_faceting', $data);
                     }
                     if (in_array($index_name, self::$fields['autocomplete'])) {
                         $autocomplete = array_merge($autocomplete, $data);
@@ -435,9 +448,11 @@ class Indexer {
                 $solrDoc->setField('autocomplete', $autocomplete);
             }
             // Add collection information to logical sub-elements if applicable.
-            if (in_array('collection', self::$fields['facets'])
+            if (
+                in_array('collection', self::$fields['facets'])
                 && empty($metadata['collection'])
-                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])) {
+                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
+            ) {
                 $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
             }
             try {
@@ -446,7 +461,7 @@ class Indexer {
             } catch (\Exception $e) {
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
@@ -480,12 +495,15 @@ class Indexer {
      *
      * @return integer 0 on success or 1 on failure
      */
-    protected static function processPhysical(Document &$doc, $page, array $physicalUnit) {
+    protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
+    {
         $errors = 0;
         // Read extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-        if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])
-            || !empty($annotationContainerIds = $physicalUnit['annotationContainers'])) {
+        if (
+            !empty($physicalUnit['files'][$extConf['fileGrpFulltext']])
+            || !empty($annotationContainerIds = $physicalUnit['annotationContainers'])
+        ) {
             if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])) {
                 $file = $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpFulltext']]);
                 // Load XML file.
@@ -526,7 +544,7 @@ class Indexer {
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = $updateQuery->createDocument();
             // Create unique identifier from document's UID and unit's XML ID.
-            $solrDoc->setField('id', $doc->uid.$physicalUnit['id']);
+            $solrDoc->setField('id', $doc->uid . $physicalUnit['id']);
             $solrDoc->setField('uid', $doc->uid);
             $solrDoc->setField('pid', $doc->pid);
             $solrDoc->setField('page', $page);
@@ -542,17 +560,21 @@ class Indexer {
             $solrDoc->setField('fulltext', htmlspecialchars($doc->getRawText($physicalUnit['id'])));
             // Add faceting information to physical sub-elements if applicable.
             foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
-                if (!empty($data)
-                    && substr($index_name, -8) !== '_sorting') {
+                if (
+                    !empty($data)
+                    && substr($index_name, -8) !== '_sorting'
+                ) {
                     if (in_array($index_name, self::$fields['facets'])) {
                         // Add facets to index.
-                        $solrDoc->setField($index_name.'_faceting', $data);
+                        $solrDoc->setField($index_name . '_faceting', $data);
                     }
                 }
             }
             // Add collection information to physical sub-elements if applicable.
-            if (in_array('collection', self::$fields['facets'])
-                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])) {
+            if (
+                in_array('collection', self::$fields['facets'])
+                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
+            ) {
                 $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
             }
             try {
@@ -562,7 +584,7 @@ class Indexer {
                 if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                        Helper::getMessage('flash.solrException', TRUE).'<br />'.htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
                         TRUE
@@ -584,7 +606,8 @@ class Indexer {
      *
      * @return boolean TRUE on success or FALSE on failure
      */
-    protected static function solrConnect($core, $pid = 0) {
+    protected static function solrConnect($core, $pid = 0)
+    {
         // Get Solr instance.
         if (!self::$solr) {
             // Connect to Solr server.
@@ -605,5 +628,6 @@ class Indexer {
      *
      * @access private
      */
-    private function __construct() {}
+    private function __construct()
+    { }
 }

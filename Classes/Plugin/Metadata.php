@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin;
 
 /**
@@ -28,7 +29,8 @@ use Ubl\Iiif\Context\IRI;
  * @subpackage dlf
  * @access public
  */
-class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
+class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Metadata.php';
 
     /**
@@ -49,7 +51,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The content that is displayed on the website
      */
-    public function main($content, $conf) {
+    public function main($content, $conf)
+    {
         $this->init($conf);
         // Turn cache on.
         $this->setCache(TRUE);
@@ -128,7 +131,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
             array_unshift($metadata, $data);
         }
         if (empty($metadata)) {
-            Helper::devLog('No metadata found for document with UID '.$this->doc->uid, DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('No metadata found for document with UID ' . $this->doc->uid, DEVLOG_SEVERITY_WARNING);
             return $content;
         }
         ksort($metadata);
@@ -154,7 +157,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
      *
      * @return string The metadata array ready for output
      */
-    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = FALSE) {
+    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = FALSE)
+    {
         // Load template file.
         $this->getTemplate();
         $output = '';
@@ -169,7 +173,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                 $iiifwrap['value.']['required'] = 1;
                 $iiifwrap['value.']['wrap'] = '<dd>|</dd>';
             }
-            $iiifLink=[];
+            $iiifLink = [];
             $iiifLink['key.']['wrap'] = '<dt>|</dt>';
             $iiifLink['value.']['required'] = 1;
             $iiifLink['value.']['setContentToCurrent'] = 1;
@@ -179,7 +183,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
             $cObjData = $this->cObj->data;
             foreach ($metadataArray as $metadata) {
                 foreach ($metadata as $key => $group) {
-                    $markerArray['###METADATA###'] = '<span class="tx-dlf-metadata-group">'.$this->pi_getLL($key).'</span>';
+                    $markerArray['###METADATA###'] = '<span class="tx-dlf-metadata-group">' . $this->pi_getLL($key) . '</span>';
                     // Reset content object's data array.
                     $this->cObj->data = $cObjData;
                     if (!is_array($group)) {
@@ -187,15 +191,17 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                             continue;
                         }
                         $this->cObj->data[$key] = $group;
-                        if (IRI::isAbsoluteIri($this->cObj->data[$key])
-                            && (($scheme = (new IRI($this->cObj->data[$key]))->getScheme()) == 'http' || $scheme == 'https')) {
+                        if (
+                            IRI::isAbsoluteIri($this->cObj->data[$key])
+                            && (($scheme = (new IRI($this->cObj->data[$key]))->getScheme()) == 'http' || $scheme == 'https')
+                        ) {
                             $field = $this->cObj->stdWrap('', $iiifLink['key.']);
                             $field .= $this->cObj->stdWrap($this->cObj->data[$key], $iiifLink['value.']);
                         } else {
                             $field = $this->cObj->stdWrap('', $iiifwrap['key.']);
                             $field .= $this->cObj->stdWrap($this->cObj->data[$key], $iiifwrap['value.']);
                         }
-                        $markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+                        $markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $iiifwrap['all.']);
                     } else {
                         // Load all the metadata values into the content object's data array.
                         foreach ($group as $label => $value) {
@@ -215,7 +221,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                                 $field = $this->cObj->stdWrap(htmlspecialchars($label), $iiifwrap['key.']);
                                 $field .= $this->cObj->stdWrap($this->cObj->data[$label], $iiifwrap['value.']);
                             }
-                            $markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+                            $markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $iiifwrap['all.']);
                         }
                     }
                     $output .= $this->templateService->substituteMarkerArray($subpart['block'], $markerArray);
@@ -237,7 +243,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                 ->where(
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
-                            $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', array(-1, 0)),
+                            $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
                             $queryBuilder->expr()->eq('tx_dlf_metadata.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                         ),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
@@ -306,7 +312,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin {
                                 if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
                                     $superiorTitle = Document::getTitle($this->doc->parentId, TRUE);
                                     if (!empty($superiorTitle)) {
-                                        $value = '['.$superiorTitle.']';
+                                        $value = '[' . $superiorTitle . ']';
                                     }
                                 }
                                 if (!empty($value)) {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Command;
 
 /**
@@ -10,6 +11,7 @@ namespace Kitodo\Dlf\Command;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,11 +23,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use Kitodo\Dlf\Common\Document;
-use Kitodo\Dlf\Common\Helper;
-
 
 /**
- * Reindex a collection into database and solr.
+ * Reindex a collection into database and Solr.
  */
 class ReindexCommand extends Command
 {
@@ -35,11 +35,11 @@ class ReindexCommand extends Command
     public function configure()
     {
         $this
-            ->setDescription('Reindex a collection into database and solr.')
+            ->setDescription('Reindex a collection into database and Solr.')
             ->setHelp('')
             ->addOption(
                 'dry-run',
-                null,
+                NULL,
                 InputOption::VALUE_NONE,
                 'If this option is set, the files will not actually be processed but the location URI is shown.'
             )
@@ -53,13 +53,13 @@ class ReindexCommand extends Command
                 'pid',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'UID of the page the document should be added to.'
+                'UID of the page the documents should be added to.'
             )
             ->addOption(
                 'solr',
                 's',
                 InputOption::VALUE_REQUIRED,
-                '[UID|index name] of the Solr core the document should be added to.'
+                '[UID|index_name] of the Solr core the document should be added to.'
             )
             ->addOption(
                 'all',
@@ -80,14 +80,14 @@ class ReindexCommand extends Command
         // Make sure the _cli_ user is loaded
         Bootstrap::getInstance()->initializeBackendAuthentication();
 
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
+        $dryRun = $input->getOption('dry-run') != FALSE ? TRUE : FALSE;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
         $startingPoint = 0;
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('pid'))) {
-            $startingPoint = MathUtility::forceIntegerInRange((int)$input->getOption('pid'), 0);
+            $startingPoint = MathUtility::forceIntegerInRange((int) $input->getOption('pid'), 0);
         }
         if ($startingPoint == 0) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
@@ -97,21 +97,22 @@ class ReindexCommand extends Command
         if ($input->getOption('solr')) {
             $allSolrCores = $this->getSolrCores($startingPoint);
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('solr'))) {
-                $solrCoreUid = MathUtility::forceIntegerInRange((int)$input->getOption('solr'), 0);
+                $solrCoreUid = MathUtility::forceIntegerInRange((int) $input->getOption('solr'), 0);
             } else {
                 $solrCoreName = $input->getOption('solr');
                 $solrCoreUid = $allSolrCores[$solrCoreName];
             }
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
+                $output_solrCores = [];
                 foreach ($allSolrCores as $index_name => $uid) {
-                    $output_solrCores .= ' ' . $uid . ' : ' . $index_name ."\n";
+                    $output_solrCores[] = $uid . ' : ' . $index_name;
                 }
                 if (empty($output_solrCores)) {
-                    $io->error('ERROR: No valid solr core ("'. $input->getOption('solr') . '") given. ' . "No valid cores found on PID " . $startingPoint .".\n" . $output_solrCores);
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $startingPoint . ".\n");
                     exit(1);
                 } else {
-                    $io->error('ERROR: No valid solr core ("'. $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . $output_solrCores);
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
                     exit(1);
                 }
             }
@@ -125,7 +126,7 @@ class ReindexCommand extends Command
             $documents = $this->getAllDocuments($startingPoint);
         } else {
             // coll may be a single integer, a list of integer
-            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), true)))) {
+            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), TRUE)))) {
                 $io->error('ERROR: "' . $input->getOption('coll') . '" is not a valid list of collection UIDs for --coll|-c.');
                 exit(1);
             }
@@ -136,18 +137,18 @@ class ReindexCommand extends Command
             $doc = Document::getInstance($document, $startingPoint, TRUE);
             if ($doc->ready) {
                 if ($dryRun) {
-                    $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
+                    $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                 } else {
                     if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:i:s') . ' ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ' . $doc->location . ' on UID ' . $startingPoint . ' and solr core ' . $solrCoreUid .'.');
+                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                     }
                     // ...and save it to the database...
                     if (!$doc->save($startingPoint, $solrCoreUid)) {
-                        $io->error('ERROR: Document "'.$id.'" not saved and indexed.');
+                        $io->error('ERROR: Document "' . $id . '" not saved and indexed.');
                     }
                 }
             } else {
-                $io->error('ERROR: Document "'.$id.'" could not be loaded.');
+                $io->error('ERROR: Document "' . $id . '" could not be loaded.');
             }
             // Clear document registry to prevent memory exhaustion.
             Document::clearRegistry();
@@ -171,7 +172,7 @@ class ReindexCommand extends Command
             ->getQueryBuilderForTable('tx_dlf_solrcores');
 
         $solrCores = [];
-        $pageId = (int)$pageId;
+        $pageId = (int) $pageId;
         $result = $queryBuilder
             ->select('uid', 'index_name')
             ->from('tx_dlf_solrcores')
@@ -205,7 +206,7 @@ class ReindexCommand extends Command
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         $documents = [];
-        $pageId = (int)$pageId;
+        $pageId = (int) $pageId;
         $result = $queryBuilder
             ->select('tx_dlf_documents.uid')
             ->from('tx_dlf_documents')
@@ -227,24 +228,24 @@ class ReindexCommand extends Command
                     'tx_dlf_collections_join.uid'
                 )
             )
-            -> where(
-              $queryBuilder->expr()->andX(
-                  $queryBuilder->expr()->in(
-                      'tx_dlf_collections_join.uid',
-                      $queryBuilder->createNamedParameter(
-                          GeneralUtility::intExplode(',', $collIds, true),
-                          Connection::PARAM_INT_ARRAY
-                      )
-                  ),
-                  $queryBuilder->expr()->eq(
-                      'tx_dlf_collections_join.pid',
-                      $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
-                  ),
-                  $queryBuilder->expr()->eq(
-                      'tx_dlf_relations_joins.ident',
-                      $queryBuilder->createNamedParameter('docs_colls')
-                  )
-              )
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->in(
+                        'tx_dlf_collections_join.uid',
+                        $queryBuilder->createNamedParameter(
+                            GeneralUtility::intExplode(',', $collIds, TRUE),
+                            Connection::PARAM_INT_ARRAY
+                        )
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_collections_join.pid',
+                        $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_relations_joins.ident',
+                        $queryBuilder->createNamedParameter('docs_colls')
+                    )
+                )
             )
             ->groupBy('tx_dlf_documents.uid')
             ->orderBy('tx_dlf_documents.uid', 'ASC')
@@ -271,15 +272,15 @@ class ReindexCommand extends Command
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         $documents = [];
-        $pageId = (int)$pageId;
+        $pageId = (int) $pageId;
         $result = $queryBuilder
             ->select('uid')
             ->from('tx_dlf_documents')
-            -> where(
-              $queryBuilder->expr()->eq(
-                  'tx_dlf_documents.pid',
-                  $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
-              )
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_documents.pid',
+                    $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
+                )
             )
             ->orderBy('tx_dlf_documents.uid', 'ASC')
             ->execute();

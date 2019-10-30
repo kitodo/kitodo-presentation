@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -25,7 +26,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @access public
  * @abstract
  */
-abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+{
     public $extKey = 'dlf';
     public $prefixId = 'tx_dlf';
     public $scriptRelPath = 'Classes/Common/AbstractPlugin.php';
@@ -66,14 +68,15 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return void
      */
-    protected function getTemplate($part = '###TEMPLATE###') {
+    protected function getTemplate($part = '###TEMPLATE###')
+    {
         $this->templateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
         if (!empty($this->conf['templateFile'])) {
             // Load template file from configuration.
             $templateFile = $this->conf['templateFile'];
         } else {
             // Load default template from extension.
-            $templateFile = 'EXT:'.$this->extKey.'/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
+            $templateFile = 'EXT:' . $this->extKey . '/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
         }
         $this->template = $this->templateService->getSubpart($this->cObj->fileResource($templateFile), $part);
     }
@@ -88,7 +91,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return void
      */
-    protected function init(array $conf) {
+    protected function init(array $conf)
+    {
         // Read FlexForm configuration.
         $flexFormConf = [];
         $this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
@@ -96,12 +100,12 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
             $conf = Helper::mergeRecursiveWithOverrule($flexFormConf, $conf);
         }
         // Read plugin TS configuration.
-        $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_'.strtolower(Helper::getUnqualifiedClassName(get_class($this))).'.'];
+        $pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_' . strtolower(Helper::getUnqualifiedClassName(get_class($this))) . '.'];
         if (is_array($pluginConf)) {
             $conf = Helper::mergeRecursiveWithOverrule($pluginConf, $conf);
         }
         // Read general TS configuration.
-        $generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId.'.'];
+        $generalConf = $GLOBALS['TSFE']->tmpl->setup['plugin.'][$this->prefixId . '.'];
         if (is_array($generalConf)) {
             $conf = Helper::mergeRecursiveWithOverrule($generalConf, $conf);
         }
@@ -119,7 +123,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         // Set default plugin variables.
         $this->pi_setPiVarDefaults();
         // Load translation files.
-        $this->pi_loadLL('EXT:'.$this->extKey.'/Resources/Private/Language/'.Helper::getUnqualifiedClassName(get_class($this)).'.xml');
+        $this->pi_loadLL('EXT:' . $this->extKey . '/Resources/Private/Language/' . Helper::getUnqualifiedClassName(get_class($this)) . '.xml');
     }
 
     /**
@@ -129,10 +133,13 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return void
      */
-    protected function loadDocument() {
+    protected function loadDocument()
+    {
         // Check for required variable.
-        if (!empty($this->piVars['id'])
-            && !empty($this->conf['pages'])) {
+        if (
+            !empty($this->piVars['id'])
+            && !empty($this->conf['pages'])
+        ) {
             // Should we exclude documents from other pages than $this->conf['pages']?
             $pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
             // Get instance of \Kitodo\Dlf\Common\Document.
@@ -140,7 +147,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = NULL;
-                Helper::devLog('Failed to load document with UID '.$this->piVars['id'], DEVLOG_SEVERITY_ERROR);
+                Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_ERROR);
             } else {
                 // Set configuration PID.
                 $this->doc->cPid = $this->conf['pages'];
@@ -165,14 +172,14 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
                 $this->piVars['id'] = $resArray['uid'];
                 // Set superglobal $_GET array and unset variables to avoid infinite looping.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
-                unset ($this->piVars['recordId'], $_GET[$this->prefixId]['recordId']);
+                unset($this->piVars['recordId'], $_GET[$this->prefixId]['recordId']);
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                Helper::devLog('Failed to load document with record ID "'.$this->piVars['recordId'].'"', DEVLOG_SEVERITY_ERROR);
+                Helper::devLog('Failed to load document with record ID "' . $this->piVars['recordId'] . '"', DEVLOG_SEVERITY_ERROR);
             }
         } else {
-            Helper::devLog('Invalid UID '.$this->piVars['id'].' or PID '.$this->conf['pages'].' for document loading', DEVLOG_SEVERITY_ERROR);
+            Helper::devLog('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['pages'] . ' for document loading', DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -199,12 +206,13 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return string HTML content wrapped, ready to return to the parent object.
      */
-    public function pi_wrapInBaseClass($content) {
+    public function pi_wrapInBaseClass($content)
+    {
         if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass']) {
             // Use class name instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
-            $content = '<div class="tx-dlf-'.Helper::getUnqualifiedClassName(get_class($this)).'">'.$content.'</div>';
+            $content = '<div class="tx-dlf-' . Helper::getUnqualifiedClassName(get_class($this)) . '">' . $content . '</div>';
             if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
-                $content = "\n\n<!-- BEGIN: Content of extension '".$this->extKey."', plugin '".Helper::getUnqualifiedClassName(get_class($this))."' -->\n\n".$content."\n\n<!-- END: Content of extension '".$this->extKey."', plugin '".Helper::getUnqualifiedClassName(get_class($this))."' -->\n\n";
+                $content = "\n\n<!-- BEGIN: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n" . $content . "\n\n<!-- END: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n";
             }
         }
         return $content;
@@ -219,7 +227,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return array The resulting typoscript array
      */
-    protected function parseTS($string = '') {
+    protected function parseTS($string = '')
+    {
         $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
         $parser->parse($string);
         return $parser->setup;
@@ -234,7 +243,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      *
      * @return void
      */
-    protected function setCache($cache = TRUE) {
+    protected function setCache($cache = TRUE)
+    {
         if ($cache) {
             // Set cObject type to "USER" (default).
             $this->pi_USER_INT_obj = FALSE;

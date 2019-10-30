@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Common;
 
 /**
@@ -24,7 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class DocumentTypeCheck {
+class DocumentTypeCheck
+{
     /**
      * This holds the current document
      *
@@ -65,7 +67,8 @@ class DocumentTypeCheck {
      *
      * @return string The type of the current document
      */
-    public function getDocType() {
+    public function getDocType()
+    {
         // Load current document.
         $this->loadDocument();
         if ($this->doc === NULL) {
@@ -103,23 +106,31 @@ class DocumentTypeCheck {
                     $nodes_day = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]/mets:div[@TYPE="month"]/mets:div[@TYPE="day"]');
                     $nodes_issue = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]');
                     $nodes_issue_current = $this->doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div[@TYPE="newspaper" or @TYPE="ephemera"]/mets:div[@TYPE="year"]//mets:div[@TYPE="issue"]/@DMDID');
-                    if (count($nodes_year) == 1
-                        && count($nodes_issue) == 0) {
+                    if (
+                        count($nodes_year) == 1
+                        && count($nodes_issue) == 0
+                    ) {
                         // It's possible to have only one year in the newspaper's anchor file.
                         return 'newspaper';
-                    } elseif (count($nodes_year) == 1
-                        && count($nodes_month) > 1) {
+                    } elseif (
+                        count($nodes_year) == 1
+                        && count($nodes_month) > 1
+                    ) {
                         // One year, multiple months means this is a year's anchor file.
                         return 'year';
-                    } elseif (count($nodes_year) == 1
+                    } elseif (
+                        count($nodes_year) == 1
                         && count($nodes_month) == 1
-                        && count($nodes_day) > 1) {
+                        && count($nodes_day) > 1
+                    ) {
                         // One year, one month, one or more days means this is a year's anchor file.
                         return 'year';
-                    } elseif (count($nodes_year) == 1
+                    } elseif (
+                        count($nodes_year) == 1
                         && count($nodes_month) == 1
                         && count($nodes_day) == 1
-                        && count($nodes_issue_current) == 0) {
+                        && count($nodes_issue_current) == 0
+                    ) {
                         // One year, one month, a single day, one or more issues (but not the current one) means this is a year's anchor file.
                         return 'year';
                     } else {
@@ -140,7 +151,8 @@ class DocumentTypeCheck {
      *
      * @return void
      */
-    protected function loadDocument() {
+    protected function loadDocument()
+    {
         // Check for required variable.
         if (!empty($this->piVars['id'])) {
             // Get instance of \Kitodo\Dlf\Common\Document.
@@ -148,7 +160,7 @@ class DocumentTypeCheck {
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = NULL;
-                Helper::devLog('Failed to load document with UID '.$this->piVars['id'], DEVLOG_SEVERITY_WARNING);
+                Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($this->piVars['recordId'])) {
             /** @var QueryBuilder $queryBuilder */
@@ -171,11 +183,11 @@ class DocumentTypeCheck {
                 // Set superglobal $_GET array.
                 $_GET[$this->prefixId]['id'] = $this->piVars['id'];
                 // Unset variable to avoid infinite looping.
-                unset ($this->piVars['recordId'], $_GET[$this->prefixId]['recordId']);
+                unset($this->piVars['recordId'], $_GET[$this->prefixId]['recordId']);
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                Helper::devLog('Failed to load document with record ID "'.$this->piVars['recordId'].'"', DEVLOG_SEVERITY_WARNING);
+                Helper::devLog('Failed to load document with record ID "' . $this->piVars['recordId'] . '"', DEVLOG_SEVERITY_WARNING);
             }
         }
     }
@@ -187,7 +199,8 @@ class DocumentTypeCheck {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         // Load current plugin parameters.
         $this->piVars = GeneralUtility::_GPmerged($this->prefixId);
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Plugin\Eid;
 
 /**
@@ -23,7 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class SearchInDocument extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+class SearchInDocument extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+{
     public $scriptRelPath = 'Classes/Plugin/Eid/SearchInDocument.php';
 
     /**
@@ -36,15 +38,18 @@ class SearchInDocument extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      *
      * @return string JSON response of search suggestions
      */
-    public function main($content = '', $conf = []) {
-        if (GeneralUtility::_GP('encrypted') != ''
-            && GeneralUtility::_GP('hashed') != '') {
+    public function main($content = '', $conf = [])
+    {
+        if (
+            GeneralUtility::_GP('encrypted') != ''
+            && GeneralUtility::_GP('hashed') != ''
+        ) {
             $core = Helper::decrypt(GeneralUtility::_GP('encrypted'), GeneralUtility::_GP('hashed'));
         }
         if (!empty($core)) {
-            $url = trim(Solr::getSolrUrl($core), '/').'/select?wt=json&q=fulltext:('.Solr::escapeQuery(GeneralUtility::_GP('q')).')%20AND%20uid:'.GeneralUtility::_GP('uid')
-              .'&hl=on&hl.fl=fulltext&fl=uid,id,page&hl.method=fastVector'
-              .'&start='.GeneralUtility::_GP('start').'&rows=20';
+            $url = trim(Solr::getSolrUrl($core), '/') . '/select?wt=json&q=fulltext:(' . Solr::escapeQuery(GeneralUtility::_GP('q')) . ')%20AND%20uid:' . GeneralUtility::_GP('uid')
+                . '&hl=on&hl.fl=fulltext&fl=uid,id,page&hl.method=fastVector'
+                . '&start=' . GeneralUtility::_GP('start') . '&rows=20';
             $output = GeneralUtility::getUrl($url);
         }
         echo $output;

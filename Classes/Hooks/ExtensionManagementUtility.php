@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\Hooks;
 
 /**
@@ -21,7 +22,8 @@ use Kitodo\Dlf\Common\Helper;
  * @subpackage dlf
  * @access public
  */
-class ExtensionManagementUtility extends \TYPO3\CMS\Core\Utility\ExtensionManagementUtility {
+class ExtensionManagementUtility extends \TYPO3\CMS\Core\Utility\ExtensionManagementUtility
+{
     /**
      * Add plugin to static template for css_styled_content
      * @see \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43()
@@ -36,16 +38,17 @@ class ExtensionManagementUtility extends \TYPO3\CMS\Core\Utility\ExtensionManage
      *
      * @return void
      */
-    public static function addPItoST43($key, $class, $suffix = '', $type = 'list_type', $cached = FALSE) {
-        $internalName = 'tx_'.$key.'_'.strtolower(Helper::getUnqualifiedClassName($class));
+    public static function addPItoST43($key, $class, $suffix = '', $type = 'list_type', $cached = FALSE)
+    {
+        $internalName = 'tx_' . $key . '_' . strtolower(Helper::getUnqualifiedClassName($class));
         // General plugin
-        $typoscript = 'plugin.'.$internalName.' = USER'.($cached ? '' : '_INT')."\n";
-        $typoscript .= 'plugin.'.$internalName.'.userFunc = '.$class.'->main'."\n";
+        $typoscript = 'plugin.' . $internalName . ' = USER' . ($cached ? '' : '_INT') . "\n";
+        $typoscript .= 'plugin.' . $internalName . '.userFunc = ' . $class . '->main' . "\n";
         parent::addTypoScript($key, 'setup', $typoscript);
         // Add after defaultContentRendering
         switch ($type) {
             case 'list_type':
-                $addLine = 'tt_content.list.20.'.$key.$suffix.' = < plugin.'.$internalName;
+                $addLine = 'tt_content.list.20.' . $key . $suffix . ' = < plugin.' . $internalName;
                 break;
             default:
                 $addLine = '';
