@@ -866,7 +866,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $solr_query .= ' NOT ' . $required . ':""';
         }
         // toplevel="true" is always required
-        $solr_query .= ' AND toplevel:"true"';
+        $solr_query .= ' AND toplevel:true';
         $from = "*";
         // Check "from" for valid value.
         if (!empty($this->piVars['from'])) {

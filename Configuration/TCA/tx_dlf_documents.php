@@ -269,10 +269,10 @@ return [
                 'readOnly' => 1,
                 'fieldControl' => [
                     'elementBrowser' => [
-                        'disabled' => true
+                        'disabled' => TRUE
                     ]
                 ],
-                'hideDeleteIcon' => true
+                'hideDeleteIcon' => TRUE
             ],
         ],
         'volume' => [

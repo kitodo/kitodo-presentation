@@ -74,7 +74,7 @@ class AnnotationTool extends AbstractPlugin
         // Load template file.
         $this->getTemplate();
         $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['annotationContainers'];
-        if ($annotationContainers != null && sizeof($annotationContainers) > 0) {
+        if ($annotationContainers != NULL && sizeof($annotationContainers) > 0) {
             $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:'
                 . $this->pi_getLL('annotations-on', '', TRUE) . ';annotations-off:'
                 . $this->pi_getLL('annotations-off', '', TRUE) . '">&nbsp;</a>';

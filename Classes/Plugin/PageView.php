@@ -259,8 +259,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
-                if ($canvas != null && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     $annotationContainers = array();
+                if ($canvas != NULL && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     /*
                      *  TODO Analyzing the annotations on the server side requires loading the annotation lists / pages
                      *  just to determine wether they contain text annotations for painting. This will take time and lead to a bad user experience.
@@ -269,11 +269,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                      *  On the other hand, server connections are potentially better than client connections. Downloading annotation lists
                      */
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
-                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
+                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != NULL) {
                             foreach ($textAnnotations as $annotation) {
                                 if (
                                     $annotation->getBody()->getFormat() == "text/plain"
-                                    && $annotation->getBody()->getChars() != null
+                                    && $annotation->getBody()->getChars() != NULL
                                 ) {
                                     $annotationListData = [];
                                     $annotationListData["uri"] = $annotationContainer->getId();

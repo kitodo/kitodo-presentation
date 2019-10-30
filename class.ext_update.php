@@ -385,10 +385,10 @@ class ext_update
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             if ($resArray['COLUMN_NAME'] == 'document_format') {
-                return false;
+                return FALSE;
             }
         }
-        return true;
+        return TRUE;
     }
 
     protected function updateDocumentAddFormat()

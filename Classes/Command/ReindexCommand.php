@@ -39,7 +39,7 @@ class ReindexCommand extends Command
             ->setHelp('')
             ->addOption(
                 'dry-run',
-                null,
+                NULL,
                 InputOption::VALUE_NONE,
                 'If this option is set, the files will not actually be processed but the location URI is shown.'
             )
@@ -80,7 +80,7 @@ class ReindexCommand extends Command
         // Make sure the _cli_ user is loaded
         Bootstrap::getInstance()->initializeBackendAuthentication();
 
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
+        $dryRun = $input->getOption('dry-run') != FALSE ? TRUE : FALSE;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
@@ -126,7 +126,7 @@ class ReindexCommand extends Command
             $documents = $this->getAllDocuments($startingPoint);
         } else {
             // coll may be a single integer, a list of integer
-            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), true)))) {
+            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), TRUE)))) {
                 $io->error('ERROR: "' . $input->getOption('coll') . '" is not a valid list of collection UIDs for --coll|-c.');
                 exit(1);
             }
@@ -233,7 +233,7 @@ class ReindexCommand extends Command
                     $queryBuilder->expr()->in(
                         'tx_dlf_collections_join.uid',
                         $queryBuilder->createNamedParameter(
-                            GeneralUtility::intExplode(',', $collIds, true),
+                            GeneralUtility::intExplode(',', $collIds, TRUE),
                             Connection::PARAM_INT_ARRAY
                         )
                     ),

@@ -143,11 +143,11 @@ final class MetsDocument extends Document
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $service = IiifHelper::loadIiifResource($fileLocation);
-            if ($service != null && $service instanceof AbstractImageService) {
+            if ($service != NULL && $service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
         } elseif ($fileMimeType = "application/vnd.netfpx") {
-            $baseURL = $fileLocation . (strpos($fileLocation, "?") === false ? "?" : "");
+            $baseURL = $fileLocation . (strpos($fileLocation, "?") === FALSE ? "?" : "");
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
             return $baseURL . "&CVT=jpeg";
         }
@@ -624,9 +624,9 @@ final class MetsDocument extends Document
 
         if ($preloadedDocument instanceof \SimpleXMLElement) {
             $this->xml = $preloadedDocument;
-            return true;
+            return TRUE;
         }
-        return false;
+        return FALSE;
     }
 
     /**

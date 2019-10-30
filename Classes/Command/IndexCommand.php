@@ -38,7 +38,7 @@ class IndexCommand extends Command
             ->setHelp('')
             ->addOption(
                 'dry-run',
-                null,
+                NULL,
                 InputOption::VALUE_NONE,
                 'If this option is set, the files will not actually be processed but the location URI is shown.'
             )
@@ -73,7 +73,7 @@ class IndexCommand extends Command
         // Make sure the _cli_ user is loaded
         Bootstrap::getInstance()->initializeBackendAuthentication();
 
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
+        $dryRun = $input->getOption('dry-run') != FALSE ? TRUE : FALSE;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());

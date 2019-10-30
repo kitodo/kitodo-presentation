@@ -427,9 +427,9 @@ abstract class Document
             }
         }
         // Create new instance depending on format (METS or IIIF) ...
-        $documentFormat = null;
-        $xml = null;
-        $iiif = null;
+        $documentFormat = NULL;
+        $xml = NULL;
+        $iiif = NULL;
         // Try to get document format from database
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
             /** @var QueryBuilder $queryBuilder */
@@ -490,15 +490,15 @@ abstract class Document
                 libxml_disable_entity_loader($previousValueOfEntityLoader);
                 // Reset libxml's error logging.
                 libxml_use_internal_errors($libxmlErrors);
-                if ($xml !== false) {
+                if ($xml !== FALSE) {
                     /* @var $xml \SimpleXMLElement */
                     $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
                     $xpathResult = $xml->xpath('//mets:mets');
-                    $documentFormat = ($xpathResult !== false && count($xpathResult) > 0) ? 'METS' : null;
+                    $documentFormat = ($xpathResult !== FALSE && count($xpathResult) > 0) ? 'METS' : NULL;
                 } else {
                     // Try to load file as IIIF resource instead.
-                    $contentAsJsonArray = json_decode($content, true);
-                    if ($contentAsJsonArray !== null) {
+                    $contentAsJsonArray = json_decode($content, TRUE);
+                    if ($contentAsJsonArray !== NULL) {
                         // Load plugin configuration.
                         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
                         IiifHelper::setUrlReader(IiifUrlReader::getInstance());
@@ -766,7 +766,7 @@ abstract class Document
      * @param integer $depth: current tree depth
      * @param string $logId: ID of the logical structure whose depth is requested
      *
-     * @return integer|boolean: false if structure with $logId is not a child of this substructure,
+     * @return integer|boolean: FALSE if structure with $logId is not a child of this substructure,
      * or the actual depth.
      */
     protected function getTreeDepth($structure, $depth, $logId)
@@ -776,12 +776,12 @@ abstract class Document
                 return $depth;
             } elseif (array_key_exists('children', $element)) {
                 $foundInChildren = $this->getTreeDepth($element['children'], $depth + 1, $logId);
-                if ($foundInChildren !== false) {
+                if ($foundInChildren !== FALSE) {
                     return $foundInChildren;
                 }
             }
         }
-        return false;
+        return FALSE;
     }
 
     /**
@@ -817,7 +817,7 @@ abstract class Document
      *
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
      *
-     * @return boolean true if $preloadedDocument can actually be reused, false if it has to be loaded again
+     * @return boolean TRUE if $preloadedDocument can actually be reused, FALSE if it has to be loaded again
      */
     protected abstract function setPreloadedDocument($preloadedDocument);
 
@@ -1526,7 +1526,7 @@ abstract class Document
      *
      * @param integer $uid: The UID of the document to parse or URL to XML file
      * @param integer $pid: If > 0, then only document with this PID gets loaded
-     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either NULL or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
