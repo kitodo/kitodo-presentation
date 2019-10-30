@@ -37,6 +37,8 @@ CREATE TABLE tx_dlf_documents (
     out_of_print text NOT NULL,
     rights_info text NOT NULL,
     collections int(11) DEFAULT '0' NOT NULL,
+    mets_label varchar(255) DEFAULT '' NOT NULL,
+    mets_orderlabel varchar(255) DEFAULT '' NOT NULL,
     owner int(11) DEFAULT '0' NOT NULL,
     solrcore int(11) DEFAULT '0' NOT NULL,
     status smallint(6) unsigned DEFAULT '0' NOT NULL,

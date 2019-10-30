@@ -51,6 +51,8 @@
             <label index="tx_dlf_documents.out_of_print">Out Of Print Works</label>
             <label index="tx_dlf_documents.rights_info">Rights Information</label>
             <label index="tx_dlf_documents.collections">Collections</label>
+            <label index="tx_dlf_documents.mets_label">METS @LABEL</label>
+            <label index="tx_dlf_documents.mets_orderlabel">METS @ORDERLABEL</label>
             <label index="tx_dlf_documents.owner">Owner</label>
             <label index="tx_dlf_documents.status">Status</label>
             <label index="tx_dlf_documents.status.default">default</label>
@@ -230,6 +232,8 @@
             <label index="tx_dlf_documents.out_of_print">Vergriffene Werke</label>
             <label index="tx_dlf_documents.rights_info">Rechteinformation</label>
             <label index="tx_dlf_documents.collections">Sammlungen</label>
+            <label index="tx_dlf_documents.mets_label">METS @LABEL</label>
+            <label index="tx_dlf_documents.mets_orderlabel">METS @ORDERLABEL</label>
             <label index="tx_dlf_documents.owner">Besitzer</label>
             <label index="tx_dlf_documents.status">Status</label>
             <label index="tx_dlf_documents.status.default">Standard</label>
