@@ -57,8 +57,7 @@ Number.isNaN = Number.isNaN || function(value) {
  */
 Array.prototype.includes = Array.prototype.includes || function(value) {
     return this.indexOf(value) > -1;
-}
-
+};
 
 /**
  * OpenLayers 3 TileLoadFunction based on the work of Klokan Technologies GmbH (http://www.klokantech.com) and
