@@ -72,14 +72,14 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->getTemplate();
 
         // Configure @action URL for form.
-        $linkConf = array(
+        $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1
-        );
+        ];
 
         $encryptedSolr = $this->getEncryptedCoreName();
         // Fill markers.
-        $markerArray = array(
+        $markerArray = [
             '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
             '###LABEL_QUERY###' => $this->pi_getLL('label.query'),
             '###LABEL_DELETE_SEARCH###' => $this->pi_getLL('label.delete_search'),
@@ -92,7 +92,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             '###CURRENT_DOCUMENT###' => $this->doc->uid,
             '###SOLR_ENCRYPTED###' => isset($encryptedSolr['encrypted']) ? $encryptedSolr['encrypted'] : '',
             '###SOLR_HASH###' => isset($encryptedSolr['hash']) ? $encryptedSolr['hash'] : '',
-        );
+        ];
 
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);

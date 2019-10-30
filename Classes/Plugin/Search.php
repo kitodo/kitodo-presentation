@@ -591,7 +591,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         $results = $solr->service->select($selectQuery);
         $facet = $results->getFacetSet();
 
-        $facetCollectionArray = array();
+        $facetCollectionArray = [];
 
         // replace everything expect numbers and comma
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);

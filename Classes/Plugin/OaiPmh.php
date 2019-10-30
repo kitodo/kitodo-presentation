@@ -783,7 +783,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             )
             ->from('tx_dlf_collections')
             ->where(
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', array(-1, 0)),
+                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
                 $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
                 $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', ''),
                 $where,

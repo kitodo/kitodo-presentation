@@ -1026,7 +1026,7 @@ abstract class Document
             ->from('tx_dlf_collections')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($pid)),
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', array(-1, 0)),
+                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
                 Helper::whereExpression('tx_dlf_collections')
             )
             ->execute();

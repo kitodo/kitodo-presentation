@@ -825,11 +825,11 @@ class Helper
         if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
-                $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', array(-1, 0));
+                $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
                 if ($GLOBALS['TSFE']->sys_language_content > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
-                            $queryBuilder->expr()->in($table . '.sys_language_uid', array(-1, 0)),
+                            $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
                             $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content))
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)

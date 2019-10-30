@@ -78,7 +78,7 @@ final class IiifManifest extends Document
      * @var array
      * @access protected
      */
-    protected $originalMetadataArray = array();
+    protected $originalMetadataArray = [];
 
     /**
      * Holds the mime types of linked resources in the manifest (extreacted during parsing) for later use.
@@ -294,8 +294,8 @@ final class IiifManifest extends Document
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['contentIds'] = NULL;
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = NULL;
                     if (!empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
-                        $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = array();
-                        $this->physicalStructureInfo[$physSeq[0]]['annotationContainers'] = array();
+                        $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = [];
+                        $this->physicalStructureInfo[$physSeq[0]]['annotationContainers'] = [];
                         foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'][] = $annotationContainer->getId();
                             if ($extConf['indexAnnotations']) {
@@ -414,7 +414,7 @@ final class IiifManifest extends Document
      */
     public function getLogicalStructure($id, $recursive = FALSE)
     {
-        $details = array();
+        $details = [];
         if (!$recursive && !empty($this->logicalUnits[$id])) {
             return $this->logicalUnits[$id];
         } elseif (!empty($id)) {
@@ -427,7 +427,7 @@ final class IiifManifest extends Document
                 $details = $this->getLogicalStructureInfo($logUnits[0]);
             } else {
                 // cache the ranges - they might occure multiple times in the structures "tree" - with full data as well as referenced as id
-                $processedStructures = array();
+                $processedStructures = [];
                 foreach ($logUnits as $logUnit) {
                     if (array_search($logUnit->getId(), $processedStructures) == FALSE) {
                         $this->tableOfContents[] = $this->getLogicalStructureInfo($logUnit, TRUE, $processedStructures);
@@ -450,7 +450,7 @@ final class IiifManifest extends Document
      */
     protected function getLogicalStructureInfo(IiifResourceInterface $resource, $recursive = FALSE, &$processedStructures = [])
     {
-        $details = array();
+        $details = [];
         $details['id'] = $resource->getId();
         $details['dmdId'] = '';
         $details['label'] = $resource->getLabelForDisplay() !== NULL ? $resource->getLabelForDisplay() : '';
@@ -471,7 +471,7 @@ final class IiifManifest extends Document
         $this->_getSmLinks();
         // Load physical structure.
         $this->_getPhysicalStructure();
-        $canvases = array();
+        $canvases = [];
         if ($resource instanceof ManifestInterface) {
             $startCanvas = $resource->getStartCanvasOrFirstCanvas();
             $canvases = $resource->getDefaultCanvases();
@@ -488,14 +488,14 @@ final class IiifManifest extends Document
         }
         $useGroups = $this->getUseGroups('fileGrps');
         if (is_string($useGroups)) {
-            $useGroups = array($useGroups);
+            $useGroups = [$useGroups];
         }
         // Keep for later usage.
         $this->logicalUnits[$details['id']] = $details;
         // Walk the structure recursively? And are there any children of the current element?
         if ($recursive) {
             $processedStructures[] = $resource->getId();
-            $details['children'] = array();
+            $details['children'] = [];
             if ($resource instanceof ManifestInterface && $resource->getRootRanges() != NULL) {
                 $rangesToAdd = [];
                 $rootRanges = [];
@@ -547,7 +547,7 @@ final class IiifManifest extends Document
             return $this->originalMetadataArray[$id];
         }
         $iiifResource = $this->iiif->getContainedResourceById($id);
-        $result = array();
+        $result = [];
         if ($iiifResource != NULL) {
             if ($iiifResource->getLabel() != NULL && $iiifResource->getLabel() != "") {
                 $result['label'] = $iiifResource->getLabel();
@@ -591,29 +591,29 @@ final class IiifManifest extends Document
         }
         // Initialize metadata array with empty values.
         // TODO initialize metadata in abstract class
-        $metadata = array(
-            'title' => array(),
-            'title_sorting' => array(),
-            'author' => array(),
-            'place' => array(),
-            'year' => array(),
-            'prod_id' => array(),
-            'record_id' => array(),
-            'opac_id' => array(),
-            'union_id' => array(),
-            'urn' => array(),
-            'purl' => array(),
-            'type' => array(),
-            'volume' => array(),
-            'volume_sorting' => array(),
-            'license' => array(),
-            'terms' => array(),
-            'restrictions' => array(),
-            'out_of_print' => array(),
-            'rights_info' => array(),
-            'collection' => array(),
-            'owner' => array(),
-        );
+        $metadata = [
+            'title' => [],
+            'title_sorting' => [],
+            'author' => [],
+            'place' => [],
+            'year' => [],
+            'prod_id' => [],
+            'record_id' => [],
+            'opac_id' => [],
+            'union_id' => [],
+            'urn' => [],
+            'purl' => [],
+            'type' => [],
+            'volume' => [],
+            'volume_sorting' => [],
+            'license' => [],
+            'terms' => [],
+            'restrictions' => [],
+            'out_of_print' => [],
+            'rights_info' => [],
+            'collection' => [],
+            'owner' => [],
+        ];
         $metadata['document_format'][] = 'IIIF';
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
@@ -628,9 +628,9 @@ final class IiifManifest extends Document
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != NULL) {
                 if (is_string($values)) {
-                    $metadata[$resArray['index_name']] = array(trim((string) $values));
+                    $metadata[$resArray['index_name']] = [trim((string) $values)];
                 } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
-                    $metadata[$resArray['index_name']] = array();
+                    $metadata[$resArray['index_name']] = [];
                     foreach ($values->data() as $value) {
                         $metadata[$resArray['index_name']][] = trim((string) $value);
                     }
@@ -638,7 +638,7 @@ final class IiifManifest extends Document
             }
             // Set default value if applicable.
             if (empty($metadata[$resArray['index_name']][0]) && strlen($resArray['default_value']) > 0) {
-                $metadata[$resArray['index_name']] = array($resArray['default_value']);
+                $metadata[$resArray['index_name']] = [$resArray['default_value']];
             }
             // Set sorting value if applicable.
             if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
@@ -647,9 +647,9 @@ final class IiifManifest extends Document
                     && ($values = $iiifResource->jsonPath($resArray['xpath_sorting']) != NULL)
                 ) {
                     if ($values instanceof string) {
-                        $metadata[$resArray['index_name'] . '_sorting'][0] = array(trim((string) $values));
+                        $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
                     } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data() > 1)) {
-                        $metadata[$resArray['index_name']] = array();
+                        $metadata[$resArray['index_name']] = [];
                         foreach ($values->data() as $value) {
                             $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $value);
                         }
@@ -763,7 +763,7 @@ final class IiifManifest extends Document
                     // Get annotation containers
                     $annotationContainerIds = $this->physicalStructureInfo[$id]['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
-                        $annotationTexts = array();
+                        $annotationTexts = [];
                         foreach ($annotationContainerIds as $annotationListId) {
                             $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
                             /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
@@ -957,6 +957,6 @@ final class IiifManifest extends Document
         // TODO implement serializiation in IIIF library
         $jsonArray = $this->iiif->getOriginalJsonArray();
         $this->asJson = json_encode($jsonArray);
-        return array('uid', 'pid', 'recordId', 'parentId', 'asJson');
+        return ['uid', 'pid', 'recordId', 'parentId', 'asJson'];
     }
 }

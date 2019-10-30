@@ -243,7 +243,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->where(
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
-                            $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', array(-1, 0)),
+                            $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
                             $queryBuilder->expr()->eq('tx_dlf_metadata.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                         ),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)

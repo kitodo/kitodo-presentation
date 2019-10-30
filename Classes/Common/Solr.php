@@ -150,7 +150,7 @@ class Solr
                     $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', array(-1, 0)),
+                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
                     ),
                     Helper::whereExpression('tx_dlf_metadata')

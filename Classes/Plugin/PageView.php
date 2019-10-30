@@ -59,7 +59,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      * @var array
      * @access protected
      */
-    protected $annotationContainers = array();
+    protected $annotationContainers = [];
 
     /**
      * Adds Viewer javascript
@@ -259,8 +259,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
-                    $annotationContainers = array();
                 if ($canvas != NULL && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
+                    $annotationContainers = [];
                     /*
                      *  TODO Analyzing the annotations on the server side requires loading the annotation lists / pages
                      *  just to determine wether they contain text annotations for painting. This will take time and lead to a bad user experience.
@@ -296,7 +296,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
             }
         }
-        return array();
+        return [];
     }
 
     /**

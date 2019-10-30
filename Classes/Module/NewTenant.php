@@ -276,7 +276,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 )
                 ->from('tx_dlf_solrcores')
                 ->where(
-                    $queryBuilder->expr()->in('tx_dlf_solrcores.pid', array(intval($this->id), 0)),
+                    $queryBuilder->expr()->in('tx_dlf_solrcores.pid', [intval($this->id), 0]),
                     Helper::whereExpression('tx_dlf_solrcores')
                 )
                 ->execute();

@@ -127,7 +127,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                 $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', array(-1, 0)),
+                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
                         $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                     ),
                     $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
