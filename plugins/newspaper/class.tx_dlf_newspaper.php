@@ -122,6 +122,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         $firstMonth = 1;
         $lastMonth = 12;
         foreach ($calendarIssuesByYear as $year => $calendarIssues) {
+            ksort($calendarIssues);
             // show calendar from first issue in case of seasons
             if (empty($this->conf['showEmptyMonths'])) {
                 $firstMonth = key($calendarIssues);
