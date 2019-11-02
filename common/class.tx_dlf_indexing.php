@@ -524,9 +524,11 @@ class tx_dlf_indexing {
         $metadata = $doc->metadataArray[$logicalUnit['id']];
 
         // Remove appended "valueURI" from authors' names for indexing.
-        foreach ($metadata['author'] as $i => $author) {
-            $splitName = explode(chr(31), $author);
-            $metadata['author'][$i] = $splitName[0];
+        if (is_array($metadata['author'])) {
+            foreach ($metadata['author'] as $i => $author) {
+                $splitName = explode(chr(31), $author);
+                $metadata['author'][$i] = $splitName[0];
+            }
         }
 
         if (!empty($metadata)) {
