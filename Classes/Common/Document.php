@@ -87,6 +87,15 @@ abstract class Document
     ];
 
     /**
+     * Are the available metadata formats loaded?
+     * @see $formats
+     *
+     * @var boolean
+     * @access protected
+     */
+    protected $formatsLoaded = FALSE;
+
+    /**
      * Are there any fulltext files available? This also includes IIIF text annotations
      * with motivation 'painting' if Kitodo.Presentation is configured to store text
      * annotations as fulltext.

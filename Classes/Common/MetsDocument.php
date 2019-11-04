@@ -102,15 +102,6 @@ final class MetsDocument extends Document
     protected $fileGrpsLoaded = FALSE;
 
     /**
-     * Are the available metadata formats loaded?
-     * @see $formats
-     *
-     * @var boolean
-     * @access protected
-     */
-    protected $formatsLoaded = FALSE;
-
-    /**
      * This holds the XML file's METS part as \SimpleXMLElement object
      *
      * @var \SimpleXMLElement
