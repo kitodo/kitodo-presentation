@@ -55,9 +55,13 @@ class KitodoProductionHacks
                 if (empty($id)) {
                     $id = (string) $divs[0]['DMDID'];
                 }
-                $recordIds = $xml->xpath('//mets:dmdSec[@ID="' . $id . '"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
-                if (!empty($recordIds[0])) {
-                    $record_id = (string) $recordIds[0];
+                $dmdIds = explode(' ', $id);
+                foreach ($dmdIds as $dmdId) {
+                    $recordIds = $xml->xpath('//mets:dmdSec[@ID="' . $dmdId . '"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
+                    if (!empty($recordIds[0])) {
+                        $record_id = (string) $recordIds[0];
+                        break;
+                    }
                 }
             }
         }

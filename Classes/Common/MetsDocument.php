@@ -392,17 +392,25 @@ final class MetsDocument extends Document
             'document_format' => [],
         ];
         $metadata['document_format'][] = 'METS';
-        // Get the logical structure node's DMDID.
+        // Get the logical structure node's @DMDID.
         if (!empty($this->logicalUnits[$id])) {
-            $dmdId = $this->logicalUnits[$id]['dmdId'];
+            $dmdIds = $this->logicalUnits[$id]['dmdId'];
         } else {
-            $dmdId = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@DMDID');
-            $dmdId = (string) $dmdId[0];
+            $dmdIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@DMDID');
+            $dmdIds = (string) $dmdIds[0];
         }
-        if (!empty($dmdId)) {
-            // Load available metadata formats and dmdSecs.
-            $this->loadFormats();
-            $this->_getDmdSec();
+        if ($dmdIds !== FALSE && !empty($dmdIds)) {
+            // Handle multiple DMDIDs separately.
+            $dmdIds = explode(' ', $dmdIds);
+            $hasSupportedMetadata = FALSE;
+        } else {
+            // There is no dmdSec for this structure node.
+            return [];
+        }
+        // Load available metadata formats and dmdSecs.
+        $this->loadFormats();
+        $this->_getDmdSec();
+        foreach ($dmdIds as $dmdId) {
             // Is this metadata format supported?
             if (!empty($this->formats[$this->dmdSec[$dmdId]['type']])) {
                 if (!empty($this->formats[$this->dmdSec[$dmdId]['type']]['class'])) {
@@ -418,8 +426,9 @@ final class MetsDocument extends Document
                     }
                 }
             } else {
-                Helper::devLog('Unsupported metadata format "' . $this->dmdSec[$dmdId]['type'] . '" in dmdSec with @ID "' . $dmdId . '"', DEVLOG_SEVERITY_WARNING);
-                return [];
+                Helper::devLog('Unsupported metadata format "' . $this->dmdSec[$dmdId]['type'] . '" in dmdSec with @ID "' . $dmdId . '"', DEVLOG_SEVERITY_NOTICE);
+                // Continue searching for supported metadata with next @DMDID.
+                continue;
             }
             // Get the structure's type.
             if (!empty($this->logicalUnits[$id])) {
@@ -523,11 +532,16 @@ final class MetsDocument extends Document
                     }
                 }
             }
+            // Extract metadata only from first supported dmdSec.
+            $hasSupportedMetadata = TRUE;
+            break;
+        }
+        if ($hasSupportedMetadata) {
+            return $metadata;
         } else {
-            // There is no dmdSec for this structure node.
+            Helper::devLog('No supported metadata found for logical structure with @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
             return [];
         }
-        return $metadata;
     }
 
     /**
