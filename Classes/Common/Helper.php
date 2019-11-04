@@ -186,7 +186,7 @@ class Helper
      */
     public static function devLog($message, $severity = 0)
     {
-        if (TYPO3_DLOG) {
+        if (\TYPO3_DLOG) {
             $stacktrace = debug_backtrace(0, 2);
             // Set some defaults.
             $caller = 'Kitodo\Dlf\Default\UnknownClass::unknownMethod';
@@ -371,18 +371,18 @@ class Helper
             return $code;
         }
         // Load ISO table and get localized full name of language.
-        if (TYPO3_MODE === 'FE') {
+        if (\TYPO3_MODE === 'FE') {
             $iso639 = $GLOBALS['TSFE']->readLLfile($file);
             if (!empty($iso639['default'][$isoCode])) {
                 $lang = $GLOBALS['TSFE']->getLLL($isoCode, $iso639);
             }
-        } elseif (TYPO3_MODE === 'BE') {
+        } elseif (\TYPO3_MODE === 'BE') {
             $iso639 = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
             if (!empty($iso639['default'][$isoCode])) {
                 $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639, FALSE);
             }
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return $code;
         }
         if (!empty($lang)) {
@@ -411,22 +411,22 @@ class Helper
         // Load common messages file.
         if (empty(self::$messages)) {
             $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/FlashMessages.xml');
-            if (TYPO3_MODE === 'FE') {
+            if (\TYPO3_MODE === 'FE') {
                 self::$messages = $GLOBALS['TSFE']->readLLfile($file);
-            } elseif (TYPO3_MODE === 'BE') {
+            } elseif (\TYPO3_MODE === 'BE') {
                 self::$messages = $GLOBALS['LANG']->includeLLFile($file, FALSE, TRUE);
             } else {
-                self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+                self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             }
         }
         // Get translation.
         if (!empty(self::$messages['default'][$key])) {
-            if (TYPO3_MODE === 'FE') {
+            if (\TYPO3_MODE === 'FE') {
                 $translated = $GLOBALS['TSFE']->getLLL($key, self::$messages);
-            } elseif (TYPO3_MODE === 'BE') {
+            } elseif (\TYPO3_MODE === 'BE') {
                 $translated = $GLOBALS['LANG']->getLLL($key, self::$messages, FALSE);
             } else {
-                self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+                self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             }
         }
         // Escape HTML characters if applicable.
@@ -591,12 +591,12 @@ class Helper
             return;
         }
         // Get the session data.
-        if (TYPO3_MODE === 'FE') {
+        if (\TYPO3_MODE === 'FE') {
             return $GLOBALS['TSFE']->fe_user->getKey('ses', $key);
-        } elseif (TYPO3_MODE === 'BE') {
+        } elseif (\TYPO3_MODE === 'BE') {
             return $GLOBALS['BE_USER']->getSessionData($key);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return;
         }
     }
@@ -636,7 +636,7 @@ class Helper
     public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = FALSE, $cmdFirst = FALSE)
     {
         if (
-            TYPO3_MODE === 'BE'
+            \TYPO3_MODE === 'BE'
             && $GLOBALS['BE_USER']->isAdmin()
         ) {
             // Instantiate TYPO3 core engine.
@@ -734,15 +734,15 @@ class Helper
             return FALSE;
         }
         // Save value in session data.
-        if (TYPO3_MODE === 'FE') {
+        if (\TYPO3_MODE === 'FE') {
             $GLOBALS['TSFE']->fe_user->setKey('ses', $key, $value);
             $GLOBALS['TSFE']->fe_user->storeSessionData();
             return TRUE;
-        } elseif (TYPO3_MODE === 'BE') {
+        } elseif (\TYPO3_MODE === 'BE') {
             $GLOBALS['BE_USER']->setAndSaveSessionData($key, $value);
             return TRUE;
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
     }
@@ -885,7 +885,7 @@ class Helper
      */
     public static function whereClause($table, $showHidden = FALSE)
     {
-        if (TYPO3_MODE === 'FE') {
+        if (\TYPO3_MODE === 'FE') {
             // Table "tx_dlf_formats" always has PID 0.
             if ($table == 'tx_dlf_formats') {
                 return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
@@ -903,10 +903,10 @@ class Helper
                 $GLOBALS['TSFE']->includeTCA();
                 return $pageRepository->enableFields($table, $ignoreHide);
             }
-        } elseif (TYPO3_MODE === 'BE') {
+        } elseif (\TYPO3_MODE === 'BE') {
             return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return ' AND 1=-1';
         }
     }
@@ -927,7 +927,7 @@ class Helper
             ->getQueryBuilderForTable($table)
             ->expr();
 
-        if (TYPO3_MODE === 'FE') {
+        if (\TYPO3_MODE === 'FE') {
             // Table "tx_dlf_formats" always has PID 0.
             if ($table == 'tx_dlf_formats') {
                 return $expressionBuilder->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
@@ -951,10 +951,10 @@ class Helper
                 return substr($expression, strlen(' AND '));
             }
             return $expression;
-        } elseif (TYPO3_MODE === 'BE') {
+        } elseif (\TYPO3_MODE === 'BE') {
             return $expressionBuilder->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return '1=-1';
         }
     }

@@ -981,7 +981,7 @@ abstract class Document
      */
     public function save($pid = 0, $core = 0)
     {
-        if (TYPO3_MODE !== 'BE') {
+        if (\TYPO3_MODE !== 'BE') {
             Helper::devLog('Saving a document is only allowed in the backend', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
@@ -1091,7 +1091,7 @@ abstract class Document
                 unset($collData);
                 // Add new collection's UID.
                 $collections[] = $substUid[$collNewUid];
-                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
                         htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
                         Helper::getMessage('flash.attention', TRUE),
@@ -1142,7 +1142,7 @@ abstract class Document
             $substUid = Helper::processDBasAdmin($libData);
             // Add new library's UID.
             $ownerUid = $substUid[$libNewUid];
-            if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                 Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
                     Helper::getMessage('flash.attention', TRUE),
@@ -1260,7 +1260,7 @@ abstract class Document
             $this->pid = $pid;
             $this->parentId = $partof;
         }
-        if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+        if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
             Helper::addMessage(
                 htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
                 Helper::getMessage('flash.done', TRUE),

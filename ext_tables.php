@@ -11,7 +11,7 @@
  */
 
 // Register backend module.
-if (TYPO3_MODE === 'BE') {
+if (\TYPO3_MODE === 'BE') {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'tools',
         'dlfNewTenantModule',

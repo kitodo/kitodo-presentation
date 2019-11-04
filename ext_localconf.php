@@ -79,7 +79,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'] = 87600; // 87600 seconds = 1 day
 }
 // Register Typoscript user function.
-if (TYPO3_MODE === 'FE') {
+if (\TYPO3_MODE === 'FE') {
     /**
      * docTypeCheck user function to use in Typoscript
      * @example [userFunc = user_dlf_docTypeCheck($type)]
