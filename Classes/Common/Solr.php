@@ -24,6 +24,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @property-write integer $cPid This holds the PID for the configuration
+ * @property integer $limit This holds the max results
+ * @property-read integer $numberOfHits This holds the number of hits for last search
+ * @property-write array $params This holds the additional query parameters
+ * @property-read boolean $ready Is the search instantiated successfully?
+ * @property-read \Solarium\Client $service This holds the Solr service object
  */
 class Solr
 {

@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @property array $metadata This holds the list's metadata
  */
 class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Core\SingletonInterface
 {

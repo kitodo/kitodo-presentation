@@ -27,6 +27,23 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @property-write integer $cPid This holds the PID for the configuration
+ * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-read string $location This holds the documents location
+ * @property-read array $metadataArray This holds the documents' parsed metadata array
+ * @property-read integer $numPages The holds the total number of pages
+ * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read array $physicalStructure This holds the physical structure
+ * @property-read array $physicalStructureInfo This holds the physical structure metadata
+ * @property-read integer $pid This holds the PID of the document or zero if not in database
+ * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read string $recordId The METS file's / IIIF manifest's record identifier
+ * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read array $smLinks This holds the smLinks between logical and physical structMap
+ * @property-read array $tableOfContents This holds the logical structure
+ * @property-read string $thumbnail This holds the document's thumbnail location
+ * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
+ * @property-read mixed $uid This holds the UID or the URL of the document
  * @abstract
  */
 abstract class Document
@@ -256,7 +273,7 @@ abstract class Document
     protected $tableOfContentsLoaded = FALSE;
 
     /**
-     * This holds the document's thumbnail location.
+     * This holds the document's thumbnail location
      *
      * @var string
      * @access protected
@@ -273,7 +290,7 @@ abstract class Document
     protected $thumbnailLoaded = FALSE;
 
     /**
-     * This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF).
+     * This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
      *
      * @var string
      * @access protected
@@ -312,7 +329,7 @@ abstract class Document
     }
 
     /**
-     * This ensures that the recordId, if existent, is retrieved from the document.
+     * This ensures that the recordId, if existent, is retrieved from the document
      *
      * @access protected
      *
