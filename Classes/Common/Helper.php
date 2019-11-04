@@ -150,7 +150,6 @@ class Helper
      */
     public static function decrypt($encrypted, $hash)
     {
-        $decrypted = NULL;
         if (
             empty($encrypted)
             || empty($hash)
