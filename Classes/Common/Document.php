@@ -496,34 +496,36 @@ abstract class Document
                     @ini_set('user_agent', $extConf['useragent']);
                 }
                 $content = GeneralUtility::getUrl($location);
-                // TODO use single place to load xml
-                // Turn off libxml's error logging.
-                $libxmlErrors = libxml_use_internal_errors(TRUE);
-                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-                // Try to load XML from file.
-                $xml = simplexml_load_string($content);
-                // reset entity loader setting
-                libxml_disable_entity_loader($previousValueOfEntityLoader);
-                // Reset libxml's error logging.
-                libxml_use_internal_errors($libxmlErrors);
-                if ($xml !== FALSE) {
-                    /* @var $xml \SimpleXMLElement */
-                    $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-                    $xpathResult = $xml->xpath('//mets:mets');
-                    $documentFormat = ($xpathResult !== FALSE && count($xpathResult) > 0) ? 'METS' : NULL;
-                } else {
-                    // Try to load file as IIIF resource instead.
-                    $contentAsJsonArray = json_decode($content, TRUE);
-                    if ($contentAsJsonArray !== NULL) {
-                        // Load plugin configuration.
-                        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-                        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                        IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
-                        IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
-                        $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
-                        if ($iiif instanceof IiifResourceInterface) {
-                            $documentFormat = 'IIIF';
+                if ($content !== FALSE) {
+                    // TODO use single place to load xml
+                    // Turn off libxml's error logging.
+                    $libxmlErrors = libxml_use_internal_errors(TRUE);
+                    // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+                    $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                    // Try to load XML from file.
+                    $xml = simplexml_load_string($content);
+                    // reset entity loader setting
+                    libxml_disable_entity_loader($previousValueOfEntityLoader);
+                    // Reset libxml's error logging.
+                    libxml_use_internal_errors($libxmlErrors);
+                    if ($xml !== FALSE) {
+                        /* @var $xml \SimpleXMLElement */
+                        $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
+                        $xpathResult = $xml->xpath('//mets:mets');
+                        $documentFormat = ($xpathResult !== FALSE && count($xpathResult) > 0) ? 'METS' : NULL;
+                    } else {
+                        // Try to load file as IIIF resource instead.
+                        $contentAsJsonArray = json_decode($content, TRUE);
+                        if ($contentAsJsonArray !== NULL) {
+                            // Load plugin configuration.
+                            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+                            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+                            IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
+                            IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
+                            $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
+                            if ($iiif instanceof IiifResourceInterface) {
+                                $documentFormat = 'IIIF';
+                            }
                         }
                     }
                 }
