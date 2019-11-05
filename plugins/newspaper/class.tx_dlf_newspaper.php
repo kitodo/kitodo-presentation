@@ -84,7 +84,7 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
             'tx_dlf_documents',
             '(tx_dlf_documents.structure='.tx_dlf_helper::getIdFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid).' AND tx_dlf_documents.partof='.intval($this->doc->uid).')'.tx_dlf_helper::whereClause('tx_dlf_documents'),
             '',
-            'tx_dlf_documents.mets_orderlabel ASC',
+            'tx_dlf_documents.mets_orderlabel, tx_dlf_documents.mets_label ASC',
             ''
         );
 
@@ -119,17 +119,23 @@ class tx_dlf_newspaper extends tx_dlf_plugin {
         ksort($calendarIssuesByYear);
 
         $subPartContent = '';
-        $firstMonth = 1;
-        $lastMonth = 12;
+        $iteration = 0;
         foreach ($calendarIssuesByYear as $year => $calendarIssues) {
             ksort($calendarIssues);
-            // show calendar from first issue in case of seasons
-            if (empty($this->conf['showEmptyMonths'])) {
-                $firstMonth = key($calendarIssues);
-                end($calendarIssues);
-                $lastMonth = key($calendarIssues);
+            // default is to show January to December
+            $firstMonth = 1;
+            $lastMonth = 12;
+            // show calendar from first issue up to end of season
+            if (empty($this->conf['showEmptyMonths']) && count($calendarIssuesByYear) > 1) {
+                if ($iteration == 0) {
+                    $firstMonth = key($calendarIssues);
+                } else if (($iteration + 1) == count($calendarIssuesByYear)) {
+                    end($calendarIssues);
+                    $lastMonth = key($calendarIssues);
+                }
             }
             $subPartContent .= $this->getCalendarYear($calendarIssues, $year, $firstMonth, $lastMonth);
+            $iteration++;
         }
 
         // Link to years overview
