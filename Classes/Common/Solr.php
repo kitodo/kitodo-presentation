@@ -230,7 +230,7 @@ class Solr
      *
      * @access public
      *
-     * @return string The connection parameters for a specific Solr core
+     * @return array The connection parameters for a specific Solr core
      */
     public static function getSolrConnectionInfo()
     {
