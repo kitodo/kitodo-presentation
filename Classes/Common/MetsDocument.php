@@ -805,7 +805,7 @@ final class MetsDocument extends Document
         if (!$this->physicalStructureLoaded) {
             // Does the document have a structMap node of type "PHYSICAL"?
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div');
-            if ($elementNodes) {
+            if (is_array($elementNodes)) {
                 // Get file groups.
                 $fileUse = $this->_getFileGrps();
                 // Get the physical sequence's metadata.
