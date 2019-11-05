@@ -548,7 +548,10 @@ abstract class Document
             $instance = new IiifManifest($uid, $pid, $iiif);
         }
         // Save instance to registry.
-        if ($instance->ready) {
+        if (
+            isset($instance)
+            && $instance instanceof self
+            && $instance->ready) {
             self::$registry[md5($instance->uid)] = $instance;
             if ($instance->uid != $instance->location) {
                 self::$registry[md5($instance->location)] = $instance;
