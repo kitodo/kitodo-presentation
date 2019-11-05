@@ -45,10 +45,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             // Get all names which do not have any role term assigned and assume these are authors.
             $authors = $xml->xpath('./mods:name[not(./mods:role)]');
         }
-        if (
-            $authors !== FALSE
-            && !empty($authors)
-        ) {
+        if (is_array($authors)) {
             for ($i = 0, $j = count($authors); $i < $j; $i++) {
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
                 // Check if there is a display form.
@@ -102,10 +99,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             // Get all places and assume these are places of publication.
             $places = $xml->xpath('./mods:originInfo/mods:place/mods:placeTerm');
         }
-        if (
-            $places !== FALSE
-            && !empty($places)
-        ) {
+        if (is_array($places)) {
             foreach ($places as $place) {
                 $metadata['place'][] = (string) $place;
                 if (!$metadata['place_sorting'][0]) {
@@ -129,10 +123,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             // Get all dates and assume these are dates of publication.
             $years = $xml->xpath('./mods:originInfo/mods:dateIssued');
         }
-        if (
-            $years !== FALSE
-            && !empty($years)
-        ) {
+        if (is_array($years)) {
             foreach ($years as $year) {
                 $metadata['year'][] = (string) $year;
                 if (!$metadata['year_sorting'][0]) {

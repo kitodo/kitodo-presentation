@@ -352,7 +352,7 @@ class ext_update
                 if ($response) {
                     $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
                     if (
-                        $status !== FALSE
+                        is_array($status)
                         && $status[0] == 0
                     ) {
                         continue;
