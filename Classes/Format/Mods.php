@@ -38,11 +38,17 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         // Get "author" and "author_sorting".
         $authors = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="aut"]');
         // Get "author" and "author_sorting" again if that was to sophisticated.
-        if (!$authors) {
+        if (
+            $authors === FALSE
+            || empty($authors)
+        ) {
             // Get all names which do not have any role term assigned and assume these are authors.
             $authors = $xml->xpath('./mods:name[not(./mods:role)]');
         }
-        if (is_array($authors)) {
+        if (
+            $authors !== FALSE
+            && !empty($authors)
+        ) {
             for ($i = 0, $j = count($authors); $i < $j; $i++) {
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
                 // Check if there is a display form.
@@ -89,11 +95,17 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         // Get "place" and "place_sorting".
         $places = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:place/mods:placeTerm');
         // Get "place" and "place_sorting" again if that was to sophisticated.
-        if (!$places) {
+        if (
+            $places === FALSE
+            || empty($places)
+        ) {
             // Get all places and assume these are places of publication.
             $places = $xml->xpath('./mods:originInfo/mods:place/mods:placeTerm');
         }
-        if (is_array($places)) {
+        if (
+            $places !== FALSE
+            && !empty($places)
+        ) {
             foreach ($places as $place) {
                 $metadata['place'][] = (string) $place;
                 if (!$metadata['place_sorting'][0]) {
@@ -110,11 +122,17 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         // Get "year" and "year_sorting" if not specified separately.
         $years = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateIssued[@keyDate="yes"]');
         // Get "year" and "year_sorting" again if that was to sophisticated.
-        if (!$years) {
+        if (
+            $years === FALSE
+            || empty($years)
+        ) {
             // Get all dates and assume these are dates of publication.
             $years = $xml->xpath('./mods:originInfo/mods:dateIssued');
         }
-        if (is_array($years)) {
+        if (
+            $years !== FALSE
+            && !empty($years)
+        ) {
             foreach ($years as $year) {
                 $metadata['year'][] = (string) $year;
                 if (!$metadata['year_sorting'][0]) {
