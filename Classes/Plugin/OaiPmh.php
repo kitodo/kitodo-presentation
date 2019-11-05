@@ -412,7 +412,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return string Substitution for subpart "###RESPONSE###"
+     * @return \DOMElement XML node to add to the OAI response
      */
     protected function resume()
     {
@@ -425,7 +425,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->select('tx_dlf_tokens.options AS options')
             ->from('tx_dlf_tokens')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', '"oai"'),
+                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', 'oai'),
                 $queryBuilder->expr()->eq('tx_dlf_tokens.token', $queryBuilder->expr()->literal($this->piVars['resumptionToken'])),
                 Helper::whereExpression('tx_dlf_structures')
             )
@@ -448,7 +448,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return string Substitution for subpart "###RESPONSE###"
+     * @return \DOMElement XML node to add to the OAI response
      */
     protected function verbGetRecord()
     {
@@ -584,8 +584,6 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
-
         if ($resArray = $result->fetch()) {
             $timestamp = $resArray['tstamp'];
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
@@ -614,7 +612,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return string Substitution for subpart "###RESPONSE###"
+     * @return \DOMElement XML node to add to the OAI response
      */
     protected function verbListIdentifiers()
     {
@@ -714,7 +712,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return string Substitution for subpart "###RESPONSE###"
+     * @return \DOMElement XML node to add to the OAI response
      */
     protected function verbListRecords()
     {
@@ -755,7 +753,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return string Substitution for subpart "###RESPONSE###"
+     * @return \DOMElement XML node to add to the OAI response
      */
     protected function verbListSets()
     {
@@ -1042,6 +1040,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
             } else {
                 Helper::devLog('Could not create resumption token', DEVLOG_SEVERITY_ERROR);
+                return $this->error('badResumptionToken');
             }
         } else {
             // Result set complete. We don't need a token.
