@@ -453,6 +453,7 @@ abstract class Document
             }
         }
         // Create new instance depending on format (METS or IIIF) ...
+        $instance = NULL;
         $documentFormat = NULL;
         $xml = NULL;
         $iiif = NULL;
@@ -549,8 +550,7 @@ abstract class Document
         }
         // Save instance to registry.
         if (
-            isset($instance)
-            && $instance instanceof self
+            $instance instanceof self
             && $instance->ready) {
             self::$registry[md5($instance->uid)] = $instance;
             if ($instance->uid != $instance->location) {
