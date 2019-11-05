@@ -94,13 +94,15 @@ class ReindexCommand extends Command
             exit(1);
         }
 
-        if ($input->getOption('solr')) {
+        if (
+            !empty($input->getOption('solr'))
+            && !is_array($input->getOption('solr'))
+        ) {
             $allSolrCores = $this->getSolrCores($startingPoint);
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('solr'))) {
                 $solrCoreUid = MathUtility::forceIntegerInRange((int) $input->getOption('solr'), 0);
             } else {
-                $solrCoreName = $input->getOption('solr');
-                $solrCoreUid = $allSolrCores[$solrCoreName];
+                $solrCoreUid = $allSolrCores[$input->getOption('solr')];
             }
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
@@ -117,20 +119,26 @@ class ReindexCommand extends Command
                 }
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing.');
+            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
             exit(1);
         }
 
-        if ($input->getOption('all')) {
-            // Get the document...
+        if (!empty($input->getOption('all'))) {
+            // Get all documents.
             $documents = $this->getAllDocuments($startingPoint);
-        } else {
-            // coll may be a single integer, a list of integer
+        } elseif (
+            !empty($input->getOption('coll'))
+            && !is_array($input->getOption('coll'))
+        ) {
+            // "coll" may be a single integer or a comma-separated list of integers.
             if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), TRUE)))) {
-                $io->error('ERROR: "' . $input->getOption('coll') . '" is not a valid list of collection UIDs for --coll|-c.');
+                $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
                 exit(1);
             }
             $documents = $this->getDocumentsToProceed($input->getOption('coll'), $startingPoint);
+        } else {
+            $io->error('ERROR: One of parameters --all|-a or --coll|-c must be given.');
+            exit(1);
         }
 
         foreach ($documents as $id => $document) {

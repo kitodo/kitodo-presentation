@@ -87,13 +87,15 @@ class IndexCommand extends Command
             exit(1);
         }
 
-        if ($input->getOption('solr')) {
+        if (
+            !empty($input->getOption('solr'))
+            && !is_array($input->getOption('solr'))
+        ) {
             $allSolrCores = $this->getSolrCores($startingPoint);
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('solr'))) {
                 $solrCoreUid = MathUtility::forceIntegerInRange((int) $input->getOption('solr'), 0);
             } else {
-                $solrCoreName = $input->getOption('solr');
-                $solrCoreUid = $allSolrCores[$solrCoreName];
+                $solrCoreUid = $allSolrCores[$input->getOption('solr')];
             }
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
@@ -110,15 +112,19 @@ class IndexCommand extends Command
                 }
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing.');
+            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
             exit(1);
         }
 
         if (
-            !MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))
-            && !GeneralUtility::isValidUrl($input->getOption('doc'))
+            empty($input->getOption('doc'))
+            || is_array($input->getOption('doc'))
+            || (
+                !MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))
+                && !GeneralUtility::isValidUrl($input->getOption('doc'))
+            )
         ) {
-            $io->error('ERROR: "' . $input->getOption('doc') . '" is not a valid document UID or URL for --doc|-d.');
+            $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
             exit(1);
         }
 
