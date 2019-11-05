@@ -306,15 +306,16 @@ final class MetsDocument extends Document
         } elseif (
             !empty($this->physicalStructure)
             && array_key_exists($details['id'], $this->smLinks['l2p'])
-        ) { // Are there any physical elements and is this logical unit linked to at least one of them?
+        ) {
+            // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, TRUE)), 1);
             if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
                 $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
             }
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
-        } elseif ($details['id'] == $this->_getToplevelId()) { // Is this the toplevel structure element?
-            // Yes. Point to itself.
+        } elseif ($details['id'] == $this->_getToplevelId()) {
+            // Point to self if this is the toplevel structure.
             $details['points'] = 1;
             if (
                 !empty($this->physicalStructure)

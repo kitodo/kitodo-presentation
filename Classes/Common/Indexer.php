@@ -624,10 +624,12 @@ class Indexer
     }
 
     /**
-     * This is a static class, thus no instances should be created
+     * Prevent instantiation by hiding the constructor
      *
      * @access private
      */
     private function __construct()
-    { }
+    {
+        // This is a static class, thus no instances should be created.
+    }
 }

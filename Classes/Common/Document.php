@@ -1543,14 +1543,15 @@ abstract class Document
 
     /**
      * This magic method is invoked each time a clone is called on the object variable
-     * (This method is defined as private/protected because singleton objects should not be cloned)
      *
      * @access protected
      *
      * @return void
      */
     protected function __clone()
-    { }
+    {
+        // This method is defined as protected because singleton objects should not be cloned.
+    }
 
     /**
      * This is a singleton class, thus the constructor should be private/protected
