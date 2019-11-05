@@ -421,7 +421,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             ) {
                 $allowedOperators = ['AND', 'OR', 'NOT'];
                 $allowedFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
-                for ($i = 0; $i < count($this->piVars['extQuery']); $i++) {
+                $numberOfExtQueries = count($this->piVars['extQuery']);
+                for ($i = 0; $i < $numberOfExtQueries; $i++) {
                     if (!empty($this->piVars['extQuery'][$i])) {
                         if (
                             in_array($this->piVars['extOperator'][$i], $allowedOperators)
