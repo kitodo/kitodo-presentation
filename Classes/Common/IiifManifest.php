@@ -665,9 +665,9 @@ final class IiifManifest extends Document
                     $resArray['format'] > 0 && !empty($resArray['xpath_sorting'])
                     && ($values = $iiifResource->jsonPath($resArray['xpath_sorting']) != NULL)
                 ) {
-                    if ($values instanceof string) {
+                    if (is_string($values)) {
                         $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
-                    } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data() > 1)) {
+                    } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
                         $metadata[$resArray['index_name']] = [];
                         foreach ($values->data() as $value) {
                             $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $value);
@@ -846,7 +846,7 @@ final class IiifManifest extends Document
                 return TRUE;
             }
         } else {
-            Helper::devLog('Could not load IIIF manifest from "' . $location . '"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('Could not load IIIF manifest from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -963,7 +963,7 @@ final class IiifManifest extends Document
             $this->iiif = $resource;
             $this->init();
         } else {
-            Helper::devLog('Could not load IIIF after deserialization', self::$extKey, SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('Could not load IIIF after deserialization', DEVLOG_SEVERITY_ERROR);
         }
     }
 
