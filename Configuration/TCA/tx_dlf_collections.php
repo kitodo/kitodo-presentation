@@ -127,9 +127,9 @@ return array (
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/locallang.xml:tx_dlf_collections.index_search',
             'config' => array (
-                'type' => 'input',
+                'type' => 'text',
                 'size' => 30,
-                'max' => 255,
+                'rows' => 5,
                 'eval' => 'trim',
             ),
         ),
