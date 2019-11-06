@@ -608,23 +608,26 @@ final class MetsDocument extends Document
      */
     protected function loadLocation($location)
     {
-        // Turn off libxml's error logging.
-        $libxmlErrors = libxml_use_internal_errors(TRUE);
-        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-        $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-        // Load XML from file.
-        $xml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($location));
-        // reset entity loader setting
-        libxml_disable_entity_loader($previousValueOfEntityLoader);
-        // Reset libxml's error logging.
-        libxml_use_internal_errors($libxmlErrors);
-        // Set some basic properties.
-        if ($xml !== FALSE) {
-            $this->xml = $xml;
-            return TRUE;
-        } else {
-            Helper::devLog('Could not load XML file from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
+        $fileResource = GeneralUtility::getUrl($location);
+        if ($fileResource !== FALSE) {
+            // Turn off libxml's error logging.
+            $libxmlErrors = libxml_use_internal_errors(TRUE);
+            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+            $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+            // Load XML from file.
+            $xml = simplexml_load_string($fileResource);
+            // reset entity loader setting
+            libxml_disable_entity_loader($previousValueOfEntityLoader);
+            // Reset libxml's error logging.
+            libxml_use_internal_errors($libxmlErrors);
+            // Set some basic properties.
+            if ($xml !== FALSE) {
+                $this->xml = $xml;
+                return TRUE;
+            }
         }
+        Helper::devLog('Could not load XML file from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
+        return FALSE;
     }
 
     /**
@@ -724,7 +727,7 @@ final class MetsDocument extends Document
                         $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
                     }
                 }
-                if ($xml) {
+                if (isset($xml)) {
                     $this->dmdSec[(string) $dmdId]['type'] = $type;
                     $this->dmdSec[(string) $dmdId]['xml'] = $xml[0];
                     $this->registerNamespaces($this->dmdSec[(string) $dmdId]['xml']);

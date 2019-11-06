@@ -870,6 +870,8 @@ abstract class Document
      * @abstract
      *
      * @param string $location: The URL of the file to load
+     *
+     * @return boolean TRUE on success or FALSE on failure
      */
     protected abstract function loadLocation($location);
 
