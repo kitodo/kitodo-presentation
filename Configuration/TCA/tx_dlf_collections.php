@@ -132,9 +132,9 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.index_search',
             'config' => [
-                'type' => 'input',
+                'type' => 'text',
                 'size' => 30,
-                'max' => 255,
+                'rows' => 5,
                 'eval' => 'trim',
                 'default' => '',
             ],
