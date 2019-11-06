@@ -44,7 +44,6 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function addAutocompleteJS()
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -597,7 +596,6 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // replace everything expect numbers and comma
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);
 
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 

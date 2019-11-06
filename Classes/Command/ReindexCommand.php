@@ -175,7 +175,6 @@ class ReindexCommand extends Command
      */
     protected function getSolrCores(int $pageId): array
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_solrcores');
 
@@ -209,7 +208,6 @@ class ReindexCommand extends Command
      */
     protected function getDocumentsToProceed(string $collIds, int $pageId): array
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -275,7 +273,6 @@ class ReindexCommand extends Command
      */
     protected function getAllDocuments(int $pageId): array
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 

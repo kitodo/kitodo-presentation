@@ -168,7 +168,6 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                 !empty($this->metadata['options']['source'])
                 && $this->metadata['options']['source'] == 'collection'
             ) {
-                /** @var QueryBuilder $queryBuilder */
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -568,7 +567,6 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if (!$this->solr) {
             // Connect to Solr server.
             if ($this->solr = Solr::getInstance($this->metadata['options']['core'])) {
-                /** @var QueryBuilder $queryBuilder */
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_metadata');
 

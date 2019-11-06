@@ -155,7 +155,6 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $this->doc->cPid = $this->conf['pages'];
             }
         } elseif (!empty($this->piVars['recordId'])) {
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 

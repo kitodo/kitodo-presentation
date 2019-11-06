@@ -80,7 +80,6 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function showCollectionList()
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 
@@ -258,9 +257,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function showSingleCollection($id)
     {
-        /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_collections');
 
         $additionalWhere = '';
@@ -320,7 +317,6 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         $documentSet = array_unique($documentSet);
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
         // Fetch document info for UIDs in $documentSet from DB
         $documents = $queryBuilder

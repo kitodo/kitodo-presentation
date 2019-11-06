@@ -459,7 +459,6 @@ abstract class Document
         $iiif = NULL;
         // Try to get document format from database
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -730,7 +729,6 @@ abstract class Document
         // Sanitize input.
         $uid = max(intval($uid), 0);
         if ($uid) {
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -921,7 +919,6 @@ abstract class Document
     protected function loadFormats()
     {
         if (!$this->formatsLoaded) {
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_formats');
 
@@ -1027,7 +1024,6 @@ abstract class Document
         // Load plugin configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_structures');
 
@@ -1578,7 +1574,6 @@ abstract class Document
      */
     protected function __construct($uid, $pid, $preloadedDocument)
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
         $location = '';
