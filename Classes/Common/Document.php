@@ -666,25 +666,33 @@ abstract class Document
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
         if (!empty($this->physicalStructureInfo[$id])) {
             // Get fulltext file.
-            $file = $this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]);
-            // Turn off libxml's error logging.
-            $libxmlErrors = libxml_use_internal_errors(TRUE);
-            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
-            $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-            // Load XML from file.
-            $rawTextXml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
-            // Reset entity loader setting.
-            libxml_disable_entity_loader($previousValueOfEntityLoader);
-            // Reset libxml's error logging.
-            libxml_use_internal_errors($libxmlErrors);
-            // Get the root element's name as text format.
-            $textFormat = strtoupper($rawTextXml->getName());
+            $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]));
+            if ($file !== FALSE) {
+                // Turn off libxml's error logging.
+                $libxmlErrors = libxml_use_internal_errors(TRUE);
+                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                // Load XML from file.
+                $rawTextXml = simplexml_load_string($file);
+                // Reset entity loader setting.
+                libxml_disable_entity_loader($previousValueOfEntityLoader);
+                // Reset libxml's error logging.
+                libxml_use_internal_errors($libxmlErrors);
+                // Get the root element's name as text format.
+                $textFormat = strtoupper($rawTextXml->getName());
+            } else {
+                Helper::devLog('Couln\'t load fulltext file for structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+                return $rawText;
+            }
         } else {
             Helper::devLog('Invalid structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
             return $rawText;
         }
         // Is this text format supported?
-        if (!empty($this->formats[$textFormat])) {
+        if (
+            !empty($rawTextXml)
+            && !empty($this->formats[$textFormat])
+        ) {
             if (!empty($this->formats[$textFormat]['class'])) {
                 $class = $this->formats[$textFormat]['class'];
                 // Get the raw text from class.
