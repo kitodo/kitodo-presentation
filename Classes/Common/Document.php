@@ -1074,12 +1074,11 @@ abstract class Document
             )
             ->execute();
 
+        $collUid = [];
         while ($resArray = $result->fetch()) {
             $collUid[$resArray['index_name']] = $resArray['uid'];
         }
-
         $collections = [];
-
         foreach ($metadata['collection'] as $collection) {
             if (!empty($collUid[$collection])) {
                 // Add existing collection's UID.
@@ -1582,7 +1581,7 @@ abstract class Document
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
-
+        $location = '';
         // Prepare to check database for the requested document.
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
             $whereClause = $queryBuilder->expr()->andX(
