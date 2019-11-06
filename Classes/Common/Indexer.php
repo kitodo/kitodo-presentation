@@ -505,22 +505,27 @@ class Indexer
             if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])) {
                 $file = $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpFulltext']]);
                 // Load XML file.
-                if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($file)) {
+                if (GeneralUtility::isValidUrl($file)) {
                     // Set user-agent to identify self when fetching XML data.
                     if (!empty($extConf['useragent'])) {
                         @ini_set('user_agent', $extConf['useragent']);
                     }
-                    // Turn off libxml's error logging.
-                    $libxmlErrors = libxml_use_internal_errors(TRUE);
-                    // disable entity loading
-                    $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-                    // Load XML from file.
-                    $xml = simplexml_load_string(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($file));
-                    // reset entity loader setting
-                    libxml_disable_entity_loader($previousValueOfEntityLoader);
-                    // Reset libxml's error logging.
-                    libxml_use_internal_errors($libxmlErrors);
-                    if ($xml === FALSE) {
+                    $fileResource = GeneralUtility::getUrl($file);
+                    if ($fileResource !== FALSE) {
+                        // Turn off libxml's error logging.
+                        $libxmlErrors = libxml_use_internal_errors(TRUE);
+                        // disable entity loading
+                        $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                        // Load XML from file.
+                        $xml = simplexml_load_string($fileResource);
+                        // reset entity loader setting
+                        libxml_disable_entity_loader($previousValueOfEntityLoader);
+                        // Reset libxml's error logging.
+                        libxml_use_internal_errors($libxmlErrors);
+                        if ($xml === FALSE) {
+                            return 1;
+                        }
+                    } else {
                         return 1;
                     }
                 } else {
@@ -532,8 +537,13 @@ class Indexer
                     if (!empty($extConf['useragent'])) {
                         @ini_set('user_agent', $extConf['useragent']);
                     }
-                    $annotationContainer = IiifHelper::loadIiifResource(\TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($annotationContainerId));
-                    if (!($annotationContainer instanceof AnnotationContainerInterface)) {
+                    $fileResource = GeneralUtility::getUrl($annotationContainerId);
+                    if ($fileResource !== FALSE) {
+                        $annotationContainer = IiifHelper::loadIiifResource($fileResource);
+                        if (!($annotationContainer instanceof AnnotationContainerInterface)) {
+                            return 1;
+                        }
+                    } else {
                         return 1;
                     }
                 }
