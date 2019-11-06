@@ -78,7 +78,9 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             // Load default template from extension.
             $templateFile = 'EXT:' . $this->extKey . '/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
         }
-        $this->template = $this->templateService->getSubpart($this->cObj->fileResource($templateFile), $part);
+        // Substitute strings like "EXT:" in given template file location.
+        $fileResource = $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
+        $this->template = $this->templateService->getSubpart(file_get_contents($fileResource), $part);
     }
 
     /**
