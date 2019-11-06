@@ -27,6 +27,23 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @property-write integer $cPid This holds the PID for the configuration
+ * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-read string $location This holds the documents location
+ * @property-read array $metadataArray This holds the documents' parsed metadata array
+ * @property-read integer $numPages The holds the total number of pages
+ * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read array $physicalStructure This holds the physical structure
+ * @property-read array $physicalStructureInfo This holds the physical structure metadata
+ * @property-read integer $pid This holds the PID of the document or zero if not in database
+ * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read string $recordId The METS file's / IIIF manifest's record identifier
+ * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read array $smLinks This holds the smLinks between logical and physical structMap
+ * @property-read array $tableOfContents This holds the logical structure
+ * @property-read string $thumbnail This holds the document's thumbnail location
+ * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
+ * @property-read mixed $uid This holds the UID or the URL of the document
  * @abstract
  */
 abstract class Document
@@ -68,6 +85,15 @@ abstract class Document
             'namespaceURI' => 'http://www.w3.org/1999/xlink',
         ]
     ];
+
+    /**
+     * Are the available metadata formats loaded?
+     * @see $formats
+     *
+     * @var boolean
+     * @access protected
+     */
+    protected $formatsLoaded = FALSE;
 
     /**
      * Are there any fulltext files available? This also includes IIIF text annotations
@@ -256,7 +282,7 @@ abstract class Document
     protected $tableOfContentsLoaded = FALSE;
 
     /**
-     * This holds the document's thumbnail location.
+     * This holds the document's thumbnail location
      *
      * @var string
      * @access protected
@@ -273,7 +299,7 @@ abstract class Document
     protected $thumbnailLoaded = FALSE;
 
     /**
-     * This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF).
+     * This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
      *
      * @var string
      * @access protected
@@ -312,7 +338,7 @@ abstract class Document
     }
 
     /**
-     * This ensures that the recordId, if existent, is retrieved from the document.
+     * This ensures that the recordId, if existent, is retrieved from the document
      *
      * @access protected
      *
@@ -427,6 +453,7 @@ abstract class Document
             }
         }
         // Create new instance depending on format (METS or IIIF) ...
+        $instance = NULL;
         $documentFormat = NULL;
         $xml = NULL;
         $iiif = NULL;
@@ -479,34 +506,36 @@ abstract class Document
                     @ini_set('user_agent', $extConf['useragent']);
                 }
                 $content = GeneralUtility::getUrl($location);
-                // TODO use single place to load xml
-                // Turn off libxml's error logging.
-                $libxmlErrors = libxml_use_internal_errors(TRUE);
-                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
-                // Try to load XML from file.
-                $xml = simplexml_load_string($content);
-                // reset entity loader setting
-                libxml_disable_entity_loader($previousValueOfEntityLoader);
-                // Reset libxml's error logging.
-                libxml_use_internal_errors($libxmlErrors);
-                if ($xml !== FALSE) {
-                    /* @var $xml \SimpleXMLElement */
-                    $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-                    $xpathResult = $xml->xpath('//mets:mets');
-                    $documentFormat = ($xpathResult !== FALSE && count($xpathResult) > 0) ? 'METS' : NULL;
-                } else {
-                    // Try to load file as IIIF resource instead.
-                    $contentAsJsonArray = json_decode($content, TRUE);
-                    if ($contentAsJsonArray !== NULL) {
-                        // Load plugin configuration.
-                        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-                        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                        IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
-                        IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
-                        $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
-                        if ($iiif instanceof IiifResourceInterface) {
-                            $documentFormat = 'IIIF';
+                if ($content !== FALSE) {
+                    // TODO use single place to load xml
+                    // Turn off libxml's error logging.
+                    $libxmlErrors = libxml_use_internal_errors(TRUE);
+                    // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+                    $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                    // Try to load XML from file.
+                    $xml = simplexml_load_string($content);
+                    // reset entity loader setting
+                    libxml_disable_entity_loader($previousValueOfEntityLoader);
+                    // Reset libxml's error logging.
+                    libxml_use_internal_errors($libxmlErrors);
+                    if ($xml !== FALSE) {
+                        /* @var $xml \SimpleXMLElement */
+                        $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
+                        $xpathResult = $xml->xpath('//mets:mets');
+                        $documentFormat = ($xpathResult !== FALSE && count($xpathResult) > 0) ? 'METS' : NULL;
+                    } else {
+                        // Try to load file as IIIF resource instead.
+                        $contentAsJsonArray = json_decode($content, TRUE);
+                        if ($contentAsJsonArray !== NULL) {
+                            // Load plugin configuration.
+                            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+                            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+                            IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
+                            IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
+                            $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
+                            if ($iiif instanceof IiifResourceInterface) {
+                                $documentFormat = 'IIIF';
+                            }
                         }
                     }
                 }
@@ -520,7 +549,9 @@ abstract class Document
             $instance = new IiifManifest($uid, $pid, $iiif);
         }
         // Save instance to registry.
-        if ($instance->ready) {
+        if (
+            $instance instanceof self
+            && $instance->ready) {
             self::$registry[md5($instance->uid)] = $instance;
             if ($instance->uid != $instance->location) {
                 self::$registry[md5($instance->location)] = $instance;
@@ -953,7 +984,7 @@ abstract class Document
      */
     public function save($pid = 0, $core = 0)
     {
-        if (TYPO3_MODE !== 'BE') {
+        if (\TYPO3_MODE !== 'BE') {
             Helper::devLog('Saving a document is only allowed in the backend', DEVLOG_SEVERITY_ERROR);
             return FALSE;
         }
@@ -1063,7 +1094,7 @@ abstract class Document
                 unset($collData);
                 // Add new collection's UID.
                 $collections[] = $substUid[$collNewUid];
-                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
                         htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
                         Helper::getMessage('flash.attention', TRUE),
@@ -1114,7 +1145,7 @@ abstract class Document
             $substUid = Helper::processDBasAdmin($libData);
             // Add new library's UID.
             $ownerUid = $substUid[$libNewUid];
-            if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                 Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
                     Helper::getMessage('flash.attention', TRUE),
@@ -1232,7 +1263,7 @@ abstract class Document
             $this->pid = $pid;
             $this->parentId = $partof;
         }
-        if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+        if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
             Helper::addMessage(
                 htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
                 Helper::getMessage('flash.done', TRUE),
@@ -1515,14 +1546,15 @@ abstract class Document
 
     /**
      * This magic method is invoked each time a clone is called on the object variable
-     * (This method is defined as private/protected because singleton objects should not be cloned)
      *
      * @access protected
      *
      * @return void
      */
     protected function __clone()
-    { }
+    {
+        // This method is defined as protected because singleton objects should not be cloned.
+    }
 
     /**
      * This is a singleton class, thus the constructor should be private/protected

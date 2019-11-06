@@ -37,6 +37,23 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
+ * @property-write integer $cPid This holds the PID for the configuration
+ * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-read string $location This holds the documents location
+ * @property-read array $metadataArray This holds the documents' parsed metadata array
+ * @property-read integer $numPages The holds the total number of pages
+ * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read array $physicalStructure This holds the physical structure
+ * @property-read array $physicalStructureInfo This holds the physical structure metadata
+ * @property-read integer $pid This holds the PID of the document or zero if not in database
+ * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read string $recordId The IIIF manifest's record identifier
+ * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read array $smLinks This holds the connections between resources and canvases
+ * @property-read array $tableOfContents This holds the logical structure
+ * @property-read string $thumbnail This holds the document's thumbnail location
+ * @property-read string $toplevelId This holds the toplevel manifest's @id
+ * @property-read mixed $uid This holds the UID or the URL of the document
  */
 final class IiifManifest extends Document
 {
@@ -648,9 +665,9 @@ final class IiifManifest extends Document
                     $resArray['format'] > 0 && !empty($resArray['xpath_sorting'])
                     && ($values = $iiifResource->jsonPath($resArray['xpath_sorting']) != NULL)
                 ) {
-                    if ($values instanceof string) {
+                    if (is_string($values)) {
                         $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
-                    } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data() > 1)) {
+                    } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
                         $metadata[$resArray['index_name']] = [];
                         foreach ($values->data() as $value) {
                             $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $value);
@@ -829,7 +846,7 @@ final class IiifManifest extends Document
                 return TRUE;
             }
         } else {
-            Helper::devLog('Could not load IIIF manifest from "' . $location . '"', self::$extKey, SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('Could not load IIIF manifest from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
         }
     }
 
@@ -946,7 +963,7 @@ final class IiifManifest extends Document
             $this->iiif = $resource;
             $this->init();
         } else {
-            Helper::devLog('Could not load IIIF after deserialization', self::$extKey, SYSLOG_SEVERITY_ERROR);
+            Helper::devLog('Could not load IIIF after deserialization', DEVLOG_SEVERITY_ERROR);
         }
     }
 

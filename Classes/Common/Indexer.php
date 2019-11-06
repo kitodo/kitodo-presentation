@@ -151,7 +151,7 @@ class Indexer
 
                 $allResults = $result->fetchAll();
                 $resArray = $allResults[0];
-                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     if (!$errors) {
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
@@ -170,7 +170,7 @@ class Indexer
                 }
                 return $errors;
             } catch (\Exception $e) {
-                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
                         Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
@@ -182,7 +182,7 @@ class Indexer
                 return 1;
             }
         } else {
-            if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                 Helper::addMessage(
                     Helper::getMessage('flash.solrNoConnection', TRUE),
                     Helper::getMessage('flash.warning', TRUE),
@@ -230,7 +230,7 @@ class Indexer
                     $updateQuery->addCommit();
                     self::$solr->service->update($updateQuery);
                 } catch (\Exception $e) {
-                    if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                    if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                         Helper::addMessage(
                             Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
                             Helper::getMessage('flash.error', TRUE),
@@ -242,7 +242,7 @@ class Indexer
                     return 1;
                 }
             } else {
-                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
                         Helper::getMessage('flash.solrNoConnection', TRUE),
                         Helper::getMessage('flash.error', TRUE),
@@ -253,7 +253,7 @@ class Indexer
                 Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
-            if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                 Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.documentDeleted'), $title, $uid)),
                     Helper::getMessage('flash.done', TRUE),
@@ -459,7 +459,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
                         Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', TRUE),
@@ -581,7 +581,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if ((TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
                     Helper::addMessage(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
@@ -624,10 +624,12 @@ class Indexer
     }
 
     /**
-     * This is a static class, thus no instances should be created
+     * Prevent instantiation by hiding the constructor
      *
      * @access private
      */
     private function __construct()
-    { }
+    {
+        // This is a static class, thus no instances should be created.
+    }
 }

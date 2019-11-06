@@ -168,11 +168,14 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
-                    } elseif ($index_name == 'owner' && !empty($value)) { // Translate name of holding library.
+                    } elseif ($index_name == 'owner' && !empty($value)) {
+                        // Translate name of holding library.
                         $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
-                    } elseif ($index_name == 'type' && !empty($value)) { // Translate document type.
+                    } elseif ($index_name == 'type' && !empty($value)) {
+                        // Translate document type.
                         $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
-                    } elseif ($index_name == 'language' && !empty($value)) { // Translate ISO 639 language code.
+                    } elseif ($index_name == 'language' && !empty($value)) {
+                        // Translate ISO 639 language code.
                         $value = htmlspecialchars(Helper::getLanguageName($value));
                     } elseif (!empty($value)) {
                         $value = htmlspecialchars($value);
@@ -337,16 +340,19 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
-                    } elseif ($index_name == 'owner' && !empty($value)) { // Translate name of holding library.
+                    } elseif ($index_name == 'owner' && !empty($value)) {
+                        // Translate name of holding library.
                         $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
-                    } elseif ($index_name == 'type' && !empty($value)) { // Translate document type.
+                    } elseif ($index_name == 'type' && !empty($value)) {
+                        // Translate document type.
                         $_value = $value;
                         $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
                         // Add page number for single pages.
                         if ($_value == 'page') {
                             $value .= ' ' . intval($subpart['page']);
                         }
-                    } elseif ($index_name == 'language' && !empty($value)) { // Translate ISO 639 language code.
+                    } elseif ($index_name == 'language' && !empty($value)) {
+                        // Translate ISO 639 language code.
                         $value = htmlspecialchars(Helper::getLanguageName($value));
                     } elseif (!empty($value)) {
                         $value = htmlspecialchars($value);

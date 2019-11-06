@@ -185,13 +185,13 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
-            $this->doc->physicalStructure
+            !empty($this->doc->physicalStructure)
             || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->doc->uid)
         ) {
             // Get all logical units the current page or track is a part of.
             if (
                 !empty($this->piVars['page'])
-                && $this->doc->physicalStructure
+                && !empty($this->doc->physicalStructure)
             ) {
                 $this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]], (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page']]]);
                 if (

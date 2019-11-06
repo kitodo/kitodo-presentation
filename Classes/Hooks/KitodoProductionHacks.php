@@ -41,7 +41,7 @@ class KitodoProductionHacks
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
             if (($divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
                 $smLinks = $xml->xpath('//mets:structLink/mets:smLink');
-                if ($smLinks) {
+                if (!empty($smLinks)) {
                     foreach ($smLinks as $smLink) {
                         $links[(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
                     }

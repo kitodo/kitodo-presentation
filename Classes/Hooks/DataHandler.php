@@ -128,10 +128,10 @@ class DataHandler
                     $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
                     // Process response.
                     if ($response) {
-                        $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
+                        $solrStatus = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
                         if (
-                            $status
-                            && $status[0] == 0
+                            is_array($solrStatus)
+                            && $solrStatus[0] == 0
                         ) {
                             $fieldArray['index_name'] = 'dlfCore' . $coreNumber;
                             return;

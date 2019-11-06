@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @property array $metadata This holds the list's metadata
  */
 class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Core\SingletonInterface
 {
@@ -732,14 +733,15 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
     /**
      * This magic method is invoked each time a clone is called on the object variable
-     * (This method is defined as private/protected because singleton objects should not be cloned)
      *
      * @access protected
      *
      * @return void
      */
     protected function __clone()
-    { }
+    {
+        // This method is defined as protected because singleton objects should not be cloned.
+    }
 
     /**
      * This magic method is called each time an invisible property is referenced from the object

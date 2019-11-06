@@ -26,6 +26,26 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
+ * @property-write integer $cPid This holds the PID for the configuration
+ * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
+ * @property-read array $fileGrps This holds the file ID -> USE concordance
+ * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-read string $location This holds the documents location
+ * @property-read array $metadataArray This holds the documents' parsed metadata array
+ * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
+ * @property-read integer $numPages The holds the total number of pages
+ * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read array $physicalStructure This holds the physical structure
+ * @property-read array $physicalStructureInfo This holds the physical structure metadata
+ * @property-read integer $pid This holds the PID of the document or zero if not in database
+ * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read string $recordId The METS file's / IIIF manifest's record identifier
+ * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read array $smLinks This holds the smLinks between logical and physical structMap
+ * @property-read array $tableOfContents This holds the logical structure
+ * @property-read string $thumbnail This holds the document's thumbnail location
+ * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
+ * @property-read mixed $uid This holds the UID or the URL of the document
  */
 final class MetsDocument extends Document
 {
@@ -80,15 +100,6 @@ final class MetsDocument extends Document
      * @access protected
      */
     protected $fileGrpsLoaded = FALSE;
-
-    /**
-     * Are the available metadata formats loaded?
-     * @see $formats
-     *
-     * @var boolean
-     * @access protected
-     */
-    protected $formatsLoaded = FALSE;
 
     /**
      * This holds the XML file's METS part as \SimpleXMLElement object
@@ -155,7 +166,7 @@ final class MetsDocument extends Document
     {
         $fileMimeType = $this->getFileMimeType($id);
         $fileLocation = $this->getFileLocation($id);
-        if ($fileMimeType == "application/vnd.kitodo.iiif") {
+        if ($fileMimeType == 'application/vnd.kitodo.iiif') {
             $fileLocation = strrpos($fileLocation, "info.json") == strlen($fileLocation) - 9 ? $fileLocation : strrpos($fileLocation, "/") == strlen($fileLocation) ? $fileLocation . "info.json" : $fileLocation . "/info.json";
             $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
@@ -165,7 +176,7 @@ final class MetsDocument extends Document
             if ($service != NULL && $service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
-        } elseif ($fileMimeType = "application/vnd.netfpx") {
+        } elseif ($fileMimeType == 'application/vnd.netfpx') {
             $baseURL = $fileLocation . (strpos($fileLocation, "?") === FALSE ? "?" : "");
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
             return $baseURL . "&CVT=jpeg";
@@ -295,15 +306,16 @@ final class MetsDocument extends Document
         } elseif (
             !empty($this->physicalStructure)
             && array_key_exists($details['id'], $this->smLinks['l2p'])
-        ) { // Are there any physical elements and is this logical unit linked to at least one of them?
+        ) {
+            // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, TRUE)), 1);
             if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
                 $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
             }
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
-        } elseif ($details['id'] == $this->_getToplevelId()) { // Is this the toplevel structure element?
-            // Yes. Point to itself.
+        } elseif ($details['id'] == $this->_getToplevelId()) {
+            // Point to self if this is the toplevel structure.
             $details['points'] = 1;
             if (
                 !empty($this->physicalStructure)
@@ -807,7 +819,7 @@ final class MetsDocument extends Document
         if (!$this->physicalStructureLoaded) {
             // Does the document have a structMap node of type "PHYSICAL"?
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div');
-            if ($elementNodes) {
+            if (is_array($elementNodes)) {
                 // Get file groups.
                 $fileUse = $this->_getFileGrps();
                 // Get the physical sequence's metadata.
