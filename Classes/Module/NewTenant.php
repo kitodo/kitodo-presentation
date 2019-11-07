@@ -212,7 +212,6 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 }
             }
 
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_structures');
 

@@ -163,7 +163,6 @@ class DocumentTypeCheck
                 Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($this->piVars['recordId'])) {
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 

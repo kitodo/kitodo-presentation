@@ -110,7 +110,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $this->content .= $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
         // Set defaults for menu.
         if (empty($this->markerArray['CSH'])) {
-            $this->markerArray['CSH'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_' . $GLOBALS['MCONF']['name'], 'csh', $GLOBALS['BACK_PATH'], '', TRUE);
+            $this->markerArray['CSH'] = \TYPO3\CMS\Backend\Utility\BackendUtility::cshItem('_MOD_' . $GLOBALS['MCONF']['name'], 'csh');
         }
         if (empty($this->markerArray['MOD_MENU'])) {
             $this->markerArray['MOD_MENU'] = \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']);

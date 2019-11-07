@@ -402,7 +402,6 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function loadConfig()
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
 

@@ -109,7 +109,6 @@ class ConfigurationForm
             'IIIF3' => FALSE
         ];
 
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 

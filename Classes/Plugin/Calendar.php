@@ -67,7 +67,6 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load template file.
         $this->getTemplate('###TEMPLATECALENDAR###');
 
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -278,7 +277,6 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get the title of the anchor file
         $titleAnchor = $this->doc->getTitle($this->doc->uid);
 
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 

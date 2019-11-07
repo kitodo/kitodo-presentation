@@ -161,7 +161,6 @@ class IndexCommand extends Command
      */
     protected function getSolrCores(int $pageId): array
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_solrcores');
 

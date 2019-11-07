@@ -58,7 +58,6 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
             $channel->appendChild($rss->createElement('description', htmlspecialchars($this->conf['description'], ENT_QUOTES, 'UTF-8')));
         }
 
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_structures');
 

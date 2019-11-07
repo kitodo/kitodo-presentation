@@ -228,7 +228,6 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
             }
         } else {
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_metadata');
 

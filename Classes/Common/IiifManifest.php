@@ -834,20 +834,22 @@ final class IiifManifest extends Document
      */
     protected function loadLocation($location)
     {
-        $content = GeneralUtility::getUrl($location);
-        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-        IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
-        IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
-        $resource = IiifHelper::loadIiifResource($content);
-        if ($resource != NULL) {
-            if ($resource instanceof ManifestInterface) {
-                $this->iiif = $resource;
-                return TRUE;
+        $fileResource = GeneralUtility::getUrl($location);
+        if ($fileResource !== FALSE) {
+            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+            IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
+            IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
+            $resource = IiifHelper::loadIiifResource($fileResource);
+            if ($resource != NULL) {
+                if ($resource instanceof ManifestInterface) {
+                    $this->iiif = $resource;
+                    return TRUE;
+                }
             }
-        } else {
-            Helper::devLog('Could not load IIIF manifest from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
         }
+        Helper::devLog('Could not load IIIF manifest from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
+        return FALSE;
     }
 
     /**

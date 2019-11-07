@@ -83,7 +83,6 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                 'tx_dlf_documents.uid'
             );
         } else {
-            /** @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
