@@ -107,6 +107,7 @@
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>10</maxitems>
 								<minitems>0</minitems>
+                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
 							</config>
 						</TCEforms>
 					</extendedFields>
@@ -153,6 +154,7 @@
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>1024</maxitems>
 								<minitems>0</minitems>
+                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
 							</config>
 						</TCEforms>
 					</collections>
@@ -169,6 +171,7 @@
 								<autoSizeMax>15</autoSizeMax>
 								<maxitems>1024</maxitems>
 								<minitems>0</minitems>
+                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
 							</config>
 						</TCEforms>
 					</facets>
