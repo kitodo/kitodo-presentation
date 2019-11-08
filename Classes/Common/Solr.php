@@ -390,7 +390,7 @@ class Solr
 
         // calculate cache identifier
         $cacheIdentifier = hash('md5', print_r(array_merge($this->params, $parameters), 1));
-        $cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('kitodo_solr');
+        $cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('tx_dlf_solr');
 
         $resultSet = [];
         if (($entry = $cache->get($cacheIdentifier)) === FALSE) {
