@@ -58,7 +58,7 @@ class KitodoProductionHacks
                 $dmdIds = explode(' ', $id);
                 foreach ($dmdIds as $dmdId) {
                     $recordIds = $xml->xpath('//mets:dmdSec[@ID="' . $dmdId . '"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
-                    if (!empty($recordIds[0])) {
+                    if (!empty($recordIds)) {
                         $record_id = (string) $recordIds[0];
                         break;
                     }

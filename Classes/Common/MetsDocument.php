@@ -190,9 +190,10 @@ final class MetsDocument extends Document
      */
     public function getFileLocation($id)
     {
+        $location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]');
         if (
             !empty($id)
-            && ($location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]'))
+            && !empty($location)
         ) {
             return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
         } else {
@@ -207,9 +208,10 @@ final class MetsDocument extends Document
      */
     public function getFileMimeType($id)
     {
+        $mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/@MIMETYPE');
         if (
             !empty($id)
-            && ($mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/@MIMETYPE'))
+            && !empty($mimetype)
         ) {
             return (string) $mimetype[0];
         } else {
@@ -411,7 +413,7 @@ final class MetsDocument extends Document
             $dmdIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@DMDID');
             $dmdIds = (string) $dmdIds[0];
         }
-        if ($dmdIds !== FALSE && !empty($dmdIds)) {
+        if (!empty($dmdIds)) {
             // Handle multiple DMDIDs separately.
             $dmdIds = explode(' ', $dmdIds);
             $hasSupportedMetadata = FALSE;
@@ -447,7 +449,9 @@ final class MetsDocument extends Document
                 $metadata['type'] = [$this->logicalUnits[$id]['type']];
             } else {
                 $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@TYPE');
-                $metadata['type'] = [(string) $struct[0]];
+                if (!empty($struct)) {
+                    $metadata['type'] = [(string) $struct[0]];
+                }
             }
             // Get the additional metadata from database.
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -581,7 +585,12 @@ final class MetsDocument extends Document
      */
     public function getStructureDepth($logId)
     {
-        return count($this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*'));
+        $ancestors = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*');
+        if (!empty($ancestors)) {
+            return count($ancestors);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -593,7 +602,7 @@ final class MetsDocument extends Document
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);
         $mets = $this->xml->xpath('//mets:mets');
-        if ($mets) {
+        if (!empty($mets)) {
             $this->mets = $mets[0];
             // Register namespaces.
             $this->registerNamespaces($this->mets);
@@ -651,7 +660,7 @@ final class MetsDocument extends Document
         $partof = 0;
         // Get the closest ancestor of the current document which has a MPTR child.
         $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->_getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
-        if (!empty($parentMptr[0])) {
+        if (!empty($parentMptr)) {
             $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
             if ($parentLocation != $this->location) {
                 $parentDoc = self::getInstance($parentLocation, $pid);
@@ -715,22 +724,24 @@ final class MetsDocument extends Document
             $this->loadFormats();
             // Get dmdSec nodes from METS.
             $dmdIds = $this->mets->xpath('./mets:dmdSec/@ID');
-            foreach ($dmdIds as $dmdId) {
-                if ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
-                    if (!empty($this->formats[(string) $type[0]])) {
-                        $type = (string) $type[0];
-                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+            if (!empty($dmdIds)) {
+                foreach ($dmdIds as $dmdId) {
+                    if ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
+                        if (!empty($this->formats[(string) $type[0]])) {
+                            $type = (string) $type[0];
+                            $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+                        }
+                    } elseif ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
+                        if (!empty($this->formats[(string) $type[0]])) {
+                            $type = (string) $type[0];
+                            $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+                        }
                     }
-                } elseif ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
-                    if (!empty($this->formats[(string) $type[0]])) {
-                        $type = (string) $type[0];
-                        $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+                    if (!empty($xml)) {
+                        $this->dmdSec[(string) $dmdId]['type'] = $type;
+                        $this->dmdSec[(string) $dmdId]['xml'] = $xml[0];
+                        $this->registerNamespaces($this->dmdSec[(string) $dmdId]['xml']);
                     }
-                }
-                if (isset($xml)) {
-                    $this->dmdSec[(string) $dmdId]['type'] = $type;
-                    $this->dmdSec[(string) $dmdId]['xml'] = $xml[0];
-                    $this->registerNamespaces($this->dmdSec[(string) $dmdId]['xml']);
                 }
             }
             $this->dmdSecLoaded = TRUE;
@@ -765,11 +776,13 @@ final class MetsDocument extends Document
             }
             // Get all file groups.
             $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
-            // Build concordance for configured USE attributes.
-            foreach ($fileGrps as $fileGrp) {
-                if (in_array((string) $fileGrp['USE'], $useGrps)) {
-                    foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
-                        $this->fileGrps[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
+            if (!empty($fileGrps)) {
+                // Build concordance for configured USE attributes.
+                foreach ($fileGrps as $fileGrp) {
+                    if (in_array((string) $fileGrp['USE'], $useGrps)) {
+                        foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
+                            $this->fileGrps[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
+                        }
                     }
                 }
             }
@@ -791,8 +804,9 @@ final class MetsDocument extends Document
      */
     protected function prepareMetadataArray($cPid)
     {
+        $ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID');
         // Get all logical structure nodes with metadata.
-        if (($ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID'))) {
+        if (!empty($ids)) {
             foreach ($ids as $id) {
                 $this->metadataArray[(string) $id] = $this->getMetadata((string) $id, $cPid);
             }
@@ -822,7 +836,7 @@ final class MetsDocument extends Document
         if (!$this->physicalStructureLoaded) {
             // Does the document have a structMap node of type "PHYSICAL"?
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div');
-            if (is_array($elementNodes)) {
+            if (!empty($elementNodes)) {
                 // Get file groups.
                 $fileUse = $this->_getFileGrps();
                 // Get the physical sequence's metadata.
@@ -881,9 +895,11 @@ final class MetsDocument extends Document
     {
         if (!$this->smLinksLoaded) {
             $smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
-            foreach ($smLinks as $smLink) {
-                $this->smLinks['l2p'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
-                $this->smLinks['p2l'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->to][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->from;
+            if (!empty($smLinks)) {
+                foreach ($smLinks as $smLink) {
+                    $this->smLinks['l2p'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
+                    $this->smLinks['p2l'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->to][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->from;
+                }
             }
             $this->smLinksLoaded = TRUE;
         }
@@ -972,7 +988,8 @@ final class MetsDocument extends Document
     {
         if (empty($this->toplevelId)) {
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
-            if (($divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
+            $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]');
+            if (!empty($divs)) {
                 // Load smLinks.
                 $this->_getSmLinks();
                 foreach ($divs as $div) {
