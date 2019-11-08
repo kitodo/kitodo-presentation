@@ -380,6 +380,7 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
+                'enableMultiSelectFilterTextfield' => 1,
                 'foreign_table' => 'tx_dlf_collections',
                 'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0) ORDER BY tx_dlf_collections.label',
                 'size' => 5,
