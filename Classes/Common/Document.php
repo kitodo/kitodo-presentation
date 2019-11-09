@@ -521,7 +521,7 @@ abstract class Document
                         /* @var $xml \SimpleXMLElement */
                         $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
                         $xpathResult = $xml->xpath('//mets:mets');
-                        $documentFormat = ($xpathResult !== FALSE && count($xpathResult) > 0) ? 'METS' : NULL;
+                        $documentFormat = !empty($xpathResult) ? 'METS' : NULL;
                     } else {
                         // Try to load file as IIIF resource instead.
                         $contentAsJsonArray = json_decode($content, TRUE);
