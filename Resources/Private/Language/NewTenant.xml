@@ -129,6 +129,11 @@
             <label index="owner">Owner</label>
             <label index="language">Language</label>
             <label index="coordinates">Coordinates</label>
+            <label index="license">License</label>
+            <label index="terms">Terms of Use</label>
+            <label index="restrictions">Restrictions on Access</label>
+            <label index="out_of_print">Out Of Print Works</label>
+            <label index="rights_info">Rights Information</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="mlang_tabs_tab">Neuer Mandant</label>
@@ -245,6 +250,11 @@
             <label index="owner">Besitzer</label>
             <label index="language">Sprache</label>
             <label index="coordinates">Geoinformationen</label>
+            <label index="license">Lizenz</label>
+            <label index="terms">Nutzungsbedingungen</label>
+            <label index="restrictions">Zugriffsinformationen</label>
+            <label index="out_of_print">Vergriffene Werke</label>
+            <label index="rights_info">Rechteinformation</label>
         </languageKey>
     </data>
 </T3locallang>
