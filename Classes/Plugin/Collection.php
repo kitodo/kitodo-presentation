@@ -379,7 +379,12 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                     'p' => []
                 ];
             } else {
-                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
+                $subparts[$resArray['partof']][$resArray['volume_sorting']] = [
+                    'u' => $resArray['uid'],
+                    'h' => '',
+                    's' => $sorting,
+                    'p' => []
+                ];
             }
         }
         // Add volumes to the corresponding toplevel documents.
@@ -387,14 +392,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             ksort($parts);
             foreach ($parts as $part) {
                 if (!empty($toplevel[$partof])) {
-                    $toplevel[$partof]['p'][] = ['u' => $part];
+                    $toplevel[$partof]['p'][] = ['u' => $part['u']];
                 } else {
-                    $toplevel[$part] = [
-                      'u' => $part,
-                      'h' => '',
-                      's' => $sorting,
-                      'p' => []
-                    ];
+                    $toplevel[$part['u']] = $part;
                 }
             }
         }
