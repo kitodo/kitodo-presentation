@@ -766,9 +766,9 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
 
     /**
      * This magic method is called each time an invisible property is checked for isset() or empty()
-     * 
+     *
      * @access public
-     * 
+     *
      * @param string $var: Name of variable to check
      *
      * @return boolean TRUE if variable is set and not empty, FALSE otherwise
