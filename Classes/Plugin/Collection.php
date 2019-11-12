@@ -359,19 +359,19 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                     ]
                 ];
             }
+            // Prepare document's metadata for sorting.
+            $sorting = unserialize($resArray['metadata_sorting']);
+            if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
+                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+            }
+            if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
+                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+            }
+            if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
+                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
+            }
             // Split toplevel documents from volumes.
             if ($resArray['partof'] == 0) {
-                // Prepare document's metadata for sorting.
-                $sorting = unserialize($resArray['metadata_sorting']);
-                if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-                    $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
-                }
-                if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-                    $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
-                }
-                if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-                    $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
-                }
                 $toplevel[$resArray['uid']] = [
                     'u' => $resArray['uid'],
                     'h' => '',
@@ -379,15 +379,22 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                     'p' => []
                 ];
             } else {
-                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
+                $subparts[$resArray['partof']][$resArray['volume_sorting']] = [
+                    'u' => $resArray['uid'],
+                    'h' => '',
+                    's' => $sorting,
+                    'p' => []
+                ];
             }
         }
         // Add volumes to the corresponding toplevel documents.
         foreach ($subparts as $partof => $parts) {
-            if (!empty($toplevel[$partof])) {
-                ksort($parts);
-                foreach ($parts as $part) {
-                    $toplevel[$partof]['p'][] = ['u' => $part];
+            ksort($parts);
+            foreach ($parts as $part) {
+                if (!empty($toplevel[$partof])) {
+                    $toplevel[$partof]['p'][] = ['u' => $part['u']];
+                } else {
+                    $toplevel[$part['u']] = $part;
                 }
             }
         }
