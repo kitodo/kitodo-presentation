@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Plugin 'Calendar' for the 'dlf' extension
  *
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
@@ -27,6 +28,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
 {
     public $scriptRelPath = 'Classes/Plugin/Calendar.php';
+
+    /**
+     * This holds all issues for the list view.
+     *
+     * @var array
+     * @access protected
+     */
+    protected $allIssues = [];
 
     /**
      * The main method of the PlugIn
@@ -74,7 +83,9 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             ->select(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents.title AS title',
-                'tx_dlf_documents.year AS year'
+                'tx_dlf_documents.year AS year',
+                'tx_dlf_documents.mets_label AS label',
+                'tx_dlf_documents.mets_orderlabel AS orderlabel'
             )
             ->from('tx_dlf_documents')
             ->where(
@@ -82,34 +93,129 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
                 Helper::whereExpression('tx_dlf_documents')
             )
-            ->orderBy('tx_dlf_documents.title_sorting')
+            ->orderBy('tx_dlf_documents.mets_orderlabel, tx_dlf_documents.mets_label ASC')
             ->execute();
 
         $issues = [];
 
         // Process results.
         while ($resArray = $result->fetch()) {
+            // Set title for display in calendar view.
+            if (!empty($resArray['title'])) {
+                $title = $resArray['title'];
+            } else {
+                $title = !empty($resArray['label']) ? $resArray['label'] : $resArray['orderlabel'];
+                if (strtotime($title) !== false) {
+                    $title = strftime('%x', strtotime($title));
+                }
+            }
             $issues[] = [
                 'uid' => $resArray['uid'],
-                'title' => $resArray['title'],
+                'title' => $title,
                 'year' => $resArray['year']
             ];
         }
-        //  We need an array of issues with month number as key.
-        $calendarIssues = [];
+        //  We need an array of issues with year => month => day number as key.
+        $calendarIssuesByYear = [];
         foreach ($issues as $issue) {
-            $calendarIssues[date('n', strtotime($issue['year']))][date('j', strtotime($issue['year']))][] = $issue;
+            $dateTimestamp = strtotime($issue['year']);
+            if ($dateTimestamp !== false) {
+                $_year = date('Y', $dateTimestamp);
+                $_month = date('n', $dateTimestamp);
+                $_day = date('j', $dateTimestamp);
+                $calendarIssuesByYear[$_year][$_month][$_day][] = $issue;
+            } else {
+                Helper::devLog('Document with UID ' . $issue['uid'] . 'has no valid date of publication', DEVLOG_SEVERITY_WARNING);
+            }
         }
-        $allIssues = [];
-        // Get subpart templates.
-        $subparts['list'] = $this->templateService->getSubpart($this->template, '###ISSUELIST###');
-        $subparts['month'] = $this->templateService->getSubpart($this->template, '###CALMONTH###');
-        $subparts['week'] = $this->templateService->getSubpart($subparts['month'], '###CALWEEK###');
-        $subparts['singleday'] = $this->templateService->getSubpart($subparts['list'], '###SINGLEDAY###');
-        // Build calendar for given year.
-        $year = date('Y', strtotime($issues[0]['year']));
+        // Sort by years.
+        ksort($calendarIssuesByYear);
+        // Build calendar for year (default) or season.
         $subPartContent = '';
-        for ($i = 0; $i <= 11; $i++) {
+        $iteration = 1;
+        foreach ($calendarIssuesByYear as $year => $calendarIssuesByMonth) {
+            // Sort by months.
+            ksort($calendarIssuesByMonth);
+            // Default: First monath is January, last month is December.
+            $firstMonth = 1;
+            $lastMonth = 12;
+            // Show calendar from first issue up to end of season if applicable.
+            if (
+                empty($this->conf['showEmptyMonths'])
+                && count($calendarIssuesByYear) > 1
+            ) {
+                if ($iteration == 1) {
+                    $firstMonth = key($calendarIssuesByMonth);
+                } elseif ($iteration == count($calendarIssuesByYear)) {
+                    end($calendarIssuesByMonth);
+                    $lastMonth = key($calendarIssuesByMonth);
+                }
+            }
+            $subPartContent .= $this->getCalendarYear($calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
+            $iteration++;
+        }
+        // Prepare list as alternative view.
+        $subPartContentList = '';
+        // Get subpart templates.
+        $subParts['list'] = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
+        $subParts['singleday'] = $this->cObj->getSubpart($subParts['list'], '###SINGLEDAY###');
+        foreach ($this->allIssues as $dayTimestamp => $issues) {
+            $markerArrayDay['###DATE_STRING###'] = strftime('%A, %x', $dayTimestamp);
+            $markerArrayDay['###ITEMS###'] = '';
+            foreach ($issues as $issue) {
+                $markerArrayDay['###ITEMS###'] .= $issue;
+            }
+            $subPartContentList .= $this->templateService->substituteMarkerArray($subParts['singleday'], $markerArrayDay);
+        }
+        $this->template = $this->templateService->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
+        // Link to current year.
+        $linkConf = [
+            'useCacheHash' => 1,
+            'parameter' => $this->conf['targetPid'],
+            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->uid),
+        ];
+        $linkTitleData = $this->doc->getTitledata();
+        $linkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
+        $yearLink = $this->cObj->typoLink($linkTitle, $linkConf);
+        // Link to years overview.
+        $linkConf = [
+            'useCacheHash' => 1,
+            'parameter' => $this->conf['targetPid'],
+            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
+        ];
+        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
+        // Fill marker array.
+        $markerArray = [
+            '###CALENDARVIEWACTIVE###' => count($this->allIssues) > 5 ? 'active' : '',
+            '###LISTVIEWACTIVE###' => count($this->allIssues) < 6 ? 'active' : '',
+            '###CALYEAR###' => $yearLink,
+            '###CALALLYEARS###' => $allYearsLink,
+            '###LABEL_CALENDAR###' => $this->pi_getLL('label.view_calendar'),
+            '###LABEL_LIST_VIEW###' => $this->pi_getLL('label.view_list'),
+        ];
+        $this->template = $this->templateService->substituteMarkerArray($this->template, $markerArray);
+        return $this->templateService->substituteSubpart($this->template, '###CALMONTH###', $subPartContent);
+    }
+
+    /**
+     * Build calendar for a certain year
+     *
+     * @access protected
+     *
+     * @param array $calendarIssuesByMonth All issues sorted by month => day
+     * @param int $year Gregorian year
+     * @param int $firstMonth 1 for January, 2 for February, ... 12 for December
+     * @param int $lastMonth 1 for January, 2 for February, ... 12 for December
+     *
+     * @return string Content for template subpart
+     */
+    protected function getCalendarYear($calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
+    {
+        // Get subpart templates.
+        $subPartContent = '';
+        $subParts['month'] = $this->templateService->getSubpart($this->template, '###CALMONTH###');
+        $subParts['week'] = $this->templateService->getSubpart($subParts['month'], '###CALWEEK###');
+        for ($i = $firstMonth; $i <= $lastMonth; $i++) {
             $markerArray = [
                 '###DAYMON_NAME###' => strftime('%a', strtotime('last Monday')),
                 '###DAYTUE_NAME###' => strftime('%a', strtotime('last Tuesday')),
@@ -118,11 +224,14 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 '###DAYFRI_NAME###' => strftime('%a', strtotime('last Friday')),
                 '###DAYSAT_NAME###' => strftime('%a', strtotime('last Saturday')),
                 '###DAYSUN_NAME###' => strftime('%a', strtotime('last Sunday')),
-                '###MONTHNAME###'  => strftime('%B', strtotime($year . '-' . ($i + 1) . '-1'))
+                '###MONTHNAME###'  => strftime('%B', strtotime($year . '-' . $i . '-1')) . ' ' . $year,
+                '###CALYEAR###' => ($i == $firstMonth) ? '<div class="year">' . $year . '</div>' : ''
             ];
+            // Fill the month markers.
+            $subPartContentMonth = $this->cObj->substituteMarkerArray($subParts['month'], $markerArray);
             // Reset week content of new month.
-            $subWeekPartContent = '';
-            $firstOfMonth = strtotime($year . '-' . ($i + 1) . '-1');
+            $subPartContentWeek = '';
+            $firstOfMonth = strtotime($year . '-' . $i . '-1');
             $lastOfMonth = strtotime('last day of', ($firstOfMonth));
             $firstOfMonthStart = strtotime('last Monday', $firstOfMonth);
             // There are never more than 6 weeks in a month.
@@ -148,8 +257,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                         $dayLinksText = [];
                         $dayLinksList = '';
                         $currentMonth = date('n', $currentDayTime);
-                        if (is_array($calendarIssues[$currentMonth])) {
-                            foreach ($calendarIssues[$currentMonth] as $id => $day) {
+                        if (is_array($calendarIssuesByMonth[$currentMonth])) {
+                            foreach ($calendarIssuesByMonth[$currentMonth] as $id => $day) {
                                 if ($id == date('j', $currentDayTime)) {
                                     $dayLinks = $id;
                                     foreach ($day as $issue) {
@@ -161,8 +270,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                                             'ATagParams' => ' class="title"',
                                         ];
                                         $dayLinksText[] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
-                                        // Save issues for list view.
-                                        $allIssues[$currentDayTime][] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
+                                        // Save issue for list view.
+                                        $this->allIssues[$currentDayTime][] = $this->cObj->typoLink($dayLinkLabel, $linkConf);
                                     }
                                 }
                             }
@@ -201,57 +310,16 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                     }
                 }
                 // Fill the weeks.
-                $subWeekPartContent .= $this->templateService->substituteMarkerArray($subparts['week'], $weekArray);
+                $subPartContentWeek .= $this->templateService->substituteMarkerArray($subParts['week'], $weekArray);
             }
-            // Fill the month markers.
-            $subPartContent .= $this->templateService->substituteMarkerArray($subparts['month'], $markerArray);
             // Fill the week markers with the week entries.
-            $subPartContent = $this->templateService->substituteSubpart($subPartContent, '###CALWEEK###', $subWeekPartContent);
+            $subPartContent .= $this->templateService->substituteSubpart($subPartContentMonth, '###CALWEEK###', $subPartContentWeek);
         }
-        // Link to years overview
-        $linkConf = [
-            'useCacheHash' => 1,
-            'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
-        ];
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
-        // Link to current year.
-        $linkConf = [
-            'useCacheHash' => 1,
-            'parameter' => $this->conf['targetPid'],
-            'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->uid),
-        ];
-        $yearLink = $this->cObj->typoLink($year, $linkConf);
-        $subPartContentList = '';
-        // Prepare list as alternative of the calendar view.
-        foreach ($allIssues as $dayTime => $issues) {
-            $markerArrayDay['###DATE_STRING###'] = strftime('%A, %x', $dayTime);
-            $markerArrayDay['###ITEMS###'] = '';
-            foreach ($issues as $issue) {
-                $markerArrayDay['###ITEMS###'] .= $issue;
-            }
-            $subPartContentList .= $this->templateService->substituteMarkerArray($subparts['singleday'], $markerArrayDay);
-        }
-        $this->template = $this->templateService->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
-        if (count($allIssues) < 6) {
-            $listViewActive = true;
-        } else {
-            $listViewActive = false;
-        }
-        $markerArray = [
-            '###CALENDARVIEWACTIVE###' => $listViewActive ? '' : 'active',
-            '###LISTVIEWACTIVE###' => $listViewActive ? 'active' : '',
-            '###CALYEAR###' => $yearLink,
-            '###CALALLYEARS###' => $allYearsLink,
-            '###LABEL_CALENDAR###' => $this->pi_getLL('label.view_calendar'),
-            '###LABEL_LIST_VIEW###' => $this->pi_getLL('label.view_list'),
-        ];
-        $this->template = $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $this->templateService->substituteSubpart($this->template, '###CALMONTH###', $subPartContent);
+        return $subPartContent;
     }
 
     /**
-     * The Year Method
+     * The Years Method
      *
      * @access public
      *
@@ -283,7 +351,9 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         $result = $queryBuilder
             ->select(
                 'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.title AS title'
+                'tx_dlf_documents.title AS title',
+                'tx_dlf_documents.mets_label AS label',
+                'tx_dlf_documents.mets_orderlabel AS orderlabel'
             )
             ->from('tx_dlf_documents')
             ->where(
@@ -291,13 +361,13 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
                 Helper::whereExpression('tx_dlf_documents')
             )
-            ->orderBy('tx_dlf_documents.title_sorting')
+            ->orderBy('tx_dlf_documents.volume_sorting')
             ->execute();
 
         // Process results.
         while ($resArray = $result->fetch()) {
             $years[] = [
-                'title' => $resArray['title'],
+                'title' => !empty($resArray['label']) ? $resArray['label'] : (!empty($resArray['orderlabel']) ? $resArray['orderlabel'] : $resArray['title']),
                 'uid' => $resArray['uid']
             ];
         }
@@ -316,7 +386,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 $subYearPartContent .= $this->templateService->substituteMarkerArray($subparts['year'], $yearArray);
             }
         }
-        // link to years overview (should be itself here)
+        // Link to years overview (should be itself here)
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
