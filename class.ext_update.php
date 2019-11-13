@@ -36,7 +36,7 @@ class ext_update
      *
      * @access public
      *
-     * @return boolean Should the update option be shown?
+     * @return bool Should the update option be shown?
      */
     public function access()
     {
@@ -144,7 +144,7 @@ class ext_update
      *
      * @access protected
      *
-     * @return boolean TRUE if old index related columns exist
+     * @return bool TRUE if old index related columns exist
      */
     protected function oldIndexRelatedTableNames()
     {
@@ -286,7 +286,7 @@ class ext_update
      *
      * @access protected
      *
-     * @return boolean
+     * @return bool
      */
     protected function solariumSolrUpdateRequired()
     {

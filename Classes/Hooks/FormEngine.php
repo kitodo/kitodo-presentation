@@ -116,7 +116,7 @@ class FormEngine
      * @param string $table: Table name to fetch the items from
      * @param string $sorting: Field to sort items by (optionally appended by 'ASC' or 'DESC')
      * @param string $where: Additional WHERE clause
-     * @param boolean $localize: Add check for localized records?
+     * @param bool $localize: Add check for localized records?
      *
      * @return void
      */

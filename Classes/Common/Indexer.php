@@ -57,7 +57,7 @@ class Indexer
      * Is the index configuration loaded?
      * @see $fields
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected static $fieldsLoaded = FALSE;
@@ -84,9 +84,9 @@ class Indexer
      * @access public
      *
      * @param \Kitodo\Dlf\Common\Document &$doc: The document to add
-     * @param integer $core: UID of the Solr core to use
+     * @param int $core: UID of the Solr core to use
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     public static function add(Document &$doc, $core = 0)
     {
@@ -199,9 +199,9 @@ class Indexer
      *
      * @access public
      *
-     * @param integer $uid: UID of the document to delete
+     * @param int $uid: UID of the document to delete
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     public static function delete($uid)
     {
@@ -273,7 +273,7 @@ class Indexer
      * @access public
      *
      * @param string $index_name: The metadata field's name in database
-     * @param integer $pid: UID of the configuration page
+     * @param int $pid: UID of the configuration page
      *
      * @return string The field's dynamic index name
      */
@@ -300,7 +300,7 @@ class Indexer
      *
      * @access protected
      *
-     * @param integer $pid: The configuration page's UID
+     * @param int $pid: The configuration page's UID
      *
      * @return void
      */
@@ -373,7 +373,7 @@ class Indexer
      * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
      * @param array $logicalUnit: Array of the logical unit to process
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     protected static function processLogical(Document &$doc, array $logicalUnit)
     {
@@ -490,10 +490,10 @@ class Indexer
      * @access protected
      *
      * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
-     * @param integer $page: The page number
+     * @param int $page: The page number
      * @param array $physicalUnit: Array of the physical unit to process
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
     {
@@ -611,10 +611,10 @@ class Indexer
      *
      * @access protected
      *
-     * @param integer $core: UID of the Solr core
-     * @param integer $pid: UID of the configuration page
+     * @param int $core: UID of the Solr core
+     * @param int $pid: UID of the configuration page
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool TRUE on success or FALSE on failure
      */
     protected static function solrConnect($core, $pid = 0)
     {

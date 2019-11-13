@@ -251,7 +251,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $id: The collection's UID
+     * @param int $id: The collection's UID
      *
      * @return void
      */

@@ -34,7 +34,7 @@ class ExtensionManagementUtility extends \TYPO3\CMS\Core\Utility\ExtensionManage
      * @param string $class: The qualified class name
      * @param string $suffix: The uid of the record
      * @param string $type: Determines the type of the frontend plugin
-     * @param boolean $cached: Should we created a USER object instead of USER_INT?
+     * @param bool $cached: Should we created a USER object instead of USER_INT?
      *
      * @return void
      */

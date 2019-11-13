@@ -37,18 +37,18 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
- * @property-write integer $cPid This holds the PID for the configuration
- * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-write int $cPid This holds the PID for the configuration
+ * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
- * @property-read integer $numPages The holds the total number of pages
- * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read int $numPages The holds the total number of pages
+ * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
  * @property-read array $physicalStructure This holds the physical structure
  * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read integer $pid This holds the PID of the document or zero if not in database
- * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read int $pid This holds the PID of the document or zero if not in database
+ * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId The IIIF manifest's record identifier
- * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks This holds the connections between resources and canvases
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
@@ -83,7 +83,7 @@ final class IiifManifest extends Document
 
     /**
      * Document has already been analyzed if it contains fulltext for the Solr index
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $hasFulltextSet = FALSE;
@@ -189,7 +189,7 @@ final class IiifManifest extends Document
     /**
      * True if getUseGroups() has been called and $this-useGrps is loaded
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $useGrpsLoaded;
@@ -461,7 +461,7 @@ final class IiifManifest extends Document
      * @access protected
      *
      * @param IiifResourceInterface $resource: IIIF resource, either a manifest or range.
-     * @param boolean $recursive: Whether to include the child elements
+     * @param bool $recursive: Whether to include the child elements
      * @param array $processedStructures: IIIF resources that already have been processed
      * @return array Logical structure array
      */
@@ -550,9 +550,9 @@ final class IiifManifest extends Document
      *
      * @param string $id: the ID of the IIIF resource
      * @param number $cPid: the configuration folder's id
-     * @param boolean $withDescription: add description / summary to the return value
-     * @param boolean $withRights: add attribution and license / rights and requiredStatement to the return value
-     * @param boolean $withRelated: add related links / homepage to the return value
+     * @param bool $withDescription: add description / summary to the return value
+     * @param bool $withRights: add attribution and license / rights and requiredStatement to the return value
+     * @param bool $withRelated: add related links / homepage to the return value
      *
      * @return array
      *

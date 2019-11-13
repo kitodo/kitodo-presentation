@@ -184,7 +184,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $page: Page number
+     * @param int $page: Page number
      *
      * @return array URL and MIME type of image file
      */
@@ -219,7 +219,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $page: Page number
+     * @param int $page: Page number
      *
      * @return array URL and MIME type of fulltext file
      */
@@ -247,7 +247,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer    $page: the current page's number
+     * @param int    $page: the current page's number
      * @return array     An array containing the IRIs of the AnnotationLists / AnnotationPages as well as
      *                   some information about the canvas.
      */

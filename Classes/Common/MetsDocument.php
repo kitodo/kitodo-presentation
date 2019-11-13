@@ -26,21 +26,21 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @package	TYPO3
  * @subpackage	tx_dlf
  * @access	public
- * @property-write integer $cPid This holds the PID for the configuration
+ * @property-write int $cPid This holds the PID for the configuration
  * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
  * @property-read array $fileGrps This holds the file ID -> USE concordance
- * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
- * @property-read integer $numPages The holds the total number of pages
- * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read int $numPages The holds the total number of pages
+ * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
  * @property-read array $physicalStructure This holds the physical structure
  * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read integer $pid This holds the PID of the document or zero if not in database
- * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read int $pid This holds the PID of the document or zero if not in database
+ * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId The METS file's / IIIF manifest's record identifier
- * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks This holds the smLinks between logical and physical structMap
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
@@ -70,7 +70,7 @@ final class MetsDocument extends Document
      * Are the METS file's dmdSecs loaded?
      * @see $dmdSec
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $dmdSecLoaded = FALSE;
@@ -96,7 +96,7 @@ final class MetsDocument extends Document
      * Are the file groups loaded?
      * @see $fileGrps
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $fileGrpsLoaded = FALSE;
@@ -261,7 +261,7 @@ final class MetsDocument extends Document
      * @access protected
      *
      * @param \SimpleXMLElement $structure: The logical structure node
-     * @param boolean $recursive: Whether to include the child elements
+     * @param bool $recursive: Whether to include the child elements
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
@@ -703,7 +703,7 @@ final class MetsDocument extends Document
      *
      * @access protected
      *
-     * @return integer The PID of the metadata definitions
+     * @return int The PID of the metadata definitions
      */
     protected function _getCPid()
     {

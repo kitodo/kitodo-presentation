@@ -234,7 +234,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $isFulltextSearch: Is fulltext search activated?
+     * @param int $isFulltextSearch: Is fulltext search activated?
      *
      * @return string HTML output of fulltext switch
      */
@@ -276,7 +276,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @param string $field: The facet's index_name
      * @param string $value: The facet's value
-     * @param integer $count: Number of hits for this facet
+     * @param int $count: Number of hits for this facet
      * @param array $search: The parameters of the current search query
      * @param string &$state: The state of the parent item
      *

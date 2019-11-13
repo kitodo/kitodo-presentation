@@ -120,7 +120,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $number: The number of the entry
+     * @param int $number: The number of the entry
      * @param string $template: Parsed template subpart
      *
      * @return string The rendered entry ready for output
@@ -291,7 +291,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $number: The number of the entry
+     * @param int $number: The number of the entry
      * @param string $template: Parsed template subpart
      *
      * @return string The rendered entries ready for output

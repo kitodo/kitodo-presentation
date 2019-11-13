@@ -50,8 +50,8 @@ class Helper
      *
      * @param string $message: The body of the message
      * @param string $title: The title of the message
-     * @param integer $severity: The message's severity
-     * @param boolean $session: Should the message be saved in the user's session?
+     * @param int $severity: The message's severity
+     * @param bool $session: Should the message be saved in the user's session?
      * @param string $queue: The queue's unique identifier
      *
      * @return \TYPO3\CMS\Core\Messaging\FlashMessageQueue The queue the message was added to
@@ -80,7 +80,7 @@ class Helper
      * @param string $type: What type is the identifier supposed to be?
      *                      Possible values: PPN, IDN, PND, ZDB, SWD, GKD
      *
-     * @return boolean Is $id a valid GNL identifier of the given $type?
+     * @return bool Is $id a valid GNL identifier of the given $type?
      */
     public static function checkIdentifier($id, $type)
     {
@@ -178,8 +178,8 @@ class Helper
      * @access public
      *
      * @param string $message: The message to log
-     * @param integer $severity: The severity of the message
-     *                           0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
+     * @param int $severity: The severity of the message
+     *                       0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
      *
      * @return void
      */
@@ -299,9 +299,9 @@ class Helper
      *
      * @access public
      *
-     * @param integer $uid: The UID of the record
+     * @param int $uid: The UID of the record
      * @param string $table: Get the "index_name" from this table
-     * @param integer $pid: Get the "index_name" from this page
+     * @param int $pid: Get the "index_name" from this page
      *
      * @return string "index_name" for the given UID
      */
@@ -397,7 +397,7 @@ class Helper
      * @access public
      *
      * @param string $key: The locallang key to translate
-     * @param boolean $hsc: Should the result be htmlspecialchar()'ed?
+     * @param bool $hsc: Should the result be htmlspecialchar()'ed?
      * @param string $default: Default return value if no translation is available
      *
      * @return string The translated string or the given key on failure
@@ -439,9 +439,9 @@ class Helper
      *
      * @access public
      *
-     * @param integer $index_name: The index_name of the record
+     * @param int $index_name: The index_name of the record
      * @param string $table: Get the "index_name" from this table
-     * @param integer $pid: Get the "index_name" from this page
+     * @param int $pid: Get the "index_name" from this page
      *
      * @return string "uid" for the given index_name
      */
@@ -563,7 +563,7 @@ class Helper
      *
      * @param string $id: The identifier to check
      *
-     * @return boolean Is $id a valid PPN?
+     * @return bool Is $id a valid PPN?
      */
     public static function isPPN($id)
     {
@@ -606,9 +606,9 @@ class Helper
      *
      * @param array $original: Original array
      * @param array $overrule: Overrule array, overruling the original array
-     * @param boolean $addKeys: If set to FALSE, keys that are not found in $original will not be set
-     * @param boolean $includeEmptyValues: If set, values from $overrule will overrule if they are empty
-     * @param boolean $enableUnsetFeature: If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
+     * @param bool $addKeys: If set to FALSE, keys that are not found in $original will not be set
+     * @param bool $includeEmptyValues: If set, values from $overrule will overrule if they are empty
+     * @param bool $enableUnsetFeature: If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
      *
      * @return array Merged array
      */
@@ -625,8 +625,8 @@ class Helper
      *
      * @param array $data: Data map
      * @param array $cmd: Command map
-     * @param boolean $reverseOrder: Should the data map be reversed?
-     * @param boolean $cmdFirst: Should the command map be processed first?
+     * @param bool $reverseOrder: Should the data map be reversed?
+     * @param bool $cmdFirst: Should the command map be processed first?
      *
      * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
      */
@@ -720,7 +720,7 @@ class Helper
      * @param mixed $value: Value to save
      * @param string $key: Session data key for saving
      *
-     * @return boolean TRUE on success, FALSE on failure
+     * @return bool TRUE on success, FALSE on failure
      */
     public static function saveToSession($value, $key)
     {
@@ -875,7 +875,7 @@ class Helper
      * @access public
      *
      * @param string $table: Table name as defined in TCA
-     * @param boolean $showHidden: Ignore the hidden flag?
+     * @param bool $showHidden: Ignore the hidden flag?
      *
      * @return string Additional WHERE clause
      */
@@ -913,7 +913,7 @@ class Helper
      * @access public
      *
      * @param string $table: Table name as defined in TCA
-     * @param boolean $showHidden: Ignore the hidden flag?
+     * @param bool $showHidden: Ignore the hidden flag?
      *
      * @return string Additional WHERE expression
      */

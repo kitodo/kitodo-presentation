@@ -24,11 +24,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write integer $cPid This holds the PID for the configuration
- * @property integer $limit This holds the max results
- * @property-read integer $numberOfHits This holds the number of hits for last search
+ * @property-write int $cPid This holds the PID for the configuration
+ * @property int $limit This holds the max results
+ * @property-read int $numberOfHits This holds the number of hits for last search
  * @property-write array $params This holds the additional query parameters
- * @property-read boolean $ready Is the search instantiated successfully?
+ * @property-read bool $ready Is the search instantiated successfully?
  * @property-read \Solarium\Client $service This holds the Solr service object
  */
 class Solr
@@ -44,7 +44,7 @@ class Solr
     /**
      * This holds the PID for the configuration
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $cPid = 0;
@@ -60,7 +60,7 @@ class Solr
     /**
      * This holds the max results
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $limit = 50000;
@@ -68,7 +68,7 @@ class Solr
     /**
      * This holds the number of hits for last search
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $numberOfHits = 0;
@@ -84,7 +84,7 @@ class Solr
     /**
      * Is the search instantiated successfully?
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $ready = FALSE;
@@ -131,7 +131,7 @@ class Solr
      * @access public
      *
      * @param string $query: The query string
-     * @param integer $pid: The PID for the field configuration
+     * @param int $pid: The PID for the field configuration
      *
      * @return string The escaped query string
      */
@@ -282,9 +282,9 @@ class Solr
      *
      * @access public
      *
-     * @param integer $start: Number to start with
+     * @param int $start: Number to start with
      *
-     * @return integer First unused core number found
+     * @return int First unused core number found
      */
     public static function solrGetCoreNumber($start = 0)
     {
@@ -413,7 +413,7 @@ class Solr
      *
      * @access protected
      *
-     * @return integer The max number of results
+     * @return int The max number of results
      */
     protected function _getLimit()
     {
@@ -425,7 +425,7 @@ class Solr
      *
      * @access protected
      *
-     * @return integer Total number of hits for last search
+     * @return int Total number of hits for last search
      */
     protected function _getNumberOfHits()
     {
@@ -437,7 +437,7 @@ class Solr
      *
      * @access protected
      *
-     * @return boolean Is the search instantiated successfully?
+     * @return bool Is the search instantiated successfully?
      */
     protected function _getReady()
     {
@@ -461,7 +461,7 @@ class Solr
      *
      * @access protected
      *
-     * @param integer $value: The new PID for the metadata definitions
+     * @param int $value: The new PID for the metadata definitions
      *
      * @return void
      */
@@ -475,7 +475,7 @@ class Solr
      *
      * @access protected
      *
-     * @param integer $value: The max number of results
+     * @param int $value: The max number of results
      *
      * @return void
      */
@@ -528,7 +528,7 @@ class Solr
      *
      * @param string $var: Name of variable to check
      *
-     * @return boolean TRUE if variable is set and not empty, FALSE otherwise
+     * @return bool TRUE if variable is set and not empty, FALSE otherwise
      */
     public function __isset($var) {
         return !empty($this->__get($var));

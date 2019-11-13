@@ -27,18 +27,18 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write integer $cPid This holds the PID for the configuration
- * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-write int $cPid This holds the PID for the configuration
+ * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
- * @property-read integer $numPages The holds the total number of pages
- * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read int $numPages The holds the total number of pages
+ * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
  * @property-read array $physicalStructure This holds the physical structure
  * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read integer $pid This holds the PID of the document or zero if not in database
- * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read int $pid This holds the PID of the document or zero if not in database
+ * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId The METS file's / IIIF manifest's record identifier
- * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks This holds the smLinks between logical and physical structMap
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
@@ -51,7 +51,7 @@ abstract class Document
     /**
      * This holds the PID for the configuration
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $cPid = 0;
@@ -90,7 +90,7 @@ abstract class Document
      * Are the available metadata formats loaded?
      * @see $formats
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $formatsLoaded = FALSE;
@@ -100,7 +100,7 @@ abstract class Document
      * with motivation 'painting' if Kitodo.Presentation is configured to store text
      * annotations as fulltext.
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $hasFulltext = FALSE;
@@ -142,7 +142,7 @@ abstract class Document
      * Is the metadata array loaded?
      * @see $metadataArray
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $metadataArrayLoaded = FALSE;
@@ -150,7 +150,7 @@ abstract class Document
     /**
      * The holds the total number of pages
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $numPages = 0;
@@ -158,7 +158,7 @@ abstract class Document
     /**
      * This holds the UID of the parent document or zero if not multi-volumed
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $parentId = 0;
@@ -183,7 +183,7 @@ abstract class Document
      * Is the physical structure loaded?
      * @see $physicalStructure
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $physicalStructureLoaded = FALSE;
@@ -191,7 +191,7 @@ abstract class Document
     /**
      * This holds the PID of the document or zero if not in database
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $pid = 0;
@@ -208,7 +208,7 @@ abstract class Document
     /**
      * Is the document instantiated successfully?
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $ready = FALSE;
@@ -233,7 +233,7 @@ abstract class Document
     /**
      * This holds the UID of the root document or zero if not multi-volumed
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $rootId = 0;
@@ -242,7 +242,7 @@ abstract class Document
      * Is the root id loaded?
      * @see $rootId
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $rootIdLoaded = FALSE;
@@ -259,7 +259,7 @@ abstract class Document
      * Are the smLinks loaded?
      * @see $smLinks
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $smLinksLoaded = FALSE;
@@ -276,7 +276,7 @@ abstract class Document
      * Is the table of contents loaded?
      * @see $tableOfContents
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $tableOfContentsLoaded = FALSE;
@@ -293,7 +293,7 @@ abstract class Document
      * Is the document's thumbnail location loaded?
      * @see $thumbnail
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $thumbnailLoaded = FALSE;
@@ -344,7 +344,7 @@ abstract class Document
      *
      * @abstract
      *
-     * @param integer $pid: ID of the configuration page with the recordId config
+     * @param int $pid: ID of the configuration page with the recordId config
      *
      */
     protected abstract function establishRecordId($pid);
@@ -408,8 +408,8 @@ abstract class Document
      * @static
      *
      * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
-     * @param integer $pid: If > 0, then only document with this PID gets loaded
-     * @param boolean $forceReload: Force reloading the document instead of returning the cached instance
+     * @param int $pid: If > 0, then only document with this PID gets loaded
+     * @param bool $forceReload: Force reloading the document instead of returning the cached instance
      *
      * @return \Kitodo\Dlf\Common\Document Instance of this class, either MetsDocument or IiifManifest
      */
@@ -575,7 +575,7 @@ abstract class Document
      *
      * @param string $id: The @ID attribute of the logical structure node (METS) or
      * the @id property of the Manifest / Range (IIIF)
-     * @param boolean $recursive: Whether to include the child elements / resources
+     * @param bool $recursive: Whether to include the child elements / resources
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
@@ -590,7 +590,7 @@ abstract class Document
      *
      * @param string $id: The @ID attribute of the logical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
-     * @param integer $cPid: The PID for the metadata definitions
+     * @param int $cPid: The PID for the metadata definitions
      *                       (defaults to $this->cPid or $this->pid)
      *
      * @return array The logical structure node's / the IIIF resource's parsed metadata array
@@ -604,7 +604,7 @@ abstract class Document
      *
      * @param string $logicalPage: The label (or a part of the label) of the logical page
      *
-     * @return integer The physical page number
+     * @return int The physical page number
      */
     public function getPhysicalPage($logicalPage)
     {
@@ -718,8 +718,8 @@ abstract class Document
      *
      * @static
      *
-     * @param integer $uid: The UID of the document
-     * @param boolean $recursive: Search superior documents for a title, too?
+     * @param int $uid: The UID of the document
+     * @param bool $recursive: Search superior documents for a title, too?
      *
      * @return string The title of the document itself or a parent document
      */
@@ -772,7 +772,7 @@ abstract class Document
      *
      * @access public
      *
-     * @param integer $cPid: The PID for the metadata definitions
+     * @param int $cPid: The PID for the metadata definitions
      *
      * @return array The logical structure node's / resource's parsed metadata array
      */
@@ -804,10 +804,10 @@ abstract class Document
      * @access protected
      *
      * @param array $structure: logical structure array
-     * @param integer $depth: current tree depth
+     * @param int $depth: current tree depth
      * @param string $logId: ID of the logical structure whose depth is requested
      *
-     * @return integer|boolean: FALSE if structure with $logId is not a child of this substructure,
+     * @return int|bool: FALSE if structure with $logId is not a child of this substructure,
      * or the actual depth.
      */
     protected function getTreeDepth($structure, $depth, $logId)
@@ -831,7 +831,7 @@ abstract class Document
      * @access public
      *
      * @param string $logId: The id of the logical structure element whose depth is requested
-     * @return number|boolean tree depth as integer or FALSE if no element with $logId exists within the TOC.
+     * @return int|bool tree depth as integer or FALSE if no element with $logId exists within the TOC.
      */
     public function getStructureDepth($logId)
     {
@@ -858,7 +858,7 @@ abstract class Document
      *
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
      *
-     * @return boolean TRUE if $preloadedDocument can actually be reused, FALSE if it has to be loaded again
+     * @return bool TRUE if $preloadedDocument can actually be reused, FALSE if it has to be loaded again
      */
     protected abstract function setPreloadedDocument($preloadedDocument);
 
@@ -871,7 +871,7 @@ abstract class Document
      *
      * @param string $location: The URL of the file to load
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool TRUE on success or FALSE on failure
      */
     protected abstract function loadLocation($location);
 
@@ -882,7 +882,7 @@ abstract class Document
      *
      * @param string $location: The URL of the file to load
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool TRUE on success or FALSE on failure
      */
     protected function load($location)
     {
@@ -984,10 +984,10 @@ abstract class Document
      *
      * @access public
      *
-     * @param integer $pid: The PID of the saved record
-     * @param integer $core: The UID of the Solr core for indexing
+     * @param int $pid: The PID of the saved record
+     * @param int $core: The UID of the Solr core for indexing
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool TRUE on success or FALSE on failure
      */
     public function save($pid = 0, $core = 0)
     {
@@ -1303,7 +1303,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return boolean Are there any fulltext files available?
+     * @return bool Are there any fulltext files available?
      */
     protected function _getHasFulltext()
     {
@@ -1330,7 +1330,7 @@ abstract class Document
      *
      * @abstract
      *
-     * @param integer $cPid
+     * @param int $cPid
      */
     protected abstract function prepareMetadataArray($cPid);
 
@@ -1365,7 +1365,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The total number of pages and/or tracks
+     * @return int The total number of pages and/or tracks
      */
     protected function _getNumPages()
     {
@@ -1378,7 +1378,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The UID of the parent document or zero if not applicable
+     * @return int The UID of the parent document or zero if not applicable
      */
     protected function _getParentId()
     {
@@ -1419,7 +1419,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The PID of the document or zero if not in database
+     * @return int The PID of the document or zero if not in database
      */
     protected function _getPid()
     {
@@ -1431,7 +1431,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return boolean Is the document instantiated successfully?
+     * @return bool Is the document instantiated successfully?
      */
     protected function _getReady()
     {
@@ -1455,7 +1455,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The UID of the root document or zero if not applicable
+     * @return int The UID of the root document or zero if not applicable
      */
     protected function _getRootId()
     {
@@ -1506,7 +1506,7 @@ abstract class Document
      *
      * @abstract
      *
-     * @param boolean $forceReload: Force reloading the thumbnail instead of returning the cached value
+     * @param bool $forceReload: Force reloading the thumbnail instead of returning the cached value
      *
      * @return string The document's thumbnail location
      */
@@ -1540,7 +1540,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @param integer $value: The new PID for the metadata definitions
+     * @param int $value: The new PID for the metadata definitions
      *
      * @return void
      */
@@ -1567,8 +1567,8 @@ abstract class Document
      *
      * @access protected
      *
-     * @param integer $uid: The UID of the document to parse or URL to XML file
-     * @param integer $pid: If > 0, then only document with this PID gets loaded
+     * @param int $uid: The UID of the document to parse or URL to XML file
+     * @param int $pid: If > 0, then only document with this PID gets loaded
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either NULL or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
@@ -1708,7 +1708,7 @@ abstract class Document
      *
      * @param string $var: Name of variable to check
      *
-     * @return boolean TRUE if variable is set and not empty, FALSE otherwise
+     * @return bool TRUE if variable is set and not empty, FALSE otherwise
      */
     public function __isset($var) {
         return !empty($this->__get($var));

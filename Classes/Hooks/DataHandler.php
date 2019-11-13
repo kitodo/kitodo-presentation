@@ -37,7 +37,7 @@ class DataHandler
      *
      * @param string $status: 'new' or 'update'
      * @param string $table: The destination table
-     * @param integer $id: The uid of the record
+     * @param int $id: The uid of the record
      * @param array &$fieldArray: Array of field values
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *
@@ -236,7 +236,7 @@ class DataHandler
      *
      * @param string $status: 'new' or 'update'
      * @param string $table: The destination table
-     * @param integer $id: The uid of the record
+     * @param int $id: The uid of the record
      * @param array &$fieldArray: Array of field values
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *
@@ -298,7 +298,7 @@ class DataHandler
      *
      * @param string $command: 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
      * @param string $table: The destination table
-     * @param integer $id: The uid of the record
+     * @param int $id: The uid of the record
      * @param mixed $value: The value for the command
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *

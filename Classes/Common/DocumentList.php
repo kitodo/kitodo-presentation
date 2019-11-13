@@ -33,7 +33,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * This holds the number of documents in the list
      * @see \Countable
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $count = 0;
@@ -59,7 +59,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * This holds the current list position
      * @see \Iterator
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $position = 0;
@@ -94,7 +94,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @access public
      *
      * @param array $elements: Array of elements to add to list
-     * @param integer $position: Numeric position for including
+     * @param int $position: Numeric position for including
      *
      * @return void
      */
@@ -113,7 +113,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @return integer The number of elements in the list
+     * @return int The number of elements in the list
      */
     public function count()
     {
@@ -317,7 +317,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @return integer The current position
+     * @return int The current position
      */
     public function key()
     {
@@ -329,8 +329,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @param integer $position: Numeric position for moving
-     * @param integer $steps: Amount of steps to move up or down
+     * @param int $position: Numeric position for moving
+     * @param int $steps: Amount of steps to move up or down
      *
      * @return void
      */
@@ -362,7 +362,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @param integer $position: Numeric position for moving
+     * @param int $position: Numeric position for moving
      *
      * @return void
      */
@@ -376,7 +376,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @param integer $position: Numeric position for moving
+     * @param int $position: Numeric position for moving
      *
      * @return void
      */
@@ -406,7 +406,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @param mixed $offset: The offset to check
      *
-     * @return boolean Does the given offset exist?
+     * @return bool Does the given offset exist?
      */
     public function offsetExists($offset)
     {
@@ -461,7 +461,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @param integer $position: Numeric position for removing
+     * @param int $position: Numeric position for removing
      *
      * @return array The removed element
      */
@@ -485,8 +485,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @param integer $position: Numeric position for start of range
-     * @param integer $length: Numeric position for length of range
+     * @param int $position: Numeric position for start of range
+     * @param int $length: Numeric position for length of range
      *
      * @return array The indizes of the removed elements
      */
@@ -539,7 +539,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @param integer $pid: PID for saving in database
+     * @param int $pid: PID for saving in database
      *
      * @return void
      */
@@ -559,7 +559,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access protected
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool TRUE on success or FALSE on failure
      */
     protected function solrConnect()
     {
@@ -604,7 +604,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      * @access public
      *
      * @param string $by: Sort the list by this field
-     * @param boolean $asc: Sort ascending?
+     * @param bool $asc: Sort ascending?
      *
      * @return void
      */
@@ -660,7 +660,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access public
      *
-     * @return boolean Is the current list position valid?
+     * @return bool Is the current list position valid?
      */
     public function valid()
     {
@@ -771,7 +771,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @param string $var: Name of variable to check
      *
-     * @return boolean TRUE if variable is set and not empty, FALSE otherwise
+     * @return bool TRUE if variable is set and not empty, FALSE otherwise
      */
     public function __isset($var) {
         return !empty($this->__get($var));

@@ -88,7 +88,7 @@ if (\TYPO3_MODE === 'FE') {
      *
      * @param string $type: document type string to test for
      *
-     * @return boolean TRUE if document type matches, FALSE if not
+     * @return bool TRUE if document type matches, FALSE if not
      */
     function user_dlf_docTypeCheck($type)
     {

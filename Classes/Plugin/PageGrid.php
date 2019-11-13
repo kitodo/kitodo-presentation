@@ -32,7 +32,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $number: The page to render
+     * @param int $number: The page to render
      * @param string $template: Parsed template subpart
      *
      * @return string The rendered entry ready for output

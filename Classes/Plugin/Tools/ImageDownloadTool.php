@@ -85,7 +85,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $page: Page number
+     * @param int $page: Page number
      * @param string $label: Link title and label
      *
      * @return string Link to image file with given label

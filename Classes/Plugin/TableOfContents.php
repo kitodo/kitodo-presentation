@@ -40,7 +40,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
      * @access protected
      *
      * @param array $entry: The entry's array from \Kitodo\Dlf\Common\Document->getLogicalStructure
-     * @param boolean $recursive: Whether to include the child entries
+     * @param bool $recursive: Whether to include the child entries
      *
      * @return array HMENU array for menu entry
      */

@@ -240,7 +240,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @access protected
      *
-     * @param boolean $cache: Should the plugin be cached?
+     * @param bool $cache: Should the plugin be cached?
      *
      * @return void
      */

@@ -435,7 +435,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $id: Document id
+     * @param int $id: Document id
      *
      * @return mixed download url or FALSE
      */

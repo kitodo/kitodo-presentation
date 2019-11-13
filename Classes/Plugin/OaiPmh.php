@@ -34,7 +34,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     /**
      * Did an error occur?
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $error = FALSE;
