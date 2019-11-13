@@ -1099,7 +1099,7 @@ abstract class Document
                 unset($collData);
                 // Add new collection's UID.
                 $collections[] = $substUid[$collNewUid];
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
                         htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
                         Helper::getMessage('flash.attention', true),
@@ -1150,7 +1150,7 @@ abstract class Document
             $substUid = Helper::processDBasAdmin($libData);
             // Add new library's UID.
             $ownerUid = $substUid[$libNewUid];
-            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                 Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
                     Helper::getMessage('flash.attention', true),
@@ -1268,7 +1268,7 @@ abstract class Document
             $this->pid = $pid;
             $this->parentId = $partof;
         }
-        if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+        if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
             Helper::addMessage(
                 htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
                 Helper::getMessage('flash.done', true),

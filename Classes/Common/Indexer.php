@@ -150,7 +150,7 @@ class Indexer
 
                 $allResults = $result->fetchAll();
                 $resArray = $allResults[0];
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     if (!$errors) {
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
@@ -169,7 +169,7 @@ class Indexer
                 }
                 return $errors;
             } catch (\Exception $e) {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
@@ -181,7 +181,7 @@ class Indexer
                 return 1;
             }
         } else {
-            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                 Helper::addMessage(
                     Helper::getMessage('flash.solrNoConnection', true),
                     Helper::getMessage('flash.warning', true),
@@ -229,7 +229,7 @@ class Indexer
                     $updateQuery->addCommit();
                     self::$solr->service->update($updateQuery);
                 } catch (\Exception $e) {
-                    if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+                    if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                         Helper::addMessage(
                             Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                             Helper::getMessage('flash.error', true),
@@ -241,7 +241,7 @@ class Indexer
                     return 1;
                 }
             } else {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
                         Helper::getMessage('flash.solrNoConnection', true),
                         Helper::getMessage('flash.error', true),
@@ -252,7 +252,7 @@ class Indexer
                 Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
-            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                 Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.documentDeleted'), $title, $uid)),
                     Helper::getMessage('flash.done', true),
@@ -459,7 +459,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
@@ -591,7 +591,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == false) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
