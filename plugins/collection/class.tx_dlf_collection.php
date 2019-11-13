@@ -491,7 +491,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
                    'h' => '',
                    's' => $sorting,
                    'p' => array ()
-               );
+                );
 
             }
 
