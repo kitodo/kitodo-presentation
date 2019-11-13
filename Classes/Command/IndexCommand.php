@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Connection;
 use Kitodo\Dlf\Common\Document;
 
 /**
