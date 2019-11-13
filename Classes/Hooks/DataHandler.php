@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Hooks;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,12 +10,13 @@ namespace Kitodo\Dlf\Hooks;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Hooks;
+
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +36,7 @@ class DataHandler
      *
      * @param string $status: 'new' or 'update'
      * @param string $table: The destination table
-     * @param integer $id: The uid of the record
+     * @param int $id: The uid of the record
      * @param array &$fieldArray: Array of field values
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *
@@ -124,7 +123,7 @@ class DataHandler
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
                     $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml&action=CREATE&name=dlfCore' . $coreNumber . '&instanceDir=dlfCore' . $coreNumber . '&dataDir=data&configSet=dlf';
-                    $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
+                    $response = @simplexml_load_string(file_get_contents($url, false, $context));
                     // Process response.
                     if ($response) {
                         $solrStatus = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
@@ -236,7 +235,7 @@ class DataHandler
      *
      * @param string $status: 'new' or 'update'
      * @param string $table: The destination table
-     * @param integer $id: The uid of the record
+     * @param int $id: The uid of the record
      * @param array &$fieldArray: Array of field values
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *
@@ -298,7 +297,7 @@ class DataHandler
      *
      * @param string $command: 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
      * @param string $table: The destination table
-     * @param integer $id: The uid of the record
+     * @param int $id: The uid of the record
      * @param mixed $value: The value for the command
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *

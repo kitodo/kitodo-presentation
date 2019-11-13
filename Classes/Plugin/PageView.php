@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
@@ -119,14 +119,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray = [];
         if ($this->piVars['id']) {
             if ($this->conf['crop']) {
-                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">' . $this->pi_getLL('editMode', '', TRUE) . '</a>';
-                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">' . $this->pi_getLL('editRemove', '', TRUE) . '</a>';
+                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">' . $this->pi_getLL('editMode', '', true) . '</a>';
+                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">' . $this->pi_getLL('editRemove', '', true) . '</a>';
             } else {
                 $markerArray['###EDITBUTTON###'] = '';
                 $markerArray['###EDITREMOVE###'] = '';
             }
             if ($this->conf['magnifier']) {
-                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">' . $this->pi_getLL('magnifier', '', TRUE) . '</a>';
+                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">' . $this->pi_getLL('magnifier', '', true) . '</a>';
             } else {
                 $markerArray['###MAGNIFIER###'] = '';
             }
@@ -146,17 +146,17 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray = [];
         // Add basket button
         if ($this->conf['basketButton'] && $this->conf['targetBasket'] && $this->piVars['id']) {
-            $label = $this->pi_getLL('addBasket', '', TRUE);
+            $label = $this->pi_getLL('addBasket', '', true);
             $params = [
                 'id' => $this->piVars['id'],
-                'addToBasket' => TRUE
+                'addToBasket' => true
             ];
             if (empty($this->piVars['page'])) {
                 $params['page'] = 1;
             }
             $basketConf = [
                 'parameter' => $this->conf['targetBasket'],
-                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', TRUE, FALSE),
+                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', true, false),
                 'title' => $label
             ];
             $output = '<form id="addToBasketForm" action="' . $this->cObj->typoLink_URL($basketConf) . '" method="post">';
@@ -184,7 +184,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $page: Page number
+     * @param int $page: Page number
      *
      * @return array URL and MIME type of image file
      */
@@ -219,7 +219,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $page: Page number
+     * @param int $page: Page number
      *
      * @return array URL and MIME type of fulltext file
      */
@@ -247,7 +247,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer    $page: the current page's number
+     * @param int    $page: the current page's number
      * @return array     An array containing the IRIs of the AnnotationLists / AnnotationPages as well as
      *                   some information about the canvas.
      */
@@ -259,7 +259,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
-                if ($canvas != NULL && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
+                if ($canvas != null && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     $annotationContainers = [];
                     /*
                      *  TODO Analyzing the annotations on the server side requires loading the annotation lists / pages
@@ -269,11 +269,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                      *  On the other hand, server connections are potentially better than client connections. Downloading annotation lists
                      */
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
-                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != NULL) {
+                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
                             foreach ($textAnnotations as $annotation) {
                                 if (
                                     $annotation->getBody()->getFormat() == "text/plain"
-                                    && $annotation->getBody()->getChars() != NULL
+                                    && $annotation->getBody()->getChars() != null
                                 ) {
                                     $annotationListData = [];
                                     $annotationListData["uri"] = $annotationContainer->getId();
@@ -315,7 +315,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load current document.
         $this->loadDocument();
         if (
-            $this->doc === NULL
+            $this->doc === null
             || $this->doc->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.

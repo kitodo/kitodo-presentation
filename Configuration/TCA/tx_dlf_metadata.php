@@ -144,7 +144,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.wrap',
             'config' => [
                 'behaviour' => [
-                    'allowLanguageSynchronization' => TRUE
+                    'allowLanguageSynchronization' => true
                 ],
                 'type' => 'text',
                 'cols' => 48,
@@ -152,8 +152,8 @@ return [
                 'wrap' => 'off',
                 'eval' => 'trim',
                 'default' => "key.wrap = <dt>|</dt>\nvalue.required = 1\nvalue.wrap = <dd>|</dd>",
-                'fixedFont' => TRUE,
-                'enableTabulator' => TRUE
+                'fixedFont' => true,
+                'enableTabulator' => true
             ],
         ],
         'index_tokenized' => [

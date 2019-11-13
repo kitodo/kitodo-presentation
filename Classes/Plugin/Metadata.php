@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,11 +10,12 @@ namespace Kitodo\Dlf\Plugin;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Plugin;
+
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Context\IRI;
 
@@ -55,10 +54,10 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Turn cache on.
-        $this->setCache(TRUE);
+        $this->setCache(true);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -153,11 +152,11 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
      * @access protected
      *
      * @param array $metadataArray: The metadata array
-     * @param boolean $useOriginalIiifManifestMetadata: Output IIIF metadata as simple key/value pairs?
+     * @param bool $useOriginalIiifManifestMetadata: Output IIIF metadata as simple key/value pairs?
      *
      * @return string The metadata array ready for output
      */
-    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = FALSE)
+    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = false)
     {
         // Load template file.
         $this->getTemplate();
@@ -309,7 +308,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                             if ($index_name == 'title') {
                                 // Get title of parent document if needed.
                                 if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
-                                    $superiorTitle = Document::getTitle($this->doc->parentId, TRUE);
+                                    $superiorTitle = Document::getTitle($this->doc->parentId, true);
                                     if (!empty($superiorTitle)) {
                                         $value = '[' . $superiorTitle . ']';
                                     }
@@ -319,7 +318,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                                     // Link title to pageview.
                                     if ($this->conf['linkTitle'] && $metadata['_id']) {
                                         $details = $this->doc->getLogicalStructure($metadata['_id']);
-                                        $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], TRUE, $this->conf['targetPid']);
+                                        $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], true, $this->conf['targetPid']);
                                     }
                                 }
                             } elseif ($index_name == 'owner' && !empty($value)) {
@@ -367,6 +366,6 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 $output .= $this->templateService->substituteMarkerArray($subpart['block'], $markerArray);
             }
         }
-        return $this->templateService->substituteSubpart($this->template, '###BLOCK###', $output, TRUE);
+        return $this->templateService->substituteSubpart($this->template, '###BLOCK###', $output, true);
     }
 }

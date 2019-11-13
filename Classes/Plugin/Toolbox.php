@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin;
 
 /**
  * Plugin 'Toolbox' for the 'dlf' extension
@@ -58,6 +58,6 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin
             $cObj->data = $data;
             $content .= $this->templateService->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool . '.'])]);
         }
-        return $this->pi_wrapInBaseClass($this->templateService->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
+        return $this->pi_wrapInBaseClass($this->templateService->substituteSubpart($this->template, '###TOOLS###', $content, true));
     }
 }

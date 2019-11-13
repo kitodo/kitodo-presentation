@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Hooks;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Hooks;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 
@@ -116,11 +116,11 @@ class FormEngine
      * @param string $table: Table name to fetch the items from
      * @param string $sorting: Field to sort items by (optionally appended by 'ASC' or 'DESC')
      * @param string $where: Additional WHERE clause
-     * @param boolean $localize: Add check for localized records?
+     * @param bool $localize: Add check for localized records?
      *
      * @return void
      */
-    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = TRUE)
+    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = true)
     {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
@@ -186,7 +186,7 @@ class FormEngine
             'tx_dlf_solrcores',
             'label',
             'OR pid=0',
-            FALSE
+            false
         );
     }
 

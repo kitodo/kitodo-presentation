@@ -24,9 +24,9 @@ $EM_CONF[$_EXTKEY] = [
         'suggests' => []
     ],
     'state' => 'stable',
-    'uploadfolder' => FALSE,
+    'uploadfolder' => false,
     'createDirs' => '',
-    'clearCacheOnLoad' => FALSE,
+    'clearCacheOnLoad' => false,
     'author' => 'Sebastian Meyer (Maintainer)',
     'author_email' => 'contact@kitodo.org',
     'author_company' => 'Kitodo. Key to digital objects e. V.',

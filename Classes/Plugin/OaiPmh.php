@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,11 +10,12 @@ namespace Kitodo\Dlf\Plugin;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Plugin;
+
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,10 +33,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     /**
      * Did an error occur?
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $error = FALSE;
+    protected $error = false;
 
     /**
      * This holds the OAI DOM object
@@ -102,8 +101,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function error($type)
     {
-        $this->error = TRUE;
-        $error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', htmlspecialchars($this->pi_getLL($type, $type, FALSE), ENT_NOQUOTES, 'UTF-8'));
+        $this->error = true;
+        $error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', htmlspecialchars($this->pi_getLL($type, $type, false), ENT_NOQUOTES, 'UTF-8'));
         $error->setAttribute('code', $type);
         return $error;
     }
@@ -291,7 +290,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function getMetsData(array $metadata)
     {
-        $mets = NULL;
+        $mets = null;
         // Load METS file.
         $xml = new \DOMDocument();
         if ($xml->load($metadata['location'])) {
@@ -299,15 +298,15 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
             if ($root->item(0) instanceof \DOMNode) {
                 // Import node into \DOMDocument.
-                $mets = $this->oai->importNode($root->item(0), TRUE);
+                $mets = $this->oai->importNode($root->item(0), true);
             } else {
                 Helper::devLog('No METS part found in document with location "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
             }
         } else {
             Helper::devLog('Could not load XML file from "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
         }
-        if ($mets === NULL) {
-            $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!', FALSE), ENT_NOQUOTES, 'UTF-8'));
+        if ($mets === null) {
+            $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!', false), ENT_NOQUOTES, 'UTF-8'));
         }
         return $mets;
     }
@@ -327,7 +326,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         // Initialize plugin.
         $this->init($conf);
         // Turn cache off.
-        $this->setCache(FALSE);
+        $this->setCache(false);
         // Get GET and POST variables.
         $this->getUrlParams();
         // Delete expired resumption tokens.

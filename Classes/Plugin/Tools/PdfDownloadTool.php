@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin\Tools;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin\Tools;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin\Tools;
 
 use Kitodo\Dlf\Common\Helper;
 
@@ -47,7 +47,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load current document.
         $this->loadDocument();
         if (
-            $this->doc === NULL
+            $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->conf['fileGrpDownload'])
         ) {
