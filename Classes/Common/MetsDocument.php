@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,6 +10,8 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Common;
+
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -21,11 +21,11 @@ use Ubl\Iiif\Services\AbstractImageService;
 /**
  * MetsDocument class for the 'dlf' extension.
  *
- * @author	Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author	Henrik Lochmann <dev@mentalmotive.com>
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author Henrik Lochmann <dev@mentalmotive.com>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  * @property-write int $cPid This holds the PID for the configuration
  * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
  * @property-read array $fileGrps This holds the file ID -> USE concordance

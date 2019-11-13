@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Module;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Module;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Module;
 
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;

@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Common;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Common;
 
 use Flow\JSONPath\JSONPath;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,9 +34,9 @@ use Ubl\Iiif\Tools\IiifHelper;
  * represents a IIIF manifest in the conext of this TYPO3 extension.
  *
  * @author Lutz Helm <helm@ub.uni-leipzig.de>
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  * @property-write int $cPid This holds the PID for the configuration
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location

@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin\Tools;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin\Tools;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin\Tools;
 
 use Kitodo\Dlf\Common\Helper;
 
