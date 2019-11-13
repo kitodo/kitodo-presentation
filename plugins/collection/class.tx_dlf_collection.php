@@ -453,29 +453,29 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             }
 
+            // Prepare document's metadata for sorting.
+            $sorting = unserialize($resArray['metadata_sorting']);
+
+            if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
+
+                $sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+
+            }
+
+            if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
+
+                $sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+
+            }
+
+            if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
+
+                $sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
+
+            }
+
             // Split toplevel documents from volumes.
             if ($resArray['partof'] == 0) {
-
-                // Prepare document's metadata for sorting.
-                $sorting = unserialize($resArray['metadata_sorting']);
-
-                if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-
-                    $sorting['type'] = tx_dlf_helper::getIndexName($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
-
-                }
-
-                if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-
-                    $sorting['owner'] = tx_dlf_helper::getIndexName($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
-
-                }
-
-                if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-
-                    $sorting['collection'] = tx_dlf_helper::getIndexName($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
-
-                }
 
                 $toplevel[$resArray['uid']] = array (
                     'u' => $resArray['uid'],
@@ -486,7 +486,12 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
             } else {
 
-                $subparts[$resArray['partof']][$resArray['volume_sorting']] = $resArray['uid'];
+                $subparts[$resArray['partof']][$resArray['volume_sorting']] = array (
+                   'u' => $resArray['uid'],
+                   'h' => '',
+                   's' => $sorting,
+                   'p' => array ()
+                );
 
             }
 
@@ -495,13 +500,17 @@ class tx_dlf_collection extends tx_dlf_plugin {
         // Add volumes to the corresponding toplevel documents.
         foreach ($subparts as $partof => $parts) {
 
-            if (!empty($toplevel[$partof])) {
+            ksort($parts);
 
-                ksort($parts);
+            foreach ($parts as $part) {
 
-                foreach ($parts as $part) {
+                if (!empty($toplevel[$partof])) {
 
-                    $toplevel[$partof]['p'][] = array ('u' => $part);
+                    $toplevel[$partof]['p'][] = ['u' => $part['u']];
+
+                } else {
+
+                    $toplevel[$part['u']] = $part;
 
                 }
 
