@@ -506,7 +506,7 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
                 if (!empty($toplevel[$partof])) {
 
-                    $toplevel[$partof]['p'][] = ['u' => $part];
+                    $toplevel[$partof]['p'][] = ['u' => $part['u']];
 
                 } else {
 
