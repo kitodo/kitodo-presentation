@@ -400,7 +400,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $params = [];
             $matches = [];
             // Set search query.
-            if ((!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext']))
+            if (
+                (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext']))
                 || preg_match('/fulltext:\((.*)\)/', trim($this->piVars['query']), $matches)
             ) {
                 // If the query already is a fulltext query e.g using the facets
