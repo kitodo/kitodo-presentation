@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Hooks;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Hooks;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 
@@ -34,11 +34,11 @@ class ExtensionManagementUtility extends \TYPO3\CMS\Core\Utility\ExtensionManage
      * @param string $class: The qualified class name
      * @param string $suffix: The uid of the record
      * @param string $type: Determines the type of the frontend plugin
-     * @param boolean $cached: Should we created a USER object instead of USER_INT?
+     * @param bool $cached: Should we created a USER object instead of USER_INT?
      *
      * @return void
      */
-    public static function addPItoST43($key, $class, $suffix = '', $type = 'list_type', $cached = FALSE)
+    public static function addPItoST43($key, $class, $suffix = '', $type = 'list_type', $cached = false)
     {
         $internalName = 'tx_' . $key . '_' . strtolower(Helper::getUnqualifiedClassName($class));
         // General plugin

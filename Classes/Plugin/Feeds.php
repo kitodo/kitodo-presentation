@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,10 +10,11 @@ namespace Kitodo\Dlf\Plugin;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Plugin;
+
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -44,7 +43,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Don't cache the output.
-        $this->setCache(FALSE);
+        $this->setCache(false);
         // Create XML document.
         $rss = new \DOMDocument('1.0', 'utf-8');
         // Add mandatory root element.
@@ -117,7 +116,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     if ((empty($resArray['title']) || !empty($this->conf['prependSuperiorTitle']))
                         && !empty($resArray['partof'])
                     ) {
-                        $superiorTitle = Document::getTitle($resArray['partof'], TRUE);
+                        $superiorTitle = Document::getTitle($resArray['partof'], true);
                         if (!empty($superiorTitle)) {
                             $title .= '[' . $superiorTitle . ']';
                         }
@@ -145,7 +144,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     $linkConf = [
                         'parameter' => $this->conf['targetPid'],
                         'forceAbsoluteUrl' => 1,
-                        'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', TRUE, FALSE)
+                        'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', true, false)
                     ];
                     $item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
                     // Add author if applicable.

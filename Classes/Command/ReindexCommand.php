@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Command;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Command;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,12 +25,19 @@ use TYPO3\CMS\Core\Database\Connection;
 use Kitodo\Dlf\Common\Document;
 
 /**
- * Reindex a collection into database and Solr.
+ * CLI Command for re-indexing collections into database and Solr.
+ *
+ * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
 class ReindexCommand extends Command
 {
     /**
      * Configure the command by defining the name, options and arguments
+     *
+     * @return void
      */
     public function configure()
     {
@@ -39,7 +46,7 @@ class ReindexCommand extends Command
             ->setHelp('')
             ->addOption(
                 'dry-run',
-                NULL,
+                null,
                 InputOption::VALUE_NONE,
                 'If this option is set, the files will not actually be processed but the location URI is shown.'
             )
@@ -72,15 +79,17 @@ class ReindexCommand extends Command
     /**
      * Executes the command to index the given document to db and solr.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param InputInterface $input The input parameters
+     * @param OutputInterface $output The Symfony interface for outputs on console
+     *
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Make sure the _cli_ user is loaded
         Bootstrap::getInstance()->initializeBackendAuthentication();
 
-        $dryRun = $input->getOption('dry-run') != FALSE ? TRUE : FALSE;
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
@@ -131,7 +140,7 @@ class ReindexCommand extends Command
             && !is_array($input->getOption('coll'))
         ) {
             // "coll" may be a single integer or a comma-separated list of integers.
-            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), TRUE)))) {
+            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), true)))) {
                 $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
                 exit(1);
             }
@@ -142,7 +151,7 @@ class ReindexCommand extends Command
         }
 
         foreach ($documents as $id => $document) {
-            $doc = Document::getInstance($document, $startingPoint, TRUE);
+            $doc = Document::getInstance($document, $startingPoint, true);
             if ($doc->ready) {
                 if ($dryRun) {
                     $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
@@ -167,11 +176,11 @@ class ReindexCommand extends Command
 
 
     /**
-     * Fetches all records of tx_dlf_solrcores on given page.
+     * Fetches all Solr cores on given page.
      *
-     * @param int $pageId the uid of the solr record (can also be 0)
+     * @param int $pageId The UID of the Solr core or 0 to disable indexing
      *
-     * @return array array of valid solr cores
+     * @return array Array of valid Solr cores
      */
     protected function getSolrCores(int $pageId): array
     {
@@ -179,14 +188,13 @@ class ReindexCommand extends Command
             ->getQueryBuilderForTable('tx_dlf_solrcores');
 
         $solrCores = [];
-        $pageId = (int) $pageId;
         $result = $queryBuilder
             ->select('uid', 'index_name')
             ->from('tx_dlf_solrcores')
             ->where(
                 $queryBuilder->expr()->eq(
                     'pid',
-                    $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
                 )
             )
             ->execute();
@@ -201,10 +209,10 @@ class ReindexCommand extends Command
     /**
      * Fetches all documents with given collection.
      *
-     * @param string $collId a comma separated list of collection uids
-     * @param int $pageId the uid of the solr record
+     * @param string $collId A comma separated list of collection UIDs
+     * @param int $pageId The PID of the collections' documents
      *
-     * @return array array of valid solr cores
+     * @return array Array of documents to index
      */
     protected function getDocumentsToProceed(string $collIds, int $pageId): array
     {
@@ -212,7 +220,6 @@ class ReindexCommand extends Command
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         $documents = [];
-        $pageId = (int) $pageId;
         $result = $queryBuilder
             ->select('tx_dlf_documents.uid')
             ->from('tx_dlf_documents')
@@ -239,13 +246,13 @@ class ReindexCommand extends Command
                     $queryBuilder->expr()->in(
                         'tx_dlf_collections_join.uid',
                         $queryBuilder->createNamedParameter(
-                            GeneralUtility::intExplode(',', $collIds, TRUE),
+                            GeneralUtility::intExplode(',', $collIds, true),
                             Connection::PARAM_INT_ARRAY
                         )
                     ),
                     $queryBuilder->expr()->eq(
                         'tx_dlf_collections_join.pid',
-                        $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
+                        $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
                     ),
                     $queryBuilder->expr()->eq(
                         'tx_dlf_relations_joins.ident',
@@ -267,9 +274,9 @@ class ReindexCommand extends Command
     /**
      * Fetches all documents of given page.
      *
-     * @param int $pageId the uid of the solr record
+     * @param int $pageId The documents' PID
      *
-     * @return array array of valid solr cores
+     * @return array Array of documents to index
      */
     protected function getAllDocuments(int $pageId): array
     {

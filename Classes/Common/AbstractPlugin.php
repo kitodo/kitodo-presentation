@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,8 +10,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Common;
+
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,8 +31,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     public $prefixId = 'tx_dlf';
     public $scriptRelPath = 'Classes/Common/AbstractPlugin.php';
     // Plugins are cached by default (@see setCache()).
-    public $pi_USER_INT_obj = FALSE;
-    public $pi_checkCHash = TRUE;
+    public $pi_USER_INT_obj = false;
+    public $pi_checkCHash = true;
 
     /**
      * This holds the current document
@@ -148,7 +147,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->doc = Document::getInstance($this->piVars['id'], $pid);
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
-                $this->doc = NULL;
+                $this->doc = null;
                 Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_ERROR);
             } else {
                 // Set configuration PID.
@@ -240,24 +239,24 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @access protected
      *
-     * @param boolean $cache: Should the plugin be cached?
+     * @param bool $cache: Should the plugin be cached?
      *
      * @return void
      */
-    protected function setCache($cache = TRUE)
+    protected function setCache($cache = true)
     {
         if ($cache) {
             // Set cObject type to "USER" (default).
-            $this->pi_USER_INT_obj = FALSE;
-            $this->pi_checkCHash = TRUE;
+            $this->pi_USER_INT_obj = false;
+            $this->pi_checkCHash = true;
             if (count($this->piVars)) {
                 // Check cHash or disable caching.
                 $GLOBALS['TSFE']->reqCHash();
             }
         } else {
             // Set cObject type to "USER_INT".
-            $this->pi_USER_INT_obj = TRUE;
-            $this->pi_checkCHash = FALSE;
+            $this->pi_USER_INT_obj = true;
+            $this->pi_checkCHash = false;
             // Plugins are of type "USER" by default, so convert it to "USER_INT".
             $this->cObj->convertToUserIntObject();
         }

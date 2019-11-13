@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin\Eid;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin\Eid;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin\Eid;
 
 /**
  * eID image proxy for plugin 'Page View' of the 'dlf' extension
@@ -48,7 +48,7 @@ class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         // Get last modified date from request header
         $fetchedHeader = explode("\n", \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, 2));
         foreach ($fetchedHeader as $headerline) {
-            if (stripos($headerline, 'Last-Modified:') !== FALSE) {
+            if (stripos($headerline, 'Last-Modified:') !== false) {
                 header($headerline);
                 break;
             }

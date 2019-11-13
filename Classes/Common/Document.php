@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,8 +10,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Common;
+
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
@@ -27,18 +26,18 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write integer $cPid This holds the PID for the configuration
- * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @property-write int $cPid This holds the PID for the configuration
+ * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
- * @property-read integer $numPages The holds the total number of pages
- * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read int $numPages The holds the total number of pages
+ * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
  * @property-read array $physicalStructure This holds the physical structure
  * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read integer $pid This holds the PID of the document or zero if not in database
- * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read int $pid This holds the PID of the document or zero if not in database
+ * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId The METS file's / IIIF manifest's record identifier
- * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks This holds the smLinks between logical and physical structMap
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
@@ -51,7 +50,7 @@ abstract class Document
     /**
      * This holds the PID for the configuration
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $cPid = 0;
@@ -90,20 +89,20 @@ abstract class Document
      * Are the available metadata formats loaded?
      * @see $formats
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $formatsLoaded = FALSE;
+    protected $formatsLoaded = false;
 
     /**
      * Are there any fulltext files available? This also includes IIIF text annotations
      * with motivation 'painting' if Kitodo.Presentation is configured to store text
      * annotations as fulltext.
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $hasFulltext = FALSE;
+    protected $hasFulltext = false;
 
     /**
      * Last searched logical and physical page
@@ -111,7 +110,7 @@ abstract class Document
      * @var array
      * @access protected
      */
-    protected $lastSearchedPhysicalPage = ['logicalPage' => NULL, 'physicalPage' => NULL];
+    protected $lastSearchedPhysicalPage = ['logicalPage' => null, 'physicalPage' => null];
 
     /**
      * This holds the documents location
@@ -142,15 +141,15 @@ abstract class Document
      * Is the metadata array loaded?
      * @see $metadataArray
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $metadataArrayLoaded = FALSE;
+    protected $metadataArrayLoaded = false;
 
     /**
      * The holds the total number of pages
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $numPages = 0;
@@ -158,7 +157,7 @@ abstract class Document
     /**
      * This holds the UID of the parent document or zero if not multi-volumed
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $parentId = 0;
@@ -183,15 +182,15 @@ abstract class Document
      * Is the physical structure loaded?
      * @see $physicalStructure
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $physicalStructureLoaded = FALSE;
+    protected $physicalStructureLoaded = false;
 
     /**
      * This holds the PID of the document or zero if not in database
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $pid = 0;
@@ -208,10 +207,10 @@ abstract class Document
     /**
      * Is the document instantiated successfully?
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $ready = FALSE;
+    protected $ready = false;
 
     /**
      * The METS file's / IIIF manifest's record identifier
@@ -233,7 +232,7 @@ abstract class Document
     /**
      * This holds the UID of the root document or zero if not multi-volumed
      *
-     * @var integer
+     * @var int
      * @access protected
      */
     protected $rootId = 0;
@@ -242,10 +241,10 @@ abstract class Document
      * Is the root id loaded?
      * @see $rootId
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $rootIdLoaded = FALSE;
+    protected $rootIdLoaded = false;
 
     /**
      * This holds the smLinks between logical and physical structMap
@@ -259,10 +258,10 @@ abstract class Document
      * Are the smLinks loaded?
      * @see $smLinks
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $smLinksLoaded = FALSE;
+    protected $smLinksLoaded = false;
 
     /**
      * This holds the logical structure
@@ -276,10 +275,10 @@ abstract class Document
      * Is the table of contents loaded?
      * @see $tableOfContents
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $tableOfContentsLoaded = FALSE;
+    protected $tableOfContentsLoaded = false;
 
     /**
      * This holds the document's thumbnail location
@@ -293,10 +292,10 @@ abstract class Document
      * Is the document's thumbnail location loaded?
      * @see $thumbnail
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $thumbnailLoaded = FALSE;
+    protected $thumbnailLoaded = false;
 
     /**
      * This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
@@ -344,7 +343,7 @@ abstract class Document
      *
      * @abstract
      *
-     * @param integer $pid: ID of the configuration page with the recordId config
+     * @param int $pid: ID of the configuration page with the recordId config
      *
      */
     protected abstract function establishRecordId($pid);
@@ -408,12 +407,12 @@ abstract class Document
      * @static
      *
      * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
-     * @param integer $pid: If > 0, then only document with this PID gets loaded
-     * @param boolean $forceReload: Force reloading the document instead of returning the cached instance
+     * @param int $pid: If > 0, then only document with this PID gets loaded
+     * @param bool $forceReload: Force reloading the document instead of returning the cached instance
      *
      * @return \Kitodo\Dlf\Common\Document Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance($uid, $pid = 0, $forceReload = FALSE)
+    public static function &getInstance($uid, $pid = 0, $forceReload = false)
     {
         // Sanitize input.
         $pid = max(intval($pid), 0);
@@ -453,10 +452,10 @@ abstract class Document
             }
         }
         // Create new instance depending on format (METS or IIIF) ...
-        $instance = NULL;
-        $documentFormat = NULL;
-        $xml = NULL;
-        $iiif = NULL;
+        $instance = null;
+        $documentFormat = null;
+        $xml = null;
+        $iiif = null;
         // Try to get document format from database
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -505,27 +504,27 @@ abstract class Document
                     @ini_set('user_agent', $extConf['useragent']);
                 }
                 $content = GeneralUtility::getUrl($location);
-                if ($content !== FALSE) {
+                if ($content !== false) {
                     // TODO use single place to load xml
                     // Turn off libxml's error logging.
-                    $libxmlErrors = libxml_use_internal_errors(TRUE);
+                    $libxmlErrors = libxml_use_internal_errors(true);
                     // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-                    $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                    $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
                     // Try to load XML from file.
                     $xml = simplexml_load_string($content);
                     // reset entity loader setting
                     libxml_disable_entity_loader($previousValueOfEntityLoader);
                     // Reset libxml's error logging.
                     libxml_use_internal_errors($libxmlErrors);
-                    if ($xml !== FALSE) {
+                    if ($xml !== false) {
                         /* @var $xml \SimpleXMLElement */
                         $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
                         $xpathResult = $xml->xpath('//mets:mets');
-                        $documentFormat = !empty($xpathResult) ? 'METS' : NULL;
+                        $documentFormat = !empty($xpathResult) ? 'METS' : null;
                     } else {
                         // Try to load file as IIIF resource instead.
-                        $contentAsJsonArray = json_decode($content, TRUE);
-                        if ($contentAsJsonArray !== NULL) {
+                        $contentAsJsonArray = json_decode($content, true);
+                        if ($contentAsJsonArray !== null) {
                             // Load plugin configuration.
                             $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
                             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
@@ -575,11 +574,11 @@ abstract class Document
      *
      * @param string $id: The @ID attribute of the logical structure node (METS) or
      * the @id property of the Manifest / Range (IIIF)
-     * @param boolean $recursive: Whether to include the child elements / resources
+     * @param bool $recursive: Whether to include the child elements / resources
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    public abstract function getLogicalStructure($id, $recursive = FALSE);
+    public abstract function getLogicalStructure($id, $recursive = false);
 
     /**
      * This extracts all the metadata for a logical structure node
@@ -590,7 +589,7 @@ abstract class Document
      *
      * @param string $id: The @ID attribute of the logical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
-     * @param integer $cPid: The PID for the metadata definitions
+     * @param int $cPid: The PID for the metadata definitions
      *                       (defaults to $this->cPid or $this->pid)
      *
      * @return array The logical structure node's / the IIIF resource's parsed metadata array
@@ -604,7 +603,7 @@ abstract class Document
      *
      * @param string $logicalPage: The label (or a part of the label) of the logical page
      *
-     * @return integer The physical page number
+     * @return int The physical page number
      */
     public function getPhysicalPage($logicalPage)
     {
@@ -616,7 +615,7 @@ abstract class Document
         } else {
             $physicalPage = 0;
             foreach ($this->physicalStructureInfo as $page) {
-                if (strpos($page['orderlabel'], $logicalPage) !== FALSE) {
+                if (strpos($page['orderlabel'], $logicalPage) !== false) {
                     $this->lastSearchedPhysicalPage['logicalPage'] = $logicalPage;
                     $this->lastSearchedPhysicalPage['physicalPage'] = $physicalPage;
                     return $physicalPage;
@@ -666,11 +665,11 @@ abstract class Document
         if (!empty($this->physicalStructureInfo[$id])) {
             // Get fulltext file.
             $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]));
-            if ($file !== FALSE) {
+            if ($file !== false) {
                 // Turn off libxml's error logging.
-                $libxmlErrors = libxml_use_internal_errors(TRUE);
+                $libxmlErrors = libxml_use_internal_errors(true);
                 // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
-                $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
                 // Load XML from file.
                 $rawTextXml = simplexml_load_string($file);
                 // Reset entity loader setting.
@@ -718,12 +717,12 @@ abstract class Document
      *
      * @static
      *
-     * @param integer $uid: The UID of the document
-     * @param boolean $recursive: Search superior documents for a title, too?
+     * @param int $uid: The UID of the document
+     * @param bool $recursive: Search superior documents for a title, too?
      *
      * @return string The title of the document itself or a parent document
      */
-    public static function getTitle($uid, $recursive = FALSE)
+    public static function getTitle($uid, $recursive = false)
     {
         $title = '';
         // Sanitize input.
@@ -756,7 +755,7 @@ abstract class Document
                     && intval($partof)
                     && $partof != $uid
                 ) {
-                    $title = self::getTitle($partof, TRUE);
+                    $title = self::getTitle($partof, true);
                 }
             } else {
                 Helper::devLog('No document with UID ' . $uid . ' found or document not accessible', DEVLOG_SEVERITY_WARNING);
@@ -772,7 +771,7 @@ abstract class Document
      *
      * @access public
      *
-     * @param integer $cPid: The PID for the metadata definitions
+     * @param int $cPid: The PID for the metadata definitions
      *
      * @return array The logical structure node's / resource's parsed metadata array
      */
@@ -804,10 +803,10 @@ abstract class Document
      * @access protected
      *
      * @param array $structure: logical structure array
-     * @param integer $depth: current tree depth
+     * @param int $depth: current tree depth
      * @param string $logId: ID of the logical structure whose depth is requested
      *
-     * @return integer|boolean: FALSE if structure with $logId is not a child of this substructure,
+     * @return int|bool: false if structure with $logId is not a child of this substructure,
      * or the actual depth.
      */
     protected function getTreeDepth($structure, $depth, $logId)
@@ -817,12 +816,12 @@ abstract class Document
                 return $depth;
             } elseif (array_key_exists('children', $element)) {
                 $foundInChildren = $this->getTreeDepth($element['children'], $depth + 1, $logId);
-                if ($foundInChildren !== FALSE) {
+                if ($foundInChildren !== false) {
                     return $foundInChildren;
                 }
             }
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -831,7 +830,7 @@ abstract class Document
      * @access public
      *
      * @param string $logId: The id of the logical structure element whose depth is requested
-     * @return number|boolean tree depth as integer or FALSE if no element with $logId exists within the TOC.
+     * @return int|bool tree depth as integer or false if no element with $logId exists within the TOC.
      */
     public function getStructureDepth($logId)
     {
@@ -858,7 +857,7 @@ abstract class Document
      *
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
      *
-     * @return boolean TRUE if $preloadedDocument can actually be reused, FALSE if it has to be loaded again
+     * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
      */
     protected abstract function setPreloadedDocument($preloadedDocument);
 
@@ -871,7 +870,7 @@ abstract class Document
      *
      * @param string $location: The URL of the file to load
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool true on success or false on failure
      */
     protected abstract function loadLocation($location);
 
@@ -882,7 +881,7 @@ abstract class Document
      *
      * @param string $location: The URL of the file to load
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool true on success or false on failure
      */
     protected function load($location)
     {
@@ -899,7 +898,7 @@ abstract class Document
         } else {
             Helper::devLog('Invalid file location "' . $location . '" for document loading', DEVLOG_SEVERITY_ERROR);
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -947,7 +946,7 @@ abstract class Document
                     'class' => $resArray['class']
                 ];
             }
-            $this->formatsLoaded = TRUE;
+            $this->formatsLoaded = true;
         }
     }
 
@@ -984,16 +983,16 @@ abstract class Document
      *
      * @access public
      *
-     * @param integer $pid: The PID of the saved record
-     * @param integer $core: The UID of the Solr core for indexing
+     * @param int $pid: The PID of the saved record
+     * @param int $core: The UID of the Solr core for indexing
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool true on success or false on failure
      */
     public function save($pid = 0, $core = 0)
     {
         if (\TYPO3_MODE !== 'BE') {
             Helper::devLog('Saving a document is only allowed in the backend', DEVLOG_SEVERITY_ERROR);
-            return FALSE;
+            return false;
         }
         // Make sure $pid is a non-negative integer.
         $pid = max(intval($pid), 0);
@@ -1008,7 +1007,7 @@ abstract class Document
             $pid = $this->pid;
         } elseif (!$pid) {
             Helper::devLog('Invalid PID ' . $pid . ' for document saving', DEVLOG_SEVERITY_ERROR);
-            return FALSE;
+            return false;
         }
         // Set PID for metadata definitions.
         $this->cPid = $pid;
@@ -1021,7 +1020,7 @@ abstract class Document
         // Check for record identifier.
         if (empty($metadata['record_id'][0])) {
             Helper::devLog('No record identifier found to avoid duplication', DEVLOG_SEVERITY_ERROR);
-            return FALSE;
+            return false;
         }
         // Load plugin configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
@@ -1045,7 +1044,7 @@ abstract class Document
             $structure = $resArray['uid'];
         } else {
             Helper::devLog('Could not identify document/structure type "' . $queryBuilder->expr()->literal($metadata['type'][0]) . '"', DEVLOG_SEVERITY_ERROR);
-            return FALSE;
+            return false;
         }
         $metadata['type'][0] = $structure;
 
@@ -1099,12 +1098,12 @@ abstract class Document
                 unset($collData);
                 // Add new collection's UID.
                 $collections[] = $substUid[$collNewUid];
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
                         htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
-                        Helper::getMessage('flash.attention', TRUE),
+                        Helper::getMessage('flash.attention', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                        TRUE
+                        true
                     );
                 }
             }
@@ -1150,12 +1149,12 @@ abstract class Document
             $substUid = Helper::processDBasAdmin($libData);
             // Add new library's UID.
             $ownerUid = $substUid[$libNewUid];
-            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                 Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
-                    Helper::getMessage('flash.attention', TRUE),
+                    Helper::getMessage('flash.attention', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                    TRUE
+                    true
                 );
             }
         }
@@ -1236,7 +1235,7 @@ abstract class Document
             'author' => implode('; ', $metadata['author']),
             'year' => implode('; ', $metadata['year']),
             'place' => implode('; ', $metadata['place']),
-            'thumbnail' => $this->_getThumbnail(TRUE),
+            'thumbnail' => $this->_getThumbnail(true),
             'metadata' => serialize($listed),
             'metadata_sorting' => serialize($sortable),
             'structure' => $metadata['type'][0],
@@ -1268,12 +1267,12 @@ abstract class Document
             $this->pid = $pid;
             $this->parentId = $partof;
         }
-        if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+        if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
             Helper::addMessage(
                 htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
-                Helper::getMessage('flash.done', TRUE),
+                Helper::getMessage('flash.done', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                TRUE
+                true
             );
         }
         // Add document to index.
@@ -1282,7 +1281,7 @@ abstract class Document
         } else {
             Helper::devLog('Invalid UID "' . $core . '" for Solr core', DEVLOG_SEVERITY_NOTICE);
         }
-        return TRUE;
+        return true;
     }
 
     /**
@@ -1303,7 +1302,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return boolean Are there any fulltext files available?
+     * @return bool Are there any fulltext files available?
      */
     protected function _getHasFulltext()
     {
@@ -1330,7 +1329,7 @@ abstract class Document
      *
      * @abstract
      *
-     * @param integer $cPid
+     * @param int $cPid
      */
     protected abstract function prepareMetadataArray($cPid);
 
@@ -1355,7 +1354,7 @@ abstract class Document
         ) {
             $this->prepareMetadataArray($cPid);
             $this->metadataArray[0] = $cPid;
-            $this->metadataArrayLoaded = TRUE;
+            $this->metadataArrayLoaded = true;
         }
         return $this->metadataArray;
     }
@@ -1365,7 +1364,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The total number of pages and/or tracks
+     * @return int The total number of pages and/or tracks
      */
     protected function _getNumPages()
     {
@@ -1378,7 +1377,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The UID of the parent document or zero if not applicable
+     * @return int The UID of the parent document or zero if not applicable
      */
     protected function _getParentId()
     {
@@ -1419,7 +1418,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The PID of the document or zero if not in database
+     * @return int The PID of the document or zero if not in database
      */
     protected function _getPid()
     {
@@ -1431,7 +1430,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return boolean Is the document instantiated successfully?
+     * @return bool Is the document instantiated successfully?
      */
     protected function _getReady()
     {
@@ -1455,7 +1454,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @return integer The UID of the root document or zero if not applicable
+     * @return int The UID of the root document or zero if not applicable
      */
     protected function _getRootId()
     {
@@ -1464,7 +1463,7 @@ abstract class Document
                 $parent = self::getInstance($this->parentId, $this->pid);
                 $this->rootId = $parent->rootId;
             }
-            $this->rootIdLoaded = TRUE;
+            $this->rootIdLoaded = true;
         }
         return $this->rootId;
     }
@@ -1493,8 +1492,8 @@ abstract class Document
         // Is there no logical structure array yet?
         if (!$this->tableOfContentsLoaded) {
             // Get all logical structures.
-            $this->getLogicalStructure('', TRUE);
-            $this->tableOfContentsLoaded = TRUE;
+            $this->getLogicalStructure('', true);
+            $this->tableOfContentsLoaded = true;
         }
         return $this->tableOfContents;
     }
@@ -1506,11 +1505,11 @@ abstract class Document
      *
      * @abstract
      *
-     * @param boolean $forceReload: Force reloading the thumbnail instead of returning the cached value
+     * @param bool $forceReload: Force reloading the thumbnail instead of returning the cached value
      *
      * @return string The document's thumbnail location
      */
-    protected abstract function _getThumbnail($forceReload = FALSE);
+    protected abstract function _getThumbnail($forceReload = false);
 
     /**
      * This returns the ID of the toplevel logical structure node
@@ -1540,7 +1539,7 @@ abstract class Document
      *
      * @access protected
      *
-     * @param integer $value: The new PID for the metadata definitions
+     * @param int $value: The new PID for the metadata definitions
      *
      * @return void
      */
@@ -1567,9 +1566,9 @@ abstract class Document
      *
      * @access protected
      *
-     * @param integer $uid: The UID of the document to parse or URL to XML file
-     * @param integer $pid: If > 0, then only document with this PID gets loaded
-     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either NULL or the \SimpleXMLElement
+     * @param int $uid: The UID of the document to parse or URL to XML file
+     * @param int $pid: If > 0, then only document with this PID gets loaded
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
@@ -1591,7 +1590,7 @@ abstract class Document
                 && $this->load($uid))) {
                 // Initialize core METS object.
                 $this->init();
-                if ($this->getDocument() !== NULL) {
+                if ($this->getDocument() !== null) {
                     // Cast to string for safety reasons.
                     $location = (string) $uid;
                     $this->establishRecordId($pid);
@@ -1649,30 +1648,30 @@ abstract class Document
             $this->parentId = $resArray['partof'];
             $this->thumbnail = $resArray['thumbnail'];
             $this->location = $resArray['location'];
-            $this->thumbnailLoaded = TRUE;
+            $this->thumbnailLoaded = true;
             // Load XML file if necessary...
             if (
-                $this->getDocument() === NULL
+                $this->getDocument() === null
                 && $this->load($this->location)
             ) {
                 // ...and set some basic properties.
                 $this->init();
             }
             // Do we have a METS / IIIF object now?
-            if ($this->getDocument() !== NULL) {
+            if ($this->getDocument() !== null) {
                 // Set new location if necessary.
                 if (!empty($location)) {
                     $this->location = $location;
                 }
                 // Document ready!
-                $this->ready = TRUE;
+                $this->ready = true;
             }
-        } elseif ($this->getDocument() !== NULL) {
+        } elseif ($this->getDocument() !== null) {
             // Set location as UID for documents not in database.
             $this->uid = $location;
             $this->location = $location;
             // Document ready!
-            $this->ready = TRUE;
+            $this->ready = true;
         } else {
             Helper::devLog('No document with UID ' . $uid . ' found or document not accessible', DEVLOG_SEVERITY_ERROR);
         }
@@ -1708,7 +1707,7 @@ abstract class Document
      *
      * @param string $var: Name of variable to check
      *
-     * @return boolean TRUE if variable is set and not empty, FALSE otherwise
+     * @return bool true if variable is set and not empty, false otherwise
      */
     public function __isset($var) {
         return !empty($this->__get($var));
