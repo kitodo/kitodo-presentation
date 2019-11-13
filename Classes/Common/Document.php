@@ -1702,6 +1702,19 @@ abstract class Document
     }
 
     /**
+     * This magic method is called each time an invisible property is checked for isset() or empty()
+     *
+     * @access public
+     *
+     * @param string $var: Name of variable to check
+     *
+     * @return boolean TRUE if variable is set and not empty, FALSE otherwise
+     */
+    public function __isset($var) {
+        return !empty($this->__get($var));
+    }
+
+    /**
      * This magic method is called each time an invisible property is referenced from the object
      *
      * @access public

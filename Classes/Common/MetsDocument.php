@@ -248,7 +248,7 @@ final class MetsDocument extends Document
             } else {
                 // Walk the logical structure recursively and fill the whole table of contents.
                 foreach ($divs as $div) {
-                    $this->tableOfContents[] = $this->getLogicalStructureInfo($div, TRUE);
+                    $this->tableOfContents[] = $this->getLogicalStructureInfo($div, $recursive);
                 }
             }
         }

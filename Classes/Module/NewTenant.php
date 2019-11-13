@@ -56,7 +56,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             }
             $data['tx_dlf_metadata'][uniqid('NEW')] = [
                 'pid' => intval($this->id),
-                'label' => $GLOBALS['LANG']->getLL($index_name),
+                'label' => $GLOBALS['LANG']->getLL('metadata.' . $index_name),
                 'index_name' => $index_name,
                 'format' => implode(',', $formatIds),
                 'default_value' => $values['default_value'],
@@ -141,7 +141,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             $data['tx_dlf_structures'][uniqid('NEW')] = [
                 'pid' => intval($this->id),
                 'toplevel' => $values['toplevel'],
-                'label' => $GLOBALS['LANG']->getLL($index_name),
+                'label' => $GLOBALS['LANG']->getLL('structure.' . $index_name),
                 'index_name' => $index_name,
                 'oai_name' => $values['oai_name'],
                 'thumbnail' => 0,
