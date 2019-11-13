@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
