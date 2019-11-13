@@ -58,6 +58,6 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin
             $cObj->data = $data;
             $content .= $this->templateService->substituteMarkerArray($subpart, ['###TOOL###' => $cObj->cObjGetSingle($GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool], $GLOBALS['TSFE']->tmpl->setup['plugin.'][$tool . '.'])]);
         }
-        return $this->pi_wrapInBaseClass($this->templateService->substituteSubpart($this->template, '###TOOLS###', $content, TRUE));
+        return $this->pi_wrapInBaseClass($this->templateService->substituteSubpart($this->template, '###TOOLS###', $content, true));
     }
 }

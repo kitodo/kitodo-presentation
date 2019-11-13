@@ -53,7 +53,7 @@ class AnnotationTool extends AbstractPlugin
         }
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL || $this->doc->numPages < 1) {
+        if ($this->doc === null || $this->doc->numPages < 1) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -74,13 +74,13 @@ class AnnotationTool extends AbstractPlugin
         // Load template file.
         $this->getTemplate();
         $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['annotationContainers'];
-        if ($annotationContainers != NULL && sizeof($annotationContainers) > 0) {
+        if ($annotationContainers != null && sizeof($annotationContainers) > 0) {
             $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:'
-                . $this->pi_getLL('annotations-on', '', TRUE) . ';annotations-off:'
-                . $this->pi_getLL('annotations-off', '', TRUE) . '">&nbsp;</a>';
+                . $this->pi_getLL('annotations-on', '', true) . ';annotations-off:'
+                . $this->pi_getLL('annotations-off', '', true) . '">&nbsp;</a>';
             // TODO selector for different motivations
         } else {
-            $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">' . $this->pi_getLL('annotations-not-available', '', TRUE) . '</span>';
+            $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">' . $this->pi_getLL('annotations-not-available', '', true) . '</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);

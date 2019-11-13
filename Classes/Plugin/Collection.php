@@ -53,7 +53,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Turn cache on.
-        $this->setCache(TRUE);
+        $this->setCache(true);
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
             Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
@@ -202,14 +202,14 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             $conf = [
                 'useCacheHash' => 1,
                 'parameter' => $GLOBALS['TSFE']->id,
-                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
             ];
             // Link collection's title to list view.
             $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($collection['label']), $conf);
             // Add feed link if applicable.
             if (!empty($this->conf['targetFeed'])) {
-                $img = '<img src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . $this->pi_getLL('feedAlt', '', TRUE) . '" title="' . $this->pi_getLL('feedTitle', '', TRUE) . '" />';
-                $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, [$this->prefixId => ['collection' => $collection['uid']]], FALSE, $this->conf['targetFeed']);
+                $img = '<img src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . $this->pi_getLL('feedAlt', '', true) . '" title="' . $this->pi_getLL('feedTitle', '', true) . '" />';
+                $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, [$this->prefixId => ['collection' => $collection['uid']]], false, $this->conf['targetFeed']);
             } else {
                 $markerArray[$_key]['###FEED###'] = '';
             }
@@ -222,16 +222,16 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             // Add description.
             $markerArray[$_key]['###DESCRIPTION###'] = $this->pi_RTEcssText($collection['description']);
             // Build statistic's output.
-            $labelTitles = $this->pi_getLL((count($collection['titles']) > 1 ? 'titles' : 'title'), '', FALSE);
+            $labelTitles = $this->pi_getLL((count($collection['titles']) > 1 ? 'titles' : 'title'), '', false);
             $markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars(count($collection['titles']) . $labelTitles);
-            $labelVolumes = $this->pi_getLL((count($collection['volumes']) > 1 ? 'volumes' : 'volume'), '', FALSE);
+            $labelVolumes = $this->pi_getLL((count($collection['volumes']) > 1 ? 'volumes' : 'volume'), '', false);
             $markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars(count($collection['volumes']) . $labelVolumes);
         }
         // Randomize sorting?
         if (!empty($this->conf['randomize'])) {
             ksort($markerArray, SORT_NUMERIC);
             // Don't cache the output.
-            $this->setCache(FALSE);
+            $this->setCache(false);
         }
         $entry = $this->templateService->getSubpart($this->template, '###ENTRY###');
         foreach ($markerArray as $marker) {
@@ -243,7 +243,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                 $hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['templateFile'], $content, $markerArray);
             }
         }
-        return $this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, TRUE);
+        return $this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, true);
     }
 
     /**
@@ -355,7 +355,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                         'core' => '',
                         'pid' => $this->conf['pages'],
                         'order' => 'title',
-                        'order.asc' => TRUE
+                        'order.asc' => true
                     ]
                 ];
             }

@@ -43,7 +43,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Turn cache on.
-        $this->setCache(TRUE);
+        $this->setCache(true);
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
             Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
@@ -114,8 +114,8 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                 '###VOLUMES###'
             ],
             'value' => [
-                $countTitles . ($countTitles > 1 ? $this->pi_getLL('titles', '', TRUE) : $this->pi_getLL('title', '', TRUE)),
-                $countVolumes . ($countVolumes > 1 ? $this->pi_getLL('volumes', '', TRUE) : $this->pi_getLL('volume', '', TRUE))
+                $countTitles . ($countTitles > 1 ? $this->pi_getLL('titles', '', true) : $this->pi_getLL('title', '', true)),
+                $countVolumes . ($countVolumes > 1 ? $this->pi_getLL('volumes', '', true) : $this->pi_getLL('volume', '', true))
             ]
         ];
         // Apply replacements.

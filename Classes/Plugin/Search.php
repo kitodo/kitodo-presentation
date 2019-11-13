@@ -177,11 +177,11 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get operator options.
         $operatorOptions = '';
         foreach (['AND', 'OR', 'NOT'] as $operator) {
-            $operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-' . $operator . '" value="' . $operator . '">' . $this->pi_getLL($operator, '', TRUE) . '</option>';
+            $operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-' . $operator . '" value="' . $operator . '">' . $this->pi_getLL($operator, '', true) . '</option>';
         }
         // Get field selector options.
         $fieldSelectorOptions = '';
-        $searchFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
+        $searchFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], true);
         foreach ($searchFields as $searchField) {
             $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-' . $searchField . '" value="' . $searchField . '">' . Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']) . '</option>';
         }
@@ -216,7 +216,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Get facets from plugin configuration.
         $facets = [];
-        foreach (GeneralUtility::trimExplode(',', $this->conf['facets'], TRUE) as $facet) {
+        foreach (GeneralUtility::trimExplode(',', $this->conf['facets'], true) as $facet) {
             $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
         }
         // Render facets menu.
@@ -306,7 +306,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Check if facet is already selected.
         $queryColumn = array_column($search['params']['filterquery'], 'query');
         $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
-        if ($index !== FALSE) {
+        if ($index !== false) {
             // Facet is selected, thus remove it from filter.
             unset($queryColumn[$index]);
             $queryColumn = array_values($queryColumn);
@@ -315,7 +315,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             //Reset facets
             if ($this->conf['resetFacets']) {
                 //remove ($count) for selected facet in template
-                $entryArray['count'] = FALSE;
+                $entryArray['count'] = false;
                 //build link to delete selected facet
                 $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['query' => $search['query'], 'fq' => $queryColumn]);
                 $entryArray['title'] = sprintf($this->pi_getLL('resetFacet', ''), $entryArray['title']);
@@ -343,7 +343,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Disable caching for this plugin.
-        $this->setCache(FALSE);
+        $this->setCache(false);
         // Quit without doing anything if required variables are not set.
         if (empty($this->conf['solrcore'])) {
             Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
@@ -392,7 +392,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             return $this->pi_wrapInBaseClass($content);
         } else {
             // Build label for result list.
-            $label = $this->pi_getLL('search', '', TRUE);
+            $label = $this->pi_getLL('search', '', true);
             if (!empty($this->piVars['query'])) {
                 $label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), trim($this->piVars['query'])));
             }
@@ -419,7 +419,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 && is_array($this->piVars['extQuery'])
             ) {
                 $allowedOperators = ['AND', 'OR', 'NOT'];
-                $allowedFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], TRUE);
+                $allowedFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], true);
                 $numberOfExtQueries = count($this->piVars['extQuery']);
                 for ($i = 0; $i < $numberOfExtQueries; $i++) {
                     if (!empty($this->piVars['extQuery'][$i])) {
@@ -465,7 +465,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 ) {
                     $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
                     $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
-                    $label .= sprintf($this->pi_getLL('in', '', TRUE), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
+                    $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
                 }
             }
             // Add filter query for collection restrictions.
@@ -522,7 +522,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     $additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
                 }
             }
-            $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE);
+            $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false);
             // Send headers.
             header('Location: ' . GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
             exit;

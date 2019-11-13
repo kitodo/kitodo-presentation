@@ -38,12 +38,12 @@ class Validator extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Disable caching for this plugin.
-        $this->setCache(FALSE);
+        $this->setCache(false);
         // Load template file.
         $this->getTemplate();
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Document could not be loaded.
             // Check:
             // - if document location is valid URL

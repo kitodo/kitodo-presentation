@@ -67,7 +67,7 @@ class ConfigurationForm
             ]
         ]);
         // Try to connect to Solr server.
-        $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
+        $response = @simplexml_load_string(file_get_contents($url, false, $context));
         // Check status code.
         if ($response) {
             $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
@@ -101,12 +101,12 @@ class ConfigurationForm
     public function checkMetadataFormats(&$params, &$pObj)
     {
         $nsDefined = [
-            'MODS' => FALSE,
-            'TEIHDR' => FALSE,
-            'ALTO' => FALSE,
-            'IIIF1' => FALSE,
-            'IIIF2' => FALSE,
-            'IIIF3' => FALSE
+            'MODS' => false,
+            'TEIHDR' => false,
+            'ALTO' => false,
+            'IIIF1' => false,
+            'IIIF2' => false,
+            'IIIF3' => false
         ];
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -123,7 +123,7 @@ class ConfigurationForm
             ->execute();
 
         while ($resArray = $result->fetch()) {
-            $nsDefined[$resArray['type']] = TRUE;
+            $nsDefined[$resArray['type']] = true;
         }
         // Build data array.
         $data = [];

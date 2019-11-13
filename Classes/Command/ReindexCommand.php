@@ -39,7 +39,7 @@ class ReindexCommand extends Command
             ->setHelp('')
             ->addOption(
                 'dry-run',
-                NULL,
+                null,
                 InputOption::VALUE_NONE,
                 'If this option is set, the files will not actually be processed but the location URI is shown.'
             )
@@ -80,7 +80,7 @@ class ReindexCommand extends Command
         // Make sure the _cli_ user is loaded
         Bootstrap::getInstance()->initializeBackendAuthentication();
 
-        $dryRun = $input->getOption('dry-run') != FALSE ? TRUE : FALSE;
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
@@ -131,7 +131,7 @@ class ReindexCommand extends Command
             && !is_array($input->getOption('coll'))
         ) {
             // "coll" may be a single integer or a comma-separated list of integers.
-            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), TRUE)))) {
+            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), true)))) {
                 $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
                 exit(1);
             }
@@ -142,7 +142,7 @@ class ReindexCommand extends Command
         }
 
         foreach ($documents as $id => $document) {
-            $doc = Document::getInstance($document, $startingPoint, TRUE);
+            $doc = Document::getInstance($document, $startingPoint, true);
             if ($doc->ready) {
                 if ($dryRun) {
                     $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
@@ -239,7 +239,7 @@ class ReindexCommand extends Command
                     $queryBuilder->expr()->in(
                         'tx_dlf_collections_join.uid',
                         $queryBuilder->createNamedParameter(
-                            GeneralUtility::intExplode(',', $collIds, TRUE),
+                            GeneralUtility::intExplode(',', $collIds, true),
                             Connection::PARAM_INT_ARRAY
                         )
                     ),

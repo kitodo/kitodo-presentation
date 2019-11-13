@@ -120,7 +120,7 @@ class FormEngine
      *
      * @return void
      */
-    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = TRUE)
+    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = true)
     {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
@@ -186,7 +186,7 @@ class FormEngine
             'tx_dlf_solrcores',
             'label',
             'OR pid=0',
-            FALSE
+            false
         );
     }
 

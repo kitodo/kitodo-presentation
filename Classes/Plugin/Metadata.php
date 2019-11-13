@@ -55,10 +55,10 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Turn cache on.
-        $this->setCache(TRUE);
+        $this->setCache(true);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -157,7 +157,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @return string The metadata array ready for output
      */
-    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = FALSE)
+    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = false)
     {
         // Load template file.
         $this->getTemplate();
@@ -309,7 +309,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                             if ($index_name == 'title') {
                                 // Get title of parent document if needed.
                                 if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
-                                    $superiorTitle = Document::getTitle($this->doc->parentId, TRUE);
+                                    $superiorTitle = Document::getTitle($this->doc->parentId, true);
                                     if (!empty($superiorTitle)) {
                                         $value = '[' . $superiorTitle . ']';
                                     }
@@ -319,7 +319,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                                     // Link title to pageview.
                                     if ($this->conf['linkTitle'] && $metadata['_id']) {
                                         $details = $this->doc->getLogicalStructure($metadata['_id']);
-                                        $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], TRUE, $this->conf['targetPid']);
+                                        $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], true, $this->conf['targetPid']);
                                     }
                                 }
                             } elseif ($index_name == 'owner' && !empty($value)) {
@@ -367,6 +367,6 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 $output .= $this->templateService->substituteMarkerArray($subpart['block'], $markerArray);
             }
         }
-        return $this->templateService->substituteSubpart($this->template, '###BLOCK###', $output, TRUE);
+        return $this->templateService->substituteSubpart($this->template, '###BLOCK###', $output, true);
     }
 }

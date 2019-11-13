@@ -45,7 +45,7 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Load template file.
         $this->getTemplate();
-        $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:' . $this->pi_getLL('imagemanipulation-on', '', TRUE) . ';imagemanipulation-off:' . $this->pi_getLL('imagemanipulation-off', '', TRUE) . ';reset:' . $this->pi_getLL('reset', '', TRUE) . ';saturation:' . $this->pi_getLL('saturation', '', TRUE) . ';hue:' . $this->pi_getLL('hue', '', TRUE) . ';contrast:' . $this->pi_getLL('contrast', '', TRUE) . ';brightness:' . $this->pi_getLL('brightness', '', TRUE) . ';invert:' . $this->pi_getLL('invert', '', TRUE) . '" title="' . $this->pi_getLL('no-support', '', TRUE) . '"></span>';
+        $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:' . $this->pi_getLL('imagemanipulation-on', '', true) . ';imagemanipulation-off:' . $this->pi_getLL('imagemanipulation-off', '', true) . ';reset:' . $this->pi_getLL('reset', '', true) . ';saturation:' . $this->pi_getLL('saturation', '', true) . ';hue:' . $this->pi_getLL('hue', '', true) . ';contrast:' . $this->pi_getLL('contrast', '', true) . ';brightness:' . $this->pi_getLL('brightness', '', true) . ';invert:' . $this->pi_getLL('invert', '', true) . '" title="' . $this->pi_getLL('no-support', '', true) . '"></span>';
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }

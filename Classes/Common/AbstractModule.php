@@ -27,7 +27,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     public $prefixId = 'tx_dlf';
 
     /**
-     * Holds the page record if access granted or FALSE if access denied
+     * Holds the page record if access granted or false if access denied
      *
      * @var mixed
      * @access protected

@@ -82,35 +82,35 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             return '';
         }
         // Get separator.
-        $separator = $this->pi_getLL('separator', ' - ', TRUE);
+        $separator = $this->pi_getLL('separator', ' - ', true);
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1], TRUE) . $separator;
+            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', true), ['pointer' => $this->piVars['pointer'] - 1], true) . $separator;
         } else {
-            $output = $this->pi_getLL('prevPage', '&lt;', TRUE) . $separator;
+            $output = $this->pi_getLL('prevPage', '&lt;', true) . $separator;
         }
         $i = 0;
-        $skip = NULL;
+        $skip = null;
         // Add links to pages.
         while ($i < $maxPages) {
             if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
                 if ($this->piVars['pointer'] != $i) {
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i], TRUE) . $separator;
+                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', true), $i + 1), ['pointer' => $i], true) . $separator;
                 } else {
-                    $output .= sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1) . $separator;
+                    $output .= sprintf($this->pi_getLL('page', '%d', true), $i + 1) . $separator;
                 }
-                $skip = TRUE;
-            } elseif ($skip === TRUE) {
-                $output .= $this->pi_getLL('skip', '...', TRUE) . $separator;
-                $skip = FALSE;
+                $skip = true;
+            } elseif ($skip === true) {
+                $output .= $this->pi_getLL('skip', '...', true) . $separator;
+                $skip = false;
             }
             $i++;
         }
         // Add link to next page.
         if ($this->piVars['pointer'] < $maxPages - 1) {
-            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), ['pointer' => $this->piVars['pointer'] + 1], TRUE);
+            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', true), ['pointer' => $this->piVars['pointer'] + 1], true);
         } else {
-            $output .= $this->pi_getLL('nextPage', '&gt;', TRUE);
+            $output .= $this->pi_getLL('nextPage', '&gt;', true);
         }
         return $output;
     }
@@ -145,7 +145,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->conf['getTitle']) {
-                            $superiorTitle = Document::getTitle($this->list[$number]['uid'], TRUE);
+                            $superiorTitle = Document::getTitle($this->list[$number]['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
                             }
@@ -165,7 +165,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                         $conf = [
                             'useCacheHash' => 1,
                             'parameter' => $this->conf['targetPid'],
-                            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+                            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
@@ -210,12 +210,12 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             $conf = [
                 'useCacheHash' => 1,
                 'parameter' => $this->conf['targetBasket'],
-                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
             ];
-            $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
+            $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', true), $conf);
             $markerArray['###BASKETBUTTON###'] = $link;
         }
-        return $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($template['entry'], '###SUBTEMPLATE###', $subpart, TRUE), $markerArray);
+        return $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($template['entry'], '###SUBTEMPLATE###', $subpart, true), $markerArray);
     }
 
     /**
@@ -257,7 +257,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             'parameter' => $GLOBALS['TSFE']->id
         ];
         if (!empty($this->piVars['logicalPage'])) {
-            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['logicalPage' => $this->piVars['logicalPage']], '', TRUE, FALSE);
+            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['logicalPage' => $this->piVars['logicalPage']], '', true, false);
         }
         // Build HTML form.
         $sorting = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
@@ -268,10 +268,10 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Select sort field.
         $uniqId = uniqid($prefix . '-');
-        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('orderBy', '', TRUE) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[order]" onchange="javascript:this.form.submit();">';
+        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('orderBy', '', true) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[order]" onchange="javascript:this.form.submit();">';
         // Add relevance sorting if this is a search result list.
         if ($this->list->metadata['options']['source'] == 'search') {
-            $sorting .= '<option value="score"' . (($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '') . '>' . $this->pi_getLL('relevance', '', TRUE) . '</option>';
+            $sorting .= '<option value="score"' . (($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '') . '>' . $this->pi_getLL('relevance', '', true) . '</option>';
         }
         foreach ($this->sortables as $index_name => $label) {
             $sorting .= '<option value="' . $index_name . '"' . (($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '') . '>' . htmlspecialchars($label) . '</option>';
@@ -279,9 +279,9 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         $sorting .= '</select>';
         // Select sort direction.
         $uniqId = uniqid($prefix . '-');
-        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('direction', '', TRUE) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[asc]" onchange="javascript:this.form.submit();">';
-        $sorting .= '<option value="1" ' . ($this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.asc', '', TRUE) . '</option>';
-        $sorting .= '<option value="0" ' . (!$this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.desc', '', TRUE) . '</option>';
+        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('direction', '', true) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[asc]" onchange="javascript:this.form.submit();">';
+        $sorting .= '<option value="1" ' . ($this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.asc', '', true) . '</option>';
+        $sorting .= '<option value="0" ' . (!$this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.desc', '', true) . '</option>';
         $sorting .= '</select></div></form>';
         return $sorting;
     }
@@ -315,7 +315,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->conf['getTitle']) {
-                            $superiorTitle = Document::getTitle($subpart['uid'], TRUE);
+                            $superiorTitle = Document::getTitle($subpart['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
                             }
@@ -337,7 +337,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                             // we don't want cHash in case of search parameters
                             'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
                             'parameter' => $this->conf['targetPid'],
-                            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+                            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
@@ -383,14 +383,14 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                 $conf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetBasket'],
-                    'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', TRUE, FALSE)
+                    'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                 ];
-                $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', TRUE), $conf);
+                $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', true), $conf);
                 $markerArray['###SUBBASKETBUTTON###'] = $link;
             }
             $content .= $this->templateService->substituteMarkerArray($template['subentry'], $markerArray);
         }
-        return $this->templateService->substituteSubpart($this->templateService->getSubpart($this->template, '###SUBTEMPLATE###'), '###SUBENTRY###', $content, TRUE);
+        return $this->templateService->substituteSubpart($this->templateService->getSubpart($this->template, '###SUBTEMPLATE###'), '###SUBENTRY###', $content, true);
     }
 
     /**
@@ -451,7 +451,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Don't cache the output.
-        $this->setCache(FALSE);
+        $this->setCache(false);
         // Load the list.
         $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
         $currentEntry = $this->piVars['pointer'] * $this->conf['limit'];
@@ -544,11 +544,11 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             $lastEntry = ($this->piVars['pointer'] * $this->conf['limit']) + $this->conf['limit'];
             $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), $currentEntry, $lastEntry < $this->list->metadata['options']['numberOfToplevelHits'] ? $lastEntry : $this->list->metadata['options']['numberOfToplevelHits'], $this->list->metadata['options']['numberOfToplevelHits']));
         } else {
-            $markerArray['###COUNT###'] = $this->pi_getLL('nohits', '', TRUE);
+            $markerArray['###COUNT###'] = $this->pi_getLL('nohits', '', true);
         }
         $markerArray['###PAGEBROWSER###'] = $this->getPageBrowser();
         $markerArray['###SORTING###'] = $this->getSortingForm();
-        $content = $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, TRUE), $markerArray);
+        $content = $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, true), $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 }

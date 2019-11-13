@@ -53,7 +53,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load current document.
         $this->loadDocument();
         if (
-            $this->doc === NULL
+            $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->conf['fileGrpFulltext'])
             || empty($this->conf['solrcore'])

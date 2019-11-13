@@ -218,7 +218,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     if ($resArray['uid'] == $record['uid']) {
                         $record['thumbnail'] = $resArray['thumbnail'];
                         $record['metadata'] = $metadata;
-                    } elseif (($key = array_search(['u' => $resArray['uid']], $record['subparts'], TRUE)) !== FALSE) {
+                    } elseif (($key = array_search(['u' => $resArray['uid']], $record['subparts'], true)) !== false) {
                         $record['subparts'][$key] = [
                             'uid' => $resArray['uid'],
                             'page' => 1,
@@ -245,7 +245,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                             'highlighting' => [
                                 'query' => Solr::escapeQuery($this->metadata['searchString']),
                                 'field' => 'fulltext',
-                                'usefastvectorhighlighter' => TRUE
+                                'usefastvectorhighlighter' => true
                             ]
                         ];
                     }
@@ -289,7 +289,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                             $record['thumbnail'] = $resArray->thumbnail;
                             $record['metadata'] = $metadata;
                         } else {
-                            $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : NULL;
+                            $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : null;
                             $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField('fulltext')[0] : '';
                             $record['subparts'][$resArray->id] = [
                                 'uid' => $resArray->uid,
@@ -559,7 +559,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @access protected
      *
-     * @return bool TRUE on success or FALSE on failure
+     * @return bool true on success or false on failure
      */
     protected function solrConnect()
     {
@@ -592,10 +592,10 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                 // Add static fields.
                 $this->solrConfig['type'] = 'type';
             } else {
-                return FALSE;
+                return false;
             }
         }
-        return TRUE;
+        return true;
     }
 
     /**
@@ -608,7 +608,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @return void
      */
-    public function sort($by, $asc = TRUE)
+    public function sort($by, $asc = true)
     {
         $newOrder = [];
         $nonSortable = [];
@@ -771,7 +771,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      *
      * @param string $var: Name of variable to check
      *
-     * @return bool TRUE if variable is set and not empty, FALSE otherwise
+     * @return bool true if variable is set and not empty, false otherwise
      */
     public function __isset($var) {
         return !empty($this->__get($var));

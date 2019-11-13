@@ -124,7 +124,7 @@ class DataHandler
                     // Build request for adding new Solr core.
                     // @see http://wiki.apache.org/solr/CoreAdmin
                     $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml&action=CREATE&name=dlfCore' . $coreNumber . '&instanceDir=dlfCore' . $coreNumber . '&dataDir=data&configSet=dlf';
-                    $response = @simplexml_load_string(file_get_contents($url, FALSE, $context));
+                    $response = @simplexml_load_string(file_get_contents($url, false, $context));
                     // Process response.
                     if ($response) {
                         $solrStatus = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');

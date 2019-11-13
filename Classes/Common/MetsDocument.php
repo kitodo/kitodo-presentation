@@ -73,7 +73,7 @@ final class MetsDocument extends Document
      * @var bool
      * @access protected
      */
-    protected $dmdSecLoaded = FALSE;
+    protected $dmdSecLoaded = false;
 
     /**
      * The extension key
@@ -99,7 +99,7 @@ final class MetsDocument extends Document
      * @var bool
      * @access protected
      */
-    protected $fileGrpsLoaded = FALSE;
+    protected $fileGrpsLoaded = false;
 
     /**
      * This holds the XML file's METS part as \SimpleXMLElement object
@@ -173,11 +173,11 @@ final class MetsDocument extends Document
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $service = IiifHelper::loadIiifResource($fileLocation);
-            if ($service != NULL && $service instanceof AbstractImageService) {
+            if ($service != null && $service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
         } elseif ($fileMimeType == 'application/vnd.netfpx') {
-            $baseURL = $fileLocation . (strpos($fileLocation, "?") === FALSE ? "?" : "");
+            $baseURL = $fileLocation . (strpos($fileLocation, "?") === false ? "?" : "");
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
             return $baseURL . "&CVT=jpeg";
         }
@@ -224,7 +224,7 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::getLogicalStructure()
      */
-    public function getLogicalStructure($id, $recursive = FALSE)
+    public function getLogicalStructure($id, $recursive = false)
     {
         $details = [];
         // Is the requested logical unit already loaded?
@@ -265,7 +265,7 @@ final class MetsDocument extends Document
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, $recursive = FALSE)
+    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, $recursive = false)
     {
         // Get attributes.
         foreach ($structure->attributes() as $attribute => $value) {
@@ -310,7 +310,7 @@ final class MetsDocument extends Document
             && array_key_exists($details['id'], $this->smLinks['l2p'])
         ) {
             // Link logical structure to the first corresponding physical page/track.
-            $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, TRUE)), 1);
+            $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true)), 1);
             if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
                 $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
             }
@@ -346,7 +346,7 @@ final class MetsDocument extends Document
             $details['children'] = [];
             foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
                 // Repeat for all children.
-                $details['children'][] = $this->getLogicalStructureInfo($child, TRUE);
+                $details['children'][] = $this->getLogicalStructureInfo($child, true);
             }
         }
         return $details;
@@ -416,7 +416,7 @@ final class MetsDocument extends Document
         if (!empty($dmdIds)) {
             // Handle multiple DMDIDs separately.
             $dmdIds = explode(' ', $dmdIds);
-            $hasSupportedMetadata = FALSE;
+            $hasSupportedMetadata = false;
         } else {
             // There is no dmdSec for this structure node.
             return [];
@@ -460,7 +460,7 @@ final class MetsDocument extends Document
                 'tx_dlf_metadata.pid=' . $cPid
                     . ' AND tx_dlf_metadataformat.pid=' . $cPid
                     . ' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats') . ') OR tx_dlf_metadata.format=0)'
-                    . Helper::whereClause('tx_dlf_metadata', TRUE)
+                    . Helper::whereClause('tx_dlf_metadata', true)
                     . Helper::whereClause('tx_dlf_metadataformat')
                     . Helper::whereClause('tx_dlf_formats')
             );
@@ -549,7 +549,7 @@ final class MetsDocument extends Document
                 }
             }
             // Extract metadata only from first supported dmdSec.
-            $hasSupportedMetadata = TRUE;
+            $hasSupportedMetadata = true;
             break;
         }
         if ($hasSupportedMetadata) {
@@ -618,11 +618,11 @@ final class MetsDocument extends Document
     protected function loadLocation($location)
     {
         $fileResource = GeneralUtility::getUrl($location);
-        if ($fileResource !== FALSE) {
+        if ($fileResource !== false) {
             // Turn off libxml's error logging.
-            $libxmlErrors = libxml_use_internal_errors(TRUE);
+            $libxmlErrors = libxml_use_internal_errors(true);
             // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-            $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+            $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
             // Load XML from file.
             $xml = simplexml_load_string($fileResource);
             // reset entity loader setting
@@ -630,13 +630,13 @@ final class MetsDocument extends Document
             // Reset libxml's error logging.
             libxml_use_internal_errors($libxmlErrors);
             // Set some basic properties.
-            if ($xml !== FALSE) {
+            if ($xml !== false) {
                 $this->xml = $xml;
-                return TRUE;
+                return true;
             }
         }
         Helper::devLog('Could not load XML file from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
-        return FALSE;
+        return false;
     }
 
     /**
@@ -684,9 +684,9 @@ final class MetsDocument extends Document
 
         if ($preloadedDocument instanceof \SimpleXMLElement) {
             $this->xml = $preloadedDocument;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -744,7 +744,7 @@ final class MetsDocument extends Document
                     }
                 }
             }
-            $this->dmdSecLoaded = TRUE;
+            $this->dmdSecLoaded = true;
         }
         return $this->dmdSec;
     }
@@ -791,9 +791,9 @@ final class MetsDocument extends Document
                 !empty($extConf['fileGrpFulltext'])
                 && in_array($extConf['fileGrpFulltext'], $this->fileGrps)
             ) {
-                $this->hasFulltext = TRUE;
+                $this->hasFulltext = true;
             }
-            $this->fileGrpsLoaded = TRUE;
+            $this->fileGrpsLoaded = true;
         }
         return $this->fileGrps;
     }
@@ -882,7 +882,7 @@ final class MetsDocument extends Document
                     $this->physicalStructure = array_merge($physSeq, $elements);
                 }
             }
-            $this->physicalStructureLoaded = TRUE;
+            $this->physicalStructureLoaded = true;
         }
         return $this->physicalStructure;
     }
@@ -901,7 +901,7 @@ final class MetsDocument extends Document
                     $this->smLinks['p2l'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->to][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->from;
                 }
             }
-            $this->smLinksLoaded = TRUE;
+            $this->smLinksLoaded = true;
         }
         return $this->smLinks;
     }
@@ -910,7 +910,7 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
      */
-    protected function _getThumbnail($forceReload = FALSE)
+    protected function _getThumbnail($forceReload = false)
     {
         if (
             !$this->thumbnailLoaded
@@ -920,14 +920,14 @@ final class MetsDocument extends Document
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
             if (!$cPid) {
                 Helper::devLog('Invalid PID ' . $cPid . ' for structure definitions', DEVLOG_SEVERITY_ERROR);
-                $this->thumbnailLoaded = TRUE;
+                $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
             // Load extension configuration.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             if (empty($extConf['fileGrpThumbs'])) {
                 Helper::devLog('No fileGrp for thumbnails specified', DEVLOG_SEVERITY_WARNING);
-                $this->thumbnailLoaded = TRUE;
+                $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
             $strctId = $this->_getToplevelId();
@@ -975,7 +975,7 @@ final class MetsDocument extends Document
             } else {
                 Helper::devLog('No structure of type "' . $metadata['type'][0] . '" found in database', DEVLOG_SEVERITY_ERROR);
             }
-            $this->thumbnailLoaded = TRUE;
+            $this->thumbnailLoaded = true;
         }
         return $this->thumbnail;
     }
@@ -1034,8 +1034,8 @@ final class MetsDocument extends Document
     public function __toString()
     {
         $xml = new \DOMDocument('1.0', 'utf-8');
-        $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), TRUE));
-        $xml->formatOutput = TRUE;
+        $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), true));
+        $xml->formatOutput = true;
         return $xml->saveXML();
     }
 
@@ -1050,12 +1050,12 @@ final class MetsDocument extends Document
     public function __wakeup()
     {
         // Turn off libxml's error logging.
-        $libxmlErrors = libxml_use_internal_errors(TRUE);
+        $libxmlErrors = libxml_use_internal_errors(true);
         // Reload XML from string.
         $xml = @simplexml_load_string($this->asXML);
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
-        if ($xml !== FALSE) {
+        if ($xml !== false) {
             $this->asXML = '';
             $this->xml = $xml;
             // Rebuild the unserializable properties.

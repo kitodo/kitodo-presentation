@@ -71,12 +71,12 @@ class DocumentTypeCheck
     {
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Quit without doing anything if document not available.
             return '';
         }
         $toc = $this->doc->tableOfContents;
-        if ($this->doc instanceof IiifManifest && (!isset($toc[0]['type']) || array_search($toc[0]['type'], ['newspaper', 'year', 'issue']) !== FALSE)) {
+        if ($this->doc instanceof IiifManifest && (!isset($toc[0]['type']) || array_search($toc[0]['type'], ['newspaper', 'year', 'issue']) !== false)) {
             // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types or if type is missing.
             return '';
         }
@@ -159,7 +159,7 @@ class DocumentTypeCheck
             $this->doc = Document::getInstance($this->piVars['id']);
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
-                $this->doc = NULL;
+                $this->doc = null;
                 Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($this->piVars['recordId'])) {

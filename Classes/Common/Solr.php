@@ -87,7 +87,7 @@ class Solr
      * @var bool
      * @access protected
      */
-    protected $ready = FALSE;
+    protected $ready = false;
 
     /**
      * This holds the singleton search objects with their core as array key
@@ -290,7 +290,7 @@ class Solr
     {
         $start = max(intval($start), 0);
         // Check if core already exists.
-        if (self::getInstance('dlfCore' . $start) === NULL) {
+        if (self::getInstance('dlfCore' . $start) === null) {
             return $start;
         } else {
             return self::solrGetCoreNumber($start + 1);
@@ -362,7 +362,7 @@ class Solr
                 'core' => $this->core,
                 'pid' => $this->cPid,
                 'order' => 'score',
-                'order.asc' => TRUE,
+                'order.asc' => true,
                 'numberOfHits' => $this->numberOfHits,
                 'numberOfToplevelHits' => $numberOfToplevelHits
             ]
@@ -393,7 +393,7 @@ class Solr
         $cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('tx_dlf_solr');
 
         $resultSet = [];
-        if (($entry = $cache->get($cacheIdentifier)) === FALSE) {
+        if (($entry = $cache->get($cacheIdentifier)) === false) {
             $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
             $result = $this->service->select($selectQuery);
             foreach ($result as $doc) {
@@ -528,7 +528,7 @@ class Solr
      *
      * @param string $var: Name of variable to check
      *
-     * @return bool TRUE if variable is set and not empty, FALSE otherwise
+     * @return bool true if variable is set and not empty, false otherwise
      */
     public function __isset($var) {
         return !empty($this->__get($var));
@@ -592,7 +592,7 @@ class Solr
             // Set core name.
             $this->core = $core;
             // Instantiation successful!
-            $this->ready = TRUE;
+            $this->ready = true;
         } catch (\Exception $e) {
             // Nothing to do here.
         }

@@ -72,20 +72,20 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             ];
             $i++;
         }
-        $_ids = Helper::processDBasAdmin($data, [], TRUE);
+        $_ids = Helper::processDBasAdmin($data, [], true);
         // Check for failed inserts.
         if (count($_ids) == $i) {
             // Fine.
             Helper::addMessage(
                 Helper::getMessage('flash.metadataAddedMsg'),
-                Helper::getMessage('flash.metadataAdded', TRUE),
+                Helper::getMessage('flash.metadataAdded', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Something went wrong.
             Helper::addMessage(
                 Helper::getMessage('flash.metadataNotAddedMsg'),
-                Helper::getMessage('flash.metadataNotAdded', TRUE),
+                Helper::getMessage('flash.metadataNotAdded', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }
@@ -112,14 +112,14 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             // Fine.
             Helper::addMessage(
                 Helper::getMessage('flash.solrcoreAddedMsg'),
-                Helper::getMessage('flash.solrcoreAdded', TRUE),
+                Helper::getMessage('flash.solrcoreAdded', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Something went wrong.
             Helper::addMessage(
                 Helper::getMessage('flash.solrcoreNotAddedMsg'),
-                Helper::getMessage('flash.solrcoreNotAdded', TRUE),
+                Helper::getMessage('flash.solrcoreNotAdded', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }
@@ -147,20 +147,20 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 'thumbnail' => 0,
             ];
         }
-        $_ids = Helper::processDBasAdmin($data, [], TRUE);
+        $_ids = Helper::processDBasAdmin($data, [], true);
         // Check for failed inserts.
         if (count($_ids) == count($structureDefaults)) {
             // Fine.
             Helper::addMessage(
                 Helper::getMessage('flash.structureAddedMsg'),
-                Helper::getMessage('flash.structureAdded', TRUE),
+                Helper::getMessage('flash.structureAdded', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Something went wrong.
             Helper::addMessage(
                 Helper::getMessage('flash.structureNotAddedMsg'),
-                Helper::getMessage('flash.structureNotAdded', TRUE),
+                Helper::getMessage('flash.structureNotAdded', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }
@@ -194,7 +194,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             if ($this->pageInfo['doktype'] != 254) {
                 Helper::addMessage(
                     Helper::getMessage('flash.wrongPageTypeMsg'),
-                    Helper::getMessage('flash.wrongPageType', TRUE),
+                    Helper::getMessage('flash.wrongPageType', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
                 $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
@@ -229,7 +229,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 // Fine.
                 Helper::addMessage(
                     Helper::getMessage('flash.structureOkayMsg'),
-                    Helper::getMessage('flash.structureOkay', TRUE),
+                    Helper::getMessage('flash.structureOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
             } else {
@@ -237,7 +237,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
                 Helper::addMessage(
                     sprintf(Helper::getMessage('flash.structureNotOkayMsg'), $_url),
-                    Helper::getMessage('flash.structureNotOkay', TRUE),
+                    Helper::getMessage('flash.structureNotOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
@@ -255,7 +255,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 // Fine.
                 Helper::addMessage(
                     Helper::getMessage('flash.metadataOkayMsg'),
-                    Helper::getMessage('flash.metadataOkay', TRUE),
+                    Helper::getMessage('flash.metadataOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
             } else {
@@ -263,7 +263,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
                 Helper::addMessage(
                     sprintf(Helper::getMessage('flash.metadataNotOkayMsg'), $_url),
-                    Helper::getMessage('flash.metadataNotOkay', TRUE),
+                    Helper::getMessage('flash.metadataNotOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
@@ -288,7 +288,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     // Fine.
                     Helper::addMessage(
                         Helper::getMessage('flash.solrcoreOkayMsg'),
-                        Helper::getMessage('flash.solrcoreOkay', TRUE),
+                        Helper::getMessage('flash.solrcoreOkay', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                     );
                 } else {
@@ -296,7 +296,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                     Helper::addMessage(
                         sprintf(Helper::getMessage('flash.solrcoreDeprecatedMsg'), $_url),
-                        Helper::getMessage('flash.solrcoreDeprecatedOkay', TRUE),
+                        Helper::getMessage('flash.solrcoreDeprecatedOkay', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::NOTICE
                     );
                 }
@@ -305,7 +305,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                 Helper::addMessage(
                     sprintf(Helper::getMessage('flash.solrcoreMissingMsg'), $_url),
-                    Helper::getMessage('flash.solrcoreMissing', TRUE),
+                    Helper::getMessage('flash.solrcoreMissing', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
             }

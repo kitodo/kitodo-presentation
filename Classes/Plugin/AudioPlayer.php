@@ -80,7 +80,7 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load current document.
         $this->loadDocument();
         if (
-            $this->doc === NULL
+            $this->doc === null
             || $this->doc->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.

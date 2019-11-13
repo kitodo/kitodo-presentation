@@ -38,7 +38,7 @@ class ExtensionManagementUtility extends \TYPO3\CMS\Core\Utility\ExtensionManage
      *
      * @return void
      */
-    public static function addPItoST43($key, $class, $suffix = '', $type = 'list_type', $cached = FALSE)
+    public static function addPItoST43($key, $class, $suffix = '', $type = 'list_type', $cached = false)
     {
         $internalName = 'tx_' . $key . '_' . strtolower(Helper::getUnqualifiedClassName($class));
         // General plugin

@@ -38,7 +38,7 @@ class IndexCommand extends Command
             ->setHelp('')
             ->addOption(
                 'dry-run',
-                NULL,
+                null,
                 InputOption::VALUE_NONE,
                 'If this option is set, the files will not actually be processed but the location URI is shown.'
             )
@@ -73,7 +73,7 @@ class IndexCommand extends Command
         // Make sure the _cli_ user is loaded
         Bootstrap::getInstance()->initializeBackendAuthentication();
 
-        $dryRun = $input->getOption('dry-run') != FALSE ? TRUE : FALSE;
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
@@ -129,7 +129,7 @@ class IndexCommand extends Command
         }
 
         // Get the document...
-        $doc = Document::getInstance($input->getOption('doc'), $startingPoint, TRUE);
+        $doc = Document::getInstance($input->getOption('doc'), $startingPoint, true);
         if ($doc->ready) {
             if ($dryRun) {
                 $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
