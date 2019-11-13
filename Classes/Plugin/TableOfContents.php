@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
 
@@ -40,11 +40,11 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
      * @access protected
      *
      * @param array $entry: The entry's array from \Kitodo\Dlf\Common\Document->getLogicalStructure
-     * @param boolean $recursive: Whether to include the child entries
+     * @param bool $recursive: Whether to include the child entries
      *
      * @return array HMENU array for menu entry
      */
-    protected function getMenuEntry(array $entry, $recursive = FALSE)
+    protected function getMenuEntry(array $entry, $recursive = false)
     {
         $entryArray = [];
         // Set "title", "volume", "type" and "pagination" from $entry array.
@@ -61,25 +61,25 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             !empty($entry['points'])
             && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($entry['points'])
         ) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['page' => $entry['points']], TRUE, FALSE, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['page' => $entry['points']], true, false, $this->conf['targetPid']);
             $entryArray['doNotLinkIt'] = 0;
             if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', TRUE) . '</a>';
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', true) . '</a>';
             }
         } elseif (
             !empty($entry['points'])
             && is_string($entry['points'])
         ) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['points'], 'page' => 1], TRUE, FALSE, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['points'], 'page' => 1], true, false, $this->conf['targetPid']);
             $entryArray['doNotLinkIt'] = 0;
             if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], TRUE, FALSE, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', TRUE) . '</a>';
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', true) . '</a>';
             }
         } elseif (!empty($entry['targetUid'])) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['targetUid'], 'page' => 1], TRUE, FALSE, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['targetUid'], 'page' => 1], true, false, $this->conf['targetPid']);
             $entryArray['doNotLinkIt'] = 0;
             if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], TRUE, FALSE, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', TRUE) . '</a>';
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], true, false, $this->conf['targetBasket']) . '">' . $this->pi_getLL('basketButton', '', true) . '</a>';
             }
         }
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
@@ -88,7 +88,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Build sub-menu if available and called recursively.
         if (
-            $recursive == TRUE
+            $recursive == true
             && !empty($entry['children'])
         ) {
             // Build sub-menu only if one of the following conditions apply:
@@ -108,7 +108,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                     if (in_array($child['id'], $this->activeEntries)) {
                         $entryArray['ITEM_STATE'] = 'ACT';
                     }
-                    $entryArray['_SUB_MENU'][] = $this->getMenuEntry($child, TRUE);
+                    $entryArray['_SUB_MENU'][] = $this->getMenuEntry($child, true);
                 }
             }
             // Append "IFSUB" to "ITEM_STATE" if this entry has sub-entries.
@@ -161,7 +161,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
             return [];
         } else {
@@ -203,12 +203,12 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             // Go through table of contents and create all menu entries.
             foreach ($this->doc->tableOfContents as $entry) {
-                $menuArray[] = $this->getMenuEntry($entry, TRUE);
+                $menuArray[] = $this->getMenuEntry($entry, true);
             }
         } else {
             // Go through table of contents and create top-level menu entries.
             foreach ($this->doc->tableOfContents as $entry) {
-                $menuArray[] = $this->getMenuEntry($entry, FALSE);
+                $menuArray[] = $this->getMenuEntry($entry, false);
             }
             // Get all child documents from database.
             $whereClause = 'tx_dlf_documents.partof=' . intval($this->doc->uid) . ' AND tx_dlf_documents.structure=tx_dlf_structures.uid AND tx_dlf_structures.pid=' . $this->doc->pid . Helper::whereClause('tx_dlf_documents') . Helper::whereClause('tx_dlf_structures');
@@ -234,7 +234,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                         'pagination' => '',
                         'targetUid' => $resArray['uid']
                     ];
-                    $menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($entry, FALSE);
+                    $menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($entry, false);
                 }
             }
         }

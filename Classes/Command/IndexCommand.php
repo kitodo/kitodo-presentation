@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Command;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,6 +10,8 @@ namespace Kitodo\Dlf\Command;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Command;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,15 +21,23 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Connection;
 use Kitodo\Dlf\Common\Document;
 
 /**
- * Index single document into database and Solr.
+ * CLI Command for indexing single documents into database and Solr.
+ *
+ * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
 class IndexCommand extends Command
 {
     /**
      * Configure the command by defining the name, options and arguments
+     *
+     * @return void
      */
     public function configure()
     {
@@ -38,7 +46,7 @@ class IndexCommand extends Command
             ->setHelp('')
             ->addOption(
                 'dry-run',
-                NULL,
+                null,
                 InputOption::VALUE_NONE,
                 'If this option is set, the files will not actually be processed but the location URI is shown.'
             )
@@ -65,15 +73,17 @@ class IndexCommand extends Command
     /**
      * Executes the command to index the given document to db and solr.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param InputInterface $input The input parameters
+     * @param OutputInterface $output The Symfony interface for outputs on console
+     *
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Make sure the _cli_ user is loaded
         Bootstrap::getInstance()->initializeBackendAuthentication();
 
-        $dryRun = $input->getOption('dry-run') != FALSE ? TRUE : FALSE;
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
@@ -129,7 +139,7 @@ class IndexCommand extends Command
         }
 
         // Get the document...
-        $doc = Document::getInstance($input->getOption('doc'), $startingPoint, TRUE);
+        $doc = Document::getInstance($input->getOption('doc'), $startingPoint, true);
         if ($doc->ready) {
             if ($dryRun) {
                 $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
@@ -153,11 +163,11 @@ class IndexCommand extends Command
 
 
     /**
-     * Fetches all records of tx_dlf_solrcores on given page.
+     * Fetches all Solr cores on given page.
      *
-     * @param int $pageId the uid of the solr record
+     * @param int $pageId The UID of the Solr core or 0 to disable indexing
      *
-     * @return array array of valid solr cores
+     * @return array Array of valid Solr cores
      */
     protected function getSolrCores(int $pageId): array
     {
@@ -165,14 +175,13 @@ class IndexCommand extends Command
             ->getQueryBuilderForTable('tx_dlf_solrcores');
 
         $solrCores = [];
-        $pageId = (int) $pageId;
         $result = $queryBuilder
             ->select('uid', 'index_name')
             ->from('tx_dlf_solrcores')
             ->where(
                 $queryBuilder->expr()->eq(
                     'pid',
-                    $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
                 )
             )
             ->execute();

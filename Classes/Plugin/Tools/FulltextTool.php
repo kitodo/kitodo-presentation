@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin\Tools;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin\Tools;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin\Tools;
 
 use Kitodo\Dlf\Common\Helper;
 
@@ -47,7 +47,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load current document.
         $this->loadDocument();
         if (
-            $this->doc === NULL
+            $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->conf['fileGrpFulltext'])
         ) {
@@ -75,9 +75,9 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->getTemplate();
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
         if (!empty($fullTextFile)) {
-            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:' . $this->pi_getLL('fulltext-on', '', TRUE) . ';fulltext-off:' . $this->pi_getLL('fulltext-off', '', TRUE) . '">&nbsp;</a>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:' . $this->pi_getLL('fulltext-on', '', true) . ';fulltext-off:' . $this->pi_getLL('fulltext-off', '', true) . '">&nbsp;</a>';
         } else {
-            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . $this->pi_getLL('fulltext-not-available', '', TRUE) . '</span>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . $this->pi_getLL('fulltext-not-available', '', true) . '</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);

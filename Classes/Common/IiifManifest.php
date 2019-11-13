@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Common;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Common;
 
 use Flow\JSONPath\JSONPath;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,21 +34,21 @@ use Ubl\Iiif\Tools\IiifHelper;
  * represents a IIIF manifest in the conext of this TYPO3 extension.
  *
  * @author Lutz Helm <helm@ub.uni-leipzig.de>
- * @package	TYPO3
- * @subpackage	tx_dlf
- * @access	public
- * @property-write integer $cPid This holds the PID for the configuration
- * @property-read boolean $hasFulltext Are there any fulltext files available?
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ * @property-write int $cPid This holds the PID for the configuration
+ * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
- * @property-read integer $numPages The holds the total number of pages
- * @property-read integer $parentId This holds the UID of the parent document or zero if not multi-volumed
+ * @property-read int $numPages The holds the total number of pages
+ * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
  * @property-read array $physicalStructure This holds the physical structure
  * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read integer $pid This holds the PID of the document or zero if not in database
- * @property-read boolean $ready Is the document instantiated successfully?
+ * @property-read int $pid This holds the PID of the document or zero if not in database
+ * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId The IIIF manifest's record identifier
- * @property-read integer $rootId This holds the UID of the root document or zero if not multi-volumed
+ * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks This holds the connections between resources and canvases
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
@@ -83,10 +83,10 @@ final class IiifManifest extends Document
 
     /**
      * Document has already been analyzed if it contains fulltext for the Solr index
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected $hasFulltextSet = FALSE;
+    protected $hasFulltextSet = false;
 
     /**
      * This holds the original manifest's parsed metadata array with their corresponding
@@ -119,7 +119,7 @@ final class IiifManifest extends Document
      */
     protected function establishRecordId($pid)
     {
-        if ($this->iiif !== NULL) {
+        if ($this->iiif !== null) {
             /*
              *  FIXME This will not consistently work because we can not be sure to have the pid at hand. It may miss
              *  if the plugin that actually loads the manifest allows content from other pages.
@@ -134,7 +134,7 @@ final class IiifManifest extends Document
                     . ' AND tx_dlf_metadataformat.pid=' . intval($pid)
                     . ' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid'
                     . ' AND tx_dlf_metadata.index_name="record_id" AND tx_dlf_formats.type=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats') . ') OR tx_dlf_metadata.format=0)'
-                    . Helper::whereClause('tx_dlf_metadata', TRUE)
+                    . Helper::whereClause('tx_dlf_metadata', true)
                     . Helper::whereClause('tx_dlf_metadataformat')
                     . Helper::whereClause('tx_dlf_formats')
             );
@@ -189,7 +189,7 @@ final class IiifManifest extends Document
     /**
      * True if getUseGroups() has been called and $this-useGrps is loaded
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
     protected $useGrpsLoaded;
@@ -246,8 +246,8 @@ final class IiifManifest extends Document
     {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
-            if ($this->iiif == NULL || !($this->iiif instanceof ManifestInterface)) {
-                return NULL;
+            if ($this->iiif == null || !($this->iiif instanceof ManifestInterface)) {
+                return null;
             }
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             $iiifId = $this->iiif->getId();
@@ -257,7 +257,7 @@ final class IiifManifest extends Document
             $this->physicalStructureInfo[$physSeq[0]]['label'] = $this->iiif->getLabelForDisplay();
             $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = $this->iiif->getLabelForDisplay();
             $this->physicalStructureInfo[$physSeq[0]]['type'] = 'physSequence';
-            $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = NULL;
+            $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = null;
             $fileUseDownload = $this->getUseGroups('fileGrpDownload');
             $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
             $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
@@ -271,14 +271,14 @@ final class IiifManifest extends Document
             if (isset($fileUseFulltext)) {
                 $iiifAlto = $this->iiif->getSeeAlsoUrlsForFormat("application/alto+xml");
                 if (empty($iiifAlto)) {
-                    $iiifAlto = $this->iiif->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", TRUE);
+                    $iiifAlto = $this->iiif->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", true);
                 }
                 if (!empty($iiifAlto)) {
                     // TODO use multiple possible alto files?
                     $this->mimeTypes[$iiifAlto[0]] = "application/alto+xml";
                     $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext] = $iiifAlto[0];
-                    $this->hasFulltext = TRUE;
-                    $this->hasFulltextSet = TRUE;
+                    $this->hasFulltext = true;
+                    $this->hasFulltextSet = true;
                 }
             }
             if (!empty($this->iiif->getDefaultCanvases())) {
@@ -295,7 +295,7 @@ final class IiifManifest extends Document
                     // put images in all non specific filegroups
                     if (isset($fileUses)) {
                         foreach ($fileUses as $fileUse) {
-                            if ($image->getBody() != NULL && $image->getBody() instanceof ContentResourceInterface) {
+                            if ($image->getBody() != null && $image->getBody() instanceof ContentResourceInterface) {
                                 $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUse] = $image->getBody()->getId();
                             }
                         }
@@ -303,40 +303,40 @@ final class IiifManifest extends Document
                     // populate structural metadata info
                     $elements[$canvasOrder] = $canvas->getId();
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['id'] = $canvas->getId();
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['dmdId'] = NULL;
+                    $this->physicalStructureInfo[$elements[$canvasOrder]]['dmdId'] = null;
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['label'] = $canvas->getLabelForDisplay();
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['orderlabel'] = $canvas->getLabelForDisplay();
                     // assume that a canvas always represents a page
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['type'] = 'page';
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['contentIds'] = NULL;
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = NULL;
+                    $this->physicalStructureInfo[$elements[$canvasOrder]]['contentIds'] = null;
+                    $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = null;
                     if (!empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                         $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = [];
                         $this->physicalStructureInfo[$physSeq[0]]['annotationContainers'] = [];
                         foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'][] = $annotationContainer->getId();
                             if ($extConf['indexAnnotations']) {
-                                $this->hasFulltext = TRUE;
-                                $this->hasFulltextSet = TRUE;
+                                $this->hasFulltext = true;
+                                $this->hasFulltextSet = true;
                             }
                         }
                     }
                     if (isset($fileUseFulltext)) {
                         $alto = $canvas->getSeeAlsoUrlsForFormat("application/alto+xml");
                         if (empty($alto)) {
-                            $alto = $canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", TRUE);
+                            $alto = $canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", true);
                         }
                         if (!empty($alto)) {
                             // TODO use all possible alto files?
                             $this->mimeTypes[$alto[0]] = "application/alto+xml";
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseFulltext] = $alto[0];
-                            $this->hasFulltext = TRUE;
-                            $this->hasFulltextSet = TRUE;
+                            $this->hasFulltext = true;
+                            $this->hasFulltextSet = true;
                         }
                     }
                     if (isset($fileUses)) {
                         foreach ($fileUses as $fileUse) {
-                            if ($image->getBody() != NULL && $image->getBody() instanceof ContentResourceInterface) {
+                            if ($image->getBody() != null && $image->getBody() instanceof ContentResourceInterface) {
                                 $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUse] = $image->getBody()->getId();
                             }
                         }
@@ -355,7 +355,7 @@ final class IiifManifest extends Document
                 // Merge and re-index the array to get nice numeric indexes.
                 $this->physicalStructure = array_merge($physSeq, $elements);
             }
-            $this->physicalStructureLoaded = TRUE;
+            $this->physicalStructureLoaded = true;
         }
         return $this->physicalStructure;
     }
@@ -380,15 +380,15 @@ final class IiifManifest extends Document
      */
     public function getFileLocation($id)
     {
-        if ($id == NULL) {
-            return NULL;
+        if ($id == null) {
+            return null;
         }
         $resource = $this->iiif->getContainedResourceById($id);
         if (isset($resource)) {
             if ($resource instanceof CanvasInterface) {
-                return (!empty($resource->getImageAnnotations()) && $resource->getImageAnnotations()->getSingleService() != NULL) ? $resource->getImageAnnotations()[0]->getSingleService()->getId() : $id;
+                return (!empty($resource->getImageAnnotations()) && $resource->getImageAnnotations()->getSingleService() != null) ? $resource->getImageAnnotations()[0]->getSingleService()->getId() : $id;
             } elseif ($resource instanceof ContentResourceInterface) {
-                return $resource->getSingleService() != NULL && $resource->getSingleService() instanceof Service ? $resource->getSingleService()->getId() : $id;
+                return $resource->getSingleService() != null && $resource->getSingleService() instanceof Service ? $resource->getSingleService()->getId() : $id;
             } elseif ($resource instanceof AbstractImageService) {
                 return $resource->getId();
             } elseif ($resource instanceof AnnotationContainerInterface) {
@@ -411,7 +411,7 @@ final class IiifManifest extends Document
         } elseif ($fileResource instanceof AnnotationInterface) {
             $format = "application/vnd.kitodo.iiif";
         } elseif ($fileResource instanceof ContentResourceInterface) {
-            if ($fileResource->isText() || $fileResource->isImage() && ($fileResource->getSingleService() == NULL || !($fileResource->getSingleService() instanceof AbstractImageService))) {
+            if ($fileResource->isText() || $fileResource->isImage() && ($fileResource->getSingleService() == null || !($fileResource->getSingleService() instanceof AbstractImageService))) {
                 // Support static images without an image service
                 return $fileResource->getFormat();
             }
@@ -429,7 +429,7 @@ final class IiifManifest extends Document
      * {@inheritDoc}
      * @see Document::getLogicalStructure()
      */
-    public function getLogicalStructure($id, $recursive = FALSE)
+    public function getLogicalStructure($id, $recursive = false)
     {
         $details = [];
         if (!$recursive && !empty($this->logicalUnits[$id])) {
@@ -446,8 +446,8 @@ final class IiifManifest extends Document
                 // cache the ranges - they might occure multiple times in the structures "tree" - with full data as well as referenced as id
                 $processedStructures = [];
                 foreach ($logUnits as $logUnit) {
-                    if (array_search($logUnit->getId(), $processedStructures) == FALSE) {
-                        $this->tableOfContents[] = $this->getLogicalStructureInfo($logUnit, TRUE, $processedStructures);
+                    if (array_search($logUnit->getId(), $processedStructures) == false) {
+                        $this->tableOfContents[] = $this->getLogicalStructureInfo($logUnit, true, $processedStructures);
                     }
                 }
             }
@@ -461,17 +461,17 @@ final class IiifManifest extends Document
      * @access protected
      *
      * @param IiifResourceInterface $resource: IIIF resource, either a manifest or range.
-     * @param boolean $recursive: Whether to include the child elements
+     * @param bool $recursive: Whether to include the child elements
      * @param array $processedStructures: IIIF resources that already have been processed
      * @return array Logical structure array
      */
-    protected function getLogicalStructureInfo(IiifResourceInterface $resource, $recursive = FALSE, &$processedStructures = [])
+    protected function getLogicalStructureInfo(IiifResourceInterface $resource, $recursive = false, &$processedStructures = [])
     {
         $details = [];
         $details['id'] = $resource->getId();
         $details['dmdId'] = '';
-        $details['label'] = $resource->getLabelForDisplay() !== NULL ? $resource->getLabelForDisplay() : '';
-        $details['orderlabel'] = $resource->getLabelForDisplay() !== NULL ? $resource->getLabelForDisplay() : '';
+        $details['label'] = $resource->getLabelForDisplay() !== null ? $resource->getLabelForDisplay() : '';
+        $details['orderlabel'] = $resource->getLabelForDisplay() !== null ? $resource->getLabelForDisplay() : '';
         $details['contentIds'] = '';
         $details['volume'] = '';
         $details['pagination'] = '';
@@ -496,10 +496,10 @@ final class IiifManifest extends Document
             $startCanvas = $resource->getStartCanvasOrFirstCanvas();
             $canvases = $resource->getAllCanvases();
         }
-        if ($startCanvas != NULL) {
+        if ($startCanvas != null) {
             $details['pagination'] = $startCanvas->getLabel();
             $startCanvasIndex = array_search($startCanvas, $this->iiif->getDefaultCanvases());
-            if ($startCanvasIndex !== FALSE) {
+            if ($startCanvasIndex !== false) {
                 $details['points'] = $startCanvasIndex + 1;
             }
         }
@@ -513,7 +513,7 @@ final class IiifManifest extends Document
         if ($recursive) {
             $processedStructures[] = $resource->getId();
             $details['children'] = [];
-            if ($resource instanceof ManifestInterface && $resource->getRootRanges() != NULL) {
+            if ($resource instanceof ManifestInterface && $resource->getRootRanges() != null) {
                 $rangesToAdd = [];
                 $rootRanges = [];
                 if (sizeof($this->iiif->getRootRanges()) == 1 && $this->iiif->getRootRanges()[0]->isTopRange()) {
@@ -525,15 +525,15 @@ final class IiifManifest extends Document
                     $rootRanges[] = $range;
                 }
                 foreach ($rootRanges as $range) {
-                    if ((array_search($range->getId(), $processedStructures) == FALSE)) {
-                        $details['children'][] = $this->getLogicalStructureInfo($range, TRUE, $processedStructures);
+                    if ((array_search($range->getId(), $processedStructures) == false)) {
+                        $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
                     }
                 }
             } elseif ($resource instanceof RangeInterface) {
                 if (!empty($resource->getAllRanges())) {
                     foreach ($resource->getAllRanges() as $range) {
-                        if ((array_search($range->getId(), $processedStructures) == FALSE)) {
-                            $details['children'][] = $this->getLogicalStructureInfo($range, TRUE, $processedStructures);
+                        if ((array_search($range->getId(), $processedStructures) == false)) {
+                            $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
                         }
                     }
                 }
@@ -550,23 +550,23 @@ final class IiifManifest extends Document
      *
      * @param string $id: the ID of the IIIF resource
      * @param number $cPid: the configuration folder's id
-     * @param boolean $withDescription: add description / summary to the return value
-     * @param boolean $withRights: add attribution and license / rights and requiredStatement to the return value
-     * @param boolean $withRelated: add related links / homepage to the return value
+     * @param bool $withDescription: add description / summary to the return value
+     * @param bool $withRights: add attribution and license / rights and requiredStatement to the return value
+     * @param bool $withRelated: add related links / homepage to the return value
      *
      * @return array
      *
      * @todo This method is still in experimental; the method signature may change.
      */
-    public function getManifestMetadata($id, $cPid = 0, $withDescription = TRUE, $withRights = TRUE, $withRelated = TRUE)
+    public function getManifestMetadata($id, $cPid = 0, $withDescription = true, $withRights = true, $withRelated = true)
     {
         if (!empty($this->originalMetadataArray[$id])) {
             return $this->originalMetadataArray[$id];
         }
         $iiifResource = $this->iiif->getContainedResourceById($id);
         $result = [];
-        if ($iiifResource != NULL) {
-            if ($iiifResource->getLabel() != NULL && $iiifResource->getLabel() != "") {
+        if ($iiifResource != null) {
+            if ($iiifResource->getLabel() != null && $iiifResource->getLabel() != "") {
                 $result['label'] = $iiifResource->getLabel();
             }
             if (!empty($iiifResource->getMetadata())) {
@@ -640,12 +640,12 @@ final class IiifManifest extends Document
             'tx_dlf_metadata.pid=' . intval($cPid)
                 . ' AND tx_dlf_metadataformat.pid=' . intval($cPid)
                 . ' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats') . ') OR tx_dlf_metadata.format=0)'
-                . Helper::whereClause('tx_dlf_metadata', TRUE) . Helper::whereClause('tx_dlf_metadataformat') . Helper::whereClause('tx_dlf_formats')
+                . Helper::whereClause('tx_dlf_metadata', true) . Helper::whereClause('tx_dlf_metadataformat') . Helper::whereClause('tx_dlf_formats')
         );
         $iiifResource = $this->iiif->getContainedResourceById($id);
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             // Set metadata field's value(s).
-            if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != NULL) {
+            if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != null) {
                 if (is_string($values)) {
                     $metadata[$resArray['index_name']] = [trim((string) $values)];
                 } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
@@ -663,7 +663,7 @@ final class IiifManifest extends Document
             if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
                 if (
                     $resArray['format'] > 0 && !empty($resArray['xpath_sorting'])
-                    && ($values = $iiifResource->jsonPath($resArray['xpath_sorting']) != NULL)
+                    && ($values = $iiifResource->jsonPath($resArray['xpath_sorting']) != null)
                 ) {
                     if (is_string($values)) {
                         $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
@@ -699,7 +699,7 @@ final class IiifManifest extends Document
                     $this->smLinkRangeCanvasesRecursively($range);
                 }
             }
-            $this->smLinksLoaded = TRUE;
+            $this->smLinksLoaded = true;
         }
         return $this->smLinks;
     }
@@ -789,7 +789,7 @@ final class IiifManifest extends Document
                             foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
                                 if (
                                     $annotation->getTargetResourceId() == $iiifResource->getId() &&
-                                    $annotation->getBody() != NULL && $annotation->getBody()->getChars() != NULL
+                                    $annotation->getBody() != null && $annotation->getBody()->getChars() != null
                                 ) {
                                     $annotationTexts[] = $annotation->getBody()->getChars();
                                 }
@@ -835,21 +835,21 @@ final class IiifManifest extends Document
     protected function loadLocation($location)
     {
         $fileResource = GeneralUtility::getUrl($location);
-        if ($fileResource !== FALSE) {
+        if ($fileResource !== false) {
             $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $resource = IiifHelper::loadIiifResource($fileResource);
-            if ($resource != NULL) {
+            if ($resource != null) {
                 if ($resource instanceof ManifestInterface) {
                     $this->iiif = $resource;
-                    return TRUE;
+                    return true;
                 }
             }
         }
         Helper::devLog('Could not load IIIF manifest from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
-        return FALSE;
+        return false;
     }
 
     /**
@@ -870,9 +870,9 @@ final class IiifManifest extends Document
     {
         if ($preloadedDocument instanceof ManifestInterface) {
             $this->iiif = $preloadedDocument;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -895,22 +895,22 @@ final class IiifManifest extends Document
                     !empty($canvas->getSeeAlsoUrlsForFormat("application/alto+xml")) ||
                     !empty($canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/"))
                 ) {
-                    $this->hasFulltextSet = TRUE;
-                    $this->hasFulltext = TRUE;
+                    $this->hasFulltextSet = true;
+                    $this->hasFulltext = true;
                     return;
                 }
                 $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
                 if ($extConf['indexAnnotations'] == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
-                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != NULL) {
+                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
                             foreach ($textAnnotations as $annotation) {
                                 if (
-                                    $annotation->getBody() != NULL &&
+                                    $annotation->getBody() != null &&
                                     $annotation->getBody()->getFormat() == "text/plain" &&
-                                    $annotation->getBody()->getChars() != NULL
+                                    $annotation->getBody()->getChars() != null
                                 ) {
-                                    $this->hasFulltextSet = TRUE;
-                                    $this->hasFulltext = TRUE;
+                                    $this->hasFulltextSet = true;
+                                    $this->hasFulltext = true;
                                     return;
                                 }
                             }
@@ -918,7 +918,7 @@ final class IiifManifest extends Document
                     }
                 }
             }
-            $this->hasFulltextSet = TRUE;
+            $this->hasFulltextSet = true;
         }
     }
 
@@ -926,7 +926,7 @@ final class IiifManifest extends Document
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
      */
-    protected function _getThumbnail($forceReload = FALSE)
+    protected function _getThumbnail($forceReload = false)
     {
         return $this->iiif->getThumbnailUrl();
     }
@@ -960,7 +960,7 @@ final class IiifManifest extends Document
         IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
         IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
         $resource = IiifHelper::loadIiifResource($this->asJson);
-        if ($resource != NULL && $resource instanceof ManifestInterface) {
+        if ($resource != null && $resource instanceof ManifestInterface) {
             $this->asJson = '';
             $this->iiif = $resource;
             $this->init();

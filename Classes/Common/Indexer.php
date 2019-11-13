@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,8 +10,9 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Common;
+
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
@@ -57,10 +56,10 @@ class Indexer
      * Is the index configuration loaded?
      * @see $fields
      *
-     * @var boolean
+     * @var bool
      * @access protected
      */
-    protected static $fieldsLoaded = FALSE;
+    protected static $fieldsLoaded = false;
 
     /**
      * List of already processed documents
@@ -84,9 +83,9 @@ class Indexer
      * @access public
      *
      * @param \Kitodo\Dlf\Common\Document &$doc: The document to add
-     * @param integer $core: UID of the Solr core to use
+     * @param int $core: UID of the Solr core to use
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     public static function add(Document &$doc, $core = 0)
     {
@@ -96,7 +95,7 @@ class Indexer
             $errors = 0;
             // Handle multi-volume documents.
             if ($doc->parentId) {
-                $parent = Document::getInstance($doc->parentId, 0, TRUE);
+                $parent = Document::getInstance($doc->parentId, 0, true);
                 if ($parent->ready) {
                     $errors = self::add($parent, $core);
                 } else {
@@ -150,43 +149,43 @@ class Indexer
 
                 $allResults = $result->fetchAll();
                 $resArray = $allResults[0];
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     if (!$errors) {
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
-                            Helper::getMessage('flash.done', TRUE),
+                            Helper::getMessage('flash.done', true),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                            TRUE
+                            true
                         );
                     } else {
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
-                            Helper::getMessage('flash.error', TRUE),
+                            Helper::getMessage('flash.error', true),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                            TRUE
+                            true
                         );
                     }
                 }
                 return $errors;
             } catch (\Exception $e) {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
-                        Helper::getMessage('flash.error', TRUE),
+                        Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        TRUE
+                        true
                     );
                 }
                 Helper::devLog('Apache Solr threw exception: "' . $e->getMessage() . '"', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
         } else {
-            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                 Helper::addMessage(
-                    Helper::getMessage('flash.solrNoConnection', TRUE),
-                    Helper::getMessage('flash.warning', TRUE),
+                    Helper::getMessage('flash.solrNoConnection', true),
+                    Helper::getMessage('flash.warning', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-                    TRUE
+                    true
                 );
             }
             Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
@@ -199,9 +198,9 @@ class Indexer
      *
      * @access public
      *
-     * @param integer $uid: UID of the document to delete
+     * @param int $uid: UID of the document to delete
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     public static function delete($uid)
     {
@@ -229,35 +228,35 @@ class Indexer
                     $updateQuery->addCommit();
                     self::$solr->service->update($updateQuery);
                 } catch (\Exception $e) {
-                    if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                    if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                         Helper::addMessage(
-                            Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
-                            Helper::getMessage('flash.error', TRUE),
+                            Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
+                            Helper::getMessage('flash.error', true),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                            TRUE
+                            true
                         );
                     }
                     Helper::devLog('Apache Solr threw exception: "' . $e->getMessage() . '"', DEVLOG_SEVERITY_ERROR);
                     return 1;
                 }
             } else {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrNoConnection', TRUE),
-                        Helper::getMessage('flash.error', TRUE),
+                        Helper::getMessage('flash.solrNoConnection', true),
+                        Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        TRUE
+                        true
                     );
                 }
                 Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
                 return 1;
             }
-            if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                 Helper::addMessage(
                     htmlspecialchars(sprintf(Helper::getMessage('flash.documentDeleted'), $title, $uid)),
-                    Helper::getMessage('flash.done', TRUE),
+                    Helper::getMessage('flash.done', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                    TRUE
+                    true
                 );
             }
             return 0;
@@ -273,7 +272,7 @@ class Indexer
      * @access public
      *
      * @param string $index_name: The metadata field's name in database
-     * @param integer $pid: UID of the configuration page
+     * @param int $pid: UID of the configuration page
      *
      * @return string The field's dynamic index name
      */
@@ -300,7 +299,7 @@ class Indexer
      *
      * @access protected
      *
-     * @param integer $pid: The configuration page's UID
+     * @param int $pid: The configuration page's UID
      *
      * @return void
      */
@@ -358,10 +357,10 @@ class Indexer
                 if ($indexing['index_boost'] > 0.0) {
                     self::$fields['fieldboost'][$indexing['index_name']] = floatval($indexing['index_boost']);
                 } else {
-                    self::$fields['fieldboost'][$indexing['index_name']] = FALSE;
+                    self::$fields['fieldboost'][$indexing['index_name']] = false;
                 }
             }
-            self::$fieldsLoaded = TRUE;
+            self::$fieldsLoaded = true;
         }
     }
 
@@ -373,7 +372,7 @@ class Indexer
      * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
      * @param array $logicalUnit: Array of the logical unit to process
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     protected static function processLogical(Document &$doc, array $logicalUnit)
     {
@@ -407,7 +406,7 @@ class Indexer
             $solrDoc->setField('root', $doc->rootId);
             $solrDoc->setField('sid', $logicalUnit['id']);
             // There can be only one toplevel unit per UID, independently of backend configuration
-            $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? TRUE : FALSE);
+            $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
             $solrDoc->setField('type', $logicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
@@ -459,12 +458,12 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
-                        Helper::getMessage('flash.error', TRUE),
+                        Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        TRUE
+                        true
                     );
                 }
                 return 1;
@@ -490,10 +489,10 @@ class Indexer
      * @access protected
      *
      * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
-     * @param integer $page: The page number
+     * @param int $page: The page number
      * @param array $physicalUnit: Array of the physical unit to process
      *
-     * @return integer 0 on success or 1 on failure
+     * @return int 0 on success or 1 on failure
      */
     protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
     {
@@ -513,18 +512,18 @@ class Indexer
                         @ini_set('user_agent', $extConf['useragent']);
                     }
                     $fileResource = GeneralUtility::getUrl($file);
-                    if ($fileResource !== FALSE) {
+                    if ($fileResource !== false) {
                         // Turn off libxml's error logging.
-                        $libxmlErrors = libxml_use_internal_errors(TRUE);
+                        $libxmlErrors = libxml_use_internal_errors(true);
                         // disable entity loading
-                        $previousValueOfEntityLoader = libxml_disable_entity_loader(TRUE);
+                        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
                         // Load XML from file.
                         $xml = simplexml_load_string($fileResource);
                         // reset entity loader setting
                         libxml_disable_entity_loader($previousValueOfEntityLoader);
                         // Reset libxml's error logging.
                         libxml_use_internal_errors($libxmlErrors);
-                        if ($xml === FALSE) {
+                        if ($xml === false) {
                             return 1;
                         }
                     } else {
@@ -540,7 +539,7 @@ class Indexer
                         @ini_set('user_agent', $extConf['useragent']);
                     }
                     $fileResource = GeneralUtility::getUrl($annotationContainerId);
-                    if ($fileResource !== FALSE) {
+                    if ($fileResource !== false) {
                         $annotationContainer = IiifHelper::loadIiifResource($fileResource);
                         if (!($annotationContainer instanceof AnnotationContainerInterface)) {
                             return 1;
@@ -564,7 +563,7 @@ class Indexer
             $solrDoc->setField('partof', $doc->parentId);
             $solrDoc->setField('root', $doc->rootId);
             $solrDoc->setField('sid', $physicalUnit['id']);
-            $solrDoc->setField('toplevel', FALSE);
+            $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
             $solrDoc->setField('fulltext', htmlspecialchars($doc->getRawText($physicalUnit['id'])));
@@ -591,13 +590,13 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if ((\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI) == FALSE) {
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
                         \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                        Helper::getMessage('flash.solrException', TRUE) . '<br />' . htmlspecialchars($e->getMessage()),
-                        Helper::getMessage('flash.error', TRUE),
+                        Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        TRUE
+                        true
                     );
                 }
                 return 1;
@@ -611,10 +610,10 @@ class Indexer
      *
      * @access protected
      *
-     * @param integer $core: UID of the Solr core
-     * @param integer $pid: UID of the configuration page
+     * @param int $core: UID of the Solr core
+     * @param int $pid: UID of the configuration page
      *
-     * @return boolean TRUE on success or FALSE on failure
+     * @return bool true on success or false on failure
      */
     protected static function solrConnect($core, $pid = 0)
     {
@@ -627,10 +626,10 @@ class Indexer
                     self::loadIndexConf($pid);
                 }
             } else {
-                return FALSE;
+                return false;
             }
         }
-        return TRUE;
+        return true;
     }
 
     /**

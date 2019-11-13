@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,9 +10,10 @@ namespace Kitodo\Dlf\Plugin;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Plugin;
+
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -60,7 +59,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
             return $content;
         }
@@ -215,7 +214,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             'parameter' => $this->conf['targetPid'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
         ];
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
+        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
         // Link to current year.
         $linkConf = [
             'useCacheHash' => 1,
@@ -235,9 +234,9 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $this->template = $this->templateService->substituteSubpart($this->template, '###SINGLEDAY###', $subPartContentList);
         if (count($allIssues) < 6) {
-            $listViewActive = TRUE;
+            $listViewActive = true;
         } else {
-            $listViewActive = FALSE;
+            $listViewActive = false;
         }
         $markerArray = [
             '###CALENDARVIEWACTIVE###' => $listViewActive ? '' : 'active',
@@ -266,7 +265,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
             return $content;
         }
@@ -323,7 +322,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             'parameter' => $this->conf['targetPid'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . $this->doc->uid,
         ];
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', TRUE) . ' ' . $this->doc->getTitle($this->doc->uid), $linkConf);
+        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->uid), $linkConf);
         // Fill markers.
         $markerArray = [
             '###LABEL_CHOOSE_YEAR###' => $this->pi_getLL('label.please_choose_year'),

@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
 
@@ -32,7 +32,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @param integer $number: The page to render
+     * @param int $number: The page to render
      * @param string $template: Parsed template subpart
      *
      * @return string The rendered entry ready for output
@@ -67,7 +67,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
-            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', TRUE, FALSE),
+            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', true, false),
             'title' => $markerArray['###PAGINATION###']
         ];
         $markerArray['###THUMBNAIL###'] = $this->cObj->typoLink($thumbnail, $linkConf);
@@ -90,34 +90,34 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
             return '';
         }
         // Get separator.
-        $separator = $this->pi_getLL('separator', ' - ', TRUE);
+        $separator = $this->pi_getLL('separator', ' - ', true);
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', TRUE), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], TRUE) . $separator;
+            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', true), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], true) . $separator;
         } else {
-            $output = '<span class="prev-page not-active">' . $this->pi_getLL('prevPage', '&lt;', TRUE) . '</span>' . $separator;
+            $output = '<span class="prev-page not-active">' . $this->pi_getLL('prevPage', '&lt;', true) . '</span>' . $separator;
         }
         $i = 0;
         // Add links to pages.
         while ($i < $maxPages) {
             if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
                 if ($this->piVars['pointer'] != $i) {
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], TRUE) . $separator;
+                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', true), $i + 1), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], true) . $separator;
                 } else {
-                    $output .= '<span class="active">' . sprintf($this->pi_getLL('page', '%d', TRUE), $i + 1) . '</span>' . $separator;
+                    $output .= '<span class="active">' . sprintf($this->pi_getLL('page', '%d', true), $i + 1) . '</span>' . $separator;
                 }
-                $skip = TRUE;
-            } elseif ($skip == TRUE) {
-                $output .= '<span class="skipped">' . $this->pi_getLL('skip', '...', TRUE) . '</span>' . $separator;
-                $skip = FALSE;
+                $skip = true;
+            } elseif ($skip == true) {
+                $output .= '<span class="skipped">' . $this->pi_getLL('skip', '...', true) . '</span>' . $separator;
+                $skip = false;
             }
             $i++;
         }
         // Add link to next page.
         if ($this->piVars['pointer'] < $maxPages - 1) {
-            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', TRUE), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1], TRUE);
+            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', true), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1], true);
         } else {
-            $output .= '<span class="next-page not-active">' . $this->pi_getLL('nextPage', '&gt;', TRUE) . '</span>';
+            $output .= '<span class="next-page not-active">' . $this->pi_getLL('nextPage', '&gt;', true) . '</span>';
         }
         return $output;
     }
@@ -137,7 +137,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->init($conf);
         $this->loadDocument();
         if (
-            $this->doc === NULL
+            $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->conf['fileGrpThumbs'])
         ) {
@@ -194,7 +194,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         // Render page browser.
         $markerArray['###PAGEBROWSER###'] = $this->getPageBrowser();
         // Merge everything with template.
-        $content = $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, TRUE), $markerArray);
+        $content = $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, true), $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 }

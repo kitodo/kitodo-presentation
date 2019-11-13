@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Plugin;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +9,8 @@ namespace Kitodo\Dlf\Plugin;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
@@ -44,9 +44,9 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
                 $conf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetPid'],
-                    'title' => $this->pi_getLL('linkToList', '', TRUE)
+                    'title' => $this->pi_getLL('linkToList', '', true)
                 ];
-                return $this->cObj->typoLink($this->pi_getLL('linkToList', '', TRUE), $conf);
+                return $this->cObj->typoLink($this->pi_getLL('linkToList', '', true), $conf);
             }
         }
         return '';
@@ -74,7 +74,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Add page selector.
         $uniqId = uniqid(Helper::getUnqualifiedClassName(get_class($this)) . '-');
-        $output .= '<label for="' . $uniqId . '">' . $this->pi_getLL('selectPage', '', TRUE) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[page]" onchange="javascript:this.form.submit();"' . ($this->doc->numPages < 1 ? ' disabled="disabled"' : '') . '>';
+        $output .= '<label for="' . $uniqId . '">' . $this->pi_getLL('selectPage', '', true) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[page]" onchange="javascript:this.form.submit();"' . ($this->doc->numPages < 1 ? ' disabled="disabled"' : '') . '>';
         for ($i = 1; $i <= $this->doc->numPages; $i++) {
             $output .= '<option value="' . $i . '"' . ($this->piVars['page'] == $i ? ' selected="selected"' : '') . '>[' . $i . ']' . ($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel']) : '') . '</option>';
         }
@@ -96,10 +96,10 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $this->init($conf);
         // Turn cache on.
-        $this->setCache(TRUE);
+        $this->setCache(true);
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === NULL) {
+        if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -132,67 +132,67 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         $pageSteps = $this->conf['pageStep'] * ($this->piVars['double'] + 1);
         // Link to first page.
         if ($this->piVars['page'] > 1) {
-            $markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', TRUE), ['page' => 1]);
+            $markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', true), ['page' => 1]);
         } else {
-            $markerArray['###FIRST###'] = '<span>' . $this->pi_getLL('firstPage', '', TRUE) . '</span>';
+            $markerArray['###FIRST###'] = '<span>' . $this->pi_getLL('firstPage', '', true) . '</span>';
         }
         // Link back X pages.
         if ($this->piVars['page'] > $pageSteps) {
-            $markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps), ['page' => $this->piVars['page'] - $pageSteps]);
+            $markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', true), $pageSteps), ['page' => $this->piVars['page'] - $pageSteps]);
         } else {
-            $markerArray['###BACK###'] = '<span>' . sprintf($this->pi_getLL('backXPages', '', TRUE), $pageSteps) . '</span>';
+            $markerArray['###BACK###'] = '<span>' . sprintf($this->pi_getLL('backXPages', '', true), $pageSteps) . '</span>';
         }
         // Link to previous page.
         if ($this->piVars['page'] > (1 + $this->piVars['double'])) {
-            $markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', TRUE), ['page' => $this->piVars['page'] - (1 + $this->piVars['double'])]);
+            $markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', true), ['page' => $this->piVars['page'] - (1 + $this->piVars['double'])]);
         } else {
-            $markerArray['###PREVIOUS###'] = '<span>' . $this->pi_getLL('prevPage', '', TRUE) . '</span>';
+            $markerArray['###PREVIOUS###'] = '<span>' . $this->pi_getLL('prevPage', '', true) . '</span>';
         }
         // Link to next page.
         if ($this->piVars['page'] < ($this->doc->numPages - $this->piVars['double'])) {
-            $markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', TRUE), ['page' => $this->piVars['page'] + (1 + $this->piVars['double'])]);
+            $markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', true), ['page' => $this->piVars['page'] + (1 + $this->piVars['double'])]);
         } else {
-            $markerArray['###NEXT###'] = '<span>' . $this->pi_getLL('nextPage', '', TRUE) . '</span>';
+            $markerArray['###NEXT###'] = '<span>' . $this->pi_getLL('nextPage', '', true) . '</span>';
         }
         // Link forward X pages.
         if ($this->piVars['page'] <= ($this->doc->numPages - $pageSteps)) {
-            $markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps), ['page' => $this->piVars['page'] + $pageSteps]);
+            $markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', true), $pageSteps), ['page' => $this->piVars['page'] + $pageSteps]);
         } else {
-            $markerArray['###FORWARD###'] = '<span>' . sprintf($this->pi_getLL('forwardXPages', '', TRUE), $pageSteps) . '</span>';
+            $markerArray['###FORWARD###'] = '<span>' . sprintf($this->pi_getLL('forwardXPages', '', true), $pageSteps) . '</span>';
         }
         // Link to last page.
         if ($this->piVars['page'] < $this->doc->numPages) {
-            $markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', TRUE), ['page' => $this->doc->numPages]);
+            $markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', true), ['page' => $this->doc->numPages]);
         } else {
-            $markerArray['###LAST###'] = '<span>' . $this->pi_getLL('lastPage', '', TRUE) . '</span>';
+            $markerArray['###LAST###'] = '<span>' . $this->pi_getLL('lastPage', '', true) . '</span>';
         }
         // Add double page switcher.
         if ($this->doc->numPages > 0) {
             if (!$this->piVars['double']) {
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', TRUE), ['double' => 1], 'class="tx-dlf-navigation-doubleOn"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', true), ['double' => 1], 'class="tx-dlf-navigation-doubleOn"');
             } else {
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', TRUE), ['double' => 0], 'class="tx-dlf-navigation-doubleOff"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', true), ['double' => 0], 'class="tx-dlf-navigation-doubleOff"');
             }
             if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
-                $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', TRUE), ['page' => $this->piVars['page'] + 1]);
+                $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', true), ['page' => $this->piVars['page'] + 1]);
             } else {
-                $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', TRUE) . '</span>';
+                $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', true) . '</span>';
             }
         } else {
-            $markerArray['###DOUBLEPAGE###'] = '<span>' . $this->pi_getLL('doublePageOn', '', TRUE) . '</span>';
-            $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', TRUE) . '</span>';
+            $markerArray['###DOUBLEPAGE###'] = '<span>' . $this->pi_getLL('doublePageOn', '', true) . '</span>';
+            $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', true) . '</span>';
         }
         // Add page selector.
         $markerArray['###PAGESELECT###'] = $this->getPageSelector();
         // Add link to listview if applicable.
         $markerArray['###LINKLISTVIEW###'] = $this->getLinkToListview();
         // Fill some language labels if available.
-        $markerArray['###ZOOM_IN###'] = $this->pi_getLL('zoom-in', '', TRUE);
-        $markerArray['###ZOOM_OUT###'] = $this->pi_getLL('zoom-out', '', TRUE);
-        $markerArray['###ZOOM_FULLSCREEN###'] = $this->pi_getLL('zoom-fullscreen', '', TRUE);
-        $markerArray['###ROTATE_LEFT###'] = $this->pi_getLL('rotate-left', '', TRUE);
-        $markerArray['###ROTATE_RIGHT###'] = $this->pi_getLL('rotate-right', '', TRUE);
-        $markerArray['###ROTATE_RESET###'] = $this->pi_getLL('rotate-reset', '', TRUE);
+        $markerArray['###ZOOM_IN###'] = $this->pi_getLL('zoom-in', '', true);
+        $markerArray['###ZOOM_OUT###'] = $this->pi_getLL('zoom-out', '', true);
+        $markerArray['###ZOOM_FULLSCREEN###'] = $this->pi_getLL('zoom-fullscreen', '', true);
+        $markerArray['###ROTATE_LEFT###'] = $this->pi_getLL('rotate-left', '', true);
+        $markerArray['###ROTATE_RIGHT###'] = $this->pi_getLL('rotate-right', '', true);
+        $markerArray['###ROTATE_RESET###'] = $this->pi_getLL('rotate-reset', '', true);
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
@@ -221,7 +221,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
             'useCacheHash' => 1,
             'parameter' => $GLOBALS['TSFE']->id,
             'ATagParams' => $aTagParams,
-            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', TRUE, FALSE),
+            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', true, false),
             'title' => $label
         ];
         return $this->cObj->typoLink($label, $conf);

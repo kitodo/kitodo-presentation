@@ -1,7 +1,5 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,6 +10,8 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+namespace Kitodo\Dlf\Common;
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\UrlReaderInterface;
 
@@ -21,7 +21,9 @@ use Ubl\Iiif\Tools\UrlReaderInterface;
  * IIIF library.
  *
  * @author Lutz Helm <helm@ub.uni-leipzig.de>
- *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
 class IiifUrlReader implements UrlReaderInterface
 {
@@ -41,7 +43,7 @@ class IiifUrlReader implements UrlReaderInterface
     public function getContent($url)
     {
         $fileContents = GeneralUtility::getUrl($url);
-        if ($fileContents !== FALSE) {
+        if ($fileContents !== false) {
             return $fileContents;
         } else {
             return '';
