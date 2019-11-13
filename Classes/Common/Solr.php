@@ -120,10 +120,10 @@ class Solr
         if (preg_match('/^".*"$/', $query)) {
             return $helper->escapePhrase(trim($query, '"'));
         } else {
-            // Using a modified escape function here to retain '*' and '?' for search truncation.
+            // Using a modified escape function here to retain whitespace, '*' and '?' for search truncation.
             // @see https://github.com/solariumphp/solarium/blob/4.x/src/Core/Query/Helper.php#L68 for reference
             /* return $helper->escapeTerm($query); */
-            return preg_replace('/( |\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|:|\/|\\\)/', '\\\$1', $query);
+            return preg_replace('/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|:|\/|\\\)/', '\\\$1', $query);
         }
     }
 
