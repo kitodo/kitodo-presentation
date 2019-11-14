@@ -92,7 +92,7 @@ if (\TYPO3_MODE === 'FE') {
      */
     function user_dlf_docTypeCheck($type)
     {
-        $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Common\DocumentTypeCheck::class);
-        return ($hook->getDocType() === $type);
+        $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Hooks\UserFunc::class);
+        return ($hook->getDocumentType() === $type);
     }
 }

@@ -49,7 +49,7 @@
                             <config>
                                 <type>select</type>
                                 <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\FormEngine->itemsProcFunc_collectionList</itemsProcFunc>
+                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->collectionList</itemsProcFunc>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
