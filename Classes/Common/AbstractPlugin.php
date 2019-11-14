@@ -210,7 +210,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     {
         if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass']) {
             // Use class name instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
-            $content = '<div class="tx-dlf-' . Helper::getUnqualifiedClassName(get_class($this)) . '">' . $content . '</div>';
+            $content = '<div class="tx-dlf-' . strtolower(Helper::getUnqualifiedClassName(get_class($this))) . '">' . $content . '</div>';
             if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
                 $content = "\n\n<!-- BEGIN: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n" . $content . "\n\n<!-- END: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n";
             }

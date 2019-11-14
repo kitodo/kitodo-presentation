@@ -182,7 +182,7 @@ $structureDefaults = [
         'oai_name' => ''
     ],
     'issue' => [
-        'toplevel' => 0,
+        'toplevel' => 1,
         'oai_name' => ''
     ],
     'judgement' => [

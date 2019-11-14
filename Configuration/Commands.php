@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -8,11 +9,12 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-/**
- * Commands to be executed by typo3, where the key of the array
- * is the name of the command (to be called as the first argument after typo3).
+
+ /**
+ * Commands to be executed by TYPO3, where the key of the array
+ * is the name of the command (to be called as the first argument after "typo3").
  * Required parameter is the "class" of the command which needs to be a subclass
- * of Symfony/Console/Command.
+ * of \Symfony\Component\Console\Command\Command.
  */
 return [
     'kitodo:index' => [

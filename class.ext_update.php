@@ -109,7 +109,7 @@ class ext_update
         if (count($this->oldFormatClasses())) {
             $this->updateFormatClasses();
         }
-        // add format field for tx_dlf_document to distinguish between METS and IIIF
+        // Set tx_dlf_documents.document_format to distinguish between METS and IIIF.
         if ($this->hasNoFormatForDocument()) {
             $this->updateDocumentAddFormat();
         }
@@ -401,6 +401,7 @@ class ext_update
                 $GLOBALS['LANG']->getLL('update.documentAddFormat', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
+            $this->content .= Helper::renderFlashMessages();
         } else {
             Helper::addMessage(
                 $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', true),
@@ -410,7 +411,6 @@ class ext_update
             $this->content .= Helper::renderFlashMessages();
             return;
         }
-        $this->content .= Helper::renderFlashMessages();
         $sqlQuery = 'UPDATE `tx_dlf_documents` SET `document_format`="METS" WHERE `document_format` IS NULL OR `document_format`="";';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
         if ($result) {
@@ -425,7 +425,6 @@ class ext_update
                 $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', true),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
-            return;
         }
         $this->content .= Helper::renderFlashMessages();
     }

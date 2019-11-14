@@ -33,12 +33,9 @@ class SearchInDocument extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
      * @return string JSON response of search suggestions
      */
-    public function main($content = '', $conf = [])
+    public function main()
     {
         if (
             GeneralUtility::_GP('encrypted') != ''

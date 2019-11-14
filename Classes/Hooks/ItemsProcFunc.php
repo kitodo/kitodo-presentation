@@ -15,48 +15,27 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Hooks and helper for \TYPO3\CMS\Backend\Form\FormEngine
+ * Helper for Flexform's custom "itemsProcFunc"
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class FormEngine
+class ItemsProcFunc
 {
     /**
-     * Helper to display document's thumbnail for table "tx_dlf_documents"
+     * Helper to get flexform's items array for plugin "Collection"
      *
      * @access public
      *
      * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
-     *
-     * @return string HTML <img> tag for thumbnail
-     */
-    public function displayThumbnail(&$params, &$pObj)
-    {
-        // Simulate TCA field type "passthrough".
-        $output = '<input type="hidden" name="' . $params['itemFormElName'] . '" value="' . $params['itemFormElValue'] . '" />';
-        if (!empty($params['itemFormElValue'])) {
-            $output .= '<img alt="" src="' . $params['itemFormElValue'] . '" />';
-        }
-        return $output;
-    }
-
-    /**
-     * Helper to get flexform's items array for plugin "tx_dlf_collection"
-     *
-     * @access public
-     *
-     * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
      *
      * @return void
      */
-    public function itemsProcFunc_collectionList(&$params, &$pObj)
+    public function collectionList(&$params)
     {
-        $this->itemsProcFunc_generateList(
+        $this->generateList(
             $params,
             'label,uid',
             'tx_dlf_collections',
@@ -70,13 +49,12 @@ class FormEngine
      * @access public
      *
      * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
      *
      * @return void
      */
-    public function itemsProcFunc_extendedSearchList(&$params, &$pObj)
+    public function extendedSearchList(&$params)
     {
-        $this->itemsProcFunc_generateList(
+        $this->generateList(
             $params,
             'label,index_name',
             'tx_dlf_metadata',
@@ -91,13 +69,12 @@ class FormEngine
      * @access public
      *
      * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
      *
      * @return void
      */
-    public function itemsProcFunc_facetsList(&$params, &$pObj)
+    public function facetsList(&$params)
     {
-        $this->itemsProcFunc_generateList(
+        $this->generateList(
             $params,
             'label,index_name',
             'tx_dlf_metadata',
@@ -120,7 +97,7 @@ class FormEngine
      *
      * @return void
      */
-    protected function itemsProcFunc_generateList(&$params, $fields, $table, $sorting, $where = '', $localize = true)
+    protected function generateList(&$params, $fields, $table, $sorting, $where = '', $localize = true)
     {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
@@ -154,13 +131,12 @@ class FormEngine
      * @access public
      *
      * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
      *
      * @return void
      */
-    public function itemsProcFunc_libraryList(&$params, &$pObj)
+    public function libraryList(&$params)
     {
-        $this->itemsProcFunc_generateList(
+        $this->generateList(
             $params,
             'label,uid',
             'tx_dlf_libraries',
@@ -174,13 +150,12 @@ class FormEngine
      * @access public
      *
      * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
      *
      * @return void
      */
-    public function itemsProcFunc_solrList(&$params, &$pObj)
+    public function solrList(&$params)
     {
-        $this->itemsProcFunc_generateList(
+        $this->generateList(
             $params,
             'label,uid',
             'tx_dlf_solrcores',
@@ -196,11 +171,10 @@ class FormEngine
      * @access public
      *
      * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\FormEngine &$pObj: The parent object
      *
      * @return void
      */
-    public function itemsProcFunc_toolList(&$params, &$pObj)
+    public function toolList(&$params)
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
             $params['items'][] = [$GLOBALS['LANG']->sL($label), $class];

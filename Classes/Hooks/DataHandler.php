@@ -38,11 +38,10 @@ class DataHandler
      * @param string $table: The destination table
      * @param int $id: The uid of the record
      * @param array &$fieldArray: Array of field values
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj)
+    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray)
     {
         if ($status == 'new') {
             switch ($table) {
@@ -237,11 +236,10 @@ class DataHandler
      * @param string $table: The destination table
      * @param int $id: The uid of the record
      * @param array &$fieldArray: Array of field values
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray, $pObj)
+    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray)
     {
         if ($status == 'update') {
             switch ($table) {
@@ -298,12 +296,10 @@ class DataHandler
      * @param string $command: 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
      * @param string $table: The destination table
      * @param int $id: The uid of the record
-     * @param mixed $value: The value for the command
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj: The parent object
      *
      * @return void
      */
-    public function processCmdmap_postProcess($command, $table, $id, $value, $pObj)
+    public function processCmdmap_postProcess($command, $table, $id)
     {
         if (
             in_array($command, ['move', 'delete', 'undelete'])
