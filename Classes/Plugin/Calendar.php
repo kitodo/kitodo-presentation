@@ -157,8 +157,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Prepare list as alternative view.
         $subPartContentList = '';
         // Get subpart templates.
-        $subParts['list'] = $this->cObj->getSubpart($this->template, '###ISSUELIST###');
-        $subParts['singleday'] = $this->cObj->getSubpart($subParts['list'], '###SINGLEDAY###');
+        $subParts['list'] = $this->templateService->getSubpart($this->template, '###ISSUELIST###');
+        $subParts['singleday'] = $this->templateService->getSubpart($subParts['list'], '###SINGLEDAY###');
         foreach ($this->allIssues as $dayTimestamp => $issues) {
             $markerArrayDay['###DATE_STRING###'] = strftime('%A, %x', $dayTimestamp);
             $markerArrayDay['###ITEMS###'] = '';
@@ -228,7 +228,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 '###CALYEAR###' => ($i == $firstMonth) ? '<div class="year">' . $year . '</div>' : ''
             ];
             // Fill the month markers.
-            $subPartContentMonth = $this->cObj->substituteMarkerArray($subParts['month'], $markerArray);
+            $subPartContentMonth = $this->templateService->substituteMarkerArray($subParts['month'], $markerArray);
             // Reset week content of new month.
             $subPartContentWeek = '';
             $firstOfMonth = strtotime($year . '-' . $i . '-1');
