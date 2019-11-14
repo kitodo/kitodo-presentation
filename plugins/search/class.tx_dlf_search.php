@@ -555,7 +555,7 @@ class tx_dlf_search extends tx_dlf_plugin {
                 // If the query already is a fulltext query e.g using the facets
                 $this->piVars['query'] = empty($matches[1]) ? $this->piVars['query'] : $matches[1];
 
-                // Search in fulltext field if applicable. query must not be empty!
+                // Search in fulltext field if applicable. Query must not be empty!
                 if (!empty($this->piVars['query'])) {
 
                     $query = 'fulltext:('.tx_dlf_solr::escapeQuery($this->piVars['query']).')';
@@ -655,7 +655,7 @@ class tx_dlf_search extends tx_dlf_plugin {
             }
 
             // Set some query parameters.
-            $params['query'] = $query;
+            $params['query'] = !empty($query) ? $query : '*';
             $params['start'] = 0;
             $params['rows'] = 0;
             $params['sort'] = array ('score' => 'desc');
