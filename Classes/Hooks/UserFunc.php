@@ -64,9 +64,11 @@ class UserFunc
      *
      * @access public
      *
+     * @param int $cPid The PID for the metadata definitions
+     *
      * @return string The type of the current document or 'undefined'
      */
-    public function getDocumentType()
+    public function getDocumentType(int $cPid)
     {
         $type = 'undefined';
         // Load document with current plugin parameters.
@@ -74,7 +76,7 @@ class UserFunc
         if ($doc === null) {
             return $type;
         }
-        $metadata = $doc->getTitledata();
+        $metadata = $doc->getTitledata($cPid);
         if (!empty($metadata['type'][0])) {
             // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
             if (

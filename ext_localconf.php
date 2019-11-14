@@ -82,17 +82,18 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][
 if (\TYPO3_MODE === 'FE') {
     /**
      * docTypeCheck user function to use in Typoscript
-     * @example [userFunc = user_dlf_docTypeCheck($type)]
+     * @example [userFunc = user_dlf_docTypeCheck($type, $pid)]
      *
      * @access public
      *
-     * @param string $type: document type string to test for
+     * @param string $type The document type string to test for
+     * @param int $pid The PID for the metadata definitions
      *
      * @return bool true if document type matches, false if not
      */
-    function user_dlf_docTypeCheck($type)
+    function user_dlf_docTypeCheck(string $type, int $pid): bool
     {
         $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Hooks\UserFunc::class);
-        return ($hook->getDocumentType() === $type);
+        return ($hook->getDocumentType($pid) === $type);
     }
 }
