@@ -112,7 +112,10 @@ class tx_dlf_solr {
 
         } else {
 
-            return $helper->escapeTerm($query);
+            // Using a modified escape function here to retain whitespace, '*' and '?' for search truncation.
+            // @see https://github.com/solariumphp/solarium/blob/4.x/src/Core/Query/Helper.php#L68 for reference
+            /* return $helper->escapeTerm($query); */
+            return preg_replace('/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|:|\/|\\\)/', '\\\$1', $query);
 
         }
 
