@@ -364,6 +364,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             ->orderBy('tx_dlf_documents.volume_sorting')
             ->execute();
 
+        $years = [];
         // Process results.
         while ($resArray = $result->fetch()) {
             $years[] = [
