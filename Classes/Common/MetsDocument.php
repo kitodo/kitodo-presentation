@@ -402,9 +402,8 @@ final class MetsDocument extends Document
             'owner' => [],
             'mets_label' => [],
             'mets_orderlabel' => [],
-            'document_format' => [],
+            'document_format' => ['METS'],
         ];
-        $metadata['document_format'][] = 'METS';
         // Get the logical structure node's @DMDID.
         if (!empty($this->logicalUnits[$id])) {
             $dmdIds = $this->logicalUnits[$id]['dmdId'];

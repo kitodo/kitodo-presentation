@@ -30,8 +30,7 @@ use Ubl\Iiif\Services\Service;
 use Ubl\Iiif\Tools\IiifHelper;
 
 /**
- * IiifManifest class for the 'dlf' extension. This class
- * represents a IIIF manifest in the conext of this TYPO3 extension.
+ * IiifManifest class for the 'dlf' extension.
  *
  * @author Lutz Helm <helm@ub.uni-leipzig.de>
  * @package TYPO3
@@ -632,8 +631,8 @@ final class IiifManifest extends Document
             'owner' => [],
             'mets_label' => [],
             'mets_orderlabel' => [],
+            'document_format' => ['IIIF'],
         ];
-        $metadata['document_format'][] = 'IIIF';
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
             'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
