@@ -95,7 +95,7 @@
             <label index="tx_dlf_metadata.tab3">Access</label>
             <label index="tx_dlf_metadataformat">Metadata Format</label>
             <label index="tx_dlf_metadataformat.encoded">Encoding</label>
-            <label index="tx_dlf_metadataformat.xpath">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object</label>
+            <label index="tx_dlf_metadataformat.xpath">XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object)</label>
             <label index="tx_dlf_metadataformat.xpath_sorting">XPath / JSONPath for sorting (optional)</label>
             <label index="tx_dlf_metadataformat.mandatory">Mandatory field?</label>
             <label index="tx_dlf_metadataformat.tab1">General</label>
@@ -276,7 +276,7 @@
             <label index="tx_dlf_metadata.tab3">Zugriff</label>
             <label index="tx_dlf_metadataformat">Metadatenformat</label>
             <label index="tx_dlf_metadataformat.encoded">Datenformat</label>
-            <label index="tx_dlf_metadataformat.xpath">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum) oder JSONPath (relativ zum Ressourcen-JSON-Objekt</label>
+            <label index="tx_dlf_metadataformat.xpath">XPath (relativ zu //dmdSec/mdWrap/xmlData/root und mit Namensraum) oder JSONPath (relativ zum JSON-Objekt der Ressource)</label>
             <label index="tx_dlf_metadataformat.xpath_sorting">XPath / JSONPath für Sortierfeld (optional)</label>
             <label index="tx_dlf_metadataformat.mandatory">Pflichtfeld?</label>
             <label index="tx_dlf_metadataformat.tab1">Allgemein</label>
