@@ -29,12 +29,9 @@ class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
      * @return string
      */
-    public function main($content = '', $conf = [])
+    public function main()
     {
         $this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
         $header = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('header');

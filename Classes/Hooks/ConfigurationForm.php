@@ -40,12 +40,9 @@ class ConfigurationForm
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
-     *
      * @return string Message informing the user of success or failure
      */
-    public function checkSolrConnection(&$params, &$pObj)
+    public function checkSolrConnection()
     {
         $solrInfo = Solr::getSolrConnectionInfo();
         // Prepend username and password to hostname.
@@ -92,12 +89,9 @@ class ConfigurationForm
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Core\TypoScript\ConfigurationForm &$pObj: The parent object
-     *
      * @return string Message informing the user of success or failure
      */
-    public function checkMetadataFormats(&$params, &$pObj)
+    public function checkMetadataFormats()
     {
         $nsDefined = [
             'MODS' => false,

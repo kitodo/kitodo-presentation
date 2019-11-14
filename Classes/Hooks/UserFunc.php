@@ -45,11 +45,10 @@ class UserFunc
      * @access public
      *
      * @param array &$params: An array with parameters
-     * @param \TYPO3\CMS\Backend\Form\Element\UserElement $fObj The parent form object
      *
      * @return string HTML <img> tag for thumbnail
      */
-    public function displayThumbnail(&$params, $fObj)
+    public function displayThumbnail(&$params)
     {
         // Simulate TCA field type "passthrough".
         $output = '<input type="hidden" name="' . $params['itemFormElName'] . '" value="' . $params['itemFormElValue'] . '" />';

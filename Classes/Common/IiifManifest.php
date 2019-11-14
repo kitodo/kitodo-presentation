@@ -548,7 +548,7 @@ final class IiifManifest extends Document
      * @access public
      *
      * @param string $id: the ID of the IIIF resource
-     * @param number $cPid: the configuration folder's id
+     * @param int $cPid: the configuration folder's id
      * @param bool $withDescription: add description / summary to the return value
      * @param bool $withRights: add attribution and license / rights and requiredStatement to the return value
      * @param bool $withRelated: add related links / homepage to the return value
