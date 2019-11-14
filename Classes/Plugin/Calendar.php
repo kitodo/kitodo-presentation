@@ -145,10 +145,10 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 && count($calendarIssuesByYear) > 1
             ) {
                 if ($iteration == 1) {
-                    $firstMonth = key($calendarIssuesByMonth);
+                    $firstMonth = (int) key($calendarIssuesByMonth);
                 } elseif ($iteration == count($calendarIssuesByYear)) {
                     end($calendarIssuesByMonth);
-                    $lastMonth = key($calendarIssuesByMonth);
+                    $lastMonth = (int) key($calendarIssuesByMonth);
                 }
             }
             $subPartContent .= $this->getCalendarYear($calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
