@@ -89,7 +89,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             )
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('issue', 'tx_dlf_structures', $this->doc->pid)),
+                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('issue', 'tx_dlf_structures', $this->doc->cPid)),
                 $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
                 Helper::whereExpression('tx_dlf_documents')
             )
@@ -357,7 +357,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             )
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('year', 'tx_dlf_structures', $this->doc->pid)),
+                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('year', 'tx_dlf_structures', $this->doc->cPid)),
                 $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
                 Helper::whereExpression('tx_dlf_documents')
             )

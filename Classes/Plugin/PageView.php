@@ -229,12 +229,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get fulltext link.
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']])) {
             $fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
-            // Configure @action URL for form.
-            $linkConf = [
-                'parameter' => $GLOBALS['TSFE']->id,
-                'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
-            ];
-            $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
+            if ($this->conf['useInternalProxy']) {
+                // Configure @action URL for form.
+                $linkConf = [
+                    'parameter' => $GLOBALS['TSFE']->id,
+                    'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
+                ];
+                $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
+            }
             $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
         } else {
             Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpFulltext'] . '"', DEVLOG_SEVERITY_WARNING);
@@ -243,13 +245,13 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     }
 
     /**
-     * Get all AnnotationPages / AnnotationLists that contain text Annotations with "painting" motivation
+     * Get all AnnotationPages / AnnotationLists that contain text Annotations with motivation "painting"
      *
      * @access protected
      *
-     * @param int    $page: the current page's number
-     * @return array     An array containing the IRIs of the AnnotationLists / AnnotationPages as well as
-     *                   some information about the canvas.
+     * @param int $page: Page number
+     * @return array An array containing the IRIs of the AnnotationLists / AnnotationPages as well as
+     *               some information about the canvas.
      */
     protected function getAnnotationContainers($page)
     {
@@ -272,12 +274,12 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                         if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
                             foreach ($textAnnotations as $annotation) {
                                 if (
-                                    $annotation->getBody()->getFormat() == "text/plain"
+                                    $annotation->getBody()->getFormat() == 'text/plain'
                                     && $annotation->getBody()->getChars() != null
                                 ) {
                                     $annotationListData = [];
-                                    $annotationListData["uri"] = $annotationContainer->getId();
-                                    $annotationListData["label"] = $annotationContainer->getLabelForDisplay();
+                                    $annotationListData['uri'] = $annotationContainer->getId();
+                                    $annotationListData['label'] = $annotationContainer->getLabelForDisplay();
                                     $annotationContainers[] = $annotationListData;
                                     break;
                                 }
@@ -285,12 +287,12 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                         }
                     }
                     $result = [
-                        "canvas" => [
-                            "id" => $canvas->getId(),
-                            "width" => $canvas->getWidth(),
-                            "height" => $canvas->getHeight(),
+                        'canvas' => [
+                            'id' => $canvas->getId(),
+                            'width' => $canvas->getWidth(),
+                            'height' => $canvas->getHeight(),
                         ],
-                        "annotationContainers" => $annotationContainers
+                        'annotationContainers' => $annotationContainers
                     ];
                     return $result;
                 }
