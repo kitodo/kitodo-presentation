@@ -529,6 +529,8 @@ class tx_dlf_collection extends tx_dlf_plugin {
 
         $list->metadata = $listMetadata;
 
+        $list->sort('title');
+
         $list->save();
 
         // Clean output buffer.
