@@ -532,7 +532,8 @@ class Solr
      *
      * @return bool true if variable is set and not empty, false otherwise
      */
-    public function __isset($var) {
+    public function __isset($var)
+    {
         return !empty($this->__get($var));
     }
 
