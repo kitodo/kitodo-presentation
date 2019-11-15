@@ -134,53 +134,53 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         if ($this->piVars['page'] > 1) {
             $markerArray['###FIRST###'] = $this->makeLink($this->pi_getLL('firstPage', '', true), ['page' => 1]);
         } else {
-            $markerArray['###FIRST###'] = '<span>' . $this->pi_getLL('firstPage', '', true) . '</span>';
+            $markerArray['###FIRST###'] = '<span title="' . $this->pi_getLL('firstPage', '', true) . '">' . $this->pi_getLL('firstPage', '', true) . '</span>';
         }
         // Link back X pages.
         if ($this->piVars['page'] > $pageSteps) {
             $markerArray['###BACK###'] = $this->makeLink(sprintf($this->pi_getLL('backXPages', '', true), $pageSteps), ['page' => $this->piVars['page'] - $pageSteps]);
         } else {
-            $markerArray['###BACK###'] = '<span>' . sprintf($this->pi_getLL('backXPages', '', true), $pageSteps) . '</span>';
+            $markerArray['###BACK###'] = '<span title="' . sprintf($this->pi_getLL('backXPages', '', true), $pageSteps) . '">' . sprintf($this->pi_getLL('backXPages', '', true), $pageSteps) . '</span>';
         }
         // Link to previous page.
         if ($this->piVars['page'] > (1 + $this->piVars['double'])) {
             $markerArray['###PREVIOUS###'] = $this->makeLink($this->pi_getLL('prevPage', '', true), ['page' => $this->piVars['page'] - (1 + $this->piVars['double'])]);
         } else {
-            $markerArray['###PREVIOUS###'] = '<span>' . $this->pi_getLL('prevPage', '', true) . '</span>';
+            $markerArray['###PREVIOUS###'] = '<span title="' . $this->pi_getLL('prevPage', '', true) . '">' . $this->pi_getLL('prevPage', '', true) . '</span>';
         }
         // Link to next page.
         if ($this->piVars['page'] < ($this->doc->numPages - $this->piVars['double'])) {
             $markerArray['###NEXT###'] = $this->makeLink($this->pi_getLL('nextPage', '', true), ['page' => $this->piVars['page'] + (1 + $this->piVars['double'])]);
         } else {
-            $markerArray['###NEXT###'] = '<span>' . $this->pi_getLL('nextPage', '', true) . '</span>';
+            $markerArray['###NEXT###'] = '<span title="' . $this->pi_getLL('nextPage', '', true) . '">' . $this->pi_getLL('nextPage', '', true) . '</span>';
         }
         // Link forward X pages.
         if ($this->piVars['page'] <= ($this->doc->numPages - $pageSteps)) {
             $markerArray['###FORWARD###'] = $this->makeLink(sprintf($this->pi_getLL('forwardXPages', '', true), $pageSteps), ['page' => $this->piVars['page'] + $pageSteps]);
         } else {
-            $markerArray['###FORWARD###'] = '<span>' . sprintf($this->pi_getLL('forwardXPages', '', true), $pageSteps) . '</span>';
+            $markerArray['###FORWARD###'] = '<span title="' . sprintf($this->pi_getLL('forwardXPages', '', true), $pageSteps) . '">' . sprintf($this->pi_getLL('forwardXPages', '', true), $pageSteps) . '</span>';
         }
         // Link to last page.
         if ($this->piVars['page'] < $this->doc->numPages) {
             $markerArray['###LAST###'] = $this->makeLink($this->pi_getLL('lastPage', '', true), ['page' => $this->doc->numPages]);
         } else {
-            $markerArray['###LAST###'] = '<span>' . $this->pi_getLL('lastPage', '', true) . '</span>';
+            $markerArray['###LAST###'] = '<span title="' . $this->pi_getLL('lastPage', '', true) . '">' . $this->pi_getLL('lastPage', '', true) . '</span>';
         }
         // Add double page switcher.
         if ($this->doc->numPages > 0) {
             if (!$this->piVars['double']) {
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', true), ['double' => 1], 'class="tx-dlf-navigation-doubleOn"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', true), ['double' => 1], 'class="tx-dlf-navigation-doubleOn"' . 'title="' . $this->pi_getLL('doublePageOn', '', true) . '"');
             } else {
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', true), ['double' => 0], 'class="tx-dlf-navigation-doubleOff"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', true), ['double' => 0], 'class="tx-dlf-navigation-doubleOff"' . 'title="' . $this->pi_getLL('doublePageOff', '', true) . '"');
             }
             if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
-                $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', true), ['page' => $this->piVars['page'] + 1]);
+                $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', true), ['page' => $this->piVars['page'] + 1], 'title="' . $this->pi_getLL('doublePage+1', '', true) . '"');
             } else {
-                $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', true) . '</span>';
+                $markerArray['###DOUBLEPAGE+1###'] = '<span title="' . $this->pi_getLL('doublePage+1', '', true) . '">' . $this->pi_getLL('doublePage+1', '', true) . '</span>';
             }
         } else {
-            $markerArray['###DOUBLEPAGE###'] = '<span>' . $this->pi_getLL('doublePageOn', '', true) . '</span>';
-            $markerArray['###DOUBLEPAGE+1###'] = '<span>' . $this->pi_getLL('doublePage+1', '', true) . '</span>';
+            $markerArray['###DOUBLEPAGE###'] = '<span title="' . $this->pi_getLL('doublePageOn', '', true) . '">' . $this->pi_getLL('doublePageOn', '', true) . '</span>';
+            $markerArray['###DOUBLEPAGE+1###'] = '<span title="' . $this->pi_getLL('doublePage+1', '', true) . '">' . $this->pi_getLL('doublePage+1', '', true) . '</span>';
         }
         // Add page selector.
         $markerArray['###PAGESELECT###'] = $this->getPageSelector();
