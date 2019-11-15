@@ -169,9 +169,9 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         // Add double page switcher.
         if ($this->doc->numPages > 0) {
             if (!$this->piVars['double']) {
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', true), ['double' => 1], 'class="tx-dlf-navigation-doubleOn"' . 'title="' . $this->pi_getLL('doublePageOn', '', true) . '"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOn', '', true), ['double' => 1], 'class="tx-dlf-navigation-doubleOn" title="' . $this->pi_getLL('doublePageOn', '', true) . '"');
             } else {
-                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', true), ['double' => 0], 'class="tx-dlf-navigation-doubleOff"' . 'title="' . $this->pi_getLL('doublePageOff', '', true) . '"');
+                $markerArray['###DOUBLEPAGE###'] = $this->makeLink($this->pi_getLL('doublePageOff', '', true), ['double' => 0], 'class="tx-dlf-navigation-doubleOff" title="' . $this->pi_getLL('doublePageOff', '', true) . '"');
             }
             if ($this->piVars['double'] && $this->piVars['page'] < $this->doc->numPages) {
                 $markerArray['###DOUBLEPAGE+1###'] = $this->makeLink($this->pi_getLL('doublePage+1', '', true), ['page' => $this->piVars['page'] + 1], 'title="' . $this->pi_getLL('doublePage+1', '', true) . '"');
