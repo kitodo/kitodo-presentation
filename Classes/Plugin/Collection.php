@@ -403,6 +403,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $list->add(array_values($toplevel));
         $listMetadata['options']['numberOfToplevelHits'] = count($list);
         $list->metadata = $listMetadata;
+        $list->sort('title');
         $list->save();
         // Clean output buffer.
         ob_end_clean();
