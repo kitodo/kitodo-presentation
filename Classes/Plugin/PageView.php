@@ -119,14 +119,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray = [];
         if ($this->piVars['id']) {
             if ($this->conf['crop']) {
-                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();">' . $this->pi_getLL('editMode', '', true) . '</a>';
-                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();">' . $this->pi_getLL('editRemove', '', true) . '</a>';
+                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();" title="' . $this->pi_getLL('editMode', '', true) . '">' . $this->pi_getLL('editMode', '', true) . '</a>';
+                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();" title="' . $this->pi_getLL('editRemove', '', true) . '">' . $this->pi_getLL('editRemove', '', true) . '</a>';
             } else {
                 $markerArray['###EDITBUTTON###'] = '';
                 $markerArray['###EDITREMOVE###'] = '';
             }
             if ($this->conf['magnifier']) {
-                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();">' . $this->pi_getLL('magnifier', '', true) . '</a>';
+                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();" title="' . $this->pi_getLL('magnifier', '', true) . '">' . $this->pi_getLL('magnifier', '', true) . '</a>';
             } else {
                 $markerArray['###MAGNIFIER###'] = '';
             }
