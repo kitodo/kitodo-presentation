@@ -110,6 +110,7 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Load template file.
         $this->getTemplate();
+        $this->addPlayerJS();
         // Fill in the template markers (currently: none).
         $markerArray = [];
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
