@@ -104,13 +104,14 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']]);
             $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
             $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']]);
+            // Add jPlayer javascript.
+            $this->addPlayerJS();
         } else {
             // Quit without doing anything if required variables are not set.
             return $content;
         }
         // Load template file.
         $this->getTemplate();
-        $this->addPlayerJS();
         // Fill in the template markers (currently: none).
         $markerArray = [];
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
