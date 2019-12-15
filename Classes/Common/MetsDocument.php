@@ -465,12 +465,12 @@ final class MetsDocument extends Document
             // First all metadata with configured xpath.
             $result = $queryBuilder
                 ->select(
-                  'tx_dlf_metadata.index_name AS index_name',
-                  'tx_dlf_metadataformat_joins.xpath AS xpath',
-                  'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
-                  'tx_dlf_metadata.is_sortable AS is_sortable',
-                  'tx_dlf_metadata.default_value AS default_value',
-                  'tx_dlf_metadata.format AS format'
+                    'tx_dlf_metadata.index_name AS index_name',
+                    'tx_dlf_metadataformat_joins.xpath AS xpath',
+                    'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
+                    'tx_dlf_metadata.is_sortable AS is_sortable',
+                    'tx_dlf_metadata.default_value AS default_value',
+                    'tx_dlf_metadata.format AS format'
                 )
                 ->from('tx_dlf_metadata')
                 ->innerJoin(
@@ -512,10 +512,10 @@ final class MetsDocument extends Document
 
                 $result2 = $queryBuilder
                     ->select(
-                      'tx_dlf_metadata.index_name AS index_name',
-                      'tx_dlf_metadata.is_sortable AS is_sortable',
-                      'tx_dlf_metadata.default_value AS default_value',
-                      'tx_dlf_metadata.format AS format'
+                        'tx_dlf_metadata.index_name AS index_name',
+                        'tx_dlf_metadata.is_sortable AS is_sortable',
+                        'tx_dlf_metadata.default_value AS default_value',
+                        'tx_dlf_metadata.format AS format'
                     )
                     ->from('tx_dlf_metadata')
                     ->where(
