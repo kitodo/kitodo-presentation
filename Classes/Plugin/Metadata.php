@@ -246,8 +246,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                         ),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
                     ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages'])),
-                    Helper::whereExpression('tx_dlf_metadata')
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages']))
                 )
                 ->orderBy('tx_dlf_metadata.sorting')
                 ->execute();
@@ -275,8 +274,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->select('tx_dlf_collections.index_name AS index_name')
                 ->from('tx_dlf_collections')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
-                    Helper::whereExpression('tx_dlf_collections')
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages']))
                 )
                 ->execute();
 
@@ -300,67 +298,70 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
                 // Process each metadate.
                 foreach ($metaList as $index_name => $metaConf) {
-                    if (!empty($metadata[$index_name])) {
-                        $parsedValue = '';
-                        $fieldwrap = $this->parseTS($metaConf['wrap']);
-                        do {
-                            $value = @array_shift($metadata[$index_name]);
-                            if ($index_name == 'title') {
-                                // Get title of parent document if needed.
-                                if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
-                                    $superiorTitle = Document::getTitle($this->doc->parentId, true);
-                                    if (!empty($superiorTitle)) {
-                                        $value = '[' . $superiorTitle . ']';
-                                    }
+                    $parsedValue = '';
+                    $fieldwrap = $this->parseTS($metaConf['wrap']);
+                    if ($index_name == 'authors') {
+                        $cho = 1;
+                    }
+                    do {
+                        $value = @array_shift($metadata[$index_name]);
+                        if ($index_name == 'title') {
+                            // Get title of parent document if needed.
+                            if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
+                                $superiorTitle = Document::getTitle($this->doc->parentId, true);
+                                if (!empty($superiorTitle)) {
+                                    $value = '[' . $superiorTitle . ']';
                                 }
-                                if (!empty($value)) {
-                                    $value = htmlspecialchars($value);
-                                    // Link title to pageview.
-                                    if ($this->conf['linkTitle'] && $metadata['_id']) {
-                                        $details = $this->doc->getLogicalStructure($metadata['_id']);
-                                        $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], true, $this->conf['targetPid']);
-                                    }
-                                }
-                            } elseif ($index_name == 'owner' && !empty($value)) {
-                                // Translate name of holding library.
-                                $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
-                            } elseif ($index_name == 'type' && !empty($value)) {
-                                // Translate document type.
-                                $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
-                            } elseif ($index_name == 'collection' && !empty($value)) {
-                                // Check if collections isn't hidden.
-                                if (in_array($value, $collList)) {
-                                    // Translate collection.
-                                    $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
-                                } else {
-                                    $value = '';
-                                }
-                            } elseif ($index_name == 'language' && !empty($value)) {
-                                // Translate ISO 639 language code.
-                                $value = htmlspecialchars(Helper::getLanguageName($value));
-                            } elseif (!empty($value)) {
-                                // Sanitize value for output.
-                                $value = htmlspecialchars($value);
                             }
-
                             if (!empty($value)) {
-                                // Hook for getting a customized value (requested by SBB).
-                                foreach ($this->hookObjects as $hookObj) {
-                                    if (method_exists($hookObj, 'printMetadata_customizeMetadata')) {
-                                        $hookObj->printMetadata_customizeMetadata($value);
-                                    }
+                                $value = htmlspecialchars($value);
+                                // Link title to pageview.
+                                if ($this->conf['linkTitle'] && $metadata['_id']) {
+                                    $details = $this->doc->getLogicalStructure($metadata['_id']);
+                                    $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], true, $this->conf['targetPid']);
                                 }
-                                $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
-
-                                $parsedValue .= $value;
                             }
-                        } while (count($metadata[$index_name]));
-
-                        if (!empty($parsedValue)) {
-                            $field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
-                            $field .= $parsedValue;
-                            $markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+                        } elseif ($index_name == 'owner' && !empty($value)) {
+                            // Translate name of holding library.
+                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                        } elseif ($index_name == 'type' && !empty($value)) {
+                            // Translate document type.
+                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        } elseif ($index_name == 'collection' && !empty($value)) {
+                            // Check if collections isn't hidden.
+                            if (in_array($value, $collList)) {
+                                // Translate collection.
+                                $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+                            } else {
+                                $value = '';
+                            }
+                        } elseif ($index_name == 'language' && !empty($value)) {
+                            // Translate ISO 639 language code.
+                            $value = htmlspecialchars(Helper::getLanguageName($value));
+                        } elseif (!empty($value)) {
+                            // Sanitize value for output.
+                            $value = htmlspecialchars($value);
                         }
+
+                        // Hook for getting a customized value (requested by SBB).
+                        foreach ($this->hookObjects as $hookObj) {
+                            if (method_exists($hookObj, 'printMetadata_customizeMetadata')) {
+                                $hookObj->printMetadata_customizeMetadata($value);
+                            }
+                        }
+
+                        // $value might be empty for aggregation metadata fields including other "hidden" fields.
+                        $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
+
+                        if (!empty($value)) {
+                            $parsedValue .= $value;
+                        }
+                    } while (is_array($metadata[$index_name]) && count($metadata[$index_name]) > 0);
+
+                    if (!empty($parsedValue)) {
+                        $field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
+                        $field .= $parsedValue;
+                        $markerArray['###METADATA###'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
                     }
                 }
                 $output .= $this->templateService->substituteMarkerArray($subpart['block'], $markerArray);
