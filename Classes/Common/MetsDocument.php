@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 
 /**
  * MetsDocument class for the 'dlf' extension.
@@ -451,23 +452,90 @@ final class MetsDocument extends Document
                     $metadata['type'] = [(string) $struct[0]];
                 }
             }
+
             // Get the additional metadata from database.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
-                'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
-                'tx_dlf_metadata.pid=' . $cPid
-                    . ' AND tx_dlf_metadataformat.pid=' . $cPid
-                    . ' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->dmdSec[$dmdId]['type'], 'tx_dlf_formats') . ') OR tx_dlf_metadata.format=0)'
-                    . Helper::whereClause('tx_dlf_metadata', true)
-                    . Helper::whereClause('tx_dlf_metadataformat')
-                    . Helper::whereClause('tx_dlf_formats')
-            );
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_metadata');
+
+            // Get hidden records too.
+            $queryBuilder
+                ->getRestrictions()
+                ->removeByType(HiddenRestriction::class);
+
+            // First all metadata with configured xpath.
+            $result = $queryBuilder
+                ->select(
+                  'tx_dlf_metadata.index_name AS index_name',
+                  'tx_dlf_metadataformat_joins.xpath AS xpath',
+                  'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
+                  'tx_dlf_metadata.is_sortable AS is_sortable',
+                  'tx_dlf_metadata.default_value AS default_value',
+                  'tx_dlf_metadata.format AS format'
+                )
+                ->from('tx_dlf_metadata')
+                ->innerJoin(
+                    'tx_dlf_metadata',
+                    'tx_dlf_metadataformat',
+                    'tx_dlf_metadataformat_joins',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_metadataformat_joins.parent_id',
+                        'tx_dlf_metadata.uid'
+                    )
+                )
+                ->innerJoin(
+                    'tx_dlf_metadataformat_joins',
+                    'tx_dlf_formats',
+                    'tx_dlf_formats_joins',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_formats_joins.uid',
+                            'tx_dlf_metadataformat_joins.encoded'
+                        )
+                    )
+                )
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
+                    $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid))
+                )
+                ->orderBy('tx_dlf_metadata.sorting')
+                ->execute();
+
+                // Second all metadata without format.
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_metadata');
+
+                // get all hidden records, too
+                $queryBuilder
+                    ->getRestrictions()
+                    ->removeByType(HiddenRestriction::class);
+
+                $result2 = $queryBuilder
+                    ->select(
+                      'tx_dlf_metadata.index_name AS index_name',
+                      'tx_dlf_metadata.is_sortable AS is_sortable',
+                      'tx_dlf_metadata.default_value AS default_value',
+                      'tx_dlf_metadata.format AS format'
+                    )
+                    ->from('tx_dlf_metadata')
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
+                    )
+                    ->orderBy('tx_dlf_metadata.sorting')
+                    ->execute();
+
+            // glue both together
+            $allResults = array_merge($result->fetchAll(), $result2->fetchAll());
+
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
             $this->registerNamespaces($domXPath);
             // OK, now make the XPath queries.
-            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            foreach ($allResults AS $resArray) {
+
                 // Set metadata field's value(s).
                 if (
                     $resArray['format'] > 0
