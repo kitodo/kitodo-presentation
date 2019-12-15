@@ -300,9 +300,6 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 foreach ($metaList as $index_name => $metaConf) {
                     $parsedValue = '';
                     $fieldwrap = $this->parseTS($metaConf['wrap']);
-                    if ($index_name == 'authors') {
-                        $cho = 1;
-                    }
                     do {
                         $value = @array_shift($metadata[$index_name]);
                         if ($index_name == 'title') {

@@ -534,7 +534,7 @@ final class MetsDocument extends Document
             $domXPath = new \DOMXPath($domNode->ownerDocument);
             $this->registerNamespaces($domXPath);
             // OK, now make the XPath queries.
-            foreach ($allResults AS $resArray) {
+            foreach ($allResults as $resArray) {
 
                 // Set metadata field's value(s).
                 if (
