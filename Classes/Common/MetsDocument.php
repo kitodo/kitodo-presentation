@@ -483,18 +483,16 @@ final class MetsDocument extends Document
                     'tx_dlf_metadataformat_joins',
                     'tx_dlf_formats',
                     'tx_dlf_formats_joins',
-                    $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_formats_joins.uid',
-                            'tx_dlf_metadataformat_joins.encoded'
-                        )
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_formats_joins.uid',
+                        'tx_dlf_metadataformat_joins.encoded'
                     )
                 )
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
                     $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid)),
-                    $queryBuilder->expr()->eq('tx_dlf_formats_join.type', $queryBuilder->createNamedParameter($this->dmdSec[$dmdId]['type']))
+                    $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->dmdSec[$dmdId]['type']))
                 )
                 ->execute();
             // Get all metadata without a format, but with a default value next.
@@ -516,7 +514,7 @@ final class MetsDocument extends Document
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
-                    $queryBuilder->expr()->neq('tx_dlf_metadata.defaul_value', $queryBuilder->createNamedParameter(''))
+                    $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
                 )
                 ->execute();
             // Merge both result sets.
