@@ -162,6 +162,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->getTemplate();
         $output = '';
         $subpart['block'] = $this->templateService->getSubpart($this->template, '###BLOCK###');
+        // Save original data array.
+        $cObjData = $this->cObj->data;
         // Get list of metadata to show.
         $metaList = [];
         if ($useOriginalIiifManifestMetadata) {
@@ -178,8 +180,6 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             $iiifLink['value.']['setContentToCurrent'] = 1;
             $iiifLink['value.']['typolink.']['parameter.']['current'] = 1;
             $iiifLink['value.']['wrap'] = '<dd>|</dd>';
-            // Save original data array.
-            $cObjData = $this->cObj->data;
             foreach ($metadataArray as $metadata) {
                 foreach ($metadata as $key => $group) {
                     $markerArray['###METADATA###'] = '<span class="tx-dlf-metadata-group">' . $this->pi_getLL($key) . '</span>';
@@ -229,7 +229,6 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_metadata');
-
             $result = $queryBuilder
                 ->select(
                     'tx_dlf_metadata.index_name AS index_name',
@@ -250,7 +249,6 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 )
                 ->orderBy('tx_dlf_metadata.sorting')
                 ->execute();
-
             while ($resArray = $result->fetch()) {
                 if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
                     $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
@@ -264,11 +262,9 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                     }
                 }
             }
-
+            // Get list of collections to show.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_collections');
-
-            // Get list of collections to show.
             $collList = [];
             $result = $queryBuilder
                 ->select('tx_dlf_collections.index_name AS index_name')
@@ -277,12 +273,9 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                     $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages']))
                 )
                 ->execute();
-
             while ($resArray = $result->fetch()) {
                 $collList[] = $resArray['index_name'];
             }
-            // Save original data array.
-            $cObjData = $this->cObj->data;
             // Parse the metadata arrays.
             foreach ($metadataArray as $metadata) {
                 $markerArray['###METADATA###'] = '';
@@ -339,17 +332,14 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                             // Sanitize value for output.
                             $value = htmlspecialchars($value);
                         }
-
                         // Hook for getting a customized value (requested by SBB).
                         foreach ($this->hookObjects as $hookObj) {
                             if (method_exists($hookObj, 'printMetadata_customizeMetadata')) {
                                 $hookObj->printMetadata_customizeMetadata($value);
                             }
                         }
-
                         // $value might be empty for aggregation metadata fields including other "hidden" fields.
                         $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
-
                         if (!empty($value)) {
                             $parsedValue .= $value;
                         }
