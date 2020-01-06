@@ -244,7 +244,7 @@ CREATE TABLE tx_dlf_tokens (
     uid int(11) NOT NULL auto_increment,
     tstamp int(11) DEFAULT '0' NOT NULL,
     token varchar(255) DEFAULT '' NOT NULL,
-    options text NOT NULL,
+    options mediumtext NOT NULL,
     ident varchar(30) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
