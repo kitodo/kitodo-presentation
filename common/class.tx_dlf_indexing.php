@@ -783,6 +783,14 @@ class tx_dlf_indexing {
 
                     if (in_array($index_name, self::$fields['facets'])) {
 
+                        // Remove appended "valueURI" from authors' names for indexing.
+                        if ($index_name == 'author') {
+                            foreach ($data as $i => $author) {
+                                $splitName = explode(chr(31), $author);
+                                $data[$i] = $splitName[0];
+                            }
+                        }
+
                         // Add facets to index.
                         $solrDoc->setField($index_name.'_faceting', $data);
 
