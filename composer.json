@@ -25,16 +25,14 @@
     "docs": "https://docs.typo3.org/typo3cms/extensions/dlf/"
   },
   "require": {
-    "php": "^7.0",
+    "php": "^7.2",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "^8.7",
-    "typo3/cms-css-styled-content": "^8.7",
-    "typo3/cms-tstemplate": "^8.7",
+    "typo3/cms-core": "^8.7|^9.5",
     "ubl/php-iiif-prezi-reader": "0.3.0",
     "solarium/solarium": "^4.2"
   },
