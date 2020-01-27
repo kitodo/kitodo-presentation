@@ -933,8 +933,7 @@ abstract class Document
                 )
                 ->from('tx_dlf_formats')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0),
-                    Helper::whereExpression('tx_dlf_formats')
+                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0)
                 )
                 ->execute();
 

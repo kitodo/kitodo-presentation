@@ -103,15 +103,14 @@ class ConfigurationForm
         ];
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
+            ->getQueryBuilderForTable('tx_dlf_formats');
 
         // Check existing format specifications.
         $result = $queryBuilder
             ->select('tx_dlf_formats.type AS type')
             ->from('tx_dlf_formats')
             ->where(
-                '1=1',
-                Helper::whereExpression('tx_dlf_formats')
+                '1=1'
             )
             ->execute();
 
