@@ -12,9 +12,13 @@
 
 namespace Kitodo\Dlf\Module;
 
+use Psr\Http\Message\ResponseInterface;
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Module 'New Tenant' for the 'dlf' extension.
@@ -42,7 +46,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     protected function cmdAddMetadata()
     {
         // Include metadata definition file.
-        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/MetadataDefaults.php');
+        include_once(ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/MetadataDefaults.php');
         $i = 0;
         // Build data array.
         foreach ($metadataDefaults as $index_name => $values) {
@@ -134,7 +138,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     protected function cmdAddStructure()
     {
         // Include structure definition file.
-        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
+        include_once(ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
         // Build data array.
         foreach ($structureDefaults as $index_name => $values) {
             $data['tx_dlf_structures'][uniqid('NEW')] = [
@@ -171,16 +175,14 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
      * @access public
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request: The request object
-     * @param \Psr\Http\Message\ResponseInterface $response: The response object
      *
-     * @return \Psr\Http\Message\ResponseInterface The response object
+     * @return ResponseInterface The response object
      */
-    public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response)
+    public function main(\Psr\Http\Message\ServerRequestInterface $request): ResponseInterface
     {
-        $this->response = $response;
         // Initialize module.
         $this->MCONF = [
-            'name' => 'tools_dlfNewTenantModule',
+            'name' => 'web_dlfNewTenantModule',
             'access' => 'admin'
         ];
         $GLOBALS['BE_USER']->modAccess($this->MCONF, 1);
@@ -197,8 +199,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
                 $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
-                $this->printContent();
-                return $this->response;
+                return new HtmlResponse($this->printContent());
             }
             // Should we do something?
             if (!empty($this->CMD)) {
@@ -240,6 +241,10 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_metadata');
+
             // Check for existing metadata configuration.
             $result = $queryBuilder
                 ->select('tx_dlf_metadata.uid AS uid')
@@ -266,7 +271,11 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
-            // Check for existing Solr core.
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_solrcores');
+
+                // Check for existing Solr core.
             $result = $queryBuilder
                 ->select(
                     'tx_dlf_solrcores.uid AS uid',
@@ -313,7 +322,6 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             // TODO: Ändern!
             $this->markerArray['CONTENT'] .= 'You are not allowed to access this page or have not selected a page, yet.';
         }
-        $this->printContent();
-        return $this->response;
+        return new HtmlResponse($this->printContent());
     }
 }

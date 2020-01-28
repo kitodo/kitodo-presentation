@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+
 /**
  * Abstract module class for the 'dlf' extension
  *
@@ -80,20 +81,19 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      * @access public
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request: The request object
-     * @param \Psr\Http\Message\ResponseInterface $response: The response object
      *
      * @abstract
      *
      * @return \Psr\Http\Message\ResponseInterface The response object
      */
-    abstract public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response);
+    abstract public function main(\Psr\Http\Message\ServerRequestInterface $request);
 
     /**
      * Fills the response object with the module's output.
      *
      * @access protected
      *
-     * @return void
+     * @return string
      */
     protected function printContent()
     {
@@ -117,7 +117,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         }
         $this->content .= $this->doc->moduleBody($this->pageInfo, [], $this->markerArray, $this->subpartArray);
         $this->content .= $this->doc->endPage();
-        $this->response->getBody()->write($this->content);
+        return $this->content;
     }
 
     /**
