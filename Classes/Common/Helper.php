@@ -683,31 +683,8 @@ class Helper
         // implementation and remove the htmlspecialchars() call on the message body.
         $content = '';
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
-        if (!empty($flashMessages)) {
-            $content .= '<div class="typo3-messages">';
-            foreach ($flashMessages as $flashMessage) {
-                $messageTitle = $flashMessage->getTitle();
-                $markup = [];
-                $markup[] = '<div class="alert ' . htmlspecialchars($flashMessage->getClass()) . '">';
-                $markup[] = '    <div class="media">';
-                $markup[] = '        <div class="media-left">';
-                $markup[] = '            <span class="fa-stack fa-lg">';
-                $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
-                $markup[] = '                <i class="fa fa-' . htmlspecialchars($flashMessage->getIconName()) . ' fa-stack-1x"></i>';
-                $markup[] = '            </span>';
-                $markup[] = '        </div>';
-                $markup[] = '        <div class="media-body">';
-                if (!empty($messageTitle)) {
-                    $markup[] = '            <h4 class="alert-title">' . htmlspecialchars($messageTitle) . '</h4>';
-                }
-                $markup[] = '            <p class="alert-message">' . $flashMessage->getMessage() . '</p>'; // Removed htmlspecialchars() here.
-                $markup[] = '        </div>';
-                $markup[] = '    </div>';
-                $markup[] = '</div>';
-                $content .= implode('', $markup);
-            }
-            $content .= '</div>';
-        }
+        $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashmessageRenderer::class)
+            ->render($flashMessages);
         return $content;
     }
 
