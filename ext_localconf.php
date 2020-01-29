@@ -29,36 +29,151 @@ if (!defined('DEVLOG_SEVERITY_WARNING')) {
 if (!defined('DEVLOG_SEVERITY_ERROR')) {
     define('DEVLOG_SEVERITY_ERROR', 3);
 }
-// Register plugins.
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\AudioPlayer::class, '_audioplayer', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Basket::class, '_basket', 'list_type', false);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Calendar::class, '_calendar', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Collection::class, '_collection', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Feeds::class, '_feeds', 'list_type', false);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\ListView::class, '_listview', 'list_type', false);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Metadata::class, '_metadata', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Navigation::class, '_navigation', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\OaiPmh::class, '_oaipmh', 'list_type', false);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\PageGrid::class, '_pagegrid', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\PageView::class, '_pageview', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Search::class, '_search', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Statistics::class, '_statistics', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\TableOfContents::class, '_tableofcontents', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Toolbox::class, '_toolbox', 'list_type', true);
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Validator::class, '_validator', 'list_type', false);
+
+// Register plugins without addPItoST43() as this is not working with TYPO3 9.
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
+    '
+plugin.tx_dlf_audioplayer = USER
+plugin.tx_dlf_audioplayer {
+    userFunc = Kitodo\Dlf\Plugin\AudioPlayer->main
+}
+tt_content.list.20.dlf_audioplayer < plugin.tx_dlf_audioplayer
+
+plugin.tx_dlf_basket = USER_INT
+plugin.tx_dlf_basket {
+    userFunc = Kitodo\Dlf\Plugin\Basket->main
+}
+tt_content.list.20.dlf_basket < plugin.tx_dlf_basket
+
+plugin.tx_dlf_calendar = USER
+plugin.tx_dlf_calendar {
+    userFunc = Kitodo\Dlf\Plugin\Calendar->main
+}
+tt_content.list.20.dlf_calendar < plugin.tx_dlf_calendar
+
+plugin.tx_dlf_collection = USER
+plugin.tx_dlf_collection {
+    userFunc = Kitodo\Dlf\Plugin\Collection->main
+}
+tt_content.list.20.dlf_collection < plugin.tx_dlf_collection
+
+plugin.tx_dlf_feeds = USER_INT
+plugin.tx_dlf_feeds {
+    userFunc = Kitodo\Dlf\Plugin\Feeds->main
+}
+tt_content.list.20.dlf_feeds < plugin.tx_dlf_feeds
+
+plugin.tx_dlf_listview = USER_INT
+plugin.tx_dlf_listview {
+    userFunc = Kitodo\Dlf\Plugin\ListView->main
+}
+tt_content.list.20.dlf_listview < plugin.tx_dlf_listview
+
+plugin.tx_dlf_metadata = USER
+plugin.tx_dlf_metadata {
+    userFunc = Kitodo\Dlf\Plugin\Metadata->main
+}
+tt_content.list.20.dlf_metadata < plugin.tx_dlf_metadata
+
+plugin.tx_dlf_navigation = USER
+plugin.tx_dlf_navigation {
+    userFunc = Kitodo\Dlf\Plugin\Navigation->main
+}
+tt_content.list.20.dlf_navigation < plugin.tx_dlf_navigation
+
+plugin.tx_dlf_oaipmh = USER_INT
+plugin.tx_dlf_oaipmh {
+    userFunc = Kitodo\Dlf\Plugin\OaiPmh->main
+}
+tt_content.list.20.dlf_oaipmh < plugin.tx_dlf_oaipmh
+
+plugin.tx_dlf_pagegrid = USER
+plugin.tx_dlf_pagegrid {
+    userFunc = Kitodo\Dlf\Plugin\PageGrid->main
+}
+tt_content.list.20.dlf_pagegrid < plugin.tx_dlf_pagegrid
+
+plugin.tx_dlf_pageview = USER
+plugin.tx_dlf_pageview {
+    userFunc = Kitodo\Dlf\Plugin\PageView->main
+}
+tt_content.list.20.dlf_pageview < plugin.tx_dlf_pageview
+
+plugin.tx_dlf_search = USER
+plugin.tx_dlf_search {
+    userFunc = Kitodo\Dlf\Plugin\Search->main
+}
+tt_content.list.20.dlf_search < plugin.tx_dlf_search
+
+plugin.tx_dlf_statistics = USER
+plugin.tx_dlf_statistics {
+    userFunc = Kitodo\Dlf\Plugin\Statistics->main
+}
+tt_content.list.20.dlf_statistics < plugin.tx_dlf_statistics
+
+plugin.tx_dlf_tableofcontents = USER
+plugin.tx_dlf_tableofcontents {
+    userFunc = Kitodo\Dlf\Plugin\TableOfContents->main
+}
+tt_content.list.20.dlf_tableofcontents < plugin.tx_dlf_tableofcontents
+
+plugin.tx_dlf_toolbox = USER
+plugin.tx_dlf_toolbox {
+    userFunc = Kitodo\Dlf\Plugin\Toolbox->main
+}
+tt_content.list.20.dlf_toolbox < plugin.tx_dlf_toolbox
+
+plugin.tx_dlf_validator = USER_INT
+plugin.tx_dlf_validator {
+    userFunc = Kitodo\Dlf\Plugin\Validator->main
+}
+tt_content.list.20.dlf_validator < plugin.tx_dlf_validator
+
+plugin.tx_dlf_fulltexttool = USER
+plugin.tx_dlf_fulltexttool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\FulltextTool->main
+}
+tt_content.list.20.dlf_fulltexttool < plugin.tx_dlf_fulltexttool
+
+plugin.tx_dlf_annotationtool = USER
+plugin.tx_dlf_annotationtool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\AnnotationTool->main
+}
+tt_content.list.20.dlf_annotationtool < plugin.tx_dlf_annotationtool
+
+plugin.tx_dlf_imagedownloadtool = USER
+plugin.tx_dlf_imagedownloadtool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\ImageDownloadTool->main
+}
+tt_content.list.20.dlf_imagedownloadtool < plugin.tx_dlf_imagedownloadtool
+
+plugin.tx_dlf_imagemanipulationtool = USER
+plugin.tx_dlf_imagemanipulationtool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\ImageManipulationTool->main
+}
+tt_content.list.20.dlf_imagemanipulationtool < plugin.tx_dlf_imagemanipulationtool
+
+plugin.tx_dlf_pdfdownloadtool = USER
+plugin.tx_dlf_pdfdownloadtool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\PdfDownloadTool->main
+}
+tt_content.list.20.dlf_pdfdownloadtool < plugin.tx_dlf_pdfdownloadtool
+
+plugin.tx_dlf_searchindocumenttool = USER
+plugin.tx_dlf_searchindocumenttool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\SearchInDocumentTool->main
+}
+tt_content.list.20.dlf_searchindocumenttool < plugin.tx_dlf_searchindocumenttool
+'
+);
+
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\FulltextTool::class, '_fulltexttool', '', true);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\AnnotationTool::class, '_annotationtool', '', true);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.annotationtool';
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageDownloadTool::class, '_imagedownloadtool', '', true);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\ImageManipulationTool::class, '_imagemanipulationtool', '', true);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagemanipulationtool';
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\PdfDownloadTool::class, '_pdfdownloadtool', '', true);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.pdfdownloadtool';
-TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, \Kitodo\Dlf\Plugin\Tools\SearchInDocumentTool::class, '_searchindocumenttool', '', true);
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.searchindocumenttool';
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
