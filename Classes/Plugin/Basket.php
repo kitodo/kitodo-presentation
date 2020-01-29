@@ -155,7 +155,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             ->orderBy('tx_dlf_mail.sorting')
             ->execute();
 
-        if ($resultMail->countRow() > 0) {
+        if ($resultMail->rowCount() > 0) {
             $mailForm = '<select name="tx_dlf[mail_action]">';
             $mailForm .= '<option value="">' . $this->pi_getLL('chooseMail', '', true) . '</option>';
             while ($row = $resultMail->fetch()) {
@@ -189,7 +189,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             ->execute();
 
         $printForm = '';
-        if ($resultPrinter->countRow() > 0) {
+        if ($resultPrinter->rowCount() > 0) {
             $printForm = '<select name="tx_dlf[print_action]">';
             $printForm .= '<option value="">' . $this->pi_getLL('choosePrinter', '', true) . '</option>';
             while ($row = $resultPrinter->fetch()) {
