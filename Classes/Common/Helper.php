@@ -678,7 +678,6 @@ class Helper
     {
         $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
-        $content = '';
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
         $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashmessageRenderer::class)
             ->render($flashMessages);
