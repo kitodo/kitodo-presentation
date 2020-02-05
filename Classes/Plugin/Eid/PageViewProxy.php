@@ -12,6 +12,10 @@
 
 namespace Kitodo\Dlf\Plugin\Eid;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * eID image proxy for plugin 'Page View' of the 'dlf' extension
  *
@@ -20,36 +24,51 @@ namespace Kitodo\Dlf\Plugin\Eid;
  * @subpackage dlf
  * @access public
  */
-class PageViewProxy extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+class PageViewProxy
 {
-    public $scriptRelPath = 'Classes/Plugin/Eid/PageViewProxy.php';
 
     /**
      * The main method of the eID script
      *
      * @access public
      *
-     * @return string
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
      */
-    public function main()
+    public function main(ServerRequestInterface $request)
     {
-        $this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
-        $header = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('header');
-        $url = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('url');
-        $fetchedData = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0));
-        // Add some header tags
-        header('Last-Modified: ' . gmdate("D, d M Y H:i:s") . 'GMT');
-        header('Cache-Control: max-age=3600, must-revalidate');
-        header('Content-Length: ' . strlen($fetchedData));
-        header('Content-Type: ' . finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
-        // Get last modified date from request header
-        $fetchedHeader = explode("\n", \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl($url, 2));
-        foreach ($fetchedHeader as $headerline) {
-            if (stripos($headerline, 'Last-Modified:') !== false) {
-                header($headerline);
-                break;
+        // header parameter for getUrl(); allowed values 0,1,2; default 0
+        $header = (int)$request->getQueryParams()['header'];
+        $header = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0);
+
+        // the URI to fetch data or header from
+        $url = (string)$request->getQueryParams()['url'];
+        if (!GeneralUtility::isValidUrl($url)) {
+            throw new \InvalidArgumentException('No valid url passed!', 1580482805);
+        }
+
+        // fetch the requested data or header
+        $fetchedData = GeneralUtility::getUrl($url, $header);
+
+        // Fetch header data separately to get "Last-Modified" info
+        if ($header === 0) {
+            $fetchedHeader = explode("\n", GeneralUtility::getUrl($url, 2));
+            foreach ($fetchedHeader as $headerline) {
+                if (stripos($headerline, 'Last-Modified:') !== false) {
+                    $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
+                    break;
+                }
             }
         }
-        echo $fetchedData;
+
+        // create response object
+        /** @var Response $response */
+        $response = GeneralUtility::makeInstance(Response::class);
+        $response->getBody()->write($fetchedData);
+        $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
+        if ($header === 0 && !empty($lastModified)) {
+            $response = $response->withHeader('Last-Modified', $lastModified);
+        }
+        return $response;
     }
 }

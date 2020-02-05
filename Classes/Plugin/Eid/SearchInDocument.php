@@ -14,6 +14,10 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,31 +28,38 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class SearchInDocument extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+class SearchInDocument
 {
-    public $scriptRelPath = 'Classes/Plugin/Eid/SearchInDocument.php';
-
     /**
      * The main method of the eID script
      *
-     * @access public
-     *
-     * @return string JSON response of search suggestions
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface JSON response of search suggestions
      */
-    public function main()
+    public function main(ServerRequestInterface $request)
     {
-        if (
-            GeneralUtility::_GP('encrypted') != ''
-            && GeneralUtility::_GP('hashed') != ''
-        ) {
-            $core = Helper::decrypt(GeneralUtility::_GP('encrypted'), GeneralUtility::_GP('hashed'));
+        $parameters = $request->getParsedBody();
+        $encrypted = (string)$parameters['encrypted'];
+        $hashed = (string)$parameters['hashed'];
+        if (empty($encrypted) || empty($hashed)) {
+            throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
+        $core = Helper::decrypt($encrypted, $hashed);
+
         if (!empty($core)) {
-            $url = trim(Solr::getSolrUrl($core), '/') . '/select?wt=json&q=fulltext:(' . Solr::escapeQuery(GeneralUtility::_GP('q')) . ')%20AND%20uid:' . GeneralUtility::_GP('uid')
+            $query = (string)$parameters['q'];
+            $uid = (string)$parameters['uid'];
+            $start = (string)$parameters['start'];
+            $url = trim(Solr::getSolrUrl($core), '/') . '/select?wt=json&q=fulltext:(' . Solr::escapeQuery($query) . ')%20AND%20uid:' . $uid
                 . '&hl=on&hl.fl=fulltext&fl=uid,id,page&hl.method=fastVector'
-                . '&start=' . GeneralUtility::_GP('start') . '&rows=20';
+                . '&start=' . $start . '&rows=20';
             $output = GeneralUtility::getUrl($url);
         }
-        echo $output;
+
+        // create response object
+        /** @var Response $response */
+        $response = GeneralUtility::makeInstance(Response::class);
+        $response->getBody()->write($output);
+        return $response;
     }
 }
