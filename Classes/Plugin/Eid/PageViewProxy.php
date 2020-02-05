@@ -54,7 +54,7 @@ class PageViewProxy
         if ($header === 0) {
             $fetchedHeaderString = GeneralUtility::getUrl($url, 2);
             if (!empty($fetchedHeaderString)) {
-                $fetchedHeader = explode("\n", );
+                $fetchedHeader = explode("\n", $fetchedHeaderString);
                 foreach ($fetchedHeader as $headerline) {
                     if (stripos($headerline, 'Last-Modified:') !== false) {
                         $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
