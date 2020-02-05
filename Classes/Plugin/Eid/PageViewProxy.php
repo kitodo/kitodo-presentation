@@ -52,11 +52,14 @@ class PageViewProxy
 
         // Fetch header data separately to get "Last-Modified" info
         if ($header === 0) {
-            $fetchedHeader = explode("\n", GeneralUtility::getUrl($url, 2));
-            foreach ($fetchedHeader as $headerline) {
-                if (stripos($headerline, 'Last-Modified:') !== false) {
-                    $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
-                    break;
+            $fetchedHeaderString = GeneralUtility::getUrl($url, 2);
+            if (!empty($fetchedHeaderString)) {
+                $fetchedHeader = explode("\n", );
+                foreach ($fetchedHeader as $headerline) {
+                    if (stripos($headerline, 'Last-Modified:') !== false) {
+                        $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
+                        break;
+                    }
                 }
             }
         }
@@ -64,8 +67,10 @@ class PageViewProxy
         // create response object
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
-        $response->getBody()->write($fetchedData);
-        $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
+        if ($fetchedData) {
+            $response->getBody()->write($fetchedData);
+            $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
+        }
         if ($header === 0 && !empty($lastModified)) {
             $response = $response->withHeader('Last-Modified', $lastModified);
         }

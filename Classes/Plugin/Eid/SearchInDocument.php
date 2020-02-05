@@ -46,6 +46,7 @@ class SearchInDocument
         }
         $core = Helper::decrypt($encrypted, $hashed);
 
+        $output = '';
         if (!empty($core)) {
             $query = (string)$parameters['q'];
             $uid = (string)$parameters['uid'];

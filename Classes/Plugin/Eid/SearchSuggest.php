@@ -47,6 +47,7 @@ class SearchSuggest
         }
         $core = Helper::decrypt($encrypted, $hashed);
 
+        $output = '';
         if (!empty($core)) {
             $query = (string)$parameters['q'];
             $url = trim(Solr::getSolrUrl($core), '/') . '/suggest/?wt=xml&q=' . Solr::escapeQuery($query);
