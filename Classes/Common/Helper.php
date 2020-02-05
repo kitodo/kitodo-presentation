@@ -210,7 +210,7 @@ class Helper
             }
             $arguments = '(' . implode(', ', $args) . ')';
             $additionalData = (empty($data) ? false : $data);
-            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[' . $caller . $arguments . '] ' . $message, self::$extKey, $severity, $additionalData);
+            /** @scrutinizer ignore-deprecated */ \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[' . $caller . $arguments . '] ' . $message, self::$extKey, $severity, $additionalData);
         }
     }
 
