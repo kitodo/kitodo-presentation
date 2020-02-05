@@ -65,7 +65,7 @@ $(document).ready(function() {
                 uid: $( "input[name='tx_dlf[id]']" ).val(),
                 start: $( "input[name='tx_dlf[start]']" ).val(),
                 encrypted: $( "input[name='tx_dlf[encrypted]']" ).val(),
-                hashed: $( "input[name='tx_dlf[hash]']" ).val(),
+                hashed: $( "input[name='tx_dlf[hashed]']" ).val(),
             },
             function(data) {
               var resultItems = [];

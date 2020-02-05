@@ -14,6 +14,10 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,29 +29,35 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class SearchSuggest extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+class SearchSuggest
 {
-    public $scriptRelPath = 'Classes/Plugin/Eid/SearchSuggest.php';
-
     /**
      * The main method of the eID script
      *
-     * @access public
-     *
-     * @return string XML response of search suggestions
+    *  @param ServerRequestInterface $request
+     * @return ResponseInterface XML response of search suggestions
      */
-    public function main()
+    public function main(ServerRequestInterface $request)
     {
-        if (
-            GeneralUtility::_GP('encrypted') != ''
-            && GeneralUtility::_GP('hashed') != ''
-        ) {
-            $core = Helper::decrypt(GeneralUtility::_GP('encrypted'), GeneralUtility::_GP('hashed'));
+        $parameters = $request->getParsedBody();
+        $encrypted = (string)$parameters['encrypted'];
+        $hashed = (string)$parameters['hashed'];
+        if (empty($encrypted) || empty($hashed)) {
+            throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
+        $core = Helper::decrypt($encrypted, $hashed);
+
+        $output = '';
         if (!empty($core)) {
-            $url = trim(Solr::getSolrUrl($core), '/') . '/suggest/?wt=xml&q=' . Solr::escapeQuery(GeneralUtility::_GP('q'));
+            $query = (string)$parameters['q'];
+            $url = trim(Solr::getSolrUrl($core), '/') . '/suggest/?wt=xml&q=' . Solr::escapeQuery($query);
             $output = GeneralUtility::getUrl($url);
         }
-        echo $output;
+
+        // create response object
+        /** @var Response $response */
+        $response = GeneralUtility::makeInstance(Response::class);
+        $response->getBody()->write($output);
+        return $response;
     }
 }
