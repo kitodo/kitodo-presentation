@@ -250,22 +250,42 @@ class DataHandler
                         isset($fieldArray['hidden'])
                         || isset($fieldArray['collections'])
                     ) {
-                        // Get Solr core.
-                        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                            'tx_dlf_solrcores.uid,tx_dlf_documents.hidden',
-                            'tx_dlf_solrcores,tx_dlf_documents',
-                            'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore'
-                                . ' AND tx_dlf_documents.uid=' . intval($id)
-                                . Helper::whereClause('tx_dlf_solrcores'),
-                            '',
-                            '',
-                            '1'
-                        );
-                        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                            list($core, $hidden) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
-                            if ($hidden) {
+                        // Get Solr-Core.
+                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                            ->getQueryBuilderForTable('tx_dlf_solrcores');
+
+                        $result = $queryBuilder
+                            ->select(
+                                'tx_dlf_solrcores.uid AS core',
+                                'tx_dlf_solrcores.index_name',
+                                'tx_dlf_documents_join.hidden AS hidden'
+                            )
+                            ->innerJoin(
+                                'tx_dlf_solrcores',
+                                'tx_dlf_documents',
+                                'tx_dlf_documents_join',
+                                $queryBuilder->expr()->eq(
+                                    'tx_dlf_documents_join.solrcore',
+                                    'tx_dlf_solrcores.uid'
+                                )
+                            )
+                            ->from('tx_dlf_solrcores')
+                            ->where(
+                                $queryBuilder->expr()->eq(
+                                    'tx_dlf_documents_join.uid',
+                                    intval($id)
+                                )
+                            )
+                            ->setMaxResults(1)
+                            ->execute();
+
+                        $allResults = $result->fetchAll();
+
+                        if (count($allResults) == 1) {
+                            $resArray = $allResults[0];
+                            if ($resArray['hidden']) {
                                 // Establish Solr connection.
-                                if ($solr = Solr::getInstance($core)) {
+                                if ($solr = Solr::getInstance($resArray['core'])) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
                                     $updateQuery->addDeleteQuery('uid:' . $id);
@@ -276,14 +296,14 @@ class DataHandler
                                 // Reindex document.
                                 $doc = Document::getInstance($id);
                                 if ($doc->ready) {
-                                    Indexer::add($doc, $core);
+                                    Indexer::add($doc, $resArray['core']);
                                 } else {
                                     Helper::devLog('Failed to re-index document with UID ' . $id, DEVLOG_SEVERITY_ERROR);
                                 }
                             }
                         }
                     }
-                    break;
+                break;
             }
         }
     }

@@ -584,20 +584,42 @@ final class MetsDocument extends Document
                 \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
                 && $id == $this->_getToplevelId()
             ) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-                    'tx_dlf_collections.index_name AS index_name',
-                    'tx_dlf_documents',
-                    'tx_dlf_relations',
-                    'tx_dlf_collections',
-                    'AND tx_dlf_collections.pid=' . intval($cPid)
-                        . ' AND tx_dlf_documents.uid=' . intval($this->uid)
-                        . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                        . ' AND tx_dlf_collections.sys_language_uid IN (-1,0)'
-                        . Helper::whereClause('tx_dlf_documents')
-                        . Helper::whereClause('tx_dlf_collections'),
-                    'tx_dlf_collections.index_name'
-                );
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_collections_join.index_name AS index_name',
+                    )
+                    ->from('tx_dlf_documents')
+                    ->innerJoin(
+                        'tx_dlf_documents',
+                        'tx_dlf_relations',
+                        'tx_dlf_relations_joins',
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_relations_joins.uid_local',
+                            'tx_dlf_documents.uid'
+                        )
+                    )
+                    ->innerJoin(
+                        'tx_dlf_relations_joins',
+                        'tx_dlf_collections',
+                        'tx_dlf_collections_join',
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_relations_joins.uid_foreign',
+                            'tx_dlf_collections_join.uid'
+                        )
+                    )
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid)),
+                    )
+                    ->orderBy('tx_dlf_collections_join.index_name', 'ASC')
+                    ->execute();
+
+                $allResults = $result->fetchAll();
+
+                foreach ($allResults as $resArray) {
                     if (!in_array($resArray['index_name'], $metadata['collection'])) {
                         $metadata['collection'][] = $resArray['index_name'];
                     }
