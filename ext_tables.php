@@ -25,5 +25,5 @@ if (\TYPO3_MODE === 'BE') {
             'labels' => 'LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml'
         ]
     );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('tools_dlfNewTenantModule', 'typo3-pagetree');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('tools_dlfNewTenantModule', 'typo3-pagetree', 'dlf');
 }
