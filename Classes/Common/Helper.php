@@ -184,7 +184,7 @@ class Helper
      */
     public static function devLog($message, $severity = 0)
     {
-        if (\TYPO3_DLOG) {
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'])) {
             $stacktrace = debug_backtrace(0, 2);
             // Set some defaults.
             $caller = 'Kitodo\Dlf\Default\UnknownClass::unknownMethod';
