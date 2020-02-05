@@ -923,11 +923,6 @@ class Helper
             ->expr();
 
         if (\TYPO3_MODE === 'FE') {
-            // Table "tx_dlf_formats" always has PID 0.
-            if ($table == 'tx_dlf_formats') {
-                return $expressionBuilder->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
-            }
-
             // Should we ignore the record's hidden flag?
             $ignoreHide = -1;
             if ($showHidden) {

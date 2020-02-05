@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Helper for Flexform's custom "itemsProcFunc"
@@ -59,7 +61,7 @@ class ItemsProcFunc
             'label,index_name',
             'tx_dlf_metadata',
             'sorting',
-            'AND index_indexed=1'
+            'index_indexed=1'
         );
     }
 
@@ -79,7 +81,7 @@ class ItemsProcFunc
             'label,index_name',
             'tx_dlf_metadata',
             'sorting',
-            'AND is_facet=1'
+            'is_facet=1'
         );
     }
 
@@ -92,12 +94,11 @@ class ItemsProcFunc
      * @param string $fields: Comma-separated list of fields to fetch
      * @param string $table: Table name to fetch the items from
      * @param string $sorting: Field to sort items by (optionally appended by 'ASC' or 'DESC')
-     * @param string $where: Additional WHERE clause
-     * @param bool $localize: Add check for localized records?
+     * @param string $andWhere: Additional AND WHERE clause
      *
      * @return void
      */
-    protected function generateList(&$params, $fields, $table, $sorting, $where = '', $localize = true)
+    protected function generateList(&$params, $fields, $table, $sorting, $andWhere = '')
     {
         $pages = $params['row']['pages'];
         if (!empty($pages)) {
@@ -106,17 +107,22 @@ class ItemsProcFunc
             }
             foreach ($pages as $page) {
                 if ($page['uid'] > 0) {
-                    $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                        $fields,
-                        $table,
-                        '(' . $table . '.pid=' . intval($page['uid']) . ' ' . $where . ')'
-                            . ($localize ? ' AND (' . $table . '.sys_language_uid IN (-1,0) OR ' . $table . '.l18n_parent=0)' : '')
-                            . Helper::whereClause($table),
-                        '',
-                        $sorting
-                    );
-                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_row($result)) {
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                        ->getQueryBuilderForTable($table);
+
+                    // Get $fields from $table on given pid.
+                    $result = $queryBuilder
+                        ->select(...explode(',', $fields))
+                        ->from($table)
+                        ->where(
+                            $queryBuilder->expr()->eq($table . '.pid', intval($page['uid'])),
+                            $andWhere
+                        )
+                        ->orderBy($sorting)
+                        ->execute();
+
+                    while ($resArray = $result->fetch(\PDO::FETCH_NUM)) {
+                        if ($resArray) {
                             $params['items'][] = $resArray;
                         }
                     }
@@ -159,9 +165,7 @@ class ItemsProcFunc
             $params,
             'label,uid',
             'tx_dlf_solrcores',
-            'label',
-            'OR pid=0',
-            false
+            'label'
         );
     }
 
