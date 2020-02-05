@@ -4,5 +4,6 @@
 .project
 .settings/
 .idea/
+.vscode
 nbproject/
 Documentation-GENERATED-temp/
