@@ -678,9 +678,6 @@ class Helper
     {
         $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
-        // \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup() uses htmlspecialchars()
-        // on all messages, but we have messages with HTML tags. Therefore we copy the official
-        // implementation and remove the htmlspecialchars() call on the message body.
         $content = '';
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
         $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashmessageRenderer::class)

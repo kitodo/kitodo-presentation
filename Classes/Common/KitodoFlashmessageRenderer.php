@@ -88,6 +88,9 @@ class KitodoFlashmessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\F
      */
     protected function getMessageAsMarkup(array $flashMessages): string
     {
+        // \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup() uses htmlspecialchars()
+        // on all messages, but we have messages with HTML tags. Therefore we copy the official
+        // implementation and remove the htmlspecialchars() call on the message body.
         $markup = [];
         $markup[] = '<div class="typo3-messages">';
         foreach ($flashMessages as $flashMessage) {
