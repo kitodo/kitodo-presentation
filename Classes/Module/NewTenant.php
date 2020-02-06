@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Module;
 
 use Psr\Http\Message\ResponseInterface;
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -180,6 +180,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
      */
     public function main(\Psr\Http\Message\ServerRequestInterface $request): ResponseInterface
     {
+        /** @var Response $response */
+        $response = GeneralUtility::makeInstance(Response::class);
+
         // Initialize module.
         $this->MCONF = [
             'name' => 'tools_dlfNewTenantModule',
@@ -199,8 +202,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
                 $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
-                return new HtmlResponse($this->printContent());
-            }
+                $response->getBody()->write($this->printContent());
+                return $response;
+                    }
             // Should we do something?
             if (!empty($this->CMD)) {
                 // Sanitize input...
@@ -322,6 +326,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             // TODO: Ändern!
             $this->markerArray['CONTENT'] .= 'You are not allowed to access this page or have not selected a page, yet.';
         }
-        return new HtmlResponse($this->printContent());
+        $response->getBody()->write($this->printContent());
+        return $response;
     }
 }
