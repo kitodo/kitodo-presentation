@@ -12,12 +12,11 @@
 
 namespace Kitodo\Dlf\Module;
 
-use Psr\Http\Message\ResponseInterface;
 use Kitodo\Dlf\Common\Helper;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
@@ -238,9 +237,9 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 );
             } else {
                 // Configuration missing.
-                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
+                $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
                 Helper::addMessage(
-                    sprintf(Helper::getMessage('flash.structureNotOkayMsg'), $_url),
+                    sprintf(Helper::getMessage('flash.structureNotOkayMsg'), $url),
                     Helper::getMessage('flash.structureNotOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
@@ -268,14 +267,15 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 );
             } else {
                 // Configuration missing.
-                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
+                $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
                 Helper::addMessage(
-                    sprintf(Helper::getMessage('flash.metadataNotOkayMsg'), $_url),
+                    sprintf(Helper::getMessage('flash.metadataNotOkayMsg'), $url),
                     Helper::getMessage('flash.metadataNotOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
 
+            // Check for existing Solr core.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_solrcores');
 
@@ -305,18 +305,18 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     );
                 } else {
                     // Default core available, but this is deprecated.
-                    $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
+                    $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                     Helper::addMessage(
-                        sprintf(Helper::getMessage('flash.solrcoreDeprecatedMsg'), $_url),
+                        sprintf(Helper::getMessage('flash.solrcoreDeprecatedMsg'), $url),
                         Helper::getMessage('flash.solrcoreDeprecatedOkay', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::NOTICE
                     );
                 }
             } else {
                 // Solr core missing.
-                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
+                $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                 Helper::addMessage(
-                    sprintf(Helper::getMessage('flash.solrcoreMissingMsg'), $_url),
+                    sprintf(Helper::getMessage('flash.solrcoreMissingMsg'), $url),
                     Helper::getMessage('flash.solrcoreMissing', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
