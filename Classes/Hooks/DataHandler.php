@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -325,24 +326,46 @@ class DataHandler
             in_array($command, ['move', 'delete', 'undelete'])
             && $table == 'tx_dlf_documents'
         ) {
-            // Get Solr core.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_solrcores.uid',
-                'tx_dlf_solrcores,tx_dlf_documents',
-                'tx_dlf_solrcores.uid=tx_dlf_documents.solrcore'
-                    . ' AND tx_dlf_documents.uid=' . intval($id)
-                    . Helper::whereClause('tx_dlf_solrcores'),
-                '',
-                '',
-                '1'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-                list($core) = $GLOBALS['TYPO3_DB']->sql_fetch_row($result);
+            // Get Solr-Core.
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_solrcores');
+            // tx_dlf_documents is already deleted at this point --> include deleted documents in query
+            $queryBuilder
+                ->getRestrictions()
+                ->removeByType(DeletedRestriction::class);
+
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_solrcores.uid AS core'
+                )
+                ->innerJoin(
+                    'tx_dlf_solrcores',
+                    'tx_dlf_documents',
+                    'tx_dlf_documents_join',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_documents_join.solrcore',
+                        'tx_dlf_solrcores.uid'
+                    )
+                )
+                ->from('tx_dlf_solrcores')
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_documents_join.uid',
+                        intval($id)
+                    )
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) == 1) {
+                $resArray = $allResults[0];
                 switch ($command) {
                     case 'move':
                     case 'delete':
                         // Establish Solr connection.
-                        if ($solr = Solr::getInstance($core)) {
+                        if ($solr = Solr::getInstance($resArray['core'])) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
                             $updateQuery->addDeleteQuery('uid:' . $id);
@@ -356,7 +379,7 @@ class DataHandler
                         // Reindex document.
                         $doc = Document::getInstance($id);
                         if ($doc->ready) {
-                            Indexer::add($doc, $core);
+                            Indexer::add($doc, $resArray['core']);
                         } else {
                             Helper::devLog('Failed to re-index document with UID ' . $id, DEVLOG_SEVERITY_ERROR);
                         }
