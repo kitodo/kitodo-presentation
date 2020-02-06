@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
  * The created output contains all classes which are required for
  * the TYPO3 backend. Any kind of message contains also a nice icon.
  */
-class KitodoFlashmessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface
+class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface
 {
     /**
      * @var string The message severity class names
