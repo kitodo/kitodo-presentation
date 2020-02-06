@@ -13,8 +13,11 @@
 namespace Kitodo\Dlf\Module;
 
 use Kitodo\Dlf\Common\Helper;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Module 'New Tenant' for the 'dlf' extension.
@@ -42,7 +45,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     protected function cmdAddMetadata()
     {
         // Include metadata definition file.
-        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/MetadataDefaults.php');
+        include_once(ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/MetadataDefaults.php');
         $i = 0;
         // Build data array.
         foreach ($metadataDefaults as $index_name => $values) {
@@ -134,7 +137,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     protected function cmdAddStructure()
     {
         // Include structure definition file.
-        include_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
+        include_once(ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
         // Build data array.
         foreach ($structureDefaults as $index_name => $values) {
             $data['tx_dlf_structures'][uniqid('NEW')] = [
@@ -171,13 +174,14 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
      * @access public
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request: The request object
-     * @param \Psr\Http\Message\ResponseInterface $response: The response object
      *
-     * @return \Psr\Http\Message\ResponseInterface The response object
+     * @return ResponseInterface The response object
      */
-    public function main(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response)
+    public function main(\Psr\Http\Message\ServerRequestInterface $request): ResponseInterface
     {
-        $this->response = $response;
+        /** @var Response $response */
+        $response = GeneralUtility::makeInstance(Response::class);
+
         // Initialize module.
         $this->MCONF = [
             'name' => 'tools_dlfNewTenantModule',
@@ -197,8 +201,8 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
                 $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
-                $this->printContent();
-                return $this->response;
+                $response->getBody()->write($this->printContent());
+                return $response;
             }
             // Should we do something?
             if (!empty($this->CMD)) {
@@ -233,13 +237,17 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 );
             } else {
                 // Configuration missing.
-                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
+                $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addStructure']));
                 Helper::addMessage(
-                    sprintf(Helper::getMessage('flash.structureNotOkayMsg'), $_url),
+                    sprintf(Helper::getMessage('flash.structureNotOkayMsg'), $url),
                     Helper::getMessage('flash.structureNotOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_metadata');
+
             // Check for existing metadata configuration.
             $result = $queryBuilder
                 ->select('tx_dlf_metadata.uid AS uid')
@@ -259,14 +267,19 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 );
             } else {
                 // Configuration missing.
-                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
+                $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addMetadata']));
                 Helper::addMessage(
-                    sprintf(Helper::getMessage('flash.metadataNotOkayMsg'), $_url),
+                    sprintf(Helper::getMessage('flash.metadataNotOkayMsg'), $url),
                     Helper::getMessage('flash.metadataNotOkay', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
+
             // Check for existing Solr core.
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_solrcores');
+
+                // Check for existing Solr core.
             $result = $queryBuilder
                 ->select(
                     'tx_dlf_solrcores.uid AS uid',
@@ -292,18 +305,18 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                     );
                 } else {
                     // Default core available, but this is deprecated.
-                    $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
+                    $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                     Helper::addMessage(
-                        sprintf(Helper::getMessage('flash.solrcoreDeprecatedMsg'), $_url),
+                        sprintf(Helper::getMessage('flash.solrcoreDeprecatedMsg'), $url),
                         Helper::getMessage('flash.solrcoreDeprecatedOkay', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::NOTICE
                     );
                 }
             } else {
                 // Solr core missing.
-                $_url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
+                $url = GeneralUtility::locationHeaderUrl(GeneralUtility::linkThisScript(['id' => $this->id, 'CMD' => 'addSolrcore']));
                 Helper::addMessage(
-                    sprintf(Helper::getMessage('flash.solrcoreMissingMsg'), $_url),
+                    sprintf(Helper::getMessage('flash.solrcoreMissingMsg'), $url),
                     Helper::getMessage('flash.solrcoreMissing', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                 );
@@ -313,7 +326,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             // TODO: Ändern!
             $this->markerArray['CONTENT'] .= 'You are not allowed to access this page or have not selected a page, yet.';
         }
-        $this->printContent();
-        return $this->response;
+        $response->getBody()->write($this->printContent());
+        return $response;
     }
 }

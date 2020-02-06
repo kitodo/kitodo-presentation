@@ -22,8 +22,13 @@ if (\TYPO3_MODE === 'BE') {
             'access' => 'admin',
             'name' => 'tools_dlfNewTenantModule',
             'icon' => 'EXT:dlf/Resources/Public/Icons/Extension.svg',
-            'labels' => 'LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml'
+            'labels' => 'LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml',
+            /**
+             * 'navigationComponentId' => 'typo3-pagetree' is marked deprecated
+             * in TYPO3 9. Use 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
+             * instead. Keeping old setting for compatibility with TYPO3 8.7.
+             */
+            'navigationComponentId' => 'typo3-pagetree'
         ]
     );
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('tools_dlfNewTenantModule', 'typo3-pagetree', 'dlf');
 }
