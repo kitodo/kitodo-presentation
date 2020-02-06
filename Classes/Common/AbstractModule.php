@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Common;
 
-
 /**
  * Abstract module class for the 'dlf' extension
  *
