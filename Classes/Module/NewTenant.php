@@ -182,7 +182,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     {
         // Initialize module.
         $this->MCONF = [
-            'name' => 'web_dlfNewTenantModule',
+            'name' => 'tools_dlfNewTenantModule',
             'access' => 'admin'
         ];
         $GLOBALS['BE_USER']->modAccess($this->MCONF, 1);
