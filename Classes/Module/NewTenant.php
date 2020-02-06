@@ -204,7 +204,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 $this->markerArray['CONTENT'] .= Helper::renderFlashMessages();
                 $response->getBody()->write($this->printContent());
                 return $response;
-                    }
+            }
             // Should we do something?
             if (!empty($this->CMD)) {
                 // Sanitize input...
