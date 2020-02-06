@@ -155,14 +155,16 @@ class Indexer
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getMessage('flash.done', true),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                            true
+                            true,
+                            'core.template.flashMessages'
                         );
                     } else {
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getMessage('flash.error', true),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                            true
+                            true,
+                            'core.template.flashMessages'
                         );
                     }
                 }
@@ -173,7 +175,8 @@ class Indexer
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        true
+                        true,
+                        'core.template.flashMessages'
                     );
                 }
                 Helper::devLog('Apache Solr threw exception: "' . $e->getMessage() . '"', DEVLOG_SEVERITY_ERROR);
@@ -185,7 +188,8 @@ class Indexer
                     Helper::getMessage('flash.solrNoConnection', true),
                     Helper::getMessage('flash.warning', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
-                    true
+                    true,
+                    'core.template.flashMessages'
                 );
             }
             Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
@@ -233,7 +237,8 @@ class Indexer
                             Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                             Helper::getMessage('flash.error', true),
                             \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                            true
+                            true,
+                            'core.template.flashMessages'
                         );
                     }
                     Helper::devLog('Apache Solr threw exception: "' . $e->getMessage() . '"', DEVLOG_SEVERITY_ERROR);
@@ -245,7 +250,8 @@ class Indexer
                         Helper::getMessage('flash.solrNoConnection', true),
                         Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        true
+                        true,
+                        'core.template.flashMessages'
                     );
                 }
                 Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
@@ -256,7 +262,8 @@ class Indexer
                     htmlspecialchars(sprintf(Helper::getMessage('flash.documentDeleted'), $title, $uid)),
                     Helper::getMessage('flash.done', true),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                    true
+                    true,
+                    'core.template.flashMessages'
                 );
             }
             return 0;
@@ -463,7 +470,8 @@ class Indexer
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        true
+                        true,
+                        'core.template.flashMessages'
                     );
                 }
                 return 1;
@@ -603,7 +611,8 @@ class Indexer
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
-                        true
+                        true,
+                        'core.template.flashMessages'
                     );
                 }
                 return 1;
