@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -596,20 +597,24 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // replace everything expect numbers and comma
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
+        if (!empty($facetCollections)) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_collections');
 
-        $result = $queryBuilder
-            ->select('tx_dlf_collections.index_name AS index_name')
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()->in('tx_dlf_collections.uid', $facetCollections),
-                Helper::whereExpression('tx_dlf_collections')
-            )
-            ->execute();
+            $result = $queryBuilder
+                ->select('tx_dlf_collections.index_name AS index_name')
+                ->from('tx_dlf_collections')
+                ->where(
+                    $queryBuilder->expr()->in(
+                        'tx_dlf_collections.uid',
+                        $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $facetCollections), Connection::PARAM_INT_ARRAY)
+                    )
+                )
+                ->execute();
 
-        while ($collection = $result->fetch()) {
-            $facetCollectionArray[] = $collection[0];
+            while ($collection = $result->fetch()) {
+                $facetCollectionArray[] = $collection['index_name'];
+            }
         }
 
         // Process results.
