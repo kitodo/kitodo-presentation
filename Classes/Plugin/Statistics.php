@@ -41,7 +41,6 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     public function main($content, $conf)
     {
-        debug($conf);
         $this->init($conf);
         // Turn cache on.
         $this->setCache(true);
@@ -127,7 +126,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                     ->where(
                         $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
                         $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($this->conf['pages'])),
-                        $queryBuilder->expr()->notIn('tx_dlf_documents.uid',  $subQuery),
+                        $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery),
                         $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $this->conf['collections']), Connection::PARAM_INT_ARRAY)),
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
@@ -168,7 +167,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->from('tx_dlf_documents')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
-                    $queryBuilder->expr()->notIn('tx_dlf_documents.uid',  $subQuery)
+                    $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
                 )
                 ->execute()
                 ->fetchColumn(0);
