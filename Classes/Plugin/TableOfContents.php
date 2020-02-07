@@ -216,6 +216,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
+            $excludeOtherWhere = '';
             if ($this->conf['excludeOther']) {
                 $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->conf['pages']);
             }
