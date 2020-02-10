@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Table Of Contents' for the 'dlf' extension
@@ -210,23 +212,46 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             foreach ($this->doc->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, false);
             }
-            // Get all child documents from database.
-            $whereClause = 'tx_dlf_documents.partof=' . intval($this->doc->uid) . ' AND tx_dlf_documents.structure=tx_dlf_structures.uid AND tx_dlf_structures.pid=' . $this->doc->pid . Helper::whereClause('tx_dlf_documents') . Helper::whereClause('tx_dlf_structures');
-            if ($this->conf['excludeOther']) {
-                $whereClause .= ' AND tx_dlf_documents.pid=' . intval($this->conf['pages']);
-            }
             // Build table of contents from database.
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.uid AS uid,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_structures.index_name AS type',
-                'tx_dlf_documents,tx_dlf_structures',
-                $whereClause,
-                '',
-                'tx_dlf_documents.volume_sorting'
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $excludeOtherWhere = '';
+            if ($this->conf['excludeOther']) {
+                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->conf['pages']);
+            }
+            // Check if there are any metadata to suggest.
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_documents.uid AS uid',
+                    'tx_dlf_documents.title AS title',
+                    'tx_dlf_documents.volume AS volume',
+                    'tx_dlf_structures_join.index_name AS type'
+                )
+                ->innerJoin(
+                    'tx_dlf_documents',
+                    'tx_dlf_structures',
+                    'tx_dlf_structures_join',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_structures_join.uid',
+                        'tx_dlf_documents.structure'
+                    )
+                )
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
+                    $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($this->doc->pid)),
+                    $excludeOtherWhere
+                )
+                ->orderBy('tx_dlf_documents.volume_sorting')
+                ->execute();
+
+            $allResults = $result->fetchAll();
+
+            if (count($allResults) > 0) {
                 $menuArray[0]['ITEM_STATE'] = 'CURIFSUB';
                 $menuArray[0]['_SUB_MENU'] = [];
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                foreach ($allResults as $resArray) {
                     $entry = [
                         'label' => $resArray['title'],
                         'type' => $resArray['type'],

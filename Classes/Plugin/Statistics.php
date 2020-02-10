@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -53,59 +54,125 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
         // Check for selected collections.
         if ($this->conf['collections']) {
             // Include only selected collections.
-            $resultTitles = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_collections',
-                'AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
-                    . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
-                    . ' AND tx_dlf_documents.partof=0'
-                    . ' AND tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')'
-                    . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                    . Helper::whereClause('tx_dlf_documents')
-                    . Helper::whereClause('tx_dlf_collections'),
-                'tx_dlf_documents.uid'
-            );
-            $resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_collections',
-                'AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
-                    . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
-                    . ' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0' . Helper::whereClause('tx_dlf_documents') . ')'
-                    . ' AND tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')'
-                    . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                    . Helper::whereClause('tx_dlf_documents')
-                    . Helper::whereClause('tx_dlf_collections'),
-                'tx_dlf_documents.uid'
-            );
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $countTitles = $queryBuilder
+                ->count('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->innerJoin(
+                    'tx_dlf_documents',
+                    'tx_dlf_relations',
+                    'tx_dlf_relations_joins',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_relations_joins.uid_local',
+                        'tx_dlf_documents.uid'
+                    )
+                )
+                ->innerJoin(
+                    'tx_dlf_relations_joins',
+                    'tx_dlf_collections',
+                    'tx_dlf_collections_join',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_relations_joins.uid_foreign',
+                        'tx_dlf_collections_join.uid'
+                    )
+                )
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
+                    $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $this->conf['collections']), Connection::PARAM_INT_ARRAY)),
+                    $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
+                )
+                ->execute()
+                ->fetchColumn(0);
+
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+                $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+
+                $subQuery = $subQueryBuilder
+                    ->select('tx_dlf_documents.partof')
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                    )
+                    ->groupBy('tx_dlf_documents.partof')
+                    ->getSQL();
+
+                $countVolumes = $queryBuilder
+                    ->count('tx_dlf_documents.uid')
+                    ->from('tx_dlf_documents')
+                    ->innerJoin(
+                        'tx_dlf_documents',
+                        'tx_dlf_relations',
+                        'tx_dlf_relations_joins',
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_relations_joins.uid_local',
+                            'tx_dlf_documents.uid'
+                        )
+                    )
+                    ->innerJoin(
+                        'tx_dlf_relations_joins',
+                        'tx_dlf_collections',
+                        'tx_dlf_collections_join',
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_relations_joins.uid_foreign',
+                            'tx_dlf_collections_join.uid'
+                        )
+                    )
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                        $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($this->conf['pages'])),
+                        $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery),
+                        $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $this->conf['collections']), Connection::PARAM_INT_ARRAY)),
+                        $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
+                    )
+                    ->execute()
+                    ->fetchColumn(0);
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
             // Include all collections.
-            $resultTitles = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
+            $countTitles = $queryBuilder
+                ->count('tx_dlf_documents.uid')
                 ->from('tx_dlf_documents')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
                     Helper::whereExpression('tx_dlf_documents')
                 )
-                ->execute();
+                ->execute()
+                ->fetchColumn(0);
 
-            $resultVolumes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents',
-                'tx_dlf_documents.pid=' . intval($this->conf['pages'])
-                    . ' AND NOT tx_dlf_documents.uid IN (SELECT DISTINCT tx_dlf_documents.partof FROM tx_dlf_documents WHERE NOT tx_dlf_documents.partof=0' . Helper::whereClause('tx_dlf_documents') . ')'
-                    . Helper::whereClause('tx_dlf_documents')
-            );
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+            $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $subQuery = $subQueryBuilder
+                ->select('tx_dlf_documents.partof')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                )
+                ->groupBy('tx_dlf_documents.partof')
+                ->getSQL();
+
+            $countVolumes = $queryBuilder
+                ->count('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
+                )
+                ->execute()
+                ->fetchColumn(0);
         }
-        $countTitles = $resultTitles->rowCount();
-        $countVolumes = $GLOBALS['TYPO3_DB']->sql_num_rows($resultVolumes);
+
         // Set replacements.
         $replace = [
             'key' => [
