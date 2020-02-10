@@ -109,10 +109,11 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get collections.
         $queryBuilder
             ->select(
+                'tx_dlf_collections.uid AS uid', // required by getRecordOverlay()
+                'tx_dlf_collections.pid AS pid', // required by getRecordOverlay()
+                'tx_dlf_collections.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
                 'tx_dlf_collections.index_name AS index_name',
                 'tx_dlf_collections.index_search as index_query',
-                'tx_dlf_collections.uid AS uid',
-                'tx_dlf_collections.sys_language_uid AS sys_language_uid',
                 'tx_dlf_collections.label AS label',
                 'tx_dlf_collections.thumbnail AS thumbnail',
                 'tx_dlf_collections.description AS description',
@@ -129,8 +130,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                         $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                     ),
                     $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
-                ),
-                Helper::whereExpression('tx_dlf_collections')
+                )
             )
             ->orderBy($orderBy);
 
@@ -146,9 +146,12 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $params['fields'] = 'uid,partof';
         $params['sort'] = ['uid' => 'asc'];
         $collections = [];
+
+        // Get language overlay if on alterative website language.
+        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
         while ($collectionData = $result->fetch()) {
-            if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
-                $collections[$collectionData['uid']] = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+            if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
+                $collections[$collectionData['uid']] = $pageRepository->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
             } else {
                 $collections[$collectionData['uid']] = $collectionData;
             }
@@ -270,11 +273,14 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get collection information from DB
         $collection = $queryBuilder
             ->select(
+                'tx_dlf_collections.uid AS uid', // required by getRecordOverlay()
+                'tx_dlf_collections.pid AS pid', // required by getRecordOverlay()
+                'tx_dlf_collections.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
                 'tx_dlf_collections.index_name AS index_name',
                 'tx_dlf_collections.index_search as index_search',
-                'tx_dlf_collections.label AS collLabel',
-                'tx_dlf_collections.description AS collDesc',
-                'tx_dlf_collections.thumbnail AS collThumb',
+                'tx_dlf_collections.label AS label',
+                'tx_dlf_collections.description AS description',
+                'tx_dlf_collections.thumbnail AS thumbnail',
                 'tx_dlf_collections.fe_cruser_id'
             )
             ->from('tx_dlf_collections')
@@ -282,19 +288,31 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                 $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
                 $queryBuilder->expr()->eq('tx_dlf_collections.uid', intval($id)),
                 $additionalWhere,
-                $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0),
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
+                        $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
+                    ),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
+                ),
                 Helper::whereExpression('tx_dlf_collections')
             )
             ->setMaxResults(1)
             ->execute();
 
-        // Fetch corresponding document UIDs from Solr.
+        // Get language overlay if on alterative website language.
+        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
         if ($resArray = $collection->fetch()) {
-            $collectionData = $resArray;
+            if ($resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
+                $collectionData = $pageRepository->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+            } else {
+                $collectionData = $resArray;
+            }
         } else {
             Helper::devLog('No collection with UID ' . $id . ' found.', DEVLOG_SEVERITY_WARNING);
             return;
         }
+        // Fetch corresponding document UIDs from Solr.
         if ($collectionData['index_search'] != '') {
             $solr_query = '(' . $collectionData['index_search'] . ')';
         } else {
@@ -338,14 +356,11 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $listMetadata = [];
         // Process results.
         while ($resArray = $documents->fetch()) {
-            if (empty($l10nOverlay)) {
-                $l10nOverlay = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
-            }
             if (empty($listMetadata)) {
                 $listMetadata = [
-                    'label' => !empty($l10nOverlay['label']) ? htmlspecialchars($l10nOverlay['label']) : htmlspecialchars($collectionData['collLabel']),
-                    'description' => !empty($l10nOverlay['description']) ? $this->pi_RTEcssText($l10nOverlay['description']) : $this->pi_RTEcssText($collectionData['collDesc']),
-                    'thumbnail' => htmlspecialchars($collectionData['collThumb']),
+                    'label' => htmlspecialchars($collectionData['label']),
+                    'description' => $this->pi_RTEcssText($collectionData['description']),
+                    'thumbnail' => htmlspecialchars($collectionData['thumbnail']),
                     'options' => [
                         'source' => 'collection',
                         'select' => $id,
