@@ -14,8 +14,10 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\TypoScript\ConfigurationForm
@@ -93,6 +95,18 @@ class ConfigurationForm
      */
     public function checkMetadataFormats()
     {
+        // We need to do some bootstrapping manually as of TYPO3 9.
+        if (version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version(), '9.0.0', '>=')) {
+            // Load table configuration array into $GLOBALS['TCA'].
+            ExtensionManagementUtility::loadBaseTca(false);
+            // Get extension configuration from dlf/ext_localconf.php.
+            ExtensionManagementUtility::loadExtLocalconf(false);
+            // Initialize backend user into $GLOBALS['BE_USER'].
+            Bootstrap::initializeBackendUser();
+            // Initialize backend and ensure authenticated access.
+            Bootstrap::initializeBackendAuthentication();
+        }
+
         $nsDefined = [
             'MODS' => false,
             'TEIHDR' => false,
@@ -101,7 +115,6 @@ class ConfigurationForm
             'IIIF2' => false,
             'IIIF3' => false
         ];
-
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_formats');
 
