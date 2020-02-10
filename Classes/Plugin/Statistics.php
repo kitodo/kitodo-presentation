@@ -97,7 +97,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                     ->select('tx_dlf_documents.partof')
                     ->from('tx_dlf_documents')
                     ->where(
-                        $queryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                        $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
                     )
                     ->groupBy('tx_dlf_documents.partof')
                     ->getSQL();
@@ -157,7 +157,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->select('tx_dlf_documents.partof')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                    $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
                 )
                 ->groupBy('tx_dlf_documents.partof')
                 ->getSQL();

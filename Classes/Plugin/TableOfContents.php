@@ -214,7 +214,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             // Build table of contents from database.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+                ->getQueryBuilderForTable('tx_dlf_documents');
 
             $excludeOtherWhere = '';
             if ($this->conf['excludeOther']) {
@@ -227,7 +227,6 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                     'tx_dlf_documents.title AS title',
                     'tx_dlf_documents.volume AS volume',
                     'tx_dlf_structures_join.index_name AS type'
-
                 )
                 ->innerJoin(
                     'tx_dlf_documents',
