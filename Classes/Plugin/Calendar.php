@@ -49,6 +49,43 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     public function main($content, $conf)
     {
+        $this->init($conf);
+
+        // Set initial document (anchor or year file) if configured.
+        if (empty($this->piVars['id']) && !empty($this->conf['initialDocument'])) {
+            $this->piVars['id'] = $this->conf['initialDocument'];
+        }
+
+        // Load current document.
+        $this->loadDocument();
+        if ($this->doc === null) {
+            // Quit without doing anything if required variables are not set.
+            return $content;
+        }
+
+        $metadata = $this->doc->getTitledata($this->doc->cPid);
+        if (!empty($metadata['type'][0])) {
+            // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
+            if (
+                $doc instanceof IiifManifest
+                && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
+            ) {
+                return $type;
+            }
+            $type = $metadata['type'][0];
+        }
+
+        switch ($type) {
+            case 'newspaper':
+            case 'ephemera':
+                return $this->years($content, $conf);
+            case 'year':
+                return $this->calendar($content, $conf);
+            case 'issue':
+                default:
+                break;
+        }
+
         // Nothing to do here.
         return $content;
     }
@@ -136,7 +173,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         foreach ($calendarIssuesByYear as $year => $calendarIssuesByMonth) {
             // Sort by months.
             ksort($calendarIssuesByMonth);
-            // Default: First monath is January, last month is December.
+            // Default: First month is January, last month is December.
             $firstMonth = 1;
             $lastMonth = 12;
             // Show calendar from first issue up to end of season if applicable.
