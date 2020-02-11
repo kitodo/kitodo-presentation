@@ -63,16 +63,11 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             return $content;
         }
 
-        $metadata = $this->doc->getTitledata($this->doc->cPid);
+        $metadata = $this->doc->getTitledata();
         if (!empty($metadata['type'][0])) {
-            // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
-            if (
-                $doc instanceof IiifManifest
-                && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
-            ) {
-                return $type;
-            }
             $type = $metadata['type'][0];
+        } else {
+            return $content;
         }
 
         switch ($type) {
