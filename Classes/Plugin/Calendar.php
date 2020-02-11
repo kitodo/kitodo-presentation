@@ -82,7 +82,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             case 'year':
                 return $this->calendar($content, $conf);
             case 'issue':
-                default:
+            default:
                 break;
         }
 
