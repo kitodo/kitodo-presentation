@@ -115,6 +115,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             ->select(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents.title AS title',
+                'tx_dlf_documents.purl AS purl',
                 'tx_dlf_documents.year AS year',
                 'tx_dlf_documents.mets_label AS label',
                 'tx_dlf_documents.mets_orderlabel AS orderlabel'
@@ -144,7 +145,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             $issues[] = [
                 'uid' => $resArray['uid'],
                 'title' => $title,
-                'year' => $resArray['year']
+                'year' => $resArray['year'],
+                'purl' => $resArray['purl'],
             ];
         }
         //  We need an array of issues with year => month => day number as key.
@@ -297,7 +299,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                                         $dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
                                         $linkConf = [
                                             'useCacheHash' => 1,
-                                            'parameter' => $this->conf['targetPid'],
+                                            'parameter' => $this->conf['linkToPurl'] ? $issue['purl'] : $this->conf['targetPid'],
                                             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($issue['uid']),
                                             'ATagParams' => ' class="title"',
                                         ];
@@ -384,6 +386,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             ->select(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents.title AS title',
+                'tx_dlf_documents.purl AS purl',
                 'tx_dlf_documents.mets_label AS label',
                 'tx_dlf_documents.mets_orderlabel AS orderlabel'
             )

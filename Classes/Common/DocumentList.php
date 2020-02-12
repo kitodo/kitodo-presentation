@@ -174,6 +174,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                 $result = $queryBuilder
                     ->select(
                         'tx_dlf_documents.uid AS uid',
+                        'tx_dlf_documents.purl AS purl',
                         'tx_dlf_documents.thumbnail AS thumbnail',
                         'tx_dlf_documents.metadata AS metadata'
                     )
@@ -216,6 +217,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     // Add metadata to list element.
                     if ($resArray['uid'] == $record['uid']) {
                         $record['thumbnail'] = $resArray['thumbnail'];
+                        $record['purl'] = $resArray['purl'];
                         $record['metadata'] = $metadata;
                     } elseif (($key = array_search(['u' => $resArray['uid']], $record['subparts'], true)) !== false) {
                         $record['subparts'][$key] = [
@@ -234,7 +236,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                 if ($this->solrConnect()) {
                     $params = [];
                     // Restrict the fields to the required ones
-                    $params['fields'] = 'uid,id,toplevel,thumbnail,page';
+                    $params['fields'] = 'uid,id,toplevel,thumbnail,page,purl';
                     foreach ($this->solrConfig as $solr_name) {
                         $params['fields'] .= ',' . $solr_name;
                     }
@@ -286,6 +288,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                         // Add metadata to list elements.
                         if ($resArray->toplevel) {
                             $record['thumbnail'] = $resArray->thumbnail;
+                            $record['purl'] = $resArray->purl;
                             $record['metadata'] = $metadata;
                         } else {
                             $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : null;

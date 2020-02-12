@@ -163,7 +163,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                         }
                         $conf = [
                             'useCacheHash' => 1,
-                            'parameter' => $this->conf['targetPid'],
+                            'parameter' => $this->conf['linkToPurl'] ? ($this->list[$number]['purl'] . '/' . $this->list[$number]['page']) : $this->conf['targetPid'],
+                            // additionalParams is only active with internal links
                             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
@@ -324,18 +325,27 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                             $value = $noTitle;
                         }
                         $imgAlt = htmlspecialchars($value);
-                        $additionalParams = [
-                            'id' => $subpart['uid'],
-                            'page' => $subpart['page'],
-                            'highlight_word' => $highlight_word
-                        ];
+                        if (!empty($this->conf['linkToPurl'])) {
+                            $additionalParams = [
+                                'highlight_word' => $highlight_word
+                            ];
+                        } else {
+                            $additionalParams = [
+                                'id' => $subpart['uid'],
+                                'page' => $subpart['page'],
+                                'highlight_word' => $highlight_word
+                            ];
+                        }
                         if (!empty($this->piVars['logicalPage'])) {
                             $additionalParams['logicalPage'] = $this->piVars['logicalPage'];
                         }
                         $conf = [
                             // we don't want cHash in case of search parameters
                             'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
-                            'parameter' => $this->conf['targetPid'],
+                            'parameter' => $this->conf['linkToPurl']
+                                ? ($this->list[$number]['purl'] . '/' . $subpart['page'] . '?' . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false))
+                                : $this->conf['targetPid'],
+                            // additionalParams is only active with internal links
                             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);

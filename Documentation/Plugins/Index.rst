@@ -19,8 +19,41 @@ Plugin Reference
 Kitodo Plugin Reference
 =======================
 
-Common Settings
+Global Settings
 ---------------
+
+Settings can be done done on muliple places. The order is the following:
+
+ Flexforms > TS-Templates > Extension Configuration > ext_localconf.php
+
+Properties
+^^^^^^^^^^
+:typoscript:`plugin.tx_dlf.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+        Default
+
+ - :Property:
+       linkToPurl
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+        0
+
+linkToPurl
+""""""""""
+Link to PURL in suitable plugins (listview, calendar) instead directly to a local page with the page view plugin.
+
+
+Common Properties
+-----------------
 pages
 ^^^^^
 Startingpoint of this plugin. This is the Kitodo.Presentation data folder.
@@ -190,11 +223,27 @@ Calendar
    :Default:
 
  - :Property:
+       targetPid
+   :Data Type:
+       :ref:`t3tsref:data-type-page-id`
+   :Default:
+
+ - :Property:
+       initialDocument
+   :Data Type:
+       :ref:`t3tsref:data-type-db`
+   :Default:
+
+ - :Property:
        templateFile_
    :Data Type:
        :ref:`t3tsref:data-type-resource`
    :Default:
        Calendar.tmpl
+
+initialDocument
+"""""""""""""""
+UID of a newspaper or ephemera document to show the calendar initially (type=newspaper|ephemera|year).
 
 
 Collection
