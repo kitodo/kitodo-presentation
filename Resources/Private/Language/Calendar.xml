@@ -18,7 +18,7 @@
             <label index="tt_content.pi_flexform.initialDocument">Initial document to show (e.g. of type "newspaper" or "ephemera")</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.showEmptyMonths">Show months without issues in calendar?</label>
-            <label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" or "DLF: Calendar View" plugin)</label>
+            <label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View")</label>
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
             <label index="allYears">All years overview - </label>
             <label index="label.please_choose_year">Please choose a year first.</label>
@@ -29,7 +29,7 @@
             <label index="tt_content.pi_flexform.initialDocument">Anfangsdokument (z.B. vom Typ "newspaper" oder "ephemera)</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.showEmptyMonths">Zeige Monate ohne Ausgaben im Kalender?</label>
-            <label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht" oder "DLF: Kalenderansicht")</label>
+            <label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
             <label index="allYears">Jahrgangsübersicht - </label>
             <label index="label.please_choose_year">Bitte wählen Sie zunächst einen Jahrgang aus.</label>

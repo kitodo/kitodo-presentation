@@ -203,7 +203,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Link to current year.
         $linkConf = [
             'useCacheHash' => 1,
-            'parameter' => $this->conf['targetPid'],
+            'parameter' => $GLOBALS['TSFE']->id,
             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->uid),
         ];
         $linkTitleData = $this->doc->getTitledata();
@@ -212,7 +212,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Link to years overview.
         $linkConf = [
             'useCacheHash' => 1,
-            'parameter' => $this->conf['targetPid'],
+            'parameter' => $GLOBALS['TSFE']->id,
             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
         ];
         $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
@@ -409,7 +409,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             foreach ($years as $year) {
                 $linkConf = [
                     'useCacheHash' => 1,
-                    'parameter' => $this->conf['targetPid'],
+                    'parameter' => $GLOBALS['TSFE']->id,
                     'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($year['uid']),
                     'title' => $titleAnchor . ': ' . $year['title']
                 ];
@@ -422,7 +422,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Link to years overview (should be itself here)
         $linkConf = [
             'useCacheHash' => 1,
-            'parameter' => $this->conf['targetPid'],
+            'parameter' => $GLOBALS['TSFE']->id,
             'additionalParams' => '&' . $this->prefixId . '[id]=' . $this->doc->uid,
         ];
         $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->uid), $linkConf);
