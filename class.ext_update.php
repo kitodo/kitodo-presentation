@@ -375,8 +375,9 @@ class ext_update
         $this->content .= Helper::renderFlashMessages();
     }
 
-    protected function hasNoFormatForDocument()
+    protected function hasNoFormatForDocument($checkStructureOnly = false)
     {
+        // Check if column "document_format" exists.
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'COLUMN_NAME',
@@ -385,7 +386,18 @@ class ext_update
         );
         while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             if ($resArray['COLUMN_NAME'] == 'document_format') {
-                return false;
+                if ($checkStructureOnly) {
+                    return false;
+                }
+                // Check if column has empty fields.
+                $result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                    'uid',
+                    'tx_dlf_documents',
+                    'document_format="" OR document_format IS NULL'
+                );
+                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 0) {
+                    return false;
+                }
             }
         }
         return true;
@@ -393,23 +405,25 @@ class ext_update
 
     protected function updateDocumentAddFormat()
     {
-        $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
-        $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
-        if ($result) {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.documentAddFormatOkay', true),
-                $GLOBALS['LANG']->getLL('update.documentAddFormat', true),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-            );
-            $this->content .= Helper::renderFlashMessages();
-        } else {
-            Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', true),
-                $GLOBALS['LANG']->getLL('update.documentAddFormat', true),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-            );
-            $this->content .= Helper::renderFlashMessages();
-            return;
+        if ($this->hasNoFormatForDocument(true)) {
+            $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
+            $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
+            if ($result) {
+                Helper::addMessage(
+                    $GLOBALS['LANG']->getLL('update.documentAddFormatOkay', true),
+                    $GLOBALS['LANG']->getLL('update.documentAddFormat', true),
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+                );
+                $this->content .= Helper::renderFlashMessages();
+            } else {
+                Helper::addMessage(
+                    $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', true),
+                    $GLOBALS['LANG']->getLL('update.documentAddFormat', true),
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                );
+                $this->content .= Helper::renderFlashMessages();
+                return;
+            }
         }
         $sqlQuery = 'UPDATE `tx_dlf_documents` SET `document_format`="METS" WHERE `document_format` IS NULL OR `document_format`="";';
         $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
