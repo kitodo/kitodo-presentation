@@ -36,7 +36,9 @@ class tx_dlf_toolsImagedownload extends tx_dlf_plugin {
         $this->init($conf);
 
         // Merge configuration with conf array of toolbox.
-        $this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+        if (!empty($this->cObj->data['conf'])) {
+            $this->conf = tx_dlf_helper::array_merge_recursive_overrule($this->cObj->data['conf'], $this->conf);
+        }
 
         // Load current document.
         $this->loadDocument();
