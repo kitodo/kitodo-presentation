@@ -45,7 +45,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     protected function cmdAddMetadata()
     {
         // Include metadata definition file.
-        include_once(ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/MetadataDefaults.php');
+        $metadataDefaults = include (ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/MetadataDefaults.php');
         $i = 0;
         // Build data array.
         foreach ($metadataDefaults as $index_name => $values) {
@@ -137,7 +137,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     protected function cmdAddStructure()
     {
         // Include structure definition file.
-        include_once(ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
+        $structureDefaults = include (ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
         // Build data array.
         foreach ($structureDefaults as $index_name => $values) {
             $data['tx_dlf_structures'][uniqid('NEW')] = [
