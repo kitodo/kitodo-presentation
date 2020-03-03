@@ -12,7 +12,7 @@
 
 // Define metadata elements.
 // @see http://dfg-viewer.de/en/profile-of-the-metadata/
-$metadataDefaults = [
+return [
     'type' => [
         'format' => [
             [

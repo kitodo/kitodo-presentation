@@ -12,7 +12,7 @@
 
 // Define structure elements.
 // @see http://dfg-viewer.de/en/structural-data-set/
-$structureDefaults = [
+return [
     'act' => [
         'toplevel' => 1,
         'oai_name' => '',
