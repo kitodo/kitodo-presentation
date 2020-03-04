@@ -93,7 +93,7 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
 
         var onCanvas = DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment(annotation.on);
 
-        if (currentCanvas != onCanvas) continue;
+        if (currentCanvas !== onCanvas) continue;
 
         var feature = this.parseAnnotation(annotation);
 
@@ -123,7 +123,7 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
     listFeature.setId(annotationListId);
     listFeature.setProperties({
         'type': 'annotationList',
-        'label': annotationList.label != null ? annotationList.label : '',
+        'label': annotationList.label !== null ? annotationList.label : '',
         'width': maxX - minX + 1,
         'height': maxY - minY + 1,
         'x1': minX,
@@ -197,7 +197,7 @@ DlfIiifAnnotationParser.prototype.getXYWHForAnnotation = function (annotation) {
  * @private
  */
 DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment = function(uri) {
-    if (uri == null) {
+    if (uri === null) {
         return null;
     }
     return uri.split("#")[0];

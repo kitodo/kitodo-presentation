@@ -20,7 +20,7 @@ jQuery.fn.scrollTo = function(elem, speed) {
     var manualOffsetTop = $(elem).parent().height() / 2;
     $(this).animate({
         scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top - manualOffsetTop
-    }, speed == undefined ? 1000 : speed);
+    }, speed === undefined ? 1000 : speed);
     return this;
 };
 
@@ -263,7 +263,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         .attr('title', this.dic['fulltext-on']);
 
     // if fulltext is activated via cookie than run activation methode
-    if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") == 'enabled') {
+    if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
         // activate the fulltext behavior
         this.activate(anchorEl);
     }

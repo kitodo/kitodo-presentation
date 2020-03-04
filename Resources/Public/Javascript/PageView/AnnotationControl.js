@@ -23,7 +23,7 @@ if (jQuery.fn.scrollTo === undefined) {
         var manualOffsetTop = $(elem).parent().height() / 2;
         $(this).animate({
             scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top - manualOffsetTop
-        }, speed == undefined ? 1000 : speed);
+        }, speed === undefined ? 1000 : speed);
         return this;
     };
 }
@@ -208,7 +208,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
         .attr('title', this.dic['annotations-on']);
 
     // if annotation is activated via cookie than run activation methode
-    if (dlfUtils.getCookie("tx-dlf-pageview-annotation-select") == 'enabled') {
+    if (dlfUtils.getCookie("tx-dlf-pageview-annotation-select") === 'enabled') {
         // activate the annotation behavior
         this.activate(anchorEl);
     }
@@ -222,7 +222,7 @@ DlfAnnotationControl.prototype.showAnnotationText = function(featuresParam) {
             var feature = features[i],
                 annotations = feature.get('annotations'),
                 labelEl;
-            if (feature.get('label') != '') {
+            if (feature.get('label') !== '') {
                 labelEl = $('<span class="annotation-list-label"/>');
                 labelEl.text(feature.get('label'));
                 $('#tx-dlf-annotationselection').append(labelEl);
@@ -332,7 +332,7 @@ DlfAnnotationControl.prototype.fetchAnnotationContainersFromServer = function(an
             url: annotationList.uri,
             async: false
         });
-        responseJson = request.responseJSON != null ? request.responseJSON : request.responseText != null ? $.parseJSON(request.responseText) : null;
+        responseJson = request.responseJSON !== null ? request.responseJSON : request.responseText !== null ? $.parseJSON(request.responseText) : null;
         if (responseJson.label === undefined) {
             responseJson.label = annotationList.label;
         }

@@ -13,12 +13,12 @@
 // Internet Explorer does not support String.prototype.endsWith
 if (String.prototype.endsWith === undefined) {
     String.prototype.endsWith = function(searchString, length) {
-        if (searchString == null || searchString == '' || length!=null && searchString.length > length || searchString.length > this.length) {
+        if (searchString === null || searchString === '' || length!=null && searchString.length > length || searchString.length > this.length) {
             return false;
         }
-        length = length == null || length > this.length || length <= 0 ? this.length : length;
+        length = length === null || length > this.length || length <= 0 ? this.length : length;
         var substr = this.substr(0, length);
-        return substr.lastIndexOf(searchString) == length - searchString.length;
+        return substr.lastIndexOf(searchString) === length - searchString.length;
     };
 }
 
@@ -462,7 +462,7 @@ dlfUtils.buildImageV3 = function buildImageV2(mimetype, uri, jsonld) {
         tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function(a) {
             return a.width;
         })[0], jsonld.tiles.map(function (a) {
-            return a.height == undefined ? a.width : a.height;
+            return a.height === undefined ? a.width : a.height;
         })[0]] : undefined,
         sizes: jsonld.sizes === undefined ? undefined : jsonld.sizes.map(function(size) {
             return [size.width, size.height];
@@ -490,7 +490,7 @@ dlfUtils.buildImageV3 = function buildImageV2(mimetype, uri, jsonld) {
  * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
  */
 dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
-    if (typeof jsonld.profile == "string") {
+    if (typeof jsonld.profile === "string") {
         jsonld.profile = [jsonld.profile, {}];
     }
     if (jsonld.profile !== undefined && jsonld.profile.length < 2) {
@@ -505,7 +505,7 @@ dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
         tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function(a) {
             return a.width;
         })[0], jsonld.tiles.map(function (a) {
-            return a.height == undefined ? a.width : a.height;
+            return a.height === undefined ? a.width : a.height;
         })[0]] : undefined,
         sizes: jsonld.sizes === undefined ? undefined : jsonld.sizes.map(function(size) {
             return [size.width, size.height];
@@ -573,10 +573,10 @@ dlfUtils.getIiifComplianceLevelProfile = function(jsonld, version) {
             }
             break;
         case 'version2':
-            if (typeof jsonld.profile == 'string' && regexVersion2.test(jsonld.profile)) {
+            if (typeof jsonld.profile === 'string' && regexVersion2.test(jsonld.profile)) {
                 level = jsonld.profile;
             }
-            if (Array.isArray(jsonld.profile) && jsonld.profile.length >= 1 && typeof jsonld.profile[0] == 'string' && regexVersion2.test(jsonld.profile[0])) {
+            if (Array.isArray(jsonld.profile) && jsonld.profile.length >= 1 && typeof jsonld.profile[0] === 'string' && regexVersion2.test(jsonld.profile[0])) {
                 level = jsonld.profile[0];
             }
             break;

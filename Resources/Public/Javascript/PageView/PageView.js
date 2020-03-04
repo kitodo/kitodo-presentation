@@ -157,14 +157,14 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length == 1) {
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length === 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
 
     if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
-        && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length == 1) {
+        && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
         // Adds annotation behavior only if there are annotations available and view is single page
         annotationControl = new DlfAnnotationControl(this.map, this.images[0], this.annotationContainers[0]);
         if (fulltextControl !== undefined) {
@@ -324,14 +324,14 @@ dlfViewer.prototype.displayHighlightWord = function() {
     var key = 'tx_dlf[highlight_word]',
         urlParams = dlfUtils.getUrlParams();
 
-    if (urlParams != undefined && urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
+    if (urlParams !== undefined && urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
         var value = urlParams[key],
             values = value.split(';'),
             fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
 
         // check if there is another image / fulltext to look for
-        if (this.images.length == 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
+        if (this.images.length === 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
             fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width);

@@ -370,7 +370,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
                 element = valueEl[0],
                 labelValue = dlfUtils.exists(opt_labelFn) ? opt_labelFn(value) : value + '%';
 
-        if (orientation == 'vertical') {
+        if (orientation === 'vertical') {
             var style_top = 100 - ((value - baseMin) / (baseMax - baseMin) * 100);
             element.style.top = style_top + '%';
             element.innerHTML = labelValue;
