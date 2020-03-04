@@ -19,7 +19,7 @@ $(
 	function() {
 		// jQuery autocomplete integration
 		$("#tx-dlf-search-query").autocomplete({
-			source: function(request, response) {
+			source(request, response) {
 				return $.post(
 					"/",
 					{

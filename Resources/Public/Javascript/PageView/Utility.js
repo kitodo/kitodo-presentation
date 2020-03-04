@@ -99,7 +99,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                     tileSize: imageSourceObj.tilesize,
                     sizes: imageSourceObj.sizes,
                     format: 'jpg',
-                    quality: quality,
+                    quality,
                     supports: imageSourceObj.supports,
                     offset: [offsetWidth, 0],
                     projection: new ol.proj.Projection({
@@ -120,7 +120,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                     url: imageSourceObj.src,
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
-                    tileSize: tileSize,
+                    tileSize,
                     offset: [offsetWidth, 0]
                 }),
                 zDirection: -1
@@ -183,7 +183,7 @@ dlfUtils.createOl3View = function (images) {
         center: ol.extent.getCenter(extent),
         zoom: 1,
         maxZoom: window.OL3_MAX_ZOOM,
-        extent: extent
+        extent
     };
 
     return new ol.View(viewParams);
@@ -299,7 +299,7 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
     var type = 'GET';
     $.ajax({
         url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
-        type: type,
+        type,
         dataType: 'json'
     }).done(cb);
 
@@ -547,7 +547,7 @@ dlfUtils.buildImageV1 = function buildImageV1(mimetype, uri, jsonld) {
         formats: ['jpg'].concat(levelProfile.formats).concat(jsonld.formats === undefined ? [] : jsonld.formats),
         supports:levelProfile.supports,
         resolutions: jsonld.scale_factors,
-        mimetype: mimetype
+        mimetype
     };
 };
 

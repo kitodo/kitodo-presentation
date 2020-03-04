@@ -392,7 +392,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
         'max': baseMax,
         'value': startValue,
         'animate': 'slow',
-        'orientation': orientation,
+        orientation,
         'step': steps,
         'slide': update,
         'change': update

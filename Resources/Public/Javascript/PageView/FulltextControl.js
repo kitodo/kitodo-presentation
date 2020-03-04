@@ -390,7 +390,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
 dlfViewerFullTextControl.fetchFulltextDataFromServer = function(url, image, opt_offset){
     // fetch data from server
     var request = $.ajax({
-        url: url,
+        url,
         async: false
     });
 

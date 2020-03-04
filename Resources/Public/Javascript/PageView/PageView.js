@@ -230,8 +230,8 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
 
     this.highlightFieldParams = {
         index: imageIndex,
-        width: width,
-        height: height
+        width,
+        height
     };
 
     if (this.map) {
@@ -258,9 +258,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "OverviewMap":
 
-                    controls.push(new ol.control.OverviewMap({
-                        layers: layers
-                    }));
+                    controls.push(new ol.control.OverviewMap({layers}));
                     break;
 
                 case "ZoomPanel":

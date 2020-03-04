@@ -32,7 +32,7 @@ var dlfAudioPlayer = function (settings) {
     // Load params
     //
     var jPlayerOptions = {
-        ready: function() {
+        ready() {
           $(this).jPlayer('setMedia', audioOptions);
         },
         solution: solutions,

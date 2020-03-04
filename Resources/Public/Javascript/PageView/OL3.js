@@ -78,8 +78,8 @@ ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
         resolution = view.getResolution(),
         duration = opt_duration !== undefined ? opt_duration : 500;
     this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
-        'duration': duration
+        resolution,
+        duration
     }));
     view.setCenter(center);
     view.setZoom(zoomLevel);
