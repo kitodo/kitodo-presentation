@@ -93,7 +93,9 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
 
         var onCanvas = DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment(annotation.on);
 
-        if (currentCanvas !== onCanvas) continue;
+        if (currentCanvas !== onCanvas) {
+            continue;
+        }
 
         var feature = this.parseAnnotation(annotation);
 

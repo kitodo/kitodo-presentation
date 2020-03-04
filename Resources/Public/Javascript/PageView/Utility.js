@@ -13,7 +13,7 @@
 // Internet Explorer does not support String.prototype.endsWith
 if (String.prototype.endsWith === undefined) {
     String.prototype.endsWith = function(searchString, length) {
-        if (searchString === null || searchString === '' || length!=null && searchString.length > length || searchString.length > this.length) {
+        if (searchString === null || searchString === '' || length !== null && searchString.length > length || searchString.length > this.length) {
             return false;
         }
         length = length === null || length > this.length || length <= 0 ? this.length : length;
