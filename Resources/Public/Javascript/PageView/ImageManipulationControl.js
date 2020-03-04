@@ -129,7 +129,7 @@ dlfViewerImageManipulationControl = function(options) {
                     glif.reset();
 
                     for (var filter in this.filters_) {
-                        glif.addFilter(filter, this.filters_[filter]);
+                        glif.addFilter(filter, this.filters_[String(filter)]);
                     };
 
                     this.filterUpdated_ = false;
@@ -154,7 +154,7 @@ dlfViewerImageManipulationControl = function(options) {
             for (var i = 0; i < sliderEls.length; i++) {
                 var sliderEl = sliderEls[i],
                 type = sliderEl.getAttribute('data-type'),
-                value = FILTERS_DEFAULT_[type];
+                value = FILTERS_DEFAULT_[String(type)];
 
                 $(sliderEl).slider('value', value);
             };

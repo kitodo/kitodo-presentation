@@ -335,7 +335,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     // remove layers
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.removeLayer(this.layers_[key]);
+            this.map.removeLayer(this.layers_[String(key)]);
         }
     };
 
@@ -364,7 +364,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
     // add layers to map
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.addLayer(this.layers_[key]);
+            this.map.addLayer(this.layers_[String(key)]);
         }
     };
 
@@ -421,7 +421,7 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
             for (var j = 0; j < textlines.length; j++) {
                 var textLineSpan = $('<span class="textline" id="' + textlines[j].getId() + '">');
                 var content = textlines[j].get('content');
-                
+
                 for (var k = 0; k < content.length; k++) {
                     var span = $('<span class="' + content[k].get('type') + '" id="' + content[k].getId() + '"/>');
                     var spanText = content[k].get('fulltext');

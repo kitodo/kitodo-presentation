@@ -44,7 +44,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
         dlfUtils.parseDataDic($('#tx-dlf-tools-annotations')) :
         {'annotations-on':'Display Annotations','annotations-off':'Hide Annotations'};
 
-        this.layers_ = {
+    this.layers_ = {
         annotationList: new ol.layer.Vector({
             'source': new ol.source.Vector(),
             'style': dlfViewerOL3Styles.defaultStyle()
@@ -100,7 +100,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
 
 
         }, this),
-            mapHover: $.proxy(function(event){
+        mapHover: $.proxy(function(event){
             // hover in case of dragging
             if (event['dragging']) {
                 return;
@@ -213,8 +213,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
         this.activate(anchorEl);
     }
 }
-    
-    
+
 DlfAnnotationControl.prototype.showAnnotationText = function(featuresParam) {
     var features = featuresParam === undefined ? this.annotationData : featuresParam;
     if (features !== undefined) {
@@ -238,9 +237,9 @@ DlfAnnotationControl.prototype.showAnnotationText = function(featuresParam) {
         }
     }
 };
-    
+
 DlfAnnotationControl.prototype.activate = function() {
-        
+
     var controlEl = $('#tx-dlf-tools-annotations');
 
     // Fetch annotation lists from server if the method is called for the first time
@@ -268,9 +267,9 @@ DlfAnnotationControl.prototype.activate = function() {
 
     // trigger event
     $(this).trigger("activate-annotations", this);
-    
+
 };
-    
+
 DlfAnnotationControl.prototype.deactivate = function() {
     var controlEl = $('#tx-dlf-tools-annotations');
     // deactivate annotations
@@ -288,7 +287,7 @@ DlfAnnotationControl.prototype.disableAnnotationSelect = function() {
     // remove layers
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.removeLayer(this.layers_[key]);
+            this.map.removeLayer(this.layers_[String(key)]);
         }
     };
     var className = 'fulltext-visible';
@@ -309,7 +308,7 @@ DlfAnnotationControl.prototype.enableAnnotationSelect = function(textBlockFeatur
     // add layers to map
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.addLayer(this.layers_[key]);
+            this.map.addLayer(this.layers_[String(key)]);
         }
     };
     // show annotation container

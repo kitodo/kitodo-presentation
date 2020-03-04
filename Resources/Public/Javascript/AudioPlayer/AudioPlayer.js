@@ -26,7 +26,7 @@ var dlfAudioPlayer = function (settings) {
     var format = dlfAudioPlayer.JPLAYER_MIMETYPE_FORMAT_MAPPING[audioOptions.mimeType] !== undefined
             ? dlfAudioPlayer.JPLAYER_MIMETYPE_FORMAT_MAPPING[audioOptions.mimeType]
             : 'mp3';
-    audioOptions[format] = audioOptions.url;
+    audioOptions[String(format)] = audioOptions.url;
 
     //
     // Load params

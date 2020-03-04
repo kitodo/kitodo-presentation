@@ -16,9 +16,9 @@
  * @param {number=} opt_offset
  */
 var DlfIiifAnnotationParser = function(opt_imageObj, opt_width, opt_height, opt_offset) {
-    
+
     // get width and height either from image info.json or from canvas information
-    
+
     /**
      * @type {Object|undefined}
      * @private
@@ -88,13 +88,13 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
     var minX, maxX, minY, maxY, annotationFeatures = [];
 
     for (var i = 0; i < annotationList.resources.length; i++) {
-    
+
         var annotation = annotationList.resources[i];
-        
+
         var onCanvas = DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment(annotation.on);
-        
+
         if (currentCanvas != onCanvas) continue;
-        
+
         var feature = this.parseAnnotation(annotation);
 
         // Determine the dimension of the AnnotationList
@@ -112,14 +112,14 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
         annotationListId = this.generateId_(width, height, minX, minY),
         scale = this.image_.width / this.width_,
         coordinatesRescale = [];
-    
+
     for (var i = 0; i < listCoordinatesWithoutScale[0].length; i++) {
-        coordinatesRescale.push([( scale * listCoordinatesWithoutScale[0][i][0]),
+        coordinatesRescale.push([(scale * listCoordinatesWithoutScale[0][i][0]),
             0 - (scale * listCoordinatesWithoutScale[0][i][1])]);
     };
     var listGeometry = new ol.geom.Polygon([coordinatesRescale]),
         listFeature = new ol.Feature(listGeometry);
-        
+
     listFeature.setId(annotationListId);
     listFeature.setProperties({
         'type': 'annotationList',
@@ -135,7 +135,7 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
     listFeature.getAnnotations = function() {
         return annotationFeatures;
     };
-    
+
     return listFeature;
 };
 
@@ -156,7 +156,7 @@ DlfIiifAnnotationParser.prototype.parseGeometry = function(annotation) {
         coordinatesRescale = [];
 
     for (var i = 0; i < coordinatesWithoutScale[0].length; i++) {
-        coordinatesRescale.push([offset + ( scale * coordinatesWithoutScale[0][i][0]),
+        coordinatesRescale.push([offset + (scale * coordinatesWithoutScale[0][i][0]),
             0 - (scale * coordinatesWithoutScale[0][i][1])]);
     };
 
@@ -200,5 +200,5 @@ DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment = function(uri) {
     if (uri == null) {
         return null;
     }
-    return uri.split("#")[0]; 
+    return uri.split("#")[0];
 }
