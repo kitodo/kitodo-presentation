@@ -310,7 +310,7 @@ DlfAnnotationControl.prototype.enableAnnotationSelect = function(textBlockFeatur
         if (this.layers_.hasOwnProperty(key)) {
             this.map.addLayer(this.layers_[String(key)]);
         }
-    };
+    }
     // show annotation container
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-annotations").addClass(className)

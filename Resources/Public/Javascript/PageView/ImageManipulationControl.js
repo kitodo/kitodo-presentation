@@ -197,7 +197,7 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
     if (!dlfUtils.exists(this.sliderContainer_)) {
         // in case filter sliders are not initialize yet add them
         this.createFilters_();
-    };
+    }
     $(this.sliderContainer_).show().addClass('open');
 
     // add postcompose listener to layers

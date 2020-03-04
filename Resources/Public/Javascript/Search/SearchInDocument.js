@@ -45,7 +45,7 @@ function previousResultPage(rows) {
 function resetStart() {
     $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(0);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 $(document).ready(function() {
     $("#tx-dlf-search-in-document-form").submit(function( event ) {

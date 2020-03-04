@@ -439,6 +439,6 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
             $('#tx-dlf-fulltextselection').append('<br /><br />');
         }
 
-    };
+    }
 
 };

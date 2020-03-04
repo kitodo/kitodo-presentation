@@ -158,7 +158,7 @@ DlfIiifAnnotationParser.prototype.parseGeometry = function(annotation) {
     for (var i = 0; i < coordinatesWithoutScale[0].length; i++) {
         coordinatesRescale.push([offset + (scale * coordinatesWithoutScale[0][i][0]),
             0 - (scale * coordinatesWithoutScale[0][i][1])]);
-    };
+    }
 
     return new ol.geom.Polygon([coordinatesRescale]);
 };

@@ -205,7 +205,7 @@ dlfViewerSource.IIIF = function(options) {
             maxZoom = 0;
         }
     }
-    
+
     // define tilegrid with offset extent
     var extent = [offset[0], offset[1] - height, offset[0] + width, offset[1]];
     var tileGrid = new ol.tilegrid.TileGrid({
@@ -370,7 +370,7 @@ dlfViewerSource.IIP = function(options) {
         imageHeight >>= 1;
         res += res;
 
-    };
+    }
     resolutions.push( res );
     tierSizeInTiles.push( [1,1]);
     tierSizeInTiles.reverse();
