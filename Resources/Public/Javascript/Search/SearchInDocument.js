@@ -48,8 +48,7 @@ function resetStart() {
 }
 
 $(document).ready(function() {
-    $("#tx-dlf-search-in-document-form").submit(function( event ) {
-      console.log(event);
+    $("#tx-dlf-search-in-document-form").submit(function(event) {
         // Stop form from submitting normally
         event.preventDefault();
         $('#tx-dlf-search-in-document-loading').show();

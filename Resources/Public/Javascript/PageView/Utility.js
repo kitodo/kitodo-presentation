@@ -301,7 +301,7 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
         url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
         type: type,
         dataType: 'json'
-    }).done(cb).fail(error);
+    }).done(cb);
 
     function cb(data) {
         var mimetype = imageSourceObj.mimetype,
@@ -327,11 +327,6 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
                 deferredResponse.resolve(imageResource);
             }
         }
-    }
-
-    function error(jqXHR, errorThrown) {
-        console.log("error", jqXHR.status);
-        console.log("status: " + errorThrown);
     }
 
     return deferredResponse;
