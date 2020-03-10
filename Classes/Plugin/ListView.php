@@ -84,9 +84,9 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         $separator = $this->pi_getLL('separator', ' - ', true);
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', true), ['pointer' => $this->piVars['pointer'] - 1], true) . $separator;
+            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', true), ['pointer' => $this->piVars['pointer'] - 1], true) . '<span class="separator">' . $separator . '</span>';
         } else {
-            $output = $this->pi_getLL('prevPage', '&lt;', true) . $separator;
+            $output = '<span>' . $this->pi_getLL('prevPage', '&lt;', true) . '</span><span class="separator">' . $separator . '</span>';
         }
         $i = 0;
         $skip = null;
@@ -94,13 +94,13 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         while ($i < $maxPages) {
             if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
                 if ($this->piVars['pointer'] != $i) {
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', true), $i + 1), ['pointer' => $i], true) . $separator;
+                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', true), $i + 1), ['pointer' => $i], true) . '<span class="separator">' . $separator . '</span>';
                 } else {
-                    $output .= sprintf($this->pi_getLL('page', '%d', true), $i + 1) . $separator;
+                    $output .= '<span class="active">' . sprintf($this->pi_getLL('page', '%d', true), $i + 1) . '</span><span class="separator">' . $separator . '</span>';
                 }
                 $skip = true;
             } elseif ($skip === true) {
-                $output .= $this->pi_getLL('skip', '...', true) . $separator;
+                $output .= '<span class="skip">' . $this->pi_getLL('skip', '...', true) . '</span><span class="separator">' . $separator . '</span>';
                 $skip = false;
             }
             $i++;
@@ -109,7 +109,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         if ($this->piVars['pointer'] < $maxPages - 1) {
             $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', true), ['pointer' => $this->piVars['pointer'] + 1], true);
         } else {
-            $output .= $this->pi_getLL('nextPage', '&gt;', true);
+            $output .= '<span>' .$this->pi_getLL('nextPage', '&gt;', true) . '</span>';
         }
         return $output;
     }
