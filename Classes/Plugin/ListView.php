@@ -81,12 +81,12 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             return '';
         }
         // Get separator.
-        $separator = $this->pi_getLL('separator', ' - ', true);
+        $separator = '<span class="separator">' . $this->pi_getLL('separator', ' - ', true) . '</span>';
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
             $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', true), ['pointer' => $this->piVars['pointer'] - 1], true) . $separator;
         } else {
-            $output = $this->pi_getLL('prevPage', '&lt;', true) . $separator;
+            $output = '<span>' . $this->pi_getLL('prevPage', '&lt;', true) . '</span>' . $separator;
         }
         $i = 0;
         $skip = null;
@@ -96,11 +96,11 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                 if ($this->piVars['pointer'] != $i) {
                     $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', true), $i + 1), ['pointer' => $i], true) . $separator;
                 } else {
-                    $output .= sprintf($this->pi_getLL('page', '%d', true), $i + 1) . $separator;
+                    $output .= '<span class="active">' . sprintf($this->pi_getLL('page', '%d', true), $i + 1) . '</span>' . $separator;
                 }
                 $skip = true;
             } elseif ($skip === true) {
-                $output .= $this->pi_getLL('skip', '...', true) . $separator;
+                $output .= '<span class="skip">' . $this->pi_getLL('skip', '...', true) . '</span>' . $separator;
                 $skip = false;
             }
             $i++;
@@ -109,7 +109,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         if ($this->piVars['pointer'] < $maxPages - 1) {
             $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', true), ['pointer' => $this->piVars['pointer'] + 1], true);
         } else {
-            $output .= $this->pi_getLL('nextPage', '&gt;', true);
+            $output .= '<span>' . $this->pi_getLL('nextPage', '&gt;', true) . '</span>';
         }
         return $output;
     }
