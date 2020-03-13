@@ -121,7 +121,6 @@ ol.Map.prototype.rotateLeft = function() {
 ol.Map.prototype.rotateRight = function() {
     this.rotate(5);
     if (this.ov_view !== null && this.ov_view !== undefined) {
-        alert('no');
         this.ov_view.rotate(5);
     }
 };
