@@ -226,6 +226,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                     'tx_dlf_documents.uid AS uid',
                     'tx_dlf_documents.title AS title',
                     'tx_dlf_documents.volume AS volume',
+                    'tx_dlf_documents.mets_orderlabel AS mets_orderlabel',
                     'tx_dlf_structures_join.index_name AS type'
                 )
                 ->innerJoin(
@@ -243,7 +244,8 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                     $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($this->doc->pid)),
                     $excludeOtherWhere
                 )
-                ->orderBy('tx_dlf_documents.volume_sorting')
+                ->addOrderBy('tx_dlf_documents.volume_sorting')
+                ->addOrderBy('tx_dlf_documents.mets_orderlabel')
                 ->execute();
 
             $allResults = $result->fetchAll();
@@ -256,6 +258,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                         'label' => $resArray['title'],
                         'type' => $resArray['type'],
                         'volume' => $resArray['volume'],
+                        'orderlabel' => $resArray['mets_orderlabel'],
                         'pagination' => '',
                         'targetUid' => $resArray['uid']
                     ];
