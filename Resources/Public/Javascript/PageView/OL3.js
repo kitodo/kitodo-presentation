@@ -78,8 +78,8 @@ ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
         resolution = view.getResolution(),
         duration = opt_duration !== undefined ? opt_duration : 500;
     this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
-        'duration': duration
+        resolution,
+        duration
     }));
     view.setCenter(center);
     view.setZoom(zoomLevel);
@@ -100,7 +100,7 @@ ol.Map.prototype.rotate = function(rotation) {
         'duration':200
     }));
     view.rotate(rotate, center);
-    if (this.ov_view != null) {
+    if (this.ov_view !== null) {
         this.ov_view.rotate(rotate);
     }
 };
@@ -110,7 +110,7 @@ ol.Map.prototype.rotate = function(rotation) {
  */
 ol.Map.prototype.rotateLeft = function() {
     this.rotate(-5);
-    if (this.ov_view != null) {
+    if (this.ov_view !== null) {
         this.ov_view.rotate(-5);
     }
 };
@@ -120,7 +120,7 @@ ol.Map.prototype.rotateLeft = function() {
  */
 ol.Map.prototype.rotateRight = function() {
     this.rotate(5);
-    if (this.ov_view != null) {
+    if (this.ov_view !== null) {
         this.ov_view.rotate(5);
     }
 };
@@ -130,7 +130,7 @@ ol.Map.prototype.rotateRight = function() {
  */
 ol.Map.prototype.resetRotation = function() {
     this.getView().rotate(0, this.getView().getCenter());
-    if (this.ov_view != null) {
+    if (this.ov_view !== null) {
         this.ov_view.rotate(0);
     }
 };

@@ -199,11 +199,11 @@ dlfAltoParser.prototype.parseFeatureWithGeometry_ = function(node) {
 
     feature.setId(id);
     feature.setProperties({
-        'type':type,
-        'width': width,
-        'height': height,
-        'hpos': hpos,
-        'vpos': vpos
+        type,
+        width,
+        height,
+        hpos,
+        vpos
     });
 
     return feature;
@@ -336,7 +336,7 @@ dlfAltoParser.prototype.parseContentFeatures_ = function(node) {
             default:
                 fulltext = '';
         };
-        feature.setProperties({'fulltext':fulltext});
+        feature.setProperties({fulltext});
 
         textlineContentFeatures.push(feature);
     };

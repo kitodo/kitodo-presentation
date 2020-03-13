@@ -23,7 +23,7 @@ if (jQuery.fn.scrollTo === undefined) {
         var manualOffsetTop = $(elem).parent().height() / 2;
         $(this).animate({
             scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top - manualOffsetTop
-        }, speed == undefined ? 1000 : speed);
+        }, speed === undefined ? 1000 : speed);
         return this;
     };
 }
@@ -44,7 +44,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
         dlfUtils.parseDataDic($('#tx-dlf-tools-annotations')) :
         {'annotations-on':'Display Annotations','annotations-off':'Hide Annotations'};
 
-        this.layers_ = {
+    this.layers_ = {
         annotationList: new ol.layer.Vector({
             'source': new ol.source.Vector(),
             'style': dlfViewerOL3Styles.defaultStyle()
@@ -100,7 +100,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
 
 
         }, this),
-            mapHover: $.proxy(function(event){
+        mapHover: $.proxy(function(event){
             // hover in case of dragging
             if (event['dragging']) {
                 return;
@@ -208,13 +208,12 @@ function DlfAnnotationControl(map, image, annotationContainers) {
         .attr('title', this.dic['annotations-on']);
 
     // if annotation is activated via cookie than run activation methode
-    if (dlfUtils.getCookie("tx-dlf-pageview-annotation-select") == 'enabled') {
+    if (dlfUtils.getCookie("tx-dlf-pageview-annotation-select") === 'enabled') {
         // activate the annotation behavior
         this.activate(anchorEl);
     }
 }
-    
-    
+
 DlfAnnotationControl.prototype.showAnnotationText = function(featuresParam) {
     var features = featuresParam === undefined ? this.annotationData : featuresParam;
     if (features !== undefined) {
@@ -223,7 +222,7 @@ DlfAnnotationControl.prototype.showAnnotationText = function(featuresParam) {
             var feature = features[i],
                 annotations = feature.get('annotations'),
                 labelEl;
-            if (feature.get('label') != '') {
+            if (feature.get('label') !== '') {
                 labelEl = $('<span class="annotation-list-label"/>');
                 labelEl.text(feature.get('label'));
                 $('#tx-dlf-annotationselection').append(labelEl);
@@ -238,9 +237,9 @@ DlfAnnotationControl.prototype.showAnnotationText = function(featuresParam) {
         }
     }
 };
-    
+
 DlfAnnotationControl.prototype.activate = function() {
-        
+
     var controlEl = $('#tx-dlf-tools-annotations');
 
     // Fetch annotation lists from server if the method is called for the first time
@@ -268,9 +267,9 @@ DlfAnnotationControl.prototype.activate = function() {
 
     // trigger event
     $(this).trigger("activate-annotations", this);
-    
+
 };
-    
+
 DlfAnnotationControl.prototype.deactivate = function() {
     var controlEl = $('#tx-dlf-tools-annotations');
     // deactivate annotations
@@ -288,7 +287,7 @@ DlfAnnotationControl.prototype.disableAnnotationSelect = function() {
     // remove layers
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.removeLayer(this.layers_[key]);
+            this.map.removeLayer(this.layers_[String(key)]);
         }
     };
     var className = 'fulltext-visible';
@@ -309,9 +308,9 @@ DlfAnnotationControl.prototype.enableAnnotationSelect = function(textBlockFeatur
     // add layers to map
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.addLayer(this.layers_[key]);
+            this.map.addLayer(this.layers_[String(key)]);
         }
-    };
+    }
     // show annotation container
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-annotations").addClass(className)
@@ -333,7 +332,7 @@ DlfAnnotationControl.prototype.fetchAnnotationContainersFromServer = function(an
             url: annotationList.uri,
             async: false
         });
-        responseJson = request.responseJSON != null ? request.responseJSON : request.responseText != null ? $.parseJSON(request.responseText) : null;
+        responseJson = request.responseJSON !== null ? request.responseJSON : request.responseText !== null ? $.parseJSON(request.responseText) : null;
         if (responseJson.label === undefined) {
             responseJson.label = annotationList.label;
         }

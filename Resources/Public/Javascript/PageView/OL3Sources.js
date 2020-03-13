@@ -49,7 +49,7 @@ Number.isInteger = Number.isInteger || function(value) {
  * Polyfill for Number.isNaN
  */
 Number.isNaN = Number.isNaN || function(value) {
-    return value !== null && (value != value || +value != value);
+    return value !== null && (value !== value || +value !== value);
 };
 
 /**
@@ -73,7 +73,7 @@ dlfViewerSource.tileLoadFunction = function(tileSize, tile, url) {
         tileHeight = Array.isArray(tileSize) ? tileSize[1] : tileSize;
     $(img).load(function() {
         if (img.naturalWidth > 0 &&
-          (img.naturalWidth != tileWidth || img.naturalHeight != tileHeight)) {
+          (img.naturalWidth !== tileWidth || img.naturalHeight !== tileHeight)) {
             var canvas = document.createElement('canvas');
             canvas.width = tileWidth;
             canvas.height = tileHeight;
@@ -81,7 +81,7 @@ dlfViewerSource.tileLoadFunction = function(tileSize, tile, url) {
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
 
-            var key = dlfViewerSource.findKey(tile, function(v) {return v == img;});
+            var key = dlfViewerSource.findKey(tile, function(v) {return v === img;});
             if (key) {
                 tile[key] = canvas;
             }
@@ -114,9 +114,9 @@ dlfViewerSource.IIIF = function(options) {
         resolutions = $.extend([], options.resolutions),
         sizes = options.sizes === undefined ? [] : options.sizes,
         supports = options.supports === undefined ? [] : options.supports,
-        supportsListedSizes = sizes != undefined && Array.isArray(sizes) && sizes.length > 0,
-        supportsListedTiles = tileSize != undefined && (Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0),
-        supportsArbitraryTiling = supports != undefined && Array.isArray(supports) &&
+        supportsListedSizes = sizes !== undefined && Array.isArray(sizes) && sizes.length > 0,
+        supportsListedTiles = tileSize !== undefined && (Number.isInteger(tileSize) && tileSize > 0 || Array.isArray(tileSize) && tileSize.length > 0),
+        supportsArbitraryTiling = supports !== undefined && Array.isArray(supports) &&
             (supports.includes('regionByPx') || supports.includes('regionByPct')) &&
             (supports.includes('sizeByWh') || supports.includes('sizeByH') ||
             supports.includes('sizeByW') || supports.includes('sizeByPct')),
@@ -125,27 +125,27 @@ dlfViewerSource.IIIF = function(options) {
         tileHeight,
         maxZoom;
 
-    url += url.lastIndexOf('/') == url.length - 1 ? '' : '/';
+    url += url.lastIndexOf('/') === url.length - 1 ? '' : '/';
     // sort resolutions because the spec does not specify any order
     resolutions.sort(function(a, b) {
         return b - a;
     });
 
     if (supportsListedTiles || supportsArbitraryTiling) {
-        if (tileSize != undefined) {
+        if (tileSize !== undefined) {
             if (Number.isInteger(tileSize) && tileSize > 0) {
               tileWidth = tileSize;
               tileHeight = tileSize;
             } else if (Array.isArray(tileSize) && tileSize.length > 0) {
-                if (tileSize.length == 1 || tileSize[1] == undefined && Number.isInteger(tileSize[0])) {
+                if (tileSize.length === 1 || tileSize[1] === undefined && Number.isInteger(tileSize[0])) {
                     tileWidth = tileSize[0];
                     tileHeight = tileSize[0];
                 }
-                if (tileSize.length == 2) {
+                if (tileSize.length === 2) {
                     if (Number.isInteger(tileSize[0]) && Number.isInteger(tileSize[1])) {
                         tileWidth = tileSize[0];
                         tileHeight = tileSize[1];
-                    } else if (tileSize[0] == undefined && Number.isInteger(tileSize[1])) {
+                    } else if (tileSize[0] === undefined && Number.isInteger(tileSize[1])) {
                         tileWidth = tileSize[1];
                         tileHeight = tileSize[1];
                     }
@@ -156,7 +156,7 @@ dlfViewerSource.IIIF = function(options) {
             tileWidth = 256;
             tileHeight = 256;
         }
-        if (resolutions.length == 0) {
+        if (resolutions.length === 0) {
             maxZoom = Math.max(
                 Math.ceil(Math.log(width / tileWidth) / Math.LN2),
                 Math.ceil(Math.log(height / tileHeight) / Math.LN2)
@@ -186,7 +186,7 @@ dlfViewerSource.IIIF = function(options) {
             var ignoredSizesIndex = [];
             for (var i = 0; i < sizes.length; i++) {
                 var resolution = width / sizes[i][0];
-                if (resolutions.length > 0 && resolutions[resolutions.length - 1] == resolution) {
+                if (resolutions.length > 0 && resolutions[resolutions.length - 1] === resolution) {
                     ignoredSizesIndex.push(i);
                     continue;
                 }
@@ -205,12 +205,12 @@ dlfViewerSource.IIIF = function(options) {
             maxZoom = 0;
         }
     }
-    
+
     // define tilegrid with offset extent
     var extent = [offset[0], offset[1] - height, offset[0] + width, offset[1]];
     var tileGrid = new ol.tilegrid.TileGrid({
-        extent: extent,
-        resolutions: resolutions,
+        extent,
+        resolutions,
         origin: ol.extent.getTopLeft(extent),
         tileSize: [tileWidth, tileHeight]
     });
@@ -256,7 +256,7 @@ dlfViewerSource.IIIF = function(options) {
             if (regionY + tileHeight * scale > height) {
                 sizeH = Math.floor((height - regionY + scale - 1) / scale);
             }
-            if (regionX == 0 && regionW == width && regionY == 0 && regionH == height) {
+            if (regionX === 0 && regionW === width && regionY === 0 && regionH === height) {
                 // canonical full image region parameter is 'full', not 'x,y,w,h'
                 regionParam = 'full';
             } else if (!supportsArbitraryTiling || supports.includes('regionByPx')) {
@@ -268,7 +268,7 @@ dlfViewerSource.IIIF = function(options) {
                     pctH = formatPercentage(regionH / height * 100);
                 regionParam = 'pct:' + pctX + ',' + pctY + ',' + pctW + ',' + pctH;
             }
-            if (version == 'version3' && (!supportsArbitraryTiling || supports.includes('sizeByWh'))) {
+            if (version === 'version3' && (!supportsArbitraryTiling || supports.includes('sizeByWh'))) {
                 sizeParam = sizeW + ',' + sizeH;
             } else if (!supportsArbitraryTiling || supports.includes('sizeByW')) {
                 sizeParam = sizeW + ',';
@@ -284,21 +284,21 @@ dlfViewerSource.IIIF = function(options) {
             if (supportsListedSizes) {
                 var regionWidth = sizes[zoom][0],
                     regionHeight = sizes[zoom][1];
-                if (version == 'version3') {
-                    if (regionWidth == width && regionHeight == height) {
+                if (version === 'version3') {
+                    if (regionWidth === width && regionHeight === height) {
                         sizeParam = 'max';
                     } else {
                         sizeParam = regionWidth + ',' + regionHeight;
                     }
                 } else {
-                    if (regionWidth == width) {
+                    if (regionWidth === width) {
                         sizeParam = 'full';
                     } else {
                         sizeParam = regionWidth + ',';
                     }
                 }
             } else {
-                sizeParam = version == 'version3' ? 'max' : 'full';
+                sizeParam = version === 'version3' ? 'max' : 'full';
             }
         }
         return url + regionParam + '/' + sizeParam + '/0/' + quality + '.' + format;
@@ -306,9 +306,9 @@ dlfViewerSource.IIIF = function(options) {
 
     var tileImageParams = {
         crossOrigin: origin,
-        projection: projection,
-        tileGrid: tileGrid,
-        tileUrlFunction: tileUrlFunction
+        projection,
+        tileGrid,
+        tileUrlFunction
     };
 
     if (ol.has.CANVAS) {
@@ -370,7 +370,7 @@ dlfViewerSource.IIP = function(options) {
         imageHeight >>= 1;
         res += res;
 
-    };
+    }
     resolutions.push( res );
     tierSizeInTiles.push( [1,1]);
     tierSizeInTiles.reverse();

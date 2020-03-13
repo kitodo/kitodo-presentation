@@ -20,7 +20,7 @@ jQuery.fn.scrollTo = function(elem, speed) {
     var manualOffsetTop = $(elem).parent().height() / 2;
     $(this).animate({
         scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top - manualOffsetTop
-    }, speed == undefined ? 1000 : speed);
+    }, speed === undefined ? 1000 : speed);
     return this;
 };
 
@@ -263,7 +263,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         .attr('title', this.dic['fulltext-on']);
 
     // if fulltext is activated via cookie than run activation methode
-    if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") == 'enabled') {
+    if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
         // activate the fulltext behavior
         this.activate(anchorEl);
     }
@@ -335,7 +335,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     // remove layers
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.removeLayer(this.layers_[key]);
+            this.map.removeLayer(this.layers_[String(key)]);
         }
     };
 
@@ -364,7 +364,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
     // add layers to map
     for (var key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
-            this.map.addLayer(this.layers_[key]);
+            this.map.addLayer(this.layers_[String(key)]);
         }
     };
 
@@ -390,7 +390,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
 dlfViewerFullTextControl.fetchFulltextDataFromServer = function(url, image, opt_offset){
     // fetch data from server
     var request = $.ajax({
-        url: url,
+        url,
         async: false
     });
 
@@ -421,7 +421,7 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
             for (var j = 0; j < textlines.length; j++) {
                 var textLineSpan = $('<span class="textline" id="' + textlines[j].getId() + '">');
                 var content = textlines[j].get('content');
-                
+
                 for (var k = 0; k < content.length; k++) {
                     var span = $('<span class="' + content[k].get('type') + '" id="' + content[k].getId() + '"/>');
                     var spanText = content[k].get('fulltext');
@@ -439,6 +439,6 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
             $('#tx-dlf-fulltextselection').append('<br /><br />');
         }
 
-    };
+    }
 
 };

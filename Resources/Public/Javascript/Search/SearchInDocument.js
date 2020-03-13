@@ -45,11 +45,10 @@ function previousResultPage(rows) {
 function resetStart() {
     $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(0);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 $(document).ready(function() {
-    $("#tx-dlf-search-in-document-form").submit(function( event ) {
-      console.log(event);
+    $("#tx-dlf-search-in-document-form").submit(function(event) {
         // Stop form from submitting normally
         event.preventDefault();
         $('#tx-dlf-search-in-document-loading').show();

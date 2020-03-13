@@ -129,7 +129,7 @@ dlfViewerImageManipulationControl = function(options) {
                     glif.reset();
 
                     for (var filter in this.filters_) {
-                        glif.addFilter(filter, this.filters_[filter]);
+                        glif.addFilter(filter, this.filters_[String(filter)]);
                     };
 
                     this.filterUpdated_ = false;
@@ -154,7 +154,7 @@ dlfViewerImageManipulationControl = function(options) {
             for (var i = 0; i < sliderEls.length; i++) {
                 var sliderEl = sliderEls[i],
                 type = sliderEl.getAttribute('data-type'),
-                value = FILTERS_DEFAULT_[type];
+                value = FILTERS_DEFAULT_[String(type)];
 
                 $(sliderEl).slider('value', value);
             };
@@ -197,7 +197,7 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
     if (!dlfUtils.exists(this.sliderContainer_)) {
         // in case filter sliders are not initialize yet add them
         this.createFilters_();
-    };
+    }
     $(this.sliderContainer_).show().addClass('open');
 
     // add postcompose listener to layers
@@ -370,7 +370,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
                 element = valueEl[0],
                 labelValue = dlfUtils.exists(opt_labelFn) ? opt_labelFn(value) : value + '%';
 
-        if (orientation == 'vertical') {
+        if (orientation === 'vertical') {
             var style_top = 100 - ((value - baseMin) / (baseMax - baseMin) * 100);
             element.style.top = style_top + '%';
             element.innerHTML = labelValue;
@@ -392,7 +392,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
         'max': baseMax,
         'value': startValue,
         'animate': 'slow',
-        'orientation': orientation,
+        orientation,
         'step': steps,
         'slide': update,
         'change': update
