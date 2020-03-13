@@ -609,7 +609,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             ->execute();
 
         while ($collection = $result->fetch()) {
-            $facetCollectionArray[] = $collection[0];
+            $facetCollectionArray[] = $collection['index_name'];
         }
 
         // Process results.
