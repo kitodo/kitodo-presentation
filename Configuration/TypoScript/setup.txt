@@ -7,10 +7,9 @@ config {
 
 
 page {
-  includeJSLibs {
-    jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-2.2.4.min.js
-  }
   includeJSFooterlibs {
+    jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-3.4.1.min.js
+    jQuery.forceOnTop = 1
     jqueryUiMouseSlider = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
   }
 }

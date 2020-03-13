@@ -747,7 +747,7 @@ dlfUtils.isCorsEnabled = function (imageObjs) {
             async: false
         }).done(function (data, type) {
             response = type === 'success' && data.indexOf('Access-Control-Allow-Origin') !== -1;
-        }).error(function (data, type) {
+        }).fail(function (data, type) {
             response = false;
         });
     });
