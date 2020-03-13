@@ -425,7 +425,7 @@ dlfViewer.prototype.init = function(controlNames) {
             $(window).trigger("map-loadend", window);
 
             // append listener for saving view params in case of flipping pages
-            $(window).unload($.proxy(function() {
+            $(window).on("unload", $.proxy(function() {
                 // check if image manipulation control exists and if yes deactivate it first for proper recognition of
                 // the actual map view
                 if (this.imageManipulationControl !== undefined && this.imageManipulationControl.isActive()) {
