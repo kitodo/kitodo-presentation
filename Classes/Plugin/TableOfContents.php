@@ -226,6 +226,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                     'tx_dlf_documents.uid AS uid',
                     'tx_dlf_documents.title AS title',
                     'tx_dlf_documents.volume AS volume',
+                    'tx_dlf_documents.mets_label AS mets_label',
                     'tx_dlf_documents.mets_orderlabel AS mets_orderlabel',
                     'tx_dlf_structures_join.index_name AS type'
                 )
@@ -255,7 +256,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                 $menuArray[0]['_SUB_MENU'] = [];
                 foreach ($allResults as $resArray) {
                     $entry = [
-                        'label' => $resArray['title'],
+                        'label' => !empty($resArray['mets_label']) ? $resArray['mets_label'] : $resArray['title'],
                         'type' => $resArray['type'],
                         'volume' => $resArray['volume'],
                         'orderlabel' => $resArray['mets_orderlabel'],
