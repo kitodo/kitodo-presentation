@@ -12,6 +12,8 @@
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Update class 'ext_update' for the 'dlf' extension
@@ -32,6 +34,14 @@ class ext_update
     protected $content = '';
 
     /**
+     * the TYPO3 version number as int. This is needed for backward compatibility
+     *
+     * @var bool
+     * @access protected
+     */
+    protected $typo3Version = 0;
+
+    /**
      * Triggers the update option in the extension manager
      *
      * @access public
@@ -40,6 +50,9 @@ class ext_update
      */
     public function access()
     {
+        // set typo3Version variable
+        $this->typo3Version =  version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version(), '9.0.0', '>=');
+
         if (count($this->getMetadataConfig())) {
             return true;
         } elseif ($this->oldIndexRelatedTableNames()) {
@@ -65,23 +78,46 @@ class ext_update
     {
         $uids = [];
         // check if tx_dlf_metadata.xpath exists anyhow
-        $fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
-        if (!in_array('xpath', array_keys($fieldsInDatabase))) {
-            return $uids;
-        }
-        // Get all records with outdated configuration.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_metadata.uid AS uid',
-            'tx_dlf_metadata',
-            'tx_dlf_metadata.format=0'
-                . ' AND NOT tx_dlf_metadata.xpath=""'
-                . Helper::whereClause('tx_dlf_metadata')
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
-            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-                $uids[] = intval($resArray['uid']);
+        if($this->typo3Version) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_metadata');
+
+            $result = $queryBuilder
+                ->select('*')
+                ->from('tx_dlf_metadata')
+                ->execute();
+
+            $rows = $result->fetchAll();
+
+            if((count($rows) === 0) || !in_array('xpath', array_keys($rows[0]))) {
+                return $uids;
+            } else {
+                foreach($rows as $row) {
+                    if($row['format'] === 0 && $row['xpath']) {
+                        $uids[] = intval($row['uid']);
+                    }
+                }
+            };
+        } else {
+            $fieldsInDatabase = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_dlf_metadata');
+
+            if (!in_array('xpath', array_keys($fieldsInDatabase))) {
+                return $uids;
             }
-        }
+            // Get all records with outdated configuration.
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_dlf_metadata.uid AS uid',
+                'tx_dlf_metadata',
+                'tx_dlf_metadata.format=0'
+                    . ' AND NOT tx_dlf_metadata.xpath=""'
+                    . Helper::whereClause('tx_dlf_metadata')
+            );
+            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                    $uids[] = intval($resArray['uid']);
+                }
+            }
+        };
+
         return $uids;
     }
 
@@ -127,14 +163,28 @@ class ext_update
     {
         $oldRecords = [];
         // Get all records with outdated configuration.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
-            'tx_dlf_formats',
-            'tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
-                . Helper::whereClause('tx_dlf_formats')
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            $oldRecords[$resArray['uid']] = $resArray['type'];
+        if($this->typo3Version) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_formats');
+
+            $result = $queryBuilder
+                ->select('tx_dlf_formats.uid AS uid', 'tx_dlf_formats.type AS type')
+                ->from('tx_dlf_formats')
+                ->where('tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"')
+                ->execute();
+
+            while ($resArray = $result->fetch()) {
+                $oldRecords[$resArray['uid']] = $resArray['type'];
+            }
+        } else {
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'tx_dlf_formats.uid AS uid,tx_dlf_formats.type AS type',
+                'tx_dlf_formats',
+                'tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"' // We are looking for a single backslash...
+                    . Helper::whereClause('tx_dlf_formats')
+            );
+            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                $oldRecords[$resArray['uid']] = $resArray['type'];
+            }
         }
         return $oldRecords;
     }
@@ -148,20 +198,41 @@ class ext_update
      */
     protected function oldIndexRelatedTableNames()
     {
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'column_name',
-            'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME = "tx_dlf_metadata"'
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            if (
-                $resArray['column_name'] == 'tokenized'
-                || $resArray['column_name'] == 'stored'
-                || $resArray['column_name'] == 'indexed'
-                || $resArray['column_name'] == 'boost'
-                || $resArray['column_name'] == 'autocomplete'
-            ) {
-                return true;
+        if($this->typo3Version) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
+
+            $result = $queryBuilder
+                ->select('column_name')
+                ->from('INFORMATION_SCHEMA.COLUMNS')
+                ->where('TABLE_NAME = "tx_dlf_metadata"')
+                ->execute();
+            while($resArray = $result->fetch()) {
+                if (
+                    $resArray['column_name'] == 'tokenized'
+                    || $resArray['column_name'] == 'stored'
+                    || $resArray['column_name'] == 'indexed'
+                    || $resArray['column_name'] == 'boost'
+                    || $resArray['column_name'] == 'autocomplete'
+                ) {
+                    return true;
+                }
+            }
+        } else {
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'column_name',
+                'INFORMATION_SCHEMA.COLUMNS',
+                'TABLE_NAME = "tx_dlf_metadata"'
+            );
+            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                if (
+                    $resArray['column_name'] == 'tokenized'
+                    || $resArray['column_name'] == 'stored'
+                    || $resArray['column_name'] == 'indexed'
+                    || $resArray['column_name'] == 'boost'
+                    || $resArray['column_name'] == 'autocomplete'
+                ) {
+                    return true;
+                }
             }
         }
     }
@@ -291,19 +362,35 @@ class ext_update
     protected function solariumSolrUpdateRequired()
     {
         // Get all Solr cores that were not deleted.
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'index_name',
-            'tx_dlf_solrcores',
-            '1=1'
-                . Helper::whereClause('tx_dlf_solrcores')
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            // Instantiate search object.
-            $solr = Solr::getInstance($resArray['index_name']);
-            if (!$solr->ready) {
-                return true;
+        if($this->typo3Version) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
+            $result = $queryBuilder
+                ->select('index_name')
+                ->from('tx_dlf_solrcores')
+                ->execute();
+
+            while($resArray = $result->fetch()) {
+                // Instantiate search object.
+                $solr = Solr::getInstance($resArray['index_name']);
+                if (!$solr->ready) {
+                    return true;
+                }
             }
-        }
+        } else {
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'index_name',
+                'tx_dlf_solrcores',
+                '1=1'
+                    . Helper::whereClause('tx_dlf_solrcores')
+            );
+            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                // Instantiate search object.
+                $solr = Solr::getInstance($resArray['index_name']);
+                if (!$solr->ready) {
+                    return true;
+                }
+            }
+        };
         return false;
     }
 
@@ -375,31 +462,68 @@ class ext_update
         $this->content .= Helper::renderFlashMessages();
     }
 
+    /**
+     * check if document has format
+     *
+     * @access protected
+     * @return bool
+     */
     protected function hasNoFormatForDocument($checkStructureOnly = false)
     {
         // Check if column "document_format" exists.
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'COLUMN_NAME',
-            'INFORMATION_SCHEMA.COLUMNS',
-            'TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="' . $database . '" AND COLUMN_NAME="document_format"'
-        );
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            if ($resArray['COLUMN_NAME'] == 'document_format') {
-                if ($checkStructureOnly) {
-                    return false;
-                }
-                // Check if column has empty fields.
-                $result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'uid',
-                    'tx_dlf_documents',
-                    'document_format="" OR document_format IS NULL'
-                );
-                if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 0) {
-                    return false;
+
+        if($this->typo3Version) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
+
+            $result = $queryBuilder
+                ->select('COLUMN_NAME')
+                ->from('INFORMATION_SCHEMA.COLUMNS')
+                ->where('TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="' . $database . '" AND COLUMN_NAME="document_format"')
+                ->execute();
+            while ($resArray = $result->fetch()) {
+                if ($resArray['COLUMN_NAME'] == 'document_format') {
+                    if ($checkStructureOnly) {
+                        return false;
+                    }
+                    // Check if column has empty fields.
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
+                    $count = $queryBuilder
+                        ->count('uid')
+                        ->from('tx_dlf_documents')
+                        ->where('document_format="" OR document_format IS NULL')
+                        ->execute()
+                        ->fetchColumn(0);
+
+                    if ($count === 0) {
+                        return false;
+                    }
                 }
             }
-        }
+        } else {
+            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                'COLUMN_NAME',
+                'INFORMATION_SCHEMA.COLUMNS',
+                'TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="' . $database . '" AND COLUMN_NAME="document_format"'
+            );
+            while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                if ($resArray['COLUMN_NAME'] == 'document_format') {
+                    if ($checkStructureOnly) {
+                        return false;
+                    }
+                    // Check if column has empty fields.
+                    $result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                        'uid',
+                        'tx_dlf_documents',
+                        'document_format="" OR document_format IS NULL'
+                    );
+                    if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 0) {
+                        return false;
+                    }
+                }
+            }
+        };
+
         return true;
     }
 
