@@ -57,6 +57,37 @@ class ext_update
     }
 
     /**
+     * The main method of the class
+     *
+     * @access public
+     *
+     * @return string The content that is displayed on the website
+     */
+    public function main()
+    {
+        // Load localization file.
+        $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
+        // Update the metadata configuration.
+        if (count($this->getMetadataConfig())) {
+            $this->updateMetadataConfig();
+        }
+        if ($this->oldIndexRelatedTableNames()) {
+            $this->renameIndexRelatedColumns();
+        }
+        if ($this->solariumSolrUpdateRequired()) {
+            $this->doSolariumSolrUpdate();
+        }
+        if (count($this->oldFormatClasses())) {
+            $this->updateFormatClasses();
+        }
+        // Set tx_dlf_documents.document_format to distinguish between METS and IIIF.
+        if ($this->hasNoFormatForDocument()) {
+            $this->updateDocumentAddFormat();
+        }
+        return $this->content;
+    }
+    
+    /**
      * Get all outdated metadata configuration records
      *
      * @access protected
@@ -209,37 +240,6 @@ class ext_update
             }
         }
         return true;
-    }
-
-    /**
-     * The main method of the class
-     *
-     * @access public
-     *
-     * @return string The content that is displayed on the website
-     */
-    public function main()
-    {
-        // Load localization file.
-        $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
-        // Update the metadata configuration.
-        if (count($this->getMetadataConfig())) {
-            $this->updateMetadataConfig();
-        }
-        if ($this->oldIndexRelatedTableNames()) {
-            $this->renameIndexRelatedColumns();
-        }
-        if ($this->solariumSolrUpdateRequired()) {
-            $this->doSolariumSolrUpdate();
-        }
-        if (count($this->oldFormatClasses())) {
-            $this->updateFormatClasses();
-        }
-        // Set tx_dlf_documents.document_format to distinguish between METS and IIIF.
-        if ($this->hasNoFormatForDocument()) {
-            $this->updateDocumentAddFormat();
-        }
-        return $this->content;
     }
 
     /**
@@ -452,28 +452,6 @@ class ext_update
     protected function updateDocumentAddFormat()
     {
 
-        // todo: check if this is really needed
-//        if ($this->hasNoFormatForDocument(true)) {
-//            $sqlQuery = 'ALTER TABLE tx_dlf_documents ADD COLUMN document_format varchar(100) DEFAULT "" NOT NULL;';
-//            $result = $GLOBALS['TYPO3_DB']->sql_query($sqlQuery);
-//            if ($result) {
-//                Helper::addMessage(
-//                    $GLOBALS['LANG']->getLL('update.documentAddFormatOkay', true),
-//                    $GLOBALS['LANG']->getLL('update.documentAddFormat', true),
-//                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-//                );
-//                $this->content .= Helper::renderFlashMessages();
-//            } else {
-//                Helper::addMessage(
-//                    $GLOBALS['LANG']->getLL('update.documentAddFormatNotOkay', true),
-//                    $GLOBALS['LANG']->getLL('update.documentAddFormat', true),
-//                    \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-//                );
-//                $this->content .= Helper::renderFlashMessages();
-//                return;
-//            }
-//        }
-
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_documents');
 
         $result = $queryBuilder
@@ -482,7 +460,7 @@ class ext_update
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->eq('document_format', $queryBuilder->createNamedParameter(null)),
                     $queryBuilder->expr()->eq('document_format', $queryBuilder->createNamedParameter(''))
-                )
+                ),
             )
             ->set('document_format', 'METS')
             ->execute();
