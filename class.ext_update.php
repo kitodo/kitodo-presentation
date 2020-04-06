@@ -40,17 +40,21 @@ class ext_update
      *
      * @return bool Should the update option be shown?
      */
-    public function access()
+    public function access(): bool
     {
         if (count($this->getMetadataConfig())) {
             return true;
-        } elseif ($this->oldIndexRelatedTableNames()) {
+        }
+        if ($this->oldIndexRelatedTableNames()) {
             return true;
-        } elseif ($this->solariumSolrUpdateRequired()) {
+        }
+        if ($this->solariumSolrUpdateRequired()) {
             return true;
-        } elseif (count($this->oldFormatClasses())) {
+        }
+        if (count($this->oldFormatClasses())) {
             return true;
-        } elseif ($this->hasNoFormatForDocument()) {
+        }
+        if ($this->hasNoFormatForDocument()) {
             return true;
         }
         return false;
@@ -63,7 +67,7 @@ class ext_update
      *
      * @return string The content that is displayed on the website
      */
-    public function main()
+    public function main(): string
     {
         // Load localization file.
         $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
@@ -86,7 +90,7 @@ class ext_update
         }
         return $this->content;
     }
-    
+
     /**
      * Get all outdated metadata configuration records
      *
@@ -94,7 +98,7 @@ class ext_update
      *
      * @return array Array of UIDs of outdated records
      */
-    protected function getMetadataConfig()
+    protected function getMetadataConfig(): array
     {
         $uids = [];
         // check if tx_dlf_metadata.xpath exists anyhow
@@ -107,15 +111,14 @@ class ext_update
 
         $rows = $result->fetchAll();
 
-        if((count($rows) === 0) || !in_array('xpath', array_keys($rows[0]))) {
+        if((count($rows) === 0) || !array_key_exists('xpath', $rows[0])) {
             return $uids;
-        } else {
-            foreach($rows as $row) {
-                if($row['format'] === 0 && $row['xpath']) {
-                    $uids[] = intval($row['uid']);
-                }
+        }
+        foreach($rows as $row) {
+            if($row['format'] === 0 && $row['xpath']) {
+                $uids[] = (int)$row['uid'];
             }
-        };
+        }
         return $uids;
     }
 
@@ -126,7 +129,7 @@ class ext_update
      *
      * @return bool
      */
-    protected function solariumSolrUpdateRequired()
+    protected function solariumSolrUpdateRequired(): bool
     {
         // Get all Solr cores that were not deleted.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
@@ -152,7 +155,7 @@ class ext_update
      *
      * @return array containing old format classes
      */
-    protected function oldFormatClasses()
+    protected function oldFormatClasses(): array
     {
         $oldRecords = [];
         // Get all records with outdated configuration.
@@ -178,7 +181,7 @@ class ext_update
      *
      * @return bool true if old index related columns exist
      */
-    protected function oldIndexRelatedTableNames()
+    protected function oldIndexRelatedTableNames(): bool
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
 
@@ -189,11 +192,11 @@ class ext_update
             ->execute();
         while($resArray = $result->fetch()) {
             if (
-                $resArray['column_name'] == 'tokenized'
-                || $resArray['column_name'] == 'stored'
-                || $resArray['column_name'] == 'indexed'
-                || $resArray['column_name'] == 'boost'
-                || $resArray['column_name'] == 'autocomplete'
+                $resArray['column_name'] === 'tokenized'
+                || $resArray['column_name'] === 'stored'
+                || $resArray['column_name'] === 'indexed'
+                || $resArray['column_name'] === 'boost'
+                || $resArray['column_name'] === 'autocomplete'
             ) {
                 return true;
             }
@@ -208,7 +211,7 @@ class ext_update
      * @param bool $checkStructureOnly
      * @return bool
      */
-    protected function hasNoFormatForDocument($checkStructureOnly = false)
+    protected function hasNoFormatForDocument($checkStructureOnly = false): bool
     {
         // Check if column "document_format" exists.
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
@@ -221,7 +224,7 @@ class ext_update
             ->where('TABLE_NAME="tx_dlf_documents" AND TABLE_SCHEMA="' . $database . '" AND COLUMN_NAME="document_format"')
             ->execute();
         while ($resArray = $result->fetch()) {
-            if ($resArray['COLUMN_NAME'] == 'document_format') {
+            if ($resArray['COLUMN_NAME'] === 'document_format') {
                 if ($checkStructureOnly) {
                     return false;
                 }
@@ -249,7 +252,7 @@ class ext_update
      *
      * @return void
      */
-    protected function renameIndexRelatedColumns()
+    protected function renameIndexRelatedColumns(): void
     {
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_metadata');
@@ -286,7 +289,7 @@ class ext_update
      *
      * @return void
      */
-    protected function updateFormatClasses()
+    protected function updateFormatClasses(): void
     {
         $oldRecords = $this->oldFormatClasses();
         $newValues = [
@@ -320,7 +323,7 @@ class ext_update
      *
      * @return void
      */
-    protected function updateMetadataConfig()
+    protected function updateMetadataConfig(): void
     {
         $metadataUids = $this->getMetadataConfig();
         if (!empty($metadataUids)) {
@@ -387,7 +390,7 @@ class ext_update
      *
      * @return void
      */
-    protected function doSolariumSolrUpdate()
+    protected function doSolariumSolrUpdate(): void
     {
         // Get all Solr cores that were not deleted.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
@@ -427,7 +430,7 @@ class ext_update
                     $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
                     if (
                         $status !== false
-                        && $status[0] == 0
+                        && $status[0] === 0
                     ) {
                         continue;
                     }
@@ -449,7 +452,12 @@ class ext_update
         $this->content .= Helper::renderFlashMessages();
     }
 
-    protected function updateDocumentAddFormat()
+    /**
+     * Add format type to outdated tx_dlf_documents rows
+     *
+     * @return void
+     */
+    protected function updateDocumentAddFormat(): void
     {
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_documents');
