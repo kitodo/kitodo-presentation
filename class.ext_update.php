@@ -164,9 +164,12 @@ class ext_update
         $result = $queryBuilder
             ->select('tx_dlf_formats.uid AS uid', 'tx_dlf_formats.type AS type')
             ->from('tx_dlf_formats')
-            ->where('tx_dlf_formats.class IS NOT NULL AND tx_dlf_formats.class != "" AND tx_dlf_formats.class NOT LIKE "%\\\\\\\\%"')
+            ->where(
+                $queryBuilder->expr()->isNotNull('tx_dlf_formats.class'),
+                $queryBuilder->expr()->neq('tx_dlf_formats.class', $queryBuilder->createNamedParameter('')),
+                $queryBuilder->expr()->notLike('tx_dlf_formats.class', $queryBuilder->createNamedParameter('%\\\\%'))
+            )
             ->execute();
-
         while ($resArray = $result->fetch()) {
             $oldRecords[$resArray['uid']] = $resArray['type'];
         }
@@ -300,7 +303,7 @@ class ext_update
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_formats');
 
         foreach ($oldRecords as $uid => $type) {
-            $result = $queryBuilder
+            $queryBuilder
                 ->update('tx_dlf_formats')
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid))
@@ -468,7 +471,7 @@ class ext_update
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->eq('document_format', $queryBuilder->createNamedParameter(null)),
                     $queryBuilder->expr()->eq('document_format', $queryBuilder->createNamedParameter(''))
-                ),
+                )
             )
             ->set('document_format', 'METS')
             ->execute();
