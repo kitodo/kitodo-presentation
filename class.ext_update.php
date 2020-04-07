@@ -111,11 +111,11 @@ class ext_update
 
         $rows = $result->fetchAll();
 
-        if((count($rows) === 0) || !array_key_exists('xpath', $rows[0])) {
+        if ((count($rows) === 0) || !array_key_exists('xpath', $rows[0])) {
             return $uids;
         }
-        foreach($rows as $row) {
-            if($row['format'] === 0 && $row['xpath']) {
+        foreach ($rows as $row) {
+            if ($row['format'] === 0 && $row['xpath']) {
                 $uids[] = (int)$row['uid'];
             }
         }
@@ -193,7 +193,7 @@ class ext_update
             ->from('INFORMATION_SCHEMA.COLUMNS')
             ->where('TABLE_NAME = "tx_dlf_metadata"')
             ->execute();
-        while($resArray = $result->fetch()) {
+        while ($resArray = $result->fetch()) {
             if (
                 $resArray['column_name'] === 'tokenized'
                 || $resArray['column_name'] === 'stored'
@@ -335,7 +335,7 @@ class ext_update
             // Get all old metadata configuration records.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_metadata');
             $result = $queryBuilder
-                ->select('tx_dlf_metadata.uid AS uid', 'tx_dlf_metadata.pid AS pid','tx_dlf_metadata.cruser_id AS cruser_id', 'tx_dlf_metadata.encoded AS encoded', 'tx_dlf_metadata.xpath AS xpath', 'tx_dlf_metadata.xpath_sorting AS xpath_sorting')
+                ->select('tx_dlf_metadata.uid AS uid', 'tx_dlf_metadata.pid AS pid', 'tx_dlf_metadata.cruser_id AS cruser_id', 'tx_dlf_metadata.encoded AS encoded', 'tx_dlf_metadata.xpath AS xpath', 'tx_dlf_metadata.xpath_sorting AS xpath_sorting')
                 ->from('tx_dlf_metadata')
                 ->where(
                     $queryBuilder->expr()->in(
