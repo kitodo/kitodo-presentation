@@ -138,7 +138,7 @@ class ext_update
             ->from('tx_dlf_solrcores')
             ->execute();
 
-        while($resArray = $result->fetch()) {
+        while ($resArray = $result->fetch()) {
             // Instantiate search object.
             $solr = Solr::getInstance($resArray['index_name']);
             if (!$solr->ready) {
