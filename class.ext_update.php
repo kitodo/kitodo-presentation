@@ -167,7 +167,7 @@ class ext_update
             ->where(
                 $queryBuilder->expr()->isNotNull('tx_dlf_formats.class'),
                 $queryBuilder->expr()->neq('tx_dlf_formats.class', $queryBuilder->createNamedParameter('')),
-                $queryBuilder->expr()->notLike('tx_dlf_formats.class', $queryBuilder->createNamedParameter('%\\\\%'))
+                $queryBuilder->expr()->like('tx_dlf_formats.class', $queryBuilder->createNamedParameter('%tx_dlf_%'))
             )
             ->execute();
         while ($resArray = $result->fetch()) {
