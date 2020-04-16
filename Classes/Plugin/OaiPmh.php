@@ -473,7 +473,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE (((`tx_dlf_documents`.`deleted` = 0) AND (`tx_dlf_collections`.`deleted` = 0)) AND ((`tx_dlf_documents`.`hidden` = 0) AND (`tx_dlf_collections`.`hidden` = 0)) AND (`tx_dlf_documents`.`starttime` <= 1586953440) AND ((`tx_dlf_documents`.`endtime` = 0) OR (`tx_dlf_documents`.`endtime` > 1586953440))) ' .
+            'WHERE (((`tx_dlf_documents`.`deleted` = 0) AND (`tx_dlf_collections`.`deleted` = 0)) AND ((`tx_dlf_documents`.`hidden` = 0) AND (`tx_dlf_collections`.`hidden` = 0)) AND (`tx_dlf_documents`.`starttime` <= ' . $GLOBALS['EXEC_TIME'] . ') AND ((`tx_dlf_documents`.`endtime` = 0) OR (`tx_dlf_documents`.`endtime` > ' . $GLOBALS['EXEC_TIME'] . '))) ' .
             'AND tx_dlf_documents.record_id = ? ' .
             'AND tx_dlf_documents.pid = ? ' .
             'AND tx_dlf_collections.pid = ? ' .
@@ -955,7 +955,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE (((`tx_dlf_documents`.`deleted` = 0) AND (`tx_dlf_collections`.`deleted` = 0)) AND ((`tx_dlf_documents`.`hidden` = 0) AND (`tx_dlf_collections`.`hidden` = 0)) AND (`tx_dlf_documents`.`starttime` <= 1586953440) AND ((`tx_dlf_documents`.`endtime` = 0) OR (`tx_dlf_documents`.`endtime` > 1586953440))) ' .
+            'WHERE (((`tx_dlf_documents`.`deleted` = 0) AND (`tx_dlf_collections`.`deleted` = 0)) AND ((`tx_dlf_documents`.`hidden` = 0) AND (`tx_dlf_collections`.`hidden` = 0)) AND (`tx_dlf_documents`.`starttime` <= ' . $GLOBALS['EXEC_TIME'] . ') AND ((`tx_dlf_documents`.`endtime` = 0) OR (`tx_dlf_documents`.`endtime` > ' . $GLOBALS['EXEC_TIME'] . '))) ' .
             'AND tx_dlf_documents.uid IN ( ? ) ' .
             'AND tx_dlf_documents.pid = ? ' .
             'AND tx_dlf_collections.pid = ? ' .
