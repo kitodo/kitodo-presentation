@@ -479,7 +479,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 'AND tx_dlf_collections.pid = ? ' .
                 'AND tx_dlf_relations.ident="docs_colls"' .
                 $where .
-                Helper::whereClause('tx_dlf_collections' , [ $this->piVars['identifier'] ]);
+                Helper::whereClause('tx_dlf_collections', [ $this->piVars['identifier'] ]);
 
         $statement = $connection->prepare($sql);
         $statement->bindValue(1, $this->piVars['identifier']);
