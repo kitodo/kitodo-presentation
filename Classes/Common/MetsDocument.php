@@ -589,7 +589,7 @@ final class MetsDocument extends Document
 
                 $result = $queryBuilder
                     ->select(
-                        'tx_dlf_collections_join.index_name AS index_name',
+                        'tx_dlf_collections_join.index_name AS index_name'
                     )
                     ->from('tx_dlf_documents')
                     ->innerJoin(
@@ -612,7 +612,7 @@ final class MetsDocument extends Document
                     )
                     ->where(
                         $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid)),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
                     )
                     ->orderBy('tx_dlf_collections_join.index_name', 'ASC')
                     ->execute();
