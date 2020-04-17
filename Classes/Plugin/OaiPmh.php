@@ -422,9 +422,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->select('tx_dlf_tokens.options AS options')
             ->from('tx_dlf_tokens')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', 'oai'),
-                $queryBuilder->expr()->eq('tx_dlf_tokens.token', $queryBuilder->expr()->literal($this->piVars['resumptionToken'])),
-                Helper::whereExpression('tx_dlf_structures')
+                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
+                $queryBuilder->expr()->eq('tx_dlf_tokens.token', $queryBuilder->expr()->literal($this->piVars['resumptionToken']))
             )
             ->setMaxResults(1)
             ->execute();
@@ -777,7 +776,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->where(
                 $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
                 $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', ''),
+                $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', $queryBuilder->createNamedParameter('')),
                 $where,
                 Helper::whereExpression('tx_dlf_collections')
             )
