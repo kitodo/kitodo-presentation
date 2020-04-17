@@ -789,7 +789,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             return $this->error('noSetHierarchy');
         }
         $ListSets = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListSets');
-        while ($resArray = $result->fetch()) {
+        foreach($allResults as $resArray) {
             $set = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'set');
             $set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($resArray['oai_name'], ENT_NOQUOTES, 'UTF-8')));
             $set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setName', htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
