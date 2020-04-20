@@ -464,7 +464,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $where = '';
         if (!$this->conf['show_userdefined']) {
-            $where .= ' AND tx_dlf_collections.fe_cruser_id=0';
+            $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
         }
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
@@ -473,13 +473,12 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE (((`tx_dlf_documents`.`deleted` = 0) AND (`tx_dlf_collections`.`deleted` = 0)) AND ((`tx_dlf_documents`.`hidden` = 0) AND (`tx_dlf_collections`.`hidden` = 0)) AND (`tx_dlf_documents`.`starttime` <= ' . $GLOBALS['EXEC_TIME'] . ') AND ((`tx_dlf_documents`.`endtime` = 0) OR (`tx_dlf_documents`.`endtime` > ' . $GLOBALS['EXEC_TIME'] . '))) ' .
-            'AND tx_dlf_documents.record_id = ? ' .
+            'WHERE tx_dlf_documents.record_id = ? ' .
             'AND tx_dlf_documents.pid = ? ' .
             'AND tx_dlf_collections.pid = ? ' .
-            'AND tx_dlf_relations.ident="docs_colls"' .
+            'AND tx_dlf_relations.ident="docs_colls" ' .
             $where .
-            Helper::whereClause('tx_dlf_collections', [$this->piVars['identifier']]);
+            'AND ' . Helper::whereExpression('tx_dlf_collections', [$this->piVars['identifier']]);
 
         $statement = $connection->prepare($sql);
         $statement->bindValue(1, $this->piVars['identifier']);
@@ -955,12 +954,11 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE (((`tx_dlf_documents`.`deleted` = 0) AND (`tx_dlf_collections`.`deleted` = 0)) AND ((`tx_dlf_documents`.`hidden` = 0) AND (`tx_dlf_collections`.`hidden` = 0)) AND (`tx_dlf_documents`.`starttime` <= ' . $GLOBALS['EXEC_TIME'] . ') AND ((`tx_dlf_documents`.`endtime` = 0) OR (`tx_dlf_documents`.`endtime` > ' . $GLOBALS['EXEC_TIME'] . '))) ' .
-            'AND tx_dlf_documents.uid IN ( ? ) ' .
+            'WHERE tx_dlf_documents.uid IN ( ? ) ' .
             'AND tx_dlf_documents.pid = ? ' .
             'AND tx_dlf_collections.pid = ? ' .
             'AND tx_dlf_relations.ident="docs_colls" ' .
-            Helper::whereClause('tx_dlf_collections') .
+            'AND ' . Helper::whereExpression('tx_dlf_collections') .
             ' LIMIT ?';
 
         $documents = $connection->prepare($sql);
