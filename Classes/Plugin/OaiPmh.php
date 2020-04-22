@@ -80,7 +80,6 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function deleteExpiredTokens()
     {
         // Delete expired resumption tokens.
-
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
 
         $result = $queryBuilder
