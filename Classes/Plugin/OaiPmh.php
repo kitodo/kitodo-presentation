@@ -467,16 +467,16 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
 
-        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS `collections` ' .
+        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE tx_dlf_documents.record_id = ? ' .
-            'AND tx_dlf_documents.pid = ? ' .
-            'AND tx_dlf_collections.pid = ? ' .
-            'AND tx_dlf_relations.ident="docs_colls" ' .
+            'WHERE `tx_dlf_documents`.`record_id` = ? ' .
+            'AND `tx_dlf_documents`.`pid` = ? ' .
+            'AND `tx_dlf_collections`.`pid` = ? ' .
+            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
             $where .
-            'AND ' . Helper::whereExpression('tx_dlf_collections', [$this->piVars['identifier']]);
+            'AND ' . Helper::whereExpression('tx_dlf_collections');
 
         $statement = $connection->prepare($sql);
         $statement->bindValue(1, $this->piVars['identifier']);
@@ -948,14 +948,14 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
 
-        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS `collections` ' .
+        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE tx_dlf_documents.uid IN ( ? ) ' .
-            'AND tx_dlf_documents.pid = ? ' .
-            'AND tx_dlf_collections.pid = ? ' .
-            'AND tx_dlf_relations.ident="docs_colls" ' .
+            'WHERE `tx_dlf_documents`.`uid` IN ( ? ) ' .
+            'AND `tx_dlf_documents`.`pid` = ? ' .
+            'AND `tx_dlf_collections`.`pid` = ? ' .
+            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
             'AND ' . Helper::whereExpression('tx_dlf_collections') .
             ' LIMIT ?';
 
