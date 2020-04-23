@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\HttpUtility;
 
 /**
  * Abstract plugin class for the 'dlf' extension
@@ -88,7 +89,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @access protected
      *
-     * @param array $conf: configuration array from TS-Template
+     * @param array $conf: Configuration array from TS-Template
      *
      * @return void
      */
@@ -198,27 +199,6 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     abstract public function main($content, $conf);
 
     /**
-     * Wraps the input string in a tag with the class attribute set to the class name
-     *
-     * @access public
-     *
-     * @param string $content: HTML content to wrap in the div-tags with the class of the plugin
-     *
-     * @return string HTML content wrapped, ready to return to the parent object.
-     */
-    public function pi_wrapInBaseClass($content)
-    {
-        if (!$GLOBALS['TSFE']->config['config']['disableWrapInBaseClass']) {
-            // Use class name instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
-            $content = '<div class="tx-dlf-' . strtolower(Helper::getUnqualifiedClassName(get_class($this))) . '">' . $content . '</div>';
-            if (!$GLOBALS['TSFE']->config['config']['disablePrefixComment']) {
-                $content = "\n\n<!-- BEGIN: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n" . $content . "\n\n<!-- END: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n";
-            }
-        }
-        return $content;
-    }
-
-    /**
      * Parses a string into a Typoscript array
      *
      * @access protected
@@ -232,6 +212,55 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
         $parser->parse($string);
         return $parser->setup;
+    }
+
+    /**
+     * Link string to the current page.
+     * @see \TYPO3\CMS\Frontend\Plugin\AbstractPlugin->pi_linkTP()
+     * 
+     * @access public
+     *
+     * @param string $str: The content string to wrap in <a> tags
+     * @param array $urlParameters: Array with URL parameters as key/value pairs
+     * @param bool $cache: Should the "no_cache" parameter be added?
+     * @param int $altPageId: Alternative page ID for the link.
+     *
+     * @return string The input string wrapped in <a> tags
+     */
+    public function pi_linkTP($str, $urlParameters = [], $cache = false, $altPageId = 0)
+    {
+        $conf = [];
+        if (!$cache) {
+            $conf['no_cache'] = true;
+        }
+        $conf['parameter'] = $altPageId ?: ($this->pi_tmpPageId ?: 'current');
+        $conf['additionalParams'] = $this->conf['parent.']['addParams'] . HttpUtility::buildQueryString($urlParameters, '&', true) . $this->pi_moreParams;
+        // Add additional configuration for absolute URLs.
+        $conf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
+        $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
+        return $this->cObj->typoLink($str, $conf);
+    }
+
+    /**
+     * Wraps the input string in a <div> tag with the class attribute set to the class name
+     * @see \TYPO3\CMS\Frontend\Plugin\AbstractPlugin->pi_wrapInBaseClass()
+     *
+     * @access public
+     *
+     * @param string $content: HTML content to wrap in the div-tags with the class of the plugin
+     *
+     * @return string HTML content wrapped, ready to return to the parent object.
+     */
+    public function pi_wrapInBaseClass($content)
+    {
+        if (!$this->frontendController->config['config']['disableWrapInBaseClass']) {
+            // Use class name instead of $this->prefixId for content wrapping because $this->prefixId is the same for all plugins.
+            $content = '<div class="tx-dlf-' . strtolower(Helper::getUnqualifiedClassName(get_class($this))) . '">' . $content . '</div>';
+            if (!$this->frontendController->config['config']['disablePrefixComment']) {
+                $content = "\n\n<!-- BEGIN: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n" . $content . "\n\n<!-- END: Content of extension '" . $this->extKey . "', plugin '" . Helper::getUnqualifiedClassName(get_class($this)) . "' -->\n\n";
+            }
+        }
+        return $content;
     }
 
     /**
