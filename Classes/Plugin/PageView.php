@@ -119,9 +119,9 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             $pageRenderer->addJsFooterInlineCode('kitodo-pageview-configuration', $viewerConfiguration);
         } else {
             foreach ($jsFiles as $jsFile) {
-                $markerArray['###JAVASCRIPT###'] .= '<script>' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile . '</script>' . "\n";
+                $markerArray .= '<script>' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile . '</script>' . "\n";
             }
-            $markerArray['###JAVASCRIPT###'] .= '<script>' . $viewerConfiguration . '</script>';
+            $markerArray .= '<script>' . $viewerConfiguration . '</script>';
         }
         return $markerArray;
     }
