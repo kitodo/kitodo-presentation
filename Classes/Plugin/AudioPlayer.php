@@ -82,9 +82,9 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $audioplayerConfiguration);
         } else {
             foreach ($jsFiles as $jsFile) {
-                $markerArray .= '<script>' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile . '</script>' . "\n";
+                $markerArray .= '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile . '"></script>' . "\n";
             }
-            $markerArray .= '<script>' . $audioplayerConfiguration . '</script>';
+            $markerArray .= '<script type="text/javascript">' . $audioplayerConfiguration . '</script>';
         }
         return $markerArray;
     }
