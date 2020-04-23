@@ -121,7 +121,13 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             foreach ($jsFiles as $jsFile) {
                 $markerArray .= '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile . '"></script>' . "\n";
             }
-            $markerArray .= '<script type="text/javascript">' . $viewerConfiguration . '</script>';
+            $markerArray .= '
+                <script type="text/javascript">
+                /*<![CDATA[*/
+                /*kitodo-pageview-configuration*/
+                ' . $viewerConfiguration . '
+                /*]]>*/
+                </script>';
         }
         return $markerArray;
     }
