@@ -217,7 +217,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
      * Link string to the current page.
      * @see \TYPO3\CMS\Frontend\Plugin\AbstractPlugin->pi_linkTP()
-     * 
+     *
      * @access public
      *
      * @param string $str: The content string to wrap in <a> tags
