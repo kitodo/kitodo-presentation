@@ -369,7 +369,9 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->getTemplate();
             // Configure @action URL for form.
             $linkConf = [
-                'parameter' => $GLOBALS['TSFE']->id
+                'parameter' => $GLOBALS['TSFE']->id,
+                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
             ];
             // Fill markers.
             $markerArray = [
@@ -523,6 +525,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     $additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
                 }
             }
+            $linkConf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
+            $linkConf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
             $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false);
             // Send headers.
             header('Location: ' . GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));

@@ -112,6 +112,8 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
                 $linkConf = [
                     'parameter' => $image['url'],
+                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'title' => $label . ' ' . $mimetypeLabel,
                     'additionalParams' => '',
                 ];

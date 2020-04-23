@@ -213,6 +213,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $label = $this->pi_getLL('goBasket', '', true);
             $basketConf = [
                 'parameter' => $this->conf['targetBasket'],
+                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'title' => $label
             ];
             $markerArray['###BASKET###'] = $this->cObj->typoLink($label, $basketConf);

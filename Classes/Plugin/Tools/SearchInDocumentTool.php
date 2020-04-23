@@ -90,7 +90,8 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Configure @action URL for form.
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1
+            'forceAbsoluteUrl' => 1,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
 
         $encryptedSolr = $this->getEncryptedCoreName();

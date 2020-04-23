@@ -67,6 +67,8 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $this->conf['targetPid'],
+            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', true, false),
             'title' => $markerArray['###PAGINATION###']
         ];
