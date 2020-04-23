@@ -70,6 +70,7 @@ class PageViewProxy
         if ($fetchedData) {
             $response->getBody()->write($fetchedData);
             $response = $response->withHeader('Access-Control-Allow-Origin', '*');
+            $response = $response->withHeader('Access-Control-Allow-Methods', 'GET');
             $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
         }
         if ($header === 0 && !empty($lastModified)) {
