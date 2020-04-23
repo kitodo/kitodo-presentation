@@ -37,31 +37,56 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return void
+     * @return string The output string for the ###JAVASCRIPT### template marker
      */
     protected function addPlayerJS()
     {
-        $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-        // Add AudioPlayer library.
-        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css');
-        $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', '#tx-dlf-audio { width: 100px; height: 100px; }');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js');
-        // Add AudioPlayer configuration.
+        $markerArray = '';
+        // CSS files.
+        $cssFiles = [
+            'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css'
+        ];
+        // Inline CSS.
+        $inlineCSS = '#tx-dlf-audio { width: 100px; height: 100px; }';
+        //Javascript files.
+        $jsFiles = [
+            // jPlayer
+            'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js',
+            // AudioPlayer
+            'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js'
+        ];
+        // AudioPlayer configuration.
         $audioplayerConfiguration = '
-                $(document).ready(function() {
-                    AudioPlayer = new dlfAudioPlayer({
-                        audio: {
-                            mimeType: "' . $this->audio['mimetype'] . '",
-                            title: "' . $this->audio['label'] . '",
-                            url:  "' . $this->audio['url'] . '"
-                        },
-                        parentElId: "tx-dlf-audio",
-                        swfPath: "' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
-                    });
+            $(document).ready(function() {
+                AudioPlayer = new dlfAudioPlayer({
+                    audio: {
+                        mimeType: "' . $this->audio['mimetype'] . '",
+                        title: "' . $this->audio['label'] . '",
+                        url:  "' . $this->audio['url'] . '"
+                    },
+                    parentElId: "tx-dlf-audio",
+                    swfPath: "' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
                 });
+            });
         ';
-        $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $audioplayerConfiguration);
+        // Add Javascript to page footer if not configured otherwise.
+        if (empty($this->conf['addJStoBody'])) {
+            $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+            foreach ($cssFiles as $cssFile) {
+                $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $cssFile);
+            }
+            $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', $inlineCSS);
+            foreach ($jsFiles as $jsFile) {
+                $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile);
+            }
+            $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $audioplayerConfiguration);
+        } else {
+            foreach ($jsFiles as $jsFile) {
+                $markerArray .= '<script>' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile . '</script>' . "\n";
+            }
+            $markerArray .= '<script>' . $audioplayerConfiguration . '</script>';
+        }
+        return $markerArray;
     }
 
     /**
@@ -105,15 +130,13 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
             $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']]);
             // Add jPlayer javascript.
-            $this->addPlayerJS();
+            $markerArray['###JAVASCRIPT###'] = $this->addPlayerJS();
         } else {
             // Quit without doing anything if required variables are not set.
             return $content;
         }
         // Load template file.
         $this->getTemplate();
-        // Fill in the template markers (currently: none).
-        $markerArray = [];
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
