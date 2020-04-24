@@ -69,6 +69,8 @@ class PageViewProxy
         $response = GeneralUtility::makeInstance(Response::class);
         if ($fetchedData) {
             $response->getBody()->write($fetchedData);
+            $response = $response->withHeader('Access-Control-Allow-Methods', 'GET');
+            $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'));
             $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
         }
         if ($header === 0 && !empty($lastModified)) {
