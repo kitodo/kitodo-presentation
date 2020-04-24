@@ -379,7 +379,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 '###LABEL_QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : $this->pi_getLL('label.query')),
                 '###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
                 '###FIELD_QUERY###' => $this->prefixId . '[query]',
-                '###QUERY###' => (!empty($search['query']) ? $search['query'] : ''),
+                '###QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : ''),
                 '###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
                 '###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
                 '###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
