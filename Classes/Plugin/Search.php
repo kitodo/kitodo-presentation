@@ -369,7 +369,9 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->getTemplate();
             // Configure @action URL for form.
             $linkConf = [
-                'parameter' => $GLOBALS['TSFE']->id
+                'parameter' => $GLOBALS['TSFE']->id,
+                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
             ];
             // Fill markers.
             $markerArray = [
@@ -377,7 +379,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 '###LABEL_QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : $this->pi_getLL('label.query')),
                 '###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
                 '###FIELD_QUERY###' => $this->prefixId . '[query]',
-                '###QUERY###' => (!empty($search['query']) ? $search['query'] : ''),
+                '###QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : ''),
                 '###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
                 '###FIELD_DOC###' => ($this->conf['searchIn'] == 'document' || $this->conf['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
                 '###FIELD_COLL###' => ($this->conf['searchIn'] == 'collection' || $this->conf['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
@@ -523,6 +525,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     $additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
                 }
             }
+            $linkConf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
+            $linkConf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
             $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false);
             // Send headers.
             header('Location: ' . GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));

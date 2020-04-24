@@ -117,15 +117,24 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
             Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
         }
         // Wrap URLs with HTML.
+        $linkConf = [
+            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+        ];
         if (!empty($page1Link)) {
+            $linkConf['parameter'] = $page1Link;
             if ($this->piVars['double']) {
-                $page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), ['parameter' => $page1Link, 'title' => $this->pi_getLL('leftPage', '')]);
+                $linkConf['title'] = $this->pi_getLL('leftPage', '');
+                $page1Link = $this->cObj->typoLink($this->pi_getLL('leftPage', ''), $linkConf);
             } else {
-                $page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''), ['parameter' => $page1Link, 'title' => $this->pi_getLL('singlePage', '')]);
+                $linkConf['title'] = $this->pi_getLL('singlePage', '');
+                $page1Link = $this->cObj->typoLink($this->pi_getLL('singlePage', ''), $linkConf);
             }
         }
         if (!empty($page2Link)) {
-            $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''), ['parameter' => $page2Link, 'title' => $this->pi_getLL('rightPage', '')]);
+            $linkConf['parameter'] = $page2Link;
+            $linkConf['title'] = $this->pi_getLL('rightPage', '');
+            $page2Link = $this->cObj->typoLink($this->pi_getLL('rightPage', ''), $linkConf);
         }
         return $page1Link . $page2Link;
     }
@@ -151,7 +160,13 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Wrap URLs with HTML.
         if (!empty($workLink)) {
-            $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), ['parameter' => $workLink, 'title' => $this->pi_getLL('work', '')]);
+            $linkConf = [
+                'parameter' => $workLink,
+                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                'title' => $this->pi_getLL('work', '')
+            ];
+            $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), $linkConf);
         } else {
             Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
         }
