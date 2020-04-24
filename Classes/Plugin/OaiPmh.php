@@ -380,7 +380,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         // Add request.
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1
+            'forceAbsoluteUrl' => 1,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         $request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8'));
         if (!$this->error) {
@@ -587,7 +588,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1
+            'forceAbsoluteUrl' => 1,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         $baseURL = htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES);
         // Add identification node.

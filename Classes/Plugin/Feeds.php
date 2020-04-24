@@ -144,6 +144,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     $linkConf = [
                         'parameter' => $this->conf['targetPid'],
                         'forceAbsoluteUrl' => 1,
+                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                         'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', true, false)
                     ];
                     $item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));

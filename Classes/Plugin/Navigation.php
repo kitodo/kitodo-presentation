@@ -44,6 +44,8 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
                 $conf = [
                     'useCacheHash' => 1,
                     'parameter' => $this->conf['targetPid'],
+                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'title' => $this->pi_getLL('linkToList', '', true)
                 ];
                 return $this->cObj->typoLink($this->pi_getLL('linkToList', '', true), $conf);
@@ -63,7 +65,9 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         // Configure @action URL for form.
         $linkConf = [
-            'parameter' => $GLOBALS['TSFE']->id
+            'parameter' => $GLOBALS['TSFE']->id,
+            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         $output = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
         // Add plugin variables.
@@ -220,6 +224,8 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         $conf = [
             'useCacheHash' => 1,
             'parameter' => $GLOBALS['TSFE']->id,
+            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'ATagParams' => $aTagParams,
             'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', true, false),
             'title' => $label

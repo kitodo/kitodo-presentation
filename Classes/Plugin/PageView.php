@@ -156,6 +156,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             $basketConf = [
                 'parameter' => $this->conf['targetBasket'],
+                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', true, false),
                 'title' => $label
             ];
@@ -201,6 +203,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                     // Configure @action URL for form.
                     $linkConf = [
                         'parameter' => $GLOBALS['TSFE']->id,
+                        'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                         'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($image['url']),
                     ];
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
@@ -233,6 +237,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 // Configure @action URL for form.
                 $linkConf = [
                     'parameter' => $GLOBALS['TSFE']->id,
+                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
                 ];
                 $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);

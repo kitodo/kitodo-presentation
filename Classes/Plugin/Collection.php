@@ -204,6 +204,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             $conf = [
                 'useCacheHash' => 1,
                 'parameter' => $GLOBALS['TSFE']->id,
+                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
             ];
             // Link collection's title to list view.
@@ -423,7 +425,12 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         // Clean output buffer.
         ob_end_clean();
         // Send headers.
-        header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL(['parameter' => $this->conf['targetPid']])));
+        $linkConf = [
+            'parameter' => $this->conf['targetPid'],
+            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+        ];
+        header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
         exit;
     }
 }
