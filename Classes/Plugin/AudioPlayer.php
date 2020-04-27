@@ -43,10 +43,10 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
         // Add AudioPlayer library.
-        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css');
+        $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css');
         $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', '#tx-dlf-audio { width: 100px; height: 100px; }');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js');
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js');
         // Add AudioPlayer configuration.
         $audioplayerConfiguration = '
                 $(document).ready(function() {
@@ -57,7 +57,7 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
                             url:  "' . $this->audio['url'] . '"
                         },
                         parentElId: "tx-dlf-audio",
-                        swfPath: "' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                        swfPath: "' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
                     });
                 });
         ';
