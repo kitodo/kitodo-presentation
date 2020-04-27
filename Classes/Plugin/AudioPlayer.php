@@ -65,7 +65,7 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
                         url:  "' . $this->audio['url'] . '"
                     },
                     parentElId: "tx-dlf-audio",
-                    swfPath: "' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                    swfPath: "' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
                 });
             });
         ';
@@ -73,16 +73,16 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         if (empty($this->conf['addJStoBody'])) {
             $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
             foreach ($cssFiles as $cssFile) {
-                $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $cssFile);
+                $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $cssFile);
             }
             $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', $inlineCSS);
             foreach ($jsFiles as $jsFile) {
-                $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile);
+                $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $jsFile);
             }
             $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $audioplayerConfiguration);
         } else {
             foreach ($jsFiles as $jsFile) {
-                $markerArray .= '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . $jsFile . '"></script>' . "\n";
+                $markerArray .= '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>' . "\n";
             }
             $markerArray .= '
                 <script type="text/javascript"> 

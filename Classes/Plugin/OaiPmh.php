@@ -339,13 +339,13 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             if (substr($this->conf['stylesheet'], 0, 4) == 'EXT:') {
                 list($extKey, $filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
                 if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey)) {
-                    $this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($extKey) . $filePath;
+                    $this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey)) . $filePath;
                 }
             }
             $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
         } else {
             // Use default stylesheet if no custom stylesheet is given.
-            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
+            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
         }
         $this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="' . htmlspecialchars($stylesheet, ENT_NOQUOTES, 'UTF-8') . '"'));
         // Create root element.
