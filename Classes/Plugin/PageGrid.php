@@ -55,7 +55,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         } elseif (!empty($this->conf['placeholder'])) {
             $thumbnailFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['placeholder']);
         } else {
-            $thumbnailFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Images/PageGridPlaceholder.jpg';
+            $thumbnailFile = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey))) . 'Resources/Public/Images/PageGridPlaceholder.jpg';
         }
         $thumbnail = '<img alt="' . $markerArray['###PAGINATION###'] . '" src="' . $thumbnailFile . '" />';
         // Get new plugin variables for typolink.

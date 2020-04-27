@@ -125,7 +125,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function addSearchInDocumentJS()
     {
         $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Javascript/Search/SearchInDocument.js');
+        $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/Search/SearchInDocument.js');
     }
 
     /**
