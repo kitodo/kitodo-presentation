@@ -271,7 +271,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         // Add additional configuration for absolute URLs.
         $conf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
         $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
-        return $this->cObj->typoLink($str, $conf);       
+        return $this->cObj->typoLink($str, $conf);
     }
 
     /**
