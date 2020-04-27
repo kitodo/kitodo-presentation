@@ -212,7 +212,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($collection['label']), $conf);
             // Add feed link if applicable.
             if (!empty($this->conf['targetFeed'])) {
-                $img = '<img src="' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . $this->pi_getLL('feedAlt', '', true) . '" title="' . $this->pi_getLL('feedTitle', '', true) . '" />';
+                $img = '<img src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . $this->pi_getLL('feedAlt', '', true) . '" title="' . $this->pi_getLL('feedTitle', '', true) . '" />';
                 $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, [$this->prefixId => ['collection' => $collection['uid']]], false, $this->conf['targetFeed']);
             } else {
                 $markerArray[$_key]['###FEED###'] = '';
