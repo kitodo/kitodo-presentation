@@ -231,7 +231,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     {
         // Remove when we don't need to support TYPO3 8.7 anymore.
         if (version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version(), '9.0.0', '<')) {
-            return $this->pi_linkTP_fallback($str, $urlParameter, $cache, $altPageId);
+            return $this->pi_linkTP_fallback($str, $urlParameters, $cache, $altPageId);
         }
         // -->
         $conf = [];
