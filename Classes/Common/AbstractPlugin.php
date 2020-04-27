@@ -229,6 +229,11 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function pi_linkTP($str, $urlParameters = [], $cache = false, $altPageId = 0)
     {
+        // Remove when we don't need to support TYPO3 8.7 anymore.
+        if (version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version(), '9.0.0', '<')) {
+            return $this->pi_linkTP_fallback($str, $urlParameter, $cache, $altPageId);
+        }
+        // -->
         $conf = [];
         if (!$cache) {
             $conf['no_cache'] = true;
@@ -239,6 +244,34 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $conf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
         $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
         return $this->cObj->typoLink($str, $conf);
+    }
+
+    /**
+     * Link string to the current page (fallback for TYPO3 8.7)
+     * @see $this->pi_linkTP()
+     *
+     * @deprecated
+     *
+     * @access public
+     *
+     * @param string $str: The content string to wrap in <a> tags
+     * @param array $urlParameters: Array with URL parameters as key/value pairs
+     * @param bool $cache: Should the "no_cache" parameter be added?
+     * @param int $altPageId: Alternative page ID for the link.
+     *
+     * @return string The input string wrapped in <a> tags
+     */
+    public function pi_linkTP_fallback($str, $urlParameters = [], $cache = false, $altPageId = 0)
+    {
+        $conf = [];
+        $conf['useCacheHash'] = $this->pi_USER_INT_obj ? 0 : $cache;
+        $conf['no_cache'] = $this->pi_USER_INT_obj ? 0 : !$cache;
+        $conf['parameter'] = $altPageId ? $altPageId : ($this->pi_tmpPageId ? $this->pi_tmpPageId : $this->frontendController->id);
+        $conf['additionalParams'] = $this->conf['parent.']['addParams'] . GeneralUtility::implodeArrayForUrl('', $urlParameters, '', true) . $this->pi_moreParams;
+        // Add additional configuration for absolute URLs.
+        $conf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
+        $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
+        return $this->cObj->typoLink($str, $conf);       
     }
 
     /**
