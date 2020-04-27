@@ -179,6 +179,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             $iiifLink['value.']['required'] = 1;
             $iiifLink['value.']['setContentToCurrent'] = 1;
             $iiifLink['value.']['typolink.']['parameter.']['current'] = 1;
+            $iiifLink['value.']['typolink.']['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
+            $iiifLink['value.']['typolink.']['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
             $iiifLink['value.']['wrap'] = '<dd>|</dd>';
             foreach ($metadataArray as $metadata) {
                 foreach ($metadata as $key => $group) {

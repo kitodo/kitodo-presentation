@@ -130,7 +130,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         // set marker
-        $markerArray['###ACTION###'] = $this->pi_getPageLink($GLOBALS['TSFE']->id);
+        $linkToCurrentPage = $this->pi_linkTP('|');
+        $markerArray['###ACTION###'] = !empty($linkToCurrentPage) ? $this->cObj->lastTypoLinkUrl : '';
         $markerArray['###LISTTITLE###'] = $this->pi_getLL('basket', '', true);
         if ($basketData['doc_ids']) {
             if (is_object($basketData['doc_ids'])) {
@@ -213,6 +214,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $label = $this->pi_getLL('goBasket', '', true);
             $basketConf = [
                 'parameter' => $this->conf['targetBasket'],
+                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'title' => $label
             ];
             $markerArray['###BASKET###'] = $this->cObj->typoLink($label, $basketConf);
