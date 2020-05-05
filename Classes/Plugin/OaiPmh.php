@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\Connection;
 
 /**
  * Plugin 'OAI-PMH Interface' for the 'dlf' extension
@@ -948,7 +949,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $documentsToProcess = $documentListSet->removeRange(0, (int)$this->conf['limit']);
         $verb = $this->piVars['verb'];
 
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_dlf_documents');
 
         $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
             'FROM `tx_dlf_documents` ' .
@@ -958,14 +960,24 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             'AND `tx_dlf_documents`.`pid` = ? ' .
             'AND `tx_dlf_collections`.`pid` = ? ' .
             'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-            'AND ' . Helper::whereExpression('tx_dlf_collections') .
-            ' LIMIT ?';
+            'GROUP BY `tx_dlf_documents`.`uid` ' .
+            'LIMIT ?';
 
-        $documents = $connection->prepare($sql);
-        $documents->bindValue(1, implode(',', $documentsToProcess));
-        $documents->bindValue(2, (int)$this->conf['pages']);
-        $documents->bindValue(3, (int)$this->conf['pages']);
-        $documents->bindValue(4, (int)$this->conf['limit']);
+        $values = [
+            $documentsToProcess,
+            $this->conf['pages'],
+            $this->conf['pages'],
+            $this->conf['limit']
+        ];
+        $types = [
+            Connection::PARAM_INT_ARRAY,
+            Connection::PARAM_INT,
+            Connection::PARAM_INT,
+            Connection::PARAM_INT
+        ];
+        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
+        $documents = $connection->executeQuery($sql, $values, $types);
+
         $documents->execute();
 
         $output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
