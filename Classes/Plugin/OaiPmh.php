@@ -960,6 +960,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             'AND `tx_dlf_documents`.`pid` = ? ' .
             'AND `tx_dlf_collections`.`pid` = ? ' .
             'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
+            'AND ' . Helper::whereExpression('tx_dlf_collections') . ' ' .
             'GROUP BY `tx_dlf_documents`.`uid` ' .
             'LIMIT ?';
 
