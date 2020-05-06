@@ -22,6 +22,7 @@
             <label index="label.delete_search">Delete Search</label>
             <label index="label.next">next</label>
             <label index="label.previous">previous</label>
+            <label index="label.noresult">No result found in currenct document.</label>
             <label index="search">Search</label>
         </languageKey>
         <languageKey index="de" type="array">
@@ -32,6 +33,7 @@
             <label index="label.delete_search">Suche löschen</label>
             <label index="label.next">weiter</label>
             <label index="label.previous">zurück</label>
+            <label index="label.noresult">Kein Ergebnis im aktuellen Dokument gefunden.</label>
             <label index="search">Suche</label>
         </languageKey>
     </data>
