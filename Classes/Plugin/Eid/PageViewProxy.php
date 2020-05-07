@@ -38,11 +38,11 @@ class PageViewProxy
     public function main(ServerRequestInterface $request)
     {
         // header parameter for getUrl(); allowed values 0,1,2; default 0
-        $header = (int)$request->getQueryParams()['header'];
+        $header = (int) $request->getQueryParams()['header'];
         $header = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0);
 
         // the URI to fetch data or header from
-        $url = (string)$request->getQueryParams()['url'];
+        $url = (string) $request->getQueryParams()['url'];
         if (!GeneralUtility::isValidUrl($url)) {
             throw new \InvalidArgumentException('No valid url passed!', 1580482805);
         }
@@ -70,7 +70,7 @@ class PageViewProxy
         if ($fetchedData) {
             $response->getBody()->write($fetchedData);
             $response = $response->withHeader('Access-Control-Allow-Methods', 'GET');
-            $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeader('Origin'));
+            $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'));
             $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
         }
         if ($header === 0 && !empty($lastModified)) {
