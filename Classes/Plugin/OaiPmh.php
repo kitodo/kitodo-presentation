@@ -979,7 +979,6 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $documents = $connection->executeQuery($sql, $values, $types);
 
-        $documents->execute();
 
         $output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
         while ($resArray = $documents->fetch()) {
