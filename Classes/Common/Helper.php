@@ -376,7 +376,7 @@ class Helper
         } elseif (\TYPO3_MODE === 'BE') {
             $iso639 = $GLOBALS['LANG']->includeLLFile($file, false, true);
             if (!empty($iso639['default'][$isoCode])) {
-                $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639, false);
+                $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639);
             }
         } else {
             self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
@@ -421,7 +421,7 @@ class Helper
             if (\TYPO3_MODE === 'FE') {
                 $translated = $GLOBALS['TSFE']->getLLL($key, self::$messages);
             } elseif (\TYPO3_MODE === 'BE') {
-                $translated = $GLOBALS['LANG']->getLLL($key, self::$messages, false);
+                $translated = $GLOBALS['LANG']->getLLL($key, self::$messages);
             } else {
                 self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             }
