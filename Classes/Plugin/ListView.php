@@ -81,12 +81,12 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             return '';
         }
         // Get separator.
-        $separator = '<span class="separator">' . $this->pi_getLL('separator', ' - ', true) . '</span>';
+        $separator = '<span class="separator">' . htmlspecialchars($this->pi_getLL('separator', ' - ')) . '</span>';
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', true), ['pointer' => $this->piVars['pointer'] - 1], true) . $separator;
+            $output = $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('prevPage', '<')), ['pointer' => $this->piVars['pointer'] - 1], true) . $separator;
         } else {
-            $output = '<span>' . $this->pi_getLL('prevPage', '&lt;', true) . '</span>' . $separator;
+            $output = '<span>' . htmlspecialchars($this->pi_getLL('prevPage', '<')) . '</span>' . $separator;
         }
         $i = 0;
         $skip = null;
@@ -94,22 +94,22 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         while ($i < $maxPages) {
             if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
                 if ($this->piVars['pointer'] != $i) {
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', true), $i + 1), ['pointer' => $i], true) . $separator;
+                    $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars(sprintf($this->pi_getLL('page', '%d'), $i + 1)), ['pointer' => $i], true) . $separator;
                 } else {
-                    $output .= '<span class="active">' . sprintf($this->pi_getLL('page', '%d', true), $i + 1) . '</span>' . $separator;
+                    $output .= '<span class="active">' . htmlspecialchars(sprintf($this->pi_getLL('page', '%d'), $i + 1)) . '</span>' . $separator;
                 }
                 $skip = true;
             } elseif ($skip === true) {
-                $output .= '<span class="skip">' . $this->pi_getLL('skip', '...', true) . '</span>' . $separator;
+                $output .= '<span class="skip">' . htmlspecialchars($this->pi_getLL('skip', '...')) . '</span>' . $separator;
                 $skip = false;
             }
             $i++;
         }
         // Add link to next page.
         if ($this->piVars['pointer'] < $maxPages - 1) {
-            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', true), ['pointer' => $this->piVars['pointer'] + 1], true);
+            $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('nextPage', '>')), ['pointer' => $this->piVars['pointer'] + 1], true);
         } else {
-            $output .= '<span>' . $this->pi_getLL('nextPage', '&gt;', true) . '</span>';
+            $output .= '<span>' . htmlspecialchars($this->pi_getLL('nextPage', '>')) . '</span>';
         }
         return $output;
     }
@@ -215,7 +215,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                 'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
             ];
-            $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', true), $conf);
+            $link = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('addBasket', '')), $conf);
             $markerArray['###BASKETBUTTON###'] = $link;
         }
         return $this->templateService->substituteMarkerArray($this->templateService->substituteSubpart($template['entry'], '###SUBTEMPLATE###', $subpart, true), $markerArray);
@@ -273,10 +273,10 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Select sort field.
         $uniqId = uniqid($prefix . '-');
-        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('orderBy', '', true) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[order]" onchange="javascript:this.form.submit();">';
+        $sorting .= '<label for="' . $uniqId . '">' . htmlspecialchars($this->pi_getLL('orderBy', '')) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[order]" onchange="javascript:this.form.submit();">';
         // Add relevance sorting if this is a search result list.
         if ($this->list->metadata['options']['source'] == 'search') {
-            $sorting .= '<option value="score"' . (($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '') . '>' . $this->pi_getLL('relevance', '', true) . '</option>';
+            $sorting .= '<option value="score"' . (($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '') . '>' . htmlspecialchars($this->pi_getLL('relevance', '')) . '</option>';
         }
         foreach ($this->sortables as $index_name => $label) {
             $sorting .= '<option value="' . $index_name . '"' . (($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '') . '>' . htmlspecialchars($label) . '</option>';
@@ -284,9 +284,9 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         $sorting .= '</select>';
         // Select sort direction.
         $uniqId = uniqid($prefix . '-');
-        $sorting .= '<label for="' . $uniqId . '">' . $this->pi_getLL('direction', '', true) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[asc]" onchange="javascript:this.form.submit();">';
-        $sorting .= '<option value="1" ' . ($this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.asc', '', true) . '</option>';
-        $sorting .= '<option value="0" ' . (!$this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . $this->pi_getLL('direction.desc', '', true) . '</option>';
+        $sorting .= '<label for="' . $uniqId . '">' . htmlspecialchars($this->pi_getLL('direction', '')) . '</label><select id="' . $uniqId . '" name="' . $this->prefixId . '[asc]" onchange="javascript:this.form.submit();">';
+        $sorting .= '<option value="1" ' . ($this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . htmlspecialchars($this->pi_getLL('direction.asc', '')) . '</option>';
+        $sorting .= '<option value="0" ' . (!$this->list->metadata['options']['order.asc'] ? ' selected="selected"' : '') . '>' . htmlspecialchars($this->pi_getLL('direction.desc', '')) . '</option>';
         $sorting .= '</select></div></form>';
         return $sorting;
     }
@@ -394,7 +394,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                 ];
-                $link = $this->cObj->typoLink($this->pi_getLL('addBasket', '', true), $conf);
+                $link = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('addBasket', '')), $conf);
                 $markerArray['###SUBBASKETBUTTON###'] = $link;
             }
             $content .= $this->templateService->substituteMarkerArray($template['subentry'], $markerArray);
@@ -553,7 +553,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             $lastEntry = ($this->piVars['pointer'] * $this->conf['limit']) + $this->conf['limit'];
             $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), $currentEntry, $lastEntry < $this->list->metadata['options']['numberOfToplevelHits'] ? $lastEntry : $this->list->metadata['options']['numberOfToplevelHits'], $this->list->metadata['options']['numberOfToplevelHits']));
         } else {
-            $markerArray['###COUNT###'] = $this->pi_getLL('nohits', '', true);
+            $markerArray['###COUNT###'] = htmlspecialchars($this->pi_getLL('nohits', ''));
         }
         $markerArray['###PAGEBROWSER###'] = $this->getPageBrowser();
         $markerArray['###SORTING###'] = $this->getSortingForm();

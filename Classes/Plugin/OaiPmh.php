@@ -102,7 +102,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function error($type)
     {
         $this->error = true;
-        $error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', htmlspecialchars($this->pi_getLL($type, $type, false), ENT_NOQUOTES, 'UTF-8'));
+        $error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error', htmlspecialchars($this->pi_getLL($type, $type), ENT_NOQUOTES, 'UTF-8'));
         $error->setAttribute('code', $type);
         return $error;
     }
@@ -306,7 +306,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             Helper::devLog('Could not load XML file from "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
         }
         if ($mets === null) {
-            $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!', false), ENT_NOQUOTES, 'UTF-8'));
+            $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!'), ENT_NOQUOTES, 'UTF-8'));
         }
         return $mets;
     }
