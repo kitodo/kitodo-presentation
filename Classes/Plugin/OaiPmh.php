@@ -480,11 +480,18 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $where .
             'AND ' . Helper::whereExpression('tx_dlf_collections');
 
-        $statement = $connection->prepare($sql);
-        $statement->bindValue(1, $this->piVars['identifier']);
-        $statement->bindValue(2, (int)$this->conf['pages']);
-        $statement->bindValue(3, (int)$this->conf['pages']);
-        $statement->execute();
+        $values = [
+            $this->piVars['identifier'],
+            $this->conf['pages'],
+            $this->conf['pages']
+        ];
+        $types = [
+            Connection::PARAM_STR,
+            Connection::PARAM_INT,
+            Connection::PARAM_INT
+        ];
+        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
+        $statement = $connection->executeQuery($sql, $values, $types);
 
         $resArray = $statement->fetch();
 
@@ -978,8 +985,6 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         ];
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $documents = $connection->executeQuery($sql, $values, $types);
-
-        $documents->execute();
 
         $output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
         while ($resArray = $documents->fetch()) {
