@@ -73,7 +73,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $allResults = $result->fetchAll();
 
-        if (count($allResults) == 1) {
+        if (count($allResults) === 1) {
             $resArray = $allResults[0];
             $channel->appendChild($rss->createElement('copyright', htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
         }
@@ -88,28 +88,55 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
             $additionalWhere = '';
             // Check for pre-selected collections.
             if (!empty($this->piVars['collection'])) {
-                $additionalWhere = ' AND tx_dlf_collections.uid=' . intval($this->piVars['collection']);
+                $additionalWhere = 'tx_dlf_collections.uid=' . intval($this->piVars['collection']);
             } elseif (!empty($this->conf['collections'])) {
-                $additionalWhere = ' AND tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')';
+                $additionalWhere = 'tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')';
             }
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-                'tx_dlf_documents.uid AS uid,tx_dlf_documents.partof AS partof,tx_dlf_documents.title AS title,tx_dlf_documents.volume AS volume,tx_dlf_documents.author AS author,tx_dlf_documents.record_id AS guid,tx_dlf_documents.tstamp AS tstamp,tx_dlf_documents.crdate AS crdate',
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_collections',
-                'AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
-                    . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                    . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
-                    . $additionalWhere
-                    . Helper::whereClause('tx_dlf_documents')
-                    . Helper::whereClause('tx_dlf_collections'),
-                'tx_dlf_documents.uid',
-                'tx_dlf_documents.tstamp DESC',
-                intval($this->conf['limit'])
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result)) {
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_documents.uid AS uid',
+                    'tx_dlf_documents.partof AS partof',
+                    'tx_dlf_documents.title AS title',
+                    'tx_dlf_documents.volume AS volume',
+                    'tx_dlf_documents.author AS author',
+                    'tx_dlf_documents.record_id AS guid',
+                    'tx_dlf_documents.tstamp AS tstamp',
+                    'tx_dlf_documents.crdate AS crdate'
+                )
+                ->from('tx_dlf_documents')
+                ->join(
+                    'tx_dlf_documents',
+                    'tx_dlf_relations',
+                    'tx_dlf_relations',
+                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_relations.uid_local'))
+                )
+                ->join(
+                    'tx_dlf_relations',
+                    'tx_dlf_collections',
+                    'tx_dlf_collections',
+                    $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_relations.uid_foreign'))
+                )
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_relations.ident', $queryBuilder->createNamedParameter('docs_colls')),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
+                    $additionalWhere,
+                    Helper::whereExpression('tx_dlf_documents'),
+                    Helper::whereExpression('tx_dlf_collections'),
+                )
+                ->groupBy('tx_dlf_documents.uid')
+                ->orderBy('tx_dlf_documents.tstamp', 'DESC')
+                ->setMaxResults((int)$this->conf['limit'])
+                ->execute();
+            $rows = $result->fetchAll();
+
+            if (count($rows) > 0) {
                 // Add each record as item element.
-                while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                foreach ($rows as $resArray) {
                     $item = $rss->createElement('item');
                     $title = '';
                     // Get title of superior document.
