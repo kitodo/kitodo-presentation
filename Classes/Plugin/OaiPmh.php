@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -80,11 +81,17 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function deleteExpiredTokens()
     {
         // Delete expired resumption tokens.
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery(
-            'tx_dlf_tokens',
-            'tx_dlf_tokens.ident="oai" AND tx_dlf_tokens.tstamp<' . intval($GLOBALS['EXEC_TIME'] - $this->conf['expired'])
-        );
-        if ($GLOBALS['TYPO3_DB']->sql_affected_rows() === -1) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
+
+        $result = $queryBuilder
+            ->delete('tx_dlf_tokens')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
+                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int)($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
+            )
+            ->execute();
+
+        if ($result === -1) {
             // Deletion failed.
             Helper::devLog('Could not delete expired resumption tokens', DEVLOG_SEVERITY_WARNING);
         }
@@ -336,8 +343,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         // Add processing instruction (aka XSL stylesheet).
         if (!empty($this->conf['stylesheet'])) {
             // Resolve "EXT:" prefix in file path.
-            if (substr($this->conf['stylesheet'], 0, 4) == 'EXT:') {
-                list($extKey, $filePath) = explode('/', substr($this->conf['stylesheet'], 4), 2);
+            if (strpos($this->conf['stylesheet'], 'EXT:') === 0) {
+                [$extKey, $filePath] = explode('/', substr($this->conf['stylesheet'], 4), 2);
                 if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey)) {
                     $this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey)) . $filePath;
                 }
@@ -449,35 +456,49 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function verbGetRecord()
     {
-        if (count($this->piVars) != 3 || empty($this->piVars['metadataPrefix']) || empty($this->piVars['identifier'])) {
+        if (count($this->piVars) !== 3 || empty($this->piVars['metadataPrefix']) || empty($this->piVars['identifier'])) {
             return $this->error('badArgument');
         }
-        if (!in_array($this->piVars['metadataPrefix'], array_keys($this->formats))) {
+        if (!array_key_exists($this->piVars['metadataPrefix'], $this->formats)) {
             return $this->error('cannotDisseminateFormat');
         }
         $where = '';
         if (!$this->conf['show_userdefined']) {
-            $where .= ' AND tx_dlf_collections.fe_cruser_id=0';
+            $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
         }
-        $record = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-            'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
-            'tx_dlf_documents',
-            'tx_dlf_relations',
-            'tx_dlf_collections',
-            'AND tx_dlf_documents.record_id=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->piVars['identifier'], 'tx_dlf_documents')
-                . ' AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
-                . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
-                . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                . $where
-                . Helper::whereClause('tx_dlf_collections'),
-            '',
-            '',
-            '1'
-        );
-        if (!$GLOBALS['TYPO3_DB']->sql_num_rows($record)) {
+
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
+
+        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
+            'FROM `tx_dlf_documents` ' .
+            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
+            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
+            'WHERE `tx_dlf_documents`.`record_id` = ? ' .
+            'AND `tx_dlf_documents`.`pid` = ? ' .
+            'AND `tx_dlf_collections`.`pid` = ? ' .
+            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
+            $where .
+            'AND ' . Helper::whereExpression('tx_dlf_collections');
+
+        $values = [
+            $this->piVars['identifier'],
+            $this->conf['pages'],
+            $this->conf['pages']
+        ];
+        $types = [
+            Connection::PARAM_STR,
+            Connection::PARAM_INT,
+            Connection::PARAM_INT
+        ];
+        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
+        $statement = $connection->executeQuery($sql, $values, $types);
+
+        $resArray = $statement->fetch();
+
+        if (!$resArray['uid']) {
             return $this->error('idDoesNotExist');
         }
-        $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($record);
+
         // Check for required fields.
         foreach ($this->formats[$this->piVars['metadataPrefix']]['requiredFields'] as $required) {
             if (empty($resArray[$required])) {
@@ -932,24 +953,41 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function generateOutputForDocumentList(DocumentList $documentListSet)
     {
-        $documentsToProcess = $documentListSet->removeRange(0, intval($this->conf['limit']));
+        $documentsToProcess = $documentListSet->removeRange(0, (int)$this->conf['limit']);
         $verb = $this->piVars['verb'];
-        $documents = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-            'tx_dlf_documents.*,GROUP_CONCAT(DISTINCT tx_dlf_collections.oai_name ORDER BY tx_dlf_collections.oai_name SEPARATOR " ") AS collections',
-            'tx_dlf_documents',
-            'tx_dlf_relations',
-            'tx_dlf_collections',
-            'AND tx_dlf_documents.uid IN (' . implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($documentsToProcess)) . ')'
-                . ' AND tx_dlf_documents.pid=' . intval($this->conf['pages'])
-                . ' AND tx_dlf_collections.pid=' . intval($this->conf['pages'])
-                . ' AND tx_dlf_relations.ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr('docs_colls', 'tx_dlf_relations')
-                . Helper::whereClause('tx_dlf_collections'),
-            'tx_dlf_documents.uid',
-            'tx_dlf_documents.tstamp',
+
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_dlf_documents');
+
+        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
+            'FROM `tx_dlf_documents` ' .
+            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
+            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
+            'WHERE `tx_dlf_documents`.`uid` IN ( ? ) ' .
+            'AND `tx_dlf_documents`.`pid` = ? ' .
+            'AND `tx_dlf_collections`.`pid` = ? ' .
+            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
+            'AND ' . Helper::whereExpression('tx_dlf_collections') . ' ' .
+            'GROUP BY `tx_dlf_documents`.`uid` ' .
+            'LIMIT ?';
+
+        $values = [
+            $documentsToProcess,
+            $this->conf['pages'],
+            $this->conf['pages'],
             $this->conf['limit']
-        );
+        ];
+        $types = [
+            Connection::PARAM_INT_ARRAY,
+            Connection::PARAM_INT,
+            Connection::PARAM_INT,
+            Connection::PARAM_INT
+        ];
+        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
+        $documents = $connection->executeQuery($sql, $values, $types);
+
         $output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($documents)) {
+        while ($resArray = $documents->fetch()) {
             // Add header node.
             $header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
             $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier', htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
@@ -962,12 +1000,12 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ) {
                 // Add "deleted" status.
                 $header->setAttribute('status', 'deleted');
-                if ($verb == 'ListRecords') {
+                if ($verb === 'ListRecords') {
                     // Add record node.
                     $record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
                     $record->appendChild($header);
                     $output->appendChild($record);
-                } elseif ($verb == 'ListIdentifiers') {
+                } elseif ($verb === 'ListIdentifiers') {
                     $output->appendChild($header);
                 }
             } else {
@@ -975,7 +1013,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 foreach (explode(' ', $resArray['collections']) as $spec) {
                     $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
                 }
-                if ($verb == 'ListRecords') {
+                if ($verb === 'ListRecords') {
                     // Add record node.
                     $record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
                     $record->appendChild($header);
@@ -999,7 +1037,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                     }
                     $record->appendChild($metadata);
                     $output->appendChild($record);
-                } elseif ($verb == 'ListIdentifiers') {
+                } elseif ($verb === 'ListIdentifiers') {
                     $output->appendChild($header);
                 }
             }
@@ -1019,18 +1057,21 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet)
     {
-        if ($documentListSet->count() != 0) {
-            $token = uniqid();
-            $GLOBALS['TYPO3_DB']->exec_INSERTquery(
-                'tx_dlf_tokens',
-                [
+        if ($documentListSet->count() !== 0) {
+            $token = uniqid('', false);
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
+            $affectedRows = $queryBuilder
+                ->insert('tx_dlf_tokens')
+                ->values([
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                     'token' => $token,
                     'options' => serialize($documentListSet),
                     'ident' => 'oai',
-                ]
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_affected_rows() == 1) {
+                ])
+                ->execute();
+
+            if ($affectedRows === 1) {
                 $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
             } else {
                 Helper::devLog('Could not create resumption token', DEVLOG_SEVERITY_ERROR);
