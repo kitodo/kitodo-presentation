@@ -167,7 +167,7 @@ final class MetsDocument extends Document
         $fileMimeType = $this->getFileMimeType($id);
         $fileLocation = $this->getFileLocation($id);
         if ($fileMimeType == 'application/vnd.kitodo.iiif') {
-            $fileLocation = strrpos($fileLocation, "info.json") == strlen($fileLocation) - 9 ? $fileLocation : strrpos($fileLocation, "/") == strlen($fileLocation) ? $fileLocation . "info.json" : $fileLocation . "/info.json";
+            $fileLocation = (strrpos($fileLocation, "info.json") == strlen($fileLocation) - 9) ? $fileLocation : (strrpos($fileLocation, "/") == strlen($fileLocation) ? $fileLocation . "info.json" : $fileLocation . "/info.json");
             $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
