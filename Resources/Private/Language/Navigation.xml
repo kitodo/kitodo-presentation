@@ -16,7 +16,7 @@
     <data type="array">
         <languageKey index="default" type="array">
             <label index="tt_content.plugin.title">Navigation</label>
-            <label index="tt_content.plugin.description">Navigation Plugin for Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Navigation Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.pageStep">How many pages should be skipped by "fast-forward" and "rewind" buttons?</label>
             <label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
@@ -41,7 +41,7 @@
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.plugin.title">Navigation</label>
-            <label index="tt_content.plugin.description">Navigationsplugin für Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Navigation Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.pageStep">Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?</label>
             <label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
