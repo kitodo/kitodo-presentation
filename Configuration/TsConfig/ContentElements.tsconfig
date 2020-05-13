@@ -75,7 +75,7 @@ mod.wizards.newContentElement.wizardItems {
         }
       }
       tx_dlf_pagegrid {
-        iconIdentifier = tx-dlf-pagepreview
+        iconIdentifier = tx-dlf-pagegrid
         title = LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.plugin.title
         description = LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.plugin.description
         tt_content_defValues {
@@ -83,8 +83,8 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_pagegrid
         }
       }
-      tx_dlf_page {
-        iconIdentifier = tx-dlf-page
+      tx_dlf_pageview {
+        iconIdentifier = tx-dlf-pageview
         title = LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.plugin.title
         description = LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.plugin.description
         tt_content_defValues {
