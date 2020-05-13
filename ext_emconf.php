@@ -36,7 +36,7 @@ $EM_CONF[$_EXTKEY] = [
         ],
         'classmap' => [
             'vendor/solarium',
-            'vendor/symfony/event-dispatcher'
+            'vendor/symfony'
         ]
     ]
 ];
