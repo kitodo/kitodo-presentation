@@ -15,6 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">Basket</label>
+            <label index="tt_content.plugin.description">Basket Plugin for Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.basketGoToButton">Add go to basket button</label>
             <label index="tt_content.pi_flexform.targetBasket">Target page (with "DLF: Basket" plugin)</label>
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
@@ -41,6 +43,8 @@
             <label index="goBasket">Go to basket</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">Warenkorb</label>
+            <label index="tt_content.plugin.description">Warenkorb Plugin für Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.basketGoToButton">"Zum Warenkorb" Button hinzufügen</label>
             <label index="tt_content.pi_flexform.targetBasket">Zielseite (mit Plugin "DLF: Warenkorb")</label>
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>

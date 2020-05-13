@@ -15,6 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">Statistics</label>
+            <label index="tt_content.plugin.description">Statistics Plugin for Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.collections">Include only these collections</label>
             <label index="tt_content.pi_flexform.description">Description (Placeholders: ###TITLES### and ###VOLUMES###)</label>
@@ -24,6 +26,8 @@
             <label index="volumes"> volumes</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">Statistiken</label>
+            <label index="tt_content.plugin.description">Statistikenplugin für Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.collections">Nur diese Kollektionen berücksichtigen</label>
             <label index="tt_content.pi_flexform.description">Beschreibung (Platzhalter: ###TITLES### und ###VOLUMES###)</label>

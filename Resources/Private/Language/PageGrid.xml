@@ -15,6 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">Page Preview</label>
+            <label index="tt_content.plugin.description">Page Preview (Grid View) Plugin for Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.limit">Thumbnails per page</label>
             <label index="tt_content.pi_flexform.placeholder">Placeholder for pages without thumbnail</label>
@@ -27,6 +29,8 @@
             <label index="skip">...</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">Seitenvorschau</label>
+            <label index="tt_content.plugin.description">Seitenvorschau Plugin (Gridansicht) für Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.limit">Vorschaubilder pro Seite</label>
             <label index="tt_content.pi_flexform.placeholder">Platzhalter für Seiten ohne Vorschaubild</label>

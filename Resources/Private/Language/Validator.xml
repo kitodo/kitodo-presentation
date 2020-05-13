@@ -15,10 +15,14 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">Validator</label>
+            <label index="tt_content.plugin.description">Validator Plugin for Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">Validator</label>
+            <label index="tt_content.plugin.description">Validator Plugin für Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
         </languageKey>

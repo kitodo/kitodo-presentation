@@ -15,6 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">Metadata</label>
+            <label index="tt_content.plugin.description">Metadata Plugin for Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected page</label>
             <label index="tt_content.pi_flexform.linkTitle">Link title to target page</label>
@@ -40,6 +42,8 @@
 			<label index="requiredStatement">Attribution</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">Metadata</label>
+            <label index="tt_content.plugin.description">Metadata Plugin für Kitodo Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Seite anzeigen</label>
             <label index="tt_content.pi_flexform.linkTitle">Titel zur Zielseite verlinken</label>
