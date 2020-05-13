@@ -166,20 +166,20 @@ final class MetsDocument extends Document
     {
         $fileMimeType = $this->getFileMimeType($id);
         $fileLocation = $this->getFileLocation($id);
-        if ($fileMimeType == 'application/vnd.kitodo.iiif') {
-            $fileLocation = strrpos($fileLocation, "info.json") == strlen($fileLocation) - 9 ? $fileLocation : strrpos($fileLocation, "/") == strlen($fileLocation) ? $fileLocation . "info.json" : $fileLocation . "/info.json";
+        if ($fileMimeType === 'application/vnd.kitodo.iiif') {
+            $fileLocation = (strrpos($fileLocation, 'info.json') === strlen($fileLocation) - 9) ? $fileLocation : (strrpos($fileLocation, '/') === strlen($fileLocation) ? $fileLocation . 'info.json' : $fileLocation . '/info.json');
             $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $service = IiifHelper::loadIiifResource($fileLocation);
-            if ($service != null && $service instanceof AbstractImageService) {
+            if ($service !== null && $service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
-        } elseif ($fileMimeType == 'application/vnd.netfpx') {
-            $baseURL = $fileLocation . (strpos($fileLocation, "?") === false ? "?" : "");
+        } elseif ($fileMimeType === 'application/vnd.netfpx') {
+            $baseURL = $fileLocation . (strpos($fileLocation, '?') === false ? '?' : '');
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
-            return $baseURL . "&CVT=jpeg";
+            return $baseURL . '&CVT=jpeg';
         }
         return $fileLocation;
     }
