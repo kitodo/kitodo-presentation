@@ -239,7 +239,7 @@ $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \TYPO3\CMS\Core\Imaging\IconRegistry::class
 );
 
-foreach($iconArray as $key => $value) {
+foreach ($iconArray as $key => $value) {
     $iconRegistry->registerIcon(
         $key,
         \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
