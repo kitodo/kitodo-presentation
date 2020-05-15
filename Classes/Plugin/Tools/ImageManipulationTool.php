@@ -43,7 +43,7 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin
         if (!empty($this->cObj->data['conf'])) {
             $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
         }
-        // Set parent element's class for initialization.
+        // Set parent element for initialization.
         $parentContainer = !empty($this->conf['parentContainer']) ? $this->conf['parentContainer'] : '.tx-dlf-imagemanipulationtool';
         // Load template file.
         $this->getTemplate();
