@@ -53,7 +53,10 @@ class AnnotationTool extends AbstractPlugin
         }
         // Load current document.
         $this->loadDocument();
-        if ($this->doc === null || $this->doc->numPages < 1) {
+        if (
+            $this->doc === null
+            || $this->doc->numPages < 1
+        ) {
             // Quit without doing anything if required variables are not set.
             return $content;
         } else {
@@ -64,7 +67,10 @@ class AnnotationTool extends AbstractPlugin
             }
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
+            if (
+                (int) $this->piVars['page'] > 0
+                || empty($this->piVars['page'])
+            ) {
                 $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
@@ -74,10 +80,11 @@ class AnnotationTool extends AbstractPlugin
         // Load template file.
         $this->getTemplate();
         $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['annotationContainers'];
-        if ($annotationContainers != null && sizeof($annotationContainers) > 0) {
-            $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:'
-                . $this->pi_getLL('annotations-on', '', true) . ';annotations-off:'
-                . $this->pi_getLL('annotations-off', '', true) . '">&nbsp;</a>';
+        if (
+            $annotationContainers != null
+            && sizeof($annotationContainers) > 0
+        ) {
+            $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:' . $this->pi_getLL('annotations-on', '', true) . ';annotations-off:' . $this->pi_getLL('annotations-off', '', true) . '">&nbsp;</a>';
             // TODO selector for different motivations
         } else {
             $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">' . $this->pi_getLL('annotations-not-available', '', true) . '</span>';
