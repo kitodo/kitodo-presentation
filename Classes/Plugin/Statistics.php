@@ -180,8 +180,8 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                 '###VOLUMES###'
             ],
             'value' => [
-                $countTitles . ($countTitles > 1 ? $this->pi_getLL('titles', '', true) : $this->pi_getLL('title', '', true)),
-                $countVolumes . ($countVolumes > 1 ? $this->pi_getLL('volumes', '', true) : $this->pi_getLL('volume', '', true))
+                $countTitles . ($countTitles > 1 ? htmlspecialchars($this->pi_getLL('titles', '')) : htmlspecialchars($this->pi_getLL('title', ''))),
+                $countVolumes . ($countVolumes > 1 ? htmlspecialchars($this->pi_getLL('volumes', '')) : htmlspecialchars($this->pi_getLL('volume', '')))
             ]
         ];
         // Apply replacements.

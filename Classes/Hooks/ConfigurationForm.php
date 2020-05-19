@@ -71,16 +71,16 @@ class ConfigurationForm
             $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
             if (is_array($status)) {
                 Helper::addMessage(
-                    sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0]),
-                    $GLOBALS['LANG']->getLL('solr.connected'),
+                    htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0])),
+                    htmlspecialchars($GLOBALS['LANG']->getLL('solr.connected')),
                     ($status[0] == 0 ? \TYPO3\CMS\Core\Messaging\FlashMessage::OK : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING)
                 );
                 return Helper::renderFlashMessages();
             }
         }
         Helper::addMessage(
-            sprintf($GLOBALS['LANG']->getLL('solr.error'), $url),
-            $GLOBALS['LANG']->getLL('solr.notConnected'),
+            htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('solr.error'), $url)),
+            htmlspecialchars($GLOBALS['LANG']->getLL('solr.notConnected')),
             \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
         );
         return Helper::renderFlashMessages();
@@ -197,21 +197,21 @@ class ConfigurationForm
             $substUid = Helper::processDBasAdmin($data);
             if (!empty($substUid)) {
                 Helper::addMessage(
-                    $GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg'),
-                    $GLOBALS['LANG']->getLL('metadataFormats.nsCreated'),
+                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg')),
+                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsCreated')),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                 );
             } else {
                 Helper::addMessage(
-                    $GLOBALS['LANG']->getLL('metadataFormats.nsNotCreatedMsg'),
-                    $GLOBALS['LANG']->getLL('metadataFormats.nsNotCreated'),
+                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsNotCreatedMsg')),
+                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsNotCreated')),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
         } else {
             Helper::addMessage(
-                $GLOBALS['LANG']->getLL('metadataFormats.nsOkayMsg'),
-                $GLOBALS['LANG']->getLL('metadataFormats.nsOkay'),
+                htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsOkayMsg')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsOkay')),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         }

@@ -212,7 +212,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($collection['label']), $conf);
             // Add feed link if applicable.
             if (!empty($this->conf['targetFeed'])) {
-                $img = '<img src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . $this->pi_getLL('feedAlt', '', true) . '" title="' . $this->pi_getLL('feedTitle', '', true) . '" />';
+                $img = '<img src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . htmlspecialchars($this->pi_getLL('feedAlt', '')) . '" title="' . htmlspecialchars($this->pi_getLL('feedTitle', '')) . '" />';
                 $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, [$this->prefixId => ['collection' => $collection['uid']]], false, $this->conf['targetFeed']);
             } else {
                 $markerArray[$_key]['###FEED###'] = '';
@@ -226,9 +226,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             // Add description.
             $markerArray[$_key]['###DESCRIPTION###'] = $this->pi_RTEcssText($collection['description']);
             // Build statistic's output.
-            $labelTitles = $this->pi_getLL((count($collection['titles']) > 1 ? 'titles' : 'title'), '', false);
+            $labelTitles = $this->pi_getLL((count($collection['titles']) > 1 ? 'titles' : 'title'), '');
             $markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars(count($collection['titles']) . $labelTitles);
-            $labelVolumes = $this->pi_getLL((count($collection['volumes']) > 1 ? 'volumes' : 'volume'), '', false);
+            $labelVolumes = $this->pi_getLL((count($collection['volumes']) > 1 ? 'volumes' : 'volume'), '');
             $markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars(count($collection['volumes']) . $labelVolumes);
         }
         // Randomize sorting?
