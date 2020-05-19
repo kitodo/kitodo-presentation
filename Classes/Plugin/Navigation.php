@@ -160,7 +160,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Link forward X pages.
         if ($this->piVars['page'] <= ($this->doc->numPages - $pageSteps)) {
-            $markerArray['###FORWARD###'] = $this->makeLink(htmlspecialchars(sprintf($this->pi_getLL('forwardXPages', '')), $pageSteps), ['page' => $this->piVars['page'] + $pageSteps]);
+            $markerArray['###FORWARD###'] = $this->makeLink(htmlspecialchars(sprintf($this->pi_getLL('forwardXPages', ''), $pageSteps)), ['page' => $this->piVars['page'] + $pageSteps]);
         } else {
             $markerArray['###FORWARD###'] = '<span title="' . htmlspecialchars(sprintf($this->pi_getLL('forwardXPages', ''), $pageSteps)) . '">' . htmlspecialchars(sprintf($this->pi_getLL('forwardXPages', ''), $pageSteps)) . '</span>';
         }
