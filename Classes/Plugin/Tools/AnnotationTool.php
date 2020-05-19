@@ -84,10 +84,9 @@ class AnnotationTool extends AbstractPlugin
             $annotationContainers != null
             && sizeof($annotationContainers) > 0
         ) {
-            $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:' . $this->pi_getLL('annotations-on', '', true) . ';annotations-off:' . $this->pi_getLL('annotations-off', '', true) . '">&nbsp;</a>';
-            // TODO selector for different motivations
+            $markerArray['###ANNOTATION_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:' . htmlspecialchars($this->pi_getLL('annotations-on', '')) . ';annotations-off:' . htmlspecialchars($this->pi_getLL('annotations-off', '')) . '">&nbsp;</a>';
         } else {
-            $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">' . $this->pi_getLL('annotations-not-available', '', true) . '</span>';
+            $markerArray['###ANNOTATION_SELECT###'] = '<span class="no-annotations">' . htmlspecialchars($this->pi_getLL('annotations-not-available', '')) . '</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);

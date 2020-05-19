@@ -177,7 +177,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get operator options.
         $operatorOptions = '';
         foreach (['AND', 'OR', 'NOT'] as $operator) {
-            $operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-' . $operator . '" value="' . $operator . '">' . $this->pi_getLL($operator, '', true) . '</option>';
+            $operatorOptions .= '<option class="tx-dlf-search-operator-option tx-dlf-search-operator-' . $operator . '" value="' . $operator . '">' . htmlspecialchars($this->pi_getLL($operator, '')) . '</option>';
         }
         // Get field selector options.
         $fieldSelectorOptions = '';
@@ -244,9 +244,9 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Check for plugin configuration.
         if (!empty($this->conf['fulltext'])) {
             $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" ' . ($isFulltextSearch == 0 ? 'checked="checked"' : '') . ' />';
-            $output .= ' <label for="tx-dlf-search-fulltext-no">' . $this->pi_getLL('label.inMetadata', '') . '</label>';
+            $output .= ' <label for="tx-dlf-search-fulltext-no">' . htmlspecialchars($this->pi_getLL('label.inMetadata', '')) . '</label>';
             $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" ' . ($isFulltextSearch == 1 ? 'checked="checked"' : '') . '/>';
-            $output .= ' <label for="tx-dlf-search-fulltext-yes">' . $this->pi_getLL('label.inFulltext', '') . '</label>';
+            $output .= ' <label for="tx-dlf-search-fulltext-yes">' . htmlspecialchars($this->pi_getLL('label.inFulltext', '')) . '</label>';
         }
         return $output;
     }
@@ -263,7 +263,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         $output = '';
         // Check for plugin configuration.
         if (!empty($this->conf['showLogicalPageField'])) {
-            $output .= ' <label for="tx-dlf-search-logical-page">' . $this->pi_getLL('label.logicalPage', '') . ': </label>';
+            $output .= ' <label for="tx-dlf-search-logical-page">' . htmlspecialchars($this->pi_getLL('label.logicalPage', '')) . ': </label>';
             $output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="' . $this->prefixId . '[logicalPage]" />';
         }
         return $output;
@@ -376,8 +376,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             // Fill markers.
             $markerArray = [
                 '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
-                '###LABEL_QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : $this->pi_getLL('label.query')),
-                '###LABEL_SUBMIT###' => $this->pi_getLL('label.submit'),
+                '###LABEL_QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : htmlspecialchars($this->pi_getLL('label.query'))),
+                '###LABEL_SUBMIT###' => htmlspecialchars($this->pi_getLL('label.submit')),
                 '###FIELD_QUERY###' => $this->prefixId . '[query]',
                 '###QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : ''),
                 '###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
@@ -394,7 +394,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             return $this->pi_wrapInBaseClass($content);
         } else {
             // Build label for result list.
-            $label = $this->pi_getLL('search', '', true);
+            $label = htmlspecialchars($this->pi_getLL('search', ''));
             if (!empty($this->piVars['query'])) {
                 $label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), trim($this->piVars['query'])));
             }

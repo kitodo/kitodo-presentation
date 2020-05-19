@@ -92,34 +92,34 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
             return '';
         }
         // Get separator.
-        $separator = $this->pi_getLL('separator', ' - ', true);
+        $separator = htmlspecialchars($this->pi_getLL('separator', ' - '));
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
-            $output = $this->pi_linkTP_keepPIvars($this->pi_getLL('prevPage', '&lt;', true), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], true) . $separator;
+            $output = $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('prevPage', '<')), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], true) . $separator;
         } else {
-            $output = '<span class="prev-page not-active">' . $this->pi_getLL('prevPage', '&lt;', true) . '</span>' . $separator;
+            $output = '<span class="prev-page not-active">' . htmlspecialchars($this->pi_getLL('prevPage', '<')) . '</span>' . $separator;
         }
         $i = 0;
         // Add links to pages.
         while ($i < $maxPages) {
             if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
                 if ($this->piVars['pointer'] != $i) {
-                    $output .= $this->pi_linkTP_keepPIvars(sprintf($this->pi_getLL('page', '%d', true), $i + 1), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], true) . $separator;
+                    $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars(sprintf($this->pi_getLL('page', '%d'), $i + 1)), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], true) . $separator;
                 } else {
-                    $output .= '<span class="active">' . sprintf($this->pi_getLL('page', '%d', true), $i + 1) . '</span>' . $separator;
+                    $output .= '<span class="active">' . htmlspecialchars(sprintf($this->pi_getLL('page', '%d'), $i + 1)) . '</span>' . $separator;
                 }
                 $skip = true;
             } elseif ($skip == true) {
-                $output .= '<span class="skipped">' . $this->pi_getLL('skip', '...', true) . '</span>' . $separator;
+                $output .= '<span class="skipped">' . htmlspecialchars($this->pi_getLL('skip', '...')) . '</span>' . $separator;
                 $skip = false;
             }
             $i++;
         }
         // Add link to next page.
         if ($this->piVars['pointer'] < $maxPages - 1) {
-            $output .= $this->pi_linkTP_keepPIvars($this->pi_getLL('nextPage', '&gt;', true), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1], true);
+            $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('nextPage', '>')), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1], true);
         } else {
-            $output .= '<span class="next-page not-active">' . $this->pi_getLL('nextPage', '&gt;', true) . '</span>';
+            $output .= '<span class="next-page not-active">' . htmlspecialchars($this->pi_getLL('nextPage', '>')) . '</span>';
         }
         return $output;
     }
