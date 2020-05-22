@@ -844,44 +844,6 @@ class Helper
     }
 
     /**
-     * This returns the additional WHERE clause of a table based on its TCA configuration
-     *
-     * @access public
-     *
-     * @param string $table: Table name as defined in TCA
-     * @param bool $showHidden: Ignore the hidden flag?
-     *
-     * @return string Additional WHERE clause
-     */
-    public static function whereClause($table, $showHidden = false)
-    {
-        if (\TYPO3_MODE === 'FE') {
-            // Table "tx_dlf_formats" always has PID 0.
-            if ($table == 'tx_dlf_formats') {
-                return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
-            }
-            // Should we ignore the record's hidden flag?
-            $ignoreHide = -1;
-            if ($showHidden) {
-                $ignoreHide = 1;
-            }
-            // $GLOBALS['TSFE']->sys_page is not always available in frontend.
-            if (is_object($GLOBALS['TSFE']->sys_page)) {
-                return $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
-            } else {
-                $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
-                $GLOBALS['TSFE']->includeTCA();
-                return $pageRepository->enableFields($table, $ignoreHide);
-            }
-        } elseif (\TYPO3_MODE === 'BE') {
-            return \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($table);
-        } else {
-            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
-            return ' AND 1=-1';
-        }
-    }
-
-    /**
      * This returns the additional WHERE expression of a table based on its TCA configuration
      *
      * @access public
@@ -893,31 +855,23 @@ class Helper
      */
     public static function whereExpression($table, $showHidden = false)
     {
-        $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table)
-            ->expr();
-
         if (\TYPO3_MODE === 'FE') {
             // Should we ignore the record's hidden flag?
-            $ignoreHide = -1;
+            $ignoreHide = 0;
             if ($showHidden) {
                 $ignoreHide = 1;
             }
-
-            // $GLOBALS['TSFE']->sys_page is not always available in frontend.
-            if (is_object($GLOBALS['TSFE']->sys_page)) {
-                $expression = $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
-            } else {
-                $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
-                $GLOBALS['TSFE']->includeTCA();
-                $expression = $pageRepository->enableFields($table, $ignoreHide);
-            }
+            $expression = $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
-                return substr($expression, strlen(' AND '));
+                return substr($expression, 5);
+            } else {
+                return '';
             }
-            return $expression;
         } elseif (\TYPO3_MODE === 'BE') {
-            return $expressionBuilder->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
+            return GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table)
+                ->expr()
+                ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
             self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
             return '1=-1';
