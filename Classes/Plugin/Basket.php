@@ -53,7 +53,6 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_basket');
 
-        $allResults = $result->fetchAll();
         if ($GLOBALS['TSFE']->loginUser) {
             $result = $queryBuilder
                 ->select('*')
