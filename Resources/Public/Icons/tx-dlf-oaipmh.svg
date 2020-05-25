@@ -38,16 +38,20 @@
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      id="namedview3747"
-     showgrid="false"
+     showgrid="true"
      inkscape:zoom="37.565048"
-     inkscape:cx="5.5443356"
-     inkscape:cy="7.5112519"
+     inkscape:cx="1.013086"
+     inkscape:cy="5.7589433"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg3745"
      showguides="true"
-     inkscape:guide-bbox="true">
+     inkscape:guide-bbox="true"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-nodes="false"
+     inkscape:snap-others="false">
     <sodipodi:guide
        position="-3.4823529,12.894118"
        orientation="0,1"
@@ -68,6 +72,9 @@
        orientation="1,0"
        id="guide5083"
        inkscape:locked="false" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid885" />
   </sodipodi:namedview>
   <path
      fill="#FFF"
@@ -78,54 +85,39 @@
      d="M1 1v14h14V1H1zm1 1h12v12H2V2z"
      id="path3735" />
   <g
-     transform="matrix(0.40838465,0,0,0.40838465,4.2338996,3.1259965)"
-     id="g5797"
-     style="fill:#c837ab;fill-opacity:1">
+     aria-label="OAI PMH"
+     transform="matrix(0.07245956,0,0,0.07245956,-15.393393,-23.137925)"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c837ab;fill-opacity:1;stroke:none"
+     id="flowRoot5761">
     <path
-       id="path5740"
-       d="M 9,10 C 6.243,10 4,7.757 4,5 4,2.243 6.243,0 9,0 c 2.757,0 5,2.243 5,5 0,2.757 -2.243,5 -5,5 z M 9,1 C 6.794,1 5,2.794 5,5 5,7.206 6.794,9 9,9 11.206,9 13,7.206 13,5 13,2.794 11.206,1 9,1 Z"
-       inkscape:connector-curvature="0"
-       style="fill:#c837ab;fill-opacity:1" />
+       d="m 273.05078,419.11914 v -5 h -5 v -25 h 5 v -5 h 20 v 5 h 5 v 25 h -5 v 5 z m 5,-5 h 10 v -25 h -10 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
+       id="path5775"
+       inkscape:connector-curvature="0" />
     <path
-       id="path5742"
-       d="m 6.5,21 h -6 C 0.224,21 0,20.776 0,20.5 v -4 C 0,14.019 2.019,12 4.5,12 h 9 c 2.058,0 3.849,1.389 4.354,3.377 0.068,0.268 -0.094,0.539 -0.361,0.607 -0.271,0.071 -0.539,-0.095 -0.607,-0.361 C 16.492,14.079 15.101,13 13.5,13 h -9 C 2.57,13 1,14.57 1,16.5 V 20 H 6.5 C 6.776,20 7,20.224 7,20.5 7,20.776 6.776,21 6.5,21 Z"
-       inkscape:connector-curvature="0"
-       style="fill:#c837ab;fill-opacity:1" />
-    <g
-       id="flowRoot5761"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c837ab;fill-opacity:1;stroke:none"
-       transform="matrix(0.07921877,0,0,0.07921877,-13.168148,-13.517082)"
-       aria-label="OAI PMH">
-      <path
-         inkscape:connector-curvature="0"
-         id="path5775"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
-         d="m 273.05078,419.11914 v -5 h -5 v -25 h 5 v -5 h 20 v 5 h 5 v 25 h -5 v 5 z m 5,-5 h 10 v -25 h -10 z" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path5777"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
-         d="m 308.05078,419.11914 v -25 h 5 v -5 h 5 v -5 h 10 v 5 h 5 v 5 h 5 v 25 h -10 v -15 h -10 v 15 z m 10,-20 h 10 v -5 h -10 z" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path5779"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
-         d="m 373.05078,384.11914 v 5 h -5 v 25 h 5 v 5 h -20 v -5 h 5 v -25 h -5 v -5 z" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path5781"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
-         d="m 268.05078,473.72852 v -35 h 25 v 5 h 5 v 10 h -5 v 5 h -15 v 15 z m 10,-20 h 10 v -10 h -10 z" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path5783"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
-         d="m 308.05078,473.72852 v -35 h 10 v 5 h 5 v 5 h 5 v -5 h 5 v -5 h 10 v 35 h -10 v -20 h -5 v 5 h -5 v -5 h -5 v 20 z" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path5785"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
-         d="m 348.05078,473.72852 v -35 h 10 v 15 h 10 v -15 h 10 v 35 h -10 v -15 h -10 v 15 z" />
-    </g>
+       d="m 308.05078,419.11914 v -25 h 5 v -5 h 5 v -5 h 10 v 5 h 5 v 5 h 5 v 25 h -10 v -15 h -10 v 15 z m 10,-20 h 10 v -5 h -10 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
+       id="path5777"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 373.05078,384.11914 v 5 h -5 v 25 h 5 v 5 h -20 v -5 h 5 v -25 h -5 v -5 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
+       id="path5779"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 268.05078,473.72852 v -35 h 25 v 5 h 5 v 10 h -5 v 5 h -15 v 15 z m 10,-20 h 10 v -10 h -10 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
+       id="path5781"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 308.05078,473.72852 v -35 h 10 v 5 h 5 v 5 h 5 v -5 h 5 v -5 h 10 v 35 h -10 v -20 h -5 v 5 h -5 v -5 h -5 v 20 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
+       id="path5783"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 348.05078,473.72852 v -35 h 10 v 15 h 10 v -15 h 10 v 35 h -10 v -15 h -10 v 15 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'C64 Pro Mono';-inkscape-font-specification:'C64 Pro Mono';fill:#c837ab;fill-opacity:1"
+       id="path5785"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
