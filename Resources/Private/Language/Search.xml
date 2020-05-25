@@ -15,6 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">Search</label>
+            <label index="tt_content.plugin.description">Search Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.facetCollections">Use only this collections as facet</label>
             <label index="tt_content.pi_flexform.fulltext">Enable fulltext search?</label>
@@ -56,6 +58,8 @@
             <label index="resetFacet">Reset selection (%s)</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">Suche</label>
+            <label index="tt_content.plugin.description">Suche Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.facetCollections">Folgende Kollektionen als Facetten anzeigen</label>
             <label index="tt_content.pi_flexform.fulltext">Volltext-Suche aktivieren?</label>
@@ -75,7 +79,7 @@
             <label index="tt_content.pi_flexform.resetFacets">Facetten zurücksetzen erlauben</label>
             <label index="tt_content.pi_flexform.sortingFacets">Facetten Sortierung</label>
             <label index="tt_content.pi_flexform.sortingFacets.count">Anzahl (höchste Anzahl zuerst)</label>
-            <label index="tt_content.pi_flexform.sortingFacets.index">Lexikographisch nach indexiertem Begriff (alphabetisch für Begriffe im ASCII-Bereich)</label>            
+            <label index="tt_content.pi_flexform.sortingFacets.index">Lexikographisch nach indexiertem Begriff (alphabetisch für Begriffe im ASCII-Bereich)</label>
             <label index="tt_content.pi_flexform.suggest">Suchvorschläge anzeigen</label>
             <label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Listenansicht")</label>
             <label index="tt_content.pi_flexform.targetPidPageView">Zielseite (mit Plugin "DLF: Seitenansicht")</label>
