@@ -16,7 +16,7 @@
     <data type="array">
         <languageKey index="default" type="array">
             <label index="tt_content.plugin.title">Feeds</label>
-            <label index="tt_content.plugin.description">Feeds Plugin for Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Feeds Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.collections">Collections</label>
             <label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected collection(s)</label>
@@ -33,7 +33,7 @@
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.plugin.title">Feeds</label>
-            <label index="tt_content.plugin.description">Feeds Plugin für Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Feeds Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.collections">Kollektionen</label>
             <label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Kollektion(en) berücksichtigen</label>

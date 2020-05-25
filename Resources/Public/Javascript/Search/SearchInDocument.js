@@ -70,7 +70,7 @@ $(document).ready(function() {
               var resultItems = [];
               var resultList = '<div class="results-active-indicator"></div><ul>';
               if (data.error) {
-                  resultList += '<li>' + data.error + '</li>';
+                  resultList += '<li class="error">' + data.error + '</li>';
               } else {
                   for (var i=0; i < data.response.docs.length; i++) {
 
@@ -97,11 +97,15 @@ $(document).ready(function() {
                           resultItems[data.response.docs[i].page] = '<span class="structure">' + $('#tx-dlf-search-in-document-label-page').text() + ' ' + data.response.docs[i].page + '</span><br /><span ="textsnippet"><a href=\"' + newlink + '\">' + data.highlighting[data.response.docs[i].id].fulltext + '</a></span>';
                       }
                   }
-                  // sort by page as this cannot be done with current solr schema
-                  resultItems.sort(function(a, b){return a-b});
-                  resultItems.forEach(function(item, index){
-                      resultList += '<li>' + item + '</li>';
-                  });
+                  if (resultItems.length > 0) {
+                    // sort by page as this cannot be done with current solr schema
+                    resultItems.sort(function(a, b){return a-b});
+                    resultItems.forEach(function(item, index){
+                        resultList += '<li>' + item + '</li>';
+                    });
+                } else {
+                    resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
+                }
               }
               resultList += '</ul>';
               if (parseInt(data.response.start) > 0) {

@@ -111,18 +111,18 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->join(
                     'tx_dlf_documents',
                     'tx_dlf_relations',
-                    'tx_dlf_relations',
-                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_relations.uid_local'))
+                    'tx_dlf_documents_collections_mm',
+                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
                 )
                 ->join(
-                    'tx_dlf_relations',
+                    'tx_dlf_documents_collections_mm',
                     'tx_dlf_collections',
                     'tx_dlf_collections',
-                    $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_relations.uid_foreign'))
+                    $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
                 )
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
-                    $queryBuilder->expr()->eq('tx_dlf_relations.ident', $queryBuilder->createNamedParameter('docs_colls')),
+                    $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
                     $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
                     $additionalWhere,
                     Helper::whereExpression('tx_dlf_documents'),

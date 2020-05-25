@@ -16,7 +16,7 @@
     <data type="array">
         <languageKey index="default" type="array">
             <label index="tt_content.plugin.title">Toolbox</label>
-            <label index="tt_content.plugin.description">Toolbox Plugin for Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Toolbox Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.tools">Tools</label>
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
@@ -24,7 +24,7 @@
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.plugin.title">Werkzeugkasten</label>
-            <label index="tt_content.plugin.description">Werkzeugkastenplugin für Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Werkzeugkasten Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.tools">Werkzeuge</label>
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>

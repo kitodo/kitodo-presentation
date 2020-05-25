@@ -15,8 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="tt_content.plugin.title">Page</label>
-            <label index="tt_content.plugin.description">Page Plugin for Kitodo Presentation</label>
+            <label index="tt_content.plugin.title">Pageview</label>
+            <label index="tt_content.plugin.description">Pageview Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.basketButton">Show basket button</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.excludeOther">Show only documents from the selected page</label>
@@ -37,8 +37,8 @@
             <label index="addBasket">Add to basket</label>
         </languageKey>
         <languageKey index="de" type="array">
-            <label index="tt_content.plugin.title">Seite</label>
-            <label index="tt_content.plugin.description">Seitenplugin für Kitodo Presentation</label>
+            <label index="tt_content.plugin.title">Seitenansicht</label>
+            <label index="tt_content.plugin.description">Seitenansicht Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.basketButton">Warenkorb Button anzeigen</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.excludeOther">Nur Dokumente der ausgewählten Seite anzeigen</label>

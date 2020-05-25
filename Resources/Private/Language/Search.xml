@@ -16,7 +16,7 @@
     <data type="array">
         <languageKey index="default" type="array">
             <label index="tt_content.plugin.title">Search</label>
-            <label index="tt_content.plugin.description">Search Plugin for Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Search Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.facetCollections">Use only this collections as facet</label>
             <label index="tt_content.pi_flexform.fulltext">Enable fulltext search?</label>
@@ -59,7 +59,7 @@
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.plugin.title">Suche</label>
-            <label index="tt_content.plugin.description">Suchplugin für Kitodo Presentation</label>
+            <label index="tt_content.plugin.description">Suche Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.facetCollections">Folgende Kollektionen als Facetten anzeigen</label>
             <label index="tt_content.pi_flexform.fulltext">Volltext-Suche aktivieren?</label>
