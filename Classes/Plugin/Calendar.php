@@ -219,15 +219,15 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
         ];
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
+        $allYearsLink = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('allYears', '')) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
         // Fill marker array.
         $markerArray = [
             '###CALENDARVIEWACTIVE###' => count($this->allIssues) > 5 ? 'active' : '',
             '###LISTVIEWACTIVE###' => count($this->allIssues) < 6 ? 'active' : '',
             '###CALYEAR###' => $yearLink,
             '###CALALLYEARS###' => $allYearsLink,
-            '###LABEL_CALENDAR###' => $this->pi_getLL('label.view_calendar'),
-            '###LABEL_LIST_VIEW###' => $this->pi_getLL('label.view_list'),
+            '###LABEL_CALENDAR###' => htmlspecialchars($this->pi_getLL('label.view_calendar')),
+            '###LABEL_LIST_VIEW###' => htmlspecialchars($this->pi_getLL('label.view_list')),
         ];
         $this->template = $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->templateService->substituteSubpart($this->template, '###CALMONTH###', $subPartContent);
@@ -435,10 +435,10 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . $this->doc->uid,
         ];
-        $allYearsLink = $this->cObj->typoLink($this->pi_getLL('allYears', '', true) . ' ' . $this->doc->getTitle($this->doc->uid), $linkConf);
+        $allYearsLink = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('allYears', '')) . ' ' . $this->doc->getTitle($this->doc->uid), $linkConf);
         // Fill markers.
         $markerArray = [
-            '###LABEL_CHOOSE_YEAR###' => $this->pi_getLL('label.please_choose_year'),
+            '###LABEL_CHOOSE_YEAR###' => htmlspecialchars($this->pi_getLL('label.please_choose_year')),
             '###CALALLYEARS###' => $allYearsLink
         ];
         $this->template = $this->templateService->substituteMarkerArray($this->template, $markerArray);

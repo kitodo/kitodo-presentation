@@ -271,14 +271,14 @@ class ext_update
 
         if ($result) {
             Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsOkay', true),
-                $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', true),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsOkay')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns')),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsNotOkay', true),
-                $GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns', true),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.copyIndexRelatedColumnsNotOkay')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.copyIndexRelatedColumns')),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
         }
@@ -312,8 +312,8 @@ class ext_update
                 ->execute();
         }
         Helper::addMessage(
-            $GLOBALS['LANG']->getLL('update.FormatClassesOkay', true),
-            $GLOBALS['LANG']->getLL('update.FormatClasses', true),
+            htmlspecialchars($GLOBALS['LANG']->getLL('update.FormatClassesOkay')),
+            htmlspecialchars($GLOBALS['LANG']->getLL('update.FormatClasses')),
             \TYPO3\CMS\Core\Messaging\FlashMessage::OK
         );
         $this->content .= Helper::renderFlashMessages();
@@ -368,14 +368,14 @@ class ext_update
                 unset($data);
                 if (!empty($substUids)) {
                     Helper::addMessage(
-                        $GLOBALS['LANG']->getLL('update.metadataConfigOkay', true),
-                        $GLOBALS['LANG']->getLL('update.metadataConfig', true),
+                        htmlspecialchars($GLOBALS['LANG']->getLL('update.metadataConfigOkay')),
+                        htmlspecialchars($GLOBALS['LANG']->getLL('update.metadataConfig')),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                     );
                 } else {
                     Helper::addMessage(
-                        $GLOBALS['LANG']->getLL('update.metadataConfigNotOkay', true),
-                        $GLOBALS['LANG']->getLL('update.metadataConfig', true),
+                        htmlspecialchars($GLOBALS['LANG']->getLL('update.metadataConfigNotOkay')),
+                        htmlspecialchars($GLOBALS['LANG']->getLL('update.metadataConfig')),
                         \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
                     );
                 }
@@ -439,8 +439,8 @@ class ext_update
                     }
                 }
                 Helper::addMessage(
-                    $GLOBALS['LANG']->getLL('update.solariumSolrUpdateNotOkay', true),
-                    sprintf($GLOBALS['LANG']->getLL('update.solariumSolrUpdate', true), $resArray['index_name']),
+                    htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdateNotOkay')),
+                    htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('update.solariumSolrUpdate'), $resArray['index_name'])),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
                 $this->content .= Helper::renderFlashMessages();
@@ -448,8 +448,8 @@ class ext_update
             }
         }
         Helper::addMessage(
-            $GLOBALS['LANG']->getLL('update.solariumSolrUpdateOkay', true),
-            $GLOBALS['LANG']->getLL('update.solariumSolrUpdate', true),
+            htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdateOkay')),
+            htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdate')),
             \TYPO3\CMS\Core\Messaging\FlashMessage::OK
         );
         $this->content .= Helper::renderFlashMessages();
@@ -478,14 +478,14 @@ class ext_update
 
         if ($result) {
             Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesOkay', true),
-                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', true),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesOkay')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries')),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             Helper::addMessage(
-                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesNotOkay', true),
-                $GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries', true),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntriesNotOkay')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.documentSetFormatForOldEntries')),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
         }

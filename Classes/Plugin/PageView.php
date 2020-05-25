@@ -144,14 +144,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray = [];
         if ($this->piVars['id']) {
             if ($this->conf['crop']) {
-                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();" title="' . $this->pi_getLL('editMode', '', true) . '">' . $this->pi_getLL('editMode', '', true) . '</a>';
-                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();" title="' . $this->pi_getLL('editRemove', '', true) . '">' . $this->pi_getLL('editRemove', '', true) . '</a>';
+                $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();" title="' . htmlspecialchars($this->pi_getLL('editMode', '')) . '">' . htmlspecialchars($this->pi_getLL('editMode', '')) . '</a>';
+                $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();" title="' . htmlspecialchars($this->pi_getLL('editRemove', '')) . '">' . htmlspecialchars($this->pi_getLL('editRemove', '')) . '</a>';
             } else {
                 $markerArray['###EDITBUTTON###'] = '';
                 $markerArray['###EDITREMOVE###'] = '';
             }
             if ($this->conf['magnifier']) {
-                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();" title="' . $this->pi_getLL('magnifier', '', true) . '">' . $this->pi_getLL('magnifier', '', true) . '</a>';
+                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();" title="' . htmlspecialchars($this->pi_getLL('magnifier', '')) . '">' . htmlspecialchars($this->pi_getLL('magnifier', '')) . '</a>';
             } else {
                 $markerArray['###MAGNIFIER###'] = '';
             }
@@ -171,7 +171,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray = [];
         // Add basket button
         if ($this->conf['basketButton'] && $this->conf['targetBasket'] && $this->piVars['id']) {
-            $label = $this->pi_getLL('addBasket', '', true);
+            $label = htmlspecialchars($this->pi_getLL('addBasket', ''));
             $params = [
                 'id' => $this->piVars['id'],
                 'addToBasket' => true
