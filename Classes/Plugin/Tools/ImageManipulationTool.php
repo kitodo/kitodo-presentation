@@ -43,9 +43,11 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin
         if (!empty($this->cObj->data['conf'])) {
             $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
         }
+        // Set parent element for initialization.
+        $parentContainer = !empty($this->conf['parentContainer']) ? $this->conf['parentContainer'] : '.tx-dlf-imagemanipulationtool';
         // Load template file.
         $this->getTemplate();
-        $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:' . htmlspecialchars($this->pi_getLL('imagemanipulation-on', '')) . ';imagemanipulation-off:' . htmlspecialchars($this->pi_getLL('imagemanipulation-off', '')) . ';reset:' . htmlspecialchars($this->pi_getLL('reset', '')) . ';saturation:' . htmlspecialchars($this->pi_getLL('saturation', '')) . ';hue:' . htmlspecialchars($this->pi_getLL('hue', '')) . ';contrast:' . htmlspecialchars($this->pi_getLL('contrast', '')) . ';brightness:' . htmlspecialchars($this->pi_getLL('brightness', '')) . ';invert:' . htmlspecialchars($this->pi_getLL('invert', '')) . '" title="' . htmlspecialchars($this->pi_getLL('no-support', '')) . '"></span>';
+        $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:' . htmlspecialchars($this->pi_getLL('imagemanipulation-on', '')) . ';imagemanipulation-off:' . htmlspecialchars($this->pi_getLL('imagemanipulation-off', '')) . ';reset:' . htmlspecialchars($this->pi_getLL('reset', '')) . ';saturation:' . htmlspecialchars($this->pi_getLL('saturation', '')) . ';hue:' . htmlspecialchars($this->pi_getLL('hue', '')) . ';contrast:' . htmlspecialchars($this->pi_getLL('contrast', '')) . ';brightness:' . htmlspecialchars($this->pi_getLL('brightness', '')) . ';invert:' . htmlspecialchars($this->pi_getLL('invert', '')) . ';parentContainer:' . $parentContainer . '" title="' . htmlspecialchars($this->pi_getLL('no-support', '')) . '"></span>';
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
