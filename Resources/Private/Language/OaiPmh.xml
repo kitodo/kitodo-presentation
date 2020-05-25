@@ -15,6 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">OAI-PMH Interface</label>
+            <label index="tt_content.plugin.description">OAI-PMH Interface Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.library">Providing library</label>
             <label index="tt_content.pi_flexform.limit">Records per request</label>
@@ -36,6 +38,8 @@
             <label index="error">An error occurred, please try again later. If this happens consistently, please contact the administrator.</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">OAI-PMH-Schnittstelle</label>
+            <label index="tt_content.plugin.description">OAI-PMH-Schnittstelle Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.library">Mandant</label>
             <label index="tt_content.pi_flexform.limit">Datensätze pro Abfrage</label>

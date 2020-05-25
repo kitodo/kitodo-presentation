@@ -102,10 +102,10 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 switch ($image['mimetype']) {
                     case 'image/jpeg':
-                        $mimetypeLabel = '(JPG)';
+                        $mimetypeLabel = ' (JPG)';
                         break;
                     case 'image/tiff':
-                        $mimetypeLabel = '(TIFF)';
+                        $mimetypeLabel = ' (TIFF)';
                         break;
                     default:
                         $mimetypeLabel = '';
@@ -114,10 +114,10 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                     'parameter' => $image['url'],
                     'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                     'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                    'title' => $label . ' ' . $mimetypeLabel,
+                    'title' => $label . $mimetypeLabel,
                     'additionalParams' => '',
                 ];
-                $imageLink = $this->cObj->typoLink($label . ' ' . $mimetypeLabel, $linkConf);
+                $imageLink = $this->cObj->typoLink($label . $mimetypeLabel, $linkConf);
                 break;
             } else {
                 Helper::devLog('File not found in fileGrp "' . $fileGrp . '"', DEVLOG_SEVERITY_WARNING);
