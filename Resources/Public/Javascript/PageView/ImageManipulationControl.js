@@ -30,7 +30,7 @@ dlfViewerImageManipulationControl = function(options) {
      */
     this.dic = $('#tx-dlf-tools-imagetools').length > 0 && $('#tx-dlf-tools-imagetools').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-imagetools')) :
-        {'imagemanipulation-on':'Activate image manipulation', 'imagemanipulation-off':'Deactivate image manipulation', 'saturation':'Saturation', 'hue':'Hue', 'brightness': 'Brightness', 'contrast':'Contrast', 'reset': 'Reset', 'invert': 'Color inverting'};
+        {'imagemanipulation-on':'Activate image manipulation', 'imagemanipulation-off':'Deactivate image manipulation', 'saturation':'Saturation', 'hue':'Hue', 'brightness':'Brightness', 'contrast':'Contrast', 'reset':'Reset', 'invert':'Color inverting', 'parentContainer':'.tx-dlf-imagemanipulationtool'};
 
     /**
      * @type {Array.<ol.layer.Layer>}
@@ -71,7 +71,7 @@ dlfViewerImageManipulationControl = function(options) {
      * @type {Element}
      * @private
      */
-    this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer: $('.tx-dlf-toolbox')[0];
+    this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer : $(this.dic['parentContainer'])[0];
 
     //
     // Append open/close behavior to toolbox
@@ -278,7 +278,7 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
  * @private
  */
 dlfViewerImageManipulationControl.prototype.createMap_ = function() {
-    var mapEl_ = $('<div id="tx-dfgviewer-map-manipulate" class="tx-dlf-map"></div>');
+    var mapEl_ = $('<div id="tx-dlf-map-manipulate" class="tx-dlf-map"></div>');
     $(this.baseMap_.getTargetElement().parentElement).append(mapEl_);
 
     this.map_ = new ol.Map({

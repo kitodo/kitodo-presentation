@@ -190,7 +190,7 @@ dlfUtils.createOl3View = function (images) {
 };
 
 /**
- * Returns true if the specified value is not undefiend
+ * Returns true if the specified value is not undefined
  * @param {?} val
  * @return {boolean}
  */

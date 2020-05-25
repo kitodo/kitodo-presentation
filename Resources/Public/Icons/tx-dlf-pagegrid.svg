@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg3745"
+   sodipodi:docname="tx-dlf-navigation.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata3751">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3749" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview3747"
+     showgrid="false"
+     inkscape:zoom="37.565048"
+     inkscape:cx="12.320397"
+     inkscape:cy="2.9662142"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3745"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="-3.4823529,12.894118"
+       orientation="0,1"
+       id="guide5077"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="-1.0729412,3.0682353"
+       orientation="0,1"
+       id="guide5079"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="3.0682353,13.647059"
+       orientation="1,0"
+       id="guide5081"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="12.988235,13.308235"
+       orientation="1,0"
+       id="guide5083"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <path
+     fill="#FFF"
+     d="M1 1h14v14H1V1z"
+     id="path3733" />
+  <path
+     fill="#999"
+     d="M1 1v14h14V1H1zm1 1h12v12H2V2z"
+     id="path3735" />
+  <g
+     id="g5632"
+     transform="matrix(0.02906253,0,0,0.02878679,3.0682353,3.105882)"
+     style="fill:#c837ab;fill-opacity:1">
+    <g
+       id="g5630"
+       style="fill:#c837ab;fill-opacity:1">
+      <g
+         id="g5628"
+         style="fill:#c837ab;fill-opacity:1">
+        <rect
+           x="128"
+           y="128"
+           width="85.333"
+           height="85.333"
+           id="rect5610"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="0"
+           y="0"
+           width="85.333"
+           height="85.333"
+           id="rect5612"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="128"
+           y="256"
+           width="85.333"
+           height="85.333"
+           id="rect5614"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="0"
+           y="128"
+           width="85.333"
+           height="85.333"
+           id="rect5616"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="0"
+           y="256"
+           width="85.333"
+           height="85.333"
+           id="rect5618"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="256"
+           y="0"
+           width="85.333"
+           height="85.333"
+           id="rect5620"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="128"
+           y="0"
+           width="85.333"
+           height="85.333"
+           id="rect5622"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="256"
+           y="128"
+           width="85.333"
+           height="85.333"
+           id="rect5624"
+           style="fill:#c837ab;fill-opacity:1" />
+        <rect
+           x="256"
+           y="256"
+           width="85.333"
+           height="85.333"
+           id="rect5626"
+           style="fill:#c837ab;fill-opacity:1" />
+      </g>
+    </g>
+  </g>
+</svg>
