@@ -152,6 +152,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         while ($collectionData = $result->fetch()) {
             if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
                 $collections[$collectionData['uid']] = $pageRepository->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                // keep the index_name of the default language
+                $collections[$collectionData['uid']]['index_name'] = $collectionData['index_name'];
             } else {
                 $collections[$collectionData['uid']] = $collectionData;
             }
@@ -307,6 +309,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         if ($resArray = $collection->fetch()) {
             if ($resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
                 $collectionData = $pageRepository->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                // keep the index_name of the default language
+                $collectionData['index_name'] = $resArray['index_name'];
             } else {
                 $collectionData = $resArray;
             }
