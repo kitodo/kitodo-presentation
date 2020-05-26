@@ -33,10 +33,8 @@ The default behaviour of TYPO3 is to call the pageNotFound handler and/or to sho
 
    TYPO3 Error-Message "Reason: Request parameters could not be validated (&cHash empty)"
 
-
-
 This is not the desired behaviour. You should configure in the TYPO3 install tool
-$TYPO3_CONF_VARS['FE'][pageNotFoundOnCHashError]=0 to show the requested page
+$TYPO3_CONF_VARS['FE']['pageNotFoundOnCHashError']=0 to show the requested page
 instead. The caching will be disabled in this case. This was the default
 behaviour before TYPO3 6.x.
 
@@ -63,7 +61,7 @@ Solr Installation
 This extension doesn't include Solr, but just a prepared configuration set.
 To setup Apache Solr, perform the following steps:
 
-1. Make sure you have Apache Solr 7.4 up and running.
+1. Make sure you have Apache Solr 7.x up and running.
     Download Solr from http://lucene.apache.org/solr/.
     Other versions since 5.0 should be possible but are not tested.
 
@@ -81,6 +79,6 @@ TypoScript Basic Configuration
 ******************************
 
 Please include the Template "Basic Configuration (dlf)". This template adds
-jQuery 2.2.1 to your page by setting the following typoscript:
+jQuery to your page by setting the following typoscript:
 
 :typoscript:`page.includeJSlibs.jQuery`

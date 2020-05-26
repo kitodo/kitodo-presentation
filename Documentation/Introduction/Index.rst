@@ -34,7 +34,7 @@ Download of current version is `avaiable on GitHub <https://github.com/kitodo/ki
 Libraries using Kitodo.Presentation
 -----------------------------------
 
-The following libraries use Kitodo.Presentation for their digital collections:
+Amongst others the following libraries are using Kitodo.Presentation for their digital collections:
 
 * `SLUB Dresden <http://digital.slub-dresden.de/>`_
 * `UB "Georgius Agricola" at the TU Bergakademie Freiberg <http://digital.ub.tu-freiberg.de/>`_
@@ -52,9 +52,9 @@ handling, language localization, caching, etc., is possible within the
 Kitodo.Presentation functional modules. The entire system is multi-client
 capable, i.e. any number of instances of Kitodo.Presentation can be run within
 a single TYPO3 installation, each with its own configuration, search index,
-database, access permissions, visual design, etc.
+backend pages, access permissions, visual design, etc.
 
-Kitodo.Presentation offers a standard OAI-PMH 2-compliant interface for
+Kitodo.Presentation offers a standard OAI-PMH2-compliant interface for
 international search capability and digital metadata legibility. We recommend
 registering your Kitodo installation with the appropriate public OAI registry.
 
@@ -69,19 +69,19 @@ is a group of classes that build upon the TYPO3 API, adding
 Kitodo-specific functions, such as handling METS structures and library metadata
 in various formats, or linking external resources, such as OAI-PMH interfaces or
 Solr search engines. The API extensions are available to all TYPO3 extensions,
-which means that they can not only be used by Kitodo.Presentation, but by other
+which means that they can be used not only by Kitodo.Presentation, but by other
 extensions as well. Thus, commercial or other very specific functions, which
-are only necessary in single installations, aren’t part of the official
-Kitodo.Presentation release, but are created as separate extensions.
+are only necessary in single installations, don't need to be part of the official
+Kitodo.Presentation release, but can be created as separate extensions.
 
 Modules
 ^^^^^^^
 is a group of components that are integrated into the TYPO3 backend and
 manage the configuration of extensions as well as of digital resources, clients
-and collections. Currently, there is a module for client management and one for
-manually importing new resources or newly-indexed existing digital resources.
+and collections. Currently, there is a module for client management as well as
+integrations with the basic TYPO3 list module to manage the digital resources.
 In addition, they enable a highly granular configuration of structure and
-metadata handling as well as database management. Further, a command line
+metadata handling as well as database management. Furthermore, a command line
 interface is provided, which allows automation of procedures, such as importing
 digital resources.
 
@@ -90,8 +90,7 @@ Plugins
 are components that build the frontend output and provide various functions.
 All plugins can be precisely configured via GUI and freely dropped into
 TYPO3-managed web pages. All frontend outputs are based on design
-templates and are thus fully customizable. Currently, Kitodo.Presentation
-contains 12 plugins.
+templates and are thus fully customizable.
 
 .. _screenshots:
 

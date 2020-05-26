@@ -22,7 +22,7 @@
   "support": {
     "issues": "https://github.com/kitodo/kitodo-presentation/issues",
     "source": "https://github.com/kitodo/kitodo-presentation",
-    "docs": "https://docs.typo3.org/typo3cms/extensions/dlf/"
+    "docs": "https://docs.typo3.org/p/kitodo/presentation/master/en-us/"
   },
   "require": {
     "php": "^7.3|^7.4",
