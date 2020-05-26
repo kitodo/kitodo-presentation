@@ -29,9 +29,9 @@ If you have questions about this extensions or about other
 lists of Kitodo:
 
 * Community mailing list helps on any questions about installation and usage of
-  the software. It's address is kitodo-community@kitodo.org. The list archive
+  the software. Its address is kitodo-community@kitodo.org. The list archive
   can be found at https://maillist.slub-dresden.de/pipermail/kitodo-community/
-* Developer mailing list discusses implementation details. It's address is
+* Developer mailing list discusses implementation details. Its address is
   kitodo-developer@kitodo.org. The list archive can be found at
   https://maillist.slub-dresden.de/pipermail/kitodo-developer/
 
