@@ -25,7 +25,6 @@ $EM_CONF[$_EXTKEY] = [
     ],
     'state' => 'stable',
     'uploadfolder' => false,
-    'createDirs' => '',
     'clearCacheOnLoad' => false,
     'author' => 'Sebastian Meyer (Maintainer)',
     'author_email' => 'contact@kitodo.org',
