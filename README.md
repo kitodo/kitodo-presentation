@@ -24,12 +24,24 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 Requirements
 ------------
 
-Kitodo.Presentation requires [TYPO3 8 LTS](https://get.typo3.org/8) with at least [PHP 7.0+](https://secure.php.net). It uses [MySQL 5.7+](https://www.mysql.com) or [MariaDB 10.2+](https://mariadb.com) as database and [Apache Solr 7.0+](https://lucene.apache.org/solr) via [Solarium 4.2+](http://www.solarium-project.org/) as search engine backend.
+Kitodo.Presentation requires [TYPO3](https://get.typo3.org) with [PHP](https://secure.php.net). It uses [MySQL](https://www.mysql.com) or [MariaDB](https://mariadb.com) as database and [Apache Solr](https://lucene.apache.org/solr) via [Solarium](http://www.solarium-project.org/) as search engine backend.
+
+Currently **TYPO3 8 ELTS** and **TYPO3 9 LTS** are supported with the following system requirements:
+
+| Component   | Constraints for 8 ELTS | Constraints for 9 LTS |
+| ----------- | ---------------------- | --------------------- |
+| TYPO3       | 8.7.x                  | 9.5.x                 |
+| PHP         | 7.2.x - 7.4.x          | 7.2.x - 7.4.x         |
+| MySQL       | 5.7.x                  | 5.7.x                 |
+| MariaDB     | 10.2.x - 10.2.26       | 10.2.x - 10.3.x       |
+| Apache Solr | 7.x                    | 7.x                   |
+
+Application level dependencies are handled by [Composer](https://getcomposer.org) (see [composer.json](./composer.json)).
 
 Kitodo. Key to digital objects
 ------------------------------
 
-[Kitodo](https://github.com/kitodo) is an open source software suite intended to support mass digitization projects for cultural heritage institutions. Kitodo is widely-used and cooperatively maintained by major German libraries and digitization service providers. The software implements international standards such as IIIF, METS, MODS, ALTO, TEI, and other formats maintained by the [Library of Congress](https://loc.gov/standards). Kitodo consists of several independent modules serving different purposes such as controlling the digitization workflow, enriching descriptive and structural metadata, and presenting the results to the public in a modern and convenient way.
+[Kitodo](https://github.com/kitodo) is an open source software suite intended to support mass digitization projects for cultural heritage institutions. Kitodo is widely-used and cooperatively maintained by major German libraries and digitization service providers. The software implements international standards such as IIIF, METS, MODS, ALTO, TEI, and other formats. Kitodo consists of several independent modules serving different purposes such as controlling the digitization workflow, enriching descriptive and structural metadata, and presenting the results to the public in a modern and convenient way.
 
 To get more information, visit the [Kitodo homepage](https://www.kitodo.org). You can also follow Kitodo News on [Twitter](https://twitter.com/kitodo_org).
 

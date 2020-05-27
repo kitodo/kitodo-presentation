@@ -27,13 +27,13 @@ Kitodo.Presentation
         It is highly customizable through a user-friendly backend and flexible design templates.
 
     :Keywords:
-        kitodo,digital framework,digitization,viewer,library,METS,OAI-PMH
+        kitodo,presentation,digitization,viewer,library,METS,OAI-PMH
 
     :Copyright:
-        ###YEAR###
+        since 2017
 
     :Author:
-        Kitodo. Key to digital objects e.V.
+        Kitodo Release Management Team
 
     :Email:
         contact@kitodo.org
