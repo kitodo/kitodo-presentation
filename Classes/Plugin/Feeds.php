@@ -90,7 +90,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
             if (!empty($this->piVars['collection'])) {
                 $additionalWhere = 'tx_dlf_collections.uid=' . intval($this->piVars['collection']);
             } elseif (!empty($this->conf['collections'])) {
-                $additionalWhere = 'tx_dlf_collections.uid IN (' . $GLOBALS['TYPO3_DB']->cleanIntList($this->conf['collections']) . ')';
+                $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])) . ')';
             }
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)

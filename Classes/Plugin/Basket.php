@@ -50,43 +50,49 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray['###JS###'] = '';
         // get user session
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_basket');
+
         if ($GLOBALS['TSFE']->loginUser) {
-            $insertArray['fe_user_id'] = $GLOBALS['TSFE']->fe_user->user['uid'];
-            $query = $GLOBALS['TYPO3_DB']->SELECTquery(
-                '*',
-                'tx_dlf_basket',
-                'tx_dlf_basket.fe_user_id=' . intval($insertArray['fe_user_id'])
-                    . Helper::whereClause('tx_dlf_basket'),
-                '',
-                '',
-                '1'
-            );
+            $result = $queryBuilder
+                ->select('*')
+                ->from('tx_dlf_basket')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_basket.fe_user_id', intval($GLOBALS['TSFE']->fe_user->user['uid'])),
+                    Helper::whereExpression('tx_dlf_basket')
+                )
+                ->setMaxResults(1)
+                ->execute();
         } else {
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
             $GLOBALS['TSFE']->fe_user->sesData_change = true;
             $GLOBALS['TSFE']->fe_user->storeSessionData();
-            $query = $GLOBALS['TYPO3_DB']->SELECTquery(
-                '*',
-                'tx_dlf_basket',
-                'tx_dlf_basket.session_id=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($sessionId, 'tx_dlf_basket')
-                    . Helper::whereClause('tx_dlf_basket'),
-                '',
-                '',
-                '1'
-            );
+            $result = $queryBuilder
+                ->select('*')
+                ->from('tx_dlf_basket')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_basket.session_id', $queryBuilder->createNamedParameter($sessionId)),
+                    Helper::whereExpression('tx_dlf_basket')
+                )
+                ->setMaxResults(1)
+                ->execute();
         }
-        $result = $GLOBALS['TYPO3_DB']->sql_query($query);
         // session already exists
-        if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 0) {
+        if ($result->rowCount() === 0) {
             // create new basket in db
+            $insertArray['fe_user_id'] = $GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0;
             $insertArray['session_id'] = $sessionId;
             $insertArray['doc_ids'] = '';
             $insertArray['label'] = '';
             $insertArray['l18n_diffsource'] = '';
-            $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_basket', $insertArray);
-            $result = $GLOBALS['TYPO3_DB']->sql_query($query);
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable('tx_dlf_basket')
+                ->insert(
+                    'tx_dlf_basket',
+                    $insertArray
+                );
         }
-        $basketData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+        $basketData = $result->fetchAll();
         $piVars = $this->piVars;
         // action add to basket
         if (
@@ -362,7 +368,13 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
             }
             $update = ['doc_ids' => json_encode($items)];
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid=' . intval($basketData['uid']), $update);
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable('tx_dlf_basket')
+                ->update(
+                    'tx_dlf_basket',
+                    $update,
+                    ['uid' => intval($basketData['uid'])]
+                );
             $basketData['doc_ids'] = $items;
         }
         return ['basketData' => $basketData, 'jsOutput' => $output];
@@ -403,7 +415,13 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         } else {
             $update = ['doc_ids' => json_encode($items)];
         }
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_dlf_basket', 'uid=' . intval($basketData['uid']), $update);
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_dlf_basket')
+            ->update(
+                'tx_dlf_basket',
+                $update,
+                ['uid' => intval($basketData['uid'])]
+            );
         $basketData['doc_ids'] = $items;
         return $basketData;
     }
@@ -583,7 +601,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $insertArray['label'] = 'Mail: ' . $mailData['mail'];
         }
         // add action to protocol
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_actionlog', $insertArray);
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_dlf_actionlog')
+            ->insert(
+                'tx_dlf_actionlog',
+                $insertArray
+            );
     }
 
     /**
@@ -656,7 +679,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $insertArray['label'] = 'Print: ' . $printerData['label'];
         }
         // add action to protocol
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dlf_actionlog', $insertArray);
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_dlf_actionlog')
+            ->insert(
+                'tx_dlf_actionlog',
+                $insertArray
+            );
         header('Location: ' . $pdfUrl);
         ob_end_flush();
         exit;
