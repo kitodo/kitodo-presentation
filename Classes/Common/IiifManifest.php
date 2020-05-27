@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Flow\JSONPath\JSONPath;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationInterface;
@@ -126,24 +127,35 @@ final class IiifManifest extends Document
              *  check the configuration.
              *  TODO Saving / indexing should still work - check!
              */
-            $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'tx_dlf_metadataformat.xpath AS querypath',
-                'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
-                'tx_dlf_metadata.pid=' . intval($pid)
-                    . ' AND tx_dlf_metadataformat.pid=' . intval($pid)
-                    . ' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid'
-                    . ' AND tx_dlf_metadata.index_name="record_id" AND tx_dlf_formats.type=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats') . ') OR tx_dlf_metadata.format=0)'
-                    . Helper::whereClause('tx_dlf_metadata', true)
-                    . Helper::whereClause('tx_dlf_metadataformat')
-                    . Helper::whereClause('tx_dlf_formats')
-            );
-            if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
-                for ($i = 0, $j = $GLOBALS['TYPO3_DB']->sql_num_rows($result); $i < $j; $i++) {
-                    $resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-                    $recordIdPath = $resArray['querypath'];
-                    if (!empty($recordIdPath)) {
-                        $this->recordId = $this->iiif->jsonPath($recordIdPath);
-                    }
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_metadata');
+            // Get hidden records, too.
+            $queryBuilder
+                ->getRestrictions()
+                ->removeByType(HiddenRestriction::class);
+            $result = $queryBuilder
+                ->select('tx_dlf_metadataformat.xpath AS querypath')
+                ->from('tx_dlf_metadata')
+                ->from('tx_dlf_metadataformat')
+                ->from('tx_dlf_formats')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($pid)),
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->andX(
+                            $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
+                            $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
+                            $queryBuilder->expr()->eq('tx_dlf_metadata.index_name', $queryBuilder->createNamedParameter('record_id')),
+                            $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))
+                        ),
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
+                    )
+                )
+                ->execute();
+            while ($resArray = $result->fetch()) {
+                $recordIdPath = $resArray['querypath'];
+                if (!empty($recordIdPath)) {
+                    $this->recordId = $this->iiif->jsonPath($recordIdPath);
                 }
             }
             // For now, it's a hardcoded ID, not only as a fallback
@@ -633,16 +645,39 @@ final class IiifManifest extends Document
             'mets_orderlabel' => [],
             'document_format' => ['IIIF'],
         ];
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'tx_dlf_metadata.index_name AS index_name,tx_dlf_metadataformat.xpath AS xpath,tx_dlf_metadataformat.xpath_sorting AS xpath_sorting,tx_dlf_metadata.is_sortable AS is_sortable,tx_dlf_metadata.default_value AS default_value,tx_dlf_metadata.format AS format',
-            'tx_dlf_metadata,tx_dlf_metadataformat,tx_dlf_formats',
-            'tx_dlf_metadata.pid=' . intval($cPid)
-                . ' AND tx_dlf_metadataformat.pid=' . intval($cPid)
-                . ' AND ((tx_dlf_metadata.uid=tx_dlf_metadataformat.parent_id AND tx_dlf_metadataformat.encoded=tx_dlf_formats.uid AND tx_dlf_formats.type=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->getIiifVersion(), 'tx_dlf_formats') . ') OR tx_dlf_metadata.format=0)'
-                . Helper::whereClause('tx_dlf_metadata', true) . Helper::whereClause('tx_dlf_metadataformat') . Helper::whereClause('tx_dlf_formats')
-        );
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+        // Get hidden records, too.
+        $queryBuilder
+            ->getRestrictions()
+            ->removeByType(HiddenRestriction::class);
+        $result = $queryBuilder
+            ->select(
+                'tx_dlf_metadata.index_name AS index_name',
+                'tx_dlf_metadataformat.xpath AS xpath',
+                'tx_dlf_metadataformat.xpath_sorting AS xpath_sorting',
+                'tx_dlf_metadata.is_sortable AS is_sortable',
+                'tx_dlf_metadata.default_value AS default_value',
+                'tx_dlf_metadata.format AS format'
+            )
+            ->from('tx_dlf_metadata')
+            ->from('tx_dlf_metadataformat')
+            ->from('tx_dlf_formats')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($pid)),
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
+                        $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
+                        $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))
+                    ),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
+                )
+            )
+            ->execute();
         $iiifResource = $this->iiif->getContainedResourceById($id);
-        while ($resArray = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+        while ($resArray = $result->fetch()) {
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != null) {
                 if (is_string($values)) {
