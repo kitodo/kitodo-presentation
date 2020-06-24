@@ -55,6 +55,11 @@ class tx_dlf_pageview extends tx_dlf_plugin {
     protected function addViewerJS() {
 
         $output = array ();
+        $tmp = $this->getFulltext($this->piVars['page']);
+        $bTeiXml = false;
+        if(isset($tmp['mimetype']) && $tmp['mimetype'] == 'application/tei+xml') {
+            $bTeiXml = true;
+        }
 
         // Add OpenLayers library.
         $output[] = '<link type="text/css" rel="stylesheet" href="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'lib/OpenLayers/ol3.css">';
@@ -72,11 +77,19 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_ol3_source.js"></script>';
 
+        if($bTeiXml) {
+            $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_teiparser.js"></script>';
+        } else {
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_altoparser.js"></script>';
+        }
 
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_imagemanipulation_control.js"></script>';
 
+        if($bTeiXml) {
+            $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_teifulltext_control.js"></script>';
+        } else {
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview_fulltext_control.js"></script>';
+        }
 
         $output[] = '<script type="text/javascript" src="'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath($this->extKey).'plugins/pageview/tx_dlf_pageview.js"></script>';
 
@@ -90,6 +103,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 						div: "'.$this->conf['elementId'].'",
 						images: '.json_encode($this->images).',
 						fulltexts: '.json_encode($this->fulltexts).',
+                        teifulltext: '.(($bTeiXml) ? 'true' : 'false').',
 						useInternalProxy: '.($this->conf['useInternalProxy'] ? 1 : 0).'
 					})
 				}

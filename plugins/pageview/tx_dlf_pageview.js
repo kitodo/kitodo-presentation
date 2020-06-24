@@ -55,6 +55,13 @@ var dlfViewer = function(settings){
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
 
     /**
+     * Fulltext mimetype (e.g.  application/tei+xml or text/xml)
+     * @type {Boolean|false}
+     * @private
+     */
+    this.teifulltext = dlfUtils.exists(settings.teifulltext) ? settings.teifulltext : false;
+
+    /**
      * @type {Array.<number>}
      * @private
      */
@@ -150,7 +157,11 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
     if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length == 1) {
+        if(!this.teifulltext) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
+    } else {
+            fulltextControl = new dlfViewerTeiFullTextControl(this.fulltexts[0].url);
+        }
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
