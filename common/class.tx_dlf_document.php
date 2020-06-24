@@ -120,6 +120,14 @@ final class tx_dlf_document {
     protected $hasFulltext = FALSE;
 
     /**
+     * Mimetype of fulltext application/tei+xml or text/xml?
+     *
+     * @var string
+     * @access protected
+     */
+    protected $mimetypeFulltext = '';
+
+    /**
      * Last searched logical and physical page
      *
      * @var	array
@@ -1992,6 +2000,8 @@ final class tx_dlf_document {
             // Are there any fulltext files available?
             if (!empty($extConf['fileGrpFulltext']) && in_array($extConf['fileGrpFulltext'], $this->fileGrps)) {
 
+                $fft = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='FULLTEXT']/mets:file[1]");
+                $this->mimetypeFulltext = $fft[0]->attributes()->MIMETYPE;
                 $this->hasFulltext = TRUE;
 
             }
