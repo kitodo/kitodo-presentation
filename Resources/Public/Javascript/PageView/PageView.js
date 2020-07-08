@@ -11,10 +11,13 @@
 /**
  * @TODO Trigger resize map event after fullscreen is toggled
  * @param {Object} settings
+ *      {Array.<?>} controls
+ *      {string=} overviewMapTarget
  *      {string=} div
  *      {Array.<?>} images
  *      {Array.<?>} fulltexts
- *      {Array.<?>} controls
+ *      {string} annotationContainers
+ *      {number} useInternalProxy
  * @constructor
  */
 var dlfViewer = function(settings){
@@ -134,6 +137,12 @@ var dlfViewer = function(settings){
     this.initMagnifier = false;
 
     /**
+     * @type {string|undefined}
+     * @private
+     */
+    this.overviewMapTarget = dlfUtils.exists(settings.overviewMapTarget) ? settings.overviewMapTarget : undefined;
+
+    /**
      * use internal proxy setting
      * @type {boolean}
      * @private
@@ -248,6 +257,8 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
     var controls = [];
 
+    var overviewMapTargetElement = dlfUtils.exists(this.overviewMapTarget) ? $('#' + this.overviewMapTarget) : undefined;
+
     for (var i in controlNames) {
 
         if (controlNames[i] !== "") {
@@ -259,7 +270,8 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
                     controls.push(new ol.control.OverviewMap({
                         'collapsed': false,
                         'collapsible': false,
-                        'layers': layers
+                        'layers': layers,
+                        'target': overviewMapTargetElement
                     }));
                     break;
 
