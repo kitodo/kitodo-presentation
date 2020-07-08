@@ -258,7 +258,11 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "OverviewMap":
 
-                    controls.push(new ol.control.OverviewMap({layers}));
+                    controls.push(new ol.control.OverviewMap({
+                        'collapsed': false,
+                        'collapsible': false,
+                        'layers': layers
+                    }));
                     break;
 
                 case "ZoomPanel":
