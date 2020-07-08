@@ -369,7 +369,7 @@ dlfViewer.prototype.init = function(controlNames) {
         throw new Error('Missing image source objects.');
 
     /**
-     * Is cors enabled. Important information for correct renderer and layer initialization
+     * Is CORS enabled? Important information for correct renderer and layer initialization
      * @type {boolean}
      */
      if (this.useInternalProxy) {
