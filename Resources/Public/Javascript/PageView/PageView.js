@@ -263,7 +263,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "ZoomPanel":
 
-                    controls.push(new ol.control.Zoom());
+                    controls.push(new ol.control.Zoom({'className': "tx-dlf-pageview-zoomButtons"}));
                     break;
 
                 default:
