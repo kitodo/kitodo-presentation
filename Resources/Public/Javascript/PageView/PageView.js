@@ -146,10 +146,8 @@ var dlfViewer = function(settings){
 /**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext and the image manipulation control
- *
- * @param {Array.<string>} controlNames
  */
-dlfViewer.prototype.addCustomControls = function(controlNames) {
+dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         annotationControl = undefined,
         imageManipulationControl = undefined,
@@ -428,7 +426,7 @@ dlfViewer.prototype.init = function(controlNames) {
             // highlight word in case a highlight field is registered
             this.displayHighlightWord();
 
-            this.addCustomControls(controls);
+            this.addCustomControls();
 
             // trigger event after all has been initialize
             $(window).trigger("map-loadend", window);
