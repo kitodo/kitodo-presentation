@@ -279,7 +279,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             $sorting .= '<option value="score"' . (($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '') . '>' . htmlspecialchars($this->pi_getLL('relevance', '')) . '</option>';
         }
         foreach ($this->sortables as $index_name => $label) {
-            $sorting .= '<option value="' . htmlspecialcahrs($index_name) . '"' . (($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '') . '>' . htmlspecialchars($label) . '</option>';
+            $sorting .= '<option value="' . htmlspecialchars($index_name) . '"' . (($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '') . '>' . htmlspecialchars($label) . '</option>';
         }
         $sorting .= '</select>';
         // Select sort direction.
