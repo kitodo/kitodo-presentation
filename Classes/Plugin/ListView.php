@@ -268,7 +268,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         $sorting = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
         foreach ($this->piVars as $piVar => $value) {
             if ($piVar != 'order' && $piVar != 'DATA' && !empty($value)) {
-                $sorting .= '<input type="hidden" name="' . $this->prefixId . '[' . $piVar . ']" value="' . $value . '" />';
+                $sorting .= '<input type="hidden" name="' . $this->prefixId . '[' . $piVar . ']" value="' . htmlspecialchars($value) . '" />';
             }
         }
         // Select sort field.
@@ -279,7 +279,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             $sorting .= '<option value="score"' . (($this->list->metadata['options']['order'] == 'score') ? ' selected="selected"' : '') . '>' . htmlspecialchars($this->pi_getLL('relevance', '')) . '</option>';
         }
         foreach ($this->sortables as $index_name => $label) {
-            $sorting .= '<option value="' . $index_name . '"' . (($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '') . '>' . htmlspecialchars($label) . '</option>';
+            $sorting .= '<option value="' . htmlspecialchars($index_name) . '"' . (($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '') . '>' . htmlspecialchars($label) . '</option>';
         }
         $sorting .= '</select>';
         // Select sort direction.
