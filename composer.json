@@ -18,7 +18,6 @@
   ],
   "license": "GPL-3.0-or-later",
   "type": "typo3-cms-extension",
-  "version": "2.2.0",
   "require": {
     "typo3/cms": "^7.6",
     "solarium/solarium" : "^4.0"
