@@ -1,8 +1,9 @@
 Fixes # (please link the issue)
+Should be reviewed by @kitodo/kitodo-presentation-maintainers
 
 ## Description
 
-A summary of the changes and which issue is fixed. Please also include relevant motivation and context (if that's not part of the linked issue). List any new dependencies that are required for this to work and any breaking changes that would cause existing functionality to not work as expected.
+A summary of the changes and which issue is fixed. Please also include relevant motivation and context (if that's not part of the linked issue). List any new dependencies that are required for this to work and any breaking changes that would cause existing functionality to no longer work as expected.
 
 ## Sponsorship
 
@@ -29,7 +30,7 @@ Describe all necessary migration steps when applying this change to production. 
 I have performed a self-review of my own code and can verify that:
 
 - [ ] My code follows the style guidelines of this project
-- [ ] I have documented my code following the phpDoc standard
+- [ ] I have documented my code following the PHPDoc/PSR-5 standard
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation (or verified that none are needed)
 - [ ] My pull request meets any applicable [Codacy](https://app.codacy.com/manual/Kitodo/Kitodo.Presentation/pullRequests) and [Scrutinizer](https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/inspections) patterns

@@ -1,0 +1,8 @@
+version: "1"
+rules:
+  - base: master
+    upstream: kitodo:master
+    mergeMethod: hardreset
+  - base: 2.x
+    upstream: kitodo:2.x
+    mergeMethod: hardreset
