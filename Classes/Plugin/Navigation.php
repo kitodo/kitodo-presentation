@@ -73,7 +73,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         // Add plugin variables.
         foreach ($this->piVars as $piVar => $value) {
             if ($piVar != 'page' && $piVar != 'DATA' && !empty($value)) {
-                $output .= '<input type="hidden" name="' . $this->prefixId . '[' . $piVar . ']" value="' . $value . '" />';
+                $output .= '<input type="hidden" name="' . $this->prefixId . '[' . $piVar . ']" value="' . htmlspecialchars($value) . '" />';
             }
         }
         // Add page selector.
