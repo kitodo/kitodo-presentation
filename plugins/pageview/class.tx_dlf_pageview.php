@@ -183,9 +183,9 @@ class tx_dlf_pageview extends tx_dlf_plugin {
 
             $output = '<form id="addToBasketForm" action="'.$this->cObj->typoLink_URL($basketConf).'" method="post">';
 
-            $output .= '<input type="hidden" name="tx_dlf[startpage]" id="startpage" value="'.$this->piVars['page'].'">';
+            $output .= '<input type="hidden" name="tx_dlf[startpage]" id="startpage" value="'.htmlspecialchars($this->piVars['page']).'">';
 
-            $output .= '<input type="hidden" name="tx_dlf[endpage]" id="endpage" value="'.$this->piVars['page'].'">';
+            $output .= '<input type="hidden" name="tx_dlf[endpage]" id="endpage" value="'.htmlspecialchars($this->piVars['page']).'">';
 
             $output .= '<input type="hidden" name="tx_dlf[startX]" id="startX">';
 
