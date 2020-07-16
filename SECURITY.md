@@ -6,11 +6,8 @@ The following versions of Kitodo.Presentation are currently being supported with
 
 | Version | With TYPO3    | Active Development       | Security Fixes           |
 | ------- | ------------- | :----------------------: | :----------------------: |
-| 3.1.x   | 8 LTS + 9 LTS | :heavy_check_mark:       | :heavy_check_mark:       |
-| 3.0.x   | 8 LTS         | :heavy_multiplication_x: | :heavy_multiplication_x: |
-| 2.2.x   | 6 LTS + 7 LTS | :heavy_multiplication_x: | :heavy_check_mark:       |
-| 2.1.x   | 6 LTS + 7 LTS | :heavy_multiplication_x: | :heavy_multiplication_x: |
-| 2.0.x   | 6 LTS + 7 LTS | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| 3.x     | 8 LTS + 9 LTS | :heavy_check_mark:       | :heavy_check_mark:       |
+| 2.x     | 6 LTS + 7 LTS | :heavy_multiplication_x: | :heavy_check_mark:       |
 | 1.x     | 4 LTS + 6 LTS | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 ## Reporting a Vulnerability
