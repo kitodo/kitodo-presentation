@@ -6,7 +6,5 @@
 .idea/
 .vscode
 nbproject/
-Documentation-GENERATED-temp/
 vendor/
-public/
 composer.lock
