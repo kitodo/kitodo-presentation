@@ -1,12 +1,11 @@
 .buildpath
+.idea/
 .loadpath
 .metadata
 .project
 .settings/
-.idea/
 .vscode
-nbproject/
-Documentation-GENERATED-temp/
-vendor/
-public/
 composer.lock
+Documentation-GENERATED-temp/
+nbproject/
+vendor/
