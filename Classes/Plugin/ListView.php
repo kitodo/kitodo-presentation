@@ -268,7 +268,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         $sorting = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
         foreach ($this->piVars as $piVar => $value) {
             if ($piVar != 'order' && $piVar != 'DATA' && !empty($value)) {
-                $sorting .= '<input type="hidden" name="' . $this->prefixId . '[' . $piVar . ']" value="' . htmlspecialchars($value) . '" />';
+                $sorting .= '<input type="hidden" name="' . $this->prefixId . '[' . preg_replace('/[^A-Za-z0-9_-]/', '', $piVar) . ']" value="' . htmlspecialchars($value) . '" />';
             }
         }
         // Select sort field.
