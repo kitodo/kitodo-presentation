@@ -25,7 +25,7 @@ Currently **TYPO3 8 ELTS** and **TYPO3 9 LTS** are supported with the following 
 | Component   | Constraints for 8 ELTS | Constraints for 9 LTS |
 | ----------- | ---------------------- | --------------------- |
 | TYPO3       | 8.7.x                  | 9.5.x                 |
-| PHP         | 7.2.x - 7.4.x          | 7.2.x - 7.4.x         |
+| PHP         | 7.3.x - 7.4.x          | 7.3.x - 7.4.x         |
 | MySQL       | 5.7.x                  | 5.7.x                 |
 | MariaDB     | 10.2.x - 10.2.26       | 10.2.x - 10.3.x       |
 | Apache Solr | 7.x                    | 7.x                   |
