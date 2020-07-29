@@ -75,7 +75,7 @@ class tx_dlf_navigation extends tx_dlf_plugin {
 
             if ($piVar != 'page' && $piVars != 'DATA' && !empty($value)) {
 
-                $output .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.htmlspecialchars($value).'" />';
+                $output .= '<input type="hidden" name="'.$this->prefixId.'['.preg_replace('/[^A-Za-z0-9_-]/', '', $piVar).']" value="'.htmlspecialchars($value).'" />';
 
             }
 

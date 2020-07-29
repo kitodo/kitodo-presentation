@@ -365,7 +365,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
             if ($piVar != 'order' && $piVar != 'DATA' && !empty($value)) {
 
-                $sorting .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.htmlspecialchars($value).'" />';
+                $sorting .= '<input type="hidden" name="'.$this->prefixId.'['.preg_replace('/[^A-Za-z0-9_-]/', '', $piVar).']" value="'.htmlspecialchars($value).'" />';
 
             }
 
