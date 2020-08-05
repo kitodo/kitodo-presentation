@@ -365,7 +365,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
             if ($piVar != 'order' && $piVar != 'DATA' && !empty($value)) {
 
-                $sorting .= '<input type="hidden" name="'.$this->prefixId.'['.$piVar.']" value="'.$value.'" />';
+                $sorting .= '<input type="hidden" name="'.$this->prefixId.'['.preg_replace('/[^A-Za-z0-9_-]/', '', $piVar).']" value="'.htmlspecialchars($value).'" />';
 
             }
 
@@ -385,7 +385,7 @@ class tx_dlf_listview extends tx_dlf_plugin {
 
         foreach ($this->sortables as $index_name => $label) {
 
-            $sorting .= '<option value="'.$index_name.'"'.(($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
+            $sorting .= '<option value="'.htmlspecialchars($index_name).'"'.(($this->list->metadata['options']['order'] == $index_name) ? ' selected="selected"' : '').'>'.htmlspecialchars($label).'</option>';
 
         }
 
