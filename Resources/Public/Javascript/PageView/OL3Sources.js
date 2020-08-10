@@ -71,7 +71,7 @@ dlfViewerSource.tileLoadFunction = function(tileSize, tile, url) {
     var img = tile.getImage(),
         tileWidth = Array.isArray(tileSize) ? tileSize[0] : tileSize,
         tileHeight = Array.isArray(tileSize) ? tileSize[1] : tileSize;
-    $(img).load(function() {
+    $(img).on('load', function() {
         if (img.naturalWidth > 0 &&
           (img.naturalWidth !== tileWidth || img.naturalHeight !== tileHeight)) {
             var canvas = document.createElement('canvas');
