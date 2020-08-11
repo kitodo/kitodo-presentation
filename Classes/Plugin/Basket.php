@@ -166,7 +166,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $mailForm = '<select name="tx_dlf[mail_action]">';
             $mailForm .= '<option value="">' . htmlspecialchars($this->pi_getLL('chooseMail', '')) . '</option>';
             while ($row = $resultMail->fetch()) {
-                $mailForm .= '<option value="' . $row['uid'] . '">' . $row['name'] . ' (' . $row['mail'] . ')</option>';
+                $mailForm .= '<option value="' . $row['uid'] . '">' . htmlspecialchars($row['name']) . ' (' . htmlspecialchars($row['mail']) . ')</option>';
             }
             $mailForm .= '</select><input type="submit">';
         }
@@ -200,7 +200,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $printForm = '<select name="tx_dlf[print_action]">';
             $printForm .= '<option value="">' . htmlspecialchars($this->pi_getLL('choosePrinter', '')) . '</option>';
             while ($row = $resultPrinter->fetch()) {
-                $printForm .= '<option value="' . $row['uid'] . '">' . $row['label'] . '</option>';
+                $printForm .= '<option value="' . $row['uid'] . '">' . htmlspecialchars($row['label']) . '</option>';
             }
             $printForm .= '</select><input type="submit" />';
         }
@@ -482,7 +482,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $downloadUrl = $this->conf['pdfgenerate'] . $urlParams;
             $title = $document->getTitle($id, true);
             if (empty($title)) {
-                $title = htmlspecialchars($this->pi_getLL('noTitle', ''));
+                $title = $this->pi_getLL('noTitle', '');
             }
             // Set page and cutout information
             $info = '';
@@ -496,7 +496,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             } else {
                 $info .= htmlspecialchars($this->pi_getLL('page', '')) . ' ' . $data['startpage'] . '-' . $data['endpage'];
             }
-            $downloadLink = '<a href="' . $downloadUrl . '" target="_blank">' . $title . '</a> (' . $info . ')';
+            $downloadLink = '<a href="' . $downloadUrl . '" target="_blank">' . htmlspecialchars($title) . '</a> (' . $info . ')';
             if ($data['startpage'] == $data['endpage']) {
                 $pageNums = 1;
             } else {
