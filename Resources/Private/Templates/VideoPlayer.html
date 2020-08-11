@@ -1,0 +1,207 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:dv="http://typo3.org/ns/Slub/Dfgviewer/ViewHelpers"
+      xmlns:dc="http://typo3.org/ns/Slub/DigitalCollections/ViewHelpers"
+      data-namespace-typo3-fluid="true"
+      lang="en">
+<div class="mime-type-video" data-url="{video.url}">
+    <div id="tx-dfgviewer-view" class="tx-dlf-view">
+        <div class="media-viewport">
+            <div class="mediaplayer-container">
+                <div id="mediaplayer-viewport"></div>
+                <div class="dfgplayer-help modal">
+                    <div class="headline-container">
+                        <h3>Tastaturbelegung</h3>
+                        <span class="modal-close icon-close"></span>
+                    </div>
+                    <div class="help-container">
+                        <table>
+                            <tr>
+                                <td class="legend">Taste</td>
+                                <td class="legend"> Funktion</td>
+                            </tr>
+                            <tr>
+                                <td>Leeraste</td>
+                                <td>Abspielen / Pausieren</td>
+                            </tr>
+                            <tr>
+                                <td>ALT + Enter</td>
+                                <td>Vollbild an / aus</td>
+                            </tr>
+                            <tr>
+                                <td>Escape</td>
+                                <td>Vollbild Modus beenden</td>
+                            </tr>
+                            <tr>
+                                <td>Pfeil links / Pfeil rechts</td>
+                                <td>Einzelbild vor / zurück</td>
+                            </tr>
+                            <tr>
+                                <td>Umschalt + Pfeil links / Pfeil rechts</td>
+                                <td>10 Sekunden vor / zurück</td>
+                            </tr>
+                            <tr>
+                                <td>Taste M</td>
+                                <td>Ton aus / an</td>
+                            </tr>
+                            <tr>
+                                <td>+ / -</td>
+                                <td>lauter / leiser</td>
+                            </tr>
+                            <tr>
+                                <td>F1 / Taste H</td>
+                                <td>Hilfe (dieses Fenster)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="control-bars">
+                    <div id="url-container" style="display: none;">
+                        <input type="text" id="url-field" value="http://domain.ltd" onClick="this.select();">
+                        <span class="icon-close" onClick="$('#url-container').hide('fast')"></span>
+                    </div>
+                    <div class="viewport-menu" style="display: none;">
+                        <ul class="settings-menu">
+                            <li class="settings-menu-item-speed-menu">Wiedergabegeschwindigkeit: <span class="speed-label">1x</span></li>
+                            <li class="settings-menu-item-quality-menu">Qualität: <span class="quality-label">1080p</span></li>
+                            <li class="settings-menu-item-subtitle">Untertitel: <span class="subtitle-label">aus</span></li>
+                            <li class="settings-menu-item-language">Sprache: <span class="language-label">default (deutsch)</span></li>
+                            <li class="settings-menu-item-screenshot">Screenshot generieren</li>
+                            <li class="settings-menu-item-url">URL generieren</li>
+                            <li class="settings-menu-item-help">Hilfe</li>
+                        </ul>
+                        <ul class="speed-menu" style="display: none;">
+                            <li class="menu-item-back">zurück</li>
+                            <li class="speed-menu-item" data-speed="0.1">0.1x</li>
+                            <li class="speed-menu-item" data-speed="0.5">0.5x</li>
+                            <li class="speed-menu-item" data-speed="1">1x</li>
+                            <li class="speed-menu-item" data-speed="1.5">1.5x</li>
+                            <li class="speed-menu-item" data-speed="3">3x</li>
+                            <li class="speed-menu-item" data-speed="4">4x</li>
+                        </ul>
+                        <ul class="quality-menu" style="display: none;">
+                            <li class="menu-item-back">zurück</li>
+                            <li class="quality-menu-item" data-resolution="1080">1080p</li>
+                            <li class="quality-menu-item" data-resolution="720">720p</li>
+                            <li class="quality-menu-item" data-resolution="360">360p</li>
+                        </ul>
+                        <ul class="subtitle-menu" style="display: none;">
+                            <li class="menu-item-back">zurück</li>
+                            <li class="subtitle-menu-item" data-language="none">aus</li>
+                            <li class="subtitle-menu-item" data-language="de">deutsch</li>
+                            <li class="subtitle-menu-item" data-language="en">englisch</li>
+                            <li class="subtitle-menu-item" data-language="cs">tschechisch</li>
+                            <li class="subtitle-menu-item" data-language="pl">polnisch</li>
+                        </ul>
+                        <ul class="language-menu" style="display: none;">
+                            <li class="menu-item-back">zurück</li>
+                            <li class="language-menu-item" data-language="de">default (deutsch)</li>
+                            <li class="language-menu-item" data-language="en">englisch</li>
+                            <li class="language-menu-item" data-language="cs">tschechisch</li>
+                            <li class="language-menu-item" data-language="pl">polnisch</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-bar">
+                        <div>
+                            <div class="time-current">00:00</div>
+                            <div class="frame-current">00</div>
+                        </div>
+
+                        <div class="jp-progress">
+                            <div class="jp-seek-bar">
+                                <div class="jp-play-bar"></div>
+                            </div>
+                        </div>
+                        <div class="time-remaining">00:00</div>
+                    </div>
+                    <div class="button-bar">
+                        <div class="left-controls">
+                            <div class="control-button button-play icon-play" title="Abspielen"></div>
+                            <div class="control-button button-pause icon-pause" title="Pause"></div>
+                            <div class="control-button button-stop icon-stop" title="Stop"></div>
+                            <div class="control-button button-backward icon-backward" title="10 Sekunden zurück"></div>
+                            <div class="control-button button-lastframe icon-lastframe" title="ein Frame zurück"></div>
+                            <div class="control-button button-nextframe icon-nextframe" title="ein Frame vor"></div>
+                            <div class="control-button button-forward icon-forward" title="10 Sekunden vor"></div>
+                            <div class="jp-volume-controls">
+                                <div class="control-button button-mute icon-unmute"></div>
+                                <div class="control-button button-unmute icon-mute"></div>
+                                <div class="jp-volume-bar">
+                                    <div class="jp-volume-bar-value" style="width: 80%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-controls">
+                            <div class="control-button button-settings icon-equalizer" title="Einstellungen"></div>
+                            <div class="control-button button-fullscreen icon-maximize" title="maximieren"></div>
+                            <div class="control-button button-minimize icon-minimize" title="minimieren"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="fulltext-container">
+        <div id="tx-dlf-fulltextselection"></div>
+    </div>
+
+
+    <div class="document-functions">
+        <div class="provider">
+            <a title="Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden"
+               href="http://www.slub-dresden.de/">
+                <img src="http://digital.slub-dresden.de/fileadmin/images/dfgviewer_logo_slub.gif"
+                     title="Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden"
+                     alt="Abbildung eines Logo">
+            </a>
+
+            <dl class="mobile-meta">
+                <dt class="tx-dlf-title">Titel</dt>
+                <dd class="tx-dlf-title">
+                    <a href="#">Big Buck Bunny</a>
+                </dd>
+                <dt>Autor</dt>
+                <dd>
+                </dd>
+            </dl>
+            <div class="mobile-controls">
+                <a class="fullscreen" title="Vollansicht">Vollansicht</a>
+            </div>
+        </div>
+
+        <ul>
+            <li class="submenu links">
+                <a href="#" title="Links">Links</a>
+                <ul>
+                    <li>
+
+                        <a class="local-presentation" title="Lokale Präsentation anzeigen"
+                           href="https://digital.slub-dresden.de/id263566811">Lokale Präsentation anzeigen</a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a class="local-catalog" title="Lokaler Katalog"
+                           href="http://dienste.slub-dresden.de/cgi-bin/FOZK.pl?PPN=263566811">Lokaler Katalog</a>
+
+                    </li>
+                    <li>
+                        <a class="local-contact"
+                           title="Email an Datenprovider (Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden)"
+                           href="mailto:mailto:digital@slub-dresden.de">Email an Datenprovider</a>
+                    </li>
+
+
+                    <li class="uri"><a href="https://digital.slub-dresden.de/id263566811">Persistente Identifier
+                        (Werk)</a></li>
+                    <li class="uri"></li>
+
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+</div>

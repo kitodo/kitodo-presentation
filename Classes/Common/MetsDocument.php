@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
 
@@ -130,6 +131,7 @@ final class MetsDocument extends Document
     public function addMetadataFromMets(&$metadata, $id)
     {
         $details = $this->getLogicalStructure($id);
+
         if (!empty($details)) {
             $metadata['mets_label'][0] = $details['label'];
             $metadata['mets_orderlabel'][0] = $details['orderlabel'];
@@ -850,6 +852,9 @@ final class MetsDocument extends Document
             }
             if (!empty($extConf['fileGrpAudio'])) {
                 $useGrps[] = $extConf['fileGrpAudio'];
+            }
+            if (!empty($extConf['fileGrpVideo'])) {
+                $useGrps[] = $extConf['fileGrpVideo'];
             }
             // Get all file groups.
             $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');

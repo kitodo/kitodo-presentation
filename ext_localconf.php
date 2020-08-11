@@ -38,6 +38,12 @@ plugin.tx_dlf_audioplayer {
 }
 tt_content.list.20.dlf_audioplayer < plugin.tx_dlf_audioplayer
 
+plugin.tx_dlf_videoplayer = USER
+plugin.tx_dlf_videoplayer {
+    userFunc = Kitodo\Dlf\Plugin\VideoPlayer->main
+}
+tt_content.list.20.dlf_audioplayer < plugin.tx_dlf_audioplayer
+
 plugin.tx_dlf_basket = USER_INT
 plugin.tx_dlf_basket {
     userFunc = Kitodo\Dlf\Plugin\Basket->main

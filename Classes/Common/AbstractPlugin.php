@@ -84,6 +84,16 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     }
 
     /**
+     * Generate Path to Fluid Standalone Templates
+     * @access protected
+     *
+     * @return string
+     */
+    protected function getFluidStandaloneTemplate() {
+        return 'EXT:' . $this->extKey . '/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.html';
+    }
+
+    /**
      * All the needed configuration values are stored in class variables
      * Priority: Flexforms > TS-Templates > Extension Configuration > ext_localconf.php
      *
