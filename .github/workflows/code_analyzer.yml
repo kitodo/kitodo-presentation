@@ -1,12 +1,9 @@
 name: Static Code Analyzing
 
 on:
-  # Trigger analysis when pushing in master, stable branches or pull requests, and when creating a pull request. 
+  # Trigger analysis when pushing in stable branches
   push:
     branches: [master, 2.x]
-  pull_request:
-    branches: [master, 2.x]
-    types: [opened, synchronize, reopened]
 
 jobs:
   sonarcloud:
