@@ -34,3 +34,8 @@ if (!defined('TYPO3_MODE')) {
     'Configuration/TypoScript/Toolbox/',
     'Toolbox Default Tool Templates'
 );
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'Configuration/TypoScript/VideoPlayer/',
+    'Default Setup for Media Player Plugin'
+);

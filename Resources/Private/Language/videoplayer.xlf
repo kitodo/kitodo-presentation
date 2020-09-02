@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" product-name="Kitodo Presentation">
+		<header/>
+		<body>
+			<trans-unit id="help.keyboard-mapping" xml:space="preserve">
+				<source>Keyboard Mapping</source>
+			</trans-unit>
+			<trans-unit id="help.key" xml:space="preserve">
+				<source>Key</source>
+			</trans-unit>
+			<trans-unit id="help.function" xml:space="preserve">
+				<source>Function</source>
+			</trans-unit>
+			<trans-unit id="help.key-space" xml:space="preserve">
+				<source>Space Key</source>
+			</trans-unit>
+			<trans-unit id="help.play-pause" xml:space="preserve">
+				<source>Play / Pause</source>
+			</trans-unit>
+			<trans-unit id="help.alt-return" xml:space="preserve">
+				<source>ALT + Return</source>
+			</trans-unit>
+			<trans-unit id="help.fullscreen-on-off" xml:space="preserve">
+				<source>Fullscreen on / off</source>
+			</trans-unit>
+			<trans-unit id="help.escape" xml:space="preserve">
+				<source>Escape Key</source>
+			</trans-unit>
+			<trans-unit id="help.close-fullscreen" xml:space="preserve">
+				<source>Quit Fullscreen</source>
+			</trans-unit>
+			<trans-unit id="help.left-right" xml:space="preserve">
+				<source>Arrow left / right</source>
+			</trans-unit>
+			<trans-unit id="help.frame-forward-backward" xml:space="preserve">
+				<source>Frame forward / backward</source>
+			</trans-unit>
+			<trans-unit id="help.shift-forward-backward" xml:space="preserve">
+				<source>Shift + forward / backward</source>
+			</trans-unit>
+			<trans-unit id="help.ten-seconds" xml:space="preserve">
+				<source>+ / - 10 Seconds</source>
+			</trans-unit>
+			<trans-unit id="help.m-key" xml:space="preserve">
+				<source>M Key</source>
+			</trans-unit>
+			<trans-unit id="help.mute-unmute" xml:space="preserve">
+				<source>Mute / Unmute</source>
+			</trans-unit>
+			<trans-unit id="help.plus-minus" xml:space="preserve">
+				<source>+ / -</source>
+			</trans-unit>
+			<trans-unit id="help.volume-up-down" xml:space="preserve">
+				<source>Volume up / down</source>
+			</trans-unit>
+			<trans-unit id="help.f1-h" xml:space="preserve">
+				<source>F1 / H Key</source>
+			</trans-unit>
+			<trans-unit id="help.help-window" xml:space="preserve">
+				<source>Help (this window)</source>
+			</trans-unit>
+
+			<trans-unit id="settings.playback-speed" xml:space="preserve">
+				<source>Playback Speed</source>
+			</trans-unit>
+			<trans-unit id="settings.quality" xml:space="preserve">
+				<source>Quality</source>
+			</trans-unit>
+			<trans-unit id="settings.subtitle" xml:space="preserve">
+				<source>Subtitle</source>
+			</trans-unit>
+			<trans-unit id="settings.language" xml:space="preserve">
+				<source>Language</source>
+			</trans-unit>
+			<trans-unit id="settings.generate-screenshot" xml:space="preserve">
+				<source>Generate Screenshot</source>
+			</trans-unit>
+			<trans-unit id="settings.generate-url" xml:space="preserve">
+				<source>Generate URL</source>
+			</trans-unit>
+			<trans-unit id="settings.help" xml:space="preserve">
+				<source>Help</source>
+			</trans-unit>
+			<trans-unit id="settings.back" xml:space="preserve">
+				<source>back</source>
+			</trans-unit>
+
+			<trans-unit id="tooltip.play" xml:space="preserve">
+				<source>play</source>
+			</trans-unit>
+			<trans-unit id="tooltip.pause" xml:space="preserve">
+				<source>pause</source>
+			</trans-unit>
+			<trans-unit id="tooltip.stop" xml:space="preserve">
+				<source>stop</source>
+			</trans-unit>
+			<trans-unit id="tooltip.fast-backward" xml:space="preserve">
+				<source>10 seconds backward</source>
+			</trans-unit>
+			<trans-unit id="tooltip.frame-back" xml:space="preserve">
+				<source>frame backward</source>
+			</trans-unit>
+			<trans-unit id="tooltip.frame-forward" xml:space="preserve">
+				<source>frame forward</source>
+			</trans-unit>
+			<trans-unit id="tooltip.fast-forward" xml:space="preserve">
+				<source>10 seconds forward</source>
+			</trans-unit>
+			<trans-unit id="tooltip.settings" xml:space="preserve">
+				<source>Settings</source>
+			</trans-unit>
+			<trans-unit id="tooltip.maximize" xml:space="preserve">
+				<source>Maximize</source>
+			</trans-unit>
+			<trans-unit id="tooltip.minimize" xml:space="preserve">
+				<source>Minimize</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

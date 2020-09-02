@@ -10,46 +10,46 @@
                 <div id="mediaplayer-viewport"></div>
                 <div class="dfgplayer-help modal">
                     <div class="headline-container">
-                        <h3>Tastaturbelegung</h3>
+                        <h3>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.keyboard-mapping')}</h3>
                         <span class="modal-close icon-close"></span>
                     </div>
                     <div class="help-container">
                         <table>
                             <tr>
-                                <td class="legend">Taste</td>
-                                <td class="legend"> Funktion</td>
+                                <td class="legend">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.key')}</td>
+                                <td class="legend">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.function')}</td>
                             </tr>
                             <tr>
-                                <td>Leeraste</td>
-                                <td>Abspielen / Pausieren</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.key-space')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.play-pause')}</td>
                             </tr>
                             <tr>
-                                <td>ALT + Enter</td>
-                                <td>Vollbild an / aus</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.alt-return')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.fullscreen-on-off')}</td>
                             </tr>
                             <tr>
-                                <td>Escape</td>
-                                <td>Vollbild Modus beenden</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.escape')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.close-fullscreen')}</td>
                             </tr>
                             <tr>
-                                <td>Pfeil links / Pfeil rechts</td>
-                                <td>Einzelbild vor / zurück</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.left-right')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.frame-forward-backward')}</td>
                             </tr>
                             <tr>
-                                <td>Umschalt + Pfeil links / Pfeil rechts</td>
-                                <td>10 Sekunden vor / zurück</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.shift-forward-backward')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.ten-seconds')}</td>
                             </tr>
                             <tr>
-                                <td>Taste M</td>
-                                <td>Ton aus / an</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.m-key')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.mute-unmute')}</td>
                             </tr>
                             <tr>
-                                <td>+ / -</td>
-                                <td>lauter / leiser</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.plus-minus')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.volume-up-down')}</td>
                             </tr>
                             <tr>
-                                <td>F1 / Taste H</td>
-                                <td>Hilfe (dieses Fenster)</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.f1-h')}</td>
+                                <td>{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:help.help-window')}</td>
                             </tr>
                         </table>
                     </div>
@@ -61,43 +61,57 @@
                     </div>
                     <div class="viewport-menu" style="display: none;">
                         <ul class="settings-menu">
-                            <li class="settings-menu-item-speed-menu">Wiedergabegeschwindigkeit: <span class="speed-label">1x</span></li>
-                            <li class="settings-menu-item-quality-menu">Qualität: <span class="quality-label">1080p</span></li>
-                            <li class="settings-menu-item-subtitle">Untertitel: <span class="subtitle-label">aus</span></li>
-                            <li class="settings-menu-item-language">Sprache: <span class="language-label">default (deutsch)</span></li>
-                            <li class="settings-menu-item-screenshot">Screenshot generieren</li>
-                            <li class="settings-menu-item-url">URL generieren</li>
-                            <li class="settings-menu-item-help">Hilfe</li>
+                            <li class="settings-menu-item-speed-menu">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.playback-speed')}: <span class="speed-label">1x</span></li>
+                            <li class="settings-menu-item-quality-menu">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.quality')}: <span class="quality-label">1080p</span></li>
+                            <li class="settings-menu-item-subtitle">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.subtitle')}: <span class="subtitle-label">aus</span></li>
+                            <li class="settings-menu-item-language">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.language')}: <span class="language-label">default (deutsch)</span></li>
+                            <li class="settings-menu-item-screenshot">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.generate-screenshot')}</li>
+                            <li class="settings-menu-item-url">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.generate-url')}</li>
+                            <li class="settings-menu-item-help">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.help')}</li>
                         </ul>
                         <ul class="speed-menu" style="display: none;">
-                            <li class="menu-item-back">zurück</li>
-                            <li class="speed-menu-item" data-speed="0.1">0.1x</li>
-                            <li class="speed-menu-item" data-speed="0.5">0.5x</li>
-                            <li class="speed-menu-item" data-speed="1">1x</li>
-                            <li class="speed-menu-item" data-speed="1.5">1.5x</li>
-                            <li class="speed-menu-item" data-speed="3">3x</li>
-                            <li class="speed-menu-item" data-speed="4">4x</li>
+                            <li class="menu-item-back">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.back')}</li>
+                            <f:if condition="{config.speed}">
+                                <f:then>
+                                    <f:for each="{config.speed}" as="speedvalue">
+                                        <li class="speed-menu-item" data-speed="{speedvalue}">{speedvalue}x</li>
+                                    </f:for>
+                                </f:then>
+                                <f:else>
+                                    <li class="speed-menu-item" data-speed="1">1x</li>
+                                </f:else>
+                            </f:if>
                         </ul>
                         <ul class="quality-menu" style="display: none;">
-                            <li class="menu-item-back">zurück</li>
-                            <li class="quality-menu-item" data-resolution="1080">1080p</li>
-                            <li class="quality-menu-item" data-resolution="720">720p</li>
-                            <li class="quality-menu-item" data-resolution="360">360p</li>
+                            <li class="menu-item-back">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.back')}</li>
+                            <li class="quality-menu-item" data-resolution="1080">default</li>
+                            <f:comment>
+                                <li class="quality-menu-item" data-resolution="1080">1080p</li>
+                                <li class="quality-menu-item" data-resolution="720">720p</li>
+                                <li class="quality-menu-item" data-resolution="360">360p</li>
+                            </f:comment>
+
                         </ul>
                         <ul class="subtitle-menu" style="display: none;">
-                            <li class="menu-item-back">zurück</li>
-                            <li class="subtitle-menu-item" data-language="none">aus</li>
-                            <li class="subtitle-menu-item" data-language="de">deutsch</li>
-                            <li class="subtitle-menu-item" data-language="en">englisch</li>
-                            <li class="subtitle-menu-item" data-language="cs">tschechisch</li>
-                            <li class="subtitle-menu-item" data-language="pl">polnisch</li>
+                            <li class="menu-item-back">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.back')}</li>
+                            <li class="subtitle-menu-item" data-language="none">none</li>
+                            <f:comment>
+                                <li class="subtitle-menu-item" data-language="de">deutsch</li>
+                                <li class="subtitle-menu-item" data-language="en">englisch</li>
+                                <li class="subtitle-menu-item" data-language="cs">tschechisch</li>
+                                <li class="subtitle-menu-item" data-language="pl">polnisch</li>
+                            </f:comment>
+
                         </ul>
                         <ul class="language-menu" style="display: none;">
-                            <li class="menu-item-back">zurück</li>
-                            <li class="language-menu-item" data-language="de">default (deutsch)</li>
-                            <li class="language-menu-item" data-language="en">englisch</li>
-                            <li class="language-menu-item" data-language="cs">tschechisch</li>
-                            <li class="language-menu-item" data-language="pl">polnisch</li>
+                            <li class="menu-item-back">{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:settings.back')}</li>
+                            <li class="language-menu-item" data-language="de">default</li>
+                            <f:comment>
+                                <li class="language-menu-item" data-language="en">englisch</li>
+                                <li class="language-menu-item" data-language="cs">tschechisch</li>
+                                <li class="language-menu-item" data-language="pl">polnisch</li>
+                            </f:comment>
+
                         </ul>
                     </div>
                     <div class="timeline-bar">
@@ -115,13 +129,13 @@
                     </div>
                     <div class="button-bar">
                         <div class="left-controls">
-                            <div class="control-button button-play icon-play" title="Abspielen"></div>
-                            <div class="control-button button-pause icon-pause" title="Pause"></div>
-                            <div class="control-button button-stop icon-stop" title="Stop"></div>
-                            <div class="control-button button-backward icon-backward" title="10 Sekunden zurück"></div>
-                            <div class="control-button button-lastframe icon-lastframe" title="ein Frame zurück"></div>
-                            <div class="control-button button-nextframe icon-nextframe" title="ein Frame vor"></div>
-                            <div class="control-button button-forward icon-forward" title="10 Sekunden vor"></div>
+                            <div class="control-button button-play icon-play" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.play')}"></div>
+                            <div class="control-button button-pause icon-pause" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.pause')}"></div>
+                            <div class="control-button button-stop icon-stop" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.stop')}"></div>
+                            <div class="control-button button-backward icon-backward" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.fast-backward')}"></div>
+                            <div class="control-button button-lastframe icon-lastframe" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.frame-back')}"></div>
+                            <div class="control-button button-nextframe icon-nextframe" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.frame-forward')}"></div>
+                            <div class="control-button button-forward icon-forward" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.fast-forward')}"></div>
                             <div class="jp-volume-controls">
                                 <div class="control-button button-mute icon-unmute"></div>
                                 <div class="control-button button-unmute icon-mute"></div>
@@ -131,77 +145,13 @@
                             </div>
                         </div>
                         <div class="right-controls">
-                            <div class="control-button button-settings icon-equalizer" title="Einstellungen"></div>
-                            <div class="control-button button-fullscreen icon-maximize" title="maximieren"></div>
-                            <div class="control-button button-minimize icon-minimize" title="minimieren"></div>
+                            <div class="control-button button-settings icon-equalizer" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.settings')}"></div>
+                            <div class="control-button button-fullscreen icon-maximize" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.maximize')}"></div>
+                            <div class="control-button button-minimize icon-minimize" title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/videoplayer.xlf:tooltip.minimize')}"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-
-    <div class="fulltext-container">
-        <div id="tx-dlf-fulltextselection"></div>
-    </div>
-
-
-    <div class="document-functions">
-        <div class="provider">
-            <a title="Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden"
-               href="http://www.slub-dresden.de/">
-                <img src="http://digital.slub-dresden.de/fileadmin/images/dfgviewer_logo_slub.gif"
-                     title="Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden"
-                     alt="Abbildung eines Logo">
-            </a>
-
-            <dl class="mobile-meta">
-                <dt class="tx-dlf-title">Titel</dt>
-                <dd class="tx-dlf-title">
-                    <a href="#">Big Buck Bunny</a>
-                </dd>
-                <dt>Autor</dt>
-                <dd>
-                </dd>
-            </dl>
-            <div class="mobile-controls">
-                <a class="fullscreen" title="Vollansicht">Vollansicht</a>
-            </div>
-        </div>
-
-        <ul>
-            <li class="submenu links">
-                <a href="#" title="Links">Links</a>
-                <ul>
-                    <li>
-
-                        <a class="local-presentation" title="Lokale Präsentation anzeigen"
-                           href="https://digital.slub-dresden.de/id263566811">Lokale Präsentation anzeigen</a>
-
-                    </li>
-
-
-                    <li>
-
-                        <a class="local-catalog" title="Lokaler Katalog"
-                           href="http://dienste.slub-dresden.de/cgi-bin/FOZK.pl?PPN=263566811">Lokaler Katalog</a>
-
-                    </li>
-                    <li>
-                        <a class="local-contact"
-                           title="Email an Datenprovider (Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden)"
-                           href="mailto:mailto:digital@slub-dresden.de">Email an Datenprovider</a>
-                    </li>
-
-
-                    <li class="uri"><a href="https://digital.slub-dresden.de/id263566811">Persistente Identifier
-                        (Werk)</a></li>
-                    <li class="uri"></li>
-
-                </ul>
-            </li>
-
-        </ul>
     </div>
 </div>

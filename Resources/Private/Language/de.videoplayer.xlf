@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="de" datatype="plaintext" original="messages" product-name="Kitodo Presentation">
+		<header/>
+		<body>
+			<trans-unit id="help.keyboard-mapping" xml:space="preserve">
+				<source>Keyboard Mapping</source>
+				<target>Tastaturbelegung</target>
+			</trans-unit>
+			<trans-unit id="help.key" xml:space="preserve">
+				<source>Key</source>
+				<target>Taste</target>
+			</trans-unit>
+			<trans-unit id="help.function" xml:space="preserve">
+				<source>Function</source>
+				<target>Funktion</target>
+			</trans-unit>
+			<trans-unit id="help.key-space" xml:space="preserve">
+				<source>Space Key</source>
+				<target>Leertaste</target>
+			</trans-unit>
+			<trans-unit id="help.play-pause" xml:space="preserve">
+				<source>Play / Pause</source>
+				<target>Abspielen / Pausieren</target>
+			</trans-unit>
+			<trans-unit id="help.alt-return" xml:space="preserve">
+				<source>ALT + Return</source>
+				<target>ALT + Enter</target>
+			</trans-unit>
+			<trans-unit id="help.fullscreen-on-off" xml:space="preserve">
+				<source>Fullscreen on / off</source>
+				<target>Vollbild an / aus</target>
+			</trans-unit>
+			<trans-unit id="help.escape" xml:space="preserve">
+				<source>Escape Key</source>
+				<target>Escape Taste</target>
+			</trans-unit>
+			<trans-unit id="help.close-fullscreen" xml:space="preserve">
+				<source>Quit Fullscreen</source>
+				<target>Vollbild beenden</target>
+			</trans-unit>
+			<trans-unit id="help.left-right" xml:space="preserve">
+				<source>Arrow left / right</source>
+				<target>Pfeil links / rechts</target>
+			</trans-unit>
+			<trans-unit id="help.frame-forward-backward" xml:space="preserve">
+				<source>Frame backward / forward</source>
+				<target>Einzelbild zurück / vorwärts</target>
+			</trans-unit>
+			<trans-unit id="help.shift-forward-backward" xml:space="preserve">
+				<source>Shift + left / right</source>
+				<target>Umschalt + links / rechts</target>
+			</trans-unit>
+			<trans-unit id="help.ten-seconds" xml:space="preserve">
+				<source>- / + 10 Seconds</source>
+			</trans-unit>
+			<trans-unit id="help.m-key" xml:space="preserve">
+				<source>M Key</source>
+				<target>Taste M</target>
+			</trans-unit>
+			<trans-unit id="help.mute-unmute" xml:space="preserve">
+				<source>Mute / Unmute</source>
+				<target>Ton an / aus</target>
+			</trans-unit>
+			<trans-unit id="help.plus-minus" xml:space="preserve">
+				<source>+ / -</source>
+				<target>+ / -</target>
+			</trans-unit>
+			<trans-unit id="help.volume-up-down" xml:space="preserve">
+				<source>Volume up / down</source>
+				<target>Lautstärke hoch / runter</target>
+			</trans-unit>
+			<trans-unit id="help.f1-h" xml:space="preserve">
+				<source>F1 / H Key</source>
+				<target>F1 / Taste M</target>
+			</trans-unit>
+			<trans-unit id="help.help-window" xml:space="preserve">
+				<source>Help (this window)</source>
+				<target>Hilfe (dieses Fenster)</target>
+			</trans-unit>
+
+			<trans-unit id="settings.playback-speed" xml:space="preserve">
+				<source>Playback Speed</source>
+				<target>Geschwindigkeit</target>
+			</trans-unit>
+			<trans-unit id="settings.quality" xml:space="preserve">
+				<source>Quality</source>
+				<target>Qualität</target>
+			</trans-unit>
+			<trans-unit id="settings.subtitle" xml:space="preserve">
+				<source>Subtitle</source>
+				<target>Untertitel</target>
+			</trans-unit>
+			<trans-unit id="settings.language" xml:space="preserve">
+				<source>Language</source>
+				<target>Sprache</target>
+			</trans-unit>
+			<trans-unit id="settings.generate-screenshot" xml:space="preserve">
+				<source>Generate Screenshot</source>
+				<target>Screenshot generieren</target>
+			</trans-unit>
+			<trans-unit id="settings.generate-url" xml:space="preserve">
+				<source>Generate URL</source>
+				<target>URL generieren</target>
+			</trans-unit>
+			<trans-unit id="settings.help" xml:space="preserve">
+				<source>Help</source>
+				<target>Hilfe</target>
+			</trans-unit>
+			<trans-unit id="settings.back" xml:space="preserve">
+				<source>back</source>
+				<target>zurück</target>
+			</trans-unit>
+
+			<trans-unit id="tooltip.play" xml:space="preserve">
+				<source>play</source>
+				<target>Abspielen</target>
+			</trans-unit>
+			<trans-unit id="tooltip.pause" xml:space="preserve">
+				<source>pause</source>
+				<target>Pause</target>
+			</trans-unit>
+			<trans-unit id="tooltip.stop" xml:space="preserve">
+				<source>stop</source>
+				<target>Stop</target>
+			</trans-unit>
+			<trans-unit id="tooltip.fast-backward" xml:space="preserve">
+				<source>10 seconds backward</source>
+				<target>10 Sekunden zurück</target>
+			</trans-unit>
+			<trans-unit id="tooltip.frame-back" xml:space="preserve">
+				<source>frame backward</source>
+				<target>Einzelbild zurück</target>
+			</trans-unit>
+			<trans-unit id="tooltip.frame-forward" xml:space="preserve">
+				<source>frame forward</source>
+				<target>Einzelbild vor</target>
+			</trans-unit>
+			<trans-unit id="tooltip.fast-forward" xml:space="preserve">
+				<source>10 seconds forward</source>
+				<target>10 Sekunden vor</target>
+			</trans-unit>
+			<trans-unit id="tooltip.settings" xml:space="preserve">
+				<source>Settings</source>
+				<target>Einstellungen</target>
+			</trans-unit>
+			<trans-unit id="tooltip.maximize" xml:space="preserve">
+				<source>Maximize</source>
+				<target>Vollbild</target>
+			</trans-unit>
+			<trans-unit id="tooltip.minimize" xml:space="preserve">
+				<source>Minimize</source>
+				<target>Vollbild minimieren</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

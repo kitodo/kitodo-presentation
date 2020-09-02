@@ -35,7 +35,7 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
      * @var array
      * @access protected
      */
-    protected $audio = [];
+    protected $video = [];
 
     /**
      * Adds Player javascript
@@ -96,9 +96,9 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         // Check if there are any audio files available.
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']])) {
             // Get audio data.
-            $this->audio['url'] = urldecode($this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']]));
-            $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
-            $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']]);
+            $this->video['url'] = urldecode($this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']]));
+            $this->video['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
+            $this->video['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']]);
 
             // Add jPlayer javascript.
 
@@ -118,7 +118,11 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         $standaloneView->setFormat('html');
         $standaloneView->setTemplatePathAndFilename($templatePath);
         $standaloneView->assignMultiple([
-            'video' => $this->audio
+            'video' => $this->video,
+            'config' => [
+                'speed' => $conf['config.']['speedoptions.'] ? $conf['config.']['speedoptions.'] : false,
+
+            ]
         ]);
 
         $content = $standaloneView->render();
