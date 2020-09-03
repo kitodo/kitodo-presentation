@@ -12,11 +12,6 @@
 
 namespace Kitodo\Dlf\Plugin;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
-
 /**
  * Plugin VideoPlayer for the 'dlf' extension
  *
@@ -107,17 +102,6 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             // Quit without doing anything if required variables are not set.
             return $content;
         }
-        // Load template file.
-
-        // $this->getTemplate();
-
-//        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-//        $standaloneView = $objectManager->get(StandaloneView::class);
-//        $templatePath = GeneralUtility::getFileAbsFileName($this->getFluidStandaloneTemplate());
-//
-//        $standaloneView->setFormat('html');
-//        $standaloneView->setTemplatePathAndFilename($templatePath);
-//        $standaloneView->assignMultiple();
 
         $data = [
             'video' => $this->video,
