@@ -15,7 +15,6 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Plugin 'Table Of Contents' for the 'dlf' extension
@@ -168,7 +167,6 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     public function makeMenuArray($content, $conf)
     {
-        DebuggerUtility::var_dump($this->doc);
         $this->init($conf);
         // Load current document.
         $this->loadDocument();
