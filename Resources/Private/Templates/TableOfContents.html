@@ -1,0 +1,26 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:dv="http://typo3.org/ns/Slub/Dfgviewer/ViewHelpers"
+      xmlns:dc="http://typo3.org/ns/Slub/DigitalCollections/ViewHelpers"
+      xmlns:kp="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true"
+      lang="en">
+
+<ul class="toc">
+    <li class="current submenu">
+        <a title="{label}"
+           data-title="{label}">{label}</a>
+        <ul>
+            <f:for each="{children}" as="child">
+                <li>
+                    <a title="{child.label}"
+                       class="chapter"
+                       onclick="play({kp:timecode(timecode: child.files.area.BEGIN)})"
+                       data-timecode="{kp:timecode(timecode: child.files.area.BEGIN)}"
+                       data-title="{child.label}">{child.label}</a>
+                </li>
+            </f:for>
+        </ul>
+    </li>
+</ul>
+
+</html>

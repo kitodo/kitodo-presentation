@@ -15,7 +15,6 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
 
@@ -336,6 +335,11 @@ final class MetsDocument extends Document
             // Check if file has valid @USE attribute.
             if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
                 $details['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+                if (!empty($fptr->children('http://www.loc.gov/METS/'))) {
+                    foreach ($fptr->children('http://www.loc.gov/METS/')->attributes() as $key => $value) {
+                        $details['files']['area'][$key] = (string) $value;
+                    }
+                }
             }
         }
         // Keep for later usage.

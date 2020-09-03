@@ -111,21 +111,21 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
 
         // $this->getTemplate();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $standaloneView = $objectManager->get(StandaloneView::class);
-        $templatePath = GeneralUtility::getFileAbsFileName($this->getFluidStandaloneTemplate());
+//        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+//        $standaloneView = $objectManager->get(StandaloneView::class);
+//        $templatePath = GeneralUtility::getFileAbsFileName($this->getFluidStandaloneTemplate());
+//
+//        $standaloneView->setFormat('html');
+//        $standaloneView->setTemplatePathAndFilename($templatePath);
+//        $standaloneView->assignMultiple();
 
-        $standaloneView->setFormat('html');
-        $standaloneView->setTemplatePathAndFilename($templatePath);
-        $standaloneView->assignMultiple([
+        $data = [
             'video' => $this->video,
             'config' => [
                 'speed' => $conf['config.']['speedoptions.'] ? $conf['config.']['speedoptions.'] : false,
-
             ]
-        ]);
+        ];
 
-        $content = $standaloneView->render();
-        return $this->pi_wrapInBaseClass($content);
+        return $this->pi_wrapInBaseClass($this->generateContentWithFluidStandaloneView($data));
     }
 }
