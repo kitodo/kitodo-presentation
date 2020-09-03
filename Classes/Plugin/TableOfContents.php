@@ -135,7 +135,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         // Check for typoscript configuration to prevent fatal error.
         $this->loadDocument();
 
-        if ($this->doc->getTitledata()['type'][0] === 'video') {
+        if ($this->doc !== null && $this->doc->getTitledata()['type'][0] === 'video') {
             return $this->pi_wrapInBaseClass($this->generateContentWithFluidStandaloneView($this->doc->tableOfContents[0]));
         } else {
             if (empty($this->conf['menuConf.'])) {
