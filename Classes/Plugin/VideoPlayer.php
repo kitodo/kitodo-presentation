@@ -44,7 +44,8 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         //Javascript files.
         $jsFiles = [
             // jPlayer
-            'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js'
+            'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js',
+            'Resources/Public/Javascript/VideoPlayer/VideoPlayer.min.js'
         ];
         $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
         foreach ($jsFiles as $jsFile) {
