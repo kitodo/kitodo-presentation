@@ -18,7 +18,6 @@ $(document).ready(function () {
         bindPlayerFunctions();
         bindKeyboardEvents();
         resizeVideoCanvas();
-        console.log(generateMetadataObject());
     }
 });
 
@@ -29,7 +28,14 @@ $(window).resize(function() {
 function generateMetadataObject() {
   var dataDomElement = $('#metadata');
   var metadataObject = {};
+  metadataObject.metadata = [];
   metadataObject.screenshotFields = dataDomElement.data('screenshotfields').split(',');
+
+  for(var i=0; i < dataDomElement.children().length; i++) {
+    if(dataDomElement.children()[i].value.length) {
+      metadataObject.metadata[dataDomElement.children()[i].id] = dataDomElement.children()[i].value;
+    }
+  }
   return metadataObject;
 }
 
@@ -426,12 +432,28 @@ function renderScreenshot() {
 }
 
 function drawCanvas() {
-    var videoDomElement, canvas, context, mediaStatus, fileName, infoString;
+    var videoDomElement, canvas, context
+    var stringArray = [], infoString = '';
 
     videoDomElement = document.getElementById('jp_video_0');
     canvas = document.getElementById('screenshot-canvas');
+    var metadataArray = this.generateMetadataObject();
 
-    infoString = '© ' + copyright + ' / ' + 'SLUB ' + signature + ' / ' + getFormattedVideoCurrentTime();
+    for (var i = 0; i < metadataArray.screenshotFields.length; i++) {
+      if(typeof(metadataArray.metadata[metadataArray.screenshotFields[i]]) === 'string') {
+        stringArray.push(metadataArray.metadata[metadataArray.screenshotFields[i]]);
+      }
+    }
+
+    for (var i = 0; i < stringArray.length; i++) {
+      if((stringArray.length - 1) !== i) {
+        infoString += stringArray[i] + ' / ';
+      } else {
+        infoString += stringArray[i];
+      }
+    }
+
+    console.log('infoString: ' + infoString);
     canvas.width = videoDomElement.videoWidth;
     canvas.height = videoDomElement.videoHeight;
 

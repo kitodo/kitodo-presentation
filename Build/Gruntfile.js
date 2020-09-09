@@ -18,7 +18,7 @@ module.exports = function(grunt) {
         },
         watch: {
             js: {
-                files: ['Resources/Public/Javascript/*.js'],
+                files: ['Resources/Public/Javascript/**/*.js'],
                 tasks: ['uglify'],
                 options: {
                     nospawn: true
