@@ -453,7 +453,6 @@ function drawCanvas() {
       }
     }
 
-    console.log('infoString: ' + infoString);
     canvas.width = videoDomElement.videoWidth;
     canvas.height = videoDomElement.videoHeight;
 
