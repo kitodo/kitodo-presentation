@@ -12,11 +12,11 @@
         <ul>
             <f:for each="{children}" as="child">
                 <li>
-                    <a title="{child.label}"
+                    <a title="{child.label} | {child.files.area.BEGIN} - {child.files.area.END}"
                        class="chapter"
                        onclick="play({kp:timecode(timecode: child.files.area.BEGIN)})"
                        data-timecode="{kp:timecode(timecode: child.files.area.BEGIN)}"
-                       data-title="{child.label}">{child.label}</a>
+                       data-title="{child.label} | {child.files.area.BEGIN} - {child.files.area.END}">{child.label}</a>
                 </li>
             </f:for>
         </ul>

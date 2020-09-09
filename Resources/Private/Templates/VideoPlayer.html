@@ -3,6 +3,12 @@
       xmlns:dc="http://typo3.org/ns/Slub/DigitalCollections/ViewHelpers"
       data-namespace-typo3-fluid="true"
       lang="en">
+
+<data id="metadata" data-screenshotfields="{config.screenshotFields}">
+    <f:for each="{video.metadata}" as="metadata" key="key">
+        <data id="{key}" value="{metadata.0}"></data>
+    </f:for>
+</data>
 <div class="mime-type-video" data-url="{video.url}">
     <div id="tx-dfgviewer-view" class="tx-dlf-view">
         <div class="media-viewport">

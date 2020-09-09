@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Plugin;
 
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 /**
  * Plugin AudioPlayer for the 'dlf' extension
  *
@@ -56,13 +58,15 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js'
         ];
         // AudioPlayer configuration.
+
         $audioplayerConfiguration = '
             $(document).ready(function() {
                 AudioPlayer = new dlfAudioPlayer({
                     audio: {
                         mimeType: "' . $this->audio['mimetype'] . '",
                         title: "' . $this->audio['label'] . '",
-                        url:  "' . $this->audio['url'] . '"
+                        url:  "' . $this->audio['url'] . '",
+                        poster: "' .$this->audio['poster'] . '"
                     },
                     parentElId: "tx-dlf-audio",
                     swfPath: "' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
@@ -85,7 +89,7 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
                 $markerArray .= '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>' . "\n";
             }
             $markerArray .= '
-                <script type="text/javascript"> 
+                <script type="text/javascript">
                 /*<![CDATA[*/
                 /*kitodo-audioplayer-configuration*/
                 ' . $audioplayerConfiguration . '
@@ -130,9 +134,12 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Check if there are any audio files available.
+
+
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']])) {
             // Get audio data.
             $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']]);
+            $this->audio['poster'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files']['DEFAULT']);
             $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
             $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpAudio']]);
             // Add jPlayer javascript.
@@ -142,8 +149,8 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             return $content;
         }
         // Load template file.
-        $this->getTemplate();
-        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $this->pi_wrapInBaseClass($content);
+        // $this->getTemplate();
+        // $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
+        return $this->pi_wrapInBaseClass($this->generateContentWithFluidStandaloneView($markerArray));
     }
 }

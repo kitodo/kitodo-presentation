@@ -8,5 +8,6 @@ plugin.tx_dlf_videoplayer {
       4 = 3
       5 = 4
     }
+    screenshotFields = author,license,vd18
   }
 }

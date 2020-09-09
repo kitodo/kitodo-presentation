@@ -18,6 +18,7 @@ $(document).ready(function () {
         bindPlayerFunctions();
         bindKeyboardEvents();
         resizeVideoCanvas();
+        console.log(generateMetadataObject());
     }
 });
 
@@ -25,9 +26,16 @@ $(window).resize(function() {
     resizeVideoCanvas();
 });
 
+function generateMetadataObject() {
+  var dataDomElement = $('#metadata');
+  var metadataObject = {};
+  metadataObject.screenshotFields = dataDomElement.data('screenshotfields').split(',');
+  return metadataObject;
+}
+
 function resizeVideoCanvas() {
     var view, player, video;
-    view = $('.media-viewport');
+    view = $('.document-view');
     player = $('.mediaplayer-container');
     video = $("video");
     video.css({

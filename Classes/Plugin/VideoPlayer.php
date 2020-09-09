@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Plugin;
 
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 /**
  * Plugin VideoPlayer for the 'dlf' extension
  *
@@ -89,13 +91,14 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
+
         // Check if there are any audio files available.
         if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']])) {
             // Get audio data.
             $this->video['url'] = urldecode($this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']]));
             $this->video['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
             $this->video['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpVideo']]);
-
+            $this->video['metadata'] = $this->doc->getMetadata('LOG_0000');
             // Add jPlayer javascript.
 
             $this->addPlayerJS();
@@ -108,6 +111,7 @@ class VideoPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             'video' => $this->video,
             'config' => [
                 'speed' => $conf['config.']['speedoptions.'] ? $conf['config.']['speedoptions.'] : false,
+                'screenshotFields' => $conf['config.']['screenshotFields']
             ]
         ];
 
