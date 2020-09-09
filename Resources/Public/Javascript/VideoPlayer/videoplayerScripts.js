@@ -97,7 +97,7 @@ function bindPlayerFunctions() {
         $(".time-current").text(getFormattedVideoCurrentTime());
         $(".frame-current").text(video.get());
         $(".time-remaining").text($.jPlayer.convertTime( event.jPlayer.status.duration - event.jPlayer.status.currentTime ));
-
+        resizeVideoCanvas();
     });
 
     // initialize the counter with correct values after player initialization
@@ -391,7 +391,7 @@ function backward() {
  * @param seconds
  */
 function play(seconds) {
-    viewport.jPlayer( "play", seconds );
+  viewport.jPlayer( "play", seconds );
 }
 
 /**
