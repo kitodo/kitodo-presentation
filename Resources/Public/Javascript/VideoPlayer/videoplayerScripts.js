@@ -4,10 +4,15 @@
 var demoMovieFile = '';
 var fps = 25;
 var viewport;
-var copyright = 'Hirsch Film Filmproduktion';
-var signature = 'BK 28';
 
 var video;
+var timeDisplayModes = [
+  $('.time-current'),
+  $('.time-remaining'),
+  $('.frame-current'),
+];
+var displayModeIndex = 0;
+
 $(document).ready(function () {
     var isVideo = $(".mime-type-video");
     //demoMovieFile = decodeURI($(".mime-type-video").data('url'));
@@ -18,6 +23,7 @@ $(document).ready(function () {
         bindPlayerFunctions();
         bindKeyboardEvents();
         resizeVideoCanvas();
+        toggleTimeDisplayMode();
     }
 });
 
@@ -79,12 +85,16 @@ function bindPlayerFunctions() {
     // binding for fast backward button
     $('.button-backward').bind('click', function() {
         backward();
-    })
+    });
 
     // binding for fast forward button
     $('.button-forward').bind('click', function () {
         forward();
-    })
+    });
+
+    $('.time-counters').bind('click', function() {
+      toggleTimeDisplayMode();
+    });
 
     // function for binding the settings menu button
     bindSettingsMenuItems();
@@ -96,7 +106,7 @@ function bindPlayerFunctions() {
     viewport.bind($.jPlayer.event.timeupdate, function(event) {
         $(".time-current").text(getFormattedVideoCurrentTime());
         $(".frame-current").text(video.get());
-        $(".time-remaining").text($.jPlayer.convertTime( event.jPlayer.status.duration - event.jPlayer.status.currentTime ));
+        $(".time-remaining").text('-' + $.jPlayer.convertTime( event.jPlayer.status.duration - event.jPlayer.status.currentTime ));
         resizeVideoCanvas();
     });
 
@@ -105,7 +115,7 @@ function bindPlayerFunctions() {
         generateChapters();
         $(".time-current").text(getFormattedVideoCurrentTime());
         $(".frame-current").text(video.get());
-        $(".time-remaining").text($.jPlayer.convertTime( event.jPlayer.status.duration - event.jPlayer.status.currentTime ));
+        $(".time-remaining").text('-' + $.jPlayer.convertTime( event.jPlayer.status.duration - event.jPlayer.status.currentTime ));
     });
 
     viewport.bind($.jPlayer.event.loadeddata, function(event) {
@@ -469,6 +479,20 @@ function drawCanvas() {
 
     canvas.style.width = '80%';
     canvas.style.height = 'auto';
+}
+
+function toggleTimeDisplayMode() {
+  for (var i=0; i < timeDisplayModes.length; i++) {
+    timeDisplayModes[i].css('display', 'none');
+  }
+
+  if(displayModeIndex < timeDisplayModes.length) {
+    timeDisplayModes[displayModeIndex].css('display', 'block');
+    displayModeIndex ++;
+  } else {
+    displayModeIndex = 0;
+    toggleTimeDisplayMode();
+  }
 }
 
 function getFormattedVideoCurrentTime() {
