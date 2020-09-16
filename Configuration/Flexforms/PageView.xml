@@ -65,6 +65,10 @@
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.zoompanel</numIndex>
                                         <numIndex index="1">ZoomPanel</numIndex>
                                     </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.zoomslider</numIndex>
+                                        <numIndex index="1">ZoomSlider</numIndex>
+                                    </numIndex>
                                 </items>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>

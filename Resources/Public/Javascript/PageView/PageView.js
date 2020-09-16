@@ -11,10 +11,13 @@
 /**
  * @TODO Trigger resize map event after fullscreen is toggled
  * @param {Object} settings
+ *      {Array.<?>} controls
+ *      {string=} overviewMapTarget
  *      {string=} div
  *      {Array.<?>} images
  *      {Array.<?>} fulltexts
- *      {Array.<?>} controls
+ *      {string} annotationContainers
+ *      {number} useInternalProxy
  * @constructor
  */
 var dlfViewer = function(settings){
@@ -134,6 +137,12 @@ var dlfViewer = function(settings){
     this.initMagnifier = false;
 
     /**
+     * @type {string|undefined}
+     * @private
+     */
+    this.overviewMapTarget = dlfUtils.exists(settings.overviewMapTarget) ? settings.overviewMapTarget : undefined;
+
+    /**
      * use internal proxy setting
      * @type {boolean}
      * @private
@@ -146,10 +155,8 @@ var dlfViewer = function(settings){
 /**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext and the image manipulation control
- *
- * @param {Array.<string>} controlNames
  */
-dlfViewer.prototype.addCustomControls = function(controlNames) {
+dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         annotationControl = undefined,
         imageManipulationControl = undefined,
@@ -250,6 +257,8 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
     var controls = [];
 
+    var overviewMapTargetElement = dlfUtils.exists(this.overviewMapTarget) ? $('#' + this.overviewMapTarget) : undefined;
+
     for (var i in controlNames) {
 
         if (controlNames[i] !== "") {
@@ -258,12 +267,22 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "OverviewMap":
 
-                    controls.push(new ol.control.OverviewMap({layers}));
+                    controls.push(new ol.control.OverviewMap({
+                        'collapsed': false,
+                        'collapsible': false,
+                        'layers': layers,
+                        'target': overviewMapTargetElement
+                    }));
                     break;
 
                 case "ZoomPanel":
 
-                    controls.push(new ol.control.Zoom());
+                    controls.push(new ol.control.Zoom({'className': "tx-dlf-pageview-zoomButtons"}));
+                    break;
+
+                case "ZoomSlider":
+
+                    controls.push(new ol.control.ZoomSlider({'className': "tx-dlf-pageview-zoomSlider"}));
                     break;
 
                 default:
@@ -362,7 +381,7 @@ dlfViewer.prototype.init = function(controlNames) {
         throw new Error('Missing image source objects.');
 
     /**
-     * Is cors enabled. Important information for correct renderer and layer initialization
+     * Is CORS enabled? Important information for correct renderer and layer initialization
      * @type {boolean}
      */
      if (this.useInternalProxy) {
@@ -377,10 +396,6 @@ dlfViewer.prototype.init = function(controlNames) {
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
                 : [];
-                //: [ new ol.control.MousePosition({
-                //        coordinateFormat: ol.coordinate.createStringXY(4),
-                //        undefinedHTML: '&nbsp;'
-                //    })];
 
             // create map
             this.map = new ol.Map({
@@ -419,7 +434,7 @@ dlfViewer.prototype.init = function(controlNames) {
             // highlight word in case a highlight field is registered
             this.displayHighlightWord();
 
-            this.addCustomControls(controls);
+            this.addCustomControls();
 
             // trigger event after all has been initialize
             $(window).trigger("map-loadend", window);
