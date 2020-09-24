@@ -11,9 +11,11 @@
 var imageProcessingUtility = {
 
   'filter': function(canvas, filters) {
-    var ctx = canvas.getContext('2d');
-    for (var filter in filters) {
-      this.applyFilter(canvas, filter, filters[filter]);
+    if (canvas !== undefined) {
+      var ctx = canvas.getContext('2d');
+      for (var filter in filters) {
+        this.applyFilter(canvas, filter, filters[filter]);
+      }
     }
   },
 
