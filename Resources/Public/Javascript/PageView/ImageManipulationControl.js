@@ -118,31 +118,13 @@ dlfViewerImageManipulationControl = function(options) {
      */
     this.handler_ = {
         'postcomposeImageFilter': $.proxy(function (event) {
-            var webglContext = event['glContext'],
             canvas = $('#' + this.map_.getTargetElement().id + ' .ol-unselectable  canvas')[0];
 
-            var result = imageProcessingUtility.filter(canvas, this.filters_);
-            result ? console.log(result) : null;
-          if (webglContext !== undefined && webglContext !== null) {
-                var gl = webglContext.getGL();
-
-                if (this.filterUpdated_) {
-
-                    glif.reset();
-                    for (var filter in this.filters_) {
-                        glif.addFilter(filter, this.filters_[String(filter)]);
-                    };
-
-                    this.filterUpdated_ = false;
-                }
-
-                glif.apply(gl, canvas);
-
-                // for showing openlayers that the program changed
-                // if missing openlayers will produce errors because it
-                // expected other shaders in the webgl program
-                webglContext.useProgram(undefined);
+            if (this.filterUpdated_) {
+              imageProcessingUtility.filter(canvas, this.filters_);
+              this.filterUpdated_ = false;
             }
+
         }, this),
         'resetFilter': $.proxy(function(event) {
             // reset the checked filters
