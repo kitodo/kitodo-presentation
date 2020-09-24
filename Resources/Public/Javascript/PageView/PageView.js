@@ -626,7 +626,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
             var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
             if (rotateDiff || centerDiff) {
-                destMap.getView().rotate(sourceView.getRotation());
+                destMap.getView().setRotation(sourceView.getRotation());
             }
         },
         adjustViewHandler = function(event) {

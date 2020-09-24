@@ -32,11 +32,12 @@ ol.Map.prototype.getZoomRange = function() {
 ol.Map.prototype.zoom = function(zoomLevel) {
     var view = this.getView(),
         resolution = view.getResolution();
-    this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
-        'duration': 500
-    }));
-    view.setZoom(zoomLevel);
+
+    view.animate({
+      zoom: zoomLevel,
+      duration: 500,
+      resolution: resolution
+    })
 };
 
 /**
@@ -46,11 +47,12 @@ ol.Map.prototype.zoomIn = function() {
     var view = this.getView(),
         zoomLevel = view.getZoom() + 1,
         resolution = view.getResolution();
-    this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
-        'duration': 500
-    }));
-    view.setZoom(zoomLevel);
+
+    view.animate({
+      zoom: zoomLevel,
+      duration: 500,
+      resolution: resolution
+    });
 };
 
 /**
@@ -59,12 +61,13 @@ ol.Map.prototype.zoomIn = function() {
 ol.Map.prototype.zoomOut = function() {
     var view = this.getView(),
         zoomLevel = view.getZoom() - 1,
-     resolution = view.getResolution();
-    this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
-        'duration': 500
-    }));
-    view.setZoom(zoomLevel);
+        resolution = view.getResolution();
+
+    view.animate({
+      zoom: zoomLevel,
+      duration: 500,
+      resolution: resolution
+    });
 };
 
 /**
@@ -77,12 +80,12 @@ ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
     var view = this.getView(),
         resolution = view.getResolution(),
         duration = opt_duration !== undefined ? opt_duration : 500;
-    this.beforeRender(ol.animation.zoom({
-        resolution,
-        duration
-    }));
-    view.setCenter(center);
-    view.setZoom(zoomLevel);
+        view.animate({
+          zoom: zoomLevel,
+          duration: duration,
+          center: center,
+          resolution: resolution
+        });
 };
 
 /**
@@ -94,15 +97,11 @@ ol.Map.prototype.rotate = function(rotation) {
         rotate = view.getRotation() + (rotation *  Math.PI/180),
         center = view.getCenter();
 
-    this.beforeRender(ol.animation.rotate({
-        'rotation':view.getRotation(),
-        'anchor':center,
-        'duration':200
-    }));
-    view.rotate(rotate, center);
-    if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(rotate);
-    }
+    view.animate({
+      rotation: rotate,
+      anchor: center,
+      duration: 200
+    });
 };
 
 /**
@@ -111,7 +110,7 @@ ol.Map.prototype.rotate = function(rotation) {
 ol.Map.prototype.rotateLeft = function() {
     this.rotate(-5);
     if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(-5);
+        this.ov_view.setRotation(-5);
     }
 };
 
@@ -121,7 +120,7 @@ ol.Map.prototype.rotateLeft = function() {
 ol.Map.prototype.rotateRight = function() {
     this.rotate(5);
     if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(5);
+        this.ov_view.setRotation(5);
     }
 };
 
@@ -129,8 +128,13 @@ ol.Map.prototype.rotateRight = function() {
  * Resets the rotation of the map
  */
 ol.Map.prototype.resetRotation = function() {
-    this.getView().rotate(0, this.getView().getCenter());
+    //this.getView().setRotation(0, this.getView().getCenter());
+    this.getView().animate({
+      rotation: 0,
+      center: this.getView().getCenter()
+    });
+
     if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(0);
+        this.ov_view.setRotation(0);
     }
 };

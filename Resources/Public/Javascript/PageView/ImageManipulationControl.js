@@ -95,8 +95,8 @@ dlfViewerImageManipulationControl = function(options) {
     var FILTERS_DEFAULT_ = {
         'brightness': 1,
         'contrast': 1,
-        'hue': 0,
-        'saturation': 0
+        'hue': 55,
+        'saturation': 1
     };
 
     /**
@@ -119,15 +119,16 @@ dlfViewerImageManipulationControl = function(options) {
     this.handler_ = {
         'postcomposeImageFilter': $.proxy(function (event) {
             var webglContext = event['glContext'],
-            canvas = $('#' + this.map_.getTargetElement().id + ' canvas.ol-unselectable')[0];
+            canvas = $('#' + this.map_.getTargetElement().id + ' .ol-unselectable  canvas')[0];
 
-            if (webglContext !== undefined && webglContext !== null) {
+            var result = imageProcessingUtility.filter(canvas, this.filters_);
+            result ? console.log(result) : null;
+          if (webglContext !== undefined && webglContext !== null) {
                 var gl = webglContext.getGL();
 
                 if (this.filterUpdated_) {
 
                     glif.reset();
-
                     for (var filter in this.filters_) {
                         glif.addFilter(filter, this.filters_[String(filter)]);
                     };
@@ -228,18 +229,18 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
     //
     var contrastSlider = this.createSlider_('slider-contrast', 'horizontal', 'contrast',
         [1, 0, 2, 0.01], this.dic['contrast'], function(v) {
-            return parseInt(v * 100 - 100);
+                return parseInt(v * 100 - 100);
         }),
         saturationSlider = this.createSlider_('slider-saturation', 'horizontal', 'saturation',
-            [0, -1, 1, 0.01], this.dic['saturation'], function(v) {
-                return parseInt(v * 100);
+            [1, 0, 2, 0.01], this.dic['saturation'], function(v) {
+                return parseInt(v * 100 - 100);
             }),
         brightnessSlider = this.createSlider_('slider-brightness', 'horizontal', 'brightness',
             [1, 0, 2, 0.1], this.dic['brightness'],function(v) {
                 return parseInt(v * 100 - 100);
             }),
         hueSlider = this.createSlider_('slider-hue', 'horizontal', 'hue',
-            [0, -180, 180, 5], this.dic['hue'], function(v) {
+            [55, 0, 360, 5], this.dic['hue'], function(v) {
                 return parseInt(v);
             });
     $(this.sliderContainer_).append(contrastSlider);
@@ -280,6 +281,7 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
 dlfViewerImageManipulationControl.prototype.createMap_ = function() {
     var mapEl_ = $('<div id="tx-dlf-map-manipulate" class="tx-dlf-map"></div>');
     $(this.baseMap_.getTargetElement().parentElement).append(mapEl_);
+    console.log(this.layers);
 
     this.map_ = new ol.Map({
         layers: this.layers,
@@ -304,13 +306,14 @@ dlfViewerImageManipulationControl.prototype.createMap_ = function() {
 
     // couple map behavior with baseMap
     var adjustViews = function(sourceView, destMap) {
-            var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
+
+      var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
             var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
             var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
             if (rotateDiff || resDiff || centerDiff) {
                 destMap.zoomTo(sourceView.getCenter(),sourceView.getZoom(), 50);
-                destMap.getView().rotate(sourceView.getRotation());
+                destMap.getView().setRotation(sourceView.getRotation());
             }
 
         },

@@ -79,7 +79,9 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $jsFiles = [
             // OpenLayers
             'Resources/Public/Javascript/OpenLayers/glif.min.js',
-            'Resources/Public/Javascript/OpenLayers/ol3-dlf.js',
+            'Resources/Public/Javascript/OpenLayers/ImageProcessingUtility.js',
+            // 'Resources/Public/Javascript/OpenLayers/ol3-dlf.js',
+            'Resources/Public/Javascript/OpenLayers/ol6-dlf.js',
             // Viewer
             'Resources/Public/Javascript/PageView/Utility.js',
             'Resources/Public/Javascript/PageView/OL3.js',
