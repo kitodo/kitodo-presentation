@@ -141,7 +141,7 @@ var dlfViewer = function(settings){
     this.useInternalProxy = dlfUtils.exists(settings.useInternalProxy) ? settings.useInternalProxy : false;
 
     this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
-};
+}
 
 /**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
@@ -190,7 +190,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
             controlTarget: $('.tx-dlf-tools-imagetools')[0],
             layers: dlfUtils.createOl3Layers(images, '*'),
             map: this.map,
-            view: dlfUtils.createOl3View(images)
+            view: dlfUtils.createOl3View(images),
         });
 
         // bind behavior of both together
@@ -212,7 +212,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
         $('#tx-dlf-tools-imagetools').addClass('deactivate');
 
     }
-};
+}
 
 /**
  * Add highlight field
@@ -237,7 +237,7 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
     if (this.map) {
         this.displayHighlightWord();
     }
-};
+}
 
 /**
  * Creates OL3 controls
@@ -275,7 +275,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
     }
 
     return controls;
-};
+}
 
 /**
  * Displayes highlight words
@@ -345,10 +345,10 @@ dlfViewer.prototype.displayHighlightWord = function() {
                 for (var i = 0; i < features.length; i++) {
                     this.highlightLayer.getSource().addFeatures([features[i]]);
                 }
-            };
+            }
         }, this));
-    };
-};
+    }
+}
 
 /**
  * Start the init process of loading the map, etc.
@@ -400,9 +400,10 @@ dlfViewer.prototype.init = function(controlNames) {
                 ],
                 // necessary for proper working of the keyboard events
                 keyboardEventTarget: document,
-                view: dlfUtils.createOl3View(this.images),
-                renderer: 'canvas'
+                view: dlfUtils.createOl3View(this.images)
             });
+            this.map.getView().setViewportSize([500, 500]);
+            this.map.getView().setZoom(12);
 
             // Position image according to user preferences
             var lon = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
@@ -453,7 +454,7 @@ dlfViewer.prototype.init = function(controlNames) {
         });
 
         this.initCropping();
-};
+}
 
 /**
  * Function generate the ol3 layer objects for given image sources. Returns a promise.
@@ -483,15 +484,15 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs, isCorsEnabled) {
       });
 
     return deferredResponse;
-};
+}
 
 dlfViewer.prototype.degreeToRadian = function (degree) {
     return degree * (Math.PI / 180);
-};
+}
 
 dlfViewer.prototype.radianToDegree = function (radian) {
     return radian * (180 / Math.PI);
-};
+}
 
 /**
  * activates the crop selection
@@ -505,7 +506,7 @@ dlfViewer.prototype.activateSelection = function () {
     // add selection layer and crop interaction
     this.map.addLayer(this.selectionLayer);
     this.map.addInteraction(this.draw);
-};
+}
 
 /**
  * reset the crop selection
@@ -514,7 +515,7 @@ dlfViewer.prototype.resetCropSelection = function () {
     this.map.removeLayer(this.selectionLayer);
     this.source.clear();
     this.setNewCropDrawer(this.source);
-};
+}
 
 /**
  * initialise crop selection
@@ -558,7 +559,7 @@ dlfViewer.prototype.initCropping = function () {
     };
 
     this.setNewCropDrawer(source);
-};
+}
 
 /**
  * set the draw interaction for crop selection
@@ -580,7 +581,7 @@ dlfViewer.prototype.setNewCropDrawer = function (source) {
     this.selectionLayer = new ol.layer.Vector({
         source: source
     });
-};
+}
 
 /**
  * add magnifier map
@@ -694,4 +695,4 @@ function Drag() {
      */
     this.previousCursor_ = undefined;
 
-};
+}

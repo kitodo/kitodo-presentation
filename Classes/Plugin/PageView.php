@@ -84,7 +84,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             'Resources/Public/Javascript/OpenLayers/ol6-dlf.js',
             // Viewer
             'Resources/Public/Javascript/PageView/Utility.js',
-            'Resources/Public/Javascript/PageView/OL3.js',
+            'Resources/Public/Javascript/PageView/OL6.js',
             'Resources/Public/Javascript/PageView/OL3Styles.js',
             'Resources/Public/Javascript/PageView/OL3Sources.js',
             'Resources/Public/Javascript/PageView/AltoParser.js',

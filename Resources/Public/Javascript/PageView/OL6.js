@@ -93,7 +93,7 @@ ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
  * @param {number} rotation
  */
 ol.Map.prototype.rotate = function(rotation) {
-    var view = this.getView(),
+  var view = this.getView(),
         rotate = view.getRotation() + (rotation *  Math.PI/180),
         center = view.getCenter();
 
