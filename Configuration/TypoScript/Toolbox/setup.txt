@@ -1,4 +1,5 @@
 plugin.tx_dlf_annotationtool.templateFile = EXT:dlf/Resources/Private/Templates/AnnotationTool.tmpl
+plugin.tx_dlf_fulltextontool.templateFile = EXT:dlf/Resources/Private/Templates/FulltextOnTool.tmpl
 plugin.tx_dlf_fulltexttool.templateFile = EXT:dlf/Resources/Private/Templates/FulltextTool.tmpl
 plugin.tx_dlf_imagedownloadtool.templateFile = EXT:dlf/Resources/Private/Templates/ImageDownloadTool.tmpl
 plugin.tx_dlf_imagemanipulationtool.templateFile = EXT:dlf/Resources/Private/Templates/ImageManipulationTool.tmpl
