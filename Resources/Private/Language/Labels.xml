@@ -153,6 +153,7 @@
             <label index="tx_dlf_mail.name">Name</label>
             <label index="tx_dlf_toolbox.fulltexttool">Fulltext</label>
             <label index="tx_dlf_toolbox.annotationtool">IIIF Annotations</label>
+            <label index="tx_dlf_toolbox.fulltextdownloadtool">Fulltext Download</label>
             <label index="tx_dlf_toolbox.imagedownloadtool">Image Download</label>
             <label index="tx_dlf_toolbox.imagemanipulationtool">Image Manipulation</label>
             <label index="tx_dlf_toolbox.pdfdownloadtool">PDF Download</label>
@@ -336,6 +337,7 @@
             <label index="tx_dlf_mail.name">Name</label>
             <label index="tx_dlf_toolbox.fulltexttool">Volltext</label>
             <label index="tx_dlf_toolbox.annotationtool">IIIF-Annotationen</label>
+            <label index="tx_dlf_toolbox.fulltextdownloadtool">Volltext-Download</label>
             <label index="tx_dlf_toolbox.imagedownloadtool">Bild-Download</label>
             <label index="tx_dlf_toolbox.imagemanipulationtool">Bildbearbeitung</label>
             <label index="tx_dlf_toolbox.pdfdownloadtool">PDF-Download</label>
