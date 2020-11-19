@@ -52,14 +52,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.url = fulltextUrl;
 
     /**
-     * @type {Object}
-     * @private
-     */
-    this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
-        dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext':'Fulltext'};
-
-    /**
      * @type {ol.Feature|undefined}
      * @private
      */
@@ -240,11 +232,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
     // get anchor for activate fulltext
     var anchorEl = $('#tx-dlf-tools-fulltext');
-
-    // set title and text for anchor
-    $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext'])
-        .attr('title', this.dic['fulltext']);
 
     // activate the fulltext behavior
     this.activate(anchorEl);
