@@ -151,14 +151,16 @@ var dlfViewer = function(settings){
  */
 dlfViewer.prototype.addCustomControls = function(controlNames) {
     var fulltextControl = undefined,
+        fulltextDownloadControl = undefined,
         annotationControl = undefined,
         imageManipulationControl = undefined,
         images = this.images;
 
-    // Adds fulltext behavior only if there is fulltext available and no double page
+    // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
     if (this.fulltexts[0] !== undefined && this.fulltexts[0].length !== 0 && this.fulltexts[0].url !== '' && this.images.length === 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
+        fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, this.images[0], this.fulltexts[0].url);
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }

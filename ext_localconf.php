@@ -128,6 +128,12 @@ plugin.tx_dlf_validator {
 }
 tt_content.list.20.dlf_validator < plugin.tx_dlf_validator
 
+plugin.tx_dlf_fulltextontool = USER
+plugin.tx_dlf_fulltextontool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\FulltextOnTool->main
+}
+tt_content.list.20.dlf_fulltextontool < plugin.tx_dlf_fulltextontool
+
 plugin.tx_dlf_fulltexttool = USER
 plugin.tx_dlf_fulltexttool {
     userFunc = Kitodo\Dlf\Plugin\Tools\FulltextTool->main
@@ -139,6 +145,12 @@ plugin.tx_dlf_annotationtool {
     userFunc = Kitodo\Dlf\Plugin\Tools\AnnotationTool->main
 }
 tt_content.list.20.dlf_annotationtool < plugin.tx_dlf_annotationtool
+
+plugin.tx_dlf_fulltextdownloadtool = USER
+plugin.tx_dlf_fulltextdownloadtool {
+    userFunc = Kitodo\Dlf\Plugin\Tools\FulltextDownloadTool->main
+}
+tt_content.list.20.dlf_fulltextdownloadtool < plugin.tx_dlf_fulltextdownloadtool
 
 plugin.tx_dlf_imagedownloadtool = USER
 plugin.tx_dlf_imagedownloadtool {
@@ -199,8 +211,10 @@ foreach ($iconArray as $key => $value) {
 );
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltextontool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltextontool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.annotationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltextdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltextdownloadtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagemanipulationtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.pdfdownloadtool';
