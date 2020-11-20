@@ -126,10 +126,10 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             // The string may be e.g. "{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:2503"
             foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
                 $facetKeyVal = explode(':', $facet['query']);
-                for ($j=0; $j < count($facetKeyVal); $j++) {
+                for ($j = 0; $j < count($facetKeyVal); $j++) {
                     if (preg_match('/uid$/', $facetKeyVal[$j])) {
-                        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($facetKeyVal[$j+1])) {
-                            $documentId = (int) $facetKeyVal[$j+1];
+                        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($facetKeyVal[$j + 1])) {
+                            $documentId = (int) $facetKeyVal[$j + 1];
                         }
                     }
                 }
