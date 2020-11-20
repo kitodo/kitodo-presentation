@@ -117,19 +117,26 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
         ) {
             $this->loadDocument();
-            // Get document's UID or parent ID.
+            // Get document's UID
             if ($this->doc->ready) {
-                return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . ($this->doc->parentId > 0 ? $this->doc->parentId : $this->doc->uid) . '" />';
+                return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . ($this->doc->uid) . '" />';
             }
         } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
             // Get document's UID from search metadata.
+            // The string may be e.g. "{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:2503"
             foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
                 $facetKeyVal = explode(':', $facet['query']);
-                if ($facetKeyVal[0] == 'uid') {
-                    $documentId = (int) substr($facetKeyVal[1], 1, strpos($facetKeyVal[1], ')'));
+                for ($j=0; $j < count($facetKeyVal); $j++) {
+                    if (preg_match('/uid$/', $facetKeyVal[$j])) {
+                        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($facetKeyVal[$j+1])) {
+                            $documentId = (int) $facetKeyVal[$j+1];
+                        }
+                    }
                 }
             }
-            return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . $documentId . '" />';
+            if (!empty($documentId)) {
+                return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . $documentId . '" />';
+            }
         }
         return '';
     }
@@ -453,7 +460,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     !empty($this->piVars['id'])
                     && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
                 ) {
-                    $params['filterquery'][]['query'] = 'uid:(' . $this->piVars['id'] . ') OR partof:(' . $this->piVars['id'] . ')';
+                    // search in document and all children
+                    $params['filterquery'][]['query'] = '{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $this->piVars['id'];
                     $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
                 }
             }
