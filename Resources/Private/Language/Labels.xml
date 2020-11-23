@@ -151,6 +151,7 @@
             <label index="tx_dlf_mail">Email</label>
             <label index="tx_dlf_mail.mail">Address</label>
             <label index="tx_dlf_mail.name">Name</label>
+            <label index="tx_dlf_toolbox.fulltextontool">Fulltext</label>
             <label index="tx_dlf_toolbox.fulltexttool">Fulltext</label>
             <label index="tx_dlf_toolbox.annotationtool">IIIF Annotations</label>
             <label index="tx_dlf_toolbox.imagedownloadtool">Image Download</label>
@@ -334,6 +335,7 @@
             <label index="tx_dlf_mail">E-Mail</label>
             <label index="tx_dlf_mail.mail">Adresse</label>
             <label index="tx_dlf_mail.name">Name</label>
+            <label index="tx_dlf_toolbox.fulltextontool">Volltext</label>
             <label index="tx_dlf_toolbox.fulltexttool">Volltext</label>
             <label index="tx_dlf_toolbox.annotationtool">IIIF-Annotationen</label>
             <label index="tx_dlf_toolbox.imagedownloadtool">Bild-Download</label>

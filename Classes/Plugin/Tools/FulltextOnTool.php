@@ -15,17 +15,18 @@ namespace Kitodo\Dlf\Plugin\Tools;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Fulltext tool for the plugin 'Toolbox' of the 'dlf' extension
+ * Fulltext tool with always displayed text for the plugin 'Toolbox' of the 'dlf' extension
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
+class FulltextOnTool extends \Kitodo\Dlf\Common\AbstractPlugin
 {
-    public $scriptRelPath = 'Classes/Plugin/Tools/FulltextTool.php';
+    public $scriptRelPath = 'Classes/Plugin/Tools/FulltextOnTool.php';
 
     /**
      * The main method of the PlugIn
@@ -75,7 +76,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->getTemplate();
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
         if (!empty($fullTextFile)) {
-            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', '')) . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', '')) . '">&nbsp;</a>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<a id="tx-dlf-tools-fulltext" title="' . htmlspecialchars($this->pi_getLL('fulltext', '')) . '">' . htmlspecialchars($this->pi_getLL('fulltext', '')) . '</a>';
         } else {
             $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
         }

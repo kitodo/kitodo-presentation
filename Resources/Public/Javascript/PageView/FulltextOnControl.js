@@ -52,14 +52,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.url = fulltextUrl;
 
     /**
-     * @type {Object}
-     * @private
-     */
-    this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
-        dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext'};
-
-    /**
      * @type {ol.Feature|undefined}
      * @private
      */
@@ -238,35 +230,11 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         this)
     };
 
-    // add active / deactive behavior in case of click on control
+    // get anchor for activate fulltext
     var anchorEl = $('#tx-dlf-tools-fulltext');
-    if (anchorEl.length > 0){
-        var toogleFulltext = $.proxy(function(event) {
-            event.preventDefault();
 
-            if ($(event.target).hasClass('active')) {
-                this.deactivate();
-                return;
-            }
-
-            this.activate();
-        }, this);
-
-
-        anchorEl.on('click', toogleFulltext);
-        anchorEl.on('touchstart', toogleFulltext);
-    }
-
-    // set initial title of fulltext element
-    $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext-on'])
-        .attr('title', this.dic['fulltext-on']);
-
-    // if fulltext is activated via cookie than run activation methode
-    if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
-        // activate the fulltext behavior
-        this.activate(anchorEl);
-    }
+    // activate the fulltext behavior
+    this.activate(anchorEl);
 
 };
 
@@ -307,51 +275,6 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
 /**
  * Activate Fulltext Features
- */
-dlfViewerFullTextControl.prototype.deactivate = function() {
-
-    var controlEl = $('#tx-dlf-tools-fulltext');
-
-    // deactivate fulltext
-    this.disableFulltextSelect();
-    dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
-    $(controlEl).removeClass('active');
-
-    // trigger event
-    $(this).trigger("deactivate-fulltext", this);
-};
-
-/**
- * Disable Fulltext Features
- *
- * @return void
- */
-dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
-
-    // register event listeners
-    this.map.un('click', this.handlers_.mapClick);
-    this.map.un('pointermove', this.handlers_.mapHover);
-
-    // remove layers
-    for (var key in this.layers_) {
-        if (this.layers_.hasOwnProperty(key)) {
-            this.map.removeLayer(this.layers_[String(key)]);
-        }
-    };
-
-    var className = 'fulltext-visible';
-    $("#tx-dlf-tools-fulltext").removeClass(className)
-        .text(this.dic['fulltext-on'])
-        .attr('title', this.dic['fulltext-on']);
-
-    $('#tx-dlf-fulltextselection').removeClass(className);
-    $('#tx-dlf-fulltextselection').hide();
-    $('body').removeClass(className);
-
-};
-
-/**
- * Activate Fulltext Features
  * @param {Array.<ol.Feature>} textBlockFeatures
  * @þaram {Array.<ol.Feature>} textLineFeatures
  */
@@ -370,9 +293,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeat
 
     // show fulltext container
     var className = 'fulltext-visible';
-    $("#tx-dlf-tools-fulltext").addClass(className)
-      .text(this.dic['fulltext-off'])
-      .attr('title', this.dic['fulltext-off']);
+    $("#tx-dlf-tools-fulltext").addClass(className);
 
     $('#tx-dlf-fulltextselection').addClass(className);
     $('#tx-dlf-fulltextselection').show();
