@@ -75,8 +75,7 @@ class FulltextDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get text download.
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
         if (!empty($fullTextFile)) {
-            // TODO: add functionality for downloading txt file with fulltext
-            $markerArray['###FULLTEXT_DOWNLOAD###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', '')) . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', '')) . '">&nbsp;</a>';
+            $markerArray['###FULLTEXT_DOWNLOAD###'] = '<a href="#" id="tx-dlf-tools-fulltextdownload" title="' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '">' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '</a>';
         } else {
             $markerArray['###FULLTEXT_DOWNLOAD###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
         }

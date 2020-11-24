@@ -144,7 +144,7 @@ plugin.tx_dlf_fulltextdownloadtool = USER
 plugin.tx_dlf_fulltextdownloadtool {
     userFunc = Kitodo\Dlf\Plugin\Tools\FulltextDownloadTool->main
 }
-tt_content.list.20.dlf_imagedownloadtool < plugin.tx_dlf_imagedownloadtool
+tt_content.list.20.dlf_fulltextdownloadtool < plugin.tx_dlf_fulltextdownloadtool
 
 plugin.tx_dlf_imagedownloadtool = USER
 plugin.tx_dlf_imagedownloadtool {

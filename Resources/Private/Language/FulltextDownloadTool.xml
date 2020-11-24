@@ -15,10 +15,12 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="downloadCurrentPage">Current page (TXT)</label>
+            <label index="download-current-page">Current page (TXT)</label>
+            <label index="fulltext-not-available">No Fulltext available</label>
         </languageKey>
         <languageKey index="de" type="array">
-            <label index="downloadCurrentPage">Aktuelle Seite (TXT)</label>
+            <label index="download-current-page">Aktuelle Seite (TXT)</label>
+            <label index="fulltext-not-available">Keine Volltexte vorhanden</label>
         </languageKey>
     </data>
 </T3locallang>

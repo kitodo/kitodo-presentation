@@ -875,3 +875,39 @@ dlfUtils.searchFeatureCollectionForText = function (featureCollection, text) {
     });
     return features.length > 0 ? features : undefined;
 };
+
+/**
+ * Method fetches the fulltext data from the server
+ * @param {string} url
+ * @param {Object} image
+ * @param {number=} optOffset
+ * @return {ol.Feature|undefined}
+ * @static
+ */
+dlfUtils.fetchFulltextDataFromServer = function(url, image, optOffset) {
+    // fetch data from server
+    var request = $.ajax({
+        url,
+        async: false
+    });
+
+    var fulltextCoordinates = dlfUtils.parseAltoData(request, image, optOffset);
+
+    return fulltextCoordinates.length > 0 ? fulltextCoordinates[0] : undefined;
+};
+
+/**
+ * Method parses ALTO data from request response
+ * @param {string} url
+ * @param {Object} image
+ * @param {number=} optOffset
+ * @return {Array.<ol.Feature>}
+ * @static
+ */
+dlfUtils.parseAltoData = function(request, image, optOffset) {
+    var offset = this.exists(optOffset) ? optOffset : undefined,
+      parser = new dlfAltoParser(image, undefined, undefined, offset);
+
+      return request.responseXML ? parser.parseFeatures(request.responseXML) :
+            request.responseText ? parser.parseFeatures(request.responseText) : [];
+};
