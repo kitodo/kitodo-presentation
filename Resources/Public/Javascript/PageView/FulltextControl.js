@@ -226,7 +226,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
                         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
                             targetElem.addClass('highlight');
-                            $('#tx-dlf-fulltextselection').scrollTo(targetElem, 50);
+                            setTimeout(this.scrollToText, 1000, targetElem);
                             hoverSourceTextline_.addFeature(textlineFeature);
                         }
 
@@ -268,6 +268,18 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         this.activate(anchorEl);
     }
 
+};
+
+/**
+ * Check if full text element is highlighted
+ * @param {any} element 
+ */
+dlfViewerFullTextControl.prototype.scrollToText = function(element) {
+    if (element.hasClass('highlight')) {
+        $('html, body').animate({
+            scrollTop: element.offset().top
+        }, 500);
+    }
 };
 
 /**
