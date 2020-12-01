@@ -247,8 +247,6 @@ class Solr
         $solrInfo['password'] = $conf['solrPass'];
         // Set port if not set.
         $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
-        // Append core name to path.
-        $solrInfo['path'] = trim($conf['solrPath'], '/');
         // Timeout
         $solrInfo['timeout'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, intval(ini_get('max_execution_time')), 10);
         return $solrInfo;
@@ -276,7 +274,7 @@ class Solr
             $host = $solrInfo['host'];
         }
         // Return entire request URL.
-        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/' . $core;
+        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/solr/' . $core;
     }
 
     /**
@@ -578,8 +576,10 @@ class Solr
                     'scheme' => $solrInfo['scheme'],
                     'host' => $solrInfo['host'],
                     'port' => $solrInfo['port'],
-                    'path' => '/' . $solrInfo['path'] . '/',
+                    'path' => '/',
                     'core' => $core,
+                    // For Solr Cloud you need to provide a collection instead of core:
+                    // 'collection' => $core
                     'username' => $solrInfo['username'],
                     'password' => $solrInfo['password'],
                     'timeout' => $solrInfo['timeout']

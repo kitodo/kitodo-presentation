@@ -192,7 +192,7 @@
             <label index="config.solrHttps">Use https: (default is "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
             <label index="config.solrPort">Solr Server Port: (default is "8983")</label>
-            <label index="config.solrPath">Solr Server Path: (default is "/solr/")</label>
+            <label index="config.solrPath">Solr Server Path: (default is "/")</label>
             <label index="config.solrUser">Solr Server User: (default is "")</label>
             <label index="config.solrPass">Solr Server Password: (default is "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (default is "10")</label>
@@ -375,7 +375,7 @@
             <label index="config.solrHttps">Https verwenden: (Standard ist "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
             <label index="config.solrPort">Solr Server Port: (Standard ist "8983")</label>
-            <label index="config.solrPath">Solr Server Pfad: (Standard ist "/solr/")</label>
+            <label index="config.solrPath">Solr Server Pfad: (Standard ist "/")</label>
             <label index="config.solrUser">Solr Server Benutzername: (Standard ist "")</label>
             <label index="config.solrPass">Solr Server Kennwort: (Standard ist "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (Standard ist "10")</label>
