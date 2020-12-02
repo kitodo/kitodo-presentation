@@ -63,7 +63,9 @@ class SearchInDocument
             $hl = $query->getHighlighting();
             $hl->setFields([$fields['fulltext']]);
             $hl->setUseFastVectorHighlighter(true);
+            var_dump($query);
             $results = $solr->service->select($query);
+            var_dump($results);
             $output['numFound'] = $results->getNumFound();
             $highlighting = $results->getHighlighting();
             foreach ($results as $result) {

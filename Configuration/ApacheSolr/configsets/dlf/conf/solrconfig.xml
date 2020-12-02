@@ -83,6 +83,8 @@
 
   <lib dir="${solr.install.dir:../../../..}/contrib/velocity/lib" regex=".*\.jar" />
   <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-velocity-\d.*\.jar" />
+
+  <lib dir="${solr.install.dir:../../../..}/contrib/ocrsearch/lib" regex=".*\.jar" />
   <!-- an exact 'path' can be used instead of a 'dir' to specify a
        specific jar file.  This will cause a serious error to be logged
        if it can't be loaded.
@@ -752,6 +754,21 @@
          <str>nameOfCustomComponent2</str>
        </arr>
       -->
+  </requestHandler>
+
+  <!--
+    Instruct the request handlers you want to enable OCR highlighting for to include the
+    search component you defined above. This example uses the standard /select handler.
+
+    CAUTION: Make sure that the OCR highlight component is listed **before** the standard
+    highlighting component, but **after** the query component.
+  -->
+  <requestHandler name="/select" class="solr.SearchHandler">
+      <arr name="components">
+          <str>query</str>
+          <str>ocrHighlight</str>
+          <str>highlight</str>
+      </arr>
   </requestHandler>
 
   <!-- A request handler that returns indented JSON by default -->

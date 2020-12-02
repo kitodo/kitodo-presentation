@@ -39,8 +39,14 @@ limitations under the License.
                 <filter class="solr.LowerCaseFilterFactory" />
             </analyzer>
         </fieldType>
-        <fieldType name="fulltext" class="solr.TextField" positionIncrementGap="100">
+        <fieldType name="text_ocr" class="solr.TextField" storeOffsetsWithPositions="true" termVectors="true">
+            <!-- TODO: check why some filters are outcommented -->
             <analyzer type="index">
+                <!-- For loading external files as field values during indexing -->
+                <charFilter class="de.digitalcollections.solrocr.lucene.filters.ExternalUtf8ContentFilterFactory" />
+                <!-- For converting OCR to plaintext -->
+                <charFilter class="de.digitalcollections.solrocr.lucene.filters.OcrCharFilterFactory" />
+                
                 <charFilter class="solr.HTMLStripCharFilterFactory" />
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.FlattenGraphFilterFactory" />
@@ -55,6 +61,9 @@ limitations under the License.
                 <filter class="solr.RemoveDuplicatesTokenFilterFactory" />
                 <!-- <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replacement="" replace="all" /> -->
             </analyzer>
+            <!-- query analysis chain, should not include the character filters for highlighting -->
+            <!-- TODO: which filters here are the character filters? -->
+            <!-- TODO: check why some filters are outcommented -->
             <analyzer type="query">
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true" />
@@ -127,7 +136,7 @@ limitations under the License.
         <!-- Autocomplete field for search form. -->
         <field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
         <!-- Fulltext field for OCR results. -->
-        <field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" termVectors="true" termPositions="true" termOffsets="true" />
+        <field name="fulltext" type="text_ocr" indexed="true" stored="true" multiValued="false" default="" termVectors="true" termPositions="true" termOffsets="true" />
         <!-- Record ID of the document (required for OAI_DC output). -->
         <field name="record_id" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
         <!-- Permanent URL of the document (required for EPICUR output). -->
