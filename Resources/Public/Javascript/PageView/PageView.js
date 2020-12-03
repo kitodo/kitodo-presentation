@@ -157,7 +157,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
 
     // Adds fulltext behavior only if there is fulltext available and no double page
     // behavior is active
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length === 1) {
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0].length !== 0 && this.fulltexts[0].url !== '' && this.images.length === 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
     } else {
         $('#tx-dlf-tools-fulltext').remove();
