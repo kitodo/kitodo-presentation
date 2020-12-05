@@ -160,6 +160,7 @@ class HarvestCommand extends Command
                         $queryBuilder->createNamedParameter((int) $input->getOption('lib'), Connection::PARAM_INT)
                     )
                 )
+                ->setMaxResults(1)
                 ->execute();
 
             $record = $result->fetch();
