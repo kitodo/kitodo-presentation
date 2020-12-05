@@ -234,7 +234,7 @@ class HarvestCommand extends Command
                         $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                     }
                     // ...and save it to the database...
-                    if (!$doc->save($startingPoint, $solrCoreUid)) {
+                    if (!$doc->save($startingPoint, $solrCoreUid, (int) $input->getOption('lib'))) {
                         $io->error('ERROR: Document "' . $doc->location . '" not saved and indexed.');
                     }
                 }
