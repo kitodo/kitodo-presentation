@@ -73,19 +73,19 @@ class HarvestCommand extends Command
             ->addOption(
                 'from',
                 null,
-                InputOption::VALUE_NONE,
+                InputOption::VALUE_OPTIONAL,
                 'Datestamp (YYYY-MM-DD) to begin harvesting from.'
             )
             ->addOption(
                 'until',
                 null,
-                InputOption::VALUE_NONE,
+                InputOption::VALUE_OPTIONAL,
                 'Datestamp (YYYY-MM-DD) to end harvesting on.'
             )
             ->addOption(
                 'set',
                 null,
-                InputOption::VALUE_NONE,
+                InputOption::VALUE_OPTIONAL,
                 'Name of the set to limit harvesting to.'
             );
     }

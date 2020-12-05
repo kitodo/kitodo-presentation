@@ -71,7 +71,7 @@ class ReindexCommand extends Command
             ->addOption(
                 'owner',
                 'o',
-                InputOption::VALUE_NONE,
+                InputOption::VALUE_OPTIONAL,
                 '[UID|index_name] of the Library which should be set as owner of the documents.'
             )
             ->addOption(
