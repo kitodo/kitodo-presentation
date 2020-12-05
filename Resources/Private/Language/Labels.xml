@@ -135,7 +135,7 @@
             <label index="tx_dlf_libraries.contact">Contact</label>
             <label index="tx_dlf_libraries.image">Logo</label>
             <label index="tx_dlf_libraries.oai_label">Open Archives Interface (OAI) Label</label>
-            <label index="tx_dlf_libraries.oai_base">Open Archives Interface (OAI) Plugin Page</label>
+            <label index="tx_dlf_libraries.oai_base">Open Archives Interface (OAI) Base URL</label>
             <label index="tx_dlf_libraries.opac_label">Online Public Access Catalog (OPAC) Label</label>
             <label index="tx_dlf_libraries.opac_base">Online Public Access Catalog (OPAC) Base URL</label>
             <label index="tx_dlf_libraries.union_label">Union Catalog Label</label>
@@ -320,7 +320,7 @@
             <label index="tx_dlf_libraries.contact">Kontakt</label>
             <label index="tx_dlf_libraries.image">Logo</label>
             <label index="tx_dlf_libraries.oai_label">Open Archives Interface (OAI) Bezeichnung</label>
-            <label index="tx_dlf_libraries.oai_base">Open Archives Interface (OAI) Plugin</label>
+            <label index="tx_dlf_libraries.oai_base">Open Archives Interface (OAI) URL</label>
             <label index="tx_dlf_libraries.opac_label">Online Public Access Catalog (OPAC) Bezeichnung</label>
             <label index="tx_dlf_libraries.opac_base">Online Public Access Catalog (OPAC) URL</label>
             <label index="tx_dlf_libraries.union_label">Verbundkatalog Bezeichnung</label>
