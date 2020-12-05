@@ -142,10 +142,10 @@ class IndexCommand extends Command
         $doc = Document::getInstance($input->getOption('doc'), $startingPoint, true);
         if ($doc->ready) {
             if ($dryRun) {
-                $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
             } else {
                 if ($io->isVerbose()) {
-                    $io->section('Indexing ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                    $io->section('Indexing ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 // ...and save it to the database...
                 if (!$doc->save($startingPoint, $solrCoreUid)) {
