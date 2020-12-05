@@ -385,7 +385,7 @@ return [
                 'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0) ORDER BY tx_dlf_collections.label',
                 'size' => 5,
                 'autoSizeMax' => 15,
-                'minitems' => 1,
+                'minitems' => 0,
                 'maxitems' => 1024,
                 'MM' => 'tx_dlf_relations',
                 'MM_match_fields' => [
