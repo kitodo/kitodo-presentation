@@ -34,6 +34,7 @@
     "ext-simplexml": "*",
     "typo3/cms-core": "~8.7.32|~9.5.17",
     "typo3/cms-tstemplate": "~8.7.32|~9.5.17",
+    "caseyamcl/phpoaipmh": "^3.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
     "solarium/solarium": "^5.2"
   },
