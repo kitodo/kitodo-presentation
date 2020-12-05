@@ -67,6 +67,12 @@ class IndexCommand extends Command
                 's',
                 InputOption::VALUE_REQUIRED,
                 '[UID|index_name] of the Solr core the document should be added to.'
+            )
+            ->addOption(
+                'owner',
+                'o',
+                InputOption::VALUE_NONE,
+                '[UID|index_name] of the Library which should be set as owner of the document.'
             );
     }
 
@@ -138,6 +144,16 @@ class IndexCommand extends Command
             exit(1);
         }
 
+        if (!empty($input->getOption('owner'))) {
+            if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
+                $owner = MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1);
+            } else {
+                $owner = (string) $input->getOption('owner');
+            }
+        } else {
+            $owner = null;
+        }
+
         // Get the document...
         $doc = Document::getInstance($input->getOption('doc'), $startingPoint, true);
         if ($doc->ready) {
@@ -148,7 +164,7 @@ class IndexCommand extends Command
                     $io->section('Indexing ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 // ...and save it to the database...
-                if (!$doc->save($startingPoint, $solrCoreUid)) {
+                if (!$doc->save($startingPoint, $solrCoreUid, $owner)) {
                     $io->error('ERROR: Document "' . $input->getOption('doc') . '" not saved and indexed.');
                     exit(1);
                 }
