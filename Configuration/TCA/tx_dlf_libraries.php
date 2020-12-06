@@ -99,7 +99,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'null,required',
+                'eval' => 'null',
                 'default' => null,
                 'mode' => 'useOrOverridePlaceholder',
                 'placeholder' => '__row|index_name',
