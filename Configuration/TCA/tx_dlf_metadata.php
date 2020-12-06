@@ -103,6 +103,20 @@ return [
                 'default' => '',
             ],
         ],
+        'index_name_edit' => [
+            'exclude' => 1,
+            'l10n_mode' => 'exclude',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.index_name',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'null,required',
+                'default' => null,
+                'mode' => 'useOrOverridePlaceholder',
+                'placeholder' => '__row|index_name',
+            ],
+        ],
         'format' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
@@ -252,6 +266,6 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab1,label,--palette--;;1,format,default_value,wrap,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab3,hidden,status'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'index_name, --linebreak--, index_tokenized, index_stored, index_indexed, index_boost, --linebreak--, is_sortable, is_facet, is_listed, index_autocomplete', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'index_name_edit, --linebreak--, index_tokenized, index_stored, index_indexed, index_boost, --linebreak--, is_sortable, is_facet, is_listed, index_autocomplete', 'canNotCollapse' => 1],
     ],
 ];

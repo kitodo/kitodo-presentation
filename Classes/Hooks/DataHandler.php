@@ -31,6 +31,35 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class DataHandler
 {
     /**
+     * Field pre-processing hook for the process_datamap() method.
+     *
+     * @access public
+     *
+     * @param array &$fieldArray: Array of field values
+     * @param string $table: The destination table
+     * @param int $id: The uid of the record
+     *
+     * @return void
+     */
+    public function processDatamap_preProcessFieldArray(&$fieldArray, $table, $id)
+    {
+        switch ($table) {
+                // Field pre-processing for tables "tx_dlf_collections", "tx_dlf_libraries", "tx_dlf_metadata" and "tx_dlf_structures".
+            case 'tx_dlf_collections':
+            case 'tx_dlf_libraries':
+            case 'tx_dlf_metadata':
+            case 'tx_dlf_structures':
+                // Set index name if explicitly edited.
+                if (!empty($fieldArray['index_name_edit'])) {
+                    $fieldArray['index_name'] = $fieldArray['index_name_edit'];
+                }
+                // Remove edit-field from field array since it's no database field.
+                unset($fieldArray['index_name_edit']);
+                break;
+        }
+    }
+
+    /**
      * Field post-processing hook for the process_datamap() method.
      *
      * @access public
@@ -196,32 +225,6 @@ class DataHandler
                             // Reset indexing to current.
                             $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
-                    }
-                    // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
-                case 'tx_dlf_structures':
-                    // The index name should not be changed in production.
-                    if (isset($fieldArray['index_name'])) {
-                        if (count($fieldArray) < 2) {
-                            // Unset the whole field array.
-                            $fieldArray = [];
-                        } else {
-                            // Get current index name.
-                            $result = $queryBuilder
-                                ->select($table . '.index_autocomplete AS index_autocomplete')
-                                ->from($table)
-                                ->where(
-                                    $queryBuilder->expr()->eq($table . '.uid', intval($id)),
-                                    Helper::whereExpression($table)
-                                )
-                                ->setMaxResults(1)
-                                ->execute();
-
-                            if ($resArray = $result->fetch()) {
-                                // Reset indexing to current.
-                                $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
-                            }
-                        }
-                        Helper::devLog('Prevented change of index_name for UID ' . $id . ' in table "' . $table . '"', DEVLOG_SEVERITY_NOTICE);
                     }
                     break;
             }

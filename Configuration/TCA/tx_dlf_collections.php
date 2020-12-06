@@ -127,6 +127,20 @@ return [
                 'default' => '',
             ],
         ],
+        'index_name_edit' => [
+            'exclude' => 1,
+            'l10n_mode' => 'exclude',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.index_name',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'null,required',
+                'default' => null,
+                'mode' => 'useOrOverridePlaceholder',
+                'placeholder' => '__row|index_name',
+            ],
+        ],
         'index_search' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
@@ -289,7 +303,7 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab1,label,--palette--;;1,description,--palette--;;2,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab3,hidden,fe_group,status,owner,fe_cruser_id,--palette--;;3'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'index_name, --linebreak--, index_search, --linebreak--, oai_name', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'index_name_edit, --linebreak--, index_search, --linebreak--, oai_name', 'canNotCollapse' => 1],
         '2' => ['showitem' => 'thumbnail, priority', 'canNotCollapse' => 1],
         '3' => ['showitem' => 'fe_admin_lock', 'canNotCollapse' => 1],
     ],
