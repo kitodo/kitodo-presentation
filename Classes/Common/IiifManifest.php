@@ -785,7 +785,7 @@ final class IiifManifest extends Document
      *
      * @see Document::getParentDocumentUidForSaving()
      */
-    protected function getParentDocumentUidForSaving($pid, $core)
+    protected function getParentDocumentUidForSaving($pid, $core, $owner)
     {
         // Do nothing.
     }

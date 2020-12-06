@@ -1164,7 +1164,7 @@ abstract class Document
         }
         $metadata['owner'][0] = $owner;
         // Get UID of parent document.
-        $partof = $this->getParentDocumentUidForSaving($pid, $core);
+        $partof = $this->getParentDocumentUidForSaving($pid, $core, $owner);
         // Use the date of publication or title as alternative sorting metric for parts of multi-part works.
         if (!empty($partof)) {
             if (
@@ -1299,7 +1299,7 @@ abstract class Document
      *
      * @return int The parent document's id.
      */
-    protected abstract function getParentDocumentUidForSaving($pid, $core);
+    protected abstract function getParentDocumentUidForSaving($pid, $core, $owner);
 
     /**
      * This returns $this->hasFulltext via __get()

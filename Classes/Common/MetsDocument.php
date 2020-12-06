@@ -732,7 +732,7 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see Document::getParentDocumentUid()
      */
-    protected function getParentDocumentUidForSaving($pid, $core)
+    protected function getParentDocumentUidForSaving($pid, $core, $owner)
     {
         $partof = 0;
         // Get the closest ancestor of the current document which has a MPTR child.
@@ -743,7 +743,7 @@ final class MetsDocument extends Document
                 $parentDoc = self::getInstance($parentLocation, $pid);
                 if ($parentDoc->ready) {
                     if ($parentDoc->pid != $pid) {
-                        $parentDoc->save($pid, $core);
+                        $parentDoc->save($pid, $core, $owner);
                     }
                     $partof = $parentDoc->uid;
                 }
