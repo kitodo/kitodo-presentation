@@ -49,7 +49,7 @@ class DataHandler
             case 'tx_dlf_libraries':
             case 'tx_dlf_metadata':
             case 'tx_dlf_structures':
-                // Set index name if explicitly edited.
+                // Set index name only if explicitly edited.
                 if (!empty($fieldArray['index_name_edit'])) {
                     $fieldArray['index_name'] = $fieldArray['index_name_edit'];
                 }
@@ -121,12 +121,12 @@ class DataHandler
                     // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
                     $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                        ->getQueryBuilderForTable('tx_dlf_solrcores');
+                        ->getQueryBuilderForTable($table);
 
                     // Get number of existing cores.
                     $result = $queryBuilder
                         ->select('*')
-                        ->from('tx_dlf_solrcores')
+                        ->from($table)
                         ->execute();
 
                     // Get first unused core number.
@@ -170,12 +170,12 @@ class DataHandler
                     break;
             }
         } elseif ($status == 'update') {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable($table);
-
             switch ($table) {
                     // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                        ->getQueryBuilderForTable($table);
+
                     // Store field in index if it should appear in lists.
                     if (!empty($fieldArray['is_listed'])) {
                         $fieldArray['index_stored'] = 1;

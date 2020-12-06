@@ -84,11 +84,12 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.index_name',
             'config' => [
-                'type' => 'none',
+                'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,uniqueInPid',
                 'default' => '',
+                'readOnly' => true,
             ],
         ],
         'index_name_edit' => [

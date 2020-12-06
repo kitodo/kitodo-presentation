@@ -101,6 +101,7 @@ return [
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,uniqueInPid',
                 'default' => '',
+                'readOnly' => true,
             ],
         ],
         'index_name_edit' => [
