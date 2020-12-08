@@ -194,8 +194,8 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                 //
                 // Handle TextLine elements
                 //
-                var activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextline_),
-                    isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextBlockEl_, textlineFeature);
+                activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextline_);
+                isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextBlockEl_, textlineFeature);
 
                 if (!isFeatureEqualToOldHoverFeature_) {
 
