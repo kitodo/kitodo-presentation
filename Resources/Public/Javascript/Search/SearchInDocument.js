@@ -74,22 +74,22 @@ $(document).ready(function() {
               } else {
                   for (var i=0; i < data.response.docs.length; i++) {
 
-                      // Take the workview base_url from the form action.
-                      // link_action may be in the following form
+                      // Take the workview baseUrl from the form action.
+                      // The URL may be in the following form
                       // - http://example.com/index.php?id=14
                       // - http://example.com/workview (using slug on page with uid=14)
-                      var base_url = $("form#tx-dlf-search-in-document-form").attr('action');
+                      var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
 
-                      if (base_url.indexOf('?')>0) {
-                        base_url += '&';
+                      if (baseUrl.indexOf('?')>0) {
+                        baseUrl += '&';
                       } else {
-                        base_url += '?';
+                        baseUrl += '?';
                       }
 
                       var searchHit = data.highlighting[data.response.docs[i].id].fulltext.toString();
                       searchHit = searchHit.substring(searchHit.indexOf('<em>')+4,searchHit.indexOf('</em>'));
 
-                      var newlink = base_url
+                      var newlink = baseUrl
                       + 'tx_dlf[id]=' + data.response.docs[i].uid
                       + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchHit)
                       + '&tx_dlf[page]=' + data.response.docs[i].page;
