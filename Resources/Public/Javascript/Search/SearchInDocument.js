@@ -74,22 +74,22 @@ $(document).ready(function() {
               } else {
                   for (var i=0; i < data.response.docs.length; i++) {
 
-                      var link_current = $(location).attr('href');
-                      var link_base = link_current.substring(0, link_current.indexOf('?'));
-                      var link_params = link_current.substring(link_base.length + 1, link_current.length);
-                      var link_id = link_params.match(/id=(\d)*/g);
+                      // Take the workview base_url from the form action.
+                      // link_action may be in the following form
+                      // - http://example.com/index.php?id=14
+                      // - http://example.com/workview (using slug on page with uid=14)
+                      var base_url = $("form#tx-dlf-search-in-document-form").attr('action');
 
-                      if (link_id) {
-                        link_params = link_id + '&';
+                      if (base_url.indexOf('?')>0) {
+                        base_url += '&';
                       } else {
-                        link_params = '&';
+                        base_url += '?';
                       }
 
                       var searchHit = data.highlighting[data.response.docs[i].id].fulltext.toString();
                       searchHit = searchHit.substring(searchHit.indexOf('<em>')+4,searchHit.indexOf('</em>'));
 
-                      var newlink = link_base + '?' + (link_params
-                      + 'tx_dlf[id]=' + data.response.docs[i].uid
+                      var newlink = base_url + ('tx_dlf[id]=' + data.response.docs[i].uid
                       + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchHit)
                       + '&tx_dlf[page]=' + (data.response.docs[i].page));
 
