@@ -358,10 +358,8 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
 /**
  * Activate Fulltext Features
- * @param {Array.<ol.Feature>} textBlockFeatures
- * @þaram {Array.<ol.Feature>} textLineFeatures
  */
-dlfViewerFullTextControl.prototype.enableFulltextSelect = function(textBlockFeatures, textLineFeatures) {
+dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
 
     // register event listeners
     this.map.on('click', this.handlers_.mapClick);
