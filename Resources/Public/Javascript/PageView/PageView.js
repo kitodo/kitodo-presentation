@@ -327,14 +327,14 @@ dlfViewer.prototype.displayHighlightWord = function() {
     if (urlParams !== undefined && urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
         var value = urlParams[key],
             values = value.split(';'),
-            fulltextData = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[0].url, this.images[0]),
+            fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
 
         // check if there is another image / fulltext to look for
         if (this.images.length === 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
-            fulltextDataImageTwo = dlfViewerFullTextControl.fetchFulltextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width);
+            fulltextDataImageTwo = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width);
         }
 
         var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
