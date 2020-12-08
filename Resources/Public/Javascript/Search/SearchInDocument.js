@@ -89,9 +89,10 @@ $(document).ready(function() {
                       var searchHit = data.highlighting[data.response.docs[i].id].fulltext.toString();
                       searchHit = searchHit.substring(searchHit.indexOf('<em>')+4,searchHit.indexOf('</em>'));
 
-                      var newlink = base_url + ('tx_dlf[id]=' + data.response.docs[i].uid
+                      var newlink = base_url
+                      + 'tx_dlf[id]=' + data.response.docs[i].uid
                       + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchHit)
-                      + '&tx_dlf[page]=' + (data.response.docs[i].page));
+                      + '&tx_dlf[page]=' + data.response.docs[i].page;
 
                       if (data.highlighting[data.response.docs[i].id].fulltext) {
                           resultItems[data.response.docs[i].page] = '<span class="structure">' + $('#tx-dlf-search-in-document-label-page').text() + ' ' + data.response.docs[i].page + '</span><br /><span ="textsnippet"><a href=\"' + newlink + '\">' + data.highlighting[data.response.docs[i].id].fulltext + '</a></span>';
