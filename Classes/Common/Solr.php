@@ -274,7 +274,7 @@ class Solr
             $host = $solrInfo['host'];
         }
         // Return entire request URL.
-        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/solr/' . $core;
+        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/' . $core;
     }
 
     /**
