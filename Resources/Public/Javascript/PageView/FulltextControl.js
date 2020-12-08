@@ -384,7 +384,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
 };
 
 /**
- * Activate Fulltext Features
+ * Show full text
  *
  * @param {Array.<ol.Feature>|undefined} features
  */
@@ -392,29 +392,37 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
 
     if (features !== undefined) {
         $('#tx-dlf-fulltextselection').children().remove();
-        for (var i = 0; i < features.length; i++) {
-            var textlines = features[i].get('textlines');
-            for (var j = 0; j < textlines.length; j++) {
-                var textLineSpan = $('<span class="textline" id="' + textlines[j].getId() + '">');
-                var content = textlines[j].get('content');
-
-                for (var k = 0; k < content.length; k++) {
-                    var span = $('<span class="' + content[k].get('type') + '" id="' + content[k].getId() + '"/>');
-                    var spanText = content[k].get('fulltext');
-                    var spanTextLines = spanText.split(/\n/g);
-                    for (var l = 0; l < spanTextLines.length; l++) {
-                        span.append(document.createTextNode(spanTextLines[l]));
-                        if (l < spanTextLines.length - 1) {
-                            span.append($('<br />'));
-                        }
-                    }
-                    textLineSpan.append(span);
-                }
-                $('#tx-dlf-fulltextselection').append(textLineSpan);
+        for (feature of features) {
+            var textLines = feature.get('textlines');
+            for (textLine of textLines) {
+                this.appendTextLineSpan(textLine);
             }
             $('#tx-dlf-fulltextselection').append('<br /><br />');
         }
+    }
+};
 
+/**
+ * Append text line span
+ *
+ * @param {Object} textLine
+ */
+dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
+    var textLineSpan = $('<span class="textline" id="' + textLine.getId() + '">');
+    var content = textLine.get('content');
+    
+    for (item of content) {
+        var span = $('<span class="' + item.get('type') + '" id="' + item.getId() + '"/>');
+        var spanText = item.get('fulltext');
+        var spanTextLines = spanText.split(/\n/g);
+        for (const [i, spanTextLine] of spanTextLines.entries()) {
+            span.append(document.createTextNode(spanTextLine));
+            if (i < spanTextLines.length - 1) {
+                span.append($('<br />'));
+            }
+        }
+        textLineSpan.append(span);
     }
 
+    $('#tx-dlf-fulltextselection').append(textLineSpan);
 };
