@@ -578,7 +578,7 @@ class Solr
                     'scheme' => $solrInfo['scheme'],
                     'host' => $solrInfo['host'],
                     'port' => $solrInfo['port'],
-                    'path' => '/' . $solrInfo['path'],
+                    'path' => '/' . $solrInfo['path'] . '/',
                     'core' => $core,
                     'username' => $solrInfo['username'],
                     'password' => $solrInfo['password'],
