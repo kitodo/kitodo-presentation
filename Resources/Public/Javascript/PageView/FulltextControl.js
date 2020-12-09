@@ -171,63 +171,8 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                     }
                 });
 
-                //
-                // Handle TextBlock elements
-                //
-                var activeSelectTextBlockEl_ = dlfFullTextUtils.getFeature(selectSource_),
-                    activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextblock_),
-                    isFeatureEqualSelectFeature_ = dlfFullTextUtils.isFeatureEqual(activeSelectTextBlockEl_, textblockFeature),
-                    isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextBlockEl_);
-
-                if (!isFeatureEqualToOldHoverFeature_ && !isFeatureEqualSelectFeature_) {
-
-                    // remove old textblock hover features
-                    hoverSourceTextblock_.clear();
-
-                    if (textblockFeature) {
-                        // add textblock feature to hover
-                        hoverSourceTextblock_.addFeature(textblockFeature);
-                    }
-
-                }
-
-                //
-                // Handle TextLine elements
-                //
-                activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextline_);
-                isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextBlockEl_, textlineFeature);
-
-                if (!isFeatureEqualToOldHoverFeature_) {
-
-                    if (activeHoverTextBlockEl_) {
-
-                        // remove highlight effect on fulltext view
-                        var oldTargetElem = $('#' + activeHoverTextBlockEl_.getId());
-
-                        if (oldTargetElem.hasClass('highlight') ) {
-                            oldTargetElem.removeClass('highlight');
-                        }
-
-                        // remove old textline hover features
-                        hoverSourceTextline_.clear();
-
-                    }
-
-                    if (textlineFeature) {
-
-                        // add highlight effect to fulltext view
-                        var targetElem = $('#' + textlineFeature.getId());
-
-                        if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
-                            targetElem.addClass('highlight');
-                            setTimeout(this.scrollToText, 1000, targetElem);
-                            hoverSourceTextline_.addFeature(textlineFeature);
-                        }
-
-                    }
-
-                }
-
+                this.handleTextBlockElements(textblockFeature, selectSource_, hoverSourceTextblock_);
+                this.handleTextLineElements(textlineFeature, hoverSourceTextline_);
             },
         this)
     };
@@ -262,6 +207,79 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         this.activate(anchorEl);
     }
 
+};
+
+/**
+ * Handle TextBlock elements
+ * @param {ol.Feature|undefined} textblockFeature
+ * @param {ol.Feature|undefined} selectSource_
+ * @param {any} hoverSourceTextblock_
+ */
+dlfViewerFullTextControl.prototype.handleTextBlockElements = function(textblockFeature, selectSource_, hoverSourceTextblock_) {
+    var activeSelectTextBlockEl_ = dlfFullTextUtils.getFeature(selectSource_),
+        activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextblock_),
+        isFeatureEqualSelectFeature_ = dlfFullTextUtils.isFeatureEqual(activeSelectTextBlockEl_, textblockFeature),
+        isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextBlockEl_);
+
+    if (!isFeatureEqualToOldHoverFeature_ && !isFeatureEqualSelectFeature_) {
+        // remove old textblock hover features
+        hoverSourceTextblock_.clear();
+
+        if (textblockFeature) {
+            // add textblock feature to hover
+            hoverSourceTextblock_.addFeature(textblockFeature);
+        }
+    }
+};
+
+/**
+ * Handle TextLine elements
+ * @param {ol.Feature|undefined} textlineFeature
+ * @param {any} hoverSourceTextline_
+ */
+dlfViewerFullTextControl.prototype.handleTextLineElements = function(textlineFeature, hoverSourceTextline_) {
+    var activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextline_);
+        isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextBlockEl_, textlineFeature);
+
+    if (!isFeatureEqualToOldHoverFeature_) {
+        this.removeHighlightEffect(activeHoverTextBlockEl_, hoverSourceTextline_);
+        this.addHighlightEffect(textlineFeature, hoverSourceTextline_);
+    }
+};
+
+/**
+ * Remove highlight effect from full text view
+ * @param {ol.Feature|undefined} activeHoverTextBlockEl_
+ * @param {any} hoverSourceTextline_
+ */
+dlfViewerFullTextControl.prototype.removeHighlightEffect = function(activeHoverTextBlockEl_, hoverSourceTextline_) {
+    if (activeHoverTextBlockEl_) {
+        var oldTargetElem = $('#' + activeHoverTextBlockEl_.getId());
+
+        if (oldTargetElem.hasClass('highlight') ) {
+            oldTargetElem.removeClass('highlight');
+        }
+
+        // remove old textline hover features
+        hoverSourceTextline_.clear();
+    }
+};
+
+/**
+ * Add highlight effect from full text view
+ * @param {ol.Feature|undefined} textlineFeature
+ * @param {any} hoverSourceTextline_ 
+ */
+dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature, hoverSourceTextline_) {
+    if (textlineFeature) {
+        var targetElem = $('#' + textlineFeature.getId());
+        
+        if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
+            targetElem.addClass('highlight');
+            setTimeout(this.scrollToText, 1000, targetElem);
+            hoverSourceTextline_.addFeature(textlineFeature);
+        }
+    }
 };
 
 /**
@@ -343,7 +361,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
         if (this.layers_.hasOwnProperty(key)) {
             this.map.removeLayer(this.layers_[String(key)]);
         }
-    };
+    }
 
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").removeClass(className)
