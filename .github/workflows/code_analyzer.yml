@@ -1,9 +1,12 @@
-name: Static Code Analyzing
+name: Static Code Analyzing and Security Scanning
 
 on:
-  # Trigger analysis when pushing in stable branches
+  # Trigger analysis when pushing in stable branches (which includes merging pull requests)
   push:
     branches: [master, 2.x]
+  # Trigger analysis when a new release is drafted
+  release:
+    type: [created, edited]
 
 jobs:
   sonarcloud:
