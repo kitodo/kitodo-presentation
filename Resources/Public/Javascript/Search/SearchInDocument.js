@@ -74,24 +74,25 @@ $(document).ready(function() {
               } else {
                   for (var i=0; i < data.response.docs.length; i++) {
 
-                      var link_current = $(location).attr('href');
-                      var link_base = link_current.substring(0, link_current.indexOf('?'));
-                      var link_params = link_current.substring(link_base.length + 1, link_current.length);
-                      var link_id = link_params.match(/id=(\d)*/g);
+                      // Take the workview baseUrl from the form action.
+                      // The URL may be in the following form
+                      // - http://example.com/index.php?id=14
+                      // - http://example.com/workview (using slug on page with uid=14)
+                      var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
 
-                      if (link_id) {
-                        link_params = link_id + '&';
+                      if (baseUrl.indexOf('?')>0) {
+                        baseUrl += '&';
                       } else {
-                        link_params = '&';
+                        baseUrl += '?';
                       }
 
                       var searchHit = data.highlighting[data.response.docs[i].id].fulltext.toString();
                       searchHit = searchHit.substring(searchHit.indexOf('<em>')+4,searchHit.indexOf('</em>'));
 
-                      var newlink = link_base + '?' + (link_params
+                      var newlink = baseUrl
                       + 'tx_dlf[id]=' + data.response.docs[i].uid
                       + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchHit)
-                      + '&tx_dlf[page]=' + (data.response.docs[i].page));
+                      + '&tx_dlf[page]=' + data.response.docs[i].page;
 
                       if (data.highlighting[data.response.docs[i].id].fulltext) {
                           resultItems[data.response.docs[i].page] = '<span class="structure">' + $('#tx-dlf-search-in-document-label-page').text() + ' ' + data.response.docs[i].page + '</span><br /><span ="textsnippet"><a href=\"' + newlink + '\">' + data.highlighting[data.response.docs[i].id].fulltext + '</a></span>';
