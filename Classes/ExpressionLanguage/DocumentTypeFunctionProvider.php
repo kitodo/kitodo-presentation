@@ -18,6 +18,7 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterface
 {
