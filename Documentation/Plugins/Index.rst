@@ -204,7 +204,7 @@ This is an example usage of the TypoScript condition ("getDocumentType")::
 
 The `{$config.storagePid}` is a TypoScript constant holding the Kitodo.Presentation storage pid.
 
-This way, the FLUID variable "isNewspaper" is set accordingly to the given
+This way, the FLUID variable "isNewspaper" is set according to the given
 value. Inside the FLUID template it's possible to switch to the right plugin
 now.
 
