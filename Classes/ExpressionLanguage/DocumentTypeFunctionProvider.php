@@ -95,7 +95,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 return $doc;
             } else {
                 Helper::devLog('Failed to load document with UID ' . $piVars['id'], DEVLOG_SEVERITY_WARNING);
-                die();
             }
         }
         elseif (!empty($piVars['recordId'])) {
