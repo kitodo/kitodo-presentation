@@ -36,14 +36,14 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     public function getFunctions()
     {
-       return [
-          $this->getDocumentTypeFunction(),
-       ];
+        return [
+            $this->getDocumentTypeFunction(),
+        ];
     }
 
     protected function getDocumentTypeFunction(): ExpressionFunction
     {
-       return new ExpressionFunction(
+        return new ExpressionFunction(
             'getDocumentType',
             function () {
                 // Not implemented, we only use the evaluator
