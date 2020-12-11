@@ -12,9 +12,12 @@
 
 namespace Kitodo\Dlf\ExpressionLanguage;
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\IiifManifest;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
-use Kitodo\Dlf\Common\Document;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterface
 {
