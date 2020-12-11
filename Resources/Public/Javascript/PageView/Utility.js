@@ -27,7 +27,8 @@ if (String.prototype.endsWith === undefined) {
  *
  * @const
  */
-var dlfUtils = dlfUtils || {};
+var dlfUtils;
+dlfUtils = dlfUtils || {};
 
 /**
  * @type {{ZOOMIFY: string}}

@@ -247,7 +247,7 @@ class Solr
         $solrInfo['password'] = $conf['solrPass'];
         // Set port if not set.
         $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
-        // Append core name to path.
+        // Trim path of slashes.
         $solrInfo['path'] = trim($conf['solrPath'], '/');
         // Timeout
         $solrInfo['timeout'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, intval(ini_get('max_execution_time')), 10);
@@ -276,7 +276,7 @@ class Solr
             $host = $solrInfo['host'];
         }
         // Return entire request URL.
-        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/' . $core;
+        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/solr/' . $core;
     }
 
     /**
