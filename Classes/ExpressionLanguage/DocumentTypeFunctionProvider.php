@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
- * Provider class for additional functions of the ExpressionLanguage.
+ * Provider class for additional "getDocmentType" function to the ExpressionLanguage.
  *
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
@@ -109,8 +109,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             } else {
                 Helper::devLog('Failed to load document with UID ' . $piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
-        }
-        elseif (!empty($piVars['recordId'])) {
+        } elseif (!empty($piVars['recordId'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
