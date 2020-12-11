@@ -20,6 +20,14 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
+/**
+ * Provider class for additional functions of the ExpressionLanguage.
+ *
+ * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterface
 {
     /**
@@ -41,6 +49,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         ];
     }
 
+    /**
+     * Shortcut function to access field values
+     *
+     * @return \Symfony\Component\ExpressionLanguage\ExpressionFunction
+     */
     protected function getDocumentTypeFunction(): ExpressionFunction
     {
         return new ExpressionFunction(
