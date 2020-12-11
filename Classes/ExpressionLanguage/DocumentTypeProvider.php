@@ -19,8 +19,8 @@ class DocumentTypeProvider extends AbstractProvider
 {
     public function __construct()
     {
-         $this->expressionLanguageProviders = [
+            $this->expressionLanguageProviders = [
             DocumentTypeFunctionProvider::class
-         ];
+            ];
     }
 }
