@@ -171,6 +171,43 @@ Basket
 Calendar
 ---------
 
+The calendar plugin may be used with newspaper and ephemeras (periodical
+published media). The plugin shows itself an overview of all available
+years or all issues in a calendar view of a selected year.
+
+You can't place the plugin together with the pageview plugin on one page.
+But you can use TypoScript conditions on this page to select the proper
+plugin e.g by setting some specific FLUID variables.
+
+This is an example usage of the TypoScript condition ("getDocumentType")::
+
+    [getDocumentType("{$config.storagePid}") == "ephemera"] || [getDocumentType("{$config.storagePid}") == "newspaper"]
+    page.10.variables {
+        isNewspaper = TEXT
+        isNewspaper.value = newspaper_anchor
+    }
+    [END]
+
+    [getDocumentType("{$config.storagePid}") == "year"]
+    page.10.variables {
+        isNewspaper = TEXT
+        isNewspaper.value = newspaper_year
+    }
+    [END]
+
+    [getDocumentType("{$config.storagePid}") == "issue"]
+    page.10.variables {
+        isNewspaper = TEXT
+        isNewspaper.value = newspaper_issue
+    }
+    [END]
+
+The `{$config.storagePid}` is a TypoScript constant holding the Kitodo.Presentation storage pid.
+
+This way, the FLUID variable "isNewspaper" is set accordingly to the given
+value. Inside the FLUID template it's possible to switch to the right plugin
+now.
+
 :typoscript:`plugin.tx_dlf_calendar.`
 
 .. t3-field-list-table::
@@ -190,12 +227,24 @@ Calendar
    :Default:
 
  - :Property:
+       initialDocument
+   :Data Type:
+       :ref:`t3tsref:data-type-db`
+   :Default:
+
+ - :Property:
+       showEmptyMonths
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       1
+
+ - :Property:
        templateFile_
    :Data Type:
        :ref:`t3tsref:data-type-resource`
    :Default:
        Calendar.tmpl
-
 
 Collection
 ----------
