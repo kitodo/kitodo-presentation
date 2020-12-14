@@ -15,11 +15,13 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="fulltext">Fulltext</label>
             <label index="fulltext-on">Activate Fulltext</label>
             <label index="fulltext-off">Deactivate Fulltext</label>
             <label index="fulltext-not-available">No Fulltext available</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="fulltext">Volltext</label>
             <label index="fulltext-on">Volltext an</label>
             <label index="fulltext-off">Volltext aus</label>
             <label index="fulltext-not-available">Keine Volltexte vorhanden</label>
