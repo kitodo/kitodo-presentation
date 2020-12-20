@@ -38,29 +38,51 @@ class SearchInDocument
      */
     public function main(ServerRequestInterface $request)
     {
+        $output = [
+            'documents' => [],
+            'numFound' => 0
+        ];
+        // Get input parameters and decrypt core name.
         $parameters = $request->getParsedBody();
-        $encrypted = (string)$parameters['encrypted'];
-        $hashed = (string)$parameters['hashed'];
+        $encrypted = (string) $parameters['encrypted'];
+        $hashed = (string) $parameters['hashed'];
+        $count = intval($parameters['start']);
         if (empty($encrypted) || empty($hashed)) {
             throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
         $core = Helper::decrypt($encrypted, $hashed);
-
-        $output = '';
-        if (!empty($core)) {
-            $query = (string)$parameters['q'];
-            $uid = (string)$parameters['uid'];
-            $start = (string)$parameters['start'];
-            $url = trim(Solr::getSolrUrl($core), '/') . '/select?wt=json&q=fulltext:(' . Solr::escapeQuery($query) . ')%20AND%20uid:' . $uid
-                . '&hl=on&hl.fl=fulltext&fl=uid,id,page&hl.method=fastVector'
-                . '&start=' . $start . '&rows=20';
-            $output = GeneralUtility::getUrl($url);
+        // Perform Solr query.
+        $solr = Solr::getInstance($core);
+        if (
+            $solr->ready
+            && $solr->core === $core
+        ) {
+            $query = $solr->service->createSelect();
+            $query->setFields(['id', 'uid', 'page']);
+            $query->setQuery('fulltext:(' . Solr::escapeQuery((string) $parameters['q']) . ') AND uid:' . intval($parameters['uid']));
+            $query->setStart($count)->setRows(20);
+            $hl = $query->getHighlighting();
+            $hl->setFields('fulltext');
+            $hl->setMethod('fastVector');
+            $results = $solr->service->select($query);
+            $output['numFound'] = $results->getNumFound();
+            $highlighting = $results->getHighlighting();
+            foreach ($results as $result) {
+                $snippet = $highlighting->getResult($result->id);
+                $document = [
+                    'id' => $result->id,
+                    'uid' => $result->uid,
+                    'page' => $result->page,
+                    'snippet' => $snippet['fulltext']
+                ];
+                $output['documents'][$count] = $document;
+                $count++;
+            }
         }
-
-        // create response object
+        // Create response object.
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
-        $response->getBody()->write($output);
+        $response->getBody()->write(json_encode($output));
         return $response;
     }
 }

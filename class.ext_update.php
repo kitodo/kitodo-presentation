@@ -141,7 +141,7 @@ class ext_update
         while ($resArray = $result->fetch()) {
             // Instantiate search object.
             $solr = Solr::getInstance($resArray['index_name']);
-            if (!$solr->ready) {
+            if ($solr->core !== $resArray['index_name']) {
                 return true;
             }
         }
@@ -395,64 +395,34 @@ class ext_update
      */
     protected function doSolariumSolrUpdate(): void
     {
+        $error = false;
         // Get all Solr cores that were not deleted.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
         $result = $queryBuilder
             ->select('index_name')
             ->from('tx_dlf_solrcores')
-            ->where('1=1')
             ->execute();
 
         while ($resArray = $result->fetch()) {
-            // Instantiate search object.
-            $solr = Solr::getInstance($resArray['index_name']);
-            if (!$solr->ready) {
-                $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
-                $solrInfo = Solr::getSolrConnectionInfo();
-                // Prepend username and password to hostname.
-                if (
-                    $solrInfo['username']
-                    && $solrInfo['password']
-                ) {
-                    $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
-                } else {
-                    $host = $solrInfo['host'];
-                }
-                $context = stream_context_create([
-                    'http' => [
-                        'method' => 'GET',
-                        'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-                    ]
-                ]);
-                // Build request for adding new Solr core.
-                // @see http://wiki.apache.org/solr/CoreAdmin
-                $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml&action=CREATE&name=' . $resArray['index_name'] . '&instanceDir=' . $resArray['index_name'] . '&dataDir=data&configSet=dlf';
-                $response = @simplexml_load_string(file_get_contents($url, false, $context));
-                // Process response.
-                if ($response) {
-                    $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-                    if (
-                        $status !== false
-                        && $status[0] === 0
-                    ) {
-                        continue;
-                    }
-                }
+            // Create core if it doesn't exist.
+            if (Solr::createCore($resArray['index_name']) !== $resArray['index_name']) {
                 Helper::addMessage(
                     htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdateNotOkay')),
                     htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('update.solariumSolrUpdate'), $resArray['index_name'])),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
                 $this->content .= Helper::renderFlashMessages();
-                return;
+                $error = true;
             }
         }
-        Helper::addMessage(
-            htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdateOkay')),
-            htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdate')),
-            \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-        );
-        $this->content .= Helper::renderFlashMessages();
+        if (!$error) {
+            Helper::addMessage(
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdateOkay')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('update.solariumSolrUpdate')),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+            );
+            $this->content .= Helper::renderFlashMessages();
+        }
     }
 
     /**

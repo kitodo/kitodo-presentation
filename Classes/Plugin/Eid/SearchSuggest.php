@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\Response;
@@ -39,25 +38,34 @@ class SearchSuggest
      */
     public function main(ServerRequestInterface $request)
     {
+        $output = [];
+        // Get input parameters and decrypt core name.
         $parameters = $request->getParsedBody();
-        $encrypted = (string)$parameters['encrypted'];
-        $hashed = (string)$parameters['hashed'];
+        $encrypted = (string) $parameters['encrypted'];
+        $hashed = (string) $parameters['hashed'];
         if (empty($encrypted) || empty($hashed)) {
             throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
         $core = Helper::decrypt($encrypted, $hashed);
-
-        $output = '';
-        if (!empty($core)) {
-            $query = (string)$parameters['q'];
-            $url = trim(Solr::getSolrUrl($core), '/') . '/suggest/?wt=xml&q=' . Solr::escapeQuery($query);
-            $output = GeneralUtility::getUrl($url);
+        // Perform Solr query.
+        $solr = Solr::getInstance($core);
+        if (
+            $solr->ready
+            && $solr->core === $core
+        ) {
+            $query = $solr->service->createSuggester();
+            $query->setCount(10);
+            $query->setDictionary('suggest');
+            $query->setQuery(Solr::escapeQuery((string) $parameters['q']));
+            $results = $solr->service->suggester($query);
+            foreach ($results as $result) {
+                $output = array_merge($output, $result);
+            }
         }
-
-        // create response object
+        // Create response object.
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
-        $response->getBody()->write($output);
+        $response->getBody()->write(json_encode($output));
         return $response;
     }
 }

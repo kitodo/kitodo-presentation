@@ -91,53 +91,13 @@ class DataHandler
                     break;
                     // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
-                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                        ->getQueryBuilderForTable('tx_dlf_solrcores');
-
-                    // Get number of existing cores.
-                    $result = $queryBuilder
-                        ->select('*')
-                        ->from('tx_dlf_solrcores')
-                        ->execute();
-
-                    // Get first unused core number.
-                    $coreNumber = Solr::solrGetCoreNumber(count($result->fetchAll()));
-                    // Get Solr credentials.
-                    $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
-                    $solrInfo = Solr::getSolrConnectionInfo();
-                    // Prepend username and password to hostname.
-                    if (
-                        $solrInfo['username']
-                        && $solrInfo['password']
-                    ) {
-                        $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
-                    } else {
-                        $host = $solrInfo['host'];
+                    // Create new Solr core.
+                    $fieldArray['index_name'] = Solr::createCore();
+                    if (empty($fieldArray['index_name'])) {
+                        Helper::devLog('Could not create new Apache Solr core', DEVLOG_SEVERITY_ERROR);
+                        // Solr core could not be created, thus unset field array.
+                        $fieldArray = [];
                     }
-                    $context = stream_context_create([
-                        'http' => [
-                            'method' => 'GET',
-                            'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-                        ]
-                    ]);
-                    // Build request for adding new Solr core.
-                    // @see http://wiki.apache.org/solr/CoreAdmin
-                    $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml&action=CREATE&name=dlfCore' . $coreNumber . '&instanceDir=dlfCore' . $coreNumber . '&dataDir=data&configSet=dlf';
-                    $response = @simplexml_load_string(file_get_contents($url, false, $context));
-                    // Process response.
-                    if ($response) {
-                        $solrStatus = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-                        if (
-                            is_array($solrStatus)
-                            && $solrStatus[0] == 0
-                        ) {
-                            $fieldArray['index_name'] = 'dlfCore' . $coreNumber;
-                            return;
-                        }
-                    }
-                    Helper::devLog('Could not create new Apache Solr core "dlfCore' . $coreNumber . '"', DEVLOG_SEVERITY_ERROR);
-                    // Solr core could not be created, thus unset field array.
-                    $fieldArray = [];
                     break;
             }
         } elseif ($status == 'update') {

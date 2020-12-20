@@ -31,14 +31,14 @@ $(
 					function(data) {
 						var result = [];
 						var option = "";
-						$("arr[name='suggestion'] str", data).each(function(i) {
+						$.parseJSON(data).each(function(i) {
 							option = $(this).text();
 							option = option.replace(/(\?|!|:|\\)/g, "\\\$1");
 							result.push(option);
 						});
 						return response(result);
 					},
-					"xml");
+					"json");
 			},
 			minLength: 3,
 			appendTo: "#tx-dlf-search-suggest"
