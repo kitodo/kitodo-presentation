@@ -326,7 +326,7 @@ class Solr
             $config['port'] = MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
             // Trim path of slashes and (re-)add trailing slash if path not empty.
             $config['path'] = trim($conf['solrPath'], '/');
-            if (!empty($solrInfo['path'])) {
+            if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
             // Timeout
