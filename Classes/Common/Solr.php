@@ -257,7 +257,7 @@ class Solr
         if (!$solr->ready) {
             return $number;
         } else {
-            return self::solrGetCoreNumber($number + 1);
+            return self::getCoreNumber($number + 1);
         }
     }
 
