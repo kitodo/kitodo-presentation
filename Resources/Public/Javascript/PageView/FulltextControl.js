@@ -57,7 +57,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext'};
+        {'fulltext':'Fulltext', 'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext', 'launch-state':'on'};
 
     /**
      * @type {ol.Feature|undefined}
@@ -122,23 +122,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                     return;
                 }
 
-                // highlight features
-                if (this.selectedFeature_) {
-
-                    // remove old clicks
-                    this.layers_.select.getSource().removeFeature(this.selectedFeature_);
-
-                }
-
-                if (feature) {
-
-                    // remove hover for preventing an adding of styles
-                    this.layers_.hoverTextblock.getSource().clear();
-
-                    // add feature
-                    this.layers_.select.getSource().addFeature(feature);
-
-                }
+                this.handleLayersForClick(feature);
 
                 this.selectedFeature_ = feature;
 
@@ -177,7 +161,17 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         this)
     };
 
-    // add active / deactive behavior in case of click on control
+    // add active / deactive behavior in case of click on control depending on launch state
+    if (this.dic['launch-state'] === 'on') {
+        this.addActiveBehaviourForSwitchOn();
+    }
+
+    if (this.dic['launch-state'] === 'off') {
+        this.addActiveBehaviourForSwitchOff();
+    }
+};
+
+dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
     var anchorEl = $('#tx-dlf-tools-fulltext');
     if (anchorEl.length > 0){
         var toogleFulltext = $.proxy(function(event) {
@@ -190,7 +184,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
 
             this.activate();
         }, this);
-
 
         anchorEl.on('click', toogleFulltext);
         anchorEl.on('touchstart', toogleFulltext);
@@ -206,7 +199,47 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         // activate the fulltext behavior
         this.activate(anchorEl);
     }
+};
 
+dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
+    var anchorEl = $('#tx-dlf-tools-fulltext');
+    if (anchorEl.length > 0){
+        var toogleFulltext = $.proxy(function(event) {
+            event.preventDefault();
+
+            this.activate();
+        }, this);
+
+        anchorEl.on('click', toogleFulltext);
+        anchorEl.on('touchstart', toogleFulltext);
+    }
+
+    // set initial title of fulltext element
+    $("#tx-dlf-tools-fulltext")
+        .text(this.dic['fulltext'])
+        .attr('title', this.dic['fulltext']);
+    
+    this.activate(anchorEl);
+};
+
+/**
+ * Handle layers for click
+ * @param {ol.Feature|undefined} feature
+ */
+dlfViewerFullTextControl.prototype.handleLayersForClick = function(feature) {
+    // highlight features
+    if (this.selectedFeature_) {
+        // remove old clicks
+        this.layers_.select.getSource().removeFeature(this.selectedFeature_);
+    }
+
+    if (feature) {
+        // remove hover for preventing an adding of styles
+        this.layers_.hoverTextblock.getSource().clear();
+
+        // add feature
+        this.layers_.select.getSource().addFeature(feature);
+    }
 };
 
 /**
@@ -392,9 +425,13 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
 
     // show fulltext container
     var className = 'fulltext-visible';
-    $("#tx-dlf-tools-fulltext").addClass(className)
-      .text(this.dic['fulltext-off'])
-      .attr('title', this.dic['fulltext-off']);
+    $("#tx-dlf-tools-fulltext").addClass(className);
+
+    if(this.dic['launch-state'] === 'on') {
+        $("#tx-dlf-tools-fulltext")
+        .text(this.dic['fulltext-off'])
+        .attr('title', this.dic['fulltext-off']);
+    }
 
     $('#tx-dlf-fulltextselection').addClass(className);
     $('#tx-dlf-fulltextselection').show();
