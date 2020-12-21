@@ -25,11 +25,12 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @property-read string|null $core This holds the core name for the current instance
  * @property-write int $cPid This holds the PID for the configuration
  * @property int $limit This holds the max results
  * @property-read int $numberOfHits This holds the number of hits for last search
  * @property-write array $params This holds the additional query parameters
- * @property-read bool $ready Is the search instantiated successfully?
+ * @property-read bool $ready Is the Solr service instantiated successfully?
  * @property-read \Solarium\Client $service This holds the Solr service object
  */
 class Solr
@@ -125,39 +126,41 @@ class Solr
      */
     public static function createCore($core = '')
     {
-        // Get available core name if none given.
+        // Get next available core name if none given.
         if (empty($core)) {
             $core = 'dlfCore' . self::getCoreNumber();
         }
         // Get Solr service instance.
         $solr = self::getInstance($core);
         // Create new core if core with given name doesn't exist.
-        if ($solr->core === null) {
-            // Core doesn't exist yet.
-            $query = $solr->service->createCoreAdmin();
-            $action = $query->createCreate();
-            $action->setConfigSet('dlf');
-            $action->setCore($core);
-            $action->setDataDir('data');
-            $action->setInstanceDir($core);
-            $query->setAction($action);
-            try {
-                $response = $solr->service->coreAdmin($query);
-                if ($response->getWasSuccessful()) {
-                    // Core successfully created.
-                    return $core;
-                } else {
-                    // Core creation failed.
-                    return '';
-                }
-            } catch (\Exception $e) {
-                // Core creation failed.
-                return '';
-            }
-        } else {
+        if ($solr->ready) {
             // Core already exists.
             return $core;
+        } else {
+            // Core doesn't exist yet.
+            $solrAdmin = self::getInstance();
+            if ($solrAdmin->ready) {
+                $query = $solrAdmin->service->createCoreAdmin();
+                $action = $query->createCreate();
+                $action->setConfigSet('dlf');
+                $action->setCore($core);
+                $action->setDataDir('data');
+                $action->setInstanceDir($core);
+                $query->setAction($action);
+                try {
+                    $response = $solrAdmin->service->coreAdmin($query);
+                    if ($response->getWasSuccessful()) {
+                        // Core successfully created.
+                        return $core;
+                    }
+                } catch (\Exception $e) {
+                    // Nothing to do here.
+                }
+            } else {
+                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            }
         }
+        return '';
     }
 
     /**
@@ -251,7 +254,7 @@ class Solr
         $number = max(intval($number), 0);
         // Check if core already exists.
         $solr = self::getInstance('dlfCore' . $number);
-        if (empty($solr->core)) {
+        if (!$solr->ready) {
             return $number;
         } else {
             return self::solrGetCoreNumber($number + 1);
