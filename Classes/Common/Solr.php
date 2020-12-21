@@ -296,9 +296,7 @@ class Solr
         // Create new instance...
         $instance = new self($core);
         // ...and save it to registry.
-        if (!$instance->ready) {
-            Helper::devLog('Could not connect to Apache Solr service', DEVLOG_SEVERITY_ERROR);
-        } elseif (!empty($instance->core)) {
+        if (!empty($instance->core)) {
             self::$registry[$instance->core] = $instance;
         }
         return $instance;
@@ -660,7 +658,7 @@ class Solr
             if ($response->getWasSuccessful()) {
                 // Solr is reachable, but is the core as well?
                 if ($core !== null) {
-                    $result = $response->getStatusResultByCoreName($core);
+                    $result = $response->getStatusResult();
                     if (
                         $result instanceof \Solarium\QueryType\Server\CoreAdmin\Result\StatusResult
                         && $result->getUptime() > 0
