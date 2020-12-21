@@ -246,7 +246,8 @@ class DataHandler
                             $resArray = $allResults[0];
                             if ($resArray['hidden']) {
                                 // Establish Solr connection.
-                                if ($solr = Solr::getInstance($resArray['core'])) {
+                                $solr = Solr::getInstance($resArray['core']);
+                                if ($solr->ready) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
                                     $updateQuery->addDeleteQuery('uid:' . $id);
@@ -325,7 +326,8 @@ class DataHandler
                     case 'move':
                     case 'delete':
                         // Establish Solr connection.
-                        if ($solr = Solr::getInstance($resArray['core'])) {
+                        $solr = Solr::getInstance($resArray['core']);
+                        if ($solr->ready) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
                             $updateQuery->addDeleteQuery('uid:' . $id);

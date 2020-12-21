@@ -274,9 +274,11 @@ class Solr
             $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
         }
         // Check if core is set or null.
-        if (empty($core) && $core !== null) {
+        if (
+            empty($core)
+            && $core !== null
+        ) {
             Helper::devLog('Invalid core UID or name given for Apache Solr', DEVLOG_SEVERITY_ERROR);
-            return;
         }
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
@@ -291,13 +293,10 @@ class Solr
         // Create new instance...
         $instance = new self($core);
         // ...and save it to registry.
-        if (
-            $instance->ready
-            && !empty($instance->core)
-        ) {
-            self::$registry[$instance->core] = $instance;
-        } else {
+        if (!$instance->ready) {
             Helper::devLog('Could not connect to Apache Solr service', DEVLOG_SEVERITY_ERROR);
+        } elseif (!empty($instance->core)) {
+            self::$registry[$instance->core] = $instance;
         }
         return $instance;
     }
@@ -617,7 +616,7 @@ class Solr
      *
      * @return void
      */
-    protected function __construct($core = null)
+    protected function __construct($core)
     {
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();
@@ -649,17 +648,15 @@ class Solr
         // Check if connection is established.
         $query = $this->service->createCoreAdmin();
         $action = $query->createStatus();
-        if (!empty($core)) {
+        if ($core !== null) {
             $action->setCore($core);
         }
         $query->setAction($action);
         try {
             $response = $this->service->coreAdmin($query);
             if ($response->getWasSuccessful()) {
-                // Instantiation successful!
-                $this->ready = true;
                 // Solr is reachable, but is the core as well?
-                if (!empty($core)) {
+                if ($core !== null) {
                     $result = $response->getStatusResultByCoreName($core);
                     if (
                         $result instanceof \Solarium\QueryType\Server\CoreAdmin\Result\StatusResult
@@ -667,8 +664,13 @@ class Solr
                     ) {
                         // Set core name.
                         $this->core = $core;
+                    } else {
+                        // Core not available.
+                        return;
                     }
                 }
+                // Instantiation successful!
+                $this->ready = true;
             }
         } catch (\Exception $e) {
             // Nothing to do here.

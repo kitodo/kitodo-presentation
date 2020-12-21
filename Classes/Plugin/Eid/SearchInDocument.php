@@ -53,10 +53,7 @@ class SearchInDocument
         $core = Helper::decrypt($encrypted, $hashed);
         // Perform Solr query.
         $solr = Solr::getInstance($core);
-        if (
-            $solr->ready
-            && $solr->core === $core
-        ) {
+        if ($solr->ready) {
             $query = $solr->service->createSelect();
             $query->setFields(['id', 'uid', 'page']);
             $query->setQuery('fulltext:(' . Solr::escapeQuery((string) $parameters['q']) . ') AND uid:' . intval($parameters['uid']));

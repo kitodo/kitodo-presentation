@@ -565,7 +565,10 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         // Get Solr instance.
         if (!$this->solr) {
             // Connect to Solr server.
-            if ($this->solr = Solr::getInstance($this->metadata['options']['core'])) {
+            $solr = Solr::getInstance($this->metadata['options']['core']);
+            if ($solr->ready) {
+                $this->solr = $solr;
+                // Get indexed fields.
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_metadata');
 

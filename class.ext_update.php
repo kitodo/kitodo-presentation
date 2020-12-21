@@ -141,7 +141,7 @@ class ext_update
         while ($resArray = $result->fetch()) {
             // Instantiate search object.
             $solr = Solr::getInstance($resArray['index_name']);
-            if ($solr->core !== $resArray['index_name']) {
+            if (!$solr->ready) {
                 return true;
             }
         }

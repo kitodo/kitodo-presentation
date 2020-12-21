@@ -49,10 +49,7 @@ class SearchSuggest
         $core = Helper::decrypt($encrypted, $hashed);
         // Perform Solr query.
         $solr = Solr::getInstance($core);
-        if (
-            $solr->ready
-            && $solr->core === $core
-        ) {
+        if ($solr->ready) {
             $query = $solr->service->createSuggester();
             $query->setCount(10);
             $query->setDictionary('suggest');
