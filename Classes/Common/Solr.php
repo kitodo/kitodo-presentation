@@ -241,27 +241,6 @@ class Solr
     }
 
     /**
-     * Get next unused Solr core number
-     *
-     * @access public
-     *
-     * @param int $number: Number to start with
-     *
-     * @return int First unused core number found
-     */
-    public static function getNextCoreNumber($number = 0)
-    {
-        $number = max(intval($number), 0);
-        // Check if core already exists.
-        $solr = self::getInstance('dlfCore' . $number);
-        if (!$solr->ready) {
-            return $number;
-        } else {
-            return self::getNextCoreNumber($number + 1);
-        }
-    }
-
-    /**
      * This is a singleton class, thus instances must be created by this method
      *
      * @access public
@@ -300,6 +279,27 @@ class Solr
             self::$registry[$instance->core] = $instance;
         }
         return $instance;
+    }
+
+    /**
+     * Get next unused Solr core number
+     *
+     * @access public
+     *
+     * @param int $number: Number to start with
+     *
+     * @return int First unused core number found
+     */
+    public static function getNextCoreNumber($number = 0)
+    {
+        $number = max(intval($number), 0);
+        // Check if core already exists.
+        $solr = self::getInstance('dlfCore' . $number);
+        if (!$solr->ready) {
+            return $number;
+        } else {
+            return self::getNextCoreNumber($number + 1);
+        }
     }
 
     /**
