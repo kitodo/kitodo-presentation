@@ -128,7 +128,7 @@ class Solr
     {
         // Get next available core name if none given.
         if (empty($core)) {
-            $core = 'dlfCore' . self::getCoreNumber();
+            $core = 'dlfCore' . self::getNextCoreNumber();
         }
         // Get Solr service instance.
         $solr = self::getInstance($core);
@@ -249,7 +249,7 @@ class Solr
      *
      * @return int First unused core number found
      */
-    public static function getCoreNumber($number = 0)
+    public static function getNextCoreNumber($number = 0)
     {
         $number = max(intval($number), 0);
         // Check if core already exists.
@@ -257,7 +257,7 @@ class Solr
         if (!$solr->ready) {
             return $number;
         } else {
-            return self::getCoreNumber($number + 1);
+            return self::getNextCoreNumber($number + 1);
         }
     }
 
