@@ -47,6 +47,15 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_feeds
         }
       }
+      tx_dlf_listview {
+        iconIdentifier = tx-dlf-listview
+        title = LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.plugin.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_listview
+        }
+      }
       tx_dlf_metadata {
         iconIdentifier = tx-dlf-metadata
         title = LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.plugin.title
