@@ -54,9 +54,9 @@ class SearchSuggest
             $query->setCount(10);
             $query->setDictionary('suggest');
             $query->setQuery(Solr::escapeQuery((string) $parameters['q']));
-            $results = $solr->service->suggester($query);
+            $results = $solr->service->suggester($query)->getAll();
             foreach ($results as $result) {
-                $output = array_merge($output, $result);
+                $output[] = $result;
             }
         }
         // Create response object.
