@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\Response;
@@ -59,18 +58,18 @@ class SearchInDocument
             $query->setQuery('fulltext:(' . Solr::escapeQuery((string) $parameters['q']) . ') AND uid:' . intval($parameters['uid']));
             $query->setStart($count)->setRows(20);
             $hl = $query->getHighlighting();
-            $hl->setFields('fulltext');
-            $hl->setMethod('fastVector');
+            $hl->setFields(['fulltext']);
+            $hl->setUseFastVectorHighlighter(true);
             $results = $solr->service->select($query);
             $output['numFound'] = $results->getNumFound();
             $highlighting = $results->getHighlighting();
             foreach ($results as $result) {
-                $snippet = $highlighting->getResult($result->id);
+                $snippet = $highlighting->getResult($result->id)->getField('fulltext');
                 $document = [
                     'id' => $result->id,
                     'uid' => $result->uid,
                     'page' => $result->page,
-                    'snippet' => $snippet['fulltext']
+                    'snippet' => !empty($snippet) ? implode(' [...] ', $snippet) : ''
                 ];
                 $output['documents'][$count] = $document;
                 $count++;
