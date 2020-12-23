@@ -161,17 +161,33 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         this)
     };
 
-    // add active / deactive behavior in case of click on control depending on launch state
-    if (this.dic['launch-state'] === 'on') {
+    this.changeActiveBehaviourForLaunchState(this.dic['launch-state']);
+};
+
+/**
+ * Add active / deactive behavior in case of click on control depending on launch state.
+ * @param {string} launchState 
+ */
+dlfViewerFullTextControl.prototype.changeActiveBehaviourForLaunchState = function(launchState) {
+    if (launchState === 'on') {
         this.addActiveBehaviourForSwitchOn();
     }
 
-    if (this.dic['launch-state'] === 'off') {
+    if (launchState === 'off') {
         this.addActiveBehaviourForSwitchOff();
     }
 };
 
 dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
+    // set initial title of fulltext element
+    $("#tx-dlf-tools-fulltext")
+        .text(this.dic['fulltext'])
+        .attr('title', this.dic['fulltext']);
+    
+    this.activate();
+};
+
+dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
     var anchorEl = $('#tx-dlf-tools-fulltext');
     if (anchorEl.length > 0){
         var toogleFulltext = $.proxy(function(event) {
@@ -197,29 +213,8 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
     // if fulltext is activated via cookie than run activation methode
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
         // activate the fulltext behavior
-        this.activate(anchorEl);
+        this.activate();
     }
-};
-
-dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
-    var anchorEl = $('#tx-dlf-tools-fulltext');
-    if (anchorEl.length > 0){
-        var toogleFulltext = $.proxy(function(event) {
-            event.preventDefault();
-
-            this.activate();
-        }, this);
-
-        anchorEl.on('click', toogleFulltext);
-        anchorEl.on('touchstart', toogleFulltext);
-    }
-
-    // set initial title of fulltext element
-    $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext'])
-        .attr('title', this.dic['fulltext']);
-    
-    this.activate(anchorEl);
 };
 
 /**
@@ -398,8 +393,12 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").removeClass(className)
+
+    if(this.dic['launch-state'] === 'off') {
+        $("#tx-dlf-tools-fulltext")
         .text(this.dic['fulltext-on'])
         .attr('title', this.dic['fulltext-on']);
+    }
 
     $('#tx-dlf-fulltextselection').removeClass(className);
     $('#tx-dlf-fulltextselection').hide();
@@ -427,7 +426,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").addClass(className);
 
-    if(this.dic['launch-state'] === 'on') {
+    if(this.dic['launch-state'] === 'off') {
         $("#tx-dlf-tools-fulltext")
         .text(this.dic['fulltext-off'])
         .attr('title', this.dic['fulltext-off']);
