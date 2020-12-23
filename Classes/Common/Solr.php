@@ -329,8 +329,9 @@ class Solr
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
-            // Timeout
-            $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, intval(ini_get('max_execution_time')), 10);
+            // Set connection timeout lower than PHP's max_execution_time.
+            $max_execution_time = intval(ini_get('max_execution_time')) ?: 30;
+            $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
             $this->config = $config;
         }
     }
