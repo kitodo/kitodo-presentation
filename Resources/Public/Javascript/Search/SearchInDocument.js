@@ -95,7 +95,7 @@ $(document).ready(function() {
                             resultItems[element['page']] = '<span class="structure">'
                                 + $('#tx-dlf-search-in-document-label-page').text() + ' ' + element['page']
                                 + '</span><br />'
-                                + '<span ="textsnippet">' + 
+                                + '<span ="textsnippet">'
                                 + '<a href=\"' + link + '\">' + element['snippet'] + '</a>'
                                 + '</span>';
                         }
