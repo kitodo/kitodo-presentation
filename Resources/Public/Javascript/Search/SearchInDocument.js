@@ -67,8 +67,7 @@ $(document).ready(function() {
                 var resultItems = [];
                 var resultList = '<div class="results-active-indicator"></div><ul>';
                 var start = -1;
-                var results = JSON.parse(data);
-                if (results['numFound'] > 0) {
+                if (data['numFound'] > 0) {
                     // Take the workview baseUrl from the form action.
                     // The URL may be in the following form
                     // - http://example.com/index.php?id=14
@@ -80,7 +79,7 @@ $(document).ready(function() {
                     } else {
                         baseUrl += '?';
                     }
-                    results['documents'].forEach(function (element, i) {
+                    data['documents'].forEach(function (element, i) {
                         if (start < 0) {
                             start = i;
                         }
@@ -115,7 +114,7 @@ $(document).ready(function() {
                 if (start > 0) {
                     resultList += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" value="' + $('#tx-dlf-search-in-document-label-previous').text() + '" />';
                 }
-                if (results['numFound'] > (start + 20)) {
+                if (data['numFound'] > (start + 20)) {
                     resultList += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
                 }
                 $('#tx-dlf-search-in-document-results').html(resultList);

@@ -31,7 +31,7 @@ $(
 					function(data) {
 						var result = [];
 						var option = "";
-						JSON.parse(data).each(function(i) {
+						data.each(function(i) {
 							option = $(this).text();
 							option = option.replace(/(\?|!|:|\\)/g, "\\\$1");
 							result.push(option);
