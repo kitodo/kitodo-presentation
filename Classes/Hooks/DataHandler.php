@@ -353,48 +353,52 @@ class DataHandler
             $command === 'delete'
             && $table == 'tx_dlf_solrcores'
         ) {
-            // Delete core from Apache Solr as well.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_solrcores');
-            // Record in "tx_dlf_solrcores" is already deleted at this point.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(DeletedRestriction::class);
+            // Is core deletion allowed in extension configuration?
+            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+            if (!empty($extConf['solrAllowCoreDelete'])) {
+                // Delete core from Apache Solr as well.
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_solrcores');
+                // Record in "tx_dlf_solrcores" is already deleted at this point.
+                $queryBuilder
+                    ->getRestrictions()
+                    ->removeByType(DeletedRestriction::class);
 
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_solrcores.index_name AS core'
-                )
-                ->from('tx_dlf_solrcores')
-                ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', intval($id)))
-                ->setMaxResults(1)
-                ->execute();
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_solrcores.index_name AS core'
+                    )
+                    ->from('tx_dlf_solrcores')
+                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', intval($id)))
+                    ->setMaxResults(1)
+                    ->execute();
 
-            $allResults = $result->fetchAll();
+                $allResults = $result->fetchAll();
 
-            if (count($allResults) == 1) {
-                $resArray = $allResults[0];
-                // Establish Solr connection.
-                $solr = Solr::getInstance();
-                if ($solr->ready) {
-                    // Delete Solr core.
-                    $query = $solr->service->createCoreAdmin();
-                    $action = $query->createUnload();
-                    $action->setCore($resArray['core']);
-                    $action->setDeleteDataDir(true);
-                    $action->setDeleteIndex(true);
-                    $action->setDeleteInstanceDir(true);
-                    $query->setAction($action);
-                    try {
-                        $response = $solr->service->coreAdmin($query);
-                        if ($response->getWasSuccessful()) {
-                            return;
+                if (count($allResults) == 1) {
+                    $resArray = $allResults[0];
+                    // Establish Solr connection.
+                    $solr = Solr::getInstance();
+                    if ($solr->ready) {
+                        // Delete Solr core.
+                        $query = $solr->service->createCoreAdmin();
+                        $action = $query->createUnload();
+                        $action->setCore($resArray['core']);
+                        $action->setDeleteDataDir(true);
+                        $action->setDeleteIndex(true);
+                        $action->setDeleteInstanceDir(true);
+                        $query->setAction($action);
+                        try {
+                            $response = $solr->service->coreAdmin($query);
+                            if ($response->getWasSuccessful()) {
+                                return;
+                            }
+                        } catch (\Exception $e) {
+                            // Nothing to do here.
                         }
-                    } catch (\Exception $e) {
-                        // Nothing to do here.
                     }
+                    Helper::devLog('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr', DEVLOG_SEVERITY_WARNING);
                 }
-                Helper::devLog('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr', DEVLOG_SEVERITY_WARNING);
             }
         }
     }

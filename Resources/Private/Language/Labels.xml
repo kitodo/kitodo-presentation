@@ -189,13 +189,14 @@
 			<label index="config.iiifThumbnailWidth">Maximum thumbnail width for IIIF images: Only for images without a thumbnail declaration (default is "150")</label>
 			<label index="config.iiifThumbnailHeight">Maximum thumbnail height for IIIF images: Only for images without a thumbnail declaration (default is "150")</label>
             <label index="config.solrConnect">Solr Connection</label>
-            <label index="config.solrHttps">Use https: (default is "FALSE")</label>
+            <label index="config.solrHttps">Use HTTPS: (default is "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
             <label index="config.solrPort">Solr Server Port: (default is "8983")</label>
             <label index="config.solrPath">Solr Server Path: without API endpoint "/solr" (default is "/")</label>
             <label index="config.solrUser">Solr Server User: (default is "")</label>
             <label index="config.solrPass">Solr Server Password: (default is "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (default is "10")</label>
+            <label index="config.solrAllowCoreDelete">Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (Standard ist "FALSE")</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -291,7 +292,7 @@
             <label index="tx_dlf_solrcores">Solr Kerne</label>
             <label index="tx_dlf_solrcores.label">Anzeigeform</label>
             <label index="tx_dlf_solrcores.index_name">Solr-Bezeichnung</label>
-            <label index="tx_dlf_solrcores.tab1">General</label>
+            <label index="tx_dlf_solrcores.tab1">Allgemein</label>
             <label index="tx_dlf_collections">Sammlungen</label>
             <label index="tx_dlf_collections.label">Anzeigeform</label>
             <label index="tx_dlf_collections.index_name">Index-Bezeichnung</label>
@@ -372,13 +373,14 @@
 			<label index="config.iiifThumbnailWidth">Maximale Thumbnail-Breite für IIIF-Images: Gilt nur für Bilder ohne Thumbnail-Angaben (Standard ist "150")</label>
 			<label index="config.iiifThumbnailHeight">Maximale Thumbnail-Höhe für IIIF-Images: Gilt nur für Bilder ohne Thumbnail-Angaben (Standard ist "150")</label>
             <label index="config.solrConnect">Solr Verbindung</label>
-            <label index="config.solrHttps">Https verwenden: (Standard ist "FALSE")</label>
+            <label index="config.solrHttps">HTTPS verwenden: (Standard ist "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
             <label index="config.solrPort">Solr Server Port: (Standard ist "8983")</label>
             <label index="config.solrPath">Solr Server Pfad: ohne API-Endpunkt "/solr" (Standard ist "/")</label>
             <label index="config.solrUser">Solr Server Benutzername: (Standard ist "")</label>
             <label index="config.solrPass">Solr Server Kennwort: (Standard ist "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (Standard ist "10")</label>
+            <label index="config.solrAllowCoreDelete">Löschen von Solr Kern zulassen?: Soll beim Löschen eines Solr Kerns im TYPO3 Backend auch der entsprechende Index in Apache Solr gelöscht werden? (Standard ist "FALSE")</label>
         </languageKey>
     </data>
 </T3locallang>
