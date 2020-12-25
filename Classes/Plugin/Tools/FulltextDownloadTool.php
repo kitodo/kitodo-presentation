@@ -15,17 +15,16 @@ namespace Kitodo\Dlf\Plugin\Tools;
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Fulltext tool for the plugin 'Toolbox' of the 'dlf' extension
+ * Fulltext Download tool for the plugin 'Toolbox' of the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
+class FulltextDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
 {
-    public $scriptRelPath = 'Classes/Plugin/Tools/FulltextTool.php';
+    public $scriptRelPath = 'Classes/Plugin/Tools/FulltextDownloadTool.php';
 
     /**
      * The main method of the PlugIn
@@ -73,13 +72,15 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Load template file.
         $this->getTemplate();
+        // Get text download.
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
         if (!empty($fullTextFile)) {
-            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext:' . htmlspecialchars($this->pi_getLL('fulltext', '')) . ';fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', '')) . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', '')) . ';launch-state:' . $this->conf['launchState'] .'">&nbsp;</a>';
+            $markerArray['###FULLTEXT_DOWNLOAD###'] = '<a href="#" id="tx-dlf-tools-fulltextdownload" title="' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '">' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '</a>';
         } else {
-            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
+            $markerArray['###FULLTEXT_DOWNLOAD###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
+
 }
