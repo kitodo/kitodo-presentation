@@ -35,7 +35,7 @@ mod.wizards.newContentElement.wizardItems {
         description = LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.plugin.description
         tt_content_defValues {
           CType = list
-          list_type = dlf_calendar
+          list_type = dlf_collection
         }
       }
       tx_dlf_feeds {
