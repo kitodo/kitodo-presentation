@@ -589,7 +589,8 @@ final class MetsDocument extends Document
 
                 $result = $queryBuilder
                     ->select(
-                        'tx_dlf_documents.owner AS owner,tx_dlf_collections_join.index_name AS collection'
+                        'tx_dlf_documents.owner AS owner',
+                        'tx_dlf_collections_join.index_name AS collection'
                     )
                     ->from('tx_dlf_documents')
                     ->innerJoin(
