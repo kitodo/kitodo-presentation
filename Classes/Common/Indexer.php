@@ -318,6 +318,13 @@ class Indexer
                     $metadata['author'][$i] = $splitName[0];
                 }
             }
+            // Replace owner UID with index_name.
+            if (
+                !empty($metadata['owner'][0])
+                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])
+            ) {
+                $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], 'tx_dlf_libraries', $doc->cPid);
+            }
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = $updateQuery->createDocument();

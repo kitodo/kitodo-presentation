@@ -579,7 +579,7 @@ final class MetsDocument extends Document
                 $metadata['title'][0] = '';
                 $metadata['title_sorting'][0] = '';
             }
-            // Add collections from database to toplevel element if document is already saved.
+            // Add collections and owner from database to toplevel element if document is already saved.
             if (
                 \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
                 && $id == $this->_getToplevelId()
@@ -589,7 +589,7 @@ final class MetsDocument extends Document
 
                 $result = $queryBuilder
                     ->select(
-                        'tx_dlf_collections_join.index_name AS index_name'
+                        'tx_dlf_documents.owner AS owner,tx_dlf_collections_join.index_name AS collection'
                     )
                     ->from('tx_dlf_documents')
                     ->innerJoin(
@@ -620,8 +620,11 @@ final class MetsDocument extends Document
                 $allResults = $result->fetchAll();
 
                 foreach ($allResults as $resArray) {
-                    if (!in_array($resArray['index_name'], $metadata['collection'])) {
-                        $metadata['collection'][] = $resArray['index_name'];
+                    if (!in_array($resArray['collection'], $metadata['collection'])) {
+                        $metadata['collection'][] = $resArray['collection'];
+                    }
+                    if ($metadata['owner'][0] != $resArray['owner']) {
+                        $metadata['owner'][0] = $resArray['owner'];
                     }
                 }
             }
