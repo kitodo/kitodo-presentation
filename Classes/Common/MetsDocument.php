@@ -589,8 +589,7 @@ final class MetsDocument extends Document
 
                 $result = $queryBuilder
                     ->select(
-                        'tx_dlf_documents.owner AS owner',
-                        'tx_dlf_collections_join.index_name AS collection'
+                        'tx_dlf_collections_join.index_name AS index_name'
                     )
                     ->from('tx_dlf_documents')
                     ->innerJoin(
@@ -621,12 +620,29 @@ final class MetsDocument extends Document
                 $allResults = $result->fetchAll();
 
                 foreach ($allResults as $resArray) {
-                    if (!in_array($resArray['collection'], $metadata['collection'])) {
-                        $metadata['collection'][] = $resArray['collection'];
+                    if (!in_array($resArray['index_name'], $metadata['collection'])) {
+                        $metadata['collection'][] = $resArray['index_name'];
                     }
-                    if ($metadata['owner'][0] != $resArray['owner']) {
-                        $metadata['owner'][0] = $resArray['owner'];
-                    }
+                }
+
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_documents.owner AS owner'
+                    )
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
+                    )
+                    ->execute();
+
+                $resArray = $result->fetch();
+
+                if ($metadata['owner'][0] != $resArray['owner']) {
+                    $metadata['owner'][0] = $resArray['owner'];
                 }
             }
             // Extract metadata only from first supported dmdSec.
