@@ -50,13 +50,16 @@ class SearchSuggest
         // Perform Solr query.
         $solr = Solr::getInstance($core);
         if ($solr->ready) {
-            $query = $solr->service->createSuggester();
-            $query->setCount(10);
-            $query->setDictionary('suggest');
+            $query = $solr->service->createSelect();
+            $query->setHandler('suggest');
             $query->setQuery(Solr::escapeQuery((string) $parameters['q']));
-            $results = $solr->service->suggester($query)->getAll();
-            foreach ($results as $result) {
-                $output[] = $result;
+            $query->setRows(0);
+            $results = $solr->service->select($query)->getResponse()->getBody();
+            $result = json_decode($results);
+            foreach ($result->spellcheck->suggestions as $suggestions) {
+                foreach ($suggestions->suggestion as $suggestion) {
+                    $output[] = $suggestion;
+                }
             }
         }
         // Create response object.
