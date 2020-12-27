@@ -137,10 +137,10 @@ var dlfViewer = function(settings){
     this.initMagnifier = false;
 
     /**
-     * @type {string|undefined}
+     * @type {string}
      * @private
      */
-    this.overviewMapTarget = dlfUtils.exists(settings.overviewMapTarget) ? settings.overviewMapTarget : undefined;
+    this.overviewMapTarget = dlfUtils.exists(settings.overviewMapTarget) ? settings.overviewMapTarget : '';
 
     /**
      * use internal proxy setting
@@ -259,7 +259,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
     var controls = [];
 
-    var overviewMapTargetElement = dlfUtils.exists(this.overviewMapTarget) ? $('#' + this.overviewMapTarget) : undefined;
+    var overviewMapTargetElement = this.overviewMapTarget !== '' ? $('#' + this.overviewMapTarget) : undefined;
 
     for (var i in controlNames) {
 
