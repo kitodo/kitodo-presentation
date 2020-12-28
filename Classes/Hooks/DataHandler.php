@@ -91,53 +91,13 @@ class DataHandler
                     break;
                     // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
-                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                        ->getQueryBuilderForTable('tx_dlf_solrcores');
-
-                    // Get number of existing cores.
-                    $result = $queryBuilder
-                        ->select('*')
-                        ->from('tx_dlf_solrcores')
-                        ->execute();
-
-                    // Get first unused core number.
-                    $coreNumber = Solr::solrGetCoreNumber(count($result->fetchAll()));
-                    // Get Solr credentials.
-                    $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
-                    $solrInfo = Solr::getSolrConnectionInfo();
-                    // Prepend username and password to hostname.
-                    if (
-                        $solrInfo['username']
-                        && $solrInfo['password']
-                    ) {
-                        $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
-                    } else {
-                        $host = $solrInfo['host'];
+                    // Create new Solr core.
+                    $fieldArray['index_name'] = Solr::createCore();
+                    if (empty($fieldArray['index_name'])) {
+                        Helper::devLog('Could not create new Apache Solr core', DEVLOG_SEVERITY_ERROR);
+                        // Solr core could not be created, thus unset field array.
+                        $fieldArray = [];
                     }
-                    $context = stream_context_create([
-                        'http' => [
-                            'method' => 'GET',
-                            'user_agent' => ($conf['useragent'] ? $conf['useragent'] : ini_get('user_agent'))
-                        ]
-                    ]);
-                    // Build request for adding new Solr core.
-                    // @see http://wiki.apache.org/solr/CoreAdmin
-                    $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml&action=CREATE&name=dlfCore' . $coreNumber . '&instanceDir=dlfCore' . $coreNumber . '&dataDir=data&configSet=dlf';
-                    $response = @simplexml_load_string(file_get_contents($url, false, $context));
-                    // Process response.
-                    if ($response) {
-                        $solrStatus = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-                        if (
-                            is_array($solrStatus)
-                            && $solrStatus[0] == 0
-                        ) {
-                            $fieldArray['index_name'] = 'dlfCore' . $coreNumber;
-                            return;
-                        }
-                    }
-                    Helper::devLog('Could not create new Apache Solr core "dlfCore' . $coreNumber . '"', DEVLOG_SEVERITY_ERROR);
-                    // Solr core could not be created, thus unset field array.
-                    $fieldArray = [];
                     break;
             }
         } elseif ($status == 'update') {
@@ -286,7 +246,8 @@ class DataHandler
                             $resArray = $allResults[0];
                             if ($resArray['hidden']) {
                                 // Establish Solr connection.
-                                if ($solr = Solr::getInstance($resArray['core'])) {
+                                $solr = Solr::getInstance($resArray['core']);
+                                if ($solr->ready) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
                                     $updateQuery->addDeleteQuery('uid:' . $id);
@@ -326,10 +287,10 @@ class DataHandler
             in_array($command, ['move', 'delete', 'undelete'])
             && $table == 'tx_dlf_documents'
         ) {
-            // Get Solr-Core.
+            // Get Solr core.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_solrcores');
-            // tx_dlf_documents is already deleted at this point --> include deleted documents in query
+            // Record in "tx_dlf_documents" is already deleted at this point.
             $queryBuilder
                 ->getRestrictions()
                 ->removeByType(DeletedRestriction::class);
@@ -365,7 +326,8 @@ class DataHandler
                     case 'move':
                     case 'delete':
                         // Establish Solr connection.
-                        if ($solr = Solr::getInstance($resArray['core'])) {
+                        $solr = Solr::getInstance($resArray['core']);
+                        if ($solr->ready) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
                             $updateQuery->addDeleteQuery('uid:' . $id);
@@ -384,6 +346,58 @@ class DataHandler
                             Helper::devLog('Failed to re-index document with UID ' . $id, DEVLOG_SEVERITY_ERROR);
                         }
                         break;
+                }
+            }
+        }
+        if (
+            $command === 'delete'
+            && $table == 'tx_dlf_solrcores'
+        ) {
+            // Is core deletion allowed in extension configuration?
+            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+            if (!empty($extConf['solrAllowCoreDelete'])) {
+                // Delete core from Apache Solr as well.
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_solrcores');
+                // Record in "tx_dlf_solrcores" is already deleted at this point.
+                $queryBuilder
+                    ->getRestrictions()
+                    ->removeByType(DeletedRestriction::class);
+
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_solrcores.index_name AS core'
+                    )
+                    ->from('tx_dlf_solrcores')
+                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', intval($id)))
+                    ->setMaxResults(1)
+                    ->execute();
+
+                $allResults = $result->fetchAll();
+
+                if (count($allResults) == 1) {
+                    $resArray = $allResults[0];
+                    // Establish Solr connection.
+                    $solr = Solr::getInstance();
+                    if ($solr->ready) {
+                        // Delete Solr core.
+                        $query = $solr->service->createCoreAdmin();
+                        $action = $query->createUnload();
+                        $action->setCore($resArray['core']);
+                        $action->setDeleteDataDir(true);
+                        $action->setDeleteIndex(true);
+                        $action->setDeleteInstanceDir(true);
+                        $query->setAction($action);
+                        try {
+                            $response = $solr->service->coreAdmin($query);
+                            if ($response->getWasSuccessful()) {
+                                return;
+                            }
+                        } catch (\Exception $e) {
+                            // Nothing to do here.
+                        }
+                    }
+                    Helper::devLog('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr', DEVLOG_SEVERITY_WARNING);
                 }
             }
         }
