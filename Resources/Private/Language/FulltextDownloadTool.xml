@@ -11,19 +11,15 @@
 <T3locallang>
     <meta type="array">
         <type>module</type>
-        <description>Language labels for tool Fulltext</description>
+        <description>Language labels for tool FulltextDownload</description>
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="fulltext">Fulltext</label>
-            <label index="fulltext-on">Activate Fulltext</label>
-            <label index="fulltext-off">Deactivate Fulltext</label>
+            <label index="download-current-page">Current page (TXT)</label>
             <label index="fulltext-not-available">No Fulltext available</label>
         </languageKey>
         <languageKey index="de" type="array">
-            <label index="fulltext">Volltext</label>
-            <label index="fulltext-on">Volltext an</label>
-            <label index="fulltext-off">Volltext aus</label>
+            <label index="download-current-page">Aktuelle Seite (TXT)</label>
             <label index="fulltext-not-available">Keine Volltexte vorhanden</label>
         </languageKey>
     </data>

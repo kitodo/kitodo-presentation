@@ -76,9 +76,9 @@
 			<label index="update.documentSetFormatForOldEntriesOkay">...successfully completed!</label>
 			<label index="update.documentSetFormatForOldEntriesNotOkay">...incomplete! Please set missing tx_dlf_document.document_format values to 'METS'.</label>
             <label index="solr.connected">Connection established!</label>
-            <label index="solr.status">The status code returned by Apache Solr is &lt;strong&gt;%s&lt;/strong&gt;.</label>
+            <label index="solr.status">Apache Solr is running and taking requests.</label>
             <label index="solr.notConnected">Connection failed!</label>
-            <label index="solr.error">Apache Solr was not reachable under &lt;strong&gt;%s&lt;/strong&gt;.</label>
+            <label index="solr.error">Apache Solr not reachable with given configuration.</label>
             <label index="metadataFormats.nsOkay">Default namespaces found!</label>
             <label index="metadataFormats.nsOkayMsg">The namespace definitions for MODS, TEIHDR and ALTO do exist.</label>
             <label index="metadataFormats.nsCreated">Default namespaces created successfully!</label>
@@ -148,9 +148,9 @@
 			<label index="update.documentSetFormatForOldEntriesOkay">...erfolgreich beendet!</label>
 			<label index="update.documentSetFormatForOldEntriesNotOkay">...abgebrochen! Bitte in der Tabelle tx_dlf_document.document_format 'METS'.</label>
             <label index="solr.connected">Verbindung hergestellt!</label>
-            <label index="solr.status">Apache Solr gibt den Statuscode &lt;strong&gt;%s&lt;/strong&gt; zurück.</label>
+            <label index="solr.status">Apache Solr ist verfügbar und nimmt Anfragen entgegen.</label>
             <label index="solr.notConnected">Verbindung fehlgeschlagen!</label>
-            <label index="solr.error">Apache Solr ist unter &lt;strong&gt;%s&lt;/strong&gt; nicht erreichbar.</label>
+            <label index="solr.error">Apache Solr ist mit der gegebenen Konfiguration nicht erreichbar.</label>
             <label index="metadataFormats.nsOkay">Standard-Namensräume gefunden!</label>
             <label index="metadataFormats.nsOkayMsg">Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.</label>
             <label index="metadataFormats.nsCreated">Standard-Namensräume erfolgreich angelegt!</label>

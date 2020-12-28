@@ -82,3 +82,39 @@ Please include the Template "Basic Configuration (dlf)". This template adds
 jQuery to your page by setting the following typoscript:
 
 :typoscript:`page.includeJSlibs.jQuery`
+
+
+******************
+Slug Configuration
+******************
+
+With TYPO3 9.5 it is possible to make speaking urls with the builtin advanced
+routing feature ("Slug"). This may be used for extensions too.
+
+TYPO3 documentation about `Advanced Routing Configuration <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/Routing/AdvancedRoutingConfiguration.html>`_.
+
+The following code is an example of an routeEnhancer for the workview page on uid=14.
+
+.. code-block:: yaml
+   :linenos:
+
+   routeEnhancers:
+     KitodoWorkview:
+       type: Plugin
+       namespace: tx_dlf
+       limitToPages:
+         - 14
+       routePath: '/{id}/{page}'
+       requirements:
+         id: '(\d+)|(http.*xml)'
+         page: \d+
+     KitodoWorkviewDouble:
+       type: Plugin
+       namespace: tx_dlf
+       limitToPages:
+         - 14
+       routePath: '/{id}/{page}/{double}'
+       requirements:
+         id: '(\d+)|(http.*xml)'
+         page: \d+
+         double: '[0-1]'
