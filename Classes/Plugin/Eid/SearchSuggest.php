@@ -57,8 +57,10 @@ class SearchSuggest
             $results = $solr->service->select($query)->getResponse()->getBody();
             $result = json_decode($results);
             foreach ($result->spellcheck->suggestions as $suggestions) {
-                foreach ($suggestions->suggestion as $suggestion) {
-                    $output[] = $suggestion;
+                if (is_object($suggestions)) {
+                    foreach ($suggestions->suggestion as $suggestion) {
+                        $output[] = $suggestion;
+                    }
                 }
             }
         }
