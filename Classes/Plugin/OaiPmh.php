@@ -923,6 +923,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
         $documentSet = [];
         $solr = Solr::getInstance($this->conf['solrcore']);
+        if (!$solr->ready) {
+            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            return $documentSet;
+        }
         if (intval($this->conf['solr_limit']) > 0) {
             $solr->limit = intval($this->conf['solr_limit']);
         }

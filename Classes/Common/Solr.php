@@ -12,8 +12,10 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Solr class for the 'dlf' extension
@@ -23,22 +25,31 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage dlf
  * @access public
+ * @property-read string|null $core This holds the core name for the current instance
  * @property-write int $cPid This holds the PID for the configuration
  * @property int $limit This holds the max results
  * @property-read int $numberOfHits This holds the number of hits for last search
  * @property-write array $params This holds the additional query parameters
- * @property-read bool $ready Is the search instantiated successfully?
+ * @property-read bool $ready Is the Solr service instantiated successfully?
  * @property-read \Solarium\Client $service This holds the Solr service object
  */
 class Solr
 {
     /**
-     * This holds the core name
+     * This holds the Solr configuration
      *
-     * @var string
+     * @var array
      * @access protected
      */
-    protected $core = '';
+    protected $config = [];
+
+    /**
+     * This holds the core name
+     *
+     * @var string|null
+     * @access protected
+     */
+    protected $core = null;
 
     /**
      * This holds the PID for the configuration
@@ -105,6 +116,54 @@ class Solr
     protected $service;
 
     /**
+     * Add a new core to Apache Solr
+     *
+     * @access public
+     *
+     * @param string $core: The name of the new core. If empty, the next available core name is used.
+     *
+     * @return string The name of the new core
+     */
+    public static function createCore($core = '')
+    {
+        // Get next available core name if none given.
+        if (empty($core)) {
+            $core = 'dlfCore' . self::getNextCoreNumber();
+        }
+        // Get Solr service instance.
+        $solr = self::getInstance($core);
+        // Create new core if core with given name doesn't exist.
+        if ($solr->ready) {
+            // Core already exists.
+            return $core;
+        } else {
+            // Core doesn't exist yet.
+            $solrAdmin = self::getInstance();
+            if ($solrAdmin->ready) {
+                $query = $solrAdmin->service->createCoreAdmin();
+                $action = $query->createCreate();
+                $action->setConfigSet('dlf');
+                $action->setCore($core);
+                $action->setDataDir('data');
+                $action->setInstanceDir($core);
+                $query->setAction($action);
+                try {
+                    $response = $solrAdmin->service->coreAdmin($query);
+                    if ($response->getWasSuccessful()) {
+                        // Core successfully created.
+                        return $core;
+                    }
+                } catch (\Exception $e) {
+                    // Nothing to do here.
+                }
+            } else {
+                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            }
+        }
+        return '';
+    }
+
+    /**
      * Escape all special characters in a query string
      *
      * @access public
@@ -115,13 +174,13 @@ class Solr
      */
     public static function escapeQuery($query)
     {
-        $helper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
+        $helper = GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
         // Escape query phrase or term.
         if (preg_match('/^".*"$/', $query)) {
             return $helper->escapePhrase(trim($query, '"'));
         } else {
             // Using a modified escape function here to retain whitespace, '*' and '?' for search truncation.
-            // @see https://github.com/solariumphp/solarium/blob/4.x/src/Core/Query/Helper.php#L68 for reference
+            // @see https://github.com/solariumphp/solarium/blob/5.x/src/Core/Query/Helper.php#L70 for reference
             /* return $helper->escapeTerm($query); */
             return preg_replace('/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|:|\/|\\\)/', '\\\$1', $query);
         }
@@ -175,11 +234,7 @@ class Solr
             } else {
                 $query = self::escapeQuery($query);
             }
-        } elseif (
-            !empty($query)
-            && $query !== '*'
-        ) {
-            // Don't escape plain asterisk search.
+        } else {
             $query = self::escapeQuery($query);
         }
         return $query;
@@ -190,93 +245,40 @@ class Solr
      *
      * @access public
      *
-     * @param mixed $core: Name or UID of the core to load
+     * @param mixed $core: Name or UID of the core to load or null to get core admin endpoint
      *
      * @return \Kitodo\Dlf\Common\Solr Instance of this class
      */
-    public static function getInstance($core)
+    public static function getInstance($core = null)
     {
         // Get core name if UID is given.
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($core)) {
+        if (MathUtility::canBeInterpretedAsInteger($core)) {
             $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
         }
-        // Check if core is set.
-        if (empty($core)) {
-            Helper::devLog('Invalid core name "' . $core . '" for Apache Solr', DEVLOG_SEVERITY_ERROR);
-            return;
-        }
-        // Check if there is an instance in the registry already.
+        // Check if core is set or null.
         if (
-            is_object(self::$registry[$core])
-            && self::$registry[$core] instanceof self
+            empty($core)
+            && $core !== null
         ) {
-            // Return singleton instance if available.
-            return self::$registry[$core];
+            Helper::devLog('Invalid core UID or name given for Apache Solr', DEVLOG_SEVERITY_ERROR);
+        }
+        if (!empty($core)) {
+            // Check if there is an instance in the registry already.
+            if (
+                is_object(self::$registry[$core])
+                && self::$registry[$core] instanceof self
+            ) {
+                // Return singleton instance if available.
+                return self::$registry[$core];
+            }
         }
         // Create new instance...
         $instance = new self($core);
         // ...and save it to registry.
-        if ($instance->ready) {
-            self::$registry[$core] = $instance;
-            // Return new instance.
-            return $instance;
-        } else {
-            Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
-            return;
+        if (!empty($instance->core)) {
+            self::$registry[$instance->core] = $instance;
         }
-    }
-
-    /**
-     * Returns the connection information for Solr
-     *
-     * @access public
-     *
-     * @return array The connection parameters for a specific Solr core
-     */
-    public static function getSolrConnectionInfo()
-    {
-        $solrInfo = [];
-        // Extract extension configuration.
-        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-        // Derive Solr scheme
-        $solrInfo['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
-        // Derive Solr host name.
-        $solrInfo['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
-        // Set username and password.
-        $solrInfo['username'] = $conf['solrUser'];
-        $solrInfo['password'] = $conf['solrPass'];
-        // Set port if not set.
-        $solrInfo['port'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
-        // Trim path of slashes.
-        $solrInfo['path'] = trim($conf['solrPath'], '/');
-        // Timeout
-        $solrInfo['timeout'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, intval(ini_get('max_execution_time')), 10);
-        return $solrInfo;
-    }
-
-    /**
-     * Returns the request URL for a specific Solr core
-     *
-     * @access public
-     *
-     * @param string $core: Name of the core to load
-     *
-     * @return string The request URL for a specific Solr core
-     */
-    public static function getSolrUrl($core = '')
-    {
-        // Get Solr connection information.
-        $solrInfo = self::getSolrConnectionInfo();
-        if (
-            $solrInfo['username']
-            && $solrInfo['password']
-        ) {
-            $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
-        } else {
-            $host = $solrInfo['host'];
-        }
-        // Return entire request URL.
-        return $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/solr/' . $core;
+        return $instance;
     }
 
     /**
@@ -284,18 +286,53 @@ class Solr
      *
      * @access public
      *
-     * @param int $start: Number to start with
+     * @param int $number: Number to start with
      *
      * @return int First unused core number found
      */
-    public static function solrGetCoreNumber($start = 0)
+    public static function getNextCoreNumber($number = 0)
     {
-        $start = max(intval($start), 0);
+        $number = max(intval($number), 0);
         // Check if core already exists.
-        if (self::getInstance('dlfCore' . $start) === null) {
-            return $start;
+        $solr = self::getInstance('dlfCore' . $number);
+        if (!$solr->ready) {
+            return $number;
         } else {
-            return self::solrGetCoreNumber($start + 1);
+            return self::getNextCoreNumber($number + 1);
+        }
+    }
+
+    /**
+     * Sets the connection information for Solr
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function loadSolrConnectionInfo()
+    {
+        if (empty($this->config)) {
+            $config = [];
+            // Extract extension configuration.
+            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            // Derive Solr scheme
+            $config['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
+            // Derive Solr host name.
+            $config['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
+            // Set username and password.
+            $config['username'] = $conf['solrUser'];
+            $config['password'] = $conf['solrPass'];
+            // Set port if not set.
+            $config['port'] = MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
+            // Trim path of slashes and (re-)add trailing slash if path not empty.
+            $config['path'] = trim($conf['solrPath'], '/');
+            if (!empty($config['path'])) {
+                $config['path'] .= '/';
+            }
+            // Set connection timeout lower than PHP's max_execution_time.
+            $max_execution_time = intval(ini_get('max_execution_time')) ?: 30;
+            $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
+            $this->config = $config;
         }
     }
 
@@ -348,7 +385,7 @@ class Solr
             ];
         }
         // Save list of documents.
-        $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $list = GeneralUtility::makeInstance(DocumentList::class);
         $list->reset();
         $list->add(array_values($toplevel));
         // Set metadata for search.
@@ -392,7 +429,7 @@ class Solr
 
         // calculate cache identifier
         $cacheIdentifier = hash('md5', print_r(array_merge($this->params, $parameters), 1));
-        $cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('tx_dlf_solr');
+        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
 
         $resultSet = [];
         if (($entry = $cache->get($cacheIdentifier)) === false) {
@@ -408,6 +445,18 @@ class Solr
             $resultSet = $entry;
         }
         return $resultSet;
+    }
+
+    /**
+     * This returns $this->core via __get()
+     *
+     * @access protected
+     *
+     * @return string|null The core name of the current query endpoint or null if core admin endpoint
+     */
+    protected function _getCore()
+    {
+        return $this->core;
     }
 
     /**
@@ -565,37 +614,66 @@ class Solr
      *
      * @access protected
      *
-     * @param string $core: The name of the core to use
+     * @param string|null $core: The name of the core to use or null for core admin endpoint
      *
      * @return void
      */
     protected function __construct($core)
     {
-        $solrInfo = self::getSolrConnectionInfo();
+        // Get Solr connection parameters from configuration.
+        $this->loadSolrConnectionInfo();
+        // Configure connection adapter.
+        $adapter = GeneralUtility::makeInstance(\Solarium\Core\Client\Adapter\Http::class);
+        $adapter->setTimeout($this->config['timeout']);
+        // Configure event dispatcher.
+            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
+            // we have to provide an PSR-14 Event Dispatcher instead of
+            // "null".
+            // $eventDispatcher = GeneralUtility::makeInstance(\TYPO3\CMS\Core\EventDispatcher\EventDispatcher::class);
+        $eventDispatcher = null;
+        // Configure endpoint.
         $config = [
             'endpoint' => [
-                'dlf' => [
-                    'scheme' => $solrInfo['scheme'],
-                    'host' => $solrInfo['host'],
-                    'port' => $solrInfo['port'],
-                    'path' => '/' . $solrInfo['path'] . '/',
+                'default' => [
+                    'scheme' => $this->config['scheme'],
+                    'host' => $this->config['host'],
+                    'port' => $this->config['port'],
+                    'path' => '/' . $this->config['path'],
                     'core' => $core,
-                    'username' => $solrInfo['username'],
-                    'password' => $solrInfo['password'],
-                    'timeout' => $solrInfo['timeout']
+                    'username' => $this->config['username'],
+                    'password' => $this->config['password']
                 ]
             ]
         ];
         // Instantiate Solarium\Client class.
-        $this->service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Solarium\Client::class, $config);
+        $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $adapter, $eventDispatcher, $config);
         // Check if connection is established.
-        $ping = $this->service->createPing();
+        $query = $this->service->createCoreAdmin();
+        $action = $query->createStatus();
+        if ($core !== null) {
+            $action->setCore($core);
+        }
+        $query->setAction($action);
         try {
-            $this->service->ping($ping);
-            // Set core name.
-            $this->core = $core;
-            // Instantiation successful!
-            $this->ready = true;
+            $response = $this->service->coreAdmin($query);
+            if ($response->getWasSuccessful()) {
+                // Solr is reachable, but is the core as well?
+                if ($core !== null) {
+                    $result = $response->getStatusResult();
+                    if (
+                        $result instanceof \Solarium\QueryType\Server\CoreAdmin\Result\StatusResult
+                        && $result->getUptime() > 0
+                    ) {
+                        // Set core name.
+                        $this->core = $core;
+                    } else {
+                        // Core not available.
+                        return;
+                    }
+                }
+                // Instantiation successful!
+                $this->ready = true;
+            }
         } catch (\Exception $e) {
             // Nothing to do here.
         }
