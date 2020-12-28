@@ -12,12 +12,11 @@
   * This function increases the start parameter of the search form and submits
   * the form.
   *
-  * @param rows
   * @returns void
   */
-function nextResultPage(rows) {
+function nextResultPage() {
     var currentstart = $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val();
-    var newstart = parseInt(currentstart) + rows;
+    var newstart = parseInt(currentstart) + 20;
     $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(newstart);
     $('#tx-dlf-search-in-document-form').submit();
 };
@@ -26,13 +25,11 @@ function nextResultPage(rows) {
  * This function decreases the start parameter of the search form and submits
  * the form.
  *
- * @param rows
  * @returns void
  */
-function previousResultPage(rows) {
+function previousResultPage() {
     var currentstart = $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val();
-    currentstart = parseInt(currentstart);
-    var newstart = (currentstart > rows) ? (currentstart - rows) : 0;
+    var newstart = (parseInt(currentstart) > 20) ? (parseInt(currentstart) - 20) : 0;
     $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(newstart);
     $('#tx-dlf-search-in-document-form').submit();
 };
@@ -67,55 +64,60 @@ $(document).ready(function() {
                 hashed: $( "input[name='tx_dlf[hashed]']" ).val(),
             },
             function(data) {
-              var resultItems = [];
-              var resultList = '<div class="results-active-indicator"></div><ul>';
-              if (data.error) {
-                  resultList += '<li class="error">' + data.error + '</li>';
-              } else {
-                  for (var i=0; i < data.response.docs.length; i++) {
+                var resultItems = [];
+                var resultList = '<div class="results-active-indicator"></div><ul>';
+                var start = -1;
+                if (data['numFound'] > 0) {
+                    // Take the workview baseUrl from the form action.
+                    // The URL may be in the following form
+                    // - http://example.com/index.php?id=14
+                    // - http://example.com/workview (using slug on page with uid=14)
+                    var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
 
-                      // Take the workview baseUrl from the form action.
-                      // The URL may be in the following form
-                      // - http://example.com/index.php?id=14
-                      // - http://example.com/workview (using slug on page with uid=14)
-                      var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
-
-                      if (baseUrl.indexOf('?')>0) {
+                    if (baseUrl.indexOf('?') > 0) {
                         baseUrl += '&';
-                      } else {
+                    } else {
                         baseUrl += '?';
-                      }
+                    }
+                    data['documents'].forEach(function (element, i) {
+                        if (start < 0) {
+                            start = i;
+                        }
+                        var searchWord = element['snippet'];
+                        searchWord = searchWord.substring(searchWord.indexOf('<em>') + 4, searchWord.indexOf('</em>'));
 
-                      var searchHit = data.highlighting[data.response.docs[i].id].fulltext.toString();
-                      searchHit = searchHit.substring(searchHit.indexOf('<em>')+4,searchHit.indexOf('</em>'));
+                        var link = baseUrl
+                            + 'tx_dlf[id]=' + element['uid']
+                            + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchWord)
+                            + '&tx_dlf[page]=' + element['page'];
 
-                      var newlink = baseUrl
-                      + 'tx_dlf[id]=' + data.response.docs[i].uid
-                      + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchHit)
-                      + '&tx_dlf[page]=' + data.response.docs[i].page;
-
-                      if (data.highlighting[data.response.docs[i].id].fulltext) {
-                          resultItems[data.response.docs[i].page] = '<span class="structure">' + $('#tx-dlf-search-in-document-label-page').text() + ' ' + data.response.docs[i].page + '</span><br /><span ="textsnippet"><a href=\"' + newlink + '\">' + data.highlighting[data.response.docs[i].id].fulltext + '</a></span>';
-                      }
-                  }
-                  if (resultItems.length > 0) {
-                    // sort by page as this cannot be done with current solr schema
-                    resultItems.sort(function(a, b){return a-b});
-                    resultItems.forEach(function(item, index){
+                        if (element['snippet'].length > 0) {
+                            resultItems[element['page']] = '<span class="structure">'
+                                + $('#tx-dlf-search-in-document-label-page').text() + ' ' + element['page']
+                                + '</span><br />'
+                                + '<span ="textsnippet">'
+                                + '<a href=\"' + link + '\">' + element['snippet'] + '</a>'
+                                + '</span>';
+                        }
+                    });
+                    // Sort result by page.
+                    resultItems.sort(function (a, b) {
+                        return a - b;
+                    });
+                    resultItems.forEach(function (item, index) {
                         resultList += '<li>' + item + '</li>';
                     });
                 } else {
                     resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
                 }
-              }
-              resultList += '</ul>';
-              if (parseInt(data.response.start) > 0) {
-                  resultList += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage(' + data.responseHeader.params.rows + ');" value="' + $('#tx-dlf-search-in-document-label-previous').text() + '" />';
-              }
-              if (parseInt(data.response.numFound) > (parseInt(data.response.start) + parseInt(data.responseHeader.params.rows))) {
-                  resultList += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage(' + data.responseHeader.params.rows + ');" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
-              }
-              $('#tx-dlf-search-in-document-results').html(resultList);
+                resultList += '</ul>';
+                if (start > 0) {
+                    resultList += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" value="' + $('#tx-dlf-search-in-document-label-previous').text() + '" />';
+                }
+                if (data['numFound'] > (start + 20)) {
+                    resultList += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
+                }
+                $('#tx-dlf-search-in-document-results').html(resultList);
             },
             "json"
         )

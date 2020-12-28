@@ -560,7 +560,9 @@ class Indexer
         // Get Solr instance.
         if (!self::$solr) {
             // Connect to Solr server.
-            if (self::$solr = Solr::getInstance($core)) {
+            $solr = Solr::getInstance($core);
+            if ($solr->ready) {
+                self::$solr = $solr;
                 // Load indexing configuration if needed.
                 if ($pid) {
                     self::loadIndexConf($pid);
