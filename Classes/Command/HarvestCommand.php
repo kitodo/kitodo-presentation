@@ -158,6 +158,10 @@ class HarvestCommand extends Command
                     $queryBuilder->expr()->eq(
                         'uid',
                         $queryBuilder->createNamedParameter((int) $input->getOption('lib'), Connection::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->eq(
+                        'pid',
+                        $queryBuilder->createNamedParameter((int) $startingPoint, Connection::PARAM_INT)
                     )
                 )
                 ->setMaxResults(1)
