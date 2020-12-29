@@ -272,7 +272,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
                     controls.push(new ol.control.OverviewMap({
                         'collapsed': false,
                         'collapsible': false,
-                        'layers': layers,
+                        layers,
                         'target': overviewMapTargetElement
                     }));
                     break;
