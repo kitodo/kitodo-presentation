@@ -1031,3 +1031,40 @@ Toolbox
        :ref:`t3tsref:data-type-resource`
    :Default:
        Toolbox.tmpl
+
+
+Fulltext Tool
+^^^^^^^^^^^^^
+This plugin adds an activation link for fulltext to the toolbox. If no fulltext is available for the current page, a span-tag is rendered instead.
+
+The default behaviour is to show the fulltext after click on the toggle link. There is a TypoScript configuration to show the fulltext initially.
+
+:typoscript:`plugin.tx_dlf_fulltexttool.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+       Default
+   :Values:
+       Values
+
+ - :Property:
+       activateFullTextInitially
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+        0
+   :Values:
+        0: show fulltext after click on toggle link
+
+        1: show fulltext on document load
+
+
+The fulltext is fetched and rendered by JavaSript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
+
+**Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ muste be configured appropriate on the providing webserver.
