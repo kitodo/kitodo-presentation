@@ -641,9 +641,7 @@ final class MetsDocument extends Document
 
                 $resArray = $result->fetch();
 
-                if ($metadata['owner'][0] != $resArray['owner']) {
-                    $metadata['owner'][0] = $resArray['owner'];
-                }
+                $metadata['owner'][0] = $resArray['owner'];
             }
             // Extract metadata only from first supported dmdSec.
             $hasSupportedMetadata = true;
