@@ -57,8 +57,14 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext':'Fulltext', 'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext', 'launch-state':'on'};
+        {'fulltext':'Fulltext', 'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext', 'activate-full-text-initially':'0'};
 
+    /**
+     * @type {number}
+     * @private
+     */
+    this.activateFullTextInitially = this.dic['activate-full-text-initially'] === "1" ? 1 : 0;
+    
     /**
      * @type {ol.Feature|undefined}
      * @private
@@ -161,17 +167,49 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         this)
     };
 
-    // add active / deactive behavior in case of click on control depending on launch state
-    if (this.dic['launch-state'] === 'on') {
-        this.addActiveBehaviourForSwitchOn();
-    }
+    this.changeActiveBehaviour();
+};
 
-    if (this.dic['launch-state'] === 'off') {
+/**
+ * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
+ */
+dlfViewerFullTextControl.prototype.changeActiveBehaviour = function() {
+    if (this.activateFullTextInitially === 1) {
+        this.addActiveBehaviourForSwitchOn();
+    } else {
         this.addActiveBehaviourForSwitchOff();
     }
 };
 
 dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
+    var anchorEl = $('#tx-dlf-tools-fulltext');
+    if (anchorEl.length > 0){
+        var toogleFulltext = $.proxy(function(event) {
+            event.preventDefault();
+
+            this.activateFullTextInitially = 0;
+
+            if ($(event.target).hasClass('active')) {
+                this.deactivate();
+                return;
+            }
+
+            this.activate();
+        }, this);
+
+        anchorEl.on('click', toogleFulltext);
+        anchorEl.on('touchstart', toogleFulltext);
+    }
+
+    // set initial title of fulltext element
+    $("#tx-dlf-tools-fulltext")
+        .text(this.dic['fulltext'])
+        .attr('title', this.dic['fulltext']);
+    
+    this.activate();
+};
+
+dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
     var anchorEl = $('#tx-dlf-tools-fulltext');
     if (anchorEl.length > 0){
         var toogleFulltext = $.proxy(function(event) {
@@ -197,29 +235,8 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
     // if fulltext is activated via cookie than run activation methode
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
         // activate the fulltext behavior
-        this.activate(anchorEl);
+        this.activate();
     }
-};
-
-dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
-    var anchorEl = $('#tx-dlf-tools-fulltext');
-    if (anchorEl.length > 0){
-        var toogleFulltext = $.proxy(function(event) {
-            event.preventDefault();
-
-            this.activate();
-        }, this);
-
-        anchorEl.on('click', toogleFulltext);
-        anchorEl.on('touchstart', toogleFulltext);
-    }
-
-    // set initial title of fulltext element
-    $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext'])
-        .attr('title', this.dic['fulltext']);
-    
-    this.activate(anchorEl);
 };
 
 /**
@@ -398,8 +415,12 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").removeClass(className)
+
+    if(this.activateFullTextInitially === 0) {
+        $("#tx-dlf-tools-fulltext")
         .text(this.dic['fulltext-on'])
         .attr('title', this.dic['fulltext-on']);
+    }
 
     $('#tx-dlf-fulltextselection').removeClass(className);
     $('#tx-dlf-fulltextselection').hide();
@@ -427,7 +448,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-fulltext").addClass(className);
 
-    if(this.dic['launch-state'] === 'on') {
+    if(this.activateFullTextInitially=== 0) {
         $("#tx-dlf-tools-fulltext")
         .text(this.dic['fulltext-off'])
         .attr('title', this.dic['fulltext-off']);
