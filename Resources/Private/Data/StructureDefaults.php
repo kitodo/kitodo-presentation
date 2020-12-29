@@ -181,6 +181,10 @@ return [
         'toplevel' => 0,
         'oai_name' => ''
     ],
+    'inventory' => [
+        'toplevel' => 1,
+        'oai_name' => ''
+    ],
     'issue' => [
         'toplevel' => 1,
         'oai_name' => ''
@@ -343,6 +347,10 @@ return [
     ],
     'study' => [
         'toplevel' => 1,
+        'oai_name' => '',
+    ],
+    'subinventory' => [
+        'toplevel' => 0,
         'oai_name' => '',
     ],
     'table' => [
