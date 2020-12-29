@@ -214,8 +214,8 @@ class HarvestCommand extends Command
         // Get OAI record identifiers to process.
         try {
             $identifiers = $oai->listIdentifiers('mets', $from, $until, $set);
-        } catch (BaseoaipmhException $e) {
-            $this->throwOaiError($e, $io);
+        } catch (BaseoaipmhException $exception) {
+            $this->throwOaiError($exception, $io);
         }
 
         // Process all identifiers.
@@ -287,13 +287,13 @@ class HarvestCommand extends Command
     /**
      * Handles OAI errors
      *
-     * @param BaseoaipmhException $e Instance of exception thrown
-     * @param SymfonyStyle $io 
+     * @param BaseoaipmhException $exception Instance of exception thrown
+     * @param SymfonyStyle $io
      *
      * @return void
      */
-    protected function handleOaiError(BaseoaipmhException $e, SymfonyStyle $io)
+    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io)
     {
-        $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $e->getMessage());
+        $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
     }
 }
