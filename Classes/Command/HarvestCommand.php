@@ -290,6 +290,6 @@ class HarvestCommand extends Command
      */
     protected function handleOaiError(BaseoaipmhException $e, SymfonyStyle $io)
     {
-        $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' ."\n    " . $e->getMessage());
+        $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $e->getMessage());
     }
 }
