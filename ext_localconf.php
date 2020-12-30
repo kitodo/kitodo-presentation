@@ -250,3 +250,9 @@ if (\TYPO3_MODE === 'FE') {
         return ($hook->getDocumentType($pid) === $type);
     }
 }
+// Add new renderType for TCA fields.
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
+    'nodeName' => 'editInProductionWarning',
+    'priority' => 30,
+    'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\EditInProductionWarning::class
+];

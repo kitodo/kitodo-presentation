@@ -31,35 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class DataHandler
 {
     /**
-     * Field pre-processing hook for the process_datamap() method.
-     *
-     * @access public
-     *
-     * @param array &$fieldArray: Array of field values
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
-     *
-     * @return void
-     */
-    public function processDatamap_preProcessFieldArray(&$fieldArray, $table, $id)
-    {
-        switch ($table) {
-                // Field pre-processing for tables "tx_dlf_collections", "tx_dlf_libraries", "tx_dlf_metadata" and "tx_dlf_structures".
-            case 'tx_dlf_collections':
-            case 'tx_dlf_libraries':
-            case 'tx_dlf_metadata':
-            case 'tx_dlf_structures':
-                // Set index name only if explicitly edited.
-                if (!empty($fieldArray['index_name_edit'])) {
-                    $fieldArray['index_name'] = $fieldArray['index_name_edit'];
-                }
-                // Remove edit-field from field array since it's no database field.
-                unset($fieldArray['index_name_edit']);
-                break;
-        }
-    }
-
-    /**
      * Field post-processing hook for the process_datamap() method.
      *
      * @access public
