@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Hooks\Form\FieldInformation;
+namespace Kitodo\Dlf\Hooks\Form\FieldWizard;
 
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Backend\Form\AbstractNode;
