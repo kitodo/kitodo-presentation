@@ -146,7 +146,6 @@ class HarvestCommand extends Command
             exit(1);
         }
 
-        $baseUrl = '';
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_libraries');
@@ -184,20 +183,29 @@ class HarvestCommand extends Command
             }
         }
 
-        if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input->getOption('from'))) {
+        if (
+            !is_array($input->getOption('from'))
+            && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input->getOption('from'))
+        ) {
             $from = new \DateTime($input->getOption('from'));
         } else {
             $from = null;
         }
 
-        if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input->getOption('until'))) {
+        if (
+            !is_array($input->getOption('until'))
+            && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input->getOption('until'))
+        ) {
             $until = new \DateTime($input->getOption('until'));
         } else {
             $until = null;
         }
 
         $set = null;
-        if (!empty($input->getOption('set'))) {
+        if (
+            !is_array($input->getOption('set'))
+            && !empty($input->getOption('set'))
+        ) {
             $setsAvailable = $oai->listSets();
             foreach ($setsAvailable as $setAvailable) {
                 if ((string) $setAvailable->setSpec === $input->getOption('set')) {
@@ -215,7 +223,7 @@ class HarvestCommand extends Command
         try {
             $identifiers = $oai->listIdentifiers('mets', $from, $until, $set);
         } catch (BaseoaipmhException $exception) {
-            $this->throwOaiError($exception, $io);
+            $this->handleOaiError($exception, $io);
         }
 
         // Process all identifiers.

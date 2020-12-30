@@ -26,7 +26,7 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write int $cPid This holds the PID for the configuration
+ * @property int $cPid This holds the PID for the configuration
  * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
  * @property-read array $fileGrps This holds the file ID -> USE concordance
  * @property-read bool $hasFulltext Are there any fulltext files available?
@@ -791,18 +791,6 @@ final class MetsDocument extends Document
     protected function getDocument()
     {
         return $this->mets;
-    }
-
-    /**
-     * This returns $this->cPid via __get()
-     *
-     * @access protected
-     *
-     * @return int The PID of the metadata definitions
-     */
-    protected function _getCPid()
-    {
-        return $this->cPid;
     }
 
     /**

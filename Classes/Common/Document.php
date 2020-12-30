@@ -26,7 +26,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write int $cPid This holds the PID for the configuration
+ * @property int $cPid This holds the PID for the configuration
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
@@ -1300,6 +1300,18 @@ abstract class Document
      * @return int The parent document's id.
      */
     protected abstract function getParentDocumentUidForSaving($pid, $core, $owner);
+
+    /**
+     * This returns $this->cPid via __get()
+     *
+     * @access protected
+     *
+     * @return int The PID of the metadata definitions
+     */
+    protected function _getCPid()
+    {
+        return $this->cPid;
+    }
 
     /**
      * This returns $this->hasFulltext via __get()
