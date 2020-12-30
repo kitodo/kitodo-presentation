@@ -125,7 +125,7 @@ return [
                 'max' => 255,
                 'eval' => 'required,uniqueInPid',
                 'default' => '',
-                'fieldInformation' => [
+                'fieldWizard' => [
                     'editInProductionWarning' => [
                         'renderType' => 'editInProductionWarning',
                     ],

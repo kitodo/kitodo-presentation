@@ -16,7 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 
 /**
- * FieldInformation renderType for TYPO3 FormEngine
+ * FieldWizard renderType for TYPO3 FormEngine
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
