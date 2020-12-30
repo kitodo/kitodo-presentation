@@ -120,11 +120,16 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.index_name',
             'config' => [
-                'type' => 'none',
+                'type' => 'input',
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'required,uniqueInPid',
                 'default' => '',
+                'fieldWizard' => [
+                    'editInProductionWarning' => [
+                        'renderType' => 'editInProductionWarning',
+                    ],
+                ],
             ],
         ],
         'index_search' => [

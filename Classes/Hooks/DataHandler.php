@@ -101,12 +101,12 @@ class DataHandler
                     break;
             }
         } elseif ($status == 'update') {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable($table);
-
             switch ($table) {
                     // Field post-processing for table "tx_dlf_metadata".
                 case 'tx_dlf_metadata':
+                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                        ->getQueryBuilderForTable($table);
+
                     // Store field in index if it should appear in lists.
                     if (!empty($fieldArray['is_listed'])) {
                         $fieldArray['index_stored'] = 1;
@@ -156,32 +156,6 @@ class DataHandler
                             // Reset indexing to current.
                             $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
-                    }
-                    // Field post-processing for tables "tx_dlf_metadata" and "tx_dlf_structures".
-                case 'tx_dlf_structures':
-                    // The index name should not be changed in production.
-                    if (isset($fieldArray['index_name'])) {
-                        if (count($fieldArray) < 2) {
-                            // Unset the whole field array.
-                            $fieldArray = [];
-                        } else {
-                            // Get current index name.
-                            $result = $queryBuilder
-                                ->select($table . '.index_autocomplete AS index_autocomplete')
-                                ->from($table)
-                                ->where(
-                                    $queryBuilder->expr()->eq($table . '.uid', intval($id)),
-                                    Helper::whereExpression($table)
-                                )
-                                ->setMaxResults(1)
-                                ->execute();
-
-                            if ($resArray = $result->fetch()) {
-                                // Reset indexing to current.
-                                $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
-                            }
-                        }
-                        Helper::devLog('Prevented change of index_name for UID ' . $id . ' in table "' . $table . '"', DEVLOG_SEVERITY_NOTICE);
                     }
                     break;
             }
