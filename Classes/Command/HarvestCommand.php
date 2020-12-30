@@ -179,7 +179,7 @@ class HarvestCommand extends Command
             try {
                 $oai = Endpoint::build($baseUrl);
             } catch (BaseoaipmhException $e) {
-                $this->throwOaiError($e, $io);
+                $this->handleOaiError($e, $io);
             }
         }
 
