@@ -34,17 +34,20 @@ class EditInProductionWarning extends AbstractNode
      */
     public function render(): array
     {
-        // Load localization file.
-        $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
-        // Create flash message.
-        Helper::addMessage(
-            htmlspecialchars($GLOBALS['LANG']->getLL('flash.editInProductionWarning')),
-            htmlspecialchars($GLOBALS['LANG']->getLL('flash.attention')),
-            \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-        );
-        // Add message to result array.
         $result = $this->initializeResultArray();
-        $result['html'] = Helper::renderFlashMessages();
+        // Show warning only when editing existing records.
+        if ($this->data['command'] !== 'new') {
+            // Load localization file.
+            $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
+            // Create flash message.
+            Helper::addMessage(
+                htmlspecialchars($GLOBALS['LANG']->getLL('flash.editInProductionWarning')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('flash.attention')),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+            );
+            // Add message to result array.
+            $result['html'] = Helper::renderFlashMessages();
+        }
         return $result;
     }
 }
