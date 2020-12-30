@@ -111,6 +111,11 @@ return [
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,uniqueInPid',
                 'default' => '',
+                'fieldWizard' => [
+                    'editInProductionWarning' => [
+                        'renderType' => 'editInProductionWarning',
+                    ],
+                ],
             ],
         ],
         'oai_name' => [
