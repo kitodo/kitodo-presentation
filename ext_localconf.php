@@ -256,3 +256,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'priority' => 30,
     'class' => \Kitodo\Dlf\Hooks\Form\FieldWizard\EditInProductionWarning::class
 ];
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
+    'nodeName' => 'solrCoreStatus',
+    'priority' => 30,
+    'class' => \Kitodo\Dlf\Hooks\Form\FieldWizard\SolrCoreStatus::class
+];
