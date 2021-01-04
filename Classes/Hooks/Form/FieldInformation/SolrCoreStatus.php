@@ -17,7 +17,7 @@ use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 
 /**
- * FieldWizard renderType for TYPO3 FormEngine
+ * FieldInformation renderType for TYPO3 FormEngine
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
@@ -49,15 +49,16 @@ class SolrCoreStatus extends AbstractNode
                 $action = $coreAdminQuery->createStatus();
                 $action->setCore($core);
                 $coreAdminQuery->setAction($action);
-                $result = $solr->service->coreAdmin($coreAdminQuery)->getStatusResult();
-                $uptime = $result->getUptime();
-                $numDocuments = $result->getNumberOfDocuments();
-                $startTime = $result->getStartTime() ? date_format($result->getStartTime(), 'c') : 'N/A';
-                $lastModified = $result->getLastModified() ? date_format($result->getLastModified(), 'c') : 'N/A';
+                $response = $solr->service->coreAdmin($coreAdminQuery)->getStatusResult();
+                $uptimeInSeconds = floor($response->getUptime() / 1000);
+                $uptime = floor($uptimeInSeconds / 3600) . gmdate(":i:s.", $uptimeInSeconds % 3600) . $response->getUptime() % 1000;
+                $numDocuments = $response->getNumberOfDocuments();
+                $startTime = $response->getStartTime() ? date_format($response->getStartTime(), 'c') : 'N/A';
+                $lastModified = $response->getLastModified() ? date_format($response->getLastModified(), 'c') : 'N/A';
                 // Create flash message.
                 Helper::addMessage(
-                    nl2br(htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.coreStatusDetails'), $startTime, $uptime, $lastModified, $numDocuments))),
-                    htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.coreStatus'), $core)),
+                    htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.coreStatusDetails'), $startTime, $uptime, $lastModified, $numDocuments)),
+                    htmlspecialchars($GLOBALS['LANG']->getLL('flash.coreStatus')),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                 );
             } else {

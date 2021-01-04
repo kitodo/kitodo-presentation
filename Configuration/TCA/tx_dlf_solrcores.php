@@ -50,7 +50,7 @@ return [
                 'eval' => 'alphanum,nospace,required,unique',
                 'default' => '',
                 'readOnly' => true,
-                'fieldWizard' => [
+                'fieldInformation' => [
                     'solrCoreStatus' => [
                         'renderType' => 'solrCoreStatus',
                     ],
