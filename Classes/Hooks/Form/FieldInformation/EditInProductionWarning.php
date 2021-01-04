@@ -42,7 +42,7 @@ class EditInProductionWarning extends AbstractNode
             // Create flash message.
             Helper::addMessage(
                 htmlspecialchars($GLOBALS['LANG']->getLL('flash.editInProductionWarning')),
-                htmlspecialchars($GLOBALS['LANG']->getLL('flash.attention')),
+                '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
             // Add message to result array.
