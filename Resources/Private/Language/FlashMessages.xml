@@ -19,8 +19,7 @@
             <label index="flash.done">Done!</label>
             <label index="flash.warning">Warning!</label>
             <label index="flash.error">Error!</label>
-            <label index="flash.coreStatus">Status of Solr Core</label>
-            <label index="flash.coreStatusDetails">Start Time: %s\nUptime: %s\nLast Modified: %s\nNumber of Documents: %s</label>
+            <label index="flash.coreStatus">Start Time: %s\nUptime: %s\nLast Modified: %s\nNumber of Documents: %s</label>
             <label index="flash.running">Please wait...</label>
             <label index="flash.newCollection">New collection "%s" [%u] added to database.</label>
             <label index="flash.newLibrary">New library "%s" [%u] added to database.</label>
@@ -94,8 +93,7 @@
             <label index="flash.done">Fertig!</label>
             <label index="flash.warning">Warnung!</label>
             <label index="flash.error">Fehler!</label>
-            <label index="flash.coreStatus">Status des Solr-Kerns</label>
-            <label index="flash.coreStatusDetails">Start Time: %s\nUptime: %s\nLast Modified: %s\nNumber of Documents: %s</label>
+            <label index="flash.coreStatus">Start Time: %s\nUptime: %s\nLast Modified: %s\nNumber of Documents: %s</label>
             <label index="flash.running">Indexierung läuft...</label>
             <label index="flash.newCollection">Neue Sammlung "%s" [%u] zur Datenbank hinzugefügt.</label>
             <label index="flash.newLibrary">Neue Bibliothek "%s" [%u] zur Datenbank hinzugefügt.</label>

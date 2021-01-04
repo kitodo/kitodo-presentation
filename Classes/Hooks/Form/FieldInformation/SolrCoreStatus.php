@@ -32,6 +32,7 @@ class SolrCoreStatus extends AbstractNode
      * @access public
      *
      * @return array As defined in initializeResultArray() of AbstractNode
+     *               Allowed tags are: "<a><br><br/><div><em><i><p><strong><span><code>"
      */
     public function render(): array
     {
@@ -57,15 +58,15 @@ class SolrCoreStatus extends AbstractNode
                 $lastModified = $response->getLastModified() ? date_format($response->getLastModified(), 'c') : 'N/A';
                 // Create flash message.
                 Helper::addMessage(
-                    htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.coreStatusDetails'), $startTime, $uptime, $lastModified, $numDocuments)),
-                    htmlspecialchars($GLOBALS['LANG']->getLL('flash.coreStatus')),
+                    htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('flash.coreStatus'), $startTime, $uptime, $lastModified, $numDocuments)),
+                    '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                 );
             } else {
                 // Could not fetch core status.
                 Helper::addMessage(
                     htmlspecialchars($GLOBALS['LANG']->getLL('solr.error')),
-                    htmlspecialchars($GLOBALS['LANG']->getLL('solr.notConnected')),
+                    '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
