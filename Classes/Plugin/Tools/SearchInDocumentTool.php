@@ -93,18 +93,27 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load template file.
         $this->getTemplate();
 
+        // Configure @action URL for form.
+        $linkConf = [
+            'parameter' => $GLOBALS['TSFE']->id,
+            'forceAbsoluteUrl' => 1,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+        ];
+
+        $actionUrl = $this->cObj->typoLink_URL($linkConf);
+        $currentDocument = $this->doc->uid;
+
+        // split the given URL for DDB Zeitungsportal
+        if (intval($this->conf['isIndexRemapped']) === 1) {
+            $pathElements = explode("/", $currentDocument);
+            $actionUrl = $pathElements[0] . '//' . $pathElements[2] . '/ddb-current/newspaper/';
+            $currentDocument = $pathElements[5];
+        }
+
+        $encryptedSolr = $this->getEncryptedCoreName();
         // Fill markers.
         $markerArray = [
-            '###ACTION_URL###' => $this->getActionUrl(),
-            '###LABEL_QUERY###' => htmlspecialchars($this->pi_getLL('label.query')),
-            '###LABEL_DELETE_SEARCH###' => htmlspecialchars($this->pi_getLL('label.delete_search')),
-            '###LABEL_LOADING###' => htmlspecialchars($this->pi_getLL('label.loading')),
-            '###LABEL_SUBMIT###' => htmlspecialchars($this->pi_getLL('label.submit')),
-            '###LABEL_SEARCH_IN_DOCUMENT###' => htmlspecialchars($this->pi_getLL('label.searchInDocument')),
-            '###LABEL_NEXT###' => htmlspecialchars($this->pi_getLL('label.next')),
-            '###LABEL_PREVIOUS###' => htmlspecialchars($this->pi_getLL('label.previous')),
-            '###LABEL_PAGE###' => htmlspecialchars($this->pi_getLL('label.logicalPage')),
-            '###LABEL_NORESULT###' => htmlspecialchars($this->pi_getLL('label.noresult')),
+            '###ACTION_URL###' => $actionUrl,
             '###LABEL_QUERY_URL###' => $this->conf['queryInputName'],
             '###LABEL_START###' => $this->conf['startInputName'],
             '###LABEL_ID###' => $this->conf['idInputName'],

@@ -58,23 +58,30 @@ class SearchInDocument
         if ($solr->ready) {
             $query = $solr->service->createSelect();
             $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
-            $query->setQuery($fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . intval($parameters['uid']));
+            $query->setQuery($this->getQuery($fields, $parameters));
             $query->setStart($count)->setRows(20);
             $hl = $query->getHighlighting();
-            $hl->setFields([$fields['fulltext']]);
-            $hl->setUseFastVectorHighlighter(true);
-            var_dump($query);
-            $results = $solr->service->select($query);
-            var_dump($results);
-            $output['numFound'] = $results->getNumFound();
-            $highlighting = $results->getHighlighting();
-            foreach ($results as $result) {
-                $snippet = $highlighting->getResult($result->id)->getField($fields['fulltext']);
+            $solrRequest = $solr->service->createRequest($query);
+            // it is necessary to add this custom parameter to request
+            // query object doesn't allow custom parameters
+            $solrRequest->addParam('hl.ocr.fl', $fields['fulltext']);
+            $response = $solr->service->executeRequest($solrRequest);
+            $result = $solr->service->createResult($query, $response);
+            $output['numFound'] = $result->getNumFound();
+            $data = $result->getData();
+            $highlighting = $data['ocrHighlighting'];
+            foreach ($result as $record) {
+                $snippets = $highlighting[$record[$fields['id']]][$fields['fulltext']]['snippets'];
+                $snippetArray = array();
+                foreach ($snippets as $snippet) {
+                    array_push($snippetArray, $snippet['text']);
+                }
+
                 $document = [
-                    'id' => $result->id,
-                    'uid' => $result->uid,
-                    'page' => $result->page,
-                    'snippet' => !empty($snippet) ? implode(' [...] ', $snippet) : ''
+                    'id' => $record[$fields['id']],
+                    'uid' => $parameters['uid'],
+                    'page' => $record[$fields['page']],
+                    'snippet' => !empty($snippetArray) ? implode(' [...] ', $snippetArray) : ''
                 ];
                 $output['documents'][$count] = $document;
                 $count++;
@@ -85,5 +92,13 @@ class SearchInDocument
         $response = GeneralUtility::makeInstance(Response::class);
         $response->getBody()->write(json_encode($output));
         return $response;
+    }
+
+    private function getQuery($fields, $parameters) {
+        return $fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . intval($parameters['uid']);
+    }
+
+    private function getUid($uid) {
+        return intval($uid) > 0  ? intval($uid) : $uid;
     }
 }

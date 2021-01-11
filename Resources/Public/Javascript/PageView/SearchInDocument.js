@@ -46,7 +46,10 @@ function resetStart() {
 $(document).ready(function() {
     $("#tx-dlf-search-in-document-form").submit(function(event) {
         // Stop form from submitting normally
+        alert("Handler for .submit() called.");
         event.preventDefault();
+        event.stopPropagation();
+
         $('#tx-dlf-search-in-document-loading').show();
         $('#tx-dlf-search-in-document-clearing').hide();
         $('#tx-dlf-search-in-document-button-next').hide();
@@ -77,6 +80,7 @@ $(document).ready(function() {
                     } else {
                         baseUrl += '?';
                     }
+                    console.log(baseUrl)
                     data['documents'].forEach(function (element, i) {
                         if (start < 0) {
                             start = i;
