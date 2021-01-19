@@ -42,11 +42,10 @@ class SearchSuggest
         // Get input parameters and decrypt core name.
         $parameters = $request->getParsedBody();
         $encrypted = (string) $parameters['encrypted'];
-        $hashed = (string) $parameters['hashed'];
-        if (empty($encrypted) || empty($hashed)) {
+        if (empty($encrypted)) {
             throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
-        $core = Helper::decrypt($encrypted, $hashed);
+        $core = Helper::decrypt($encrypted);
         // Perform Solr query.
         $solr = Solr::getInstance($core);
         if ($solr->ready) {

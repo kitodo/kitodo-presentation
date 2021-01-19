@@ -108,8 +108,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             '###LABEL_PAGE###' => htmlspecialchars($this->pi_getLL('label.logicalPage')),
             '###LABEL_NORESULT###' => htmlspecialchars($this->pi_getLL('label.noresult')),
             '###CURRENT_DOCUMENT###' => $this->doc->uid,
-            '###SOLR_ENCRYPTED###' => isset($encryptedSolr['encrypted']) ? $encryptedSolr['encrypted'] : '',
-            '###SOLR_HASH###' => isset($encryptedSolr['hash']) ? $encryptedSolr['hash'] : '',
+            '###SOLR_ENCRYPTED###' => $encryptedSolr ?: '',
         ];
 
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
@@ -134,7 +133,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return array with encrypted core name and hash
+     * @return string with encrypted core name
      */
     protected function getEncryptedCoreName()
     {
