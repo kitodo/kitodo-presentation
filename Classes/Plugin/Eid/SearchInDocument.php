@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\Response;
@@ -62,26 +63,30 @@ class SearchInDocument
             $query->setStart($count)->setRows(20);
             $hl = $query->getHighlighting();
             $solrRequest = $solr->service->createRequest($query);
-            // it is necessary to add this custom parameter to request
-            // query object doesn't allow custom parameters
+
+            // it is necessary to add the custom parameters to the request
+            // because query object doesn't allow custom parameters
+
+            // field for which highlighting is going to be performed,
+            // is required if you want to have OCR highlighting
             $solrRequest->addParam('hl.ocr.fl', $fields['fulltext']);
+            // return the coordinates of highlighted search as absolute coordinates
+            $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
             $response = $solr->service->executeRequest($solrRequest);
             $result = $solr->service->createResult($query, $response);
             $output['numFound'] = $result->getNumFound();
             $data = $result->getData();
             $highlighting = $data['ocrHighlighting'];
+
             foreach ($result as $record) {
-                $snippets = $highlighting[$record[$fields['id']]][$fields['fulltext']]['snippets'];
-                $snippetArray = array();
-                foreach ($snippets as $snippet) {
-                    array_push($snippetArray, $snippet['text']);
-                }
+                $resultDocument = new ResultDocument($record, $highlighting, $fields);
 
                 $document = [
-                    'id' => $record[$fields['id']],
-                    'uid' => $parameters['uid'],
-                    'page' => $record[$fields['page']],
-                    'snippet' => !empty($snippetArray) ? implode(' [...] ', $snippetArray) : ''
+                    'id' => $resultDocument->getId(),
+                    'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+                    'page' => $resultDocument->getPage(),
+                    'snippet' => $resultDocument->getSnippets(),
+                    'highlight' => $resultDocument->getHighlightsIds()
                 ];
                 $output['documents'][$count] = $document;
                 $count++;
