@@ -193,7 +193,7 @@
             <label index="config.solrHttps">Use HTTPS: (default is "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (default is "localhost")</label>
             <label index="config.solrPort">Solr Server Port: (default is "8983")</label>
-            <label index="config.solrPath">Solr Server Path: omit API endpoint "/solr" when using Solarium 5.x (default is "/")</label>
+            <label index="config.solrPath">Solr Server Path: without API endpoint "/solr" (default is "/")</label>
             <label index="config.solrUser">Solr Server User: (default is "")</label>
             <label index="config.solrPass">Solr Server Password: (default is "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (default is "10")</label>
@@ -378,7 +378,7 @@
             <label index="config.solrHttps">HTTPS verwenden: (Standard ist "FALSE")</label>
             <label index="config.solrHost">Solr Server Host: (Standard ist "localhost")</label>
             <label index="config.solrPort">Solr Server Port: (Standard ist "8983")</label>
-            <label index="config.solrPath">Solr Server Pfad: bei Solarium 5.x ohne API-Endpunkt "/solr" (Standard ist "/")</label>
+            <label index="config.solrPath">Solr Server Pfad: ohne API-Endpunkt "/solr" (Standard ist "/")</label>
             <label index="config.solrUser">Solr Server Benutzername: (Standard ist "")</label>
             <label index="config.solrPass">Solr Server Kennwort: (Standard ist "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (Standard ist "10")</label>

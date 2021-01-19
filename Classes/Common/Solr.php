@@ -329,6 +329,11 @@ class Solr
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
+            // Add "/solr" API endpoint when using Solarium <5.x
+                // Todo: Remove when dropping support for Solarium 4.x
+            if (!\Solarium\Client::checkMinimal('5.0.0')) {
+                $config['path'] .= 'solr/';
+            }
             // Set connection timeout lower than PHP's max_execution_time.
             $max_execution_time = intval(ini_get('max_execution_time')) ?: 30;
             $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
