@@ -57,13 +57,19 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext':'Fulltext', 'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext', 'activate-full-text-initially':'0'};
+        {'fulltext':'Fulltext', 'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext', 'activate-full-text-initially':'0', 'full-text-scroll-element':'html, body'};
 
     /**
      * @type {number}
      * @private
      */
     this.activateFullTextInitially = this.dic['activate-full-text-initially'] === "1" ? 1 : 0;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.fullTextScrollElement = this.dic['full-text-scroll-element'];
     
     /**
      * @type {ol.Feature|undefined}
@@ -338,7 +344,7 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
  */
 dlfViewerFullTextControl.prototype.scrollToText = function(element) {
     if (element.hasClass('highlight')) {
-        $('html, body').animate({
+        $(this.fullTextScrollElement).animate({
             scrollTop: element.offset().top
         }, 500);
     }
