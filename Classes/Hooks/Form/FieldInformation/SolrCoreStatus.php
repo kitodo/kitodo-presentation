@@ -51,17 +51,26 @@ class SolrCoreStatus extends AbstractNode
                 $action->setCore($core);
                 $coreAdminQuery->setAction($action);
                 $response = $solr->service->coreAdmin($coreAdminQuery)->getStatusResult();
-                $uptimeInSeconds = floor($response->getUptime() / 1000);
-                $uptime = floor($uptimeInSeconds / 3600) . gmdate(":i:s.", $uptimeInSeconds % 3600) . $response->getUptime() % 1000;
-                $numDocuments = $response->getNumberOfDocuments();
-                $startTime = $response->getStartTime() ? strftime('%c', $response->getStartTime()->getTimestamp()) : 'N/A';
-                $lastModified = $response->getLastModified() ? strftime('%c'. $response->getLastModified()->getTimestamp()) : 'N/A';
-                // Create flash message.
-                Helper::addMessage(
-                    sprintf($GLOBALS['LANG']->getLL('flash.coreStatus'), $startTime, $uptime, $lastModified, $numDocuments),
-                    '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
-                );
+                if ($response) {
+                    $uptimeInSeconds = floor($response->getUptime() / 1000);
+                    $dateTimeFrom = new \DateTime('@0');
+                    $dateTimeTo = new \DateTime("@$uptimeInSeconds");
+                    $uptime = $dateTimeFrom->diff($dateTimeTo)->format('%a ' . $GLOBALS['LANG']->getLL('flash.days') . ', %H:%I:%S');
+
+                    $numDocuments = $response->getNumberOfDocuments();
+
+                    $startTime = $response->getStartTime() ? strftime('%c', $response->getStartTime()->getTimestamp()) : 'N/A';
+                    $startTimeTimestamp = $response->getStartTime()->getTimestamp();
+
+                    $lastModifiedTimestamp = $response->getLastModified()->getTimestamp();
+                    $lastModified = $response->getLastModified() ? strftime('%c', $response->getLastModified()->getTimestamp()) : 'N/A';
+                    // Create flash message.
+                    Helper::addMessage(
+                        sprintf($GLOBALS['LANG']->getLL('flash.coreStatus'), $startTime, $uptime, $lastModified, $numDocuments),
+                        '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
+                    );
+                }
             } else {
                 // Could not fetch core status.
                 Helper::addMessage(
