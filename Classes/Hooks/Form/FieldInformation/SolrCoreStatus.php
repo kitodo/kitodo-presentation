@@ -54,8 +54,8 @@ class SolrCoreStatus extends AbstractNode
                 $uptimeInSeconds = floor($response->getUptime() / 1000);
                 $uptime = floor($uptimeInSeconds / 3600) . gmdate(":i:s.", $uptimeInSeconds % 3600) . $response->getUptime() % 1000;
                 $numDocuments = $response->getNumberOfDocuments();
-                $startTime = $response->getStartTime() ? date_format($response->getStartTime(), 'c') : 'N/A';
-                $lastModified = $response->getLastModified() ? date_format($response->getLastModified(), 'c') : 'N/A';
+                $startTime = $response->getStartTime() ? strftime('%c', $response->getStartTime()->getTimestamp()) : 'N/A';
+                $lastModified = $response->getLastModified() ? strftime('%c'. $response->getLastModified()->getTimestamp()) : 'N/A';
                 // Create flash message.
                 Helper::addMessage(
                     sprintf($GLOBALS['LANG']->getLL('flash.coreStatus'), $startTime, $uptime, $lastModified, $numDocuments),
