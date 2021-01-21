@@ -428,7 +428,7 @@ class Solr
         $parameters['query'] = $query;
 
         // calculate cache identifier
-        $cacheIdentifier = hash('md5', print_r(array_merge($this->params, $parameters), 1));
+        $cacheIdentifier = hash('md5', $this->core . print_r(array_merge($this->params, $parameters), 1));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
 
         $resultSet = [];
