@@ -243,7 +243,7 @@ class Helper
      *
      * @param string $string: The string to encrypt
      *
-     * @return string Encrypted string or false on error
+     * @return mixed Encrypted string or false on error
      */
     public static function encrypt($string)
     {
