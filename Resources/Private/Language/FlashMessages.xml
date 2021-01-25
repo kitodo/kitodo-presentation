@@ -20,6 +20,7 @@
             <label index="flash.warning">Warning!</label>
             <label index="flash.error">Error!</label>
             <label index="flash.coreStatus">Start Time: %s&lt;br /&gt;Uptime: %s&lt;br /&gt;Last Modified: %s&lt;br /&gt;Number of Documents: %u</label>
+            <label index="flash.days">days</label>
             <label index="flash.running">Please wait...</label>
             <label index="flash.newCollection">New collection "%s" [%u] added to database.</label>
             <label index="flash.newLibrary">New library "%s" [%u] added to database.</label>
@@ -94,6 +95,7 @@
             <label index="flash.warning">Warnung!</label>
             <label index="flash.error">Fehler!</label>
             <label index="flash.coreStatus">Startzeit: %s&lt;br /&gt;Laufzeit: %s&lt;br /&gt;Letzte Änderung: %s&lt;br /&gt;Anzahl Dokumente: %u</label>
+            <label index="flash.days">Tage</label>
             <label index="flash.running">Indexierung läuft...</label>
             <label index="flash.newCollection">Neue Sammlung "%s" [%u] zur Datenbank hinzugefügt.</label>
             <label index="flash.newLibrary">Neue Bibliothek "%s" [%u] zur Datenbank hinzugefügt.</label>
