@@ -30,6 +30,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     public $scriptRelPath = 'Classes/Plugin/PageView.php';
 
     /**
+     * Holds the attributions for the digital object
+     *
+     * @var array
+     * @access protected
+     */
+    protected $attributions = [];
+
+    /**
      * Holds the controls to add to the map
      *
      * @var array
@@ -70,28 +78,24 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function addViewerJS()
     {
-        $markerArray = '';
+        $markerArray = [];
         // CSS files.
         $cssFiles = [
-            'Resources/Public/Javascript/OpenLayers/ol3.css'
+            'Resources/Public/Stylesheets/OpenLayers/ol.css'
         ];
         // Javascript files.
         $jsFiles = [
             // OpenLayers
-            'Resources/Public/Javascript/OpenLayers/glif.min.js',
-            'Resources/Public/Javascript/OpenLayers/ol3-dlf.js',
+            'Resources/Public/Javascript/OpenLayers/ol.js',
             // Viewer
             'Resources/Public/Javascript/PageView/Utility.js',
-            'Resources/Public/Javascript/PageView/OL3.js',
-            'Resources/Public/Javascript/PageView/OL3Styles.js',
-            'Resources/Public/Javascript/PageView/OL3Sources.js',
-            'Resources/Public/Javascript/PageView/AltoParser.js',
-            'Resources/Public/Javascript/PageView/AnnotationParser.js',
-            'Resources/Public/Javascript/PageView/AnnotationControl.js',
-            'Resources/Public/Javascript/PageView/ImageManipulationControl.js',
-            'Resources/Public/Javascript/PageView/FulltextDownloadControl.js',
-            'Resources/Public/Javascript/PageView/FulltextControl.js',
-            'Resources/Public/Javascript/PageView/FullTextUtility.js',
+//            'Resources/Public/Javascript/PageView/AltoParser.js',
+//            'Resources/Public/Javascript/PageView/AnnotationParser.js',
+//            'Resources/Public/Javascript/PageView/AnnotationControl.js',
+//            'Resources/Public/Javascript/PageView/ImageManipulationControl.js',
+//            'Resources/Public/Javascript/PageView/FulltextDownloadControl.js',
+//            'Resources/Public/Javascript/PageView/FulltextControl.js',
+//            'Resources/Public/Javascript/PageView/FullTextUtility.js',
             'Resources/Public/Javascript/PageView/PageView.js'
         ];
         // Viewer configuration.
@@ -99,11 +103,12 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             $(document).ready(function() {
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({
-                        controls: ["' . implode('", "', $this->controls) . '"],
-                        div: "' . $this->conf['elementId'] . '",
+                        attributions: ' . json_encode($this->attributions) . ',
+                        controls: ' . json_encode($this->controls) . ',
+                        target: "' . $this->conf['elementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
-                        annotationContainers: ' . json_encode($this->annotationContainers) . ',
+                        annotations: ' . json_encode($this->annotationContainers) . ',
                         useInternalProxy: ' . ($this->conf['useInternalProxy'] ? 1 : 0) . '
                     });
                 }
@@ -121,21 +126,22 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             $pageRenderer->addJsFooterInlineCode('kitodo-pageview-configuration', $viewerConfiguration);
         } else {
             foreach ($jsFiles as $jsFile) {
-                $markerArray .= '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>' . "\n";
+                $markerArray[] = '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>';
             }
-            $markerArray .= '
-                <script type="text/javascript">
-                /*<![CDATA[*/
-                /*kitodo-pageview-configuration*/
-                ' . $viewerConfiguration . '
-                /*]]>*/
-                </script>';
+            $markerArray[] = [
+                '<script type="text/javascript">',
+                '/*<![CDATA[*/',
+                '/*kitodo-pageview-configuration*/',
+                $viewerConfiguration,
+                '/*]]>*/',
+                '</script>'
+            ];
         }
-        return $markerArray;
+        return implode("\n", $markerArray);
     }
 
     /**
-     * Adds pageview interaction (crop, magnifier and rotation)
+     * Adds pageview interaction (crop and magnifier)
      *
      * @access protected
      *
@@ -298,7 +304,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                     $annotationContainers = [];
                     /*
                      *  TODO Analyzing the annotations on the server side requires loading the annotation lists / pages
-                     *  just to determine wether they contain text annotations for painting. This will take time and lead to a bad user experience.
+                     *  just to determine whether they contain text annotations for painting. This will take time and lead to a bad user experience.
                      *  It would be better to link every annotation and analyze the data on the client side.
                      *
                      *  On the other hand, server connections are potentially better than client connections. Downloading annotation lists

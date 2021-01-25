@@ -37,20 +37,20 @@ class PageViewProxy
      */
     public function main(ServerRequestInterface $request)
     {
-        // header parameter for getUrl(); allowed values 0,1,2; default 0
+        // Header parameter for getUrl().
         $header = (int) $request->getQueryParams()['header'];
         $header = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0);
 
-        // the URI to fetch data or header from
+        // The URI to fetch data or header from.
         $url = (string) $request->getQueryParams()['url'];
         if (!GeneralUtility::isValidUrl($url)) {
-            throw new \InvalidArgumentException('No valid url passed!', 1580482805);
+            throw new \InvalidArgumentException('No valid URL passed!', 1580482805);
         }
 
-        // fetch the requested data or header
+        // Fetch the requested data or header.
         $fetchedData = GeneralUtility::getUrl($url, $header);
 
-        // Fetch header data separately to get "Last-Modified" info
+        // Fetch header data seperately to get "Last-Modified" info.
         if ($header === 0) {
             $fetchedHeaderString = GeneralUtility::getUrl($url, 2);
             if (!empty($fetchedHeaderString)) {
