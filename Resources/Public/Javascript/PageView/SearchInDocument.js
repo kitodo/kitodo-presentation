@@ -43,6 +43,43 @@ function resetStart() {
     $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(0);
 }
 
+/**
+ * Add highlight effect for found search phrase.
+ * @param {array} highlightIds
+ * 
+ * @returns void
+ */
+function addHighlightEffect(highlightIds) {
+    highlightIds.forEach(function(highlightId) {
+        var targetElement = $('#' + highlightId);
+        
+        if (targetElement.length > 0 && !targetElement.hasClass('highlight')) {
+            targetElement.addClass('highlight');
+        }
+    })
+}
+
+/**
+ * Get base URL for snippet links.
+ * 
+ * @returns string
+ */
+function getBaseUrl() {
+    // Take the workview baseUrl from the form action.
+    // The URL may be in the following form
+    // - http://example.com/index.php?id=14
+    // - http://example.com/workview (using slug on page with uid=14)
+    var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
+
+    if (baseUrl.indexOf('?') > 0) {
+        baseUrl += '&';
+    } else {
+        baseUrl += '?';
+    }
+    console.log(baseUrl)
+    return baseUrl;
+}
+
 $(document).ready(function() {
     $("#tx-dlf-search-in-document-form").submit(function(event) {
         // Stop form from submitting normally
@@ -69,18 +106,6 @@ $(document).ready(function() {
                 var resultList = '<div class="results-active-indicator"></div><ul>';
                 var start = -1;
                 if (data['numFound'] > 0) {
-                    // Take the workview baseUrl from the form action.
-                    // The URL may be in the following form
-                    // - http://example.com/index.php?id=14
-                    // - http://example.com/workview (using slug on page with uid=14)
-                    var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
-
-                    if (baseUrl.indexOf('?') > 0) {
-                        baseUrl += '&';
-                    } else {
-                        baseUrl += '?';
-                    }
-                    console.log(baseUrl)
                     data['documents'].forEach(function (element, i) {
                         if (start < 0) {
                             start = i;
@@ -88,7 +113,7 @@ $(document).ready(function() {
                         var searchWord = element['snippet'];
                         searchWord = searchWord.substring(searchWord.indexOf('<em>') + 4, searchWord.indexOf('</em>'));
 
-                        var link = baseUrl
+                        var link = getBaseUrl()
                             + 'tx_dlf[id]=' + element['uid']
                             + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchWord)
                             + '&tx_dlf[page]=' + element['page'];
@@ -101,6 +126,12 @@ $(document).ready(function() {
                                 + '<a href=\"' + link + '\">' + element['snippet'] + '</a>'
                                 + '</span>';
                         }
+
+                        // TODO: highlight found phrase in full text - verify page?
+                        if (element['highlight'].length > 0) {
+                            addHighlightEffect(element['highlight']);
+                        }
+                        // TODO: highlight found phrase in image
                     });
                     // Sort result by page.
                     resultItems.sort(function (a, b) {
