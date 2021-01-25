@@ -56,13 +56,8 @@ class SolrCoreStatus extends AbstractNode
                     $dateTimeFrom = new \DateTime('@0');
                     $dateTimeTo = new \DateTime("@$uptimeInSeconds");
                     $uptime = $dateTimeFrom->diff($dateTimeTo)->format('%a ' . $GLOBALS['LANG']->getLL('flash.days') . ', %H:%I:%S');
-
                     $numDocuments = $response->getNumberOfDocuments();
-
                     $startTime = $response->getStartTime() ? strftime('%c', $response->getStartTime()->getTimestamp()) : 'N/A';
-                    $startTimeTimestamp = $response->getStartTime()->getTimestamp();
-
-                    $lastModifiedTimestamp = $response->getLastModified()->getTimestamp();
                     $lastModified = $response->getLastModified() ? strftime('%c', $response->getLastModified()->getTimestamp()) : 'N/A';
                     // Create flash message.
                     Helper::addMessage(
