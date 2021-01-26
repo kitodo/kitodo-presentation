@@ -329,6 +329,11 @@ class Solr
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
+            // Add "/solr" API endpoint when using Solarium <5.x
+                // Todo: Remove when dropping support for Solarium 4.x
+            if (!\Solarium\Client::checkMinimal('5.0.0')) {
+                $config['path'] .= 'solr/';
+            }
             // Set connection timeout lower than PHP's max_execution_time.
             $max_execution_time = intval(ini_get('max_execution_time')) ?: 30;
             $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
@@ -426,11 +431,9 @@ class Solr
         $parameters['rows'] = $this->limit;
         // Set query.
         $parameters['query'] = $query;
-
-        // calculate cache identifier
-        $cacheIdentifier = Helper::digest(print_r(array_merge($this->params, $parameters), true));
+        // Calculate cache identifier.
+        $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
-
         $resultSet = [];
         if (($entry = $cache->get($cacheIdentifier)) === false) {
             $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
@@ -438,10 +441,10 @@ class Solr
             foreach ($result as $doc) {
                 $resultSet[] = $doc;
             }
-            // Save value in cache
+            // Save value in cache.
             $cache->set($cacheIdentifier, $resultSet);
         } else {
-            // return cache hit
+            // Return cache hit.
             $resultSet = $entry;
         }
         return $resultSet;
@@ -624,13 +627,15 @@ class Solr
         $this->loadSolrConnectionInfo();
         // Configure connection adapter.
         $adapter = GeneralUtility::makeInstance(\Solarium\Core\Client\Adapter\Http::class);
-        $adapter->setTimeout($this->config['timeout']);
+            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
+            // the timeout must be set with the adapter instead of the
+            // endpoint (see below).
+            // $adapter->setTimeout($this->config['timeout']);
         // Configure event dispatcher.
             // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
             // we have to provide an PSR-14 Event Dispatcher instead of
             // "null".
             // $eventDispatcher = GeneralUtility::makeInstance(\TYPO3\CMS\Core\EventDispatcher\EventDispatcher::class);
-        $eventDispatcher = null;
         // Configure endpoint.
         $config = [
             'endpoint' => [
@@ -641,12 +646,18 @@ class Solr
                     'path' => '/' . $this->config['path'],
                     'core' => $core,
                     'username' => $this->config['username'],
-                    'password' => $this->config['password']
+                    'password' => $this->config['password'],
+                    'timeout' => $this->config['timeout'] // Remove when upgrading to Solarium 6.x
                 ]
             ]
         ];
         // Instantiate Solarium\Client class.
-        $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $adapter, $eventDispatcher, $config);
+        $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $config);
+        $this->service->setAdapter($adapter);
+            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
+            // $adapter and $eventDispatcher are mandatory arguments
+            // of the \Solarium\Client constructor.
+            // $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $adapter, $eventDispatcher, $config);
         // Check if connection is established.
         $query = $this->service->createCoreAdmin();
         $action = $query->createStatus();

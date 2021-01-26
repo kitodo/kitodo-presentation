@@ -1064,6 +1064,13 @@ The default behaviour is to show the fulltext after click on the toggle link. Th
 
         1: show fulltext on document load
 
+ - :Property:
+       fullTextScrollElement
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        html, body       
+
 
 The fulltext is fetched and rendered by JavaSript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
 
