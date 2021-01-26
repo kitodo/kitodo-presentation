@@ -16,19 +16,21 @@
  * @param {Object} settings
  * @param {string[]} settings.attributions
  * @param {string[]} settings.controls
+ * @param {Object} settings.controlTargets
  * @param {string=} settings.target
- * @param {string[]} settings.images
+ * @param {Object[]} settings.images
  * @param {boolean} settings.useInternalProxy
  */
 var dlfViewer = function(settings) {
     /**
      * This holds the settings.
      * @public
-     * @type {Object.<{attributions: *, controls: *, target: *, images: *, useInternalProxy: *}>}
+     * @type {Object.<{attributions: *, controls: *, controlTargets: *, target: *, images: *, useInternalProxy: *}>}
      */
     this.settings = {
         attributions: dlfUtils.exists(settings.attributions) ? settings.attributions : [''],
         controls: dlfUtils.exists(settings.controls) ? settings.controls : [],
+        controlTargets: dlfUtils.exists(settings.controlTargets) ? settings.controlTargets : {},
         target: dlfUtils.exists(settings.target) ? settings.target : 'tx-dlf-map',
         images: dlfUtils.exists(settings.images) ? settings.images : [],
         useInternalProxy: dlfUtils.exists(settings.useInternalProxy) ? true : false
@@ -75,7 +77,8 @@ dlfViewer.prototype.getOLControls = function() {
         this.olx.controls = [];
         if (this.settings.controls.includes("FullScreen")) {
             this.olx.controls.push(new ol.control.FullScreen({
-                tipLabel: ""
+                target: this.settings.controlTargets.FullScreen || undefined,
+                tipLabel: ''
             }));
         }
         if (this.settings.controls.includes("OverviewMap")) {
@@ -83,26 +86,32 @@ dlfViewer.prototype.getOLControls = function() {
                 collapsed: false,
                 collapsible: false,
                 rotateWithView: true,
-                tipLabel: ""
+                target: this.settings.controlTargets.OverviewMap || undefined,
+                tipLabel: ''
             }));
         }
         if (this.settings.controls.includes("Rotate")) {
             this.olx.controls.push(new ol.control.Rotate({
-                tipLabel: ""
+                target: this.settings.controlTargets.Rotate || undefined,
+                tipLabel: ''
             }));
         }
         if (this.settings.controls.includes("Zoom")) {
             this.olx.controls.push(new ol.control.Zoom({
-                zoomInTipLabel: "",
-                zoomOutTipLabel: ""
+                target: this.settings.controlTargets.Zoom || undefined,
+                zoomInTipLabel: '',
+                zoomOutTipLabel: ''
             }));
         }
         if (this.settings.controls.includes("ZoomSlider")) {
-            this.olx.controls.push(new ol.control.ZoomSlider());
+            this.olx.controls.push(new ol.control.ZoomSlider({
+                target: this.settings.controlTargets.ZoomSlider || undefined
+            }));
         }
         if (this.settings.controls.includes("ZoomToExtent")) {
             this.olx.controls.push(new ol.control.ZoomToExtent({
-                tipLabel: ""
+                target: this.settings.controlTargets.ZoomToExtent || undefined,
+                tipLabel: ''
             }));
         }
     }
@@ -115,16 +124,17 @@ dlfViewer.prototype.getOLControls = function() {
  */
 dlfViewer.prototype.getOLInteractions = function() {
     if (this.olx.interactions === undefined) {
-        this.olx.interactions = [];
-        this.olx.interactions.push(new ol.interaction.DragPan());
-        this.olx.interactions.push(new ol.interaction.DragRotate({
-            condition: new ol.events.condition.shiftKeyOnly()
-        }));
-        this.olx.interactions.push(new ol.interaction.KeyboardPan());
-        this.olx.interactions.push(new ol.interaction.KeyboardZoom());
-        this.olx.interactions.push(new ol.interaction.MouseWheelZoom());
-        this.olx.interactions.push(new ol.interaction.PinchRotate());
-        this.olx.interactions.push(new ol.interaction.PinchZoom());
+        this.olx.interactions = [
+            new ol.interaction.DragPan(),
+            new ol.interaction.DragRotate({
+                condition: new ol.events.condition.shiftKeyOnly()
+            }),
+            new ol.interaction.KeyboardPan(),
+            new ol.interaction.KeyboardZoom(),
+            new ol.interaction.MouseWheelZoom(),
+            new ol.interaction.PinchRotate(),
+            new ol.interaction.PinchZoom()
+        ];
     }
     return this.olx.interactions;
 };

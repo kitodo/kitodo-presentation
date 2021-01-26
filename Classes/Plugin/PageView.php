@@ -46,6 +46,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     protected $controls = [];
 
     /**
+     * Holds the controls' HTML element targets
+     *
+     * @var array
+     * @access protected
+     */
+    protected $controlTargets = [];
+
+    /**
      * Holds the current images' URLs and MIME types
      *
      * @var array
@@ -105,6 +113,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                     tx_dlf_viewer = new dlfViewer({
                         attributions: ' . json_encode($this->attributions) . ',
                         controls: ' . json_encode($this->controls) . ',
+                        controlTargets: ' . json_encode($this->controlTargets) . ',
                         target: "' . $this->conf['elementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
@@ -389,6 +398,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Get the controls for the map.
         $this->controls = explode(',', $this->conf['features']);
+        $this->controlTargets = [
+            'FullScreen' => $this->conf['fullScreenElementId'] ?: '',
+            'OverviewMap' => $this->conf['overviewMapElementId'] ?: '',
+            'Rotate' => $this->conf['rotateElementId'] ?: '',
+            'Zoom' => $this->conf['zoomElementId'] ?: '',
+            'ZoomSlider' => $this->conf['zoomSliderElementId'] ?: '',
+            'ZoomToExtent' => $this->conf['zoomToExtentElementId'] ?: ''
+        ];
         // Fill in the template markers.
         $markerArray = array_merge($this->addInteraction(), $this->addBasketForm());
         $markerArray['###JAVASCRIPT###'] = $this->addViewerJS();
