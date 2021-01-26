@@ -92,7 +92,7 @@ dlfViewer.prototype.getOLControls = function() {
         if (this.settings.controls.includes("OverviewMap")) {
             // Copy layers for overview map.
             var ovLayers = [];
-            thix.olx.layers.forEach(layer => {
+            this.olx.layers.forEach(layer => {
                 ovLayers.push($.extend(true, {}, layer));
             });
             this.olx.controls.push(new ol.control.OverviewMap({
