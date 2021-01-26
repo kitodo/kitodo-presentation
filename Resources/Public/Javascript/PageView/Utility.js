@@ -126,7 +126,7 @@ dlfUtils.getImageMetadata = function (imageSources, context) {
             deferredResponse.resolveWith(context, [imageMetadata]);
         }
     };
-    imageSources.forEach(function (source, index) {
+    imageSources.forEach((source, index) => {
         if (source.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
             dlfUtils.getIIIFMetadata(source)
                 .done(function (sourceMetadata) {
@@ -226,7 +226,7 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
 dlfUtils.isCorsEnabled = function (images) {
     var response = false;
     // Use image proxy to get CORS headers.
-    images.forEach(function(image) {
+    images.forEach(image => {
         var url = image.url;
         switch (image.mimetype) {
             case dlfUtils.CUSTOM_MIMETYPE.IIIF:
@@ -245,7 +245,7 @@ dlfUtils.isCorsEnabled = function (images) {
         $.ajax({
             url: url,
             async: false
-        }).done(function(data, type) {
+        }).done((data, type) => {
             response = type === 'success' && data.indexOf('Access-Control-Allow-Origin') !== -1;
         });
     });

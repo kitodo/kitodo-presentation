@@ -154,7 +154,7 @@ dlfViewer.prototype.getOLInteractions = function() {
 dlfViewer.prototype.getOLLayers = function() {
     if (this.olx.layers === undefined) {
         this.olx.layers = [];
-        this.olx.sources.forEach(function (source) {
+        this.olx.sources.forEach(source => {
             var layer = undefined;
             switch (true) {
                 case source instanceof ol.source.IIIF:
@@ -168,7 +168,7 @@ dlfViewer.prototype.getOLLayers = function() {
             if (layer !== undefined) {
                 this.olx.layers.push(layer);
             }
-        }, this);
+        });
     }
     return this.olx.layers;
 };
@@ -204,7 +204,7 @@ dlfViewer.prototype.getOLSources = function() {
             zDirection: -1
         };
         var offset = 0;
-        this.settings.images.forEach(function (image) {
+        this.settings.images.forEach(image => {
             var extentOnMap = [offset, -image.height, image.width + offset, 0];
             var imageOptions = {
                 extent: extentOnMap, // For IIIF, IIP and Zoomify sources.
@@ -235,7 +235,7 @@ dlfViewer.prototype.getOLSources = function() {
                 this.olx.extent = ol.extent.extend(this.olx.extent, extentOnMap);
                 offset += image.width;
             }
-        }, this);
+        });
     }
     return this.olx.sources;
 };
