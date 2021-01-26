@@ -237,6 +237,26 @@ class Helper
     }
 
     /**
+     * Digest the given string
+     *
+     * @access public
+     *
+     * @param string $string: The string to encrypt
+     *
+     * @return mixed Hashed string or false on error
+     */
+    public static function digest($string)
+    {
+        if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
+            self::devLog('OpenSSL library doesn\'t support hash algorithm', DEVLOG_SEVERITY_ERROR);
+            return false;
+        }
+        // Hash string.
+        $hashed = openssl_digest($string, self::$hashAlgorithm);
+        return $hashed;
+    }
+
+    /**
      * Encrypt the given string
      *
      * @access public
