@@ -135,7 +135,7 @@ dlfViewer.prototype.getOLInteractions = function() {
         this.olx.interactions = [
             new ol.interaction.DragPan(),
             new ol.interaction.DragRotate({
-                condition: new ol.events.condition.shiftKeyOnly()
+                condition: ol.events.condition.shiftKeyOnly
             }),
             new ol.interaction.KeyboardPan(),
             new ol.interaction.KeyboardZoom(),
