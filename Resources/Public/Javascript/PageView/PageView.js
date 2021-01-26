@@ -90,12 +90,27 @@ dlfViewer.prototype.getOLControls = function() {
             }));
         }
         if (this.settings.controls.includes("OverviewMap")) {
+            // Copy layers for overview map.
+            var ovLayers = [];
+            thix.olx.layers.forEach(layer => {
+                ovLayers.push($.extend(true, {}, layer));
+            });
             this.olx.controls.push(new ol.control.OverviewMap({
                 collapsed: false,
-                collapsible: false,
-                rotateWithView: true,
+                layers: ovLayers,
                 target: this.settings.controlTargets.OverviewMap || undefined,
-                tipLabel: ''
+                tipLabel: '',
+                view: new ol.View({
+                    center: ol.extent.getCenter(this.olx.extent),
+                    extent: this.olx.extent,
+                    projection: new ol.proj.Projection({
+                        code: 'dlf-projection',
+                        units: 'pixels',
+                        extent: this.olx.extent
+                    }),
+                    resolutions: [20],
+                    showFullExtent: true
+                })
             }));
         }
         if (this.settings.controls.includes("Rotate")) {
@@ -249,7 +264,7 @@ dlfViewer.prototype.getOLView = function() {
         this.olx.view = new ol.View({
             center: ol.extent.getCenter(this.olx.extent),
             extent: this.olx.extent,
-            maxZoom: 8,
+            maxZoom: 7,
             projection: new ol.proj.Projection({
                 code: 'dlf-projection',
                 units: 'pixels',
@@ -266,16 +281,16 @@ dlfViewer.prototype.getOLView = function() {
  * Initialize the viewer
  */
 dlfViewer.prototype.init = function() {
-    // Initialize OpenLayers map controls.
-    this.olx.controls = this.getOLControls();
-    // Initialize OpenLayers map interactions.
-    this.olx.interactions = this.getOLInteractions();
     // Initialize OpenLayers map sources.
     this.olx.sources = this.getOLSources();
     // Initialize OpenLayers map layers.
     this.olx.layers = this.getOLLayers();
     // Initialize OpenLayers map view.
     this.olx.view = this.getOLView();
+    // Initialize OpenLayers map controls.
+    this.olx.controls = this.getOLControls();
+    // Initialize OpenLayers map interactions.
+    this.olx.interactions = this.getOLInteractions();
     // And finally initialize OpenLayers map object.
     this.olx.map = this.getOLMap();
 };
