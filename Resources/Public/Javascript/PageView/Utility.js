@@ -113,16 +113,17 @@ dlfUtils.getIIPMetadata = function (imageSource) {
  * Get image metadata for given image sources
  *
  * @param {Array.<{url: *, mimetype: *}>} imageSources
+ * @param {Object} context
  * @return {JQueryStatic.Deferred}
  */
-dlfUtils.getImageMetadata = function (imageSources) {
+dlfUtils.getImageMetadata = function (imageSources, context) {
     var deferredResponse = new $.Deferred();
     var imageMetadata = [];
     var loadCount = 0;
     var checkResolve = function checkResolve() {
         loadCount += 1;
         if (loadCount === imageSources.length) {
-            deferredResponse.resolve(imageMetadata);
+            deferredResponse.resolveWith(context, [imageMetadata]);
         }
     };
     imageSources.forEach(function (source, index) {

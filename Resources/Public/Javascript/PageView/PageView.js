@@ -64,8 +64,16 @@ var dlfViewer = function(settings) {
         view: undefined
     };
 
-    // Initialize OpenLayers map.
-    this.init();
+    // Get image metadata and start initialization.
+    dlfUtils.getImageMetadata(this.settings.images, this)
+        .done(imageMetadata => {
+            imageMetadata.forEach((metadata, index) => {
+                this.settings.images[index].width = metadata.width;
+                this.settings.images[index].height = metadata.height;
+                this.settings.images[index].options = metadata.options;
+            }, this);
+            this.init();
+        });
 };
 
 /**
@@ -257,25 +265,16 @@ dlfViewer.prototype.getOLView = function() {
  * Initialize the viewer
  */
 dlfViewer.prototype.init = function() {
-    // Get image metadata needed as OpenLayers parameters.
-    dlfUtils.getImageMetadata(this.settings.images)
-        .done(function(imageMetadata) {
-            imageMetadata.forEach(function(metadata, index) {
-                this.settings.images[index].width = metadata.width;
-                this.settings.images[index].height = metadata.height;
-                this.settings.images[index].options = metadata.options;
-            }, this);
-            // Initialize OpenLayers map controls.
-            this.olx.controls = this.getOLControls();
-            // Initialize OpenLayers map interactions.
-            this.olx.interactions = this.getOLInteractions();
-            // Initialize OpenLayers map sources.
-            this.olx.sources = this.getOLSources();
-            // Initialize OpenLayers map layers.
-            this.olx.layers = this.getOLLayers();
-            // Initialize OpenLayers map view.
-            this.olx.view = this.getOLView();
-            // And finally initialize OpenLayers map object.
-            this.olx.map = this.getOLMap();
-        });
+    // Initialize OpenLayers map controls.
+    this.olx.controls = this.getOLControls();
+    // Initialize OpenLayers map interactions.
+    this.olx.interactions = this.getOLInteractions();
+    // Initialize OpenLayers map sources.
+    this.olx.sources = this.getOLSources();
+    // Initialize OpenLayers map layers.
+    this.olx.layers = this.getOLLayers();
+    // Initialize OpenLayers map view.
+    this.olx.view = this.getOLView();
+    // And finally initialize OpenLayers map object.
+    this.olx.map = this.getOLMap();
 };
