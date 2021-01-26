@@ -249,6 +249,7 @@ dlfViewer.prototype.getOLView = function() {
         this.olx.view = new ol.View({
             center: ol.extent.getCenter(this.olx.extent),
             extent: this.olx.extent,
+            maxZoom: 8,
             projection: new ol.proj.Projection({
                 code: 'dlf-projection',
                 units: 'pixels',
