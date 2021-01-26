@@ -14,7 +14,7 @@
  * Namespace for dlfViewer utility functions.
  * @namespace
  */
-var dlfUtils = dlfUtils || {};
+dlfUtils = dlfUtils || {};
 
 /**
  * Custom MIMETYPEs for image server protocols.
@@ -49,8 +49,8 @@ dlfUtils.getIIIFMetadata = function (imageSource) {
         imageSource.url += imageSource.url.endsWith('/') ? 'info.json' : '/info.json';
     }
     fetch(imageSource.url)
-        .then(response => response.json())
-        .then(imageInfo => {
+        .then((response) => response.json())
+        .then((imageInfo) => {
             tileSourceOptions = new ol.format.IIIFInfo(imageInfo)
                 .getTileSourceOptions({
                     format: 'jpg',
@@ -77,8 +77,8 @@ dlfUtils.getIIPMetadata = function (imageSource) {
     var metadata = {};
     var tileSourceOptions = undefined;
     fetch(imageSource.url + (imageSource.url.includes('?') ? '&' : '?') + 'obj=IIP,1.0&obj=Max-size&obj=Tile-size')
-        .then(response => response.text())
-        .then(imageInfo => {
+        .then((response) => response.text())
+        .then((imageInfo) => {
             var size = [0, 0];
             var tileSize = 256;
             // imageInfo is a plain-text multi-line string:
@@ -87,9 +87,9 @@ dlfUtils.getIIPMetadata = function (imageSource) {
             // Tile-size:TILEWIDTH TILEHEIGHT
             imageInfo.replace(/\r\n/g, '\n')
                 .split('\n')
-                .forEach(textLine => {
+                .forEach((textLine) => {
                     if (textLine.startsWith('Max-size')) {
-                        size = textLine.match(/[0-9]+/g).map(x => parseInt(x));
+                        size = textLine.match(/[0-9]+/g).map((x) => parseInt(x));
                     } else if (textLine.startsWith('Tile-size')) {
                         tileSize = parseInt(textLine.match(/[0-9]+/)[0]);
                     }
@@ -172,7 +172,7 @@ dlfUtils.getStaticMetadata = function (imageSource) {
             imageExtent: [0, -this.height, this.width, 0],
             imageSize: [this.width, this.height],
             url: this.src
-        }
+        };
         metadata = {
             width: this.width,
             height: this.height,
@@ -195,8 +195,8 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
     var metadata = {};
     var tileSourceOptions = undefined;
     fetch(imageSource.url)
-        .then(response => response.text())
-        .then(imageInfo => {
+        .then((response) => response.text())
+        .then((imageInfo) => {
             // imageInfo is a XML string:
             // <IMAGE_PROPERTIES WIDTH="{WIDTH}" HEIGHT="{HEIGHT}" TILESIZE="{TILESIZE}" />
             var imageProperties = $($.parseXML(imageInfo)).find('IMAGE_PROPERTIES');
@@ -226,7 +226,7 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
 dlfUtils.isCorsEnabled = function (images) {
     var response = false;
     // Use image proxy to get CORS headers.
-    images.forEach(image => {
+    images.forEach((image) => {
         var url = image.url;
         switch (image.mimetype) {
             case dlfUtils.CUSTOM_MIMETYPE.IIIF:

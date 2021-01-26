@@ -66,7 +66,7 @@ var dlfViewer = function(settings) {
 
     // Get image metadata and start initialization.
     dlfUtils.getImageMetadata(this.settings.images, this)
-        .done(imageMetadata => {
+        .done((imageMetadata) => {
             imageMetadata.forEach((metadata, index) => {
                 this.settings.images[index].width = metadata.width;
                 this.settings.images[index].height = metadata.height;
@@ -92,7 +92,7 @@ dlfViewer.prototype.getOLControls = function() {
         if (this.settings.controls.includes("OverviewMap")) {
             // Copy layers for overview map.
             var ovLayers = [];
-            this.olx.layers.forEach(layer => {
+            this.olx.layers.forEach((layer) => {
                 ovLayers.push($.extend(true, {}, layer));
             });
             this.olx.controls.push(new ol.control.OverviewMap({
@@ -169,7 +169,7 @@ dlfViewer.prototype.getOLInteractions = function() {
 dlfViewer.prototype.getOLLayers = function() {
     if (this.olx.layers === undefined) {
         this.olx.layers = [];
-        this.olx.sources.forEach(source => {
+        this.olx.sources.forEach((source) => {
             var layer = undefined;
             switch (true) {
                 case source instanceof ol.source.IIIF:
@@ -219,7 +219,7 @@ dlfViewer.prototype.getOLSources = function() {
             zDirection: -1
         };
         var offset = 0;
-        this.settings.images.forEach(image => {
+        this.settings.images.forEach((image) => {
             var extentOnMap = [offset, -image.height, image.width + offset, 0];
             var imageOptions = {
                 extent: extentOnMap, // For IIIF, IIP and Zoomify sources.
