@@ -117,6 +117,7 @@ dlfUtils.getIIPMetadata = function (imageSource) {
  */
 dlfUtils.getImageMetadata = function (imageSources, context) {
     var deferredResponse = new $.Deferred();
+    var deferredMetadata = undefined;
     var imageMetadata = [];
     var loadCount = 0;
     var checkResolve = function checkResolve() {
@@ -126,31 +127,24 @@ dlfUtils.getImageMetadata = function (imageSources, context) {
         }
     };
     imageSources.forEach((source, index) => {
-        if (source.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
-            dlfUtils.getIIIFMetadata(source)
-                .done(function (sourceMetadata) {
-                    imageMetadata[index] = sourceMetadata;
-                    checkResolve();
-            });
-        } else if (source.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
-            dlfUtils.getIIPMetadata(source)
-                .done(function (sourceMetadata) {
-                    imageMetadata[index] = sourceMetadata;
-                    checkResolve();
-                });
-        } else if (source.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
-            dlfUtils.getZoomifyMetadata(source)
-                .done(function (sourceMetadata) {
-                    imageMetadata[index] = sourceMetadata;
-                    checkResolve();
-                });
-        } else {
-            dlfUtils.getStaticMetadata(source)
-                .done(function (sourceMetadata) {
-                    imageMetadata[index] = sourceMetadata;
-                    checkResolve();
-                });
+        switch (source.mimetype) {
+            case dlfUtils.CUSTOM_MIMETYPE.IIIF:
+                deferredMetadata = dlfUtils.getIIIFMetadata(source);
+                break;
+            case dlfUtils.CUSTOM_MIMETYPE.IIP:
+                deferredMetadata = dlfUtils.getIIPMetadata(source);
+                break;
+            case dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY:
+                deferredMetadata = dlfUtils.getZoomifyMetadata(source);
+                break;
+            default:
+                deferredMetadata = dlfUtils.getStaticMetadata(source);
+                break;
         }
+        deferredMetadata.done(function (sourceMetadata) {
+            imageMetadata[index] = sourceMetadata;
+            checkResolve();
+        });
     });
     return deferredResponse;
 };
@@ -202,7 +196,7 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
             var height = parseInt(imageProperties.attr('HEIGHT'));
             var tileSize = parseInt(imageProperties.attr('TILESIZE')) || 256;
             tileSourceOptions = {
-                url: imageSource.url + imageSource.url.endsWith('/') ? '' : '/',
+                url: imageSource.url + (imageSource.url.endsWith('/') ? '' : '/'),
                 size: [width, height],
                 tileSize
             };
