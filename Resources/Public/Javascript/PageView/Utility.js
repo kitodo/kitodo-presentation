@@ -46,8 +46,7 @@ dlfUtils.getIIIFMetadata = function (imageSource) {
     var deferredResponse = new $.Deferred();
     var metadata = {};
     var tileSourceOptions = undefined;
-    imageSource.url += imageSource.url.endsWith('/') ? 'info.json' : '/info.json';
-    fetch(imageSource.url)
+    fetch(imageSource.url + (imageSource.url.endsWith('/') ? 'info.json' : '/info.json'))
         .then((response) => response.json())
         .then((imageInfo) => {
             tileSourceOptions = new ol.format.IIIFInfo(imageInfo)

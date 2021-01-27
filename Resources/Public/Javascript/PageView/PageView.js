@@ -253,14 +253,14 @@ dlfViewer.prototype.getOLSources = function() {
         };
         var offset = 0;
         this.settings.images.forEach((image) => {
-            var extentOnMap = [offset, -image.height, image.width + offset, 0];
+            image.extent = [offset, -image.height, image.width + offset, 0];
             var imageOptions = {
-                extent: extentOnMap, // For IIIF, IIP and Zoomify sources.
-                imageExtent: extentOnMap, // For static image sources.
+                extent: image.extent, // For IIIF, IIP and Zoomify sources.
+                imageExtent: image.extent, // For static image sources.
                 projection: new ol.proj.Projection({
                     code: 'dlf-projection',
                     units: 'pixels',
-                    extent: extentOnMap
+                    extent: image.extent
                 })
             };
             var options = $.extend({}, defaultOptions, image.options, imageOptions);
@@ -280,10 +280,15 @@ dlfViewer.prototype.getOLSources = function() {
             if (source !== undefined) {
                 this.olx.sources.push(source);
                 // Add image extent to map extent.
-                this.olx.extent = ol.extent.extend(this.olx.extent, extentOnMap);
+                this.olx.extent = ol.extent.extend(this.olx.extent, image.extent);
                 offset += image.width;
             }
         });
+        // Add 5% buffer to extent for smoother panning.
+        this.olx.extent = ol.extent.buffer(
+            this.olx.extent,
+            0.05 * Math.max(ol.extent.getWidth(this.olx.extent), ol.extent.getHeight(this.olx.extent))
+        );
     }
     return this.olx.sources;
 };
