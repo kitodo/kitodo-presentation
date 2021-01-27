@@ -302,14 +302,16 @@ dlfViewer.prototype.getOLView = function() {
         this.olx.view = new ol.View({
             center: ol.extent.getCenter(this.olx.extent),
             extent: this.olx.extent,
-            maxZoom: 7,
+            maxResolution: 100, // Min zoom level is 1% of max resolution available.
+            minResolution: 1, // Max zoom level is the max resolution available.
             projection: new ol.proj.Projection({
                 code: 'dlf-projection',
                 units: 'pixels',
                 extent: this.olx.extent
             }),
+            resolution: 100, // Initially set zoom to full extent.
             showFullExtent: true,
-            zoom: 1
+            zoomFactor: 1.5
         });
     }
     return this.olx.view;
