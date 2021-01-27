@@ -407,6 +407,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get the controls for the map.
         $this->controls = explode(',', $this->conf['features']);
         $this->controlTargets = [
+            'Attribution' => $this->conf['attributionElementId'] ?: '',
             'FullScreen' => $this->conf['fullScreenElementId'] ?: '',
             'OverviewMap' => $this->conf['overviewMapElementId'] ?: '',
             'Rotate' => $this->conf['rotateElementId'] ?: '',

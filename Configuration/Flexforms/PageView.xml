@@ -58,26 +58,30 @@
                                 <type>select</type>
                                 <items type="array">
                                     <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.attribution</numIndex>
+                                        <numIndex index="1">Attribution</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.fullscreen</numIndex>
                                         <numIndex index="1">FullScreen</numIndex>
                                     </numIndex>
-                                    <numIndex index="1" type="array">
+                                    <numIndex index="2" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.overviewmap</numIndex>
                                         <numIndex index="1">OverviewMap</numIndex>
                                     </numIndex>
-                                    <numIndex index="2" type="array">
+                                    <numIndex index="3" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.rotate</numIndex>
                                         <numIndex index="1">Rotate</numIndex>
                                     </numIndex>
-                                    <numIndex index="3" type="array">
+                                    <numIndex index="4" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.zoom</numIndex>
                                         <numIndex index="1">Zoom</numIndex>
                                     </numIndex>
-                                    <numIndex index="4" type="array">
+                                    <numIndex index="5" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.zoomslider</numIndex>
                                         <numIndex index="1">ZoomSlider</numIndex>
                                     </numIndex>
-                                    <numIndex index="5" type="array">
+                                    <numIndex index="6" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.zoomtoextent</numIndex>
                                         <numIndex index="1">ZoomToExtent</numIndex>
                                     </numIndex>

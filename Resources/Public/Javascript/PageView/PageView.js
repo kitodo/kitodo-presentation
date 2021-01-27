@@ -85,6 +85,15 @@ var dlfViewer = function(settings) {
 dlfViewer.prototype.getOLControls = function() {
     if (this.olx.controls === undefined) {
         this.olx.controls = [];
+        if (this.settings.controls.includes("Attribution")) {
+            this.olx.controls.push(new ol.control.Attribution({
+                collapsed: false,
+                collapsible: true,
+                label: '\u00a9',
+                target: this.settings.controlTargets.Attribution || undefined,
+                tipLabel: ''
+            }));
+        }
         if (this.settings.controls.includes("FullScreen")) {
             this.olx.controls.push(new ol.control.FullScreen({
                 target: this.settings.controlTargets.FullScreen || undefined,
@@ -99,6 +108,7 @@ dlfViewer.prototype.getOLControls = function() {
             });
             this.olx.controls.push(new ol.control.OverviewMap({
                 collapsed: false,
+                collapsible: true,
                 layers: ovLayers,
                 target: this.settings.controlTargets.OverviewMap || undefined,
                 tipLabel: '',
@@ -117,6 +127,7 @@ dlfViewer.prototype.getOLControls = function() {
         }
         if (this.settings.controls.includes("Rotate")) {
             this.olx.controls.push(new ol.control.Rotate({
+                autoHide: false,
                 target: this.settings.controlTargets.Rotate || undefined,
                 tipLabel: ''
             }));
