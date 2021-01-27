@@ -131,6 +131,18 @@ dlfViewer.prototype.getOLControls = function() {
                 target: this.settings.controlTargets.Rotate || undefined,
                 tipLabel: ''
             }));
+            this.olx.controls.push(new DlfRotateControl({
+                // className: 'ol-custom-rotate',
+                // delta: 0.5 * Math.PI, // ½π rad ≙ 90°
+                // duration: 250,
+                // rotateLeftClassName: 'ol-custom-rotate-left',
+                // rotateLeftLabel: '\u21ba',
+                rotateLeftTipLabel: '',
+                // rotateRightClassName: 'ol-custom-rotate-right',
+                // rotateRightLabel: '\u21bb',
+                rotateRightTipLabel: '',
+                target: this.settings.controlTargets.Rotate || undefined
+            }));
         }
         if (this.settings.controls.includes("Zoom")) {
             this.olx.controls.push(new ol.control.Zoom({

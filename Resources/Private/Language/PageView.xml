@@ -24,7 +24,7 @@
             <label index="tt_content.pi_flexform.features.attribution">Image Attribution</label>
             <label index="tt_content.pi_flexform.features.fullscreen">Fullscreen Mode</label>
             <label index="tt_content.pi_flexform.features.overviewmap">Overview Map</label>
-            <label index="tt_content.pi_flexform.features.rotate">Reset Rotation</label>
+            <label index="tt_content.pi_flexform.features.rotate">Rotate Buttons</label>
             <label index="tt_content.pi_flexform.features.zoom">Zoom Buttons</label>
             <label index="tt_content.pi_flexform.features.zoomslider">Zoom Slider</label>
             <label index="tt_content.pi_flexform.features.zoomtoextent">Zoom To Extent</label>
@@ -51,7 +51,7 @@
             <label index="tt_content.pi_flexform.features.attribution">Rechteangaben</label>
             <label index="tt_content.pi_flexform.features.fullscreen">Vollbild-Modus</label>
             <label index="tt_content.pi_flexform.features.overviewmap">Übersichtsbild</label>
-            <label index="tt_content.pi_flexform.features.rotate">Drehung zurücksetzen</label>
+            <label index="tt_content.pi_flexform.features.rotate">Dreh-Knöpfe</label>
             <label index="tt_content.pi_flexform.features.zoom">Zoom-Knöpfe</label>
             <label index="tt_content.pi_flexform.features.zoomslider">Zoom-Schieberegler</label>
             <label index="tt_content.pi_flexform.features.zoomtoextent">Maximale Ausdehnung</label>
