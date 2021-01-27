@@ -94,7 +94,7 @@ dlfUtils.getIIPMetadata = function (imageSource) {
                     }
                 });
             tileSourceOptions = {
-                url: imageSource.url,
+                url: imageSource.url + (imageSource.url.includes('?') ? '&' : '?') + 'JTL={z},{tileIndex}',
                 size,
                 tileSize
             };
@@ -168,7 +168,6 @@ dlfUtils.getStaticMetadata = function (imageSource) {
     var image = new Image();
     image.onload = function() {
         tileSourceOptions = {
-            imageExtent: [0, -this.height, this.width, 0],
             imageSize: [this.width, this.height],
             url: this.src
         };
@@ -193,7 +192,7 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
     var deferredResponse = new $.Deferred();
     var metadata = {};
     var tileSourceOptions = undefined;
-    fetch(imageSource.url)
+    fetch(imageSource.url + imageSource.url.endsWith('/') ? 'ImageProperties.xml' : '/ImageProperties.xml')
         .then((response) => response.text())
         .then((imageInfo) => {
             // imageInfo is a XML string:
@@ -203,7 +202,7 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
             var height = parseInt(imageProperties.attr('HEIGHT'));
             var tileSize = parseInt(imageProperties.attr('TILESIZE')) || 256;
             tileSourceOptions = {
-                url: imageSource.url.substring(0, imageSource.url.lastIndexOf('/') + 1),
+                url: imageSource.url + imageSource.url.endsWith('/') ? '' : '/',
                 size: [width, height],
                 tileSize
             };
@@ -244,7 +243,7 @@ dlfUtils.isCorsEnabled = function (images, context) {
                 url += url.includes('?') ? '&obj=IIP,1.0' : '?obj=IIP,1.0';
                 break;
             case dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY:
-                url = url.replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg');
+                url += url.endsWith('/') ? 'ImageProperties.xml' : '/ImageProperties.xml';
                 break;
         }
         // Prepend image proxy.
