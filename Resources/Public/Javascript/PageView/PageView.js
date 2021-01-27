@@ -112,10 +112,10 @@ dlfViewer.prototype.getOLControls = function() {
             this.olx.layers.forEach((layer) => {
                 ovLayers.push($.extend(true, {}, layer));
             });
-            // Add 5% buffer to extent for smoother panning.
+            // Add buffer to extent for better fitting.
             var ovExtent = ol.extent.buffer(
                 this.olx.extent,
-                0.05 * Math.max(ol.extent.getWidth(this.olx.extent), ol.extent.getHeight(this.olx.extent))
+                0.4 * Math.max(ol.extent.getWidth(this.olx.extent), ol.extent.getHeight(this.olx.extent))
             );
             this.olx.controls.push(new ol.control.OverviewMap({
                 collapsed: false,
@@ -131,7 +131,6 @@ dlfViewer.prototype.getOLControls = function() {
                         units: 'pixels',
                         extent: ovExtent
                     }),
-                    resolutions: [20],
                     showFullExtent: true
                 })
             }));
