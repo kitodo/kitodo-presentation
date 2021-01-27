@@ -10,10 +10,10 @@
 
 class RotateControl extends ol.control.Control {
     /**
-     * @param {Options=} opt_options Rotate options.
+     * @param {Options=} optOptions Rotate options.
      */
-    constructor(opt_options) {
-        const options = opt_options ? opt_options : {};
+    constructor(optOptions) {
+        const options = optOptions ? optOptions : {};
 
         super({
             element: document.createElement('div'),
