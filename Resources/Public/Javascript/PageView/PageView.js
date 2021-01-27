@@ -123,6 +123,7 @@ dlfViewer.prototype.getOLControls = function() {
         }
         if (this.settings.controls.includes("Zoom")) {
             this.olx.controls.push(new ol.control.Zoom({
+                delta: 0.5,
                 target: this.settings.controlTargets.Zoom || undefined,
                 zoomInTipLabel: '',
                 zoomOutTipLabel: ''
@@ -135,6 +136,7 @@ dlfViewer.prototype.getOLControls = function() {
         }
         if (this.settings.controls.includes("ZoomToExtent")) {
             this.olx.controls.push(new ol.control.ZoomToExtent({
+                label: '\u26f6',
                 target: this.settings.controlTargets.ZoomToExtent || undefined,
                 tipLabel: ''
             }));
