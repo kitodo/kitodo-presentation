@@ -112,6 +112,11 @@ dlfViewer.prototype.getOLControls = function() {
             this.olx.layers.forEach((layer) => {
                 ovLayers.push($.extend(true, {}, layer));
             });
+            // Add 5% buffer to extent for smoother panning.
+            var ovExtent = ol.extent.buffer(
+                this.olx.extent,
+                0.05 * Math.max(ol.extent.getWidth(this.olx.extent), ol.extent.getHeight(this.olx.extent))
+            );
             this.olx.controls.push(new ol.control.OverviewMap({
                 collapsed: false,
                 collapsible: true,
@@ -120,11 +125,11 @@ dlfViewer.prototype.getOLControls = function() {
                 tipLabel: '',
                 view: new ol.View({
                     center: ol.extent.getCenter(this.olx.extent),
-                    extent: this.olx.extent,
+                    extent: ovExtent,
                     projection: new ol.proj.Projection({
                         code: 'dlf-projection',
                         units: 'pixels',
-                        extent: this.olx.extent
+                        extent: ovExtent
                     }),
                     resolutions: [20],
                     showFullExtent: true
@@ -284,11 +289,6 @@ dlfViewer.prototype.getOLSources = function() {
                 offset += image.width;
             }
         });
-        // Add 5% buffer to extent for smoother panning.
-        this.olx.extent = ol.extent.buffer(
-            this.olx.extent,
-            0.05 * Math.max(ol.extent.getWidth(this.olx.extent), ol.extent.getHeight(this.olx.extent))
-        );
     }
     return this.olx.sources;
 };
