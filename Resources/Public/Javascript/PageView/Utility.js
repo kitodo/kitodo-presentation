@@ -46,9 +46,7 @@ dlfUtils.getIIIFMetadata = function (imageSource) {
     var deferredResponse = new $.Deferred();
     var metadata = {};
     var tileSourceOptions = undefined;
-    if (imageSource.url.endsWith('info.json') !== true) {
-        imageSource.url += imageSource.url.endsWith('/') ? 'info.json' : '/info.json';
-    }
+    imageSource.url += imageSource.url.endsWith('/') ? 'info.json' : '/info.json';
     fetch(imageSource.url)
         .then((response) => response.json())
         .then((imageInfo) => {
@@ -222,10 +220,19 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
 /**
  * Check if image sources have CORS enabled
  * @param {Array.<{url: *, mimetype: *}>} images
- * @return {boolean}
+ * @param {Object} context
+ * @return {JQueryStatic.Deferred}
  */
-dlfUtils.isCorsEnabled = function (images) {
-    var response = false;
+dlfUtils.isCorsEnabled = function (images, context) {
+    var deferredResponse = new $.Deferred();
+    var corsEnabled = false;
+    var loadCount = 0;
+    var checkResolve = function checkResolve() {
+        loadCount += 1;
+        if (loadCount === images.length) {
+            deferredResponse.resolveWith(context, [corsEnabled]);
+        }
+    };
     // Use image proxy to get CORS headers.
     images.forEach((image) => {
         var url = image.url;
@@ -243,12 +250,11 @@ dlfUtils.isCorsEnabled = function (images) {
         // Prepend image proxy.
         url = window.location.origin + window.location.pathname + '?eID=tx_dlf_pageview_proxy&url=' + encodeURIComponent(url) + '&header=2';
         // Get header data.
-        $.ajax({
-            url: url,
-            async: false
-        }).done((data, type) => {
-            response = type === 'success' && data.indexOf('Access-Control-Allow-Origin') !== -1;
-        });
+        $.ajax({url})
+            .done((data, type) => {
+                corsEnabled = type === 'success' && data.indexOf('Access-Control-Allow-Origin') !== -1;
+                checkResolve();
+            });
     });
-    return response;
+    return deferredResponse;
 };

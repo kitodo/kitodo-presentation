@@ -49,7 +49,13 @@ var dlfViewer = function(settings) {
      * @public
      * @type {boolean}
      */
-    this.isCorsEnabled = this.settings.useInternalProxy || dlfUtils.isCorsEnabled(this.settings.images);
+    this.isCorsEnabled = this.settings.useInternalProxy;
+    if (this.isCorsEnabled !== true) {
+        dlfUtils.isCorsEnabled(this.settings.images, this)
+            .done((corsEnabled) => {
+                this.isCorsEnabled = corsEnabled;
+            });
+    }
 
     /**
      * This holds the OpenLayers instances.
