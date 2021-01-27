@@ -131,7 +131,7 @@ dlfViewer.prototype.getOLControls = function() {
                 target: this.settings.controlTargets.Rotate || undefined,
                 tipLabel: ''
             }));
-            this.olx.controls.push(new DlfRotateControl({
+            this.olx.controls.push(new RotateControl({
                 // className: 'ol-custom-rotate',
                 // delta: 0.5 * Math.PI, // ½π rad ≙ 90°
                 // duration: 250,

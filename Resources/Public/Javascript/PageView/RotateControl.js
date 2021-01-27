@@ -8,7 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-class DlfRotateControl extends ol.control.Control {
+class RotateControl extends ol.control.Control {
     /**
      * @param {Options=} opt_options Rotate options.
      */
@@ -40,7 +40,7 @@ class DlfRotateControl extends ol.control.Control {
         leftElement.title = rotateLeftTipLabel;
         leftElement.appendChild(typeof rotateLeftLabel === 'string' ? document.createTextNode(rotateLeftLabel) : rotateLeftLabel);
         leftElement.addEventListener(
-            ol.events.EventType.CLICK,
+            'click',
             this.handleClick_.bind(this, -delta),
             false
         );
@@ -50,7 +50,7 @@ class DlfRotateControl extends ol.control.Control {
         rightElement.title = rotateRightTipLabel;
         rightElement.appendChild(typeof rotateRightLabel === 'string' ? document.createTextNode(rotateRightLabel) : rotateRightLabel);
         rightElement.addEventListener(
-            ol.events.EventType.CLICK,
+            'click',
             this.handleClick_.bind(this, delta),
             false
         );
