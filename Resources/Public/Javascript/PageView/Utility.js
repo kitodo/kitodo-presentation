@@ -192,7 +192,7 @@ dlfUtils.getZoomifyMetadata = function (imageSource) {
     var deferredResponse = new $.Deferred();
     var metadata = {};
     var tileSourceOptions = undefined;
-    fetch(imageSource.url + imageSource.url.endsWith('/') ? 'ImageProperties.xml' : '/ImageProperties.xml')
+    fetch(imageSource.url + (imageSource.url.endsWith('/') ? 'ImageProperties.xml' : '/ImageProperties.xml'))
         .then((response) => response.text())
         .then((imageInfo) => {
             // imageInfo is a XML string:
