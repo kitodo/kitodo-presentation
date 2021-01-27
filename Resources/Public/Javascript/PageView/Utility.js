@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,10 +8,13 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+'use strict';
+
 /**
  * Namespace for dlfViewer utility functions.
  * @namespace
  */
+var dlfUtils;
 dlfUtils = dlfUtils || {};
 
 /**
