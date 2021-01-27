@@ -59,6 +59,17 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     protected $controlTargets = [];
 
     /**
+     * Holds the custom MIMETYPEs for image server protocols
+     *
+     * @var array
+     * @access protected
+     */
+    protected $customMimetypes = [
+        'IIIF' => 'application/vnd.kitodo.iiif',
+        'IIP' => 'application/vnd.netfpx',
+        'ZOOMIFY' => 'application/vnd.kitodo.zoomify'
+    ];
+    /**
      * Holds the current images' URLs and MIME types
      *
      * @var array
@@ -73,6 +84,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
      * @access protected
      */
     protected $fulltexts = [];
+
+    /**
+     * Should we use the internal proxy to access images?
+     *
+     * @var bool
+     * @access protected
+     */
+    protected $useInternalProxy = false;
 
     /**
      * Holds the current AnnotationLists / AnnotationPages
@@ -127,7 +146,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
                         annotations: ' . json_encode($this->annotationContainers) . ',
-                        useInternalProxy: ' . ($this->conf['useInternalProxy'] ? 1 : 0) . '
+                        useInternalProxy: ' . ($this->useInternalProxy ? 1 : 0) . '
                     });
                 }
             });
@@ -205,6 +224,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             if (empty($this->piVars['page'])) {
                 $params['page'] = 1;
             }
+            // Configure @action URL for form.
             $basketConf = [
                 'parameter' => $this->conf['targetBasket'],
                 'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
@@ -250,8 +270,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             // Get image link.
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
                 $image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
-                if ($this->conf['useInternalProxy']) {
-                    // Configure @action URL for form.
+                $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
+                if (
+                    $this->conf['useInternalProxy']
+                    && !in_array($image['mimetype'], $this->customMimetypes)
+                ) {
                     $linkConf = [
                         'parameter' => $GLOBALS['TSFE']->id,
                         'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
@@ -259,8 +282,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                         'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($image['url']),
                     ];
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
+                    $this->useInternalProxy = true;
                 }
-                $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 break;
             } else {
                 Helper::devLog('File not found in fileGrp "' . $fileGrp . '"', DEVLOG_SEVERITY_WARNING);

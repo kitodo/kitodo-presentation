@@ -46,7 +46,7 @@ dlfUtils.getIIIFMetadata = function (imageSource) {
     var deferredResponse = new $.Deferred();
     var metadata = {};
     var tileSourceOptions = undefined;
-    if (!imageSource.url.endsWith('info.json')) {
+    if (imageSource.url.endsWith('info.json') !== true) {
         imageSource.url += imageSource.url.endsWith('/') ? 'info.json' : '/info.json';
     }
     fetch(imageSource.url)
