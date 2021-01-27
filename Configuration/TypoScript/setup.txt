@@ -1,15 +1,7 @@
-config {
-  # concatenate all JavaScript files by default
-  concatenateJs = 1
-  # concatenate all CSS files by default
-  concatenateCss = 1
-}
-
-
 page {
   includeJSFooterlibs {
     jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-3.5.1.min.js
     jQuery.forceOnTop = 1
-    jqueryUiMouseSlider = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
+    jQueryUi = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
   }
 }
