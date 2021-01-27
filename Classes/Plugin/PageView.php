@@ -89,7 +89,10 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray = [];
         // CSS files.
         $cssFiles = [
-            'Resources/Public/Stylesheets/OpenLayers/ol.css'
+            // OpenLayers
+            'Resources/Public/Stylesheets/OpenLayers/ol.css',
+            // Viewer
+            'Resources/Public/Stylesheets/PageView/PageView.js'
         ];
         // Javascript files.
         $jsFiles = [
