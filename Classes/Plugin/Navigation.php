@@ -190,13 +190,6 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray['###PAGESELECT###'] = $this->getPageSelector();
         // Add link to listview if applicable.
         $markerArray['###LINKLISTVIEW###'] = $this->getLinkToListview();
-        // Fill some language labels if available.
-        $markerArray['###ZOOM_IN###'] = htmlspecialchars($this->pi_getLL('zoom-in', ''));
-        $markerArray['###ZOOM_OUT###'] = htmlspecialchars($this->pi_getLL('zoom-out', ''));
-        $markerArray['###ZOOM_FULLSCREEN###'] = htmlspecialchars($this->pi_getLL('zoom-fullscreen', ''));
-        $markerArray['###ROTATE_LEFT###'] = htmlspecialchars($this->pi_getLL('rotate-left', ''));
-        $markerArray['###ROTATE_RIGHT###'] = htmlspecialchars($this->pi_getLL('rotate-right', ''));
-        $markerArray['###ROTATE_RESET###'] = htmlspecialchars($this->pi_getLL('rotate-reset', ''));
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }

@@ -32,12 +32,6 @@
             <label index="doublePageOff">Show single page</label>
             <label index="doublePage+1">Adjust recto/verso</label>
             <label index="linkToList">Return to list view</label>
-            <label index="zoom-in">Zoom In</label>
-            <label index="zoom-out">Zoom Out</label>
-            <label index="zoom-fullscreen">Fullscreen Mode</label>
-            <label index="rotate-left">Rotate Left</label>
-            <label index="rotate-right">Rotate Right</label>
-            <label index="rotate-reset">Reset Rotation</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.plugin.title">Navigation</label>
@@ -57,12 +51,6 @@
             <label index="doublePageOff">Einzelseitenansicht</label>
             <label index="doublePage+1">Recto/Verso korrigieren</label>
             <label index="linkToList">Zurück zur Listenansicht</label>
-            <label index="zoom-in">Ansicht vergrößern</label>
-            <label index="zoom-out">Ansicht verkleinern</label>
-            <label index="zoom-fullscreen">Vollansicht</label>
-            <label index="rotate-left">Ansicht nach links drehen</label>
-            <label index="rotate-right">Ansicht nach rechts drehen</label>
-            <label index="rotate-reset">Drehung zurücksetzen</label>
         </languageKey>
     </data>
 </T3locallang>
