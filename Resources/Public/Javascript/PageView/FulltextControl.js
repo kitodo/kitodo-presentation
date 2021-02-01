@@ -506,5 +506,6 @@ dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
         textLineSpan.append(span);
     }
 
+    textLineSpan.append('<span class="textline" id="sp"> </span>');
     $('#tx-dlf-fulltextselection').append(textLineSpan);
 };
