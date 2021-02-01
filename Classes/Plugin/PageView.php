@@ -165,14 +165,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             foreach ($jsFiles as $jsFile) {
                 $markerArray[] = '<script type="text/javascript" src="' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>';
             }
-            $markerArray[] = [
-                '<script type="text/javascript">',
-                '/*<![CDATA[*/',
-                '/*kitodo-pageview-configuration*/',
-                $viewerConfiguration,
-                '/*]]>*/',
-                '</script>'
-            ];
+            $markerArray[] = '
+                <script type="text/javascript">
+                /*<![CDATA[*/
+                /*kitodo-pageview-configuration*/
+                ' . $viewerConfiguration . '
+                /*]]>*/
+                </script>
+            ';
         }
         return implode("\n", $markerArray);
     }
@@ -433,6 +433,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->controlTargets = [
             'Attribution' => $this->conf['attributionElementId'] ?: '',
             'FullScreen' => $this->conf['fullScreenElementId'] ?: '',
+            'ImageManipulation' => $this->conf['imageManipulationElementId'] ?: '',
             'OverviewMap' => $this->conf['overviewMapElementId'] ?: '',
             'Rotate' => $this->conf['rotateElementId'] ?: '',
             'Zoom' => $this->conf['zoomElementId'] ?: '',
