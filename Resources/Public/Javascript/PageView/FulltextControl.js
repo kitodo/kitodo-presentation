@@ -339,7 +339,7 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
 };
 
 /**
- * Scroll to full text element if ot is highlighted
+ * Scroll to full text element if it is highlighted
  * @param {any} element 
  * @param {string} fullTextScrollElement
  */
