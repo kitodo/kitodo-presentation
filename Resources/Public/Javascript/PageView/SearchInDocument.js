@@ -50,13 +50,15 @@ function resetStart() {
  * @returns void
  */
 function addHighlightEffect(highlightIds) {
-    highlightIds.forEach(function (highlightId) {
-        var targetElement = $('#' + highlightId);
-
-        if (targetElement.length > 0 && !targetElement.hasClass('highlight')) {
-            targetElement.addClass('highlight');
-        }
-    })
+    if (highlightIds.length > 0) {
+        highlightIds.forEach(function (highlightId) {
+            var targetElement = $('#' + highlightId);
+    
+            if (targetElement.length > 0 && !targetElement.hasClass('highlight')) {
+                targetElement.addClass('highlight');
+            }
+        })
+    }
 }
 
 /**
@@ -80,6 +82,19 @@ function getBaseUrl() {
     return baseUrl;
 }
 
+function getNavigationButtons(start, numFound) {
+    var buttons = "";
+
+    if (start > 0) {
+        buttons += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" value="' + $('#tx-dlf-search-in-document-label-previous').text() + '" />';
+    }
+
+    if (numFound > (start + 20)) {
+        buttons += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
+    }
+    return buttons;
+}
+
 function search() {
     resetStart();
 
@@ -89,7 +104,7 @@ function search() {
     $('#tx-dlf-search-in-document-button-previous').hide();
     // Send the data using post
     $.post(
-        "/",
+        "https://sdvtypo3ddbzeitungsportaldev.slub-dresden.de/",
         {
             eID: "tx_dlf_search_in_document",
             q: $( "input[id='tx-dlf-search-in-document-query']" ).val(),
@@ -109,6 +124,7 @@ function search() {
                     var searchWord = element['snippet'];
                     searchWord = searchWord.substring(searchWord.indexOf('<em>') + 4, searchWord.indexOf('</em>'));
 
+                    //TODO: make params configurable
                     var link = getBaseUrl()
                         + 'tx_dlf[id]=' + element['uid']
                         + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchWord)
@@ -124,9 +140,8 @@ function search() {
                     }
 
                     // TODO: highlight found phrase in full text - verify page?
-                    if (element['highlight'].length > 0) {
-                        addHighlightEffect(element['highlight']);
-                    }
+                    addHighlightEffect(element['highlight']);
+
                     // TODO: highlight found phrase in image
                 });
                 // Sort result by page.
@@ -140,12 +155,7 @@ function search() {
                 resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
             }
             resultList += '</ul>';
-            if (start > 0) {
-                resultList += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" value="' + $('#tx-dlf-search-in-document-label-previous').text() + '" />';
-            }
-            if (data['numFound'] > (start + 20)) {
-                resultList += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
-            }
+            resultList += getNavigationButtons(start, data['numFound'])
             $('#tx-dlf-search-in-document-results').html(resultList);
         },
         "json"
@@ -156,12 +166,8 @@ function search() {
         });
 }
 
-$(document).ready(function () {
-    alert("Document is ready...");
-    // clearing button
-    $('#tx-dlf-search-in-document-clearing').click(function () {
-        $('#tx-dlf-search-in-document-results ul').remove();
-        $('.results-active-indicator').remove();
-        $('#tx-dlf-search-in-document-query').val('');
-    });
-});
+function clearSearch() {
+    $('#tx-dlf-search-in-document-results ul').remove();
+    $('.results-active-indicator').remove();
+    $('#tx-dlf-search-in-document-query').val('');
+}
