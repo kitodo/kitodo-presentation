@@ -100,7 +100,7 @@ class SearchInDocument
     }
 
     private function getQuery($fields, $parameters) {
-        return $fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . intval($parameters['uid']);
+        return $fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . $this->getUid($parameters['uid']);
     }
 
     private function getUid($uid) {
