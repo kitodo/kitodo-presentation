@@ -28,11 +28,6 @@ class ImageManipulationControl extends ol.control.Control {
         const tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Toggle image manipulation';
         const title = options.title !== undefined ? options.title : 'Image Manipulation';
 
-        /**
-         * @type {String}
-         * @private
-         */
-
         const button = document.createElement('button');
         button.title = tipLabel;
         button.setAttribute('type', 'button');

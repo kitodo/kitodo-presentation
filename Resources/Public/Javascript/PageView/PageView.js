@@ -93,7 +93,7 @@ var dlfViewer = function(settings) {
 dlfViewer.prototype.getOLControls = function() {
     if (this.olx.controls === undefined) {
         this.olx.controls = [];
-        if (this.settings.controls.includes("Attribution")) {
+        if (this.settings.controls.includes('Attribution')) {
             this.olx.controls.push(new ol.control.Attribution({
                 collapsed: false,
                 collapsible: true,
@@ -102,13 +102,13 @@ dlfViewer.prototype.getOLControls = function() {
                 tipLabel: this.settings.controlTitles.Attribution || undefined
             }));
         }
-        if (this.settings.controls.includes("FullScreen")) {
+        if (this.settings.controls.includes('FullScreen')) {
             this.olx.controls.push(new ol.control.FullScreen({
                 target: this.settings.controlTargets.FullScreen || undefined,
                 tipLabel: this.settings.controlTitles.FullScreen || undefined
             }));
         }
-        if (this.settings.controls.includes("ImageManipulation")) {
+        if (this.settings.controls.includes('ImageManipulation')) {
             this.olx.controls.push(new ImageManipulationControl({
                 // autoOpen: false,
                 // className: 'ol-custom-image-manipulation,
@@ -118,7 +118,7 @@ dlfViewer.prototype.getOLControls = function() {
                 title: this.settings.controlTitles.ImageManipulationDialogTitle || undefined
             }));
         }
-        if (this.settings.controls.includes("OverviewMap")) {
+        if (this.settings.controls.includes('OverviewMap')) {
             // Copy layers for overview map.
             var ovLayers = [];
             this.olx.layers.forEach((layer) => {
@@ -147,7 +147,7 @@ dlfViewer.prototype.getOLControls = function() {
                 })
             }));
         }
-        if (this.settings.controls.includes("Rotate")) {
+        if (this.settings.controls.includes('Rotate')) {
             this.olx.controls.push(new ol.control.Rotate({
                 autoHide: false,
                 target: this.settings.controlTargets.Rotate || undefined,
@@ -166,7 +166,7 @@ dlfViewer.prototype.getOLControls = function() {
                 target: this.settings.controlTargets.Rotate || undefined
             }));
         }
-        if (this.settings.controls.includes("Zoom")) {
+        if (this.settings.controls.includes('Zoom')) {
             this.olx.controls.push(new ol.control.Zoom({
                 delta: 0.5,
                 target: this.settings.controlTargets.Zoom || undefined,
@@ -174,12 +174,12 @@ dlfViewer.prototype.getOLControls = function() {
                 zoomOutTipLabel: this.settings.controlTitles.ZoomOut || undefined
             }));
         }
-        if (this.settings.controls.includes("ZoomSlider")) {
+        if (this.settings.controls.includes('ZoomSlider')) {
             this.olx.controls.push(new ol.control.ZoomSlider({
                 target: this.settings.controlTargets.ZoomSlider || undefined
             }));
         }
-        if (this.settings.controls.includes("ZoomToExtent")) {
+        if (this.settings.controls.includes('ZoomToExtent')) {
             this.olx.controls.push(new ol.control.ZoomToExtent({
                 label: '\u26f6',
                 target: this.settings.controlTargets.ZoomToExtent || undefined,

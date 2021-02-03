@@ -204,11 +204,6 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 $markerArray['###EDITBUTTON###'] = '';
                 $markerArray['###EDITREMOVE###'] = '';
             }
-            if ($this->conf['magnifier']) {
-                $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();" title="' . htmlspecialchars($this->pi_getLL('magnifier', '')) . '">' . htmlspecialchars($this->pi_getLL('magnifier', '')) . '</a>';
-            } else {
-                $markerArray['###MAGNIFIER###'] = '';
-            }
         }
         return $markerArray;
     }

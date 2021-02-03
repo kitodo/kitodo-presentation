@@ -34,8 +34,6 @@
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
             <label index="tt_content.pi_flexform.useInternalProxy">Use Internal Proxy</label>
             <label index="tt_content.pi_flexform.crop">Enable cropping</label>
-            <label index="tt_content.pi_flexform.magnifier">Activate magnifier</label>
-            <label index="tt_content.pi_flexform.rotation">Add rotation buttons</label>
             <label index="tt_content.pi_flexform.targetBasket">Target page (with "DLF: Basket" plugin)</label>
             <label index="editMode">Set cutout</label>
             <label index="editRemove">Remove cutout</label>
@@ -73,8 +71,6 @@
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
             <label index="tt_content.pi_flexform.useInternalProxy">Internen Proxy verwenden</label>
             <label index="tt_content.pi_flexform.crop">Funktion zum Erstellen eines Bildausschnitts aktivieren</label>
-            <label index="tt_content.pi_flexform.magnifier">Lupenfunktion aktivieren</label>
-            <label index="tt_content.pi_flexform.rotation">Rotations-Knöpfe hinzufügen</label>
             <label index="tt_content.pi_flexform.targetBasket">Zielseite (mit Plugin "DLF: Warenkorb")</label>
             <label index="editMode">Ausschnitt auswählen</label>
             <label index="editRemove">Ausschnitt entfernen</label>
