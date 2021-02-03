@@ -59,6 +59,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     protected $controlTargets = [];
 
     /**
+     * Holds the controls' translated titles
+     *
+     * @var array
+     * @access protected
+     */
+    protected $controlTitles = [];
+
+    /**
      * Holds the custom MIMETYPEs for image server protocols
      *
      * @var array
@@ -142,6 +150,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                         attributions: ' . json_encode($this->attributions) . ',
                         controls: ' . json_encode($this->controls) . ',
                         controlTargets: ' . json_encode($this->controlTargets) . ',
+                        controlTitles: ' . json_encode($this->controlTitles) . ',
                         target: "' . $this->conf['elementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
@@ -439,6 +448,17 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             'Zoom' => $this->conf['zoomElementId'] ?: '',
             'ZoomSlider' => $this->conf['zoomSliderElementId'] ?: '',
             'ZoomToExtent' => $this->conf['zoomToExtentElementId'] ?: ''
+        ];
+        $this->controlTitles = [
+            'Attribution' => htmlspecialchars($this->pi_getLL('Attribution', '')),
+            'FullScreen' => htmlspecialchars($this->pi_getLL('FullScreen', '')),
+            'OverviewMap' => htmlspecialchars($this->pi_getLL('OverviewMap', '')),
+            'Rotate' => htmlspecialchars($this->pi_getLL('Rotate', '')),
+            'RotateLeft' => htmlspecialchars($this->pi_getLL('RotateLeft', '')),
+            'RotateRight' => htmlspecialchars($this->pi_getLL('RotateRight', '')),
+            'ZoomIn' => htmlspecialchars($this->pi_getLL('ZoomIn', '')),
+            'ZoomOut' => htmlspecialchars($this->pi_getLL('ZoomOut', '')),
+            'ZoomToExtent' => htmlspecialchars($this->pi_getLL('ZoomToExtent', ''))
         ];
         // Fill in the template markers.
         $markerArray = array_merge($this->addInteraction(), $this->addBasketForm());

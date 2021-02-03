@@ -27,12 +27,13 @@ var dlfViewer = function(settings) {
     /**
      * This holds the settings.
      * @public
-     * @type {Object.<{attributions: *, controls: *, controlTargets: *, target: *, images: *, useInternalProxy: *}>}
+     * @type {Object.<{attributions: *, controls: *, controlTargets: *, controlTitles: *, target: *, images: *, useInternalProxy: *}>}
      */
     this.settings = {
         attributions: dlfUtils.exists(settings.attributions) ? settings.attributions : [''],
         controls: dlfUtils.exists(settings.controls) ? settings.controls : [],
         controlTargets: dlfUtils.exists(settings.controlTargets) ? settings.controlTargets : {},
+        controlTitles: dlfUtils.exists(settings.controlTitles) ? settings.controlTitles : {},
         target: dlfUtils.exists(settings.target) ? settings.target : 'tx-dlf-map',
         images: dlfUtils.exists(settings.images) ? settings.images : [],
         useInternalProxy: dlfUtils.exists(settings.useInternalProxy) ? true : false
@@ -50,7 +51,8 @@ var dlfViewer = function(settings) {
      * @type {boolean}
      */
     this.isCorsEnabled = this.settings.useInternalProxy;
-    if (this.isCorsEnabled !== true) {
+
+    if (!this.isCorsEnabled) {
         dlfUtils.isCorsEnabled(this.settings.images, this)
             .done((corsEnabled) => {
                 this.isCorsEnabled = corsEnabled;
@@ -97,13 +99,13 @@ dlfViewer.prototype.getOLControls = function() {
                 collapsible: true,
                 label: '\u00a9',
                 target: this.settings.controlTargets.Attribution || undefined,
-                tipLabel: ''
+                tipLabel: this.settings.controlTitles.Attribution || undefined
             }));
         }
         if (this.settings.controls.includes("FullScreen")) {
             this.olx.controls.push(new ol.control.FullScreen({
                 target: this.settings.controlTargets.FullScreen || undefined,
-                tipLabel: ''
+                tipLabel: this.settings.controlTitles.FullScreen || undefined
             }));
         }
         if (this.settings.controls.includes("OverviewMap")) {
@@ -122,7 +124,7 @@ dlfViewer.prototype.getOLControls = function() {
                 collapsible: true,
                 layers: ovLayers,
                 target: this.settings.controlTargets.OverviewMap || undefined,
-                tipLabel: '',
+                tipLabel: this.settings.controlTitles.OverviewMap || undefined,
                 view: new ol.View({
                     center: ol.extent.getCenter(this.olx.extent),
                     extent: ovExtent,
@@ -139,7 +141,7 @@ dlfViewer.prototype.getOLControls = function() {
             this.olx.controls.push(new ol.control.Rotate({
                 autoHide: false,
                 target: this.settings.controlTargets.Rotate || undefined,
-                tipLabel: ''
+                tipLabel: this.settings.controlTitles.Rotate || undefined
             }));
             this.olx.controls.push(new RotateControl({
                 // className: 'ol-custom-rotate',
@@ -147,10 +149,10 @@ dlfViewer.prototype.getOLControls = function() {
                 // duration: 250,
                 // rotateLeftClassName: 'ol-custom-rotate-left',
                 // rotateLeftLabel: '\u21ba',
-                rotateLeftTipLabel: '',
+                rotateLeftTipLabel: this.settings.controlTitles.RotateLeft || undefined,
                 // rotateRightClassName: 'ol-custom-rotate-right',
                 // rotateRightLabel: '\u21bb',
-                rotateRightTipLabel: '',
+                rotateRightTipLabel: this.settings.controlTitles.RotateRight || undefined,
                 target: this.settings.controlTargets.Rotate || undefined
             }));
         }
@@ -158,8 +160,8 @@ dlfViewer.prototype.getOLControls = function() {
             this.olx.controls.push(new ol.control.Zoom({
                 delta: 0.5,
                 target: this.settings.controlTargets.Zoom || undefined,
-                zoomInTipLabel: '',
-                zoomOutTipLabel: ''
+                zoomInTipLabel: this.settings.controlTitles.ZoomIn || undefined,
+                zoomOutTipLabel: this.settings.controlTitles.ZoomOut || undefined
             }));
         }
         if (this.settings.controls.includes("ZoomSlider")) {
@@ -171,7 +173,7 @@ dlfViewer.prototype.getOLControls = function() {
             this.olx.controls.push(new ol.control.ZoomToExtent({
                 label: '\u26f6',
                 target: this.settings.controlTargets.ZoomToExtent || undefined,
-                tipLabel: ''
+                tipLabel: this.settings.controlTitles.ZoomToExtent || undefined
             }));
         }
     }
