@@ -4,6 +4,5 @@ plugin.tx_dlf_fulltexttool.fullTextScrollElement = html, body
 plugin.tx_dlf_fulltexttool.templateFile = EXT:dlf/Resources/Private/Templates/FulltextTool.tmpl
 plugin.tx_dlf_fulltextdownloadtool.templateFile = EXT:dlf/Resources/Private/Templates/FulltextDownloadTool.tmpl
 plugin.tx_dlf_imagedownloadtool.templateFile = EXT:dlf/Resources/Private/Templates/ImageDownloadTool.tmpl
-plugin.tx_dlf_imagemanipulationtool.templateFile = EXT:dlf/Resources/Private/Templates/ImageManipulationTool.tmpl
 plugin.tx_dlf_pdfdownloadtool.templateFile = EXT:dlf/Resources/Private/Templates/PdfDownloadTool.tmpl
 plugin.tx_dlf_searchindocumenttool.templateFile = EXT:dlf/Resources/Private/Templates/SearchInDocumentTool.tmpl

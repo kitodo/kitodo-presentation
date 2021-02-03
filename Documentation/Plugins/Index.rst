@@ -1007,7 +1007,6 @@ Toolbox
        * tx_dlf_annotationtool
        * tx_dlf_fulltexttool
        * tx_dlf_imagedownloadtool
-       * tx_dlf_imagemanipulationtool
        * tx_dlf_pdfdownloadtool
        * tx_dlf_fulltextdownloadtool
        * tx_dlf_searchindocumenttool
