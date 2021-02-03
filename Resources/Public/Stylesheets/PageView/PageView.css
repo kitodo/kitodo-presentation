@@ -12,10 +12,27 @@
 .ol-viewport .ol-rotate {
     top: 3em;
 }
+.ol-viewport .ol-custom-image-manipulation {
+    top: 9.6em;
+    right: .5em;
+}
 .ol-viewport .ol-custom-rotate {
     top: 5.5em;
     right: .5em;
 }
 .ol-viewport .ol-zoomslider {
     top: 7.1em;
+}
+#ol-custom-image-manipulation-dialog label {
+    display: flex;
+    flex-direction: row;
+    text-align: right;
+    width: 175px;
+    margin-bottom: 7px;
+}
+#ol-custom-image-manipulation-dialog label input {
+    margin-left: 7px;
+}
+#ol-custom-image-manipulation-dialog button {
+    float: right;
 }

@@ -108,6 +108,16 @@ dlfViewer.prototype.getOLControls = function() {
                 tipLabel: this.settings.controlTitles.FullScreen || undefined
             }));
         }
+        if (this.settings.controls.includes("ImageManipulation")) {
+            this.olx.controls.push(new ImageManipulationControl({
+                // autoOpen: false,
+                // className: 'ol-custom-image-manipulation,
+                // label: '\u25d1',
+                target: this.settings.controlTargets.ImageManipulation || undefined,
+                tipLabel: this.settings.controlTitles.ImageManipulation || undefined,
+                title: this.settings.controlTitles.ImageManipulationDialogTitle || undefined
+            }));
+        }
         if (this.settings.controls.includes("OverviewMap")) {
             // Copy layers for overview map.
             var ovLayers = [];

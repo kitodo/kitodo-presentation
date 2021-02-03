@@ -135,10 +135,10 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             // 'Resources/Public/Javascript/PageView/AltoParser.js',
             // 'Resources/Public/Javascript/PageView/AnnotationParser.js',
             // 'Resources/Public/Javascript/PageView/AnnotationControl.js',
-            // 'Resources/Public/Javascript/PageView/ImageManipulationControl.js',
             // 'Resources/Public/Javascript/PageView/FulltextDownloadControl.js',
             // 'Resources/Public/Javascript/PageView/FulltextControl.js',
             // 'Resources/Public/Javascript/PageView/FullTextUtility.js',
+            'Resources/Public/Javascript/PageView/ImageManipulationControl.js',
             'Resources/Public/Javascript/PageView/RotateControl.js',
             'Resources/Public/Javascript/PageView/PageView.js'
         ];
@@ -452,6 +452,8 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->controlTitles = [
             'Attribution' => htmlspecialchars($this->pi_getLL('Attribution', '')),
             'FullScreen' => htmlspecialchars($this->pi_getLL('FullScreen', '')),
+            'ImageManipulation' => htmlspecialchars($this->pi_getLL('ImageManipulation', '')),
+            'ImageManipulationDialogTitle' => htmlspecialchars($this->pi_getLL('ImageManipulation.DialogTitle', '')),
             'OverviewMap' => htmlspecialchars($this->pi_getLL('OverviewMap', '')),
             'Rotate' => htmlspecialchars($this->pi_getLL('Rotate', '')),
             'RotateLeft' => htmlspecialchars($this->pi_getLL('RotateLeft', '')),
