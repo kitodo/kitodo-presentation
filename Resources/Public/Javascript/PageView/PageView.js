@@ -118,6 +118,14 @@ dlfViewer.prototype.getOLControls = function() {
                 title: this.settings.controlTitles.ImageManipulationDialogTitle || undefined
             }));
         }
+        if (this.settings.controls.includes('Magnify')) {
+            this.olx.controls.push(new MagnifyControl({
+                // className: 'ol-custom-magnify',
+                // label: '\ud83d\udd0d',
+                target: this.settings.controlTargets.Magnify || undefined,
+                tipLabel: this.settings.controlTitles.Magnify || undefined
+            }));
+        }
         if (this.settings.controls.includes('OverviewMap')) {
             // Copy layers for overview map.
             var ovLayers = [];

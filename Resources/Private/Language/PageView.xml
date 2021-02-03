@@ -24,6 +24,7 @@
             <label index="tt_content.pi_flexform.features.attribution">Image Attribution</label>
             <label index="tt_content.pi_flexform.features.fullscreen">Fullscreen Mode</label>
             <label index="tt_content.pi_flexform.features.imagemanipulation">Image Manipulation</label>
+            <label index="tt_content.pi_flexform.features.magnify">Magnifier</label>
             <label index="tt_content.pi_flexform.features.overviewmap">Overview Map</label>
             <label index="tt_content.pi_flexform.features.rotate">Rotate Buttons</label>
             <label index="tt_content.pi_flexform.features.zoom">Zoom Buttons</label>
@@ -43,6 +44,7 @@
             <label index="FullScreen">Toggle Fullscreen Mode</label>
             <label index="ImageManipulation">Toggle Image Manipulation</label>
             <label index="ImageManipulation.DialogTitle">Image Manipulation</label>
+            <label index="Magnify">Toggle Magnifier</label>
             <label index="OverviewMap">Toggle Overview Map</label>
             <label index="Rotate">Reset Rotation</label>
             <label index="RotateLeft">Rotate 90° Left</label>
@@ -61,6 +63,7 @@
             <label index="tt_content.pi_flexform.features.attribution">Rechteangaben</label>
             <label index="tt_content.pi_flexform.features.fullscreen">Vollbild-Modus</label>
             <label index="tt_content.pi_flexform.features.imagemanipulation">Bildmanipulation</label>
+            <label index="tt_content.pi_flexform.features.magnify">Bildschirmlupe</label>
             <label index="tt_content.pi_flexform.features.overviewmap">Übersichtsbild</label>
             <label index="tt_content.pi_flexform.features.rotate">Dreh-Knöpfe</label>
             <label index="tt_content.pi_flexform.features.zoom">Zoom-Knöpfe</label>
@@ -80,6 +83,7 @@
             <label index="FullScreen">Vollbild umschalten</label>
             <label index="ImageManipulation">Bildbearbeitung umschalten</label>
             <label index="ImageManipulation.DialogTitle">Bildbearbeitung</label>
+            <label index="Magnify">Lupe umschalten</label>
             <label index="OverviewMap">Übersichtsbild umschalten</label>
             <label index="Rotate">Drehung zurücksetzen</label>
             <label index="RotateLeft">90° nach links drehen</label>

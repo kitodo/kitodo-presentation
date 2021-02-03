@@ -139,6 +139,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             // 'Resources/Public/Javascript/PageView/FulltextControl.js',
             // 'Resources/Public/Javascript/PageView/FullTextUtility.js',
             'Resources/Public/Javascript/PageView/ImageManipulationControl.js',
+            'Resources/Public/Javascript/PageView/MagnifyControl.js',
             'Resources/Public/Javascript/PageView/RotateControl.js',
             'Resources/Public/Javascript/PageView/PageView.js'
         ];
@@ -438,6 +439,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             'Attribution' => $this->conf['attributionElementId'] ?: '',
             'FullScreen' => $this->conf['fullScreenElementId'] ?: '',
             'ImageManipulation' => $this->conf['imageManipulationElementId'] ?: '',
+            'Magnify' => $this->conf['magnifyElementId'] ?: '',
             'OverviewMap' => $this->conf['overviewMapElementId'] ?: '',
             'Rotate' => $this->conf['rotateElementId'] ?: '',
             'Zoom' => $this->conf['zoomElementId'] ?: '',
@@ -449,6 +451,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             'FullScreen' => htmlspecialchars($this->pi_getLL('FullScreen', '')),
             'ImageManipulation' => htmlspecialchars($this->pi_getLL('ImageManipulation', '')),
             'ImageManipulationDialogTitle' => htmlspecialchars($this->pi_getLL('ImageManipulation.DialogTitle', '')),
+            'Magnify' => htmlspecialchars($this->pi_getLL('Magnify', '')),
             'OverviewMap' => htmlspecialchars($this->pi_getLL('OverviewMap', '')),
             'Rotate' => htmlspecialchars($this->pi_getLL('Rotate', '')),
             'RotateLeft' => htmlspecialchars($this->pi_getLL('RotateLeft', '')),
