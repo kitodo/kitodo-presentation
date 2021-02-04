@@ -37,6 +37,9 @@
 #ol-custom-image-manipulation-dialog label input {
     margin-left: 7px;
 }
+#ol-custom-image-manipulation-dialog label input:not([type='checkbox']) {
+    width: 160px;
+}
 #ol-custom-image-manipulation-dialog button {
     float: right;
 }
