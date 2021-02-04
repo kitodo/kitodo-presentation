@@ -67,7 +67,6 @@ class ImageManipulationControl extends ol.control.Control {
         this.dialog_.appendChild(this.createControl_('invert', 0));
         this.dialog_.appendChild(this.createResetButton_());
         $(this.dialog_).dialog({
-            appendTo: this.getMap().getTargetElement(),
             autoOpen,
             closeText: '',
             height: 'auto',
@@ -198,6 +197,7 @@ class ImageManipulationControl extends ol.control.Control {
         if ($(this.dialog_).dialog('isOpen')) {
             $(this.dialog_).dialog('close');
         } else {
+            $(this.dialog_).dialog('option', 'appendTo', this.getMap().getTargetElement());
             $(this.dialog_).dialog('open');
         }
     }
