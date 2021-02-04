@@ -67,6 +67,7 @@ class ImageManipulationControl extends ol.control.Control {
         this.dialog_.appendChild(this.createControl_('invert', 0));
         this.dialog_.appendChild(this.createResetButton_());
         $(this.dialog_).dialog({
+            appendTo: this.getMap().getTargetElement(),
             autoOpen,
             closeText: '',
             height: 'auto',
