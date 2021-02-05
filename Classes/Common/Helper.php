@@ -41,7 +41,7 @@ class Helper
      * @var string
      * @access protected
      */
-    protected static $cipherAlgorithm = 'aes-256-gcm';
+    protected static $cipherAlgorithm = 'aes-256-ctr';
 
     /**
      * This holds the hash algorithm
