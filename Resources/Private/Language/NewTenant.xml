@@ -65,6 +65,7 @@
             <label index="structure.imprint">Imprint</label>
             <label index="structure.index">Index</label>
             <label index="structure.initial_decoration">Initial Decoration</label>
+            <label index="structure.inventory">Inventory</label>
             <label index="structure.issue">Issue</label>
             <label index="structure.judgement">Judgement</label>
             <label index="structure.land_register">Land Register</label>
@@ -106,6 +107,7 @@
             <label index="structure.spine">Spine</label>
             <label index="structure.stamp">Stamp</label>
             <label index="structure.study">Study</label>
+            <label index="structure.subinventory">Subinventory</label>
             <label index="structure.table">Table</label>
             <label index="structure.text">Text</label>
             <label index="structure.title_page">Titlepage</label>
@@ -186,6 +188,7 @@
             <label index="structure.imprint">Impressum</label>
             <label index="structure.index">Register</label>
             <label index="structure.initial_decoration">Initialschmuck</label>
+            <label index="structure.inventory">Bestand</label>
             <label index="structure.issue">Ausgabe</label>
             <label index="structure.judgement">Urteil</label>
             <label index="structure.land_register">Grundbuch</label>
@@ -230,6 +233,7 @@
             <label index="structure.table">Tabelle</label>
             <label index="structure.text">Text</label>
             <label index="structure.title_page">Titelseite</label>
+            <label index="structure.subinventory">Unterbestand</label>
             <label index="structure.verse">Vers</label>
             <label index="structure.volume">Band</label>
             <label index="structure.year">Jahr</label>

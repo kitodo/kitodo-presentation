@@ -171,6 +171,43 @@ Basket
 Calendar
 ---------
 
+The calendar plugin may be used with newspaper and ephemeras (periodical
+published media). The plugin shows itself an overview of all available
+years or all issues in a calendar view of a selected year.
+
+You can't place the plugin together with the pageview plugin on one page.
+But you can use TypoScript conditions on this page to select the proper
+plugin e.g by setting some specific FLUID variables.
+
+This is an example usage of the TypoScript condition ("getDocumentType")::
+
+    [getDocumentType("{$config.storagePid}") == "ephemera"] || [getDocumentType("{$config.storagePid}") == "newspaper"]
+    page.10.variables {
+        isNewspaper = TEXT
+        isNewspaper.value = newspaper_anchor
+    }
+    [END]
+
+    [getDocumentType("{$config.storagePid}") == "year"]
+    page.10.variables {
+        isNewspaper = TEXT
+        isNewspaper.value = newspaper_year
+    }
+    [END]
+
+    [getDocumentType("{$config.storagePid}") == "issue"]
+    page.10.variables {
+        isNewspaper = TEXT
+        isNewspaper.value = newspaper_issue
+    }
+    [END]
+
+The `{$config.storagePid}` is a TypoScript constant holding the Kitodo.Presentation storage pid.
+
+This way, the FLUID variable "isNewspaper" is set according to the given
+value. Inside the FLUID template it's possible to switch to the right plugin
+now.
+
 :typoscript:`plugin.tx_dlf_calendar.`
 
 .. t3-field-list-table::
@@ -190,12 +227,24 @@ Calendar
    :Default:
 
  - :Property:
+       initialDocument
+   :Data Type:
+       :ref:`t3tsref:data-type-db`
+   :Default:
+
+ - :Property:
+       showEmptyMonths
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       1
+
+ - :Property:
        templateFile_
    :Data Type:
        :ref:`t3tsref:data-type-resource`
    :Default:
        Calendar.tmpl
-
 
 Collection
 ----------
@@ -960,6 +1009,7 @@ Toolbox
        * tx_dlf_imagedownloadtool
        * tx_dlf_imagemanipulationtool
        * tx_dlf_pdfdownloadtool
+       * tx_dlf_fulltextdownloadtool
        * tx_dlf_searchindocumenttool
 
  - :Property:
@@ -981,3 +1031,47 @@ Toolbox
        :ref:`t3tsref:data-type-resource`
    :Default:
        Toolbox.tmpl
+
+
+Fulltext Tool
+^^^^^^^^^^^^^
+This plugin adds an activation link for fulltext to the toolbox. If no fulltext is available for the current page, a span-tag is rendered instead.
+
+The default behaviour is to show the fulltext after click on the toggle link. There is a TypoScript configuration to show the fulltext initially.
+
+:typoscript:`plugin.tx_dlf_fulltexttool.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+       Default
+   :Values:
+       Values
+
+ - :Property:
+       activateFullTextInitially
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+        0
+   :Values:
+        0: show fulltext after click on toggle link
+
+        1: show fulltext on document load
+
+ - :Property:
+       fullTextScrollElement
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        html, body       
+
+
+The fulltext is fetched and rendered by JavaSript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
+
+**Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ muste be configured appropriate on the providing webserver.

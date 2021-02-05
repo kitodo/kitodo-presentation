@@ -46,43 +46,20 @@ class ConfigurationForm
      */
     public function checkSolrConnection()
     {
-        $solrInfo = Solr::getSolrConnectionInfo();
-        // Prepend username and password to hostname.
-        if (
-            !empty($solrInfo['username'])
-            && !empty($solrInfo['password'])
-        ) {
-            $host = $solrInfo['username'] . ':' . $solrInfo['password'] . '@' . $solrInfo['host'];
+        $solr = Solr::getInstance();
+        if ($solr->ready) {
+            Helper::addMessage(
+                htmlspecialchars($GLOBALS['LANG']->getLL('solr.status')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('solr.connected')),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+            );
         } else {
-            $host = $solrInfo['host'];
+            Helper::addMessage(
+                htmlspecialchars($GLOBALS['LANG']->getLL('solr.error')),
+                htmlspecialchars($GLOBALS['LANG']->getLL('solr.notConnected')),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+            );
         }
-        // Build request URI.
-        $url = $solrInfo['scheme'] . '://' . $host . ':' . $solrInfo['port'] . '/' . $solrInfo['path'] . '/admin/cores?wt=xml';
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'GET',
-                'user_agent' => (!empty($this->conf['useragent']) ? $this->conf['useragent'] : ini_get('user_agent'))
-            ]
-        ]);
-        // Try to connect to Solr server.
-        $response = @simplexml_load_string(file_get_contents($url, false, $context));
-        // Check status code.
-        if ($response) {
-            $status = $response->xpath('//lst[@name="responseHeader"]/int[@name="status"]');
-            if (is_array($status)) {
-                Helper::addMessage(
-                    htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('solr.status'), (string) $status[0])),
-                    htmlspecialchars($GLOBALS['LANG']->getLL('solr.connected')),
-                    ($status[0] == 0 ? \TYPO3\CMS\Core\Messaging\FlashMessage::OK : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING)
-                );
-                return Helper::renderFlashMessages();
-            }
-        }
-        Helper::addMessage(
-            htmlspecialchars(sprintf($GLOBALS['LANG']->getLL('solr.error'), $url)),
-            htmlspecialchars($GLOBALS['LANG']->getLL('solr.notConnected')),
-            \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-        );
         return Helper::renderFlashMessages();
     }
 

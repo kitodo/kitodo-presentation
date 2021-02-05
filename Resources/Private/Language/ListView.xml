@@ -15,6 +15,8 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
+            <label index="tt_content.plugin.title">List View</label>
+            <label index="tt_content.plugin.description">List View Plugin for Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.limit">Documents per page</label>
             <label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: Page View" plugin)</label>
@@ -39,6 +41,8 @@
             <label index="hits">%d hits found in %d documents.</label>
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="tt_content.plugin.title">Listenansicht</label>
+            <label index="tt_content.plugin.description">Listenansicht Plugin für Kitodo.Presentation</label>
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.limit">Dokumente pro Seite</label>
             <label index="tt_content.pi_flexform.targetPid">Zielseite (mit Plugin "DLF: Seitenansicht")</label>

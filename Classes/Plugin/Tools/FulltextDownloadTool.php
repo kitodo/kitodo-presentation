@@ -12,22 +12,19 @@
 
 namespace Kitodo\Dlf\Plugin\Tools;
 
-use TYPO3\CMS\Core\Utility\MathUtility;
-
 use Kitodo\Dlf\Common\Helper;
 
 /**
- * Fulltext tool for the plugin 'Toolbox' of the 'dlf' extension
+ * Fulltext Download tool for the plugin 'Toolbox' of the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
+class FulltextDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
 {
-    public $scriptRelPath = 'Classes/Plugin/Tools/FulltextTool.php';
+    public $scriptRelPath = 'Classes/Plugin/Tools/FulltextDownloadTool.php';
 
     /**
      * The main method of the PlugIn
@@ -67,21 +64,23 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 (int) $this->piVars['page'] > 0
                 || empty($this->piVars['page'])
             ) {
-                $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
             }
-            $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+            $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
         $this->getTemplate();
+        // Get text download.
         $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
         if (!empty($fullTextFile)) {
-            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext:' . htmlspecialchars($this->pi_getLL('fulltext', '')) . ';fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', '')) . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', '')) . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['activateFullTextInitially'], 0, 1, 0) . ';full-text-scroll-element:' . $this->conf['fullTextScrollElement'] . '">&nbsp;</a>';
+            $markerArray['###FULLTEXT_DOWNLOAD###'] = '<a href="#" id="tx-dlf-tools-fulltextdownload" title="' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '">' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '</a>';
         } else {
-            $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
+            $markerArray['###FULLTEXT_DOWNLOAD###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
         }
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
+
 }

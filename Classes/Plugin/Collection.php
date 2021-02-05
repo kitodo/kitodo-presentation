@@ -142,6 +142,10 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->showSingleCollection(intval($resArray['uid']));
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
+        if (!$solr->ready) {
+            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            return $content;
+        }
         // We only care about the UID and partOf in the results and want them sorted
         $params['fields'] = 'uid,partof';
         $params['sort'] = ['uid' => 'asc'];
