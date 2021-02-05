@@ -254,5 +254,10 @@ if (\TYPO3_MODE === 'FE') {
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'nodeName' => 'editInProductionWarning',
     'priority' => 30,
-    'class' => \Kitodo\Dlf\Hooks\Form\FieldWizard\EditInProductionWarning::class
+    'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\EditInProductionWarning::class
+];
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
+    'nodeName' => 'solrCoreStatus',
+    'priority' => 30,
+    'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
 ];
