@@ -332,19 +332,20 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
         
         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
             targetElem.addClass('highlight');
-            setTimeout(this.scrollToText, 1000, targetElem);
+            setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement);
             hoverSourceTextline_.addFeature(textlineFeature);
         }
     }
 };
 
 /**
- * Check if full text element is highlighted
+ * Scroll to full text element if it is highlighted
  * @param {any} element 
+ * @param {string} fullTextScrollElement
  */
-dlfViewerFullTextControl.prototype.scrollToText = function(element) {
+dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement) {
     if (element.hasClass('highlight')) {
-        $(this.fullTextScrollElement).animate({
+        $(fullTextScrollElement).animate({
             scrollTop: element.offset().top
         }, 500);
     }
@@ -506,5 +507,6 @@ dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
         textLineSpan.append(span);
     }
 
+    textLineSpan.append('<span class="textline" id="sp"> </span>');
     $('#tx-dlf-fulltextselection').append(textLineSpan);
 };
