@@ -189,7 +189,7 @@ class Helper
         $data = substr($encrypted, openssl_cipher_iv_length(self::$cipherAlgorithm));
         $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
         // Decrypt data.
-        $decrypted = openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
+        $decrypted = openssl_decrypt($data, self::$cipherAlgorithm, $key, 0, $iv);
         return $decrypted;
     }
 
@@ -282,7 +282,7 @@ class Helper
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
         $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
         // Encrypt data.
-        $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
+        $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, 0, $iv);
         // Merge initialisation vector and encrypted data.
         if ($encrypted !== false) {
             $encrypted = $iv . $encrypted;
