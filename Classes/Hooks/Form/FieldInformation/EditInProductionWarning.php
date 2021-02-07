@@ -10,13 +10,13 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Hooks\Form\FieldWizard;
+namespace Kitodo\Dlf\Hooks\Form\FieldInformation;
 
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 
 /**
- * FieldWizard renderType for TYPO3 FormEngine
+ * FieldInformation renderType for TYPO3 FormEngine
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
@@ -42,7 +42,7 @@ class EditInProductionWarning extends AbstractNode
             // Create flash message.
             Helper::addMessage(
                 htmlspecialchars($GLOBALS['LANG']->getLL('flash.editInProductionWarning')),
-                htmlspecialchars($GLOBALS['LANG']->getLL('flash.attention')),
+                '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
             // Add message to result array.
