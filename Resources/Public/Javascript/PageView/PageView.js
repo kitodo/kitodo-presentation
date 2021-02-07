@@ -379,9 +379,9 @@ dlfViewer.prototype.init = function(controlNames) {
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
                 : [];
-                //: [ new ol.control.MousePosition({	
-                //        coordinateFormat: ol.coordinate.createStringXY(4),	
-                //        undefinedHTML: '&nbsp;'	
+                //: [ new ol.control.MousePosition({
+                //        coordinateFormat: ol.coordinate.createStringXY(4),
+                //        undefinedHTML: '&nbsp;'
                 //    })];
 
             // create map
