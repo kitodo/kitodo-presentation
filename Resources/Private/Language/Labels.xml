@@ -107,7 +107,7 @@
             <label index="tx_dlf_formats.tab1">General</label>
             <label index="tx_dlf_solrcores">Solr Cores</label>
             <label index="tx_dlf_solrcores.label">Display Label</label>
-            <label index="tx_dlf_solrcores.index_name">Solr Name</label>
+            <label index="tx_dlf_solrcores.index_name">Solr Core</label>
             <label index="tx_dlf_solrcores.tab1">General</label>
             <label index="tx_dlf_collections">Collections</label>
             <label index="tx_dlf_collections.label">Display Label</label>
@@ -291,7 +291,7 @@
             <label index="tx_dlf_formats.tab1">Allgemein</label>
             <label index="tx_dlf_solrcores">Solr Kerne</label>
             <label index="tx_dlf_solrcores.label">Anzeigeform</label>
-            <label index="tx_dlf_solrcores.index_name">Solr-Bezeichnung</label>
+            <label index="tx_dlf_solrcores.index_name">Solr-Kern</label>
             <label index="tx_dlf_solrcores.tab1">Allgemein</label>
             <label index="tx_dlf_collections">Sammlungen</label>
             <label index="tx_dlf_collections.label">Anzeigeform</label>
