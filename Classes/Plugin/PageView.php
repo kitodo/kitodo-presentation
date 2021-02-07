@@ -100,7 +100,6 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({
                         controls: ["' . implode('", "', $this->controls) . '"],
-                        overviewMapTarget: "' . (!empty($this->conf['overviewMapElementId']) ? $this->conf['overviewMapElementId'] : '') . '",
                         div: "' . $this->conf['elementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
