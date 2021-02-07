@@ -111,7 +111,7 @@ return [
                 'max' => 255,
                 'eval' => 'required,nospace,alphanum_x,uniqueInPid',
                 'default' => '',
-                'fieldWizard' => [
+                'fieldInformation' => [
                     'editInProductionWarning' => [
                         'renderType' => 'editInProductionWarning',
                     ],

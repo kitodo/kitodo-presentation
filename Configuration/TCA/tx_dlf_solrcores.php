@@ -44,11 +44,17 @@ return [
         'index_name' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.index_name',
             'config' => [
-                'type' => 'none',
+                'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'alphanum,unique',
+                'eval' => 'alphanum,nospace,required,unique',
                 'default' => '',
+                'readOnly' => true,
+                'fieldInformation' => [
+                    'solrCoreStatus' => [
+                        'renderType' => 'solrCoreStatus',
+                    ],
+                ],
             ],
         ],
     ],
