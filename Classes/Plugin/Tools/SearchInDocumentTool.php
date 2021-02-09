@@ -115,13 +115,22 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Fill markers.
         $markerArray = [
             '###ACTION_URL###' => $actionUrl,
+            '###CURRENT_DOCUMENT###' => $this->getCurrentDocumentId(),
+            '###LABEL_QUERY###' => htmlspecialchars($this->pi_getLL('label.query')),
+            '###LABEL_DELETE_SEARCH###' => htmlspecialchars($this->pi_getLL('label.delete_search')),
+            '###LABEL_LOADING###' => htmlspecialchars($this->pi_getLL('label.loading')),
+            '###LABEL_SUBMIT###' => htmlspecialchars($this->pi_getLL('label.submit')),
+            '###LABEL_SEARCH_IN_DOCUMENT###' => htmlspecialchars($this->pi_getLL('label.searchInDocument')),
+            '###LABEL_NEXT###' => htmlspecialchars($this->pi_getLL('label.next')),
+            '###LABEL_PREVIOUS###' => htmlspecialchars($this->pi_getLL('label.previous')),
+            '###LABEL_PAGE###' => htmlspecialchars($this->pi_getLL('label.logicalPage')),
+            '###LABEL_NORESULT###' => htmlspecialchars($this->pi_getLL('label.noresult')),
             '###LABEL_QUERY_URL###' => $this->conf['queryInputName'],
             '###LABEL_START###' => $this->conf['startInputName'],
             '###LABEL_ID###' => $this->conf['idInputName'],
             '###LABEL_PAGE_URL###' => $this->conf['pageInputName'],
             '###LABEL_HIGHLIGHT_WORD###' => $this->conf['highlightWordInputName'],
             '###LABEL_ENCRYPTED###' => $this->conf['encryptedInputName'],
-            '###CURRENT_DOCUMENT###' => $this->getCurrentDocumentId(),
             '###SOLR_ENCRYPTED###' => $this->getEncryptedCoreName() ? : ''
         ];
 

@@ -70,7 +70,8 @@ class PageViewProxy
         if ($fetchedData) {
             $response->getBody()->write($fetchedData);
             $response = $response->withHeader('Access-Control-Allow-Methods', 'GET');
-            $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin') ? : '*');
+            // temporally replaced by * in .htaccess
+            // $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin') ? : '*');
             $response = $response->withHeader('Access-Control-Max-Age', '86400');
             $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
         }

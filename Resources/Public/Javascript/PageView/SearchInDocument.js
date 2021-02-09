@@ -52,6 +52,7 @@ function resetStart() {
 function addHighlightEffect(highlightIds) {
     if (highlightIds.length > 0) {
         highlightIds.forEach(function (highlightId) {
+            console.log(highlightId)
             var targetElement = $('#' + highlightId);
     
             if (targetElement.length > 0 && !targetElement.hasClass('highlight')) {
@@ -72,6 +73,13 @@ function getBaseUrl() {
     // - http://example.com/index.php?id=14
     // - http://example.com/workview (using slug on page with uid=14)
     var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
+    var url = window.location.href
+
+    // it is specific to DDB Zeitungsportal
+    // TODO: make this solution more generic
+    if(baseUrl.indexOf('ddb-current/newspaper/item')) {
+        baseUrl = url
+    }
 
     if (baseUrl.indexOf('?') > 0) {
         baseUrl += '&';
@@ -124,11 +132,10 @@ function search() {
                     var searchWord = element['snippet'];
                     searchWord = searchWord.substring(searchWord.indexOf('<em>') + 4, searchWord.indexOf('</em>'));
 
-                    //TODO: make params configurable
                     var link = getBaseUrl()
-                        + 'tx_dlf[id]=' + element['uid']
-                        + '&tx_dlf[highlight_word]=' + encodeURIComponent(searchWord)
-                        + '&tx_dlf[page]=' + element['page'];
+                        + $("input[id='tx-dlf-search-in-document-id']").attr('name') + '=' + element['uid']
+                        + '&' + $("input[id='tx-dlf-search-in-document-highlight-word']").attr('name') + '=' + encodeURIComponent(searchWord)
+                        + '&' + $("input[id='tx-dlf-search-in-document-page']").attr('name') + '=' + element['page'];
 
                     if (element['snippet'].length > 0) {
                         resultItems[element['page']] = '<span class="structure">'

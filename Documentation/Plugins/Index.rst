@@ -1115,12 +1115,15 @@ This plugin adds an possibility to search all appearances of the phrase in curre
    :Default:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  - :Property:
        documentIdUrlSchema
    :Data Type:
        :ref:`t3tsref:data-type-string`
    :Default:
 
+=======
+>>>>>>> a4f0880b (Make search input names configurable)
  - :Property:
        idInputName
    :Data Type:
@@ -1162,5 +1165,8 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[encrypted]
+<<<<<<< HEAD
 =======
 >>>>>>> d34cf08f (Change configuration option fromisIndexRemapped to searchURL)
+=======
+>>>>>>> a4f0880b (Make search input names configurable)
