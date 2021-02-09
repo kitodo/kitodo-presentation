@@ -417,7 +417,7 @@ abstract class Document
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$forceReload) {
-            $regObj = md5($uid);
+            $regObj = Helper::digest($uid);
             if (
                 is_object(self::$registry[$regObj])
                 && self::$registry[$regObj] instanceof self
@@ -550,9 +550,9 @@ abstract class Document
         if (
             $instance instanceof self
             && $instance->ready) {
-            self::$registry[md5($instance->uid)] = $instance;
+            self::$registry[Helper::digest($instance->uid)] = $instance;
             if ($instance->uid != $instance->location) {
-                self::$registry[md5($instance->location)] = $instance;
+                self::$registry[Helper::digest($instance->location)] = $instance;
             }
             // Load extension configuration
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
