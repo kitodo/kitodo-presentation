@@ -1087,7 +1087,11 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-ful
 
 
 Search in Document Tool
+<<<<<<< HEAD
 ^^^^^^^^^^^^^^^^^^^^^^^
+=======
+^^^^^^^^^^^^^
+>>>>>>> d34cf08f (Change configuration option fromisIndexRemapped to searchURL)
 This plugin adds an possibility to search all appearances of the phrase in currently displayed document 
 
 :typoscript:`plugin.tx_dlf_searchindocumenttool.`
@@ -1110,6 +1114,7 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
 
+<<<<<<< HEAD
  - :Property:
        documentIdUrlSchema
    :Data Type:
@@ -1157,3 +1162,5 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[encrypted]
+=======
+>>>>>>> d34cf08f (Change configuration option fromisIndexRemapped to searchURL)

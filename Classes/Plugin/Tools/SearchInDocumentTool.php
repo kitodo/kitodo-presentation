@@ -103,10 +103,11 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $actionUrl = $this->cObj->typoLink_URL($linkConf);
         $currentDocument = $this->doc->uid;
 
-        // split the given URL for DDB Zeitungsportal
-        if (intval($this->conf['isIndexRemapped']) === 1) {
+        if (!empty($this->conf['searchUrl'])) {
+            $actionUrl = $this->conf['searchUrl'];
+            // it is specific to DDB Zeitungsportal
+            // TODO: make this solution more generic
             $pathElements = explode("/", $currentDocument);
-            $actionUrl = $pathElements[0] . '//' . $pathElements[2] . '/ddb-current/newspaper/';
             $currentDocument = $pathElements[5];
         }
 
