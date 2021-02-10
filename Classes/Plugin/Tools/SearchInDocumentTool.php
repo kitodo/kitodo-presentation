@@ -100,31 +100,6 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
 
-        $actionUrl = $this->cObj->typoLink_URL($linkConf);
-        $currentDocument = $this->doc->uid;
-
-        if (!empty($this->conf['searchUrl'])) {
-            $actionUrl = $this->conf['searchUrl'];
-        }
-
-        var_dump($currentDocument);
-
-        if (!empty($this->conf['documentIdUrlSchema'])) {
-            $arr = explode('*', $this->conf['documentIdUrlSchema']);
-            var_dump($arr);
-            if(count($arr) == 2) {
-                $currentDocument = explode($arr[0], $currentDocument)[0];
-                var_dump(explode($arr[0], $currentDocument)[0]);
-            } else if(count($arr) == 3) {
-                $sub = substr($currentDocument, strpos($currentDocument, $arr[0]) + strlen($arr[0]), strlen($currentDocument));
-                var_dump($sub);
-                $currentDocument = substr($sub, 0, strpos($sub, $arr[2]));
-            }
-        }
-
-        var_dump($currentDocument);
-
-        $encryptedSolr = $this->getEncryptedCoreName();
         // Fill markers.
         $markerArray = [
             '###ACTION_URL###' => $actionUrl,
