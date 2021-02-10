@@ -105,11 +105,24 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
 
         if (!empty($this->conf['searchUrl'])) {
             $actionUrl = $this->conf['searchUrl'];
-            // it is specific to DDB Zeitungsportal
-            // TODO: make this solution more generic
-            $pathElements = explode("/", $currentDocument);
-            $currentDocument = $pathElements[5];
         }
+
+        var_dump($currentDocument);
+
+        if (!empty($this->conf['documentIdUrlSchema'])) {
+            $arr = explode('*', $this->conf['documentIdUrlSchema']);
+            var_dump($arr);
+            if(count($arr) == 2) {
+                $currentDocument = explode($arr[0], $currentDocument)[0];
+                var_dump(explode($arr[0], $currentDocument)[0]);
+            } else if(count($arr) == 3) {
+                $sub = substr($currentDocument, strpos($currentDocument, $arr[0]) + strlen($arr[0]), strlen($currentDocument));
+                var_dump($sub);
+                $currentDocument = substr($sub, 0, strpos($sub, $arr[2]));
+            }
+        }
+
+        var_dump($currentDocument);
 
         $encryptedSolr = $this->getEncryptedCoreName();
         // Fill markers.

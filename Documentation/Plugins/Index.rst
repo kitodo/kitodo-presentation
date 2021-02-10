@@ -1125,6 +1125,12 @@ This plugin adds an possibility to search all appearances of the phrase in curre
 =======
 >>>>>>> a4f0880b (Make search input names configurable)
  - :Property:
+       documentIdUrlSchema
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+
+ - :Property:
        idInputName
    :Data Type:
        :ref:`t3tsref:data-type-string`
