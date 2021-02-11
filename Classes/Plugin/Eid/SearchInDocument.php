@@ -61,7 +61,6 @@ class SearchInDocument
             $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
             $query->setQuery($this->getQuery($fields, $parameters));
             $query->setStart($count)->setRows(20);
-            $hl = $query->getHighlighting();
             $solrRequest = $solr->service->createRequest($query);
 
             // it is necessary to add the custom parameters to the request

@@ -58,7 +58,7 @@ function addHighlightEffect(highlightIds) {
             if (targetElement.length > 0 && !targetElement.hasClass('highlight')) {
                 targetElement.addClass('highlight');
             }
-        })
+        });
     }
 }
 
@@ -84,16 +84,31 @@ function getBaseUrl() {
 }
 
 /**
+ * Get current URL query parameters.
+ * It returns array of params in form 'param=value' if there are any params supplied in the given url. If there are none it returns empty array
+ * 
+ * @returns {array} array with params or empty 
+ */
+function getCurrentQueryParams() {
+    var baseUrl = getBaseUrl();
+
+    if(baseUrl.indexOf('?') > 0) {
+        return baseUrl.slice(baseUrl.indexOf('?') + 1).split('&');
+    }
+
+    return [];
+}
+
+/**
  * Get all URL query parameters for snippet links.
  * All means that it includes together params which were already supplied in the page url and params which are returned as search results.
  * 
- * @param {string} baseUrl
  * @param {array} queryParams
  * 
  * @returns {array} array with params in form 'param' => 'value'
  */
-function getAllQueryParams(baseUrl, queryParams) {
-    var params = getCurrentQueryParams(baseUrl)
+function getAllQueryParams(queryParams) {
+    var params = getCurrentQueryParams();
 
     var queryParam;
     for(var i = 0; i < params.length; i++) {
@@ -104,22 +119,6 @@ function getAllQueryParams(baseUrl, queryParams) {
         }
     }
     return queryParams;
-}
-
-/**
- * Get current URL query parameters.
- * It returns array of params in form 'param=value' if there are any params supplied in the given url. If there are none it returns empty array
- * 
- * @param {string} baseUrl
- * 
- * @returns {array} array with params or empty 
- */
-function getCurrentQueryParams(baseUrl) {
-    if(baseUrl.indexOf('?') > 0) {
-        return baseUrl.slice(baseUrl.indexOf('?') + 1).split('&')
-    }
-
-    return [];
 }
 
 /**
@@ -158,22 +157,21 @@ function getNeededQueryParams(element) {
  */
 function getLink(element) {
     var baseUrl = getBaseUrl();
-    var link = ""
 
     var queryParams = getNeededQueryParams(element);
 
     if (baseUrl.indexOf('?') > 0) {
-        queryParams = getAllQueryParams(baseUrl, queryParams);
+        queryParams = getAllQueryParams(queryParams);
         baseUrl = baseUrl.split('?')[0];
     }
 
-    link = baseUrl + '?'
+    var link = baseUrl + '?';
 
     // add query params to result link
     for(var i = 0; i < queryParams.length; i++) {
-        link += queryParams[i] + '=' + queryParams[queryParams[i]] + '&'
+        link += queryParams[i] + '=' + queryParams[queryParams[i]] + '&';
     }
-    link = link.slice(0, -1)
+    link = link.slice(0, -1);
     return link;
 }
 
@@ -241,7 +239,7 @@ function search() {
                 resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
             }
             resultList += '</ul>';
-            resultList += getNavigationButtons(start, data['numFound'])
+            resultList += getNavigationButtons(start, data['numFound']);
             $('#tx-dlf-search-in-document-results').html(resultList);
         },
         "json"

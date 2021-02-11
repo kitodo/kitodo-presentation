@@ -93,13 +93,6 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load template file.
         $this->getTemplate();
 
-        // Configure @action URL for form.
-        $linkConf = [
-            'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
-        ];
-
         // Fill markers.
         $markerArray = [
             '###ACTION_URL###' => $actionUrl,
