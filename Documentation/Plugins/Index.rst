@@ -1069,9 +1069,16 @@ The default behaviour is to show the fulltext after click on the toggle link. Th
    :Data Type:
        :ref:`t3tsref:data-type-string`
    :Default:
-        html, body       
+        html, body
+
+ - :Property:
+       searchHlElements
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        tx_dlf[highlight_word]
 
 
-The fulltext is fetched and rendered by JavaSript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
+The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
 
-**Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ muste be configured appropriate on the providing webserver.
+**Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.
