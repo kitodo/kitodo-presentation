@@ -61,6 +61,7 @@ class SearchInDocument
             $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
             $query->setQuery($this->getQuery($fields, $parameters));
             $query->setStart($count)->setRows(20);
+            $query->getHighlighting();
             $solrRequest = $solr->service->createRequest($query);
 
             // it is necessary to add the custom parameters to the request
@@ -71,6 +72,9 @@ class SearchInDocument
             $solrRequest->addParam('hl.ocr.fl', $fields['fulltext']);
             // return the coordinates of highlighted search as absolute coordinates
             $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
+            // max amount of snippets for a single page
+            $solrRequest->addParam('hl.snippets', 20);
+
             $response = $solr->service->executeRequest($solrRequest);
             $result = $solr->service->createResult($query, $response);
             $output['numFound'] = $result->getNumFound();
