@@ -65,19 +65,20 @@ function addHighlightEffect(highlightIds) {
 /**
  * Get base URL for snippet links.
  * 
+ * @param {string} id
+ * 
  * @returns {string}
  */
-function getBaseUrl() {
+function getBaseUrl(id) {
     // Take the workview baseUrl from the form action.
     // The URL may be in the following form
     // - http://example.com/index.php?id=14
     // - http://example.com/workview (using slug on page with uid=14)
     var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
 
-    // it is specific to DDB Zeitungsportal
-    // TODO: make this solution more generic
-    if(baseUrl.indexOf('ddb-current/newspaper/item')) {
-        baseUrl = window.location.href;
+    // check if action URL contains id, if not, get URL from window
+    if(baseUrl.split('?')[0].indexOf(id) === -1) {
+        baseUrl = $(location).attr('href');
     }
 
     return baseUrl;
@@ -87,11 +88,11 @@ function getBaseUrl() {
  * Get current URL query parameters.
  * It returns array of params in form 'param=value' if there are any params supplied in the given url. If there are none it returns empty array
  * 
+ * @param {string} baseUrl
+ * 
  * @returns {array} array with params or empty 
  */
-function getCurrentQueryParams() {
-    var baseUrl = getBaseUrl();
-
+function getCurrentQueryParams(baseUrl) {
     if(baseUrl.indexOf('?') > 0) {
         return baseUrl.slice(baseUrl.indexOf('?') + 1).split('&');
     }
@@ -103,12 +104,13 @@ function getCurrentQueryParams() {
  * Get all URL query parameters for snippet links.
  * All means that it includes together params which were already supplied in the page url and params which are returned as search results.
  * 
+ * @param {string} baseUrl
  * @param {array} queryParams
  * 
  * @returns {array} array with params in form 'param' => 'value'
  */
-function getAllQueryParams(queryParams) {
-    var params = getCurrentQueryParams();
+function getAllQueryParams(baseUrl, queryParams) {
+    var params = getCurrentQueryParams(baseUrl);
 
     var queryParam;
     for(var i = 0; i < params.length; i++) {
@@ -138,12 +140,15 @@ function getNeededQueryParams(element) {
     var page = $("input[id='tx-dlf-search-in-document-page']").attr('name');
 
     var queryParams = [];
+        
+    if(getBaseUrl(element['uid']).split('?')[0].indexOf(element['uid']) === -1) {
         queryParams.push(id);
         queryParams[id] = element['uid'];
-        queryParams.push(highlightWord);
-        queryParams[highlightWord] = encodeURIComponent(searchWord);
-        queryParams.push(page);
-        queryParams[page] = element['page'];
+    }
+    queryParams.push(highlightWord);
+    queryParams[highlightWord] = encodeURIComponent(searchWord);
+    queryParams.push(page);
+    queryParams[page] = element['page'];
 
     return queryParams;
 }
@@ -156,12 +161,12 @@ function getNeededQueryParams(element) {
  * @returns {string}
  */
 function getLink(element) {
-    var baseUrl = getBaseUrl();
+    var baseUrl = getBaseUrl(element['uid']);
 
     var queryParams = getNeededQueryParams(element);
 
     if (baseUrl.indexOf('?') > 0) {
-        queryParams = getAllQueryParams(queryParams);
+        queryParams = getAllQueryParams(baseUrl, queryParams);
         baseUrl = baseUrl.split('?')[0];
     }
 
@@ -225,8 +230,6 @@ function search() {
                     }
 
                     addHighlightEffect(element['highlight']);
-
-                    // TODO: highlight found phrase in image
                 });
                 // Sort result by page.
                 resultItems.sort(function (a, b) {
