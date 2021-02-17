@@ -279,7 +279,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
                 $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 break;
-            }    
+            }
         }
         if (empty($fulltext)) {
             Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpFulltext'] . '"', DEVLOG_SEVERITY_WARNING);
