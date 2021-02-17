@@ -140,13 +140,13 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         while ($fileGrpAudio = array_shift($fileGrpAudios)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio])) {
                 // Get audio data.
-                $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio);
+                $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio]);
                 $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
                 $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio]);
                 break;
             }
         }
-        if (!empty($this->audio) {
+        if (!empty($this->audio)) {
             // Add jPlayer javascript.
             $markerArray['###JAVASCRIPT###'] = $this->addPlayerJS();
         } else {

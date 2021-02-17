@@ -846,7 +846,7 @@ final class MetsDocument extends Document
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            $useGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
+            $useGrps = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
             if (!empty($extConf['fileGrpThumbs'])) {
                 $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
             }
