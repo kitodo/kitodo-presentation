@@ -1,8 +1,7 @@
 ---
 name: Task for the development fund
-about: escribe a working package which may be implemented by the Kitodo e.V. development
-  fund.
-title: "[FUND]"
+about: A working package which may be sponsored by the Kitodo e.V. development fund.
+title: '[FUND] '
 labels: development fund
 assignees: ''
 
@@ -14,4 +13,4 @@ A clear and concise description of what should be developed.
 
 ## Related Issues
 
-Please check if there are already issues related to this task in the Kitodo.Presentation repo and link it here.
+Please check if there are already any [issues](https://github.com/kitodo/kitodo-presentation/issues) related to this task and link them here using `#issuenumber`.
