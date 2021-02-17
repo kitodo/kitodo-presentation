@@ -221,7 +221,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrps']);
+        $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpImages']);
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {

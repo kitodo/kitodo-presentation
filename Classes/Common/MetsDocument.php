@@ -93,7 +93,7 @@ final class MetsDocument extends Document
     protected $fileGrps = [];
 
     /**
-     * Are the file groups loaded?
+     * Are the image file groups loaded?
      * @see $fileGrps
      *
      * @var bool
@@ -838,18 +838,18 @@ final class MetsDocument extends Document
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            $useGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrps']);
+            $useGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
             if (!empty($extConf['fileGrpThumbs'])) {
-                $useGrps[] = $extConf['fileGrpThumbs'];
+                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
             }
             if (!empty($extConf['fileGrpDownload'])) {
-                $useGrps[] = $extConf['fileGrpDownload'];
+                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']));
             }
             if (!empty($extConf['fileGrpFulltext'])) {
-                $useGrps[] = $extConf['fileGrpFulltext'];
+                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']));
             }
             if (!empty($extConf['fileGrpAudio'])) {
-                $useGrps[] = $extConf['fileGrpAudio'];
+                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']));
             }
             // Get all file groups.
             $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
@@ -866,7 +866,7 @@ final class MetsDocument extends Document
             // Are there any fulltext files available?
             if (
                 !empty($extConf['fileGrpFulltext'])
-                && in_array($extConf['fileGrpFulltext'], $this->fileGrps)
+                && array_intersect(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']), $this->fileGrps) !== []
             ) {
                 $this->hasFulltext = true;
             }

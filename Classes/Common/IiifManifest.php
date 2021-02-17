@@ -230,8 +230,8 @@ final class IiifManifest extends Document
         if (!$this->useGrpsLoaded) {
             // Get configured USE attributes.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            if (!empty($extConf['fileGrps'])) {
-                $this->useGrps['fileGrps'] = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrps']);
+            if (!empty($extConf['fileGrpImages'])) {
+                $this->useGrps['fileGrpImages'] = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
             }
             if (!empty($extConf['fileGrpThumbs'])) {
                 $this->useGrps['fileGrpThumbs'] = $extConf['fileGrpThumbs'];
@@ -240,7 +240,7 @@ final class IiifManifest extends Document
                 $this->useGrps['fileGrpDownload'] = $extConf['fileGrpDownload'];
             }
             if (!empty($extConf['fileGrpFulltext'])) {
-                $this->useGrps['fileGrpFulltext'] = $extConf['fileGrpFulltext'];
+                $this->useGrps['fileGrpFulltext'] = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
             }
             if (!empty($extConf['fileGrpAudio'])) {
                 $this->useGrps['fileGrpAudio'] = $extConf['fileGrpAudio'];
@@ -272,7 +272,7 @@ final class IiifManifest extends Document
             $fileUseDownload = $this->getUseGroups('fileGrpDownload');
             $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
             $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
-            $fileUses = $this->getUseGroups('fileGrps');
+            $fileUses = $this->getUseGroups('fileGrpImages');
             if (isset($fileUseDownload)) {
                 $docPdfRendering = $this->iiif->getRenderingUrlsForFormat('application/pdf');
                 if (!empty($docPdfRendering)) {
@@ -514,7 +514,7 @@ final class IiifManifest extends Document
                 $details['points'] = $startCanvasIndex + 1;
             }
         }
-        $useGroups = $this->getUseGroups('fileGrps');
+        $useGroups = $this->getUseGroups('fileGrpImages');
         if (is_string($useGroups)) {
             $useGroups = [$useGroups];
         }
