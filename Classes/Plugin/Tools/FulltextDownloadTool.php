@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Plugin\Tools;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Fulltext Download tool for the plugin 'Toolbox' of the 'dlf' extension
@@ -64,16 +66,22 @@ class FulltextDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 (int) $this->piVars['page'] > 0
                 || empty($this->piVars['page'])
             ) {
-                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+                $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
             }
-            $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+            $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
         $this->getTemplate();
         // Get text download.
-        $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
+        $fileGrpFulltexts = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+        while ($fileGrpFulltext = array_shift($fileGrpFulltexts)) {
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext])) {
+                $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext];
+                break;
+            }
+        }
         if (!empty($fullTextFile)) {
             $markerArray['###FULLTEXT_DOWNLOAD###'] = '<a href="#" id="tx-dlf-tools-fulltextdownload" title="' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '">' . htmlspecialchars($this->pi_getLL('download-current-page', '')) . '</a>';
         } else {

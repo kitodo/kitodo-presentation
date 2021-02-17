@@ -311,19 +311,27 @@ final class MetsDocument extends Document
         ) {
             // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true)), 1);
-            if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']])) {
-                $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$extConf['fileGrpThumbs']];
+            $fileGrpThumbs = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+            while ($fileGrpThumb = array_shift($fileGrpThumbs)) {
+                if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$fileGrpThumb])) {
+                    $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$fileGrpThumb];
+                    break;
+                }
             }
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
         } elseif ($details['id'] == $this->_getToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
-            if (
-                !empty($this->physicalStructure)
-                && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']])
-            ) {
-                $details['thumbnailId'] = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']];
+            $fileGrpThumbs = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+            while ($fileGrpThumb = array_shift($fileGrpThumbs)) {
+                if (
+                    !empty($this->physicalStructure)
+                    && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])
+                ) {
+                    $details['thumbnailId'] = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb];
+                    break;
+                }
             }
         }
         // Get the files this structure element is pointing at.
@@ -431,7 +439,7 @@ final class MetsDocument extends Document
                     // Get the metadata from class.
                     if (
                         class_exists($class)
-                        && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof MetadataInterface
+                        && ($obj = GeneralUtility::makeInstance($class)) instanceof MetadataInterface
                     ) {
                         $obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
                     } else {
@@ -840,16 +848,16 @@ final class MetsDocument extends Document
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             $useGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
             if (!empty($extConf['fileGrpThumbs'])) {
-                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
+                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
             }
             if (!empty($extConf['fileGrpDownload'])) {
-                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']));
+                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']));
             }
             if (!empty($extConf['fileGrpFulltext'])) {
-                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']));
+                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']));
             }
             if (!empty($extConf['fileGrpAudio'])) {
-                $useGrps = array_merge($useGrps, \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']));
+                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']));
             }
             // Get all file groups.
             $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
@@ -866,7 +874,7 @@ final class MetsDocument extends Document
             // Are there any fulltext files available?
             if (
                 !empty($extConf['fileGrpFulltext'])
-                && array_intersect(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']), $this->fileGrps) !== []
+                && array_intersect(GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']), $this->fileGrps) !== []
             ) {
                 $this->hasFulltext = true;
             }
@@ -1041,13 +1049,19 @@ final class MetsDocument extends Document
                 // Load smLinks.
                 $this->_getSmLinks();
                 // Get thumbnail location.
-                if (
-                    $this->_getPhysicalStructure()
-                    && !empty($this->smLinks['l2p'][$strctId])
-                ) {
-                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$extConf['fileGrpThumbs']]);
-                } else {
-                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$extConf['fileGrpThumbs']]);
+                $fileGrpThumbs = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+                while ($fileGrpThumb = array_shift($fileGrpThumbs)) {
+                    if (
+                        $this->_getPhysicalStructure()
+                        && !empty($this->smLinks['l2p'][$strctId])
+                        && !empty($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb])
+                    ) {
+                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb]);
+                        break;
+                    } elseif (!empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])) {
+                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb]);
+                        break;
+                    }
                 }
             } else {
                 Helper::devLog('No structure of type "' . $metadata['type'][0] . '" found in database', DEVLOG_SEVERITY_ERROR);

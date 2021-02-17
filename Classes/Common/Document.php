@@ -662,25 +662,31 @@ abstract class Document
         $this->_getPhysicalStructure();
         // ... and extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $fileGrpFulltexts = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
         if (!empty($this->physicalStructureInfo[$id])) {
-            // Get fulltext file.
-            $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]));
-            if ($file !== false) {
-                // Turn off libxml's error logging.
-                $libxmlErrors = libxml_use_internal_errors(true);
-                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
-                $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-                // Load XML from file.
-                $rawTextXml = simplexml_load_string($file);
-                // Reset entity loader setting.
-                libxml_disable_entity_loader($previousValueOfEntityLoader);
-                // Reset libxml's error logging.
-                libxml_use_internal_errors($libxmlErrors);
-                // Get the root element's name as text format.
-                $textFormat = strtoupper($rawTextXml->getName());
-            } else {
-                Helper::devLog('Couln\'t load fulltext file for structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
-                return $rawText;
+            while ($fileGrpFulltext = array_shift($fileGrpFulltexts)) {
+                if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
+                    // Get fulltext file.
+                    $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
+                    if ($file !== false) {
+                        // Turn off libxml's error logging.
+                        $libxmlErrors = libxml_use_internal_errors(true);
+                        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+                        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+                        // Load XML from file.
+                        $rawTextXml = simplexml_load_string($file);
+                        // Reset entity loader setting.
+                        libxml_disable_entity_loader($previousValueOfEntityLoader);
+                        // Reset libxml's error logging.
+                        libxml_use_internal_errors($libxmlErrors);
+                        // Get the root element's name as text format.
+                        $textFormat = strtoupper($rawTextXml->getName());
+                    } else {
+                        Helper::devLog('Couln\'t load fulltext file for structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+                        return $rawText;
+                    }
+                    break;
+                }
             }
         } else {
             Helper::devLog('Invalid structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
@@ -696,7 +702,7 @@ abstract class Document
                 // Get the raw text from class.
                 if (
                     class_exists($class)
-                    && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof FulltextInterface
+                    && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
                 ) {
                     $rawText = $obj->getRawText($rawTextXml);
                     $this->rawTextArray[$id] = $rawText;

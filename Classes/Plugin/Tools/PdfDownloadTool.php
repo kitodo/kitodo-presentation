@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Plugin\Tools;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * PDF Download tool for the plugin 'Toolbox' of the 'dlf' extension
@@ -65,11 +67,11 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 (int) $this->piVars['page'] > 0
                 || empty($this->piVars['page'])
             ) {
-                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+                $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
             }
-            $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+            $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
         $this->getTemplate();
@@ -93,28 +95,27 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $page1Link = '';
         $page2Link = '';
         $pageNumber = $this->piVars['page'];
+        $fileGrpDownloads = GeneralUtility::trimExplode(',', $this->conf['fileGrpDownload']);
         // Get image link.
-        $details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]];
-        $file = $details['files'][$this->conf['fileGrpDownload']];
-        if (!empty($file)) {
-            $page1Link = $this->doc->getFileLocation($file);
-        }
-        // Get second page, too, if double page view is activated.
-        if (
-            $this->piVars['double']
-            && $pageNumber < $this->doc->numPages
-        ) {
-            $details = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]];
-            $file = $details['files'][$this->conf['fileGrpDownload']];
-            if (!empty($file)) {
-                $page2Link = $this->doc->getFileLocation($file);
+        while ($fileGrpDownload = array_shift($fileGrpDownloads)) {
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]]['files'][$fileGrpDownload])) {
+                $page1Link = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]]['files'][$fileGrpDownload]);
+                // Get second page, too, if double page view is activated.
+                if (
+                    $this->piVars['double']
+                    && $pageNumber < $this->doc->numPages
+                    && !empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload])
+                ) {
+                    $page2Link = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload]);
+                }
+                break;
             }
         }
         if (
             empty($page1Link)
             && empty($page2Link)
         ) {
-            Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
+            Helper::devLog('File not found in fileGrps "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
         }
         // Wrap URLs with HTML.
         $linkConf = [
@@ -149,13 +150,18 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function getWorkLink()
     {
         $workLink = '';
+        $fileGrpDownloads = GeneralUtility::trimExplode(',', $this->conf['fileGrpDownload']);
         // Get work link.
-        if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']])) {
-            $workLink = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$this->conf['fileGrpDownload']]);
-        } else {
-            $details = $this->doc->getLogicalStructure($this->doc->toplevelId);
-            if (!empty($details['files'][$this->conf['fileGrpDownload']])) {
-                $workLink = $this->doc->getFileLocation($details['files'][$this->conf['fileGrpDownload']]);
+        while ($fileGrpDownload = array_shift($fileGrpDownloads)) {
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$fileGrpDownload])) {
+                $workLink = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$fileGrpDownload]);
+                break;
+            } else {
+                $details = $this->doc->getLogicalStructure($this->doc->toplevelId);
+                if (!empty($details['files'][$fileGrpDownload])) {
+                    $workLink = $this->doc->getFileLocation($details['files'][$fileGrpDownload]);
+                    break;
+                }
             }
         }
         // Wrap URLs with HTML.

@@ -13,6 +13,10 @@
 namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Plugin 'Page Grid' for the 'dlf' extension
@@ -50,12 +54,18 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         // Set pagination.
         $markerArray['###PAGINATION###'] = htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['orderlabel']);
         // Get thumbnail or placeholder.
-        if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$this->conf['fileGrpThumbs']])) {
-            $thumbnailFile = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$this->conf['fileGrpThumbs']]);
+        $fileGrpThumbs = GeneralUtility::trimExplode(',', $this->onf['fileGrpThumbs']);
+        if (array_intersect($fileGrpThumbs, array_keys($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) !== [] ) {
+            while ($fileGrpThumb = array_shift($fileGrpThumbs)) {
+                if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb])) {
+                    $thumbnailFile = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb]);
+                    break;
+                }
+            }
         } elseif (!empty($this->conf['placeholder'])) {
             $thumbnailFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['placeholder']);
         } else {
-            $thumbnailFile = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Images/PageGridPlaceholder.jpg';
+            $thumbnailFile = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Images/PageGridPlaceholder.jpg';
         }
         $thumbnail = '<img alt="' . $markerArray['###PAGINATION###'] . '" src="' . $thumbnailFile . '" />';
         // Get new plugin variables for typolink.
@@ -69,7 +79,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
             'parameter' => $this->conf['targetPid'],
             'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', true, false),
+            'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', true, false),
             'title' => $markerArray['###PAGINATION###']
         ];
         $markerArray['###THUMBNAIL###'] = $this->cObj->typoLink($thumbnail, $linkConf);
@@ -147,7 +157,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
             return $content;
         } else {
             // Set default values for page if not set.
-            $this->piVars['pointer'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['pointer'], 0, $this->doc->numPages, 0);
+            $this->piVars['pointer'] = MathUtility::forceIntegerInRange($this->piVars['pointer'], 0, $this->doc->numPages, 0);
         }
         // Load template file.
         $this->getTemplate();
@@ -168,7 +178,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
             (int) $this->piVars['page'] > 0
             || empty($this->piVars['page'])
         ) {
-            $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+            $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
         } else {
             $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
         }

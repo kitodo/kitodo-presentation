@@ -198,12 +198,12 @@ final class IiifManifest extends Document
     }
 
     /**
-     * True if getUseGroups() has been called and $this-useGrps is loaded
+     * True if getUseGroups() has been called and $this->useGrps is loaded
      *
      * @var bool
      * @access protected
      */
-    protected $useGrpsLoaded;
+    protected $useGrpsLoaded = false;
 
     /**
      * Holds the configured useGrps as array.
@@ -211,7 +211,7 @@ final class IiifManifest extends Document
      * @var array
      * @access protected
      */
-    protected $useGrps;
+    protected $useGrps = [];
 
     /**
      * IiifManifest also populates the physical stucture array entries for matching
@@ -231,20 +231,21 @@ final class IiifManifest extends Document
             // Get configured USE attributes.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             if (!empty($extConf['fileGrpImages'])) {
-                $this->useGrps['fileGrpImages'] = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
+                $this->useGrps['fileGrpImages'] = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
             }
             if (!empty($extConf['fileGrpThumbs'])) {
-                $this->useGrps['fileGrpThumbs'] = $extConf['fileGrpThumbs'];
+                $this->useGrps['fileGrpThumbs'] = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
             }
             if (!empty($extConf['fileGrpDownload'])) {
-                $this->useGrps['fileGrpDownload'] = $extConf['fileGrpDownload'];
+                $this->useGrps['fileGrpDownload'] = GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']);
             }
             if (!empty($extConf['fileGrpFulltext'])) {
-                $this->useGrps['fileGrpFulltext'] = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+                $this->useGrps['fileGrpFulltext'] = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
             }
             if (!empty($extConf['fileGrpAudio'])) {
-                $this->useGrps['fileGrpAudio'] = $extConf['fileGrpAudio'];
+                $this->useGrps['fileGrpAudio'] = GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']);
             }
+            $this->useGrpsLoaded = true;
         }
         return array_key_exists($use, $this->useGrps) ? $this->useGrps[$use] : [];
     }
@@ -273,21 +274,20 @@ final class IiifManifest extends Document
             $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
             $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
             $fileUses = $this->getUseGroups('fileGrpImages');
-            if (isset($fileUseDownload)) {
+            if (!empty($fileUseDownload)) {
                 $docPdfRendering = $this->iiif->getRenderingUrlsForFormat('application/pdf');
                 if (!empty($docPdfRendering)) {
-                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseDownload] = $docPdfRendering[0];
+                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
                 }
             }
-            if (isset($fileUseFulltext)) {
-                $iiifAlto = $this->iiif->getSeeAlsoUrlsForFormat("application/alto+xml");
+            if (!empty($fileUseFulltext)) {
+                $iiifAlto = $this->iiif->getSeeAlsoUrlsForFormat('application/alto+xml');
                 if (empty($iiifAlto)) {
-                    $iiifAlto = $this->iiif->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", true);
+                    $iiifAlto = $this->iiif->getSeeAlsoUrlsForProfile('http://www.loc.gov/standards/alto/', true);
                 }
                 if (!empty($iiifAlto)) {
-                    // TODO use multiple possible alto files?
-                    $this->mimeTypes[$iiifAlto[0]] = "application/alto+xml";
-                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext] = $iiifAlto[0];
+                    $this->mimeTypes[$iiifAlto[0]] = 'application/alto+xml';
+                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext[0]] = $iiifAlto[0];
                     $this->hasFulltext = true;
                     $this->hasFulltextSet = true;
                 }
@@ -299,17 +299,11 @@ final class IiifManifest extends Document
                     $canvasOrder++;
                     $thumbnailUrl = $canvas->getThumbnailUrl();
                     // put thumbnails in thumbnail filegroup
-                    if (isset($thumbnailUrl)) {
-                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseThumbs] = $thumbnailUrl;
-                    }
-                    $image = $canvas->getImageAnnotations()[0];
-                    // put images in all non specific filegroups
-                    if (isset($fileUses)) {
-                        foreach ($fileUses as $fileUse) {
-                            if ($image->getBody() != null && $image->getBody() instanceof ContentResourceInterface) {
-                                $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUse] = $image->getBody()->getId();
-                            }
-                        }
+                    if (
+                        !empty($thumbnailUrl)
+                        && empty($this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseThumbs[0]])
+                    ) {
+                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
                     }
                     // populate structural metadata info
                     $elements[$canvasOrder] = $canvas->getId();
@@ -323,7 +317,6 @@ final class IiifManifest extends Document
                     $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = null;
                     if (!empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                         $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = [];
-                        $this->physicalStructureInfo[$physSeq[0]]['annotationContainers'] = [];
                         foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'][] = $annotationContainer->getId();
                             if ($extConf['indexAnnotations']) {
@@ -332,33 +325,33 @@ final class IiifManifest extends Document
                             }
                         }
                     }
-                    if (isset($fileUseFulltext)) {
-                        $alto = $canvas->getSeeAlsoUrlsForFormat("application/alto+xml");
+                    if (!empty($fileUseFulltext)) {
+                        $alto = $canvas->getSeeAlsoUrlsForFormat('application/alto+xml');
                         if (empty($alto)) {
-                            $alto = $canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/", true);
+                            $alto = $canvas->getSeeAlsoUrlsForProfile('http://www.loc.gov/standards/alto/', true);
                         }
                         if (!empty($alto)) {
-                            // TODO use all possible alto files?
-                            $this->mimeTypes[$alto[0]] = "application/alto+xml";
-                            $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseFulltext] = $alto[0];
+                            $this->mimeTypes[$alto[0]] = 'application/alto+xml';
+                            $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseFulltext[0]] = $alto[0];
                             $this->hasFulltext = true;
                             $this->hasFulltextSet = true;
                         }
                     }
-                    if (isset($fileUses)) {
+                    if (!empty($fileUses)) {
+                        $image = $canvas->getImageAnnotations()[0];
                         foreach ($fileUses as $fileUse) {
-                            if ($image->getBody() != null && $image->getBody() instanceof ContentResourceInterface) {
+                            if ($image->getBody() !== null && $image->getBody() instanceof ContentResourceInterface) {
                                 $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUse] = $image->getBody()->getId();
                             }
                         }
                     }
-                    if (isset($thumbnailUrl)) {
+                    if (!empty($thumbnailUrl)) {
                         $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseThumbs] = $thumbnailUrl;
                     }
-                    if (isset($fileUseDownload)) {
+                    if (!empty($fileUseDownload)) {
                         $pdfRenderingUrls = $canvas->getRenderingUrlsForFormat('application/pdf');
                         if (!empty($pdfRenderingUrls)) {
-                            $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseDownload] = $pdfRenderingUrls[0];
+                            $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseDownload[0]] = $pdfRenderingUrls[0];
                         }
                     }
                 }
@@ -807,9 +800,13 @@ final class IiifManifest extends Document
             $this->_getPhysicalStructure();
             // ... and extension configuration.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $fileGrpFulltexts = GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']);
             if (!empty($this->physicalStructureInfo[$id])) {
-                if (!empty($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']])) {
-                    $rawText = parent::getRawTextFromXml($id);
+                while ($fileGrpFulltext = array_shift($fileGrpFulltexts)) {
+                    if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
+                        $rawText = parent::getRawTextFromXml($id);
+                        break;
+                    }
                 }
                 if ($extConf['indexAnnotations'] == 1) {
                     $iiifResource = $this->iiif->getContainedResourceById($id);
