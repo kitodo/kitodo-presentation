@@ -35,6 +35,24 @@ class Helper
     public static $extKey = 'dlf';
 
     /**
+     * This holds the cipher algorithm
+     * @see openssl_get_cipher_methods() for options
+     *
+     * @var string
+     * @access protected
+     */
+    protected static $cipherAlgorithm = 'aes-256-ctr';
+
+    /**
+     * This holds the hash algorithm
+     * @see openssl_get_md_methods() for options
+     *
+     * @var string
+     * @access protected
+     */
+    protected static $hashAlgorithm = 'sha256';
+
+    /**
      * The locallang array for flash messages
      *
      * @var array
@@ -143,31 +161,36 @@ class Helper
      * @access public
      *
      * @param string $encrypted: The encrypted value to decrypt
-     * @param string $hash: The control hash for decrypting
      *
-     * @return mixed The decrypted value or null on error
+     * @return mixed The decrypted value or false on error
      */
-    public static function decrypt($encrypted, $hash)
+    public static function decrypt($encrypted)
     {
         if (
-            empty($encrypted)
-            || empty($hash)
+            !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
+            || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
         ) {
-            self::devLog('Invalid parameters given for decryption', DEVLOG_SEVERITY_ERROR);
-            return;
+            self::devLog('OpenSSL library doesn\'t support cipher and/or hash algorithm', DEVLOG_SEVERITY_ERROR);
+            return false;
         }
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
             self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
-            return;
+            return false;
         }
-        $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, openssl_cipher_iv_length('BF-CFB'));
-        $decrypted = openssl_decrypt($encrypted, 'BF-CFB', substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), 0, $iv);
-        $salt = substr($hash, 0, 10);
-        $hashed = $salt . substr(sha1($salt . $decrypted), -10);
-        if ($hashed !== $hash) {
-            self::devLog('Invalid hash "' . $hash . '" given for decryption', DEVLOG_SEVERITY_WARNING);
-            return;
+        if (
+            empty($encrypted)
+            || strlen($encrypted) < openssl_cipher_iv_length(self::$cipherAlgorithm)
+        ) {
+            self::devLog('Invalid parameters given for decryption', DEVLOG_SEVERITY_ERROR);
+            return false;
         }
+        // Split initialisation vector and encrypted data.
+        $binary = base64_decode($encrypted);
+        $iv = substr($binary, 0, openssl_cipher_iv_length(self::$cipherAlgorithm));
+        $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
+        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        // Decrypt data.
+        $decrypted = openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
         return $decrypted;
     }
 
@@ -215,25 +238,57 @@ class Helper
     }
 
     /**
+     * Digest the given string
+     *
+     * @access public
+     *
+     * @param string $string: The string to encrypt
+     *
+     * @return mixed Hashed string or false on error
+     */
+    public static function digest($string)
+    {
+        if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
+            self::devLog('OpenSSL library doesn\'t support hash algorithm', DEVLOG_SEVERITY_ERROR);
+            return false;
+        }
+        // Hash string.
+        $hashed = openssl_digest($string, self::$hashAlgorithm);
+        return $hashed;
+    }
+
+    /**
      * Encrypt the given string
      *
      * @access public
      *
      * @param string $string: The string to encrypt
      *
-     * @return array Array with encrypted string and control hash
+     * @return mixed Encrypted string or false on error
      */
     public static function encrypt($string)
     {
+        if (
+            !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
+            || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
+        ) {
+            self::devLog('OpenSSL library doesn\'t support cipher and/or hash algorithm', DEVLOG_SEVERITY_ERROR);
+            return false;
+        }
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
             self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
-            return;
+            return false;
         }
-        $iv = substr(md5($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, openssl_cipher_iv_length('BF-CFB'));
-        $encrypted = openssl_encrypt($string, 'BF-CFB', substr($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], 0, 56), 0, $iv);
-        $salt = substr(md5(uniqid(rand(), true)), 0, 10);
-        $hash = $salt . substr(sha1($salt . $string), -10);
-        return ['encrypted' => $encrypted, 'hash' => $hash];
+        // Generate random initialisation vector.
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
+        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        // Encrypt data.
+        $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
+        // Merge initialisation vector and encrypted data.
+        if ($encrypted !== false) {
+            $encrypted = base64_encode($iv . $encrypted);
+        }
+        return $encrypted;
     }
 
     /**

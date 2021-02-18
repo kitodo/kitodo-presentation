@@ -431,11 +431,9 @@ class Solr
         $parameters['rows'] = $this->limit;
         // Set query.
         $parameters['query'] = $query;
-
-        // calculate cache identifier
-        $cacheIdentifier = hash('md5', $this->core . print_r(array_merge($this->params, $parameters), 1));
+        // Calculate cache identifier.
+        $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
-
         $resultSet = [];
         if (($entry = $cache->get($cacheIdentifier)) === false) {
             $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
@@ -443,10 +441,10 @@ class Solr
             foreach ($result as $doc) {
                 $resultSet[] = $doc;
             }
-            // Save value in cache
+            // Save value in cache.
             $cache->set($cacheIdentifier, $resultSet);
         } else {
-            // return cache hit
+            // Return cache hit.
             $resultSet = $entry;
         }
         return $resultSet;
