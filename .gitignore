@@ -8,4 +8,5 @@
 composer.lock
 Documentation-GENERATED-temp/
 nbproject/
+public/typo3/
 vendor/

@@ -150,8 +150,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $name = Helper::encrypt($name);
         }
         // Add encrypted fields to search form.
-        if (is_array($name)) {
-            return '<input type="hidden" name="' . $this->prefixId . '[encrypted]" value="' . $name['encrypted'] . '" /><input type="hidden" name="' . $this->prefixId . '[hashed]" value="' . $name['hash'] . '" />';
+        if ($name !== false) {
+            return '<input type="hidden" name="' . $this->prefixId . '[encrypted]" value="' . $name . '" />';
         } else {
             return '';
         }
