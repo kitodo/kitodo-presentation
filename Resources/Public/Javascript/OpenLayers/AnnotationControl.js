@@ -8,26 +8,6 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/**
- * This is necessary to support the scrolling of the element into the viewport
- * in case of text hover on the map.
- *
- * @param elem
- * @param speed
- * @returns {jQuery}
- */
-
-
-if (jQuery.fn.scrollTo === undefined) {
-    jQuery.fn.scrollTo = function(elem, speed) {
-        var manualOffsetTop = $(elem).parent().height() / 2;
-        $(this).animate({
-            scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top - manualOffsetTop
-        }, speed === undefined ? 1000 : speed);
-        return this;
-    };
-}
-
 function DlfAnnotationControl(map, image, annotationContainers) {
 
     this.map = map;
