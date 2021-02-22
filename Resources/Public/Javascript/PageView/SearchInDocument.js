@@ -258,3 +258,12 @@ function clearSearch() {
     $('.results-active-indicator').remove();
     $('#tx-dlf-search-in-document-query').val('');
 }
+
+$(document).ready(function() {
+    document.getElementById('tx-dlf-search-in-document-query').addEventListener("keydown", function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            search();
+        }
+    });
+});
