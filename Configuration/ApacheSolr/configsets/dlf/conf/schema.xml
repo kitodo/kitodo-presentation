@@ -26,7 +26,6 @@ limitations under the License.
         <fieldType name="standard" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
                 <tokenizer class="solr.StandardTokenizerFactory" />
-                <filter class="solr.StandardFilterFactory" />
                 <filter class="solr.LowerCaseFilterFactory" />
             </analyzer>
         </fieldType>
