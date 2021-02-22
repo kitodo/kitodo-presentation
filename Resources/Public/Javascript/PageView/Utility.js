@@ -862,7 +862,36 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
 };
 
 /**
- * Search a feature collcetion for a feature with the given text
+ * Trim text in the feature to avoid comparison against for e.g. ',' or '.'.
+ * @param {string} string
+ * @param {string} character
+ * @return {string}
+ */
+function trimByChar(string, character) {
+    const arr = Array.from(string);
+    const first = arr.findIndex((char) => char !== character);
+    const last = arr.reverse().findIndex((char) => char !== character);
+    return (first === -1 && last === -1) ? '' : string.substring(first, string.length - last);
+}
+
+/**
+ * Trim text in the feature to avoid comparison against given list of chars.
+ * @param {string} string
+ * @param {Array} characters
+ * @return {string}
+ */
+function trimByChars(string, characters) {
+    var trimmed = string;
+
+    for (const character of characters) {
+        trimmed = trimByChar(trimmed, character);
+    }
+
+    return trimmed;
+}
+
+/**
+ * Search a feature collection for a feature with the given text
  * @param {Array.<ol.Feature>} featureCollection
  * @param {string} text
  * @return {Array.<ol.Feature>|undefined}
@@ -871,7 +900,13 @@ dlfUtils.searchFeatureCollectionForText = function (featureCollection, text) {
     var features = [];
     featureCollection.forEach(function (ft) {
         if (ft.get('fulltext') !== undefined) {
-            if (ft.get('fulltext').toLowerCase().indexOf(text.toLowerCase()) > -1) features.push(ft);
+            var trimmedFt = trimByChars(
+                ft.get('fulltext'),
+                [',', '.', ';', ':', '-', '\'', '"', '!', '?', '(', ')', '[', ']']
+                );
+            if (trimmedFt.toLowerCase() == text.toLowerCase()) {
+                features.push(ft);
+            }
         }
     });
     return features.length > 0 ? features : undefined;
