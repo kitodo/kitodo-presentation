@@ -95,9 +95,9 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $page1Link = '';
         $page2Link = '';
         $pageNumber = $this->piVars['page'];
-        $fileGrpDownloads = GeneralUtility::trimExplode(',', $this->conf['fileGrpDownload']);
+        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->conf['fileGrpDownload']);
         // Get image link.
-        while ($fileGrpDownload = array_shift($fileGrpDownloads)) {
+        while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]]['files'][$fileGrpDownload])) {
                 $page1Link = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]]['files'][$fileGrpDownload]);
                 // Get second page, too, if double page view is activated.
@@ -150,9 +150,9 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function getWorkLink()
     {
         $workLink = '';
-        $fileGrpDownloads = GeneralUtility::trimExplode(',', $this->conf['fileGrpDownload']);
+        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->conf['fileGrpDownload']);
         // Get work link.
-        while ($fileGrpDownload = array_shift($fileGrpDownloads)) {
+        while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$fileGrpDownload])) {
                 $workLink = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$fileGrpDownload]);
                 break;

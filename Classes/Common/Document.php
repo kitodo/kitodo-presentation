@@ -662,9 +662,9 @@ abstract class Document
         $this->_getPhysicalStructure();
         // ... and extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-        $fileGrpFulltexts = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
         if (!empty($this->physicalStructureInfo[$id])) {
-            while ($fileGrpFulltext = array_shift($fileGrpFulltexts)) {
+            while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
                 if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
                     // Get fulltext file.
                     $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));

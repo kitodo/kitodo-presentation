@@ -136,8 +136,8 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Check if there are any audio files available.
-        $fileGrpAudios = GeneralUtility::trimExplode(',', $this->conf['fileGrpAudio']);
-        while ($fileGrpAudio = array_shift($fileGrpAudios)) {
+        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->conf['fileGrpAudio']);
+        while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio])) {
                 // Get audio data.
                 $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio]);

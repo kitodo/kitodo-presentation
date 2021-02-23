@@ -83,8 +83,8 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         }
 
         // Quit if no fulltext file is present
-        $fileGrpFulltexts = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
-        while ($fileGrpFulltext = array_shift($fileGrpFulltexts)) {
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+        while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext])) {
                 $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext];
                 break;

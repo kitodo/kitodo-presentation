@@ -75,8 +75,8 @@ class FulltextDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load template file.
         $this->getTemplate();
         // Get text download.
-        $fileGrpFulltexts = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
-        while ($fileGrpFulltext = array_shift($fileGrpFulltexts)) {
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+        while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext])) {
                 $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext];
                 break;

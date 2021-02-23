@@ -311,8 +311,8 @@ final class MetsDocument extends Document
         ) {
             // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true)), 1);
-            $fileGrpThumbs = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            while ($fileGrpThumb = array_shift($fileGrpThumbs)) {
+            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
                 if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$fileGrpThumb])) {
                     $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$fileGrpThumb];
                     break;
@@ -323,8 +323,8 @@ final class MetsDocument extends Document
         } elseif ($details['id'] == $this->_getToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
-            $fileGrpThumbs = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            while ($fileGrpThumb = array_shift($fileGrpThumbs)) {
+            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
                 if (
                     !empty($this->physicalStructure)
                     && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])
@@ -1049,8 +1049,8 @@ final class MetsDocument extends Document
                 // Load smLinks.
                 $this->_getSmLinks();
                 // Get thumbnail location.
-                $fileGrpThumbs = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-                while ($fileGrpThumb = array_shift($fileGrpThumbs)) {
+                $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+                while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
                     if (
                         $this->_getPhysicalStructure()
                         && !empty($this->smLinks['l2p'][$strctId])
