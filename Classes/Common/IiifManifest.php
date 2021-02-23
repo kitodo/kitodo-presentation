@@ -800,9 +800,9 @@ final class IiifManifest extends Document
             $this->_getPhysicalStructure();
             // ... and extension configuration.
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
-            $fileGrpFulltexts = GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']);
+            $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
             if (!empty($this->physicalStructureInfo[$id])) {
-                while ($fileGrpFulltext = array_shift($fileGrpFulltexts)) {
+                while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
                     if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
                         $rawText = parent::getRawTextFromXml($id);
                         break;
