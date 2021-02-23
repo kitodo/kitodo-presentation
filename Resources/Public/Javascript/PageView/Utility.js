@@ -904,7 +904,7 @@ dlfUtils.searchFeatureCollectionForText = function (featureCollection, text) {
                 ft.get('fulltext'),
                 [',', '.', ';', ':', '-', '\'', '"', '!', '?', '(', ')', '[', ']']
                 );
-            if (trimmedFt.toLowerCase() == text.toLowerCase()) {
+            if (trimmedFt.toLowerCase() === text.toLowerCase()) {
                 features.push(ft);
             }
         }
