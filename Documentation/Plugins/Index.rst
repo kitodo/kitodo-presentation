@@ -1037,7 +1037,9 @@ Fulltext Tool
 ^^^^^^^^^^^^^
 This plugin adds an activation link for fulltext to the toolbox. If no fulltext is available for the current page, a span-tag is rendered instead.
 
-The default behaviour is to show the fulltext after click on the toggle link. There is a TypoScript configuration to show the fulltext initially.
+The default behavior is to show the fulltext after click on the toggle link. There is a TypoScript configuration to show the fulltext initially.
+
+Plugin allows also to configure (searchHlElements) by which URL parameters words will be highlighted in the image. The first defined parameter on the configuration has highest priority, if not found it checks the next ones.
 
 :typoscript:`plugin.tx_dlf_fulltexttool.`
 
