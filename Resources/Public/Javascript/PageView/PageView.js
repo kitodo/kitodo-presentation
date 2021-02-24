@@ -27,11 +27,12 @@ var dlfViewer = function(settings) {
     /**
      * This holds the settings.
      * @public
-     * @type {Object.<{attributions: *, controls: *, controlTargets: *, controlTitles: *, target: *, images: *, useInternalProxy: *}>}
+     * @type {Object.<{attributions: *, controls: *, controlLabels: *, controlTargets: *, controlTitles: *, target: *, images: *, useInternalProxy: *}>}
      */
     this.settings = {
         attributions: dlfUtils.exists(settings.attributions) ? settings.attributions : [''],
         controls: dlfUtils.exists(settings.controls) ? settings.controls : [],
+        controlLabels: dlfUtils.exists(settings.controlLabels) ?  settings.controlLabels : {},
         controlTargets: dlfUtils.exists(settings.controlTargets) ? settings.controlTargets : {},
         controlTitles: dlfUtils.exists(settings.controlTitles) ? settings.controlTitles : {},
         target: dlfUtils.exists(settings.target) ? settings.target : 'tx-dlf-map',
@@ -97,13 +98,15 @@ dlfViewer.prototype.getOLControls = function() {
             this.olx.controls.push(new ol.control.Attribution({
                 collapsed: false,
                 collapsible: true,
-                label: '\u00a9',
+                label: this.settings.controlLabels.Attribution || undefined,
                 target: this.settings.controlTargets.Attribution || undefined,
                 tipLabel: this.settings.controlTitles.Attribution || undefined
             }));
         }
         if (this.settings.controls.includes('FullScreen')) {
             this.olx.controls.push(new ol.control.FullScreen({
+                label: this.settings.controlLabels.FullScreen || undefined,
+                labelActive: this.settings.controlLabels.FullScreenActive || undefined,
                 target: this.settings.controlTargets.FullScreen || undefined,
                 tipLabel: this.settings.controlTitles.FullScreen || undefined
             }));
@@ -111,8 +114,8 @@ dlfViewer.prototype.getOLControls = function() {
         if (this.settings.controls.includes('ImageManipulation')) {
             this.olx.controls.push(new ImageManipulationControl({
                 // autoOpen: false,
-                // className: 'ol-custom-image-manipulation,
-                // label: '\u25d1',
+                // className: 'ol-custom-image-manipulation',
+                label: this.settings.controlLabels.ImageManipulation || undefined,
                 target: this.settings.controlTargets.ImageManipulation || undefined,
                 tipLabel: this.settings.controlTitles.ImageManipulation || undefined,
                 title: this.settings.controlTitles.ImageManipulationDialogTitle || undefined
@@ -121,7 +124,7 @@ dlfViewer.prototype.getOLControls = function() {
         if (this.settings.controls.includes('Magnify')) {
             this.olx.controls.push(new MagnifyControl({
                 // className: 'ol-custom-magnify',
-                // label: '\ud83d\udd0d',
+                label: this.settings.controlLabels.Magnify || undefined,
                 target: this.settings.controlTargets.Magnify || undefined,
                 tipLabel: this.settings.controlTitles.Magnify || undefined
             }));
@@ -139,7 +142,9 @@ dlfViewer.prototype.getOLControls = function() {
             );
             this.olx.controls.push(new ol.control.OverviewMap({
                 collapsed: false,
+                collapseLabel: this.settings.controlLabels.OverviewMapCollapse || undefined,
                 collapsible: true,
+                label: this.settings.controlLabels.OverviewMap || undefined,
                 layers: ovLayers,
                 target: this.settings.controlTargets.OverviewMap || undefined,
                 tipLabel: this.settings.controlTitles.OverviewMap || undefined,
@@ -158,6 +163,7 @@ dlfViewer.prototype.getOLControls = function() {
         if (this.settings.controls.includes('Rotate')) {
             this.olx.controls.push(new ol.control.Rotate({
                 autoHide: false,
+                label: this.settings.controlLabels.Rotate || undefined,
                 target: this.settings.controlTargets.Rotate || undefined,
                 tipLabel: this.settings.controlTitles.Rotate || undefined
             }));
@@ -166,10 +172,10 @@ dlfViewer.prototype.getOLControls = function() {
                 // delta: 0.5 * Math.PI, // ½π rad ≙ 90°
                 // duration: 250,
                 // rotateLeftClassName: 'ol-custom-rotate-left',
-                // rotateLeftLabel: '\u21ba',
+                rotateLeftLabel: this.settings.controlLabels.rotateLeft || undefined,
                 rotateLeftTipLabel: this.settings.controlTitles.RotateLeft || undefined,
                 // rotateRightClassName: 'ol-custom-rotate-right',
-                // rotateRightLabel: '\u21bb',
+                rotateRightLabel: this.settings.controlLabels.rotateRight || undefined,
                 rotateRightTipLabel: this.settings.controlTitles.RotateRight || undefined,
                 target: this.settings.controlTargets.Rotate || undefined
             }));
@@ -178,7 +184,9 @@ dlfViewer.prototype.getOLControls = function() {
             this.olx.controls.push(new ol.control.Zoom({
                 delta: 0.5,
                 target: this.settings.controlTargets.Zoom || undefined,
+                zoomInLabel: this.settings.controlLabels.zoomIn || undefined,
                 zoomInTipLabel: this.settings.controlTitles.ZoomIn || undefined,
+                zoomOutLabel: this.settings.controlLabels.ZoomOut || undefined,
                 zoomOutTipLabel: this.settings.controlTitles.ZoomOut || undefined
             }));
         }
@@ -189,7 +197,7 @@ dlfViewer.prototype.getOLControls = function() {
         }
         if (this.settings.controls.includes('ZoomToExtent')) {
             this.olx.controls.push(new ol.control.ZoomToExtent({
-                label: '\u26f6',
+                label: this.settings.controlLabels.ZoomToExtent || undefined,
                 target: this.settings.controlTargets.ZoomToExtent || undefined,
                 tipLabel: this.settings.controlTitles.ZoomToExtent || undefined
             }));

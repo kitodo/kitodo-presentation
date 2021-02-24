@@ -51,6 +51,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     protected $controls = [];
 
     /**
+     * Holds the controls' translated labels
+     *
+     * @var array
+     * @access protected
+     */
+    protected $controlLabels = [];
+
+    /**
      * Holds the controls' HTML element targets
      *
      * @var array
@@ -151,6 +159,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                     tx_dlf_viewer = new dlfViewer({
                         attributions: ' . json_encode($this->attributions) . ',
                         controls: ' . json_encode($this->controls) . ',
+                        controlLabels: ' . json_encode($this->controlLabels) . ',
                         controlTargets: ' . json_encode($this->controlTargets) . ',
                         controlTitles: ' . json_encode($this->controlTitles) . ',
                         target: "' . $this->conf['elementId'] . '",
@@ -436,6 +445,35 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Get the controls for the map.
         $this->controls = explode(',', $this->conf['features']);
+        $this->controlLabels = [
+            'Attribution' => htmlspecialchars($this->pi_getLL('AttributionLabel', '')),
+            'FullScreen' => htmlspecialchars($this->pi_getLL('FullScreenLabel.Inactive', '')),
+            'FullScreenActive' => htmlspecialchars($this->pi_getLL('FullScreenLabel.Active', '')),
+            'ImageManipulation' => htmlspecialchars($this->pi_getLL('ImageManipulationLabel', '')),
+            'Magnify' => htmlspecialchars($this->pi_getLL('MagnifyLabel', '')),
+            'OverviewMap' => htmlspecialchars($this->pi_getLL('OverviewMapLabel', '')),
+            'OverviewMapCollapse' => htmlspecialchars($this->pi_getLL('OverviewMapLabel.Collapse', '')),
+            'Rotate' => htmlspecialchars($this->pi_getLL('RotateLabel', '')),
+            'RotateLeft' => htmlspecialchars($this->pi_getLL('RotateLeftLabel', '')),
+            'RotateRight' => htmlspecialchars($this->pi_getLL('RotateRightLabel', '')),
+            'ZoomIn' => htmlspecialchars($this->pi_getLL('ZoomInLabel', '')),
+            'ZoomOut' => htmlspecialchars($this->pi_getLL('ZoomOutLabel', '')),
+            'ZoomToExtent' => htmlspecialchars($this->pi_getLL('ZoomToExtentLabel', ''))
+        ];
+        $this->controlTitles = [
+            'Attribution' => htmlspecialchars($this->pi_getLL('AttributionTitle', '')),
+            'FullScreen' => htmlspecialchars($this->pi_getLL('FullScreenTitle', '')),
+            'ImageManipulation' => htmlspecialchars($this->pi_getLL('ImageManipulationTitle', '')),
+            'ImageManipulationDialogTitle' => htmlspecialchars($this->pi_getLL('ImageManipulationTitle.Dialog', '')),
+            'Magnify' => htmlspecialchars($this->pi_getLL('MagnifyTitle', '')),
+            'OverviewMap' => htmlspecialchars($this->pi_getLL('OverviewMapTitle', '')),
+            'Rotate' => htmlspecialchars($this->pi_getLL('RotateTitle', '')),
+            'RotateLeft' => htmlspecialchars($this->pi_getLL('RotateLeftTitle', '')),
+            'RotateRight' => htmlspecialchars($this->pi_getLL('RotateRightTitle', '')),
+            'ZoomIn' => htmlspecialchars($this->pi_getLL('ZoomInTitle', '')),
+            'ZoomOut' => htmlspecialchars($this->pi_getLL('ZoomOutTitle', '')),
+            'ZoomToExtent' => htmlspecialchars($this->pi_getLL('ZoomToExtentTitle', ''))
+        ];
         $this->controlTargets = [
             'Attribution' => $this->conf['attributionElementId'] ?: '',
             'FullScreen' => $this->conf['fullScreenElementId'] ?: '',
@@ -446,20 +484,6 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             'Zoom' => $this->conf['zoomElementId'] ?: '',
             'ZoomSlider' => $this->conf['zoomSliderElementId'] ?: '',
             'ZoomToExtent' => $this->conf['zoomToExtentElementId'] ?: ''
-        ];
-        $this->controlTitles = [
-            'Attribution' => htmlspecialchars($this->pi_getLL('Attribution', '')),
-            'FullScreen' => htmlspecialchars($this->pi_getLL('FullScreen', '')),
-            'ImageManipulation' => htmlspecialchars($this->pi_getLL('ImageManipulation', '')),
-            'ImageManipulationDialogTitle' => htmlspecialchars($this->pi_getLL('ImageManipulation.DialogTitle', '')),
-            'Magnify' => htmlspecialchars($this->pi_getLL('Magnify', '')),
-            'OverviewMap' => htmlspecialchars($this->pi_getLL('OverviewMap', '')),
-            'Rotate' => htmlspecialchars($this->pi_getLL('Rotate', '')),
-            'RotateLeft' => htmlspecialchars($this->pi_getLL('RotateLeft', '')),
-            'RotateRight' => htmlspecialchars($this->pi_getLL('RotateRight', '')),
-            'ZoomIn' => htmlspecialchars($this->pi_getLL('ZoomIn', '')),
-            'ZoomOut' => htmlspecialchars($this->pi_getLL('ZoomOut', '')),
-            'ZoomToExtent' => htmlspecialchars($this->pi_getLL('ZoomToExtent', ''))
         ];
         // Fill in the template markers.
         $markerArray = array_merge($this->addInteraction(), $this->addBasketForm());

@@ -23,7 +23,7 @@ class MagnifyControl extends ol.control.Control {
         const className = options.className !== undefined ? options.className : 'ol-custom-magnify';
         const cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' + ol.css.CLASS_CONTROL;
 
-        const label = options.label !== undefined ? options.label : '\ud83d\udd0d';
+        const label = options.label !== undefined ? options.label : '\u2a00';
         const tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Toggle magnifier';
 
         const button = document.createElement('button');
