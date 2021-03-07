@@ -28,7 +28,7 @@
             <label index="tt_content.pi_flexform.collections">Restrict search to these collections</label>
             <label index="tt_content.pi_flexform.searchIn">Restrict search to current document or collection?</label>
             <label index="tt_content.pi_flexform.searchIn.none">none</label>
-            <label index="tt_content.pi_flexform.searchIn.document">document and children only</label>
+            <label index="tt_content.pi_flexform.searchIn.document">document and descendants only</label>
             <label index="tt_content.pi_flexform.searchIn.collection">collection only</label>
             <label index="tt_content.pi_flexform.searchIn.all">both</label>
             <label index="tt_content.pi_flexform.facets">Show these facets</label>
@@ -71,7 +71,7 @@
             <label index="tt_content.pi_flexform.collections">Suche auf diese Kollektionen einschränken</label>
             <label index="tt_content.pi_flexform.searchIn">Suche auf aktuelle/s Kollektion/Dokument einschränken?</label>
             <label index="tt_content.pi_flexform.searchIn.none">nein</label>
-            <label index="tt_content.pi_flexform.searchIn.document">nur Dokument und Kindelemente</label>
+            <label index="tt_content.pi_flexform.searchIn.document">nur Dokument und Nachfolger</label>
             <label index="tt_content.pi_flexform.searchIn.collection">nur Kollektion</label>
             <label index="tt_content.pi_flexform.searchIn.all">beides</label>
             <label index="tt_content.pi_flexform.facets">Diese Facetten anzeigen</label>
