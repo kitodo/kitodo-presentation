@@ -105,7 +105,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return string HTML input fields with current document's UID and parent ID
+     * @return string HTML input fields with current document's UID
      */
     protected function addCurrentDocument()
     {
@@ -123,14 +123,13 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
             // Get document's UID from search metadata.
-            // The string may be e.g. "{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:2503"
+            // The string may be e.g. "{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:2" OR {!join from=uid to=partof}uid:2 OR uid:2"
+            // or "collection_faceting:("Some Collection Title")"
             foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
-                $facetKeyVal = explode(':', $facet['query']);
-                for ($j = 0; $j < count($facetKeyVal); $j++) {
-                    if (preg_match('/uid$/', $facetKeyVal[$j])) {
-                        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($facetKeyVal[$j + 1])) {
-                            $documentId = (int) $facetKeyVal[$j + 1];
-                        }
+                if (($lastUidPos = strrpos($facet['query'], 'uid:')) !== false) {
+                    $facetKeyVal = explode(':', substr($facet['query'], $lastUidPos));
+                    if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($facetKeyVal[1])) {
+                        $documentId = (int) $facetKeyVal[1];
                     }
                 }
             }
