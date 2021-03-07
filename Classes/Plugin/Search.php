@@ -460,8 +460,10 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     !empty($this->piVars['id'])
                     && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
                 ) {
-                    // search in document and all children
-                    $params['filterquery'][]['query'] = '{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $this->piVars['id'];
+                    // search in document and all descendants (valid for two level hierarchies like newspaper, too)
+                    $params['filterquery'][]['query'] = '"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $this->piVars['id'] . '"' .
+                        ' OR {!join from=uid to=partof}uid:' . $this->piVars['id'] .
+                        ' OR uid:'. $this->piVars['id'] . '';
                     $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
                 }
             }
