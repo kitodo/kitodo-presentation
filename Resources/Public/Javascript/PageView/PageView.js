@@ -167,7 +167,7 @@ dlfViewer.prototype.addCustomControls = function() {
     if (this.fulltexts[0] !== undefined && this.fulltexts[0].length !== 0 && this.fulltexts[0].url !== '' && this.images.length === 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
         fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, this.images[0], this.fulltexts[0].url);
-        this.highlightKeys = fulltextControl.searchHlElements;
+        this.highlightKeys = fulltextControl.searchHlParameters;
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
