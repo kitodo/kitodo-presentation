@@ -293,7 +293,7 @@ dlfViewerImageManipulationControl.prototype.createMap_ = function() {
             new ol.interaction.PinchZoom(),
             new ol.interaction.MouseWheelZoom(),
             new ol.interaction.KeyboardPan(),
-            new ol.interaction.KeyboardZoom,
+            new ol.interaction.KeyboardZoom(),
             new ol.interaction.DragRotateAndZoom()
         ],
         // necessary for proper working of the keyboard events
