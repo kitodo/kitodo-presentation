@@ -63,7 +63,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
             'fulltext-off':'Deactivate Fulltext',
             'activate-full-text-initially':'0',
             'full-text-scroll-element':'html, body',
-            'search-hl-elements':'tx_dlf[highlight_word]'};
+            'search-hl-parameters':'tx_dlf[highlight_word]'};
 
     /**
      * @type {number}
