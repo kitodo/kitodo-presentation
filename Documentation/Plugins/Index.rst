@@ -1074,7 +1074,7 @@ Plugin allows also to configure (searchHlElements) by which URL parameters words
         html, body
 
  - :Property:
-       searchHlElements
+       searchHlParameters
    :Data Type:
        :ref:`t3tsref:data-type-string`
    :Default:
