@@ -611,19 +611,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->conf['facetCollections']);
 
         if (!empty($facetCollections)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_collections');
-
-            $result = $queryBuilder
-                ->select('tx_dlf_collections.index_name AS index_name')
-                ->from('tx_dlf_collections')
-                ->where(
-                    $queryBuilder->expr()->in(
-                        'tx_dlf_collections.uid',
-                        $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $facetCollections), Connection::PARAM_INT_ARRAY)
-                    )
-                )
-                ->execute();
+            $result = CollectionRepository::findByUidArray($facetCollections);
 
             while ($collection = $result->fetch()) {
                 $facetCollectionArray[] = $collection['index_name'];

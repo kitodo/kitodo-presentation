@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -926,31 +928,7 @@ abstract class Document
     protected function loadFormats()
     {
         if (!$this->formatsLoaded) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_formats');
-
-            // Get available data formats from database.
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_formats.type AS type',
-                    'tx_dlf_formats.root AS root',
-                    'tx_dlf_formats.namespace AS namespace',
-                    'tx_dlf_formats.class AS class'
-                )
-                ->from('tx_dlf_formats')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0)
-                )
-                ->execute();
-
-            while ($resArray = $result->fetch()) {
-                // Update format registry.
-                $this->formats[$resArray['type']] = [
-                    'rootElement' => $resArray['root'],
-                    'namespaceURI' => $resArray['namespace'],
-                    'class' => $resArray['class']
-                ];
-            }
+            $this->formats = FormatRepository::loadFormats();
             $this->formatsLoaded = true;
         }
     }
@@ -1059,22 +1037,8 @@ abstract class Document
             $metadata['author'][$i] = $splitName[0];
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
-
         // Get UIDs for collections.
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_collections.index_name AS index_name',
-                'tx_dlf_collections.uid AS uid'
-            )
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($pid)),
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-                Helper::whereExpression('tx_dlf_collections')
-            )
-            ->execute();
+        $result = CollectionRepository::findByPidAndLanguage(intval($pid));
 
         $collUid = [];
         while ($resArray = $result->fetch()) {

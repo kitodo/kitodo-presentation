@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Context\IRI;
@@ -265,16 +266,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
             }
             // Get list of collections to show.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_collections');
             $collList = [];
-            $result = $queryBuilder
-                ->select('tx_dlf_collections.index_name AS index_name')
-                ->from('tx_dlf_collections')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages']))
-                )
-                ->execute();
+            $result = CollectionRepository::findByPid(intval($this->conf['pages']));
             while ($resArray = $result->fetch()) {
                 $collList[] = $resArray['index_name'];
             }

@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -774,9 +775,6 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function verbListSets()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
-
         // Check for invalid arguments.
         if (count($this->piVars) > 1) {
             if (!empty($this->piVars['resumptionToken'])) {
@@ -785,27 +783,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 return $this->error('badArgument');
             }
         }
-        $where = '';
-        if (!$this->conf['show_userdefined']) {
-            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-        }
 
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_collections.oai_name AS oai_name',
-                'tx_dlf_collections.label AS label'
-            )
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', $queryBuilder->createNamedParameter('')),
-                $where,
-                Helper::whereExpression('tx_dlf_collections')
-            )
-            ->orderBy('tx_dlf_collections.oai_name')
-            ->execute();
-
+        $result = CollectionRepository::findByPidAndUser(intval($this->conf['pages']), !$this->conf['show_userdefined']);        
         $allResults = $result->fetchAll();
 
         if (count($allResults) < 1) {
@@ -831,34 +810,13 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function fetchDocumentUIDs()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
-
         $solr_query = '';
-        $where = '';
-        if (!$this->conf['show_userdefined']) {
-            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-        }
+
         // Check "set" for valid value.
         if (!empty($this->piVars['set'])) {
             // For SOLR we need the index_name of the collection,
             // For DB Query we need the UID of the collection
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_collections.index_name AS index_name',
-                    'tx_dlf_collections.uid AS uid',
-                    'tx_dlf_collections.index_search as index_query'
-                )
-                ->from('tx_dlf_collections')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
-                    $queryBuilder->expr()->eq('tx_dlf_collections.oai_name', $queryBuilder->expr()->literal($this->piVars['set'])),
-                    $where,
-                    Helper::whereExpression('tx_dlf_collections')
-                )
-                ->setMaxResults(1)
-                ->execute();
-
+            $result = CollectionRepository::findByPidAndOaiNAmeAndUser(intval($this->conf['pages']), $this->piVars['set'], !$this->conf['show_userdefined']);
             $allResults = $result->fetchAll();
 
             if (count($allResults) < 1) {
