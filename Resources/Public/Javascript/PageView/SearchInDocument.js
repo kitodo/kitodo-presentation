@@ -50,7 +50,6 @@ function resetStart() {
  * @returns void
  */
 function addHighlightEffect(highlightIds) {
-    // TODO: highlight found phrase in full text - verify page?
     if (highlightIds.length > 0) {
         highlightIds.forEach(function (highlightId) {
             var targetElement = $('#' + highlightId);
@@ -193,77 +192,70 @@ function getNavigationButtons(start, numFound) {
     return buttons;
 }
 
-function search() {
-    resetStart();
+$(document).ready(function() {
+    $("#tx-dlf-search-in-document-form").submit(function(event) {
+        // Stop form from submitting normally
+        event.preventDefault();
 
-    $('#tx-dlf-search-in-document-loading').show();
-    $('#tx-dlf-search-in-document-clearing').hide();
-    $('#tx-dlf-search-in-document-button-next').hide();
-    $('#tx-dlf-search-in-document-button-previous').hide();
-    // Send the data using post
-    $.post(
-        "https://sdvtypo3ddbzeitungsportaldev.slub-dresden.de/",
-        {
-            eID: "tx_dlf_search_in_document",
-            q: $( "input[id='tx-dlf-search-in-document-query']" ).val(),
-            uid: $( "input[id='tx-dlf-search-in-document-id']" ).val(),
-            start: $( "input[id='tx-dlf-search-in-document-start']" ).val(),
-            encrypted: $( "input[id='tx-dlf-search-in-document-encrypted']" ).val(),
-        },
-        function(data) {
-            var resultItems = [];
-            var resultList = '<div class="results-active-indicator"></div><ul>';
-            var start = -1;
-            if (data['numFound'] > 0) {
-                data['documents'].forEach(function (element, i) {
-                    if (start < 0) {
-                        start = i;
-                    }
+        $('#tx-dlf-search-in-document-loading').show();
+        $('#tx-dlf-search-in-document-clearing').hide();
+        $('#tx-dlf-search-in-document-button-next').hide();
+        $('#tx-dlf-search-in-document-button-previous').hide();
+        // Send the data using post
+        $.post(
+            "https://sdvtypo3ddbzeitungsportaldev.slub-dresden.de/",
+            {
+                eID: "tx_dlf_search_in_document",
+                q: $( "input[id='tx-dlf-search-in-document-query']" ).val(),
+                uid: $( "input[id='tx-dlf-search-in-document-id']" ).val(),
+                start: $( "input[id='tx-dlf-search-in-document-start']" ).val(),
+                encrypted: $( "input[id='tx-dlf-search-in-document-encrypted']" ).val(),
+            },
+            function(data) {
+                var resultItems = [];
+                var resultList = '<div class="results-active-indicator"></div><ul>';
+                var start = -1;
+                if (data['numFound'] > 0) {
+                    data['documents'].forEach(function (element, i) {
+                        if (start < 0) {
+                            start = i;
+                        }
+                        if (element['snippet'].length > 0) {
+                            resultItems[element['page']] = '<span class="structure">'
+                                + $('#tx-dlf-search-in-document-label-page').text() + ' ' + element['page']
+                                + '</span><br />'
+                                + '<span ="textsnippet">'
+                                + '<a href=\"' + getLink(element) + '\">' + element['snippet'] + '</a>'
+                                + '</span>';
+                        }
 
-                    if (element['snippet'].length > 0) {
-                        resultItems[element['page']] = '<span class="structure">'
-                            + $('#tx-dlf-search-in-document-label-page').text() + ' ' + element['page']
-                            + '</span><br />'
-                            + '<span ="textsnippet">'
-                            + '<a href=\"' + getLink(element) + '\">' + element['snippet'] + '</a>'
-                            + '</span>';
-                    }
-
-                    addHighlightEffect(element['highlight']);
-                });
-                // Sort result by page.
-                resultItems.sort(function (a, b) {
-                    return a - b;
-                });
-                resultItems.forEach(function (item, index) {
-                    resultList += '<li>' + item + '</li>';
-                });
-            } else {
-                resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
-            }
-            resultList += '</ul>';
-            resultList += getNavigationButtons(start, data['numFound']);
-            $('#tx-dlf-search-in-document-results').html(resultList);
-        },
-        "json"
-    )
-        .done(function (data) {
+                        addHighlightEffect(element['highlight']);
+                    });
+                    // Sort result by page.
+                    resultItems.sort(function (a, b) {
+                        return a - b;
+                    });
+                    resultItems.forEach(function (item, index) {
+                        resultList += '<li>' + item + '</li>';
+                    });
+                } else {
+                    resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
+                }
+                resultList += '</ul>';
+                resultList += getNavigationButtons(start, data['numFound']);
+                $('#tx-dlf-search-in-document-results').html(resultList);
+            },
+            "json"
+        ).done(function (data) {
             $('#tx-dfgviewer-sru-results-loading').hide();
             $('#tx-dfgviewer-sru-results-clearing').show();
         });
-}
+    });
 
-function clearSearch() {
-    $('#tx-dlf-search-in-document-results ul').remove();
-    $('.results-active-indicator').remove();
-    $('#tx-dlf-search-in-document-query').val('');
-}
-
-$(document).ready(function() {
-    document.getElementById('tx-dlf-search-in-document-query').addEventListener("keydown", function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            search();
-        }
+     // clearing button
+     $('#tx-dlf-search-in-document-clearing').click(function() {
+        $('#tx-dlf-search-in-document-results ul').remove();
+        $('.results-active-indicator').remove();
+        $('#tx-dlf-search-in-document-query').val('');
     });
 });
