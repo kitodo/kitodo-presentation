@@ -57,7 +57,13 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
-        {'fulltext':'Fulltext', 'fulltext-on':'Activate Fulltext','fulltext-off':'Deactivate Fulltext', 'activate-full-text-initially':'0', 'full-text-scroll-element':'html, body'};
+        {
+            'fulltext':'Fulltext',
+            'fulltext-on':'Activate Fulltext',
+            'fulltext-off':'Deactivate Fulltext',
+            'activate-full-text-initially':'0',
+            'full-text-scroll-element':'html, body',
+            'search-hl-parameters':'tx_dlf[highlight_word]'};
 
     /**
      * @type {number}
@@ -70,6 +76,12 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @private
      */
     this.fullTextScrollElement = this.dic['full-text-scroll-element'];
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.searchHlParameters = this.dic['search-hl-parameters'];
     
     /**
      * @type {ol.Feature|undefined}
