@@ -1,7 +1,7 @@
 --
--- Table structure for table 'tx_dlf_documents'
+-- Table structure for table 'tx_dlf_domain_model_document'
 --
-CREATE TABLE tx_dlf_documents (
+CREATE TABLE tx_dlf_domain_model_document (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -52,9 +52,9 @@ CREATE TABLE tx_dlf_documents (
 );
 
 --
--- Table structure for table 'tx_dlf_structures'
+-- Table structure for table 'tx_dlf_domain_model_structure'
 --
-CREATE TABLE tx_dlf_structures (
+CREATE TABLE tx_dlf_domain_model_structure (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -79,9 +79,9 @@ CREATE TABLE tx_dlf_structures (
 );
 
 --
--- Table structure for table 'tx_dlf_metadata'
+-- Table structure for table 'tx_dlf_domain_model_metadata'
 --
-CREATE TABLE tx_dlf_metadata (
+CREATE TABLE tx_dlf_domain_model_metadata (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -119,9 +119,9 @@ CREATE TABLE tx_dlf_metadata (
 );
 
 --
--- Table structure for table 'tx_dlf_metadataformat'
+-- Table structure for table 'tx_dlf_domain_model_metadataformat'
 --
-CREATE TABLE tx_dlf_metadataformat (
+CREATE TABLE tx_dlf_domain_model_metadataformat (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -140,9 +140,9 @@ CREATE TABLE tx_dlf_metadataformat (
 );
 
 --
--- Table structure for table 'tx_dlf_formats'
+-- Table structure for table 'tx_dlf_domain_model_format'
 --
-CREATE TABLE tx_dlf_formats (
+CREATE TABLE tx_dlf_domain_model_format (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -159,9 +159,9 @@ CREATE TABLE tx_dlf_formats (
 );
 
 --
--- Table structure for table 'tx_dlf_solrcores'
+-- Table structure for table 'tx_dlf_domain_model_solrcore'
 --
-CREATE TABLE tx_dlf_solrcores (
+CREATE TABLE tx_dlf_domain_model_solrcore (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -177,9 +177,9 @@ CREATE TABLE tx_dlf_solrcores (
 );
 
 --
--- Table structure for table 'tx_dlf_collections'
+-- Table structure for table 'tx_dlf_domain_model_collection'
 --
-CREATE TABLE tx_dlf_collections (
+CREATE TABLE tx_dlf_domain_model_collection (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -213,9 +213,9 @@ CREATE TABLE tx_dlf_collections (
 );
 
 --
--- Table structure for table 'tx_dlf_libraries'
+-- Table structure for table 'tx_dlf_domain_model_library'
 --
-CREATE TABLE tx_dlf_libraries (
+CREATE TABLE tx_dlf_domain_model_library (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -244,9 +244,9 @@ CREATE TABLE tx_dlf_libraries (
 );
 
 --
--- Table structure for table 'tx_dlf_tokens'
---
-CREATE TABLE tx_dlf_tokens (
+-- Table structure for table 'tx_dlf_domain_model_token'
+-- TODO: configuration file
+CREATE TABLE tx_dlf_domain_model_token (
     uid int(11) NOT NULL auto_increment,
     tstamp int(11) DEFAULT '0' NOT NULL,
     token varchar(255) DEFAULT '' NOT NULL,
@@ -258,9 +258,9 @@ CREATE TABLE tx_dlf_tokens (
 );
 
 --
--- Table structure for table 'tx_dlf_relations'
---
-CREATE TABLE tx_dlf_relations (
+-- Table structure for table 'tx_dlf_domain_model_relation'
+-- TODO: configuration file
+CREATE TABLE tx_dlf_domain_model_relation (
     uid int(11) NOT NULL auto_increment,
     uid_local int(11) DEFAULT '0' NOT NULL,
     uid_foreign int(11) DEFAULT '0' NOT NULL,
@@ -274,9 +274,9 @@ CREATE TABLE tx_dlf_relations (
 );
 
 --
--- Table structure for table 'tx_dlf_basket'
+-- Table structure for table 'tx_dlf_domain_model_basket'
 --
-CREATE TABLE tx_dlf_basket (
+CREATE TABLE tx_dlf_domain_model_basket (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
@@ -295,9 +295,9 @@ CREATE TABLE tx_dlf_basket (
 );
 
 --
--- Table structure for table 'tx_dlf_printer'
+-- Table structure for table 'tx_dlf_domain_model_printer'
 --
-CREATE TABLE tx_dlf_printer (
+CREATE TABLE tx_dlf_domain_model_printer (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     deleted smallint(6) DEFAULT '0' NOT NULL,
@@ -309,9 +309,9 @@ CREATE TABLE tx_dlf_printer (
 );
 
 --
--- Table structure for table 'tx_dlf_mail'
+-- Table structure for table 'tx_dlf_domain_model_mail'
 --
-CREATE TABLE tx_dlf_mail (
+CREATE TABLE tx_dlf_domain_model_mail (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     deleted smallint(6) DEFAULT '0' NOT NULL,
@@ -325,9 +325,9 @@ CREATE TABLE tx_dlf_mail (
 );
 
 --
--- Table structure for table 'tx_dlf_actionlog'
+-- Table structure for table 'tx_dlf_domain_model_actionlog'
 --
-CREATE TABLE tx_dlf_actionlog (
+CREATE TABLE tx_dlf_domain_model_actionlog (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     crdate int(11) DEFAULT '0' NOT NULL,
