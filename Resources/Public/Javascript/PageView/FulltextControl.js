@@ -81,7 +81,7 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @type {string}
      * @private
      */
-    this.searchHlElements = this.dic['search-hl-elements'];
+    this.searchHlParameters = this.dic['search-hl-parameters'];
     
     /**
      * @type {ol.Feature|undefined}
