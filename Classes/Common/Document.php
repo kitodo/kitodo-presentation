@@ -1178,10 +1178,12 @@ abstract class Document
                     $metadata['volume_sorting'][0] = $metadata['year'][0];
                 }
             }
-            // If volume_sorting is still empty, try to use title_sorting finally (workaround for newspapers)
+            // If volume_sorting is still empty, try to use title_sorting or mets_orderlabel finally (workaround for newspapers)
             if (empty($metadata['volume_sorting'][0])) {
                 if (!empty($metadata['title_sorting'][0])) {
                     $metadata['volume_sorting'][0] = $metadata['title_sorting'][0];
+                } elseif (!empty($metadata['mets_orderlabel'][0])) {
+                    $metadata['volume_sorting'][0] = $metadata['mets_orderlabel'][0];
                 }
             }
         }
