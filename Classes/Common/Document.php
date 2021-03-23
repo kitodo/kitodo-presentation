@@ -1169,16 +1169,21 @@ abstract class Document
                 $metadata['volume'] = $metadata['year'];
             }
             if (empty($metadata['volume_sorting'][0])) {
-                if (!empty($metadata['year_sorting'][0])) {
+                // If METS @ORDER is given it is preferred over year_sorting and year.
+                if (!empty($metadata['mets_order'][0])) {
+                    $metadata['volume_sorting'][0] = $metadata['mets_order'][0];
+                } elseif (!empty($metadata['year_sorting'][0])) {
                     $metadata['volume_sorting'][0] = $metadata['year_sorting'][0];
                 } elseif (!empty($metadata['year'][0])) {
                     $metadata['volume_sorting'][0] = $metadata['year'][0];
                 }
             }
-            // If volume_sorting is still empty, try to use title_sorting finally (workaround for newspapers)
+            // If volume_sorting is still empty, try to use title_sorting or METS @ORDERLABEL finally (workaround for newspapers)
             if (empty($metadata['volume_sorting'][0])) {
                 if (!empty($metadata['title_sorting'][0])) {
                     $metadata['volume_sorting'][0] = $metadata['title_sorting'][0];
+                } elseif (!empty($metadata['mets_orderlabel'][0])) {
+                    $metadata['volume_sorting'][0] = $metadata['mets_orderlabel'][0];
                 }
             }
         }
@@ -1249,6 +1254,7 @@ abstract class Document
             'collections' => $metadata['collection'],
             'mets_label' => $metadata['mets_label'][0],
             'mets_orderlabel' => $metadata['mets_orderlabel'][0],
+            'mets_order' => $metadata['mets_order'][0],
             'owner' => $metadata['owner'][0],
             'solrcore' => $core,
             'status' => 0,
