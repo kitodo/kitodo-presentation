@@ -83,7 +83,13 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         if (!empty($fullTextFile)) {
-            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext:' . htmlspecialchars($this->pi_getLL('fulltext', '')) . ';fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', '')) . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', '')) . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['activateFullTextInitially'], 0, 1, 0) . ';full-text-scroll-element:' . $this->conf['fullTextScrollElement'] . '">&nbsp;</a>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="'
+            . 'fulltext:' . htmlspecialchars($this->pi_getLL('fulltext', ''))
+            . ';fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', ''))
+            . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', ''))
+            . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['activateFullTextInitially'], 0, 1, 0)
+            . ';full-text-scroll-element:' . $this->conf['fullTextScrollElement']
+            . ';search-hl-parameters:' . $this->conf['searchHlParameters'] . '">&nbsp;</a>';
         } else {
             $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
         }

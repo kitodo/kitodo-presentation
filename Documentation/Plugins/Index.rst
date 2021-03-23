@@ -1037,7 +1037,9 @@ Fulltext Tool
 ^^^^^^^^^^^^^
 This plugin adds an activation link for fulltext to the toolbox. If no fulltext is available for the current page, a span-tag is rendered instead.
 
-The default behaviour is to show the fulltext after click on the toggle link. There is a TypoScript configuration to show the fulltext initially.
+The default behavior is to show the fulltext after click on the toggle link. There is a TypoScript configuration to show the fulltext initially.
+
+Plugin allows also to configure (searchHlParameters) by which URL parameters words will be highlighted in the image. The first defined parameter on the configuration has highest priority, if not found it checks the next ones.
 
 :typoscript:`plugin.tx_dlf_fulltexttool.`
 
@@ -1069,9 +1071,16 @@ The default behaviour is to show the fulltext after click on the toggle link. Th
    :Data Type:
        :ref:`t3tsref:data-type-string`
    :Default:
-        html, body       
+        html, body
+
+ - :Property:
+       searchHlParameters
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        tx_dlf[highlight_word]
 
 
-The fulltext is fetched and rendered by JavaSript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
+The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
 
-**Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ muste be configured appropriate on the providing webserver.
+**Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.

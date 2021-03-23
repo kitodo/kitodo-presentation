@@ -74,6 +74,12 @@ var dlfViewer = function(settings){
     this.highlightFieldParams = undefined;
 
     /**
+     * @type {string|undefined}
+     * @private
+     */
+    this.highlightKeys = undefined;
+
+    /**
      * @type {Object|undefined}
      * @private
      */
@@ -149,7 +155,7 @@ var dlfViewer = function(settings){
  *
  * @param {Array.<string>} controlNames
  */
-dlfViewer.prototype.addCustomControls = function(controlNames) {
+dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
         annotationControl = undefined,
@@ -161,6 +167,7 @@ dlfViewer.prototype.addCustomControls = function(controlNames) {
     if (this.fulltexts[0] !== undefined && this.fulltexts[0].length !== 0 && this.fulltexts[0].url !== '' && this.images.length === 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
         fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, this.images[0], this.fulltexts[0].url);
+        this.highlightKeys = fulltextControl.searchHlParameters;
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
@@ -280,7 +287,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 };
 
 /**
- * Displayes highlight words
+ * Displays highlight words
  */
 dlfViewer.prototype.displayHighlightWord = function() {
 
@@ -322,12 +329,24 @@ dlfViewer.prototype.displayHighlightWord = function() {
         }
     }
 
+    // check keys for which highlighting should be made
+    var keys = this.highlightKeys.split(',');
     // check if highlight by words is set
-    var key = 'tx_dlf[highlight_word]',
-        urlParams = dlfUtils.getUrlParams();
+    var urlParams = dlfUtils.getUrlParams();
 
-    if (urlParams !== undefined && urlParams.hasOwnProperty(key) && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
-        var value = urlParams[key],
+    var hasOwnProperty = false;
+    var param = '';
+
+    for(let key of keys) {
+        if(urlParams !== undefined && urlParams.hasOwnProperty(key.trim())) {
+            hasOwnProperty = true;
+            param = key.trim();
+            break;
+        }
+    };
+
+    if (hasOwnProperty && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
+        var value = urlParams[param],
             values = value.split(';'),
             fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
@@ -397,7 +416,7 @@ dlfViewer.prototype.init = function(controlNames) {
                     new ol.interaction.PinchZoom(),
                     new ol.interaction.MouseWheelZoom(),
                     new ol.interaction.KeyboardPan(),
-                    new ol.interaction.KeyboardZoom,
+                    new ol.interaction.KeyboardZoom(),
                     new ol.interaction.DragRotateAndZoom()
                 ],
                 // necessary for proper working of the keyboard events
@@ -418,10 +437,10 @@ dlfViewer.prototype.init = function(controlNames) {
                 }
             }
 
+            this.addCustomControls();
+
             // highlight word in case a highlight field is registered
             this.displayHighlightWord();
-
-            this.addCustomControls(controls);
 
             // trigger event after all has been initialize
             $(window).trigger("map-loadend", window);
