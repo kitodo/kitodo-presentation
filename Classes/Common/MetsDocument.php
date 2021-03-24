@@ -131,6 +131,7 @@ final class MetsDocument extends Document
     {
         $details = $this->getLogicalStructure($id);
         if (!empty($details)) {
+            $metadata['mets_order'][0] = $details['order'];
             $metadata['mets_label'][0] = $details['label'];
             $metadata['mets_orderlabel'][0] = $details['orderlabel'];
         }

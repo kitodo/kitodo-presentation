@@ -403,7 +403,8 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                     'p' => []
                 ];
             } else {
-                $subparts[$resArray['partof']][$resArray['volume_sorting']] = [
+                // volume_sorting should be always set - but it's not a required field. We append the uid to the array key to make it always unique.
+                $subparts[$resArray['partof']][$resArray['volume_sorting'] . str_pad($resArray['uid'], 9, '0', STR_PAD_LEFT)] = [
                     'u' => $resArray['uid'],
                     'h' => '',
                     's' => $sorting,
