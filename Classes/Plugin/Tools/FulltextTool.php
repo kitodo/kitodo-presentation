@@ -12,9 +12,9 @@
 
 namespace Kitodo\Dlf\Plugin\Tools;
 
-use TYPO3\CMS\Core\Utility\MathUtility;
-
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Fulltext tool for the plugin 'Toolbox' of the 'dlf' extension
@@ -75,9 +75,21 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Load template file.
         $this->getTemplate();
-        $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$this->conf['fileGrpFulltext']];
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+        while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext])) {
+                $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext];
+                break;
+            }
+        }
         if (!empty($fullTextFile)) {
-            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="fulltext:' . htmlspecialchars($this->pi_getLL('fulltext', '')) . ';fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', '')) . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', '')) . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['activateFullTextInitially'], 0, 1, 0) . ';full-text-scroll-element:' . $this->conf['fullTextScrollElement'] . '">&nbsp;</a>';
+            $markerArray['###FULLTEXT_SELECT###'] = '<a class="select switchoff" id="tx-dlf-tools-fulltext" title="" data-dic="'
+            . 'fulltext:' . htmlspecialchars($this->pi_getLL('fulltext', ''))
+            . ';fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', ''))
+            . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', ''))
+            . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['activateFullTextInitially'], 0, 1, 0)
+            . ';full-text-scroll-element:' . $this->conf['fullTextScrollElement']
+            . ';search-hl-parameters:' . $this->conf['searchHlParameters'] . '">&nbsp;</a>';
         } else {
             $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
         }

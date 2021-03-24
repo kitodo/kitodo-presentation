@@ -12,8 +12,8 @@ caching = 0
 publishNewCollections = 1
 # cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.unhideOnIndex
 unhideOnIndex = 0
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrps
-fileGrps = MIN,DEFAULT,MAX
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpImages
+fileGrpImages = DEFAULT,MAX
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpThumbs
 fileGrpThumbs = THUMBS
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpDownload

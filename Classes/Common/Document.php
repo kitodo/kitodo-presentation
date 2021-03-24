@@ -662,25 +662,31 @@ abstract class Document
         $this->_getPhysicalStructure();
         // ... and extension configuration.
         $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
         if (!empty($this->physicalStructureInfo[$id])) {
-            // Get fulltext file.
-            $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$extConf['fileGrpFulltext']]));
-            if ($file !== false) {
-                // Turn off libxml's error logging.
-                $libxmlErrors = libxml_use_internal_errors(true);
-                // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
-                $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-                // Load XML from file.
-                $rawTextXml = simplexml_load_string($file);
-                // Reset entity loader setting.
-                libxml_disable_entity_loader($previousValueOfEntityLoader);
-                // Reset libxml's error logging.
-                libxml_use_internal_errors($libxmlErrors);
-                // Get the root element's name as text format.
-                $textFormat = strtoupper($rawTextXml->getName());
-            } else {
-                Helper::devLog('Couln\'t load fulltext file for structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
-                return $rawText;
+            while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
+                if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
+                    // Get fulltext file.
+                    $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
+                    if ($file !== false) {
+                        // Turn off libxml's error logging.
+                        $libxmlErrors = libxml_use_internal_errors(true);
+                        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+                        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+                        // Load XML from file.
+                        $rawTextXml = simplexml_load_string($file);
+                        // Reset entity loader setting.
+                        libxml_disable_entity_loader($previousValueOfEntityLoader);
+                        // Reset libxml's error logging.
+                        libxml_use_internal_errors($libxmlErrors);
+                        // Get the root element's name as text format.
+                        $textFormat = strtoupper($rawTextXml->getName());
+                    } else {
+                        Helper::devLog('Couln\'t load fulltext file for structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+                        return $rawText;
+                    }
+                    break;
+                }
             }
         } else {
             Helper::devLog('Invalid structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
@@ -696,7 +702,7 @@ abstract class Document
                 // Get the raw text from class.
                 if (
                     class_exists($class)
-                    && ($obj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($class)) instanceof FulltextInterface
+                    && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
                 ) {
                     $rawText = $obj->getRawText($rawTextXml);
                     $this->rawTextArray[$id] = $rawText;
@@ -1174,16 +1180,21 @@ abstract class Document
                 $metadata['volume'] = $metadata['year'];
             }
             if (empty($metadata['volume_sorting'][0])) {
-                if (!empty($metadata['year_sorting'][0])) {
+                // If METS @ORDER is given it is preferred over year_sorting and year.
+                if (!empty($metadata['mets_order'][0])) {
+                    $metadata['volume_sorting'][0] = $metadata['mets_order'][0];
+                } elseif (!empty($metadata['year_sorting'][0])) {
                     $metadata['volume_sorting'][0] = $metadata['year_sorting'][0];
                 } elseif (!empty($metadata['year'][0])) {
                     $metadata['volume_sorting'][0] = $metadata['year'][0];
                 }
             }
-            // If volume_sorting is still empty, try to use title_sorting finally (workaround for newspapers)
+            // If volume_sorting is still empty, try to use title_sorting or METS @ORDERLABEL finally (workaround for newspapers)
             if (empty($metadata['volume_sorting'][0])) {
                 if (!empty($metadata['title_sorting'][0])) {
                     $metadata['volume_sorting'][0] = $metadata['title_sorting'][0];
+                } elseif (!empty($metadata['mets_orderlabel'][0])) {
+                    $metadata['volume_sorting'][0] = $metadata['mets_orderlabel'][0];
                 }
             }
         }
@@ -1254,6 +1265,7 @@ abstract class Document
             'collections' => $metadata['collection'],
             'mets_label' => $metadata['mets_label'][0],
             'mets_orderlabel' => $metadata['mets_orderlabel'][0],
+            'mets_order' => $metadata['mets_order'][0],
             'owner' => $metadata['owner'][0],
             'solrcore' => $core,
             'status' => 0,

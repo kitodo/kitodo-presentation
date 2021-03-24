@@ -78,7 +78,7 @@
                                 <type>input</type>
                                 <size>30</size>
                                 <max>30</max>
-                                <default>MIN,DEFAULT,MAX</default>
+                                <default>DEFAULT,MAX</default>
                             </config>
                         </TCEforms>
                     </fileGrpsImageDownload>
