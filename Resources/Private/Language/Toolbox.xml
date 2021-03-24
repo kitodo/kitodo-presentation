@@ -20,7 +20,7 @@
             <label index="tt_content.pi_flexform.sheet_general">Options</label>
             <label index="tt_content.pi_flexform.tools">Tools</label>
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
-            <label index="tt_content.pi_flexform.fileGrps">Page fileGrps used by image download tool: comma-separated list of @USE attribute values ordered by increasing size (default is "MIN,DEFAULT,MAX")</label>
+            <label index="tt_content.pi_flexform.fileGrps">Page fileGrps used by image download tool: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tt_content.plugin.title">Werkzeugkasten</label>
@@ -28,7 +28,7 @@
             <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
             <label index="tt_content.pi_flexform.tools">Werkzeuge</label>
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
-            <label index="tt_content.pi_flexform.fileGrp">Seiten fileGrps für das Werkzeug Bild-Download: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "MIN,DEFAULT,MAX")</label>
+            <label index="tt_content.pi_flexform.fileGrp">Seiten fileGrps für das Werkzeug Bild-Download: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX")</label>
         </languageKey>
     </data>
 </T3locallang>

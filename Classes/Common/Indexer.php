@@ -13,9 +13,11 @@
 namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Ubl\Iiif\Tools\IiifHelper;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
+use Ubl\Iiif\Tools\IiifHelper;
 
 /**
  * Indexer class for the 'dlf' extension
@@ -154,7 +156,7 @@ class Indexer
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getMessage('flash.done', true),
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
+                            FlashMessage::OK,
                             true,
                             'core.template.flashMessages'
                         );
@@ -162,7 +164,7 @@ class Indexer
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getMessage('flash.error', true),
-                            \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
+                            FlashMessage::ERROR,
                             true,
                             'core.template.flashMessages'
                         );
@@ -174,7 +176,7 @@ class Indexer
                     Helper::addMessage(
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
+                        FlashMessage::ERROR,
                         true,
                         'core.template.flashMessages'
                     );
@@ -187,7 +189,7 @@ class Indexer
                 Helper::addMessage(
                     Helper::getMessage('flash.solrNoConnection', true),
                     Helper::getMessage('flash.warning', true),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
+                    FlashMessage::WARNING,
                     true,
                     'core.template.flashMessages'
                 );
@@ -325,7 +327,7 @@ class Indexer
             $solrDoc->setField('id', $doc->uid . $logicalUnit['id']);
             $solrDoc->setField('uid', $doc->uid);
             $solrDoc->setField('pid', $doc->pid);
-            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
+            if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                 $solrDoc->setField('page', $logicalUnit['points']);
             }
             if ($logicalUnit['id'] == $doc->toplevelId) {
@@ -393,7 +395,7 @@ class Indexer
                     Helper::addMessage(
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
+                        FlashMessage::ERROR,
                         true,
                         'core.template.flashMessages'
                     );
@@ -428,59 +430,12 @@ class Indexer
      */
     protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
     {
-        $errors = 0;
-        // Read extension configuration.
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
         if (
-            !empty($physicalUnit['files'][$extConf['fileGrpFulltext']])
-            || !empty($annotationContainerIds = $physicalUnit['annotationContainers'])
+            $doc->hasFulltext
+            && $fulltext = $doc->getRawText($physicalUnit['id'])
         ) {
-            if (!empty($physicalUnit['files'][$extConf['fileGrpFulltext']])) {
-                $file = $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpFulltext']]);
-                // Load XML file.
-                if (GeneralUtility::isValidUrl($file)) {
-                    // Set user-agent to identify self when fetching XML data.
-                    if (!empty($extConf['useragent'])) {
-                        @ini_set('user_agent', $extConf['useragent']);
-                    }
-                    $fileResource = GeneralUtility::getUrl($file);
-                    if ($fileResource !== false) {
-                        // Turn off libxml's error logging.
-                        $libxmlErrors = libxml_use_internal_errors(true);
-                        // disable entity loading
-                        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-                        // Load XML from file.
-                        $xml = simplexml_load_string($fileResource);
-                        // reset entity loader setting
-                        libxml_disable_entity_loader($previousValueOfEntityLoader);
-                        // Reset libxml's error logging.
-                        libxml_use_internal_errors($libxmlErrors);
-                        if ($xml === false) {
-                            return 1;
-                        }
-                    } else {
-                        return 1;
-                    }
-                } else {
-                    return 1;
-                }
-            }
-            if (isset($annotationContainerIds) && !empty($annotationContainerIds)) {
-                foreach ($annotationContainerIds as $annotationContainerId) {
-                    if (!empty($extConf['useragent'])) {
-                        @ini_set('user_agent', $extConf['useragent']);
-                    }
-                    $fileResource = GeneralUtility::getUrl($annotationContainerId);
-                    if ($fileResource !== false) {
-                        $annotationContainer = IiifHelper::loadIiifResource($fileResource);
-                        if (!($annotationContainer instanceof AnnotationContainerInterface)) {
-                            return 1;
-                        }
-                    } else {
-                        return 1;
-                    }
-                }
-            }
+            // Read extension configuration.
+            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = $updateQuery->createDocument();
@@ -489,8 +444,12 @@ class Indexer
             $solrDoc->setField('uid', $doc->uid);
             $solrDoc->setField('pid', $doc->pid);
             $solrDoc->setField('page', $page);
-            if (!empty($physicalUnit['files'][$extConf['fileGrpThumbs']])) {
-                $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$extConf['fileGrpThumbs']]));
+            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+                if (!empty($physicalUnit['files'][$fileGrpThumb])) {
+                    $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$fileGrpThumb]));
+                    break;
+                }
             }
             $solrDoc->setField('partof', $doc->parentId);
             $solrDoc->setField('root', $doc->rootId);
@@ -498,7 +457,7 @@ class Indexer
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
-            $solrDoc->setField('fulltext', htmlspecialchars($doc->getRawText($physicalUnit['id'])));
+            $solrDoc->setField('fulltext', htmlspecialchars($fulltext));
             // Add faceting information to physical sub-elements if applicable.
             foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
                 if (
@@ -534,7 +493,7 @@ class Indexer
                     Helper::addMessage(
                         Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
+                        FlashMessage::ERROR,
                         true,
                         'core.template.flashMessages'
                     );
@@ -542,7 +501,7 @@ class Indexer
                 return 1;
             }
         }
-        return $errors;
+        return 0;
     }
 
     /**

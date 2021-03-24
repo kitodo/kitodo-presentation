@@ -14,6 +14,11 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 
@@ -111,17 +116,17 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
         ';
         // Add Javascript to page footer if not configured otherwise.
         if (empty($this->conf['addJStoBody'])) {
-            $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
             foreach ($cssFiles as $cssFile) {
-                $pageRenderer->addCssFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $cssFile);
+                $pageRenderer->addCssFile(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . $cssFile);
             }
             foreach ($jsFiles as $jsFile) {
-                $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $jsFile);
+                $pageRenderer->addJsFooterFile(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . $jsFile);
             }
             $pageRenderer->addJsFooterInlineCode('kitodo-pageview-configuration', $viewerConfiguration);
         } else {
             foreach ($jsFiles as $jsFile) {
-                $markerArray .= '<script type="text/javascript" src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>' . "\n";
+                $markerArray .= '<script type="text/javascript" src="' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>' . "\n";
             }
             $markerArray .= '
                 <script type="text/javascript">
@@ -185,7 +190,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 'parameter' => $this->conf['targetBasket'],
                 'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                 'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', true, false),
+                'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', true, false),
                 'title' => $label
             ];
             $output = '<form id="addToBasketForm" action="' . $this->cObj->typoLink_URL($basketConf) . '" method="post">';
@@ -221,11 +226,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrps']);
-        while ($fileGrp = @array_pop($fileGrps)) {
+        $fileGrpsImages = GeneralUtility::trimExplode(',', $this->conf['fileGrpImages']);
+        while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
-                $image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages])) {
+                $image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages]);
                 if ($this->conf['useInternalProxy']) {
                     // Configure @action URL for form.
                     $linkConf = [
@@ -236,10 +241,10 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                     ];
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
                 }
-                $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
+                $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages]);
                 break;
             } else {
-                Helper::devLog('File not found in fileGrp "' . $fileGrp . '"', DEVLOG_SEVERITY_WARNING);
+                Helper::devLog('File not found in fileGrp "' . $fileGrpImages . '"', DEVLOG_SEVERITY_WARNING);
             }
         }
         return $image;
@@ -258,20 +263,25 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $fulltext = [];
         // Get fulltext link.
-        if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']])) {
-            $fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
-            if ($this->conf['useInternalProxy']) {
-                // Configure @action URL for form.
-                $linkConf = [
-                    'parameter' => $GLOBALS['TSFE']->id,
-                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                    'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
-                ];
-                $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+        while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
+                $fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+                if ($this->conf['useInternalProxy']) {
+                    // Configure @action URL for form.
+                    $linkConf = [
+                        'parameter' => $GLOBALS['TSFE']->id,
+                        'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
+                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                        'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
+                    ];
+                    $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
+                }
+                $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+                break;
             }
-            $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$this->conf['fileGrpFulltext']]);
-        } else {
+        }
+        if (empty($fulltext)) {
             Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpFulltext'] . '"', DEVLOG_SEVERITY_WARNING);
         }
         return $fulltext;
@@ -364,11 +374,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             // Set default values if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
             if ((int) $this->piVars['page'] > 0 || empty($this->piVars['page'])) {
-                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+                $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
             } else {
                 $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
             }
-            $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+            $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
         // Load template file.
         $this->getTemplate();
