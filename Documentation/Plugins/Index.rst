@@ -8,9 +8,9 @@
 
 .. _configuration:
 
-================
+################
 Plugin Reference
-================
+################
 
 .. contents::
     :local:

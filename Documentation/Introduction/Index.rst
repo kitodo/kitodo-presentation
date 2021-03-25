@@ -8,14 +8,16 @@
 
 .. _introduction:
 
+############
 Introduction
-============
+############
 
 
 .. _what-it-does:
 
+*************************
 About Kitodo.Presentation
--------------------------
+*************************
 
 Kitodo.Presentation is a powerful framework for building a METS-based digital
 library. It is highly customizable through an user-friendly backend and flexible
@@ -31,8 +33,9 @@ depositary copies, manuscripts and letters, prints, newspapers and magazines.
 
 Download of current version is `avaiable on GitHub <https://github.com/kitodo/kitodo-presentation>`_.
 
+***********************************
 Libraries using Kitodo.Presentation
------------------------------------
+***********************************
 
 Amongst others Kitodo.Presentation is known to be used on the following digital presentations:
 
@@ -62,13 +65,14 @@ Kitodo.Presentation offers a standard OAI-PMH2-compliant interface for
 international search capability and digital metadata legibility. We recommend
 registering your Kitodo installation with the appropriate public OAI registry.
 
+*******************
 Software Components
--------------------
+*******************
 
 The software primarily consists of three modules:
 
 Commons
-^^^^^^^
+=======
 is a group of classes that build upon the TYPO3 API, adding
 Kitodo-specific functions, such as handling METS structures and library metadata
 in various formats, or linking external resources, such as OAI-PMH interfaces or
@@ -79,7 +83,7 @@ are only necessary in single installations, don't need to be part of the officia
 Kitodo.Presentation release, but can be created as separate extensions.
 
 Modules
-^^^^^^^
+=======
 is a group of components that are integrated into the TYPO3 backend and
 manage the configuration of extensions as well as of digital resources, clients
 and collections. Currently, there is a module for client management as well as
@@ -90,7 +94,7 @@ interface is provided, which allows automation of procedures, such as importing
 digital resources.
 
 Plugins
-^^^^^^^
+=======
 are components that build the frontend output and provide various functions.
 All plugins can be precisely configured via GUI and freely dropped into
 TYPO3-managed web pages. All frontend outputs are based on design
@@ -99,7 +103,7 @@ templates and are thus fully customizable.
 .. _screenshots:
 
 Screenshots
------------
+===========
 
 Some examples of Kitodo.Presentation in action on the `Digital Collection of SLUB Dresden <https://digital.slub-dresden.de/>`_:
 
