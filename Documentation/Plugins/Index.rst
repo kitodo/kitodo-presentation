@@ -229,7 +229,7 @@ now.
  - :Property:
        initialDocument
    :Data Type:
-       :ref:`t3tsref:data-type-db`
+       :ref:`t3tsref:data-type-integer`
    :Default:
 
  - :Property:
