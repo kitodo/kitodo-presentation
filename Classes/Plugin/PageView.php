@@ -97,6 +97,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             'Resources/Public/Javascript/PageView/FulltextDownloadControl.js',
             'Resources/Public/Javascript/PageView/FulltextControl.js',
             'Resources/Public/Javascript/PageView/FullTextUtility.js',
+            'Resources/Public/Javascript/PageView/SearchInDocument.js',
             'Resources/Public/Javascript/PageView/PageView.js'
         ];
         // Viewer configuration.
