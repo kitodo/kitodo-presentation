@@ -31,7 +31,7 @@ Kitodo.Presentation provides a comprehensive toolset covering all basic
 requirements for presenting digitized media: books, archivalia, digital
 depositary copies, manuscripts and letters, prints, newspapers and magazines.
 
-Download of current version is `avaiable on GitHub <https://github.com/kitodo/kitodo-presentation>`_.
+Download of current version is `available on GitHub <https://github.com/kitodo/kitodo-presentation>`_.
 
 ***********************************
 Libraries using Kitodo.Presentation
