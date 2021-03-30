@@ -8,9 +8,9 @@
 
 .. _user_manual:
 
-===========
+###########
 User Manual
-===========
+###########
 
 .. contents::
     :local:

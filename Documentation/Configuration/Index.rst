@@ -8,9 +8,9 @@
 
 .. _system_setup:
 
-============
+############
 System Setup
-============
+############
 
 .. contents::
     :local:
@@ -22,29 +22,44 @@ System Setup
 TYPO3 Setup
 ***********
 
+Extension Configuration
+=======================
+
+This step is obligatory!
+
+* go to the Extension Configuration (:file:`ADMIN TOOLS -> Settings -> Extension Configuration`).
+* open dlf
+* check and save the configuration
+
+After this step, the require tx_dlf_formats records are created on the root page (uid=0).
+
+TYPO3 Configuration
+===================
+
 The navigation plugin provides a page selection dropdown input field. The
 resulting action url cannot contain a valid cHash value.
 
 The default behaviour of TYPO3 is to call the pageNotFound handler and/or to show an exception:
 
 .. figure:: ../Images/Configuration/typo3_pagenotfoundonchasherror.png
-   :width: 800px
+   :width: 820px
    :alt: TYPO3 Error-Message "Reason: Request parameters could not be validated (&cHash empty)"
 
    TYPO3 Error-Message "Reason: Request parameters could not be validated (&cHash empty)"
 
-This is not the desired behaviour. You should configure in the TYPO3 install tool
-$TYPO3_CONF_VARS['FE']['pageNotFoundOnCHashError']=0 to show the requested page
+This is not the desired behaviour. You should configure in
+:file:`ADMIN TOOLS -> Settings -> Configure Installation-Wide Options`
+:file:`$TYPO3_CONF_VARS['FE']['pageNotFoundOnCHashError']=0` to show the requested page
 instead. The caching will be disabled in this case. This was the default
 behaviour before TYPO3 6.x.
 
-.. figure:: ../Images/Configuration/typo3_install_pagenotfoundonchasherror.png
-   :width: 800px
+.. figure:: ../Images/Configuration/New\ TYPO3\ site\ \[TYPO3\ CMS\ 9.5.26\ .png
+   :width: 820px
    :alt: TYPO3 Configuration of pageNotFoundOnCHashError in Install Tool
 
-   TYPO3 Configuration of pageNotFoundOnCHashError in Install Tool
+   TYPO3 Configuration of pageNotFoundOnCHashError in Settings Module
 
-The install tool writes this configuration to typo3conf/LocalConfiguration.php::
+This configuration is written to typo3conf/LocalConfiguration.php::
 
     'FE' => [
             'pageNotFoundOnCHashError' => '0',
@@ -52,31 +67,8 @@ The install tool writes this configuration to typo3conf/LocalConfiguration.php::
         ],
 
 
-.. _configuration-solr:
-
-*****************
-Solr Installation
-*****************
-
-This extension doesn't include Solr, but just a prepared configuration set.
-To setup Apache Solr, perform the following steps:
-
-1. Make sure you have Apache Solr 7.x up and running.
-    Download Solr from http://lucene.apache.org/solr/.
-    Other versions since 5.0 should be possible but are not tested.
-
-2. Copy the lib/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/dlf.
-
-3. Using basic authentication is optional but recommended.
-    The documentation is available here:
-    https://lucene.apache.org/solr/guide/7_4/basic-authentication-plugin.html
-
-
-.. _configuration-typoscript:
-
-******************************
 TypoScript Basic Configuration
-******************************
+------------------------------
 
 Please include the Template "Basic Configuration (dlf)". This template adds
 jQuery to your page by setting the following typoscript:
@@ -84,9 +76,8 @@ jQuery to your page by setting the following typoscript:
 :typoscript:`page.includeJSlibs.jQuery`
 
 
-******************
 Slug Configuration
-******************
+------------------
 
 With TYPO3 9.5 it is possible to make speaking urls with the builtin advanced
 routing feature ("Slug"). This may be used for extensions too.
@@ -118,3 +109,26 @@ The following code is an example of an routeEnhancer for the workview page on ui
          id: '(\d+)|(http.*xml)'
          page: \d+
          double: '[0-1]'
+
+
+.. _configuration-solr:
+
+*****************
+Solr Installation
+*****************
+
+This extension doesn't include Solr, but just a prepared configuration set.
+To setup Apache Solr, perform the following steps:
+
+1. Make sure you have Apache Solr 7.7 or 8.8 and running.
+    Download Solr from https://solr.apache.org/downloads.html.
+    Other versions may work but are not tested.
+
+2. Copy the lib/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/dlf.
+
+3. Using basic authentication is optional but recommended.
+    The documentation is available here:
+    https://lucene.apache.org/solr/guide/7_4/basic-authentication-plugin.html
+
+
+.. _configuration-typoscript:
