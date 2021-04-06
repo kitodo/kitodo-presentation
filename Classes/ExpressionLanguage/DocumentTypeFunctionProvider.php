@@ -15,13 +15,12 @@ namespace Kitodo\Dlf\ExpressionLanguage;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
- * Provider class for additional "getDocmentType" function to the ExpressionLanguage.
+ * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
@@ -110,19 +109,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 Helper::devLog('Failed to load document with UID ' . $piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($piVars['recordId'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
             // Get UID of document with given record identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($piVars['recordId'])),
-                    Helper::whereExpression('tx_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $result = DocumentRepository::findOneByRecordId($piVars['recordId']);
 
             if ($resArray = $result->fetch()) {
                 // Try to load document.

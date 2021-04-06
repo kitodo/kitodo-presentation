@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
-use Kitodo\Dlf\Common\Document;
 
 /**
  * CLI Command for re-indexing collections into database and Solr.
@@ -216,53 +217,8 @@ class ReindexCommand extends Command
      */
     protected function getDocumentsToProceed(string $collIds, int $pageId): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
         $documents = [];
-        $result = $queryBuilder
-            ->select('tx_dlf_documents.uid')
-            ->from('tx_dlf_documents')
-            ->join(
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_relations_joins',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_relations_joins.uid_local',
-                    'tx_dlf_documents.uid'
-                )
-            )
-            ->join(
-                'tx_dlf_relations_joins',
-                'tx_dlf_collections',
-                'tx_dlf_collections_join',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_relations_joins.uid_foreign',
-                    'tx_dlf_collections_join.uid'
-                )
-            )
-            ->where(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->in(
-                        'tx_dlf_collections_join.uid',
-                        $queryBuilder->createNamedParameter(
-                            GeneralUtility::intExplode(',', $collIds, true),
-                            Connection::PARAM_INT_ARRAY
-                        )
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_collections_join.pid',
-                        $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_relations_joins.ident',
-                        $queryBuilder->createNamedParameter('docs_colls')
-                    )
-                )
-            )
-            ->groupBy('tx_dlf_documents.uid')
-            ->orderBy('tx_dlf_documents.uid', 'ASC')
-            ->execute();
+        $result = DocumentRepository::findByPidAndCollections($pageId, $collIds);
 
         while ($record = $result->fetch()) {
             $documents[] = $record['uid'];
@@ -280,22 +236,9 @@ class ReindexCommand extends Command
      */
     protected function getAllDocuments(int $pageId): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
         $documents = [];
         $pageId = (int) $pageId;
-        $result = $queryBuilder
-            ->select('uid')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_documents.pid',
-                    $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
-                )
-            )
-            ->orderBy('tx_dlf_documents.uid', 'ASC')
-            ->execute();
+        $result = DocumentRepository::findByPid($pageId);
 
         while ($record = $result->fetch()) {
             $documents[] = $record['uid'];

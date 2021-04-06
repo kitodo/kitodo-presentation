@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -167,25 +168,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                 !empty($this->metadata['options']['source'])
                 && $this->metadata['options']['source'] == 'collection'
             ) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
                 // Get document's thumbnail and metadata from database.
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_documents.uid AS uid',
-                        'tx_dlf_documents.thumbnail AS thumbnail',
-                        'tx_dlf_documents.metadata AS metadata'
-                    )
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $queryBuilder->expr()->orX(
-                            $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($record['uid'])),
-                            $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($record['uid']))
-                        ),
-                        Helper::whereExpression('tx_dlf_documents')
-                    )
-                    ->execute();
+                $result = DocumentRepository::findByUidOrPartof($record['uid']);
 
                 // Process results.
                 while ($resArray = $result->fetch()) {

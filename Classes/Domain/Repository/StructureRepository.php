@@ -27,5 +27,5 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class StructureRepository extends Repository
 {
-
+    const TABLE = 'tx_dlf_domain_model_structure';
 }

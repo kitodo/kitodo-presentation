@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -184,18 +185,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:format', 'application/mets+xml'));
         $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:type', 'Text'));
         if (!empty($metadata['partof'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.record_id')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($metadata['partof'])),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $result = DocumentRepository::findOneByUid($metadata['partof']);
 
             $allResults = $result->fetchAll();
 
@@ -589,18 +579,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get earliest datestamp. Use a default value if that fails.
         $earliestDatestamp = '0000-00-00T00:00:00Z';
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
-        $result = $queryBuilder
-            ->select('tx_dlf_documents.tstamp AS tstamp')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages']))
-            )
-            ->orderBy('tx_dlf_documents.tstamp')
-            ->setMaxResults(1)
-            ->execute();
+        $result = DocumentRepository::findOneByPid($this->conf['pages']);
 
         if ($resArray = $result->fetch()) {
             $timestamp = $resArray['tstamp'];
@@ -682,20 +661,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 return $this->error('badArgument');
             }
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
             // Check given identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.*')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['identifier']))
-                )
-                ->orderBy('tx_dlf_documents.tstamp')
-                ->setMaxResults(1)
-                ->execute();
+            $result = DocumentRepository::findOneByPidAndRecordId($this->conf['pages'], $this->piVars['identifier']);
 
             $allResults = $result->fetchAll();
 
@@ -918,35 +885,14 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $documentsToProcess = $documentListSet->removeRange(0, (int)$this->conf['limit']);
         $verb = $this->piVars['verb'];
 
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_dlf_documents');
-
-        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
-            'FROM `tx_dlf_documents` ' .
-            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
-            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE `tx_dlf_documents`.`uid` IN ( ? ) ' .
-            'AND `tx_dlf_documents`.`pid` = ? ' .
-            'AND `tx_dlf_collections`.`pid` = ? ' .
-            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-            'AND ' . Helper::whereExpression('tx_dlf_collections') . ' ' .
-            'GROUP BY `tx_dlf_documents`.`uid` ' .
-            'LIMIT ?';
-
         $values = [
             $documentsToProcess,
             $this->conf['pages'],
             $this->conf['pages'],
             $this->conf['limit']
         ];
-        $types = [
-            Connection::PARAM_INT_ARRAY,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT
-        ];
-        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-        $documents = $connection->executeQuery($sql, $values, $types);
+
+        $documents = DocumentRepository::findByValues($values);
 
         $output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
         while ($resArray = $documents->fetch()) {

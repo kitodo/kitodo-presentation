@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -83,55 +85,18 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
         if (
             !$this->conf['excludeOther']
             || empty($this->piVars['collection'])
-            || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])
+            || GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])
         ) {
             $additionalWhere = '';
             // Check for pre-selected collections.
             if (!empty($this->piVars['collection'])) {
-                $additionalWhere = 'tx_dlf_collections.uid=' . intval($this->piVars['collection']);
+                $additionalWhere = CollectionRepository::TABLE . '.uid=' . intval($this->piVars['collection']);
             } elseif (!empty($this->conf['collections'])) {
-                $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])) . ')';
+                $additionalWhere = CollectionRepository::TABLE . '.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])) . ')';
             }
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
+            $result = DocumentRepository::findForFeeds($this->conf['pages'], $additionalWhere, $this->conf['limit']);
 
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_documents.uid AS uid',
-                    'tx_dlf_documents.partof AS partof',
-                    'tx_dlf_documents.title AS title',
-                    'tx_dlf_documents.volume AS volume',
-                    'tx_dlf_documents.author AS author',
-                    'tx_dlf_documents.record_id AS guid',
-                    'tx_dlf_documents.tstamp AS tstamp',
-                    'tx_dlf_documents.crdate AS crdate'
-                )
-                ->from('tx_dlf_documents')
-                ->join(
-                    'tx_dlf_documents',
-                    'tx_dlf_relations',
-                    'tx_dlf_documents_collections_mm',
-                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
-                )
-                ->join(
-                    'tx_dlf_documents_collections_mm',
-                    'tx_dlf_collections',
-                    'tx_dlf_collections',
-                    $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
-                )
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
-                    $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
-                    $additionalWhere,
-                    Helper::whereExpression('tx_dlf_documents'),
-                    Helper::whereExpression('tx_dlf_collections'),
-                )
-                ->groupBy('tx_dlf_documents.uid')
-                ->orderBy('tx_dlf_documents.tstamp', 'DESC')
-                ->setMaxResults((int)$this->conf['limit'])
-                ->execute();
             $rows = $result->fetchAll();
 
             if (count($rows) > 0) {
@@ -172,7 +137,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                         'parameter' => $this->conf['targetPid'],
                         'forceAbsoluteUrl' => 1,
                         'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                        'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', true, false)
+                        'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', true, false)
                     ];
                     $item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
                     // Add author if applicable.

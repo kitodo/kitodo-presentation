@@ -212,42 +212,17 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             foreach ($this->doc->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, false);
             }
-            // Build table of contents from database.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
 
             $excludeOtherWhere = '';
             if ($this->conf['excludeOther']) {
                 $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->conf['pages']);
             }
             // Check if there are any metadata to suggest.
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_documents.uid AS uid',
-                    'tx_dlf_documents.title AS title',
-                    'tx_dlf_documents.volume AS volume',
-                    'tx_dlf_documents.mets_label AS mets_label',
-                    'tx_dlf_documents.mets_orderlabel AS mets_orderlabel',
-                    'tx_dlf_structures_join.index_name AS type'
-                )
-                ->innerJoin(
-                    'tx_dlf_documents',
-                    'tx_dlf_structures',
-                    'tx_dlf_structures_join',
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_structures_join.uid',
-                        'tx_dlf_documents.structure'
-                    )
-                )
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
-                    $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($this->doc->pid)),
-                    $excludeOtherWhere
-                )
-                ->addOrderBy('tx_dlf_documents.volume_sorting')
-                ->addOrderBy('tx_dlf_documents.mets_orderlabel')
-                ->execute();
+            $result = DocumentRepository::findForTableOfContents(
+                $this->doc->uid,
+                $this->doc->pid,
+                $excludeOtherWhere
+            );
 
             $allResults = $result->fetchAll();
 

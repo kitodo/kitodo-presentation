@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -593,38 +594,7 @@ final class MetsDocument extends Document
                 \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
                 && $id == $this->_getToplevelId()
             ) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_collections_join.index_name AS index_name'
-                    )
-                    ->from('tx_dlf_documents')
-                    ->innerJoin(
-                        'tx_dlf_documents',
-                        'tx_dlf_relations',
-                        'tx_dlf_relations_joins',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_local',
-                            'tx_dlf_documents.uid'
-                        )
-                    )
-                    ->innerJoin(
-                        'tx_dlf_relations_joins',
-                        'tx_dlf_collections',
-                        'tx_dlf_collections_join',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_foreign',
-                            'tx_dlf_collections_join.uid'
-                        )
-                    )
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
-                    )
-                    ->orderBy('tx_dlf_collections_join.index_name', 'ASC')
-                    ->execute();
+                $result = DocumentRepository::findByPidAndUidWithCollection($cPid, $this->uid);
 
                 $allResults = $result->fetchAll();
 

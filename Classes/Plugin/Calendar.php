@@ -13,8 +13,8 @@
 namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 
 /**
  * Plugin 'Calendar' for the 'dlf' extension
@@ -107,26 +107,11 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load template file.
         $this->getTemplate('###TEMPLATECALENDAR###');
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
         // Get all children of year anchor.
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.title AS title',
-                'tx_dlf_documents.year AS year',
-                'tx_dlf_documents.mets_label AS label',
-                'tx_dlf_documents.mets_orderlabel AS orderlabel'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('issue', 'tx_dlf_structures', $this->doc->cPid)),
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
-                Helper::whereExpression('tx_dlf_documents')
-            )
-            ->orderBy('tx_dlf_documents.mets_orderlabel')
-            ->execute();
+        $result = DocumentRepository::findByStructureAndPartof(
+            Helper::getUidFromIndexName('issue', StructureRepository::TABLE, $this->doc->cPid),
+            $this->doc->uid
+        );
 
         $issues = [];
 
@@ -382,25 +367,11 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get the title of the anchor file
         $titleAnchor = $this->doc->getTitle($this->doc->uid);
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
         // Get all children of anchor. This should be the year anchor documents
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.title AS title',
-                'tx_dlf_documents.mets_label AS label',
-                'tx_dlf_documents.mets_orderlabel AS orderlabel'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('year', 'tx_dlf_structures', $this->doc->cPid)),
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
-                Helper::whereExpression('tx_dlf_documents')
-            )
-            ->orderBy('tx_dlf_documents.mets_orderlabel')
-            ->execute();
+        $result = DocumentRepository::findByStructureAndPartof(
+            Helper::getUidFromIndexName('year', StructureRepository::TABLE, $this->doc->cPid),
+            $this->doc->uid
+        );
 
         $years = [];
         // Process results.

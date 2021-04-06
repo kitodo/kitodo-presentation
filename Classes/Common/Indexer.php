@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -135,19 +136,8 @@ class Indexer
                 $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
 
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
                 // Get document title from database.
-                $result = $queryBuilder
-                    ->select('tx_dlf_documents.title AS title')
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($doc->uid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    )
-                    ->setMaxResults(1)
-                    ->execute();
+                $result =DocumentRepository::findByUid($doc->uid);
 
                 $allResults = $result->fetchAll();
                 $resArray = $allResults[0];

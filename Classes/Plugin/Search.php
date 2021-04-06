@@ -45,7 +45,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function addAutocompleteJS()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+            ->getQueryBuilderForTable('tx_dlf_metadata');
 
         // Check if there are any metadata to suggest.
         $result = $queryBuilder

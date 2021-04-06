@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -460,35 +461,12 @@ abstract class Document
         $iiif = null;
         // Try to get document format from database
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
-            $queryBuilder
-                ->select(
-                    'tx_dlf_documents.location AS location',
-                    'tx_dlf_documents.document_format AS document_format'
-                )
-                ->from('tx_dlf_documents');
-
             // Get UID of document with given record identifier.
             if ($pid) {
-                $queryBuilder
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    );
+                $result = DocumentRepository::findOneByUidAndPid($uid, $pid);
             } else {
-                $queryBuilder
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    );
+                $result = DocumentRepository::findOneByUid($uid);
             }
-
-            $result = $queryBuilder
-                ->setMaxResults(1)
-                ->execute();
 
             if ($resArray = $result->fetch()) {
                 $documentFormat = $resArray['document_format'];
@@ -736,21 +714,7 @@ abstract class Document
         // Sanitize input.
         $uid = max(intval($uid), 0);
         if ($uid) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_documents.title',
-                    'tx_dlf_documents.partof'
-                )
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $uid),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $result = DocumentRepository::findOneByUid($uid);
 
             if ($resArray = $result->fetch()) {
                 // Get title information.
@@ -1551,13 +1515,13 @@ abstract class Document
     protected function __construct($uid, $pid, $preloadedDocument)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+            ->getQueryBuilderForTable('tx_dlf_domain_model_document');
         $location = '';
         // Prepare to check database for the requested document.
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
             $whereClause = $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
-                Helper::whereExpression('tx_dlf_documents')
+                $queryBuilder->expr()->eq('tx_dlf_domain_model_document.uid', intval($uid)),
+                Helper::whereExpression('tx_dlf_domain_model_document')
             );
         } else {
             // Try to load METS file / IIIF manifest.
@@ -1584,10 +1548,10 @@ abstract class Document
                 // Try to match record identifier or location (both should be unique).
                 $whereClause = $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.location', $queryBuilder->expr()->literal($location)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->recordId))
+                        $queryBuilder->expr()->eq('tx_dlf_domain_model_document.location', $queryBuilder->expr()->literal($location)),
+                        $queryBuilder->expr()->eq('tx_dlf_domain_model_document.record_id', $queryBuilder->expr()->literal($this->recordId))
                     ),
-                    Helper::whereExpression('tx_dlf_documents')
+                    Helper::whereExpression('tx_dlf_domain_model_document')
                 );
             } else {
                 // Can't persistently identify document, don't try to match at all.
@@ -1598,20 +1562,20 @@ abstract class Document
         if ($pid) {
             $whereClause = $queryBuilder->expr()->andX(
                 $whereClause,
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid))
+                $queryBuilder->expr()->eq('tx_dlf_domain_model_document.pid', intval($pid))
             );
         }
         // Get document PID and location from database.
         $result = $queryBuilder
             ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.pid AS pid',
-                'tx_dlf_documents.record_id AS record_id',
-                'tx_dlf_documents.partof AS partof',
-                'tx_dlf_documents.thumbnail AS thumbnail',
-                'tx_dlf_documents.location AS location'
+                'tx_dlf_domain_model_document.uid AS uid',
+                'tx_dlf_domain_model_document.pid AS pid',
+                'tx_dlf_domain_model_document.record_id AS record_id',
+                'tx_dlf_domain_model_document.partof AS partof',
+                'tx_dlf_domain_model_document.thumbnail AS thumbnail',
+                'tx_dlf_domain_model_document.location AS location'
             )
-            ->from('tx_dlf_documents')
+            ->from('tx_dlf_domain_model_document')
             ->where($whereClause)
             ->setMaxResults(1)
             ->execute();

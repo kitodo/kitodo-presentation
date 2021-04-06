@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -112,19 +112,8 @@ class UserFunc
                 Helper::devLog('Failed to load document with UID ' . $piVars['id'], DEVLOG_SEVERITY_WARNING);
             }
         } elseif (!empty($piVars['recordId'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
             // Get UID of document with given record identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($piVars['recordId'])),
-                    Helper::whereExpression('tx_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $result = DocumentRepository::findOneByRecordId($piVars['recordId']);
 
             if ($resArray = $result->fetch()) {
                 // Try to load document.

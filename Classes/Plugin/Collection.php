@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -344,22 +345,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         $documentSet = array_unique($documentSet);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+
         // Fetch document info for UIDs in $documentSet from DB
-        $documents = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.metadata_sorting AS metadata_sorting',
-                'tx_dlf_documents.volume_sorting AS volume_sorting',
-                'tx_dlf_documents.partof AS partof'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->in('tx_dlf_documents.uid', $documentSet),
-                Helper::whereExpression('tx_dlf_documents')
-            )
-            ->execute();
+        $documents = DocumentRepository::findByPidAndUid($this->conf['pages'], $documentSet);
 
         $toplevel = [];
         $subparts = [];
