@@ -43,26 +43,15 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @access protected
      *
-     * @return string The output string for the ###JAVASCRIPT### template marker
+     * @return void
      */
     protected function addPlayerJS()
     {
-        $markerArray = '';
-        // CSS files.
-        $cssFiles = [
-            'Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css'
-        ];
         // Inline CSS.
         $inlineCSS = '#tx-dlf-audio { width: 100px; height: 100px; }';
-        //Javascript files.
-        $jsFiles = [
-            // jPlayer
-            'Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js',
-            // AudioPlayer
-            'Resources/Public/Javascript/AudioPlayer/AudioPlayer.js'
-        ];
+
         // AudioPlayer configuration.
-        $audioplayerConfiguration = '
+        $audioPlayerConfiguration = '
             $(document).ready(function() {
                 AudioPlayer = new dlfAudioPlayer({
                     audio: {
@@ -75,30 +64,10 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
                 });
             });
         ';
-        // Add Javascript to page footer if not configured otherwise.
-        if (empty($this->conf['addJStoBody'])) {
-            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-            foreach ($cssFiles as $cssFile) {
-                $pageRenderer->addCssFile(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . $cssFile);
-            }
-            $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', $inlineCSS);
-            foreach ($jsFiles as $jsFile) {
-                $pageRenderer->addJsFooterFile(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . $jsFile);
-            }
-            $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $audioplayerConfiguration);
-        } else {
-            foreach ($jsFiles as $jsFile) {
-                $markerArray .= '<script type="text/javascript" src="' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . $jsFile . '"></script>' . "\n";
-            }
-            $markerArray .= '
-                <script type="text/javascript"> 
-                /*<![CDATA[*/
-                /*kitodo-audioplayer-configuration*/
-                ' . $audioplayerConfiguration . '
-                /*]]>*/
-                </script>';
-        }
-        return $markerArray;
+
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer->addCssInlineBlock('kitodo-audioplayer-configuration', $inlineCSS);
+        $pageRenderer->addJsFooterInlineCode('kitodo-audioplayer-configuration', $audioPlayerConfiguration);
     }
 
     /**
@@ -148,14 +117,13 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         if (!empty($this->audio)) {
             // Add jPlayer javascript.
-            $markerArray['###JAVASCRIPT###'] = $this->addPlayerJS();
+            $this->addPlayerJS();
         } else {
             // Quit without doing anything if required variables are not set.
             return $content;
         }
         // Load template file.
         $this->getTemplate();
-        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
     }
 }
