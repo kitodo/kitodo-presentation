@@ -27,8 +27,26 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class FormatRepository extends Repository
 {
+    const TABLE = 'tx_dlf_domain_model_format';
 
     //TODO: replace all static methods after real repository is implemented
+
+    public static function findAll() {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(self::TABLE);
+
+        // Check existing format specifications.
+        $result = $queryBuilder
+            ->select(self::TABLE . '.type AS type')
+            ->from(self::TABLE)
+            ->where(
+                '1=1'
+            )
+            ->execute();
+
+        return $result;
+    }
+
     /**
      * Load all available data formats
      *
@@ -40,19 +58,20 @@ class FormatRepository extends Repository
     {
         $formats = [];
         
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_format');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(self::TABLE);
 
         // Get available data formats from database.
         $result = $queryBuilder
             ->select(
-                'tx_dlf_domain_model_format.type AS type',
-                'tx_dlf_domain_model_format.root AS root',
-                'tx_dlf_domain_model_format.namespace AS namespace',
-                'tx_dlf_domain_model_format.class AS class'
+                self::TABLE . '.type AS type',
+                self::TABLE . '.root AS root',
+                self::TABLE . '.namespace AS namespace',
+                self::TABLE . '.class AS class'
             )
-            ->from('tx_dlf_domain_model_format')
+            ->from(self::TABLE)
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_domain_model_format.pid', 0)
+                $queryBuilder->expr()->eq(self::TABLE . '.pid', 0)
             )
             ->execute();
 

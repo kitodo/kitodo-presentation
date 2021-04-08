@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,9 +22,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
-use Kitodo\Dlf\Common\Document;
 
 /**
  * CLI Command for indexing single documents into database and Solr.
@@ -171,20 +170,8 @@ class IndexCommand extends Command
      */
     protected function getSolrCores(int $pageId): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_solrcores');
-
         $solrCores = [];
-        $result = $queryBuilder
-            ->select('uid', 'index_name')
-            ->from('tx_dlf_solrcores')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'pid',
-                    $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
-                )
-            )
-            ->execute();
+        $result = SolrCoreRepository::findByPid($pageId);
 
         while ($record = $result->fetch()) {
             $solrCores[$record['index_name']] = $record['uid'];

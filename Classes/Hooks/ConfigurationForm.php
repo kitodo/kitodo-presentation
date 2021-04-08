@@ -15,7 +15,6 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
@@ -92,17 +91,9 @@ class ConfigurationForm
             'IIIF2' => false,
             'IIIF3' => false
         ];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_formats');
 
         // Check existing format specifications.
-        $result = $queryBuilder
-            ->select('tx_dlf_formats.type AS type')
-            ->from('tx_dlf_formats')
-            ->where(
-                '1=1'
-            )
-            ->execute();
+        $result = FormatRepository::findAll();
 
         while ($resArray = $result->fetch()) {
             $nsDefined[$resArray['type']] = true;
@@ -207,6 +198,6 @@ class ConfigurationForm
         // Load localization file.
         $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
         // Get current configuration.
-        $this->conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));
+        $this->conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) GeneralUtility::_POST('data'));
     }
 }

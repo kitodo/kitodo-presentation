@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -186,33 +187,7 @@ class DataHandler
                         || isset($fieldArray['collections'])
                     ) {
                         // Get Solr-Core.
-                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                            ->getQueryBuilderForTable('tx_dlf_solrcores');
-
-                        $result = $queryBuilder
-                            ->select(
-                                'tx_dlf_solrcores.uid AS core',
-                                'tx_dlf_solrcores.index_name',
-                                'tx_dlf_documents_join.hidden AS hidden'
-                            )
-                            ->innerJoin(
-                                'tx_dlf_solrcores',
-                                'tx_dlf_documents',
-                                'tx_dlf_documents_join',
-                                $queryBuilder->expr()->eq(
-                                    'tx_dlf_documents_join.solrcore',
-                                    'tx_dlf_solrcores.uid'
-                                )
-                            )
-                            ->from('tx_dlf_solrcores')
-                            ->where(
-                                $queryBuilder->expr()->eq(
-                                    'tx_dlf_documents_join.uid',
-                                    intval($id)
-                                )
-                            )
-                            ->setMaxResults(1)
-                            ->execute();
+                        $result = SolrCoreRepository::findOneByDocumentId($id);
 
                         $allResults = $result->fetchAll();
 
@@ -262,35 +237,8 @@ class DataHandler
             && $table == 'tx_dlf_documents'
         ) {
             // Get Solr core.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_solrcores');
             // Record in "tx_dlf_documents" is already deleted at this point.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(DeletedRestriction::class);
-
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_solrcores.uid AS core'
-                )
-                ->innerJoin(
-                    'tx_dlf_solrcores',
-                    'tx_dlf_documents',
-                    'tx_dlf_documents_join',
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_documents_join.solrcore',
-                        'tx_dlf_solrcores.uid'
-                    )
-                )
-                ->from('tx_dlf_solrcores')
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_documents_join.uid',
-                        intval($id)
-                    )
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $result = SolrCoreRepository::findOneDeletedByDocumentId($id);
 
             $allResults = $result->fetchAll();
 
@@ -331,21 +279,7 @@ class DataHandler
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
             if (!empty($extConf['solrAllowCoreDelete'])) {
                 // Delete core from Apache Solr as well.
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_solrcores');
-                // Record in "tx_dlf_solrcores" is already deleted at this point.
-                $queryBuilder
-                    ->getRestrictions()
-                    ->removeByType(DeletedRestriction::class);
-
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_solrcores.index_name AS core'
-                    )
-                    ->from('tx_dlf_solrcores')
-                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', intval($id)))
-                    ->setMaxResults(1)
-                    ->execute();
+                $result = SolrCoreRepository::findOneDeletedByUid($id);
 
                 $allResults = $result->fetchAll();
 

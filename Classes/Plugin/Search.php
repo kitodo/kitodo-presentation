@@ -18,7 +18,6 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -44,20 +43,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function addAutocompleteJS()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-
         // Check if there are any metadata to suggest.
-        $result = $queryBuilder
-            ->select('tx_dlf_metadata.*')
-            ->from('tx_dlf_metadata')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.index_autocomplete', 1),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages'])),
-                Helper::whereExpression('tx_dlf_metadata')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $result = MetadataRepository::findOneAutocompleteByPid($this->conf['pages']);
 
         if ($result->rowCount() == 1) {
             $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);

@@ -13,6 +13,9 @@
 namespace Kitodo\Dlf\Module;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -215,18 +218,8 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 }
             }
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_structures');
-
             // Check for existing structure configuration.
-            $result = $queryBuilder
-                ->select('tx_dlf_structures.uid AS uid')
-                ->from('tx_dlf_structures')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($this->id)),
-                    Helper::whereExpression('tx_dlf_structures')
-                )
-                ->execute();
+            $result = StructureRepository::findByPid($this->id);
 
             if ($result->rowCount() > 0) {
                 // Fine.
@@ -245,18 +238,8 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
                 );
             }
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-
             // Check for existing metadata configuration.
-            $result = $queryBuilder
-                ->select('tx_dlf_metadata.uid AS uid')
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->id)),
-                    Helper::whereExpression('tx_dlf_metadata')
-                )
-                ->execute();
+            $result = MetadataRepository::findByPid($this->id);
 
             if ($result->rowCount() > 0) {
                 // Fine.
@@ -276,21 +259,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             }
 
             // Check for existing Solr core.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_solrcores');
-
-                // Check for existing Solr core.
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_solrcores.uid AS uid',
-                    'tx_dlf_solrcores.pid AS pid'
-                )
-                ->from('tx_dlf_solrcores')
-                ->where(
-                    $queryBuilder->expr()->in('tx_dlf_solrcores.pid', [intval($this->id), 0]),
-                    Helper::whereExpression('tx_dlf_solrcores')
-                )
-                ->execute();
+            $result = SolrCoreRepository::findByPidForNewTenant($this->id);
 
             $allResults = $result->fetchAll();
 

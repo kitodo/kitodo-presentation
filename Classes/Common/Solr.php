@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -200,28 +201,9 @@ class Solr
     {
         // Is there a field query?
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-
             // Get all indexed fields.
             $fields = [];
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored'
-                )
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
-                    ),
-                    Helper::whereExpression('tx_dlf_metadata')
-                )
-                ->execute();
+            $result = MetadataRepository::findAllIndexedFieldsByPid($pid);
 
             while ($resArray = $result->fetch()) {
                 $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';

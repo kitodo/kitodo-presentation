@@ -15,6 +15,9 @@ namespace Kitodo\Dlf\Common;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -972,20 +975,8 @@ abstract class Document
         // Load plugin configuration.
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_structures');
-
         // Get UID for structure type.
-        $result = $queryBuilder
-            ->select('tx_dlf_structures.uid AS uid')
-            ->from('tx_dlf_structures')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
-                Helper::whereExpression('tx_dlf_structures')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $result = StructureRepository::findOneByPidAndIndexName($pid, $metadata['type'][0]);
 
         if ($resArray = $result->fetch()) {
             $structure = $resArray['uid'];
@@ -1043,22 +1034,10 @@ abstract class Document
         }
         $metadata['collection'] = $collections;
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_libraries');
-
         // Get UID for owner.
         $owner = !empty($metadata['owner'][0]) ? $metadata['owner'][0] : 'default';
 
-        $result = $queryBuilder
-            ->select('tx_dlf_libraries.uid AS uid')
-            ->from('tx_dlf_libraries')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.index_name', $queryBuilder->expr()->literal($owner)),
-                Helper::whereExpression('tx_dlf_libraries')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $result = LibraryRepository::findOneByPidAndIndexName($pid, $owner);
 
         if ($resArray = $result->fetch()) {
             $ownerUid = $resArray['uid'];
@@ -1122,26 +1101,8 @@ abstract class Document
             }
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-
         // Get metadata for lists and sorting.
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadata.is_listed AS is_listed',
-                'tx_dlf_metadata.is_sortable AS is_sortable'
-            )
-            ->from('tx_dlf_metadata')
-            ->where(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)
-                ),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                Helper::whereExpression('tx_dlf_metadata')
-            )
-            ->execute();
+        $result = MetadataRepository::findListedOrSortedByPid($pid);
 
         $listed = [];
         $sortable = [];
@@ -1515,13 +1476,13 @@ abstract class Document
     protected function __construct($uid, $pid, $preloadedDocument)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_domain_model_document');
+            ->getQueryBuilderForTable(DocumentRepository::TABLE);
         $location = '';
         // Prepare to check database for the requested document.
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
             $whereClause = $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq('tx_dlf_domain_model_document.uid', intval($uid)),
-                Helper::whereExpression('tx_dlf_domain_model_document')
+                $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.uid', intval($uid)),
+                Helper::whereExpression(DocumentRepository::TABLE)
             );
         } else {
             // Try to load METS file / IIIF manifest.
@@ -1548,10 +1509,10 @@ abstract class Document
                 // Try to match record identifier or location (both should be unique).
                 $whereClause = $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->eq('tx_dlf_domain_model_document.location', $queryBuilder->expr()->literal($location)),
-                        $queryBuilder->expr()->eq('tx_dlf_domain_model_document.record_id', $queryBuilder->expr()->literal($this->recordId))
+                        $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.location', $queryBuilder->expr()->literal($location)),
+                        $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.record_id', $queryBuilder->expr()->literal($this->recordId))
                     ),
-                    Helper::whereExpression('tx_dlf_domain_model_document')
+                    Helper::whereExpression(DocumentRepository::TABLE)
                 );
             } else {
                 // Can't persistently identify document, don't try to match at all.
@@ -1562,23 +1523,11 @@ abstract class Document
         if ($pid) {
             $whereClause = $queryBuilder->expr()->andX(
                 $whereClause,
-                $queryBuilder->expr()->eq('tx_dlf_domain_model_document.pid', intval($pid))
+                $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.pid', intval($pid))
             );
         }
         // Get document PID and location from database.
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_domain_model_document.uid AS uid',
-                'tx_dlf_domain_model_document.pid AS pid',
-                'tx_dlf_domain_model_document.record_id AS record_id',
-                'tx_dlf_domain_model_document.partof AS partof',
-                'tx_dlf_domain_model_document.thumbnail AS thumbnail',
-                'tx_dlf_domain_model_document.location AS location'
-            )
-            ->from('tx_dlf_domain_model_document')
-            ->where($whereClause)
-            ->setMaxResults(1)
-            ->execute();
+        $result = DocumentRepository::findOneByWhereClause($whereClause);
 
         if ($resArray = $result->fetch()) {
             $this->uid = $resArray['uid'];

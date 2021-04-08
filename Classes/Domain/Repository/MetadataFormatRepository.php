@@ -27,5 +27,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class MetadataFormatRepository extends Repository
 {
+    const TABLE = 'tx_dlf_domain_model_metadataformat';
 
 }

@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -229,28 +229,8 @@ class Indexer
     protected static function loadIndexConf($pid)
     {
         if (!self::$fieldsLoaded) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-
             // Get the metadata indexing options.
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored',
-                    'tx_dlf_metadata.index_indexed AS index_indexed',
-                    'tx_dlf_metadata.is_sortable AS is_sortable',
-                    'tx_dlf_metadata.is_facet AS is_facet',
-                    'tx_dlf_metadata.is_listed AS is_listed',
-                    'tx_dlf_metadata.index_autocomplete AS index_autocomplete',
-                    'tx_dlf_metadata.index_boost AS index_boost'
-                )
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                    Helper::whereExpression('tx_dlf_metadata')
-                )
-                ->execute();
+            $result = MetadataRepository::findIndexConfigurationByPid($pid);
 
             while ($indexing = $result->fetch()) {
                 if ($indexing['index_tokenized']) {

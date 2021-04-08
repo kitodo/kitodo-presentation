@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -455,34 +456,17 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $where = '';
         if (!$this->conf['show_userdefined']) {
-            $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
+            $where .= 'AND ' . CollectionRepository::TABLE .'.fe_cruser_id=0 ';
         }
-
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
-
-        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
-            'FROM `tx_dlf_documents` ' .
-            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
-            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE `tx_dlf_documents`.`record_id` = ? ' .
-            'AND `tx_dlf_documents`.`pid` = ? ' .
-            'AND `tx_dlf_collections`.`pid` = ? ' .
-            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-            $where .
-            'AND ' . Helper::whereExpression('tx_dlf_collections');
 
         $values = [
             $this->piVars['identifier'],
             $this->conf['pages'],
             $this->conf['pages']
         ];
-        $types = [
-            Connection::PARAM_STR,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT
-        ];
+
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-        $statement = $connection->executeQuery($sql, $values, $types);
+        $statement = DocumentRepository::findByValuesAndAdditionalWhere($values, $where);
 
         $resArray = $statement->fetch();
 
@@ -550,22 +534,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $adminEmail = 'unknown@example.org';
         $repositoryName = 'Kitodo.Presentation OAI-PMH Interface (default configuration)';
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_libraries');
-
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_libraries.oai_label AS oai_label',
-                'tx_dlf_libraries.contact AS contact'
-            )
-            ->from('tx_dlf_libraries')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['library'])),
-                Helper::whereExpression('tx_dlf_libraries')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $result = LibraryRepository::findOneByPidAndUid($this->conf['pages'], $this->conf['library']);
 
         $allResults = $result->fetchAll();
 

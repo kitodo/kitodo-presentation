@@ -14,8 +14,9 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Domain\Repository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Repository\BasketRepository;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
+use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -126,19 +127,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $markerArray['###COUNT###'] = sprintf($this->pi_getLL('count'), 0);
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_mail');
-
         // get mail addresses
-        $resultMail = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_mail')
-            ->where(
-                '1=1',
-                Helper::whereExpression('tx_dlf_mail')
-            )
-            ->orderBy('tx_dlf_mail.sorting')
-            ->execute();
+        $resultMail = MailRepository::findAll();
 
         if ($resultMail->rowCount() > 0) {
             $mailForm = '<select name="tx_dlf[mail_action]">';
@@ -160,18 +150,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
    <input type="submit">
   ';
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_printer');
-
         // get mail addresses
-        $resultPrinter = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_printer')
-            ->where(
-                '1=1',
-                Helper::whereExpression('tx_dlf_printer')
-            )
-            ->execute();
+        $resultPrinter = PrinterRepository::findAll();
 
         $printForm = '';
         if ($resultPrinter->rowCount() > 0) {
@@ -491,19 +471,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         // send mail
         $mailId = $this->piVars['mail_action'];
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_mail');
-
         // get id from db and send selected doc download link
-        $resultMail = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_mail')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_mail.uid', intval($mailId)),
-                Helper::whereExpression('tx_dlf_mail')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $resultMail = MailRepository::findOneByUid($mailId);
 
         $allResults = $resultMail->fetchAll();
         $mailData = $allResults[0];
@@ -537,7 +506,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $from = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
         // send mail
-        $mail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $mail = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
         // Prepare and send the message
         $mail
             // subject
@@ -592,19 +561,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         // get printer data
         $printerId = $this->piVars['print_action'];
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_printer');
-
         // get id from db and send selected doc download link
-        $resultPrinter = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_printer')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_printer.uid', intval($printerId)),
-                Helper::whereExpression('tx_dlf_printer')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $resultPrinter = PrinterRepository::findOneByUid($printerId);
 
         $allResults = $resultPrinter->fetchAll();
         $printerData = $allResults[0];

@@ -16,7 +16,7 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -59,19 +59,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
             $channel->appendChild($rss->createElement('description', htmlspecialchars($this->conf['description'], ENT_QUOTES, 'UTF-8')));
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_structures');
-
-        $result = $queryBuilder
-            ->select('tx_dlf_libraries.label AS label')
-            ->from('tx_dlf_libraries')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['library'])),
-                Helper::whereExpression('tx_dlf_libraries')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $result = LibraryRepository::findOneByPidAndUid($this->conf['pages'], $this->conf['library']);
 
         $allResults = $result->fetchAll();
 

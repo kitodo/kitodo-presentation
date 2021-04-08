@@ -210,6 +210,27 @@ class DocumentRepository extends Repository
         return $result;
     }
 
+    public static function findOneByWhereClause($whereClause) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(self::TABLE);
+
+        $queryBuilder
+            ->select(
+                self::TABLE . '.uid AS uid',
+                self::TABLE . '.pid AS pid',
+                self::TABLE . '.record_id AS record_id',
+                self::TABLE . '.partof AS partof',
+                self::TABLE . '.thumbnail AS thumbnail',
+                self::TABLE . '.location AS location'
+            )
+            ->from(self::TABLE)
+            ->where($whereClause)
+            ->setMaxResults(1)
+            ->execute();
+
+        return $result;
+    }
+
     public static function findOneByUid($uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable(self::TABLE);
@@ -371,6 +392,30 @@ class DocumentRepository extends Repository
         $types = [
             Connection::PARAM_INT_ARRAY,
             Connection::PARAM_INT,
+            Connection::PARAM_INT,
+            Connection::PARAM_INT
+        ];
+        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
+        return $connection->executeQuery($sql, $values, $types);
+    }
+
+    public static function findByValuesAndAdditionalWhere($values, $where) {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable(self::TABLE);
+
+        $sql = 'SELECT `'. self::TABLE .'`.*, GROUP_CONCAT(DISTINCT `' . CollectionRepository::TABLE . '`.`oai_name` ORDER BY `' . CollectionRepository::TABLE . 'tions`.`oai_name` SEPARATOR " ") AS `collections` ' .
+            'FROM `'. self::TABLE .'` ' .
+            'INNER JOIN `tx_dlf_domain_model_relation` ON `tx_dlf_domain_model_relation`.`uid_local` = `'. self::TABLE .'`.`uid` ' .
+            'INNER JOIN `' . CollectionRepository::TABLE . '` ON `' . CollectionRepository::TABLE . '`.`uid` = `tx_dlf_domain_model_relation`.`uid_foreign` ' .
+            'WHERE `'. self::TABLE .'`.`record_id` = ? ' .
+            'AND `'. self::TABLE .'`.`pid` = ? ' .
+            'AND `' . CollectionRepository::TABLE . '`.`pid` = ? ' .
+            'AND `tx_dlf_domain_model_relation`.`ident`="docs_colls" ' .
+            $where .
+            'AND ' . Helper::whereExpression(CollectionRepository::TABLE);
+
+        $types = [
+            Connection::PARAM_STR,
             Connection::PARAM_INT,
             Connection::PARAM_INT
         ];

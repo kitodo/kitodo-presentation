@@ -15,9 +15,11 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Plugin 'Collection' for the 'dlf' extension
@@ -81,10 +83,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function showCollectionList()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
+            ->getQueryBuilderForTable(CollectionRepository::TABLE);
 
-        $selectedCollections = $queryBuilder->expr()->neq('tx_dlf_collections.uid', 0);
-        $orderBy = 'tx_dlf_collections.label';
+        $selectedCollections = $queryBuilder->expr()->neq(CollectionRepository::TABLE . '.uid', 0);
         $showUserDefinedColls = '';
         // Handle collections set by configuration.
         if ($this->conf['collections']) {
@@ -94,49 +95,21 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             ) {
                 $this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
             }
-            $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])));
+            $selectedCollections = $queryBuilder->expr()->in(CollectionRepository::TABLE . '.uid', implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])));
         }
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
-            $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
+            $showUserDefinedColls = $queryBuilder->expr()->eq(CollectionRepository::TABLE . '.fe_cruser_id', 0);
         } elseif ($this->conf['show_userdefined'] > 0) {
             if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
-                $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', intval($GLOBALS['TSFE']->fe_user->user['uid']));
+                $showUserDefinedColls = $queryBuilder->expr()->eq(CollectionRepository::TABLE . '.fe_cruser_id', intval($GLOBALS['TSFE']->fe_user->user['uid']));
             } else {
-                $showUserDefinedColls = $queryBuilder->expr()->neq('tx_dlf_collections.fe_cruser_id', 0);
+                $showUserDefinedColls = $queryBuilder->expr()->neq(CollectionRepository::TABLE . '.fe_cruser_id', 0);
             }
         }
 
-        // Get collections.
-        $queryBuilder
-            ->select(
-                'tx_dlf_collections.uid AS uid', // required by getRecordOverlay()
-                'tx_dlf_collections.pid AS pid', // required by getRecordOverlay()
-                'tx_dlf_collections.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
-                'tx_dlf_collections.index_name AS index_name',
-                'tx_dlf_collections.index_search as index_query',
-                'tx_dlf_collections.label AS label',
-                'tx_dlf_collections.thumbnail AS thumbnail',
-                'tx_dlf_collections.description AS description',
-                'tx_dlf_collections.priority AS priority'
-            )
-            ->from('tx_dlf_collections')
-            ->where(
-                $selectedCollections,
-                $showUserDefinedColls,
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
-                    ),
-                    $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
-                )
-            )
-            ->orderBy($orderBy);
-
-        $result = $queryBuilder->execute();
-        $count = $queryBuilder->count('uid')->execute()->fetchColumn(0);
+        $result = CollectionRepository::findByPidAndLanguageAndAdditionalWhereClause($this->conf['pages'], $selectedCollections, $showUserDefinedColls);
+        $count = CollectionRepository::countByPidAndLanguageAndAdditionalWhereClause($this->conf['pages'], $selectedCollections, $showUserDefinedColls);
         $content = '';
         if ($count == 1 && empty($this->conf['dont_show_single'])) {
             $resArray = $result->fetch();
@@ -153,7 +126,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $collections = [];
 
         // Get language overlay if on alterative website language.
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         while ($collectionData = $result->fetch()) {
             if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
                 $collections[$collectionData['uid']] = $pageRepository->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
@@ -213,7 +186,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                 'parameter' => $GLOBALS['TSFE']->id,
                 'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                 'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
+                'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
             ];
             // Link collection's title to list view.
             $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($collection['label']), $conf);
@@ -268,49 +241,22 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function showSingleCollection($id)
     {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_collections');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(CollectionRepository::TABLE);
 
         $additionalWhere = '';
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
-            $additionalWhere = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
+            $additionalWhere = $queryBuilder->expr()->eq(CollectionRepository::TABLE. '.fe_cruser_id', 0);
         } elseif ($this->conf['show_userdefined'] > 0) {
-            $additionalWhere = $queryBuilder->expr()->neq('tx_dlf_collections.fe_cruser_id', 0);
+            $additionalWhere = $queryBuilder->expr()->neq(CollectionRepository::TABLE. '.fe_cruser_id', 0);
         }
 
         // Get collection information from DB
-        $collection = $queryBuilder
-            ->select(
-                'tx_dlf_collections.uid AS uid', // required by getRecordOverlay()
-                'tx_dlf_collections.pid AS pid', // required by getRecordOverlay()
-                'tx_dlf_collections.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
-                'tx_dlf_collections.index_name AS index_name',
-                'tx_dlf_collections.index_search as index_search',
-                'tx_dlf_collections.label AS label',
-                'tx_dlf_collections.description AS description',
-                'tx_dlf_collections.thumbnail AS thumbnail',
-                'tx_dlf_collections.fe_cruser_id'
-            )
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_collections.uid', intval($id)),
-                $additionalWhere,
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
-                    ),
-                    $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
-                ),
-                Helper::whereExpression('tx_dlf_collections')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $collection = CollectionRepository::findOneByPidAndUidLanguageWithAddtionalWhereClause($this->conf['pages'], $id, $additionalWhere);
 
         // Get language overlay if on alterative website language.
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         if ($resArray = $collection->fetch()) {
             if ($resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
                 $collectionData = $pageRepository->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);

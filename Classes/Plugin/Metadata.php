@@ -16,8 +16,7 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Ubl\Iiif\Context\IRI;
 
 /**
@@ -230,28 +229,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
             }
         } else {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.is_listed AS is_listed',
-                    'tx_dlf_metadata.wrap AS wrap',
-                    'tx_dlf_metadata.sys_language_uid AS sys_language_uid'
-                )
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->orX(
-                            $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq('tx_dlf_metadata.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
-                        ),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
-                    ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages']))
-                )
-                ->orderBy('tx_dlf_metadata.sorting')
-                ->execute();
+            $result = MetadataFormat::findByPidAndLanguage($this->conf['pages']);
+
             while ($resArray = $result->fetch()) {
                 if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
                     $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);

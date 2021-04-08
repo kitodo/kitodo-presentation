@@ -13,8 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -429,7 +428,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
      */
     public function offsetSet($offset, $value)
     {
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($offset)) {
+        if (MathUtility::canBeInterpretedAsInteger($offset)) {
             $this->elements[$offset] = $value;
         } else {
             $this->elements[] = $value;
@@ -553,24 +552,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             if ($solr->ready) {
                 $this->solr = $solr;
                 // Get indexed fields.
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_metadata');
-
                 // Load index configuration.
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_metadata.index_name AS index_name',
-                        'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                        'tx_dlf_metadata.index_indexed AS index_indexed'
-                    )
-                    ->from('tx_dlf_metadata')
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->metadata['options']['pid'])),
-                        Helper::whereExpression('tx_dlf_metadata')
-                    )
-                    ->orderBy('tx_dlf_metadata.sorting', 'ASC')
-                    ->execute();
+                $result = MetadataRepository::findListedIndexConfigurationByPid($this->metadata['options']['pid']);
 
                 while ($resArray = $result->fetch()) {
                     $this->solrConfig[$resArray['index_name']] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . 's' . ($resArray['index_indexed'] ? 'i' : 'u');
