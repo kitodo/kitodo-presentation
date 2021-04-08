@@ -107,6 +107,6 @@ class SearchInDocument
     }
 
     private function getUid($uid) {
-        return intval($uid) > 0  ? intval($uid) : $uid;
+        return is_numeric($uid) > 0  ? intval($uid) : $uid;
     }
 }
