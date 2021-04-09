@@ -20,29 +20,25 @@ page {
   }
 
   includeJSFooter {
-    kitodo {
-      audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
+    # AudioPlayer plugin
+    kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
 
-      ol {
-        glif = EXT:dlf/Resources/Public/Javascript/OpenLayers/glif.min.js
-        dlf = EXT:dlf/Resources/Public/Javascript/OpenLayers/ol3-dlf.js
-      }
+    # PageView plugin
+    kitodo-openLayers-glif = EXT:dlf/Resources/Public/Javascript/OpenLayers/glif.min.js
+    kitodo-openLayers-dlf = EXT:dlf/Resources/Public/Javascript/OpenLayers/ol3-dlf.js
 
-      viewer {
-        utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js
-        ol3 = EXT:dlf/Resources/Public/Javascript/PageView/OL3.js
-        ol3Styles = EXT:dlf/Resources/Public/Javascript/PageView/OL3Styles.js
-        ol3Sources = EXT:dlf/Resources/Public/Javascript/PageView/OL3Sources.js
-        altoParser = EXT:dlf/Resources/Public/Javascript/PageView/AltoParser.js
-        annotationParser = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationParser.js
-        annotationControl = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationControl.js
-        imageManipulationControl = EXT:dlf/Resources/Public/Javascript/PageView/ImageManipulationControl.js
-        fullTextDownloadControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextDownloadControl.js
-        fullTextControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextControl.js
-        fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
-        searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
-        pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
-      }
-    }
+    kitodo-pageView-utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js
+    kitodo-pageView-ol3 = EXT:dlf/Resources/Public/Javascript/PageView/OL3.js
+    kitodo-pageView-ol3Styles = EXT:dlf/Resources/Public/Javascript/PageView/OL3Styles.js
+    kitodo-pageView-ol3Sources = EXT:dlf/Resources/Public/Javascript/PageView/OL3Sources.js
+    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/Javascript/PageView/AltoParser.js
+    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationParser.js
+    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationControl.js
+    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/Javascript/PageView/ImageManipulationControl.js
+    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextDownloadControl.js
+    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextControl.js
+    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
+    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
+    kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
   }
 }
