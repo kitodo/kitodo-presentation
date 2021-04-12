@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
@@ -78,9 +79,9 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
             $additionalWhere = '';
             // Check for pre-selected collections.
             if (!empty($this->piVars['collection'])) {
-                $additionalWhere = CollectionRepository::TABLE . '.uid=' . intval($this->piVars['collection']);
+                $additionalWhere = Table::$collection . '.uid=' . intval($this->piVars['collection']);
             } elseif (!empty($this->conf['collections'])) {
-                $additionalWhere = CollectionRepository::TABLE . '.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])) . ')';
+                $additionalWhere = Table::$collection . '.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])) . ')';
             }
 
             $result = DocumentRepository::findForFeeds($this->conf['pages'], $additionalWhere, $this->conf['limit']);

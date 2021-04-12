@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -28,21 +29,19 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class LibraryRepository extends Repository
 {
-    const TABLE = 'tx_dlf_domain_model_library';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findOneByPidAndIndexName($pid, $owner) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$library);
 
         $result = $queryBuilder
-            ->select(self::TABLE . '.uid AS uid')
-            ->from(self::TABLE)
+            ->select(Table::$library . '.uid AS uid')
+            ->from(Table::$library)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.index_name', $queryBuilder->expr()->literal($owner)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$library . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$library . '.index_name', $queryBuilder->expr()->literal($owner)),
+                Helper::whereExpression(Table::$library)
             )
             ->setMaxResults(1)
             ->execute();
@@ -52,19 +51,19 @@ class LibraryRepository extends Repository
 
     public static function findOneByPidAndUid($pid, $uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$library);
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.label AS label',
-                self::TABLE . '.oai_label AS oai_label',
-                self::TABLE . '.contact AS contact'
+                Table::$library . '.label AS label',
+                Table::$library . '.oai_label AS oai_label',
+                Table::$library . '.contact AS contact'
             )
-            ->from(self::TABLE)
+            ->from(Table::$library)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.uid', intval($uid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$library . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$library . '.uid', intval($uid)),
+                Helper::whereExpression(Table::$library)
             )
             ->setMaxResults(1)
             ->execute();

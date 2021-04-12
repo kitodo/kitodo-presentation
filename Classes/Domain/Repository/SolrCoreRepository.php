@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -29,20 +29,18 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class SolrCoreRepository extends Repository
 {
-    const TABLE = 'tx_dlf_domain_model_solrcore';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$solrCore);
 
         $result = $queryBuilder
             ->select(
                 'uid',
                 'index_name'
             )
-            ->from(self::TABLE)
+            ->from(Table::$solrCore)
             ->where(
                 $queryBuilder->expr()->eq(
                     'pid',
@@ -56,18 +54,18 @@ class SolrCoreRepository extends Repository
 
     public static function findByPidForNewTenant($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$solrCore);
 
         // Check for existing Solr core.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS uid',
-                self::TABLE . '.pid AS pid'
+                Table::$solrCore . '.uid AS uid',
+                Table::$solrCore . '.pid AS pid'
             )
-            ->from(self::TABLE)
+            ->from(Table::$solrCore)
             ->where(
-                $queryBuilder->expr()->in(self::TABLE . '.pid', [intval($pid), 0]),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->in(Table::$solrCore . '.pid', [intval($pid), 0]),
+                Helper::whereExpression(Table::$solrCore)
             )
             ->execute();
 
@@ -76,27 +74,27 @@ class SolrCoreRepository extends Repository
 
     public static function findOneByDocumentId($documentId) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$solrCore);
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS core',
-                self::TABLE . '.index_name',
-                DocumentRepository::TABLE . '_join.hidden AS hidden'
+                Table::$solrCore . '.uid AS core',
+                Table::$solrCore . '.index_name',
+                Table::$document . '_join.hidden AS hidden'
             )
             ->innerJoin(
-                self::TABLE,
-                DocumentRepository::TABLE,
-                DocumentRepository::TABLE . '_join',
+                Table::$solrCore,
+                Table::$document,
+                Table::$document . '_join',
                 $queryBuilder->expr()->eq(
-                    DocumentRepository::TABLE . '_join.solrcore',
-                    self::TABLE . '.uid'
+                    Table::$document . '_join.solrcore',
+                    Table::$solrCore . '.uid'
                 )
             )
-            ->from(self::TABLE)
+            ->from(Table::$solrCore)
             ->where(
                 $queryBuilder->expr()->eq(
-                    DocumentRepository::TABLE . '_join.uid',
+                    Table::$document . '_join.uid',
                     intval($documentId)
                 )
             )
@@ -108,7 +106,7 @@ class SolrCoreRepository extends Repository
 
     public static function findOneDeletedByDocumentId($documentId) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$solrCore);
         // Record in "tx_dlf_documents" is already deleted at this point.
         $queryBuilder
             ->getRestrictions()
@@ -116,21 +114,21 @@ class SolrCoreRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS core'
+                Table::$solrCore . '.uid AS core'
             )
             ->innerJoin(
-                self::TABLE,
-                DocumentRepository::TABLE,
-                DocumentRepository::TABLE . '_join',
+                Table::$solrCore,
+                Table::$document,
+                Table::$document . '_join',
                 $queryBuilder->expr()->eq(
-                    DocumentRepository::TABLE . '_join.solrcore',
-                    self::TABLE . '.uid'
+                    Table::$document . '_join.solrcore',
+                    Table::$solrCore . '.uid'
                 )
             )
-            ->from(self::TABLE)
+            ->from(Table::$solrCore)
             ->where(
                 $queryBuilder->expr()->eq(
-                    DocumentRepository::TABLE . '_join.uid',
+                    Table::$document . '_join.uid',
                     intval($documentId)
                 )
             )
@@ -142,7 +140,7 @@ class SolrCoreRepository extends Repository
 
     public static function findOneDeletedByUid($uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$solrCore);
         // Record in "tx_dlf_solrcores" is already deleted at this point.
         $queryBuilder
             ->getRestrictions()
@@ -150,10 +148,10 @@ class SolrCoreRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS core'
+                Table::$solrCore . '.index_name AS core'
             )
-            ->from(self::TABLE)
-            ->where($queryBuilder->expr()->eq(self::TABLE . '.uid', intval($uid)))
+            ->from(Table::$solrCore)
+            ->where($queryBuilder->expr()->eq(Table::$solrCore . '.uid', intval($uid)))
             ->setMaxResults(1)
             ->execute();
 

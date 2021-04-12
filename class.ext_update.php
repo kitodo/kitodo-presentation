@@ -12,6 +12,7 @@
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -151,46 +152,46 @@ class ext_update
         foreach ($tablesToRename as &$tableName) {
             switch ($tableName) {
                 case 'tx_dlf_documents':
-                    $this->renameOldTableName('tx_dlf_documents', 'tx_dlf_domain_model_document');
+                    $this->renameOldTableName('tx_dlf_documents', Table::$document);
                     break;
                 case 'tx_dlf_structures':
-                    $this->renameOldTableName('tx_dlf_structures', 'tx_dlf_domain_model_structure');
+                    $this->renameOldTableName('tx_dlf_structures', Table::$structure);
                     break;
                 case 'tx_dlf_metadata':
-                    $this->renameOldTableName('tx_dlf_metadata', 'tx_dlf_domain_model_metadata');
+                    $this->renameOldTableName('tx_dlf_metadata', Table::$metadata);
                     break;
                 case 'tx_dlf_metadataformat':
-                      $this->renameOldTableName('tx_dlf_metadataformat', 'tx_dlf_domain_model_metadataformat');
+                      $this->renameOldTableName('tx_dlf_metadataformat', Table::$metadataFormat);
                     break;
                 case 'tx_dlf_formats':
-                    $this->renameOldTableName('tx_dlf_formats', 'tx_dlf_domain_model_format');
+                    $this->renameOldTableName('tx_dlf_formats', Table::$format);
                     break;
                 case 'tx_dlf_solrcores':
-                    $this->renameOldTableName('tx_dlf_solrcores', 'tx_dlf_domain_model_solrcore');
+                    $this->renameOldTableName('tx_dlf_solrcores', Table::$solrCore);
                     break;
                 case 'tx_dlf_collections':
-                    $this->renameOldTableName('tx_dlf_collections', 'tx_dlf_domain_model_collection');
+                    $this->renameOldTableName('tx_dlf_collections', Table::$collection);
                     break;
                 case 'tx_dlf_libraries':
-                    $this->renameOldTableName('tx_dlf_libraries', 'tx_dlf_domain_model_library');
+                    $this->renameOldTableName('tx_dlf_libraries', Table::$library);
                     break;
                 case 'tx_dlf_tokens':
-                    $this->renameOldTableName('tx_dlf_tokens', 'tx_dlf_domain_model_token');
+                    $this->renameOldTableName('tx_dlf_tokens', Table::$token);
                     break;
                 case 'tx_dlf_relations':
-                    $this->renameOldTableName('tx_dlf_relations', 'tx_dlf_domain_model_relation');
+                    $this->renameOldTableName('tx_dlf_relations', Table::$relation);
                     break;
                 case 'tx_dlf_basket':
-                    $this->renameOldTableName('tx_dlf_basket', 'tx_dlf_domain_model_basket');
+                    $this->renameOldTableName('tx_dlf_basket', Table::$basket);
                     break;
                 case 'tx_dlf_printer':
-                    $this->renameOldTableName('tx_dlf_printer', 'tx_dlf_domain_model_printer');
+                    $this->renameOldTableName('tx_dlf_printer', Table::$printer);
                     break;
                 case 'tx_dlf_mail':
-                    $this->renameOldTableName('tx_dlf_mail', 'tx_dlf_domain_model_mail');
+                    $this->renameOldTableName('tx_dlf_mail', Table::$mail);
                     break;
                 case 'tx_dlf_actionlog':
-                    $this->renameOldTableName('tx_dlf_actionlog', 'tx_dlf_domain_model_actionlog');
+                    $this->renameOldTableName('tx_dlf_actionlog', Table::$actionLog);
                     break;
                 default:
                   break;
@@ -215,11 +216,11 @@ class ext_update
     {
         $uids = [];
         // check if tx_dlf_domain_model_metadata.xpath exists anyhow
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_metadata');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(Table::$metadata);
 
         $result = $queryBuilder
             ->select('*')
-            ->from('tx_dlf_domain_model_metadata')
+            ->from(Table::$metadata)
             ->execute();
 
         $rows = $result->fetchAll();
@@ -245,10 +246,11 @@ class ext_update
     protected function solariumSolrUpdateRequired(): bool
     {
         // Get all Solr cores that were not deleted.
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_solrcore');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Table::$solrCore);
         $result = $queryBuilder
             ->select('index_name')
-            ->from('tx_dlf_domain_model_solrcore')
+            ->from(Table::$solrCore)
             ->execute();
 
         while ($resArray = $result->fetch()) {
@@ -272,15 +274,16 @@ class ext_update
     {
         $oldRecords = [];
         // Get all records with outdated configuration.
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_format');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Table::$format);
 
         $result = $queryBuilder
-            ->select('tx_dlf_domain_model_format.uid AS uid', 'tx_dlf_domain_model_format.type AS type')
-            ->from('tx_dlf_domain_model_format')
+            ->select(Table::$format . '.uid AS uid', Table::$format . '.type AS type')
+            ->from(Table::$format)
             ->where(
-                $queryBuilder->expr()->isNotNull('tx_dlf_domain_model_format.class'),
-                $queryBuilder->expr()->neq('tx_dlf_domain_model_format.class', $queryBuilder->createNamedParameter('')),
-                $queryBuilder->expr()->like('tx_dlf_domain_model_format.class', $queryBuilder->createNamedParameter('%tx_dlf_%'))
+                $queryBuilder->expr()->isNotNull(Table::$format . '.class'),
+                $queryBuilder->expr()->neq(Table::$format . '.class', $queryBuilder->createNamedParameter('')),
+                $queryBuilder->expr()->like(Table::$format . '.class', $queryBuilder->createNamedParameter('%tx_dlf_%'))
             )
             ->execute();
         while ($resArray = $result->fetch()) {
@@ -299,12 +302,13 @@ class ext_update
      */
     protected function oldIndexRelatedTableNames(): bool
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
 
         $result = $queryBuilder
             ->select('column_name')
             ->from('INFORMATION_SCHEMA.COLUMNS')
-            ->where('TABLE_NAME = "tx_dlf_domain_model_metadata"')
+            ->where('TABLE_NAME = "' . Table::$metadata . '"')
             ->execute();
         while ($resArray = $result->fetch()) {
             if (
@@ -332,12 +336,13 @@ class ext_update
         // Check if column "document_format" exists.
         $database = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
 
         $result = $queryBuilder
             ->select('COLUMN_NAME')
             ->from('INFORMATION_SCHEMA.COLUMNS')
-            ->where('TABLE_NAME="tx_dlf_domain_model_document" AND TABLE_SCHEMA="' . $database . '" AND COLUMN_NAME="document_format"')
+            ->where('TABLE_NAME="' . Table::$document . '" AND TABLE_SCHEMA="' . $database . '" AND COLUMN_NAME="document_format"')
             ->execute();
         while ($resArray = $result->fetch()) {
             if ($resArray['COLUMN_NAME'] === 'document_format') {
@@ -348,7 +353,7 @@ class ext_update
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('INFORMATION_SCHEMA.COLUMNS');
                 $count = $queryBuilder
                     ->count('uid')
-                    ->from('tx_dlf_domain_model_document')
+                    ->from(Table::$document)
                     ->where('document_format="" OR document_format IS NULL')
                     ->execute()
                     ->fetchColumn(0);
@@ -370,10 +375,11 @@ class ext_update
      */
     protected function renameIndexRelatedColumns(): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_metadata');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Table::$metadata);
 
         $result = $queryBuilder
-            ->update('tx_dlf_domain_model_metadata', 'm')
+            ->update(Table::$metadata, 'm')
             ->set('m.index_tokenized', 'm.tokenized')
             ->set('m.index_stored', 'm.stored')
             ->set('m.index_indexed', 'm.indexed')
@@ -412,11 +418,12 @@ class ext_update
             'MODS' => 'Kitodo\\\\Dlf\\\\Format\\\\Mods',
             'TEIHDR' => 'Kitodo\\\\Dlf\\\\Format\\\\TeiHeader'
         ];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_format');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Table::$format);
 
         foreach ($oldRecords as $uid => $type) {
             $queryBuilder
-                ->update('tx_dlf_domain_model_format')
+                ->update(Table::$format)
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid))
                 )
@@ -445,13 +452,14 @@ class ext_update
             $data = [];
 
             // Get all old metadata configuration records.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_metadata');
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable(Table::$metadata);
             $result = $queryBuilder
-                ->select('tx_dlf_domain_model_metadata.uid AS uid', 'tx_dlf_domain_model_metadata.pid AS pid', 'tx_dlf_domain_model_metadata.cruser_id AS cruser_id', 'tx_dlf_domain_model_metadata.encoded AS encoded', 'tx_dlf_domain_model_metadata.xpath AS xpath', 'tx_dlf_domain_model_metadata.xpath_sorting AS xpath_sorting')
-                ->from('tx_dlf_domain_model_metadata')
+                ->select(Table::$metadata . '.uid AS uid', Table::$metadata . '.pid AS pid', Table::$metadata . '.cruser_id AS cruser_id', Table::$metadata . '.encoded AS encoded', Table::$metadata . '.xpath AS xpath', Table::$metadata . '.xpath_sorting AS xpath_sorting')
+                ->from(Table::$metadata)
                 ->where(
                     $queryBuilder->expr()->in(
-                        'tx_dlf_domain_model_metadata.uid',
+                        Table::$metadata . '.uid',
                         $queryBuilder->createNamedParameter(
                             $metadataUids,
                             \TYPO3\CMS\Core\Database\Connection::PARAM_INT_ARRAY
@@ -463,7 +471,7 @@ class ext_update
             while ($resArray = $result->fetch()) {
                 $newId = uniqid('NEW');
                 // Copy record to new table.
-                $data['tx_dlf_domain_model_metadataformat'][$newId] = [
+                $data[Table::$metadataFormat][$newId] = [
                     'pid' => $resArray['pid'],
                     'cruser_id' => $resArray['cruser_id'],
                     'parent_id' => $resArray['uid'],
@@ -472,7 +480,7 @@ class ext_update
                     'xpath_sorting' => $resArray['xpath_sorting']
                 ];
                 // Add reference to old table.
-                $data['tx_dlf_domain_model_metadata'][$resArray['uid']]['format'] = $newId;
+                $data[Table::$metadata][$resArray['uid']]['format'] = $newId;
             }
             if (!empty($data)) {
                 // Process datamap.
@@ -507,10 +515,11 @@ class ext_update
     {
         $error = false;
         // Get all Solr cores that were not deleted.
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_solrcores');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Table::$solrCore);
         $result = $queryBuilder
             ->select('index_name')
-            ->from('tx_dlf_domain_model_solrcores')
+            ->from(Table::$solrCore)
             ->execute();
 
         while ($resArray = $result->fetch()) {
@@ -542,10 +551,11 @@ class ext_update
      */
     protected function updateDocumentAddFormat(): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_domain_model_documents');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
-            ->update('tx_dlf_domain_model_documents')
+            ->update(Table::$document)
             ->where(
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->eq('document_format', $queryBuilder->createNamedParameter(null)),

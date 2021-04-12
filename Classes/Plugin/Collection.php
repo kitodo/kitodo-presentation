@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -83,9 +84,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function showCollectionList()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(CollectionRepository::TABLE);
+            ->getQueryBuilderForTable(Table::$collection);
 
-        $selectedCollections = $queryBuilder->expr()->neq(CollectionRepository::TABLE . '.uid', 0);
+        $selectedCollections = $queryBuilder->expr()->neq(Table::$collection . '.uid', 0);
         $showUserDefinedColls = '';
         // Handle collections set by configuration.
         if ($this->conf['collections']) {
@@ -95,16 +96,16 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             ) {
                 $this->showSingleCollection(intval(trim($this->conf['collections'], ' ,')));
             }
-            $selectedCollections = $queryBuilder->expr()->in(CollectionRepository::TABLE . '.uid', implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])));
+            $selectedCollections = $queryBuilder->expr()->in(Table::$collection . '.uid', implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])));
         }
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
-            $showUserDefinedColls = $queryBuilder->expr()->eq(CollectionRepository::TABLE . '.fe_cruser_id', 0);
+            $showUserDefinedColls = $queryBuilder->expr()->eq(Table::$collection . '.fe_cruser_id', 0);
         } elseif ($this->conf['show_userdefined'] > 0) {
             if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
-                $showUserDefinedColls = $queryBuilder->expr()->eq(CollectionRepository::TABLE . '.fe_cruser_id', intval($GLOBALS['TSFE']->fe_user->user['uid']));
+                $showUserDefinedColls = $queryBuilder->expr()->eq(Table::$collection . '.fe_cruser_id', intval($GLOBALS['TSFE']->fe_user->user['uid']));
             } else {
-                $showUserDefinedColls = $queryBuilder->expr()->neq(CollectionRepository::TABLE . '.fe_cruser_id', 0);
+                $showUserDefinedColls = $queryBuilder->expr()->neq(Table::$collection . '.fe_cruser_id', 0);
             }
         }
 
@@ -129,7 +130,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         while ($collectionData = $result->fetch()) {
             if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
-                $collections[$collectionData['uid']] = $pageRepository->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                $collections[$collectionData['uid']] = $pageRepository->getRecordOverlay(Table::$collection, $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
                 // keep the index_name of the default language
                 $collections[$collectionData['uid']]['index_name'] = $collectionData['index_name'];
             } else {
@@ -242,14 +243,14 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function showSingleCollection($id)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(CollectionRepository::TABLE);
+            ->getQueryBuilderForTable(Table::$collection);
 
         $additionalWhere = '';
         // Should user-defined collections be shown?
         if (empty($this->conf['show_userdefined'])) {
-            $additionalWhere = $queryBuilder->expr()->eq(CollectionRepository::TABLE. '.fe_cruser_id', 0);
+            $additionalWhere = $queryBuilder->expr()->eq(Table::$collection . '.fe_cruser_id', 0);
         } elseif ($this->conf['show_userdefined'] > 0) {
-            $additionalWhere = $queryBuilder->expr()->neq(CollectionRepository::TABLE. '.fe_cruser_id', 0);
+            $additionalWhere = $queryBuilder->expr()->neq(Table::$collection . '.fe_cruser_id', 0);
         }
 
         // Get collection information from DB
@@ -259,7 +260,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         if ($resArray = $collection->fetch()) {
             if ($resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
-                $collectionData = $pageRepository->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                $collectionData = $pageRepository->getRecordOverlay(Table::$collection, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
                 // keep the index_name of the default language
                 $collectionData['index_name'] = $resArray['index_name'];
             } else {
@@ -320,13 +321,13 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             // Prepare document's metadata for sorting.
             $sorting = unserialize($resArray['metadata_sorting']);
             if (!empty($sorting['type']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->conf['pages']);
+                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], Table::$structure, $this->conf['pages']);
             }
             if (!empty($sorting['owner']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->conf['pages']);
+                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], Table::$library, $this->conf['pages']);
             }
             if (!empty($sorting['collection']) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->conf['pages']);
+                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], Table::$collection, $this->conf['pages']);
             }
             // Split toplevel documents from volumes.
             if ($resArray['partof'] == 0) {

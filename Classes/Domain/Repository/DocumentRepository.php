@@ -13,8 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Domain\Repository\CollectionRepository;
-use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -30,24 +28,22 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class DocumentRepository extends Repository
 {
-    const TABLE = 'tx_dlf_domain_model_document';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
             ->select('uid')
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->where(
                 $queryBuilder->expr()->eq(
-                    self::TABLE . '.pid',
+                    Table::$document . '.pid',
                     $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
                 )
             )
-            ->orderBy(self::TABLE . '.uid', 'ASC')
+            ->orderBy(Table::$document . '.uid', 'ASC')
             ->execute();
 
         return $result;
@@ -55,20 +51,20 @@ class DocumentRepository extends Repository
 
     public static function findByPidAndUid($pid, $uidArray) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(self::TABLE);
+                ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
         ->select(
-            self::TABLE . '.uid AS uid',
-            self::TABLE . '.metadata_sorting AS metadata_sorting',
-            self::TABLE . '.volume_sorting AS volume_sorting',
-            self::TABLE . '.partof AS partof'
+            Table::$document . '.uid AS uid',
+            Table::$document . '.metadata_sorting AS metadata_sorting',
+            Table::$document . '.volume_sorting AS volume_sorting',
+            Table::$document . '.partof AS partof'
         )
-        ->from(self::TABLE)
+        ->from(Table::$document)
         ->where(
-            $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-            $queryBuilder->expr()->in(self::TABLE . '.uid', $uidArray),
-            Helper::whereExpression(self::TABLE)
+            $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+            $queryBuilder->expr()->in(Table::$document . '.uid', $uidArray),
+            Helper::whereExpression(Table::$document)
         )
         ->execute();
             
@@ -77,50 +73,50 @@ class DocumentRepository extends Repository
 
     public static function findByPidAndCollections($pid, $collectionIds) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
-            ->select(self::TABLE .'.uid')
-            ->from(self::TABLE)
+            ->select(Table::$document .'.uid')
+            ->from(Table::$document)
             ->join(
-                self::TABLE,
-                'tx_dlf_domain_model_relation',
-                'tx_dlf_domain_model_relation_joins',
+                Table::$document,
+                Table::$relation,
+                Table::$relation . '_joins',
                 $queryBuilder->expr()->eq(
-                    'tx_dlf_domain_model_relation_joins.uid_local',
-                    self::TABLE . '.uid'
+                    Table::$relation . '_joins.uid_local',
+                    Table::$document . '.uid'
                 )
             )
             ->join(
-                'tx_dlf_domain_model_relation_joins',
-                CollectionRepository::TABLE,
-                CollectionRepository::TABLE . '_join',
+                Table::$relation . '_joins',
+                Table::$collection,
+                Table::$collection . '_join',
                 $queryBuilder->expr()->eq(
-                    'tx_dlf_domain_model_relation_joins.uid_foreign',
-                    CollectionRepository::TABLE . '_join.uid'
+                    Table::$relation . '_joins.uid_foreign',
+                    Table::$collection . '_join.uid'
                 )
             )
             ->where(
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->in(
-                        CollectionRepository::TABLE . '_join.uid',
+                        Table::$collection . '_join.uid',
                         $queryBuilder->createNamedParameter(
                             GeneralUtility::intExplode(',', $collectionIds, true),
                             Connection::PARAM_INT_ARRAY
                         )
                     ),
                     $queryBuilder->expr()->eq(
-                        CollectionRepository::TABLE . '_join.pid',
+                        Table::$collection . '_join.pid',
                         $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)
                     ),
                     $queryBuilder->expr()->eq(
-                        'tx_dlf_domain_model_relation_joins.ident',
+                        Table::$relation . '_joins.ident',
                         $queryBuilder->createNamedParameter('docs_colls')
                     )
                 )
             )
-            ->groupBy(self::TABLE . '.uid')
-            ->orderBy(self::TABLE . '.uid', 'ASC')
+            ->groupBy(Table::$document . '.uid')
+            ->orderBy(Table::$document . '.uid', 'ASC')
             ->execute();
 
         return $result;
@@ -128,36 +124,36 @@ class DocumentRepository extends Repository
 
     public static function findByPidAndUidWithCollection($cPid, $uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable(self::TABLE);
+                    ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
             ->select(
-                CollectionRepository::TABLE . '_join.index_name AS index_name'
+                Table::$collection . '_join.index_name AS index_name'
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->innerJoin(
-                self::TABLE,
-                'tx_dlf_domain_model_relation',
-                'tx_dlf_domain_model_relation_joins',
+                Table::$document,
+                Table::$relation,
+                Table::$relation . '_joins',
                 $queryBuilder->expr()->eq(
-                    'tx_dlf_domain_model_relation_joins.uid_local',
-                    self::TABLE . '.uid'
+                    Table::$relation . '_joins.uid_local',
+                    Table::$document . '.uid'
                 )
             )
             ->innerJoin(
-                'tx_dlf_domain_model_relation_joins',
-                CollectionRepository::TABLE,
-                CollectionRepository::TABLE . '_join',
+                Table::$relation . '_joins',
+                Table::$collection,
+                Table::$collection . '_join',
                     $queryBuilder->expr()->eq(
-                        'tx_dlf_domain_model_relation_joins.uid_foreign',
-                        CollectionRepository::TABLE . '_join.uid'
+                        Table::$relation . '_joins.uid_foreign',
+                        Table::$collection . '_join.uid'
                     )
                 )
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($cPid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.uid', intval($uid))
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($cPid)),
+                $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid))
             )
-            ->orderBy(CollectionRepository::TABLE . '_join.index_name', 'ASC')
+            ->orderBy(Table::$collection . '_join.index_name', 'ASC')
             ->execute();
 
         return $result;
@@ -165,46 +161,46 @@ class DocumentRepository extends Repository
 
     public static function findByUidOrPartof($uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         // Get document's thumbnail and metadata from database.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS uid',
-                self::TABLE . '.thumbnail AS thumbnail',
-                self::TABLE . '.metadata AS metadata'
+                Table::$document . '.uid AS uid',
+                Table::$document . '.thumbnail AS thumbnail',
+                Table::$document . '.metadata AS metadata'
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->where(
                 $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq(self::TABLE . '.uid', intval($uid)),
-                    $queryBuilder->expr()->eq(self::TABLE . '.partof', intval($uid))
+                    $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid)),
+                    $queryBuilder->expr()->eq(Table::$document . '.partof', intval($uid))
                 ),
-                Helper::whereExpression(self::TABLE)
+                Helper::whereExpression(Table::$document)
             )
             ->execute();
     }
 
     public static function findByStructureAndPartof($structure, $uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         // Get all children of year anchor.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS uid',
-                self::TABLE . '.title AS title',
-                self::TABLE . '.year AS year',
-                self::TABLE . '.mets_label AS label',
-                self::TABLE . '.mets_orderlabel AS orderlabel'
+                Table::$document . '.uid AS uid',
+                Table::$document . '.title AS title',
+                Table::$document . '.year AS year',
+                Table::$document . '.mets_label AS label',
+                Table::$document . '.mets_orderlabel AS orderlabel'
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.structure', $structure),
-                $queryBuilder->expr()->eq(self::TABLE . '.partof', intval($uid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$document . '.structure', $structure),
+                $queryBuilder->expr()->eq(Table::$document . '.partof', intval($uid)),
+                Helper::whereExpression(Table::$document)
             )
-            ->orderBy(self::TABLE . '.mets_orderlabel')
+            ->orderBy(Table::$document . '.mets_orderlabel')
             ->execute();
 
         return $result;
@@ -212,18 +208,18 @@ class DocumentRepository extends Repository
 
     public static function findOneByWhereClause($whereClause) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         $queryBuilder
             ->select(
-                self::TABLE . '.uid AS uid',
-                self::TABLE . '.pid AS pid',
-                self::TABLE . '.record_id AS record_id',
-                self::TABLE . '.partof AS partof',
-                self::TABLE . '.thumbnail AS thumbnail',
-                self::TABLE . '.location AS location'
+                Table::$document . '.uid AS uid',
+                Table::$document . '.pid AS pid',
+                Table::$document . '.record_id AS record_id',
+                Table::$document . '.partof AS partof',
+                Table::$document . '.thumbnail AS thumbnail',
+                Table::$document . '.location AS location'
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->where($whereClause)
             ->setMaxResults(1)
             ->execute();
@@ -233,20 +229,20 @@ class DocumentRepository extends Repository
 
     public static function findOneByUid($uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(self::TABLE);
+                ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.title AS title',
-                self::TABLE . '.partof AS partof',
-                self::TABLE . '.location AS location',
-                self::TABLE . '.document_format AS document_format',
-                self::TABLE . '.record_id AS record_id'
+                Table::$document . '.title AS title',
+                Table::$document . '.partof AS partof',
+                Table::$document . '.location AS location',
+                Table::$document . '.document_format AS document_format',
+                Table::$document . '.record_id AS record_id'
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.uid', intval($uid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid)),
+                Helper::whereExpression(Table::$document)
             )
             ->setMaxResults(1)
             ->execute();
@@ -256,15 +252,15 @@ class DocumentRepository extends Repository
 
     public static function findOneByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(self::TABLE);
+                ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
-            ->select(self::TABLE . '.tstamp AS tstamp')
-            ->from(self::TABLE)
+            ->select(Table::$document . '.tstamp AS tstamp')
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid))
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid))
             )
-            ->orderBy(self::TABLE . '.tstamp')
+            ->orderBy(Table::$document . '.tstamp')
             ->setMaxResults(1)
             ->execute();
             
@@ -273,18 +269,18 @@ class DocumentRepository extends Repository
 
     public static function findOneByUidAndPid($uid, $pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(self::TABLE);
+                ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.location AS location',
-                self::TABLE . '.document_format AS document_format'
+                Table::$document . '.location AS location',
+                Table::$document . '.document_format AS document_format'
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.uid', intval($uid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid)),
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+                Helper::whereExpression(Table::$document)
             )
             ->setMaxResults(1)
             ->execute();
@@ -294,16 +290,16 @@ class DocumentRepository extends Repository
 
     public static function findOneByPidAndRecordId($pid, $recordId) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(self::TABLE);
+                ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
-            ->select(self::TABLE . '.*')
-            ->from(self::TABLE)
+            ->select(Table::$document . '.*')
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(self::TABLE .'.record_id', $queryBuilder->expr()->literal($recordId))
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$document .'.record_id', $queryBuilder->expr()->literal($recordId))
             )
-            ->orderBy(self::TABLE . '.tstamp')
+            ->orderBy(Table::$document . '.tstamp')
             ->setMaxResults(1)
             ->execute();
             
@@ -312,15 +308,15 @@ class DocumentRepository extends Repository
 
     public static function findOneByRecordId($recordId) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(self::TABLE);
+                ->getQueryBuilderForTable(Table::$document);
 
         // Get UID of document with given record identifier.
         $result = $queryBuilder
-            ->select(self::TABLE . '.uid AS uid')
-            ->from(self::TABLE)
+            ->select(Table::$document . '.uid AS uid')
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq( self::TABLE . '.record_id', $queryBuilder->expr()->literal($recordId)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$document . '.record_id', $queryBuilder->expr()->literal($recordId)),
+                Helper::whereExpression(Table::$document)
             )
             ->setMaxResults(1)
             ->execute();
@@ -330,43 +326,44 @@ class DocumentRepository extends Repository
 
     public static function findForFeeds($pid, $additionalWhere, $limit) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS uid',
-                self::TABLE . '.partof AS partof',
-                self::TABLE . '.title AS title',
-                self::TABLE . '.volume AS volume',
-                self::TABLE . '.author AS author',
-                self::TABLE . '.record_id AS guid',
-                self::TABLE . '.tstamp AS tstamp',
-                self::TABLE . '.crdate AS crdate'
+                Table::$document . '.uid AS uid',
+                Table::$document . '.partof AS partof',
+                Table::$document . '.title AS title',
+                Table::$document . '.volume AS volume',
+                Table::$document . '.author AS author',
+                Table::$document . '.record_id AS guid',
+                Table::$document . '.tstamp AS tstamp',
+                Table::$document . '.crdate AS crdate'
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->join(
-                self::TABLE,
-                'tx_dlf_domain_model_relation',
+                Table::$document,
+                Table::$relation,
                 //TODO: what is the correct name for this table?
                 'tx_dlf_documents_collections_mm',
-                $queryBuilder->expr()->eq(self::TABLE . '.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
+                $queryBuilder->expr()->eq(Table::$document . '.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
             )
             ->join(
                 'tx_dlf_documents_collections_mm',
-                CollectionRepository::TABLE,
-                CollectionRepository::TABLE,
-                $queryBuilder->expr()->eq(CollectionRepository::TABLE . '.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
+                //TODO: check out why 2 times the same table
+                Table::$collection,
+                Table::$collection,
+                $queryBuilder->expr()->eq(Table::$collection . '.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
             )
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', $queryBuilder->createNamedParameter((int)$pid)),
+                $queryBuilder->expr()->eq(Table::$document . '.pid', $queryBuilder->createNamedParameter((int)$pid)),
                 $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                $queryBuilder->expr()->eq(CollectionRepository::TABLE . '.pid', $queryBuilder->createNamedParameter((int)$pid)),
+                $queryBuilder->expr()->eq(Table::$collection . '.pid', $queryBuilder->createNamedParameter((int)$pid)),
                 $additionalWhere,
-                Helper::whereExpression(self::TABLE),
-                Helper::whereExpression(CollectionRepository::TABLE),
+                Helper::whereExpression(Table::$document),
+                Helper::whereExpression(Table::$collection),
             )
-            ->groupBy(self::TABLE . '.uid')
-            ->orderBy(self::TABLE . '.tstamp', 'DESC')
+            ->groupBy(Table::$document . '.uid')
+            ->orderBy(Table::$document . '.tstamp', 'DESC')
             ->setMaxResults((int)$limit)
             ->execute();
 
@@ -375,18 +372,18 @@ class DocumentRepository extends Repository
 
     public static function findByValues($values) {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable(self::TABLE);
+            ->getConnectionForTable(Table::$document);
 
-        $sql = 'SELECT `'. self::TABLE .'`.*, GROUP_CONCAT(DISTINCT `'. CollectionRepository::TABLE .'`.`oai_name` ORDER BY `'. CollectionRepository::TABLE .'`.`oai_name` SEPARATOR " ") AS `collections` ' .
-            'FROM `'. self::TABLE .'` ' .
-            'INNER JOIN `tx_dlf_domain_model_relation` ON `tx_dlf_domain_model_relation`.`uid_local` = `'. self::TABLE .'`.`uid` ' .
-            'INNER JOIN `'. CollectionRepository::TABLE .'` ON `'. CollectionRepository::TABLE .'`.`uid` = `tx_dlf_domain_model_relation`.`uid_foreign` ' .
-            'WHERE `'. self::TABLE .'`.`uid` IN ( ? ) ' .
-            'AND `'. self::TABLE .'`.`pid` = ? ' .
-            'AND `'. CollectionRepository::TABLE .'`.`pid` = ? ' .
+        $sql = 'SELECT `'. Table::$document .'`.*, GROUP_CONCAT(DISTINCT `'. Table::$collection .'`.`oai_name` ORDER BY `'. Table::$collection .'`.`oai_name` SEPARATOR " ") AS `collections` ' .
+            'FROM `'. Table::$document .'` ' .
+            'INNER JOIN `tx_dlf_domain_model_relation` ON `tx_dlf_domain_model_relation`.`uid_local` = `'. Table::$document .'`.`uid` ' .
+            'INNER JOIN `'. Table::$collection .'` ON `'. Table::$collection .'`.`uid` = `tx_dlf_domain_model_relation`.`uid_foreign` ' .
+            'WHERE `'. Table::$document .'`.`uid` IN ( ? ) ' .
+            'AND `'. Table::$document .'`.`pid` = ? ' .
+            'AND `'. Table::$collection .'`.`pid` = ? ' .
             'AND `tx_dlf_domain_model_relation`.`ident`="docs_colls" ' .
-            'AND ' . Helper::whereExpression(CollectionRepository::TABLE) . ' ' .
-            'GROUP BY `'. self::TABLE .'`.`uid` ' .
+            'AND ' . Helper::whereExpression(Table::$collection) . ' ' .
+            'GROUP BY `'. Table::$document .'`.`uid` ' .
             'LIMIT ?';
 
         $types = [
@@ -401,18 +398,18 @@ class DocumentRepository extends Repository
 
     public static function findByValuesAndAdditionalWhere($values, $where) {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable(self::TABLE);
+            ->getConnectionForTable(Table::$document);
 
-        $sql = 'SELECT `'. self::TABLE .'`.*, GROUP_CONCAT(DISTINCT `' . CollectionRepository::TABLE . '`.`oai_name` ORDER BY `' . CollectionRepository::TABLE . 'tions`.`oai_name` SEPARATOR " ") AS `collections` ' .
-            'FROM `'. self::TABLE .'` ' .
-            'INNER JOIN `tx_dlf_domain_model_relation` ON `tx_dlf_domain_model_relation`.`uid_local` = `'. self::TABLE .'`.`uid` ' .
-            'INNER JOIN `' . CollectionRepository::TABLE . '` ON `' . CollectionRepository::TABLE . '`.`uid` = `tx_dlf_domain_model_relation`.`uid_foreign` ' .
-            'WHERE `'. self::TABLE .'`.`record_id` = ? ' .
-            'AND `'. self::TABLE .'`.`pid` = ? ' .
-            'AND `' . CollectionRepository::TABLE . '`.`pid` = ? ' .
+        $sql = 'SELECT `'. Table::$document .'`.*, GROUP_CONCAT(DISTINCT `' . Table::$collection . '`.`oai_name` ORDER BY `' . Table::$collection . 'tions`.`oai_name` SEPARATOR " ") AS `collections` ' .
+            'FROM `'. Table::$document .'` ' .
+            'INNER JOIN `tx_dlf_domain_model_relation` ON `tx_dlf_domain_model_relation`.`uid_local` = `'. Table::$document .'`.`uid` ' .
+            'INNER JOIN `' . Table::$collection . '` ON `' . Table::$collection . '`.`uid` = `tx_dlf_domain_model_relation`.`uid_foreign` ' .
+            'WHERE `'. Table::$document .'`.`record_id` = ? ' .
+            'AND `'. Table::$document .'`.`pid` = ? ' .
+            'AND `' . Table::$collection . '`.`pid` = ? ' .
             'AND `tx_dlf_domain_model_relation`.`ident`="docs_colls" ' .
             $where .
-            'AND ' . Helper::whereExpression(CollectionRepository::TABLE);
+            'AND ' . Helper::whereExpression(Table::$collection);
 
         $types = [
             Connection::PARAM_STR,
@@ -425,34 +422,34 @@ class DocumentRepository extends Repository
 
     public static function countTitlesWithSelectedCollections($pid, $collections) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
         
         $countTitles = $queryBuilder
-            ->count(self::TABLE . '.uid')
-            ->from(self::TABLE)
+            ->count(Table::$document . '.uid')
+            ->from(Table::$document)
             ->innerJoin(
-                self::TABLE,
-                'tx_dlf_domain_model_relation',
-                'tx_dlf_domain_model_relation_joins',
+                Table::$document,
+                Table::$relation,
+                Table::$relation . '_joins',
                 $queryBuilder->expr()->eq(
-                    'tx_dlf_domain_model_relation_joins.uid_local',
-                    self::TABLE . '.uid'
+                    Table::$relation . '_joins.uid_local',
+                    Table::$document . '.uid'
                 )
             )
             ->innerJoin(
-                'tx_dlf_domain_model_relation_joins',
-                CollectionRepository::TABLE,
-                CollectionRepository::TABLE . '_join',
+                Table::$relation . '_joins',
+                Table::$collection,
+                Table::$collection . '_join',
                 $queryBuilder->expr()->eq(
-                    'tx_dlf_domain_model_relation_joins.uid_foreign',
-                    CollectionRepository::TABLE . '_join.uid'
+                    Table::$relation . '_joins.uid_foreign',
+                    Table::$collection . '_join.uid'
                 )
             )
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(CollectionRepository::TABLE . '_join.pid', intval($pid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.partof', 0),
-                $queryBuilder->expr()->in(CollectionRepository::TABLE . '_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $collections), Connection::PARAM_INT_ARRAY)),
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$collection . '_join.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$document . '.partof', 0),
+                $queryBuilder->expr()->in(Table::$collection . '_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $collections), Connection::PARAM_INT_ARRAY)),
                 $queryBuilder->expr()->eq('tx_dlf_domain_model_relation_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
             )
             ->execute()
@@ -463,46 +460,46 @@ class DocumentRepository extends Repository
 
     public static function countVolumesWithSelectedCollections($pid, $collections) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
         $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         $subQuery = $subQueryBuilder
-            ->select(self::TABLE . '.partof')
-            ->from(self::TABLE)
+            ->select(Table::$document . '.partof')
+            ->from(Table::$document)
             ->where(
-                $subQueryBuilder->expr()->neq(self::TABLE . '.partof', 0)
+                $subQueryBuilder->expr()->neq(Table::$document . '.partof', 0)
             )
-            ->groupBy(self::TABLE . '.partof')
+            ->groupBy(Table::$document . '.partof')
             ->getSQL();
 
         $countVolumes = $queryBuilder
-            ->count(self::TABLE . '.uid')
-            ->from(self::TABLE)
+            ->count(Table::$document . '.uid')
+            ->from(Table::$document)
             ->innerJoin(
-                self::TABLE,
-                'tx_dlf_domain_model_relation',
-                'tx_dlf_domain_model_relation_joins',
+                Table::$document,
+                Table::$relation,
+                Table::$relation . '_joins',
                 $queryBuilder->expr()->eq(
-                    'tx_dlf_domain_model_relation_joins.uid_local',
-                    self::TABLE . '.uid'
+                    Table::$relation . '_joins.uid_local',
+                    Table::$document . '.uid'
                 )
             )
             ->innerJoin(
-                CollectionRepository::TABLE . '_joins',
-                CollectionRepository::TABLE,
-                CollectionRepository::TABLE . '_join',
+                Table::$collection . '_joins',
+                Table::$collection,
+                Table::$collection . '_join',
                 $queryBuilder->expr()->eq(
-                    'tx_dlf_domain_model_relation_joins.uid_foreign',
-                    CollectionRepository::TABLE . '_join.uid'
+                    Table::$relation . '_joins.uid_foreign',
+                    Table::$collection . '_join.uid'
                 )
             )
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(CollectionRepository::TABLE . '_join.pid', intval($pid)),
-                $queryBuilder->expr()->notIn(self::TABLE . '.uid', $subQuery),
-                $queryBuilder->expr()->in(CollectionRepository::TABLE . '_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $collections), Connection::PARAM_INT_ARRAY)),
-                $queryBuilder->expr()->eq('tx_dlf_domain_model_relation_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$collection . '_join.pid', intval($pid)),
+                $queryBuilder->expr()->notIn(Table::$document . '.uid', $subQuery),
+                $queryBuilder->expr()->in(Table::$collection . '_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $collections), Connection::PARAM_INT_ARRAY)),
+                $queryBuilder->expr()->eq(Table::$relation . '_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
             )
             ->execute()
             ->fetchColumn(0);
@@ -512,15 +509,15 @@ class DocumentRepository extends Repository
 
     public static function countTitles($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
         
         $countTitles = $queryBuilder
-            ->count(self::TABLE . '.uid')
-            ->from(self::TABLE)
+            ->count(Table::$document . '.uid')
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.partof', 0),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$document . '.partof', 0),
+                Helper::whereExpression(Table::$document)
             )
             ->execute()
             ->fetchColumn(0);
@@ -530,25 +527,25 @@ class DocumentRepository extends Repository
 
     public static function countVolumes($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
         $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
 
         $subQuery = $subQueryBuilder
-            ->select(self::TABLE . '.partof')
-            ->from(self::TABLE)
+            ->select(Table::$document . '.partof')
+            ->from(Table::$document)
             ->where(
-                $subQueryBuilder->expr()->neq(self::TABLE . '.partof', 0)
+                $subQueryBuilder->expr()->neq(Table::$document . '.partof', 0)
             )
-            ->groupBy(self::TABLE . '.partof')
+            ->groupBy(Table::$document . '.partof')
             ->getSQL();
 
         $countVolumes = $queryBuilder
-            ->count(self::TABLE . '.uid')
-            ->from(self::TABLE)
+            ->count(Table::$document . '.uid')
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->notIn(self::TABLE . '.uid', $subQuery)
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+                $queryBuilder->expr()->notIn(Table::$document . '.uid', $subQuery)
             )
             ->execute()
             ->fetchColumn(0);
@@ -558,35 +555,35 @@ class DocumentRepository extends Repository
 
     public static function findForTableOfContents($uid, $pid, $excludeOtherWhere) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable(self::TABLE);
+                ->getQueryBuilderForTable(Table::$document);
 
         // Check if there are any metadata to suggest.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS uid',
-                self::TABLE . '.title AS title',
-                self::TABLE . '.volume AS volume',
-                self::TABLE . '.mets_label AS mets_label',
-                self::TABLE . '.mets_orderlabel AS mets_orderlabel',
-                StructureRepository::TABLE . '_join.index_name AS type'
+                Table::$document . '.uid AS uid',
+                Table::$document . '.title AS title',
+                Table::$document . '.volume AS volume',
+                Table::$document . '.mets_label AS mets_label',
+                Table::$document . '.mets_orderlabel AS mets_orderlabel',
+                Table::$structure . '_join.index_name AS type'
             )
             ->innerJoin(
-                self::TABLE,
-                StructureRepository::TABLE,
-                StructureRepository::TABLE . '_join',
+                Table::$document,
+                Table::$structure,
+                Table::$structure . '_join',
                 $queryBuilder->expr()->eq(
-                    StructureRepository::TABLE . '_join.uid',
-                    self::TABLE . '.structure'
+                    Table::$structure . '_join.uid',
+                    Table::$document . '.structure'
                 )
             )
-            ->from(self::TABLE)
+            ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.partof', intval($uid)),
-                $queryBuilder->expr()->eq(StructureRepository::TABLE . '_join.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$document . '.partof', intval($uid)),
+                $queryBuilder->expr()->eq(Table::$structure . '_join.pid', intval($pid)),
                 $excludeOtherWhere
             )
-            ->addOrderBy(self::TABLE . '.volume_sorting')
-            ->addOrderBy(self::TABLE . '.mets_orderlabel')
+            ->addOrderBy(Table::$document . '.volume_sorting')
+            ->addOrderBy(Table::$document . '.mets_orderlabel')
             ->execute();
 
         return $result;

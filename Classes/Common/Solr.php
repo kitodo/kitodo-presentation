@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -235,7 +236,7 @@ class Solr
     {
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
-            $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
+            $core = Helper::getIndexNameFromUid($core, Table::$solrCore);
         }
         // Check if core is set or null.
         if (

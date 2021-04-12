@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -28,21 +29,19 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class StructureRepository extends Repository
 {
-    const TABLE = 'tx_dlf_domain_model_structure';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$structure);
 
         // Check for existing structure configuration.
         $result = $queryBuilder
-            ->select(self::TABLE . '.uid AS uid')
-            ->from(self::TABLE)
+            ->select(Table::$structure . '.uid AS uid')
+            ->from(Table::$structure)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$structure . '.pid', intval($pid)),
+                Helper::whereExpression(Table::$structure)
             )
             ->execute();
 
@@ -51,19 +50,19 @@ class StructureRepository extends Repository
 
     public static function findOneByPidAndIndexName($pid, $indexName) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-        ->getQueryBuilderForTable(self::TABLE);
+        ->getQueryBuilderForTable(Table::$structure);
 
         // Get UID for structure type.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.uid AS uid',
-                self::TABLE . '.thumbnail AS thumbnail'
+                Table::$structure . '.uid AS uid',
+                Table::$structure . '.thumbnail AS thumbnail'
             )
-            ->from(self::TABLE)
+            ->from(Table::$structure)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.index_name', $queryBuilder->expr()->literal($indexName)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$structure . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$structure . '.index_name', $queryBuilder->expr()->literal($indexName)),
+                Helper::whereExpression(Table::$structure)
             )
             ->setMaxResults(1)
             ->execute();

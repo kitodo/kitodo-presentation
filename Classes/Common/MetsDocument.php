@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
@@ -940,7 +941,7 @@ final class MetsDocument extends Document
                 $resArray = $allResults[0];
                 // Get desired thumbnail structure if not the toplevel structure itself.
                 if (!empty($resArray['thumbnail'])) {
-                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
+                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], Table::$structure, $cPid);
                     // Check if this document has a structure element of the desired type.
                     $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="' . $strctType . '"]/@ID');
                     if (!empty($strctIds)) {

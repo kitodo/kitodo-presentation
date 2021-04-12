@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -40,7 +41,7 @@ class ItemsProcFunc
         $this->generateList(
             $params,
             'label,uid',
-            'tx_dlf_collections',
+            Table::$collection,
             'label'
         );
     }
@@ -59,7 +60,7 @@ class ItemsProcFunc
         $this->generateList(
             $params,
             'label,index_name',
-            'tx_dlf_metadata',
+            Table::$metadata,
             'sorting',
             'index_indexed=1'
         );
@@ -79,7 +80,7 @@ class ItemsProcFunc
         $this->generateList(
             $params,
             'label,index_name',
-            'tx_dlf_metadata',
+            Table::$metadata,
             'sorting',
             'is_facet=1'
         );
@@ -145,7 +146,7 @@ class ItemsProcFunc
         $this->generateList(
             $params,
             'label,uid',
-            'tx_dlf_libraries',
+            Table::$library,
             'label'
         );
     }
@@ -164,7 +165,7 @@ class ItemsProcFunc
         $this->generateList(
             $params,
             'label,uid',
-            'tx_dlf_solrcores',
+            Table::$solrCore,
             'label'
         );
     }

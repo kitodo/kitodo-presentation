@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Plugin\Tools;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -131,7 +132,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function getEncryptedCoreName()
     {
         // Get core name.
-        $name = Helper::getIndexNameFromUid($this->conf['solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexNameFromUid($this->conf['solrcore'], Table::$solrCore);
         // Encrypt core name.
         if (!empty($name)) {
             $name = Helper::encrypt($name);

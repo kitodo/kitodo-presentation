@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -48,7 +49,7 @@ class DataHandler
         if ($status == 'new') {
             switch ($table) {
                     // Field post-processing for table "tx_dlf_documents".
-                case 'tx_dlf_documents':
+                case Table::$document:
                     // Set sorting field if empty.
                     if (
                         empty($fieldArray['title_sorting'])
@@ -58,7 +59,7 @@ class DataHandler
                     }
                     break;
                     // Field post-processing for table "tx_dlf_metadata".
-                case 'tx_dlf_metadata':
+                case Table::$metadata:
                     // Store field in index if it should appear in lists.
                     if (!empty($fieldArray['is_listed'])) {
                         $fieldArray['index_stored'] = 1;
@@ -68,9 +69,9 @@ class DataHandler
                         $fieldArray['index_indexed'] = 1;
                     }
                     // Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
-                case 'tx_dlf_collections':
-                case 'tx_dlf_libraries':
-                case 'tx_dlf_structures':
+                case Table::$collection:
+                case Table::$library:
+                case Table::$structure:
                     // Set label as index name if empty.
                     if (
                         empty($fieldArray['index_name'])
@@ -91,7 +92,7 @@ class DataHandler
                     }
                     break;
                     // Field post-processing for table "tx_dlf_solrcores".
-                case 'tx_dlf_solrcores':
+                case Table::$solrCore:
                     // Create new Solr core.
                     $fieldArray['index_name'] = Solr::createCore();
                     if (empty($fieldArray['index_name'])) {
@@ -104,7 +105,7 @@ class DataHandler
         } elseif ($status == 'update') {
             switch ($table) {
                     // Field post-processing for table "tx_dlf_metadata".
-                case 'tx_dlf_metadata':
+                case Table::$metadata:
                     $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                         ->getQueryBuilderForTable($table);
 
@@ -180,7 +181,7 @@ class DataHandler
         if ($status == 'update') {
             switch ($table) {
                     // After database operations for table "tx_dlf_documents".
-                case 'tx_dlf_documents':
+                case Table::$document:
                     // Delete/reindex document in Solr if "hidden" status or collections have changed.
                     if (
                         isset($fieldArray['hidden'])
@@ -232,10 +233,7 @@ class DataHandler
      */
     public function processCmdmap_postProcess($command, $table, $id)
     {
-        if (
-            in_array($command, ['move', 'delete', 'undelete'])
-            && $table == 'tx_dlf_documents'
-        ) {
+        if (in_array($command, ['move', 'delete', 'undelete']) && $table == Table::$document) {
             // Get Solr core.
             // Record in "tx_dlf_documents" is already deleted at this point.
             $result = SolrCoreRepository::findOneDeletedByDocumentId($id);
@@ -271,10 +269,7 @@ class DataHandler
                 }
             }
         }
-        if (
-            $command === 'delete'
-            && $table == 'tx_dlf_solrcores'
-        ) {
+        if ($command === 'delete' && $table == Table::$solrCores) {
             // Is core deletion allowed in extension configuration?
             $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
             if (!empty($extConf['solrAllowCoreDelete'])) {

@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -27,18 +28,16 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class FormatRepository extends Repository
 {
-    const TABLE = 'tx_dlf_domain_model_format';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findAll() {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$format);
 
         // Check existing format specifications.
         $result = $queryBuilder
-            ->select(self::TABLE . '.type AS type')
-            ->from(self::TABLE)
+            ->select(Table::$format . '.type AS type')
+            ->from(Table::$format)
             ->where(
                 '1=1'
             )
@@ -59,19 +58,19 @@ class FormatRepository extends Repository
         $formats = [];
         
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$format);
 
         // Get available data formats from database.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.type AS type',
-                self::TABLE . '.root AS root',
-                self::TABLE . '.namespace AS namespace',
-                self::TABLE . '.class AS class'
+                Table::$format . '.type AS type',
+                Table::$format . '.root AS root',
+                Table::$format . '.namespace AS namespace',
+                Table::$format . '.class AS class'
             )
-            ->from(self::TABLE)
+            ->from(Table::$format)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', 0)
+                $queryBuilder->expr()->eq(Table::$format . '.pid', 0)
             )
             ->execute();
 

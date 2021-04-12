@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
@@ -1007,7 +1008,7 @@ abstract class Document
             } else {
                 // Insert new collection.
                 $collNewUid = uniqid('NEW');
-                $collData['tx_dlf_collections'][$collNewUid] = [
+                $collData[Table::$collection][$collNewUid] = [
                     'pid' => $pid,
                     'label' => $collection,
                     'index_name' => $collection,
@@ -1044,7 +1045,7 @@ abstract class Document
         } else {
             // Insert new library.
             $libNewUid = uniqid('NEW');
-            $libData['tx_dlf_libraries'][$libNewUid] = [
+            $libData[Table::$library][$libNewUid] = [
                 'pid' => $pid,
                 'label' => $owner,
                 'index_name' => $owner,
@@ -1118,10 +1119,10 @@ abstract class Document
             }
         }
         // Fill data array.
-        $data['tx_dlf_documents'][$this->uid] = [
+        $data[Table::$document][$this->uid] = [
             'pid' => $pid,
-            $GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['starttime'] => 0,
-            $GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['endtime'] => 0,
+            $GLOBALS['TCA'][Table::$document]['ctrl']['enablecolumns']['starttime'] => 0,
+            $GLOBALS['TCA'][Table::$document]['ctrl']['enablecolumns']['endtime'] => 0,
             'prod_id' => $metadata['prod_id'][0],
             'location' => $this->location,
             'record_id' => $metadata['record_id'][0],
@@ -1157,7 +1158,7 @@ abstract class Document
         ];
         // Unhide hidden documents.
         if (!empty($conf['unhideOnIndex'])) {
-            $data['tx_dlf_documents'][$this->uid][$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['disabled']] = 0;
+            $data[Table::$document][$this->uid][$GLOBALS['TCA'][Table::$document]['ctrl']['enablecolumns']['disabled']] = 0;
         }
         // Process data.
         $newIds = Helper::processDBasAdmin($data);
@@ -1476,13 +1477,13 @@ abstract class Document
     protected function __construct($uid, $pid, $preloadedDocument)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(DocumentRepository::TABLE);
+            ->getQueryBuilderForTable(Table::$document);
         $location = '';
         // Prepare to check database for the requested document.
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
             $whereClause = $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.uid', intval($uid)),
-                Helper::whereExpression(DocumentRepository::TABLE)
+                $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid)),
+                Helper::whereExpression(Table::$document)
             );
         } else {
             // Try to load METS file / IIIF manifest.
@@ -1509,10 +1510,10 @@ abstract class Document
                 // Try to match record identifier or location (both should be unique).
                 $whereClause = $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.location', $queryBuilder->expr()->literal($location)),
-                        $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.record_id', $queryBuilder->expr()->literal($this->recordId))
+                        $queryBuilder->expr()->eq(Table::$document . '.location', $queryBuilder->expr()->literal($location)),
+                        $queryBuilder->expr()->eq(Table::$document . '.record_id', $queryBuilder->expr()->literal($this->recordId))
                     ),
-                    Helper::whereExpression(DocumentRepository::TABLE)
+                    Helper::whereExpression(Table::$document)
                 );
             } else {
                 // Can't persistently identify document, don't try to match at all.
@@ -1523,7 +1524,7 @@ abstract class Document
         if ($pid) {
             $whereClause = $queryBuilder->expr()->andX(
                 $whereClause,
-                $queryBuilder->expr()->eq(DocumentRepository::TABLE . '.pid', intval($pid))
+                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid))
             );
         }
         // Get document PID and location from database.

@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
@@ -56,7 +57,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         if ($GLOBALS['TSFE']->loginUser) {
             $result = BasketRepository::findByFrontendUser(intval($GLOBALS['TSFE']->fe_user->user['uid']));
         } else {
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_domain_model_basket', '');
+            $GLOBALS['TSFE']->fe_user->setKey('ses', Table::$basket, '');
             $GLOBALS['TSFE']->fe_user->sesData_change = true;
             $GLOBALS['TSFE']->fe_user->storeSessionData();
             $result = BasketRepository::findBySessionId($sessionId);

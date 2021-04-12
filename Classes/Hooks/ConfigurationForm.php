@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -102,7 +103,7 @@ class ConfigurationForm
         $data = [];
         // Add MODS namespace.
         if (!$nsDefined['MODS']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = [
+            $data[Table::$format][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'MODS',
                 'root' => 'mods',
@@ -112,7 +113,7 @@ class ConfigurationForm
         }
         // Add TEIHDR namespace.
         if (!$nsDefined['TEIHDR']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = [
+            $data[Table::$format][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'TEIHDR',
                 'root' => 'teiHeader',
@@ -122,7 +123,7 @@ class ConfigurationForm
         }
         // Add ALTO namespace.
         if (!$nsDefined['ALTO']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = [
+            $data[Table::$format][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'ALTO',
                 'root' => 'alto',
@@ -132,7 +133,7 @@ class ConfigurationForm
         }
         // Add IIIF Metadata API 1 context
         if (!$nsDefined['IIIF1']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = [
+            $data[Table::$format][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'IIIF1',
                 'root' => 'IIIF1',
@@ -142,7 +143,7 @@ class ConfigurationForm
         }
         // Add IIIF Presentation 2 context
         if (!$nsDefined['IIIF2']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = [
+            $data[Table::$format][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'IIIF2',
                 'root' => 'IIIF2',
@@ -152,7 +153,7 @@ class ConfigurationForm
         }
         // Add IIIF Presentation 3 context
         if (!$nsDefined['IIIF3']) {
-            $data['tx_dlf_formats'][uniqid('NEW')] = [
+            $data[v][uniqid('NEW')] = [
                 'pid' => 0,
                 'type' => 'IIIF3',
                 'root' => 'IIIF3',

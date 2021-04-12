@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -79,7 +80,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     $facetKeyVal[0] == 'collection_faceting'
                     && !strpos($facetKeyVal[1], '" OR "')
                 ) {
-                    $collectionId = Helper::getUidFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
+                    $collectionId = Helper::getUidFromIndexName(trim($facetKeyVal[1], '(")'), Table::$collection);
                 }
             }
             return '<input type="hidden" name="' . $this->prefixId . '[collection]" value="' . $collectionId . '" />';
@@ -137,7 +138,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function addEncryptedCoreName()
     {
         // Get core name.
-        $name = Helper::getIndexNameFromUid($this->conf['solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexNameFromUid($this->conf['solrcore'], Table::$solrCore);
         // Encrypt core name.
         if (!empty($name)) {
             $name = Helper::encrypt($name);
@@ -176,7 +177,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         $fieldSelectorOptions = '';
         $searchFields = GeneralUtility::trimExplode(',', $this->conf['extendedFields'], true);
         foreach ($searchFields as $searchField) {
-            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-' . $searchField . '" value="' . $searchField . '">' . Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['pages']) . '</option>';
+            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-' . $searchField . '" value="' . $searchField . '">' . Helper::translate($searchField, Table::$metadata, $this->conf['pages']) . '</option>';
         }
         for ($i = 0; $i < $this->conf['extendedSlotCount']; $i++) {
             $markerArray = [
@@ -210,7 +211,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get facets from plugin configuration.
         $facets = [];
         foreach (GeneralUtility::trimExplode(',', $this->conf['facets'], true) as $facet) {
-            $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['pages']);
+            $facets[$facet . '_faceting'] = Helper::translate($facet, Table::$metadata, $this->conf['pages']);
         }
         // Render facets menu.
         $TSconfig = [];
@@ -281,13 +282,13 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Translate value.
         if ($field == 'owner_faceting') {
             // Translate name of holding library.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, Table::$library, $this->conf['pages']));
         } elseif ($field == 'type_faceting') {
             // Translate document type.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, Table::$structure, $this->conf['pages']));
         } elseif ($field == 'collection_faceting') {
             // Translate name of collection.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, Table::$collection, $this->conf['pages']));
         } elseif ($field == 'language_faceting') {
             // Translate ISO 639 language code.
             $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
@@ -462,9 +463,9 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     !empty($this->piVars['collection'])
                     && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])
                 ) {
-                    $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], 'tx_dlf_collections', $this->conf['pages']);
+                    $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], Table::$collection, $this->conf['pages']);
                     $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
-                    $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['pages']));
+                    $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, Table::$collection, $this->conf['pages']));
                 }
             }
             // Add filter query for collection restrictions.
@@ -472,7 +473,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 $collIds = explode(',', $this->conf['collections']);
                 $collIndexNames = [];
                 foreach ($collIds as $collId) {
-                    $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['pages']));
+                    $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), Table::$collection, $this->conf['pages']));
                 }
                 // Last value is fake and used for distinction in $this->addCurrentCollection()
                 $params['filterquery'][]['query'] = 'collection_faceting:("' . implode('" OR "', $collIndexNames) . '" OR "FakeValueForDistinction")';

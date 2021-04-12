@@ -13,8 +13,7 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Domain\Repository\FormatRepository;
-use Kitodo\Dlf\Domain\Repository\MetadataFormatRepository;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -30,21 +29,19 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class MetadataRepository extends Repository
 {
-    const TABLE = 'tx_dlf_domain_model_metadata';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
 
         // Check for existing metadata configuration.
         $result = $queryBuilder
-            ->select(self::TABLE . '.uid AS uid')
-            ->from(self::TABLE)
+            ->select(Table::$metadata . '.uid AS uid')
+            ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                Helper::whereExpression(Table::$metadata)
             )
             ->execute();
         
@@ -53,16 +50,16 @@ class MetadataRepository extends Repository
 
     public static function findOneAutocompleteByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
 
         // Check if there are any metadata to suggest.
         $result = $queryBuilder
-            ->select(self::TABLE . '.*')
-            ->from(self::TABLE)
+            ->select(Table::$metadata . '.*')
+            ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.index_autocomplete', 1),
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$metadata . '.index_autocomplete', 1),
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                Helper::whereExpression(Table::$metadata)
             )
             ->setMaxResults(1)
             ->execute();
@@ -72,26 +69,26 @@ class MetadataRepository extends Repository
 
     public static function findListedOrSortedByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
 
         // Get metadata for lists and sorting.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                self::TABLE . '.wrap AS wrap',
-                self::TABLE . '.is_listed AS is_listed',
-                self::TABLE . '.is_sortable AS is_sortable'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadata . '.wrap AS wrap',
+                Table::$metadata . '.is_listed AS is_listed',
+                Table::$metadata . '.is_sortable AS is_sortable'
             )
-            ->from(self::TABLE)
+            ->from(Table::$metadata)
             ->where(
                 $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq(self::TABLE . '.is_listed', 1),
-                    $queryBuilder->expr()->eq(self::TABLE . '.is_sortable', 1)
+                    $queryBuilder->expr()->eq(Table::$metadata . '.is_listed', 1),
+                    $queryBuilder->expr()->eq(Table::$metadata . '.is_sortable', 1)
                 ),
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                Helper::whereExpression(Table::$metadata)
             )
-            ->orderBy(self::TABLE . '.sorting')
+            ->orderBy(Table::$metadata . '.sorting')
             ->execute();
 
         return $result;
@@ -99,22 +96,22 @@ class MetadataRepository extends Repository
 
     public static function findListedIndexConfigurationByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
 
         // Load index configuration.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                self::TABLE . '.index_tokenized AS index_tokenized',
-                self::TABLE . '.index_indexed AS index_indexed'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadata . '.index_tokenized AS index_tokenized',
+                Table::$metadata . '.index_indexed AS index_indexed'
             )
-            ->from(self::TABLE)
+            ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.is_listed', 1),
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$metadata . '.is_listed', 1),
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                Helper::whereExpression(Table::$metadata)
             )
-            ->orderBy(self::TABLE . '.sorting', 'ASC')
+            ->orderBy(Table::$metadata . '.sorting', 'ASC')
             ->execute();
         
         return $result;
@@ -122,25 +119,25 @@ class MetadataRepository extends Repository
 
     public static function findIndexConfigurationByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
 
         // Get the metadata indexing options.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                self::TABLE . '.index_tokenized AS index_tokenized',
-                self::TABLE . '.index_stored AS index_stored',
-                self::TABLE . '.index_indexed AS index_indexed',
-                self::TABLE . '.is_sortable AS is_sortable',
-                self::TABLE . '.is_facet AS is_facet',
-                self::TABLE . '.is_listed AS is_listed',
-                self::TABLE . '.index_autocomplete AS index_autocomplete',
-                self::TABLE . '.index_boost AS index_boost'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadata . '.index_tokenized AS index_tokenized',
+                Table::$metadata . '.index_stored AS index_stored',
+                Table::$metadata . '.index_indexed AS index_indexed',
+                Table::$metadata . '.is_sortable AS is_sortable',
+                Table::$metadata . '.is_facet AS is_facet',
+                Table::$metadata . '.is_listed AS is_listed',
+                Table::$metadata . '.index_autocomplete AS index_autocomplete',
+                Table::$metadata . '.index_boost AS index_boost'
             )
-            ->from(self::TABLE)
+            ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                Helper::whereExpression(Table::$metadata)
             )
             ->execute();
         
@@ -156,26 +153,26 @@ class MetadataRepository extends Repository
          *  TODO Saving / indexing should still work - check!
          */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
         // Get hidden records, too.
         $queryBuilder
             ->getRestrictions()
             ->removeByType(HiddenRestriction::class);
         $result = $queryBuilder
-            ->select(MetadataFormatRepository::TABLE . '.xpath AS querypath')
-            ->from(self::TABLE)
-            ->from(MetadataFormatRepository::TABLE)
-            ->from(FormatRepository::TABLE)
+            ->select(Table::$metadataFormat . '.xpath AS querypath')
+            ->from(Table::$metadata)
+            ->from(Table::$metadataFormat)
+            ->from(Table::$format)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(MetadataFormatRepository::TABLE . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$metadataFormat . '.pid', intval($pid)),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq(self::TABLE . '.uid', MetadataFormatRepository::TABLE . '.parent_id'),
-                        $queryBuilder->expr()->eq(MetadataFormatRepository::TABLE . '.encoded', FormatRepository::TABLE . '.uid'),
-                        $queryBuilder->expr()->eq(self::TABLE . '.index_name', $queryBuilder->createNamedParameter('record_id')),
-                        $queryBuilder->expr()->eq(FormatRepository::TABLE . '.type', $queryBuilder->createNamedParameter($iiifVersion)),
-                    $queryBuilder->expr()->eq(self::TABLE . '.format', 0)
+                        $queryBuilder->expr()->eq(Table::$metadata . '.uid', Table::$metadataFormat . '.parent_id'),
+                        $queryBuilder->expr()->eq(Table::$metadataFormat . '.encoded', Table::$formatRepository . '.uid'),
+                        $queryBuilder->expr()->eq(Table::$metadata . '.index_name', $queryBuilder->createNamedParameter('record_id')),
+                        $queryBuilder->expr()->eq(Table::$format . '.type', $queryBuilder->createNamedParameter($iiifVersion)),
+                    $queryBuilder->expr()->eq(Table::$metadata . '.format', 0)
                     )
                 )
             )
@@ -186,33 +183,33 @@ class MetadataRepository extends Repository
 
     public static function findByPidAndFormatType2($pid, $iiifVersion) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
         // Get hidden records, too.
         $queryBuilder
             ->getRestrictions()
             ->removeByType(HiddenRestriction::class);
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                MetadataFormatRepository::TABLE . '.xpath AS xpath',
-                MetadataFormatRepository::TABLE . '.xpath_sorting AS xpath_sorting',
-                self::TABLE . '.is_sortable AS is_sortable',
-                self::TABLE . '.default_value AS default_value',
-                self::TABLE . '.format AS format'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadataFormat . '.xpath AS xpath',
+                Table::$metadataFormat . '.xpath_sorting AS xpath_sorting',
+                Table::$metadata . '.is_sortable AS is_sortable',
+                Table::$metadata . '.default_value AS default_value',
+                Table::$metadata . '.format AS format'
             )
-            ->from(self::TABLE)
-            ->from(MetadataFormatRepository::TABLE)
-            ->from(FormatRepository::TABLE)
+            ->from(Table::$metadata)
+            ->from(Table::$metadataFormat)
+            ->from(Table::$format)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(MetadataFormatRepository::TABLE . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$metadataFormat . '.pid', intval($pid)),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq(self::TABLE . '.uid', MetadataFormatRepository::TABLE . '.parent_id'),
-                        $queryBuilder->expr()->eq(MetadataFormatRepository::TABLE . '.encoded', FormatRepository::TABLE . '.uid'),
-                        $queryBuilder->expr()->eq(FormatRepository::TABLE . '.type', $queryBuilder->createNamedParameter($iiifVersion))
+                        $queryBuilder->expr()->eq(Table::$metadata . '.uid', Table::$metadataFormat . '.parent_id'),
+                        $queryBuilder->expr()->eq(Table::$metadataFormat . '.encoded', Table::$format . '.uid'),
+                        $queryBuilder->expr()->eq(Table::$format . '.type', $queryBuilder->createNamedParameter($iiifVersion))
                     ),
-                    $queryBuilder->expr()->eq(self::TABLE . '.format', 0)
+                    $queryBuilder->expr()->eq(Table::$metadata . '.format', 0)
                 )
             )
             ->execute();
@@ -222,7 +219,7 @@ class MetadataRepository extends Repository
 
     public static function findByPidWithConfiguredXpathAndFormat($pid, $type) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
         // Get hidden records, too.
         $queryBuilder
             ->getRestrictions()
@@ -230,37 +227,37 @@ class MetadataRepository extends Repository
         // Get all metadata with configured xpath and applicable format first.
         $resultWithFormat = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                MetadataFormatRepository::TABLE . '_joins.xpath AS xpath',
-                MetadataFormatRepository::TABLE . '_joins.xpath_sorting AS xpath_sorting',
-                self::TABLE . '.is_sortable AS is_sortable',
-                self::TABLE . '.default_value AS default_value',
-                self::TABLE . '.format AS format'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadataFormat . '_joins.xpath AS xpath',
+                Table::$metadataFormat . '_joins.xpath_sorting AS xpath_sorting',
+                Table::$metadata . '.is_sortable AS is_sortable',
+                Table::$metadata . '.default_value AS default_value',
+                Table::$metadata . '.format AS format'
             )
-            ->from(self::TABLE)
+            ->from(Table::$metadata)
             ->innerJoin(
-                self::TABLE,
-                MetadataFormatRepository::TABLE,
-                MetadataFormatRepository::TABLE . '_joins',
+                Table::$metadata,
+                Table::$metadataFormat,
+                Table::$metadataFormat . '_joins',
                 $queryBuilder->expr()->eq(
-                    MetadataFormatRepository::TABLE . '_joins.parent_id',
-                    self::TABLE . '.uid'
+                    Table::$metadataFormat . '_joins.parent_id',
+                    Table::$metadata . '.uid'
                 )
             )
             ->innerJoin(
-                MetadataFormatRepository::TABLE . '_joins',
-                FormatRepository::TABLE,
-                FormatRepository::TABLE . '_joins',
+                Table::$metadataFormat . '_joins',
+                Table::$format,
+                Table::$format . '_joins',
                 $queryBuilder->expr()->eq(
-                    FormatRepository::TABLE . '_joins.uid',
-                    MetadataFormatRepository::TABLE . '_joins.encoded'
+                    Table::$format . '_joins.uid',
+                    Table::$metadataFormat . '_joins.encoded'
                 )
             )
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($cPid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.l18n_parent', 0),
-                $queryBuilder->expr()->eq(MetadataFormatRepository::TABLE . '_joins.pid', intval($cPid)),
-                $queryBuilder->expr()->eq(FormatRepository::TABLE . '_joins.type', $queryBuilder->createNamedParameter($type))
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($cPid)),
+                $queryBuilder->expr()->eq(Table::$metadata . '.l18n_parent', 0),
+                $queryBuilder->expr()->eq(Table::$metadataFormat . '_joins.pid', intval($cPid)),
+                $queryBuilder->expr()->eq(Table::$format . '_joins.type', $queryBuilder->createNamedParameter($type))
             )
             ->execute();
 
@@ -269,24 +266,24 @@ class MetadataRepository extends Repository
 
     public static function findByPidWithConfiguredXpathAndDefaultValue($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
         // Get hidden records, too.
         $queryBuilder
             ->getRestrictions()
             ->removeByType(HiddenRestriction::class);
         $resultWithoutFormat = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                self::TABLE . '.is_sortable AS is_sortable',
-                self::TABLE . '.default_value AS default_value',
-                self::TABLE . '.format AS format'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadata . '.is_sortable AS is_sortable',
+                Table::$metadata . '.default_value AS default_value',
+                Table::$metadata . '.format AS format'
             )
-            ->from(self::TABLE)
+            ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($cPid)),
-                $queryBuilder->expr()->eq(self::TABLE . '.l18n_parent', 0),
-                $queryBuilder->expr()->eq(self::TABLE . '.format', 0),
-                $queryBuilder->expr()->neq(self::TABLE . '.default_value', $queryBuilder->createNamedParameter(''))
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($cPid)),
+                $queryBuilder->expr()->eq(Table::$metadata . '.l18n_parent', 0),
+                $queryBuilder->expr()->eq(Table::$metadata . '.format', 0),
+                $queryBuilder->expr()->neq(Table::$metadata . '.default_value', $queryBuilder->createNamedParameter(''))
             )
             ->execute();
 
@@ -295,24 +292,24 @@ class MetadataRepository extends Repository
 
     public static function findAllIndexedFieldsByPid($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
 
         // Get all indexed fields.
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                self::TABLE . '.index_tokenized AS index_tokenized',
-                self::TABLE . '.index_stored AS index_stored'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadata . '.index_tokenized AS index_tokenized',
+                Table::$metadata . '.index_stored AS index_stored'
             )
-            ->from(self::TABLE)
+            ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.index_indexed', 1),
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq(Table::$metadata . '.index_indexed', 1),
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
                 $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->in(self::TABLE . '.sys_language_uid', [-1, 0]),
-                    $queryBuilder->expr()->eq(self::TABLE . '.l18n_parent', 0)
+                    $queryBuilder->expr()->in(Table::$metadata . '.sys_language_uid', [-1, 0]),
+                    $queryBuilder->expr()->eq(Table::$metadata . '.l18n_parent', 0)
                 ),
-                Helper::whereExpression(self::TABLE)
+                Helper::whereExpression(Table::$metadata)
             )
             ->execute();
 
@@ -321,27 +318,27 @@ class MetadataRepository extends Repository
 
     public static function findByPidAndLanguage($pid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$metadata);
 
         $result = $queryBuilder
             ->select(
-                self::TABLE . '.index_name AS index_name',
-                self::TABLE . '.is_listed AS is_listed',
-                self::TABLE . '.wrap AS wrap',
-                self::TABLE . '.sys_language_uid AS sys_language_uid'
+                Table::$metadata . '.index_name AS index_name',
+                Table::$metadata . '.is_listed AS is_listed',
+                Table::$metadata . '.wrap AS wrap',
+                Table::$metadata . '.sys_language_uid AS sys_language_uid'
             )
-            ->from(self::TABLE)
+            ->from(Table::$metadata)
             ->where(
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in(self::TABLE . '.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq(self::TABLE . '.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
+                        $queryBuilder->expr()->in(Table::$metadata . '.sys_language_uid', [-1, 0]),
+                        $queryBuilder->expr()->eq(Table::$metadata . '.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                     ),
-                    $queryBuilder->expr()->eq(self::TABLE . '.l18n_parent', 0)
+                    $queryBuilder->expr()->eq(Table::$metadata . '.l18n_parent', 0)
                 ),
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', intval($pid))
+                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid))
             )
-            ->orderBy(self::TABLE . '.sorting')
+            ->orderBy(Table::$metadata . '.sorting')
             ->execute();
 
         return $result;

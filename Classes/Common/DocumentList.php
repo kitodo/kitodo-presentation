@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -178,13 +179,13 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                         !empty($metadata['type'][0])
                         && MathUtility::canBeInterpretedAsInteger($metadata['type'][0])
                     ) {
-                        $metadata['type'][0] = Helper::getIndexNameFromUid($metadata['type'][0], 'tx_dlf_structures', $this->metadata['options']['pid']);
+                        $metadata['type'][0] = Helper::getIndexNameFromUid($metadata['type'][0], Table::$structure, $this->metadata['options']['pid']);
                     }
                     if (
                         !empty($metadata['owner'][0])
                         && MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])
                     ) {
-                        $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], 'tx_dlf_libraries', $this->metadata['options']['pid']);
+                        $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], Table::$library, $this->metadata['options']['pid']);
                     }
                     if (
                         !empty($metadata['collection'])
@@ -192,7 +193,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
                     ) {
                         foreach ($metadata['collection'] as $i => $collection) {
                             if (MathUtility::canBeInterpretedAsInteger($collection)) {
-                                $metadata['collection'][$i] = Helper::getIndexNameFromUid($metadata['collection'][$i], 'tx_dlf_collections', $this->metadata['options']['pid']);
+                                $metadata['collection'][$i] = Helper::getIndexNameFromUid($metadata['collection'][$i], Table::$collection, $this->metadata['options']['pid']);
                             }
                         }
                     }

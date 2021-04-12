@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use Kitodo\Dlf\Domain\Repository\StructureRepository;
 
 /**
  * Plugin 'Calendar' for the 'dlf' extension
@@ -109,7 +108,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
 
         // Get all children of year anchor.
         $result = DocumentRepository::findByStructureAndPartof(
-            Helper::getUidFromIndexName('issue', StructureRepository::TABLE, $this->doc->cPid),
+            Helper::getUidFromIndexName('issue', Table::$structure, $this->doc->cPid),
             $this->doc->uid
         );
 
@@ -369,7 +368,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
 
         // Get all children of anchor. This should be the year anchor documents
         $result = DocumentRepository::findByStructureAndPartof(
-            Helper::getUidFromIndexName('year', StructureRepository::TABLE, $this->doc->cPid),
+            Helper::getUidFromIndexName('year', Table::$structure, $this->doc->cPid),
             $this->doc->uid
         );
 

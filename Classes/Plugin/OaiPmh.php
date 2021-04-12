@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
@@ -84,13 +85,14 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function deleteExpiredTokens()
     {
         // Delete expired resumption tokens.
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(Table::$token);
 
         $result = $queryBuilder
-            ->delete('tx_dlf_tokens')
+            ->delete(Table::$token)
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int)($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
+                $queryBuilder->expr()->eq('ident', $queryBuilder->createNamedParameter('oai')),
+                $queryBuilder->expr()->lt('tstamp', $queryBuilder->createNamedParameter((int)($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
             )
             ->execute();
 
@@ -415,15 +417,15 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function resume()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_tokens');
+            ->getQueryBuilderForTable(Table::$token);
 
         // Get resumption token.
         $result = $queryBuilder
-            ->select('tx_dlf_tokens.options AS options')
-            ->from('tx_dlf_tokens')
+            ->select('options')
+            ->from(Table::$token)
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-                $queryBuilder->expr()->eq('tx_dlf_tokens.token', $queryBuilder->expr()->literal($this->piVars['resumptionToken']))
+                $queryBuilder->expr()->eq('ident', $queryBuilder->createNamedParameter('oai')),
+                $queryBuilder->expr()->eq('token', $queryBuilder->expr()->literal($this->piVars['resumptionToken']))
             )
             ->setMaxResults(1)
             ->execute();
@@ -456,7 +458,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $where = '';
         if (!$this->conf['show_userdefined']) {
-            $where .= 'AND ' . CollectionRepository::TABLE .'.fe_cruser_id=0 ';
+            $where .= 'AND ' . Table::$collection .'.fe_cruser_id=0 ';
         }
 
         $values = [
@@ -937,9 +939,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         if ($documentListSet->count() !== 0) {
             $token = uniqid('', false);
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable(Table::$token);
             $affectedRows = $queryBuilder
-                ->insert('tx_dlf_tokens')
+                ->insert(Table::$token)
                 ->values([
                     'tstamp' => $GLOBALS['EXEC_TIME'],
                     'token' => $token,

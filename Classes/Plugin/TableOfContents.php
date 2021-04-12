@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -53,7 +54,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
+        $entryArray['type'] = Helper::translate($entry['type'], Table::$structure, $this->conf['pages']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
@@ -215,7 +216,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
 
             $excludeOtherWhere = '';
             if ($this->conf['excludeOther']) {
-                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->conf['pages']);
+                $excludeOtherWhere = Table::$document . '.pid=' . intval($this->conf['pages']);
             }
             // Check if there are any metadata to suggest.
             $result = DocumentRepository::findForTableOfContents(

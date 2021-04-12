@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -365,7 +366,7 @@ class Helper
         $uid = max(intval($uid), 0);
         if (
             !$uid
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
+            || !in_array($table, [Table::$collection, Table::$library, Table::$metadata, Table::$structure, Table::$solrCore])
         ) {
             self::devLog('Invalid UID "' . $uid . '" or table "' . $table . '"', DEVLOG_SEVERITY_ERROR);
             return '';
@@ -503,7 +504,7 @@ class Helper
     {
         if (
             !$index_name
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
+            || !in_array($table, [Table::$collection, Table::$library, Table::$metadata, Table::$structure, Table::$solrCore])
         ) {
             self::devLog('Invalid UID ' . $index_name . ' or table "' . $table . '"', DEVLOG_SEVERITY_ERROR);
             return '';
@@ -849,7 +850,7 @@ class Helper
         // Check if we already got a translation.
         if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
             // Check if this table is allowed for translation.
-            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
+            if (in_array($table, [Table::$collection, Table::$library, Table::$metadata, Table::$structure])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
                 if ($GLOBALS['TSFE']->sys_language_content > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(

@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -28,23 +29,20 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class BasketRepository extends Repository
 {
-
-    const TABLE = 'tx_dlf_domain_model_basket';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findByFrontendUser($feUserId) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$basket);
 
         return $queryBuilder
             ->select('*')
-            ->from(self::TABLE)
+            ->from(Table::$basket)
             ->where(
                 $queryBuilder
                     ->expr()
-                    ->eq(self::TABLE . '.fe_user_id', $feUserId),
-                    Helper::whereExpression(self::TABLE)
+                    ->eq(Table::$basket . '.fe_user_id', $feUserId),
+                    Helper::whereExpression(Table::$basket)
                 )
             ->setMaxResults(1)
             ->execute();
@@ -60,16 +58,16 @@ class BasketRepository extends Repository
      */
     public static function findBySessionId($sessionId) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$basket);
 
         return $queryBuilder
             ->select('*')
-            ->from(self::TABLE)
+            ->from(Table::$basket)
             ->where(
                 $queryBuilder
                     ->expr()
-                    ->eq(self::TABLE . '.session_id', $queryBuilder->createNamedParameter($sessionId)),
-                    Helper::whereExpression(self::TABLE)
+                    ->eq(Table::$basket . '.session_id', $queryBuilder->createNamedParameter($sessionId)),
+                    Helper::whereExpression(Table::$basket)
                 )
             ->setMaxResults(1)
             ->execute();
@@ -85,8 +83,8 @@ class BasketRepository extends Repository
      */
     public static function insert($insertArray) {
         GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable(self::TABLE)
-            ->insert(self::TABLE, $insertArray);
+            ->getConnectionForTable(Table::$basket)
+            ->insert(Table::$basket, $insertArray);
     }
 
     /**
@@ -99,12 +97,11 @@ class BasketRepository extends Repository
      */
     public static function update($update, $uid) {
         GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable(self::TABLE)
+            ->getConnectionForTable(Table::$basket)
             ->update(
-                self::TABLE,
+                Table::$basket,
                 $update,
                 ['uid' => $uid]
             );
     }
-
 }

@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -28,23 +29,21 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class MailRepository extends Repository
 {
-    const TABLE = 'tx_dlf_domain_model_mail';
-
     //TODO: replace all static methods after real repository is implemented
 
     public static function findAll() {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$mail);
 
         // get mail addresses
         $resultMail = $queryBuilder
             ->select('*')
-            ->from(self::TABLE)
+            ->from(Table::$mail)
             ->where(
                 '1=1',
-                Helper::whereExpression(self::TABLE)
+                Helper::whereExpression(Table::$mail)
             )
-            ->orderBy(self::TABLE . '.sorting')
+            ->orderBy(Table::$mail . '.sorting')
             ->execute();
 
         return $resultMail;
@@ -52,15 +51,15 @@ class MailRepository extends Repository
 
     public static function findOneByUid($uid) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable(self::TABLE);
+            ->getQueryBuilderForTable(Table::$mail);
 
         // get id from db and send selected doc download link
         $resultMail = $queryBuilder
             ->select('*')
-            ->from(self::TABLE)
+            ->from(Table::$mail)
             ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.uid', intval($uid)),
-                Helper::whereExpression(self::TABLE)
+                $queryBuilder->expr()->eq(Table::$mail . '.uid', intval($uid)),
+                Helper::whereExpression(Table::$mail)
             )
             ->setMaxResults(1)
             ->execute();

@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Domain\Table;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -32,9 +33,9 @@ class ActionLogRepository extends Repository
     
     public static function insert($insertArray) {
         GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_dlf_domain_model_actionlog')
+            ->getConnectionForTable(Table::$actionLog)
             ->insert(
-                'tx_dlf_domain_model_actionlog',
+                Table::$actionLog,
                 $insertArray
             );
     }

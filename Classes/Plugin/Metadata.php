@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Ubl\Iiif\Context\IRI;
@@ -233,13 +234,13 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
 
             while ($resArray = $result->fetch()) {
                 if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
-                    $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                    $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay(Table::$metadata, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
                 }
                 if ($resArray) {
                     if ($this->conf['showFull'] || $resArray['is_listed']) {
                         $metaList[$resArray['index_name']] = [
                             'wrap' => $resArray['wrap'],
-                            'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+                            'label' => Helper::translate($resArray['index_name'], Table::$metadata, $this->conf['pages'])
                         ];
                     }
                 }
@@ -287,15 +288,15 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                             }
                         } elseif ($index_name == 'owner' && !empty($value)) {
                             // Translate name of holding library.
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                            $value = htmlspecialchars(Helper::translate($value, Table::$library, $this->conf['pages']));
                         } elseif ($index_name == 'type' && !empty($value)) {
                             // Translate document type.
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                            $value = htmlspecialchars(Helper::translate($value, Table::$structure, $this->conf['pages']));
                         } elseif ($index_name == 'collection' && !empty($value)) {
                             // Check if collections isn't hidden.
                             if (in_array($value, $collList)) {
                                 // Translate collection.
-                                $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+                                $value = htmlspecialchars(Helper::translate($value, Table::$collection, $this->conf['pages']));
                             } else {
                                 $value = '';
                             }

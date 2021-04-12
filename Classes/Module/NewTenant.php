@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Module;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
@@ -55,17 +56,17 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
             $formatIds = [];
             foreach ($values['format'] as $format) {
                 $formatIds[] = uniqid('NEW');
-                $data['tx_dlf_metadataformat'][end($formatIds)] = $format;
-                $data['tx_dlf_metadataformat'][end($formatIds)]['pid'] = intval($this->id);
+                $data[Table::$metadataFormat][end($formatIds)] = $format;
+                $data[Table::$metadataFormat][end($formatIds)]['pid'] = intval($this->id);
                 $i++;
             }
-            $data['tx_dlf_metadata'][uniqid('NEW')] = [
+            $data[Table::$metadata][uniqid('NEW')] = [
                 'pid' => intval($this->id),
                 'label' => $GLOBALS['LANG']->getLL('metadata.' . $index_name),
                 'index_name' => $index_name,
                 'format' => implode(',', $formatIds),
                 'default_value' => $values['default_value'],
-                'wrap' => (!empty($values['wrap']) ? $values['wrap'] : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']),
+                'wrap' => (!empty($values['wrap']) ? $values['wrap'] : $GLOBALS['TCA'][Table::$metadata]['columns']['wrap']['config']['default']),
                 'index_tokenized' => $values['index_tokenized'],
                 'index_stored' => $values['index_stored'],
                 'index_indexed' => $values['index_indexed'],
@@ -106,7 +107,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
     protected function cmdAddSolrCore()
     {
         // Build data array.
-        $data['tx_dlf_solrcores'][uniqid('NEW')] = [
+        $data[Table::$solrCore][uniqid('NEW')] = [
             'pid' => intval($this->id),
             'label' => $GLOBALS['LANG']->getLL('solrcore') . ' (PID ' . $this->id . ')',
             'index_name' => '',
@@ -143,7 +144,7 @@ class NewTenant extends \Kitodo\Dlf\Common\AbstractModule
         $structureDefaults = include (ExtensionManagementUtility::extPath($this->extKey) . 'Resources/Private/Data/StructureDefaults.php');
         // Build data array.
         foreach ($structureDefaults as $index_name => $values) {
-            $data['tx_dlf_structures'][uniqid('NEW')] = [
+            $data[Table::$structure][uniqid('NEW')] = [
                 'pid' => intval($this->id),
                 'toplevel' => $values['toplevel'],
                 'label' => $GLOBALS['LANG']->getLL('structure.' . $index_name),

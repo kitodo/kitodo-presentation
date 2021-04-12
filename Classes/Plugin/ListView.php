@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Table;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -171,10 +172,10 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, Table::$library, $this->conf['pages']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, Table::$structure, $this->conf['pages']));
                     } elseif ($index_name == 'language' && !empty($value)) {
                         // Translate ISO 639 language code.
                         $value = htmlspecialchars(Helper::getLanguageName($value));
@@ -349,11 +350,11 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, Table::$library, $this->conf['pages']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
                         $_value = $value;
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, Table::$structure, $this->conf['pages']));
                         // Add page number for single pages.
                         if ($_value == 'page') {
                             $value .= ' ' . intval($subpart['page']);
@@ -417,11 +418,11 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             if ($resArray['is_listed']) {
                 $this->metadata[$resArray['index_name']] = [
                     'wrap' => $resArray['wrap'],
-                    'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+                    'label' => Helper::translate($resArray['index_name'], Table::$metadata, $this->conf['pages'])
                 ];
             }
             if ($resArray['is_sortable']) {
-                $this->sortables[$resArray['index_name']] = Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages']);
+                $this->sortables[$resArray['index_name']] = Helper::translate($resArray['index_name'], Table::$metadata, $this->conf['pages']);
             }
         }
     }
