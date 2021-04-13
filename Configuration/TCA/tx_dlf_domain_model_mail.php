@@ -12,34 +12,24 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_mail',
         'label'     => 'label',
-        'default_sortby' => 'ORDER BY label',
+        'sortby' => 'sorting',
         'delete' => 'deleted',
-        'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfprinter.png',
+        'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfemail.png',
         'rootLevel' => 0,
         'dividers2tabs' => 2,
-        'searchFields' => 'label,print',
+        'searchFields' => 'label,name,mail',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,name,address',
+        'showRecordFieldList' => 'label,name,mail',
     ],
     'feInterface' => [
         'fe_admin_fieldList' => '',
     ],
     'columns' => [
         'label' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.label',
-            'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'max' => 255,
-                'eval' => 'required,trim',
-                'default' => '',
-            ],
-        ],
-        'print' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.printcommand',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_mail',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -48,9 +38,28 @@ return [
                 'default' => '',
             ],
         ],
+        'name' => [
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_mail.name',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'default' => '',
+            ],
+        ],
+        'mail' => [
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_mail.mail',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'unique',
+                'default' => '',
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_printer.tab1,label,print'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_mail.tab1,label,name,mail'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

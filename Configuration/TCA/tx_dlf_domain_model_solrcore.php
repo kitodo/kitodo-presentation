@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_solrcore',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -32,7 +32,7 @@ return [
     ],
     'columns' => [
         'label' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_solrcore.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -42,7 +42,7 @@ return [
             ],
         ],
         'index_name' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_solrcore.index_name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -59,7 +59,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_solrcores.tab1,label,index_name'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_solrcore.tab1,label,index_name'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

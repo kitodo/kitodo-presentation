@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_metadataformat',
         'label'     => 'encoded',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -40,12 +40,12 @@ return [
         ],
         'encoded' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.encoded',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_metadataformat.encoded',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'foreign_table' => 'tx_dlf_formats',
-                'foreign_table_where' => 'ORDER BY tx_dlf_formats.type',
+                'foreign_table' => 'tx_dlf_domain_model_format',
+                'foreign_table_where' => 'ORDER BY tx_dlf_domain_model_format.type',
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
@@ -54,7 +54,7 @@ return [
         ],
         'xpath' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.xpath',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_metadataformat.xpath',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -65,7 +65,7 @@ return [
         ],
         'xpath_sorting' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.xpath_sorting',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_metadataformat.xpath_sorting',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -76,7 +76,7 @@ return [
         ],
         'mandatory' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.mandatory',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_metadataformat.mandatory',
             'config' => [
                 'type' => 'check',
                 'default' => 0,
@@ -84,7 +84,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

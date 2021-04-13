@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_format',
         'label'     => 'type',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -32,7 +32,7 @@ return [
     ],
     'columns' => [
         'type' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.type',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_format.type',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -42,7 +42,7 @@ return [
             ],
         ],
         'root' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.root',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_format.root',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -52,7 +52,7 @@ return [
             ],
         ],
         'namespace' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.namespace',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_format.namespace',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -62,7 +62,7 @@ return [
             ],
         ],
         'class' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.class',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_format.class',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -73,7 +73,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_formats.tab1,type,root,namespace,class'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:_domain_model_format.tab1,type,root,namespace,class'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

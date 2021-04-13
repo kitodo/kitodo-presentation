@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document',
         'label'     => 'title',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -91,7 +91,7 @@ return [
         ],
         'prod_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.prod_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:_domain_model_document.prod_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -102,7 +102,7 @@ return [
         ],
         'location' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.location',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.location',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -113,7 +113,7 @@ return [
         ],
         'record_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.record_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.record_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -124,7 +124,7 @@ return [
         ],
         'opac_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.opac_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.opac_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -135,7 +135,7 @@ return [
         ],
         'union_id' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.union_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:_domain_model_document.union_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -146,7 +146,7 @@ return [
         ],
         'urn' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.urn',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.urn',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -157,7 +157,7 @@ return [
         ],
         'purl' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.purl',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.purl',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -168,7 +168,7 @@ return [
         ],
         'title' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.title',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.title',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -179,7 +179,7 @@ return [
         ],
         'title_sorting' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.title_sorting',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.title_sorting',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -190,7 +190,7 @@ return [
         ],
         'author' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.author',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.author',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -201,7 +201,7 @@ return [
         ],
         'year' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.year',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.year',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -212,7 +212,7 @@ return [
         ],
         'place' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.place',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.place',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -223,7 +223,7 @@ return [
         ],
         'thumbnail' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.thumbnail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.thumbnail',
             'config' => [
                 'type' => 'user',
                 'userFunc' => \Kitodo\Dlf\Hooks\UserFunc::class . '->displayThumbnail',
@@ -243,12 +243,12 @@ return [
         ],
         'structure' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.structure',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.structure',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'foreign_table' => 'tx_dlf_structures',
-                'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) AND tx_dlf_structures.toplevel=1 ORDER BY tx_dlf_structures.label',
+                'foreign_table' => 'tx_dlf_domain_model_structure',
+                'foreign_table_where' => 'AND tx_dlf_domain_model_structure.pid=###CURRENT_PID### AND tx_dlf_domain_model_structure.sys_language_uid IN (-1,0) AND tx_dlf_domain_model_structure.toplevel=1 ORDER BY tx_dlf_domain_model_structure.label',
                 'size' => 1,
                 'minitems' => 1,
                 'maxitems' => 1,
@@ -256,11 +256,11 @@ return [
             ],
         ],
         'partof' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.partof',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.partof',
             'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
-                'allowed' => 'tx_dlf_documents',
+                'allowed' => 'tx_dlf_domain_model_document',
                 'prepend_tname' => 0,
                 'size' => 1,
                 'minitems' => 0,
@@ -277,7 +277,7 @@ return [
         ],
         'volume' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.volume',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.volume',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -288,7 +288,7 @@ return [
         ],
         'volume_sorting' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.volume_sorting',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.volume_sorting',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -299,7 +299,7 @@ return [
         ],
         'license' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.license',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.license',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -310,7 +310,7 @@ return [
         ],
         'terms' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.terms',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.terms',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -321,7 +321,7 @@ return [
         ],
         'restrictions' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.restrictions',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.restrictions',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -332,7 +332,7 @@ return [
         ],
         'out_of_print' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.out_of_print',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.out_of_print',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -343,7 +343,7 @@ return [
         ],
         'rights_info' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.rights_info',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.rights_info',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -354,7 +354,7 @@ return [
         ],
         'mets_label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.mets_label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.mets_label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -365,7 +365,7 @@ return [
         ],
         'mets_orderlabel' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.mets_orderlabel',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.mets_orderlabel',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -376,18 +376,18 @@ return [
         ],
         'collections' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.collections',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.collections',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'enableMultiSelectFilterTextfield' => 1,
-                'foreign_table' => 'tx_dlf_collections',
-                'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0) ORDER BY tx_dlf_collections.label',
+                'foreign_table' => 'tx_dlf_domain_model_collection',
+                'foreign_table_where' => 'AND tx_dlf_domain_model_collection.pid=###CURRENT_PID### AND tx_dlf_domain_model_collection.sys_language_uid IN (-1,0) ORDER BY tx_dlf_domain_model_collections.label',
                 'size' => 5,
                 'autoSizeMax' => 15,
                 'minitems' => 1,
                 'maxitems' => 1024,
-                'MM' => 'tx_dlf_relations',
+                'MM' => 'tx_dlf_domain_model_relation',
                 'MM_match_fields' => [
                     'ident' => 'docs_colls',
                 ],
@@ -396,12 +396,12 @@ return [
         ],
         'owner' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.owner',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.owner',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'foreign_table' => 'tx_dlf_libraries',
-                'foreign_table_where' => 'AND tx_dlf_libraries.sys_language_uid IN (-1,0) ORDER BY tx_dlf_libraries.label',
+                'foreign_table' => 'tx_dlf_domain_model_library',
+                'foreign_table_where' => 'AND tx_dlf_domain_model_library.sys_language_uid IN (-1,0) ORDER BY tx_dlf_domain_model_library.label',
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
@@ -416,12 +416,12 @@ return [
         ],
         'status' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.status',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.status',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.status.default', 0],
+                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.status.default', 0],
                 ],
                 'size' => 1,
                 'minitems' => 1,
@@ -431,13 +431,13 @@ return [
         ],
         'document_format' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.document_format',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.document_format',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.document_format.mets', 'METS'],
-                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.document_format.iiif', 'IIIF'],
+                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.document_format.mets', 'METS'],
+                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.document_format.iiif', 'IIIF'],
                 ],
                 'size' => 1,
                 'minitems' => 1,
@@ -446,7 +446,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,--palette--;;1,author,--palette--;;2,structure,--palette--;;3,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,--palette--;;4,--palette--;;5,--palette--;;6,--palette--;;7,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,--palette--;;8,hidden,--palette--;;9,fe_group,status,owner,license,'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.tab1,--palette--;;1,author,--palette--;;2,structure,--palette--;;3,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.tab2,--palette--;;4,--palette--;;5,--palette--;;6,--palette--;;7,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_domain_model_document.tab3,--palette--;;8,hidden,--palette--;;9,fe_group,status,owner,license,'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'title, title_sorting, --linebreak--, mets_label, thumbnail', 'canNotCollapse' => 1],
