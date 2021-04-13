@@ -467,7 +467,7 @@ final class MetsDocument extends Document
             }
             // Get the additional metadata from database.
             // Get all metadata with configured xpath and applicable format first.
-            $resultWithFormat = MetadataRepository::findByPidWithConfiguredXpathAndFormat($cPid);
+            $resultWithFormat = MetadataRepository::findByPidWithConfiguredXpathAndFormat($cPid, $this->dmdSec[$dmdId]['type']);
             // Get all metadata without a format, but with a default value next.
             $resultWithoutFormat = MetadataRepository::findByPidWithConfiguredXpathAndDefaultValue($cPid);
             // Merge both result sets.
