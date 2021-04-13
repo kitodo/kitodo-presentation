@@ -129,7 +129,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         }
 
         // get mail addresses
-        $resultMail = MailRepository::findAll();
+        $resultMail = MailRepository::findAllTemp();
 
         if ($resultMail->rowCount() > 0) {
             $mailForm = '<select name="tx_dlf[mail_action]">';
@@ -152,7 +152,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
   ';
 
         // get mail addresses
-        $resultPrinter = PrinterRepository::findAll();
+        $resultPrinter = PrinterRepository::findAllTemp();
 
         $printForm = '';
         if ($resultPrinter->rowCount() > 0) {

@@ -30,7 +30,7 @@ class FormatRepository extends Repository
 {
     //TODO: replace all static methods after real repository is implemented
 
-    public static function findAll() {
+    public static function findAllTemp() {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(Table::$format);
 

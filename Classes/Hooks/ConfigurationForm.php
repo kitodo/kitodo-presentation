@@ -94,7 +94,7 @@ class ConfigurationForm
         ];
 
         // Check existing format specifications.
-        $result = FormatRepository::findAll();
+        $result = FormatRepository::findAllTemp();
 
         while ($resArray = $result->fetch()) {
             $nsDefined[$resArray['type']] = true;
