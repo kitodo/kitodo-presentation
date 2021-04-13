@@ -43,6 +43,9 @@ class ext_update
      */
     public function access(): bool
     {
+        if (count($this->getOldTableNames())) {
+            return true;
+        }
         if (count($this->getMetadataConfig())) {
             return true;
         }
