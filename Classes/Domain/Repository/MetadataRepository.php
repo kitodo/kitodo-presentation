@@ -225,7 +225,7 @@ class MetadataRepository extends Repository
             ->getRestrictions()
             ->removeByType(HiddenRestriction::class);
         // Get all metadata with configured xpath and applicable format first.
-        $resultWithFormat = $queryBuilder
+        $result = $queryBuilder
             ->select(
                 Table::$metadata . '.index_name AS index_name',
                 Table::$metadataFormat . '_joins.xpath AS xpath',
@@ -271,7 +271,7 @@ class MetadataRepository extends Repository
         $queryBuilder
             ->getRestrictions()
             ->removeByType(HiddenRestriction::class);
-        $resultWithoutFormat = $queryBuilder
+        $result = $queryBuilder
             ->select(
                 'index_name',
                 'is_sortable',
