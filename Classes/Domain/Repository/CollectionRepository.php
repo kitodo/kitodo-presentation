@@ -38,10 +38,10 @@ class CollectionRepository extends Repository
 
         // Get UIDs for collections.
         $result = $queryBuilder
-                ->select(Table::$collection . '.index_name AS index_name')
+                ->select('index_name')
                 ->from(Table::$collection)
                 ->where(
-                    $queryBuilder->expr()->eq(Table::$collection . '.pid', $pid)
+                    $queryBuilder->expr()->eq('pid', $pid)
                 )
                 ->execute();
 
@@ -55,13 +55,13 @@ class CollectionRepository extends Repository
         // Get UIDs for collections.
         $result = $queryBuilder
             ->select(
-                Table::$collection . '.index_name AS index_name',
-                Table::$collection . '.uid AS uid'
+                'index_name',
+                'uid'
             )
             ->from(Table::$collection)
             ->where(
-                $queryBuilder->expr()->eq(Table::$collection . '.pid', $pid),
-                $queryBuilder->expr()->in(Table::$collection .'.sys_language_uid', [-1, 0]),
+                $queryBuilder->expr()->eq('pid', $pid),
+                $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
                 Helper::whereExpression(Table::$collection)
             )
             ->execute();
@@ -75,23 +75,23 @@ class CollectionRepository extends Repository
 
         $where = '';
         if ($withoutUser) {
-            $where = $queryBuilder->expr()->eq(Table::$collection . '.fe_cruser_id', 0);
+            $where = $queryBuilder->expr()->eq('fe_cruser_id', 0);
         }
 
         $result = $queryBuilder
             ->select(
-                Table::$collection . '.oai_name AS oai_name',
-                Table::$collection . '.label AS label'
+                'oai_name',
+                'label'
             )
             ->from(Table::$collection)
             ->where(
-                $queryBuilder->expr()->in(Table::$collection . '.sys_language_uid', [-1, 0]),
-                $queryBuilder->expr()->eq(Table::$collection . '.pid', $pid),
-                $queryBuilder->expr()->neq(Table::$collection . '.oai_name', $queryBuilder->createNamedParameter('')),
+                $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                $queryBuilder->expr()->eq('pid', $pid),
+                $queryBuilder->expr()->neq('oai_name', $queryBuilder->createNamedParameter('')),
                 $where,
                 Helper::whereExpression(Table::$collection)
             )
-            ->orderBy(Table::$collection . '.oai_name')
+            ->orderBy('oai_name')
             ->execute();
 
         return $result;
@@ -103,19 +103,19 @@ class CollectionRepository extends Repository
 
         $where = '';
         if ($withoutUser) {
-            $where = $queryBuilder->expr()->eq(Table::$collection . '.fe_cruser_id', 0);
+            $where = $queryBuilder->expr()->eq('fe_cruser_id', 0);
         }
 
         $result = $queryBuilder
             ->select(
-                Table::$collection . '.index_name AS index_name',
-                Table::$collection . '.uid AS uid',
-                Table::$collection . '.index_search as index_query'
+                'index_name',
+                'uid',
+                'index_search AS index_query'
             )
             ->from(Table::$collection)
             ->where(
-                $queryBuilder->expr()->eq(Table::$collection . '.pid', $pid),
-                $queryBuilder->expr()->eq(Table::$collection . '.oai_name', $queryBuilder->expr()->literal($oaiName)),
+                $queryBuilder->expr()->eq('pid', $pid),
+                $queryBuilder->expr()->eq('oai_name', $queryBuilder->expr()->literal($oaiName)),
                 $where,
                 Helper::whereExpression(Table::$collection)
             )
@@ -130,11 +130,11 @@ class CollectionRepository extends Repository
                 ->getQueryBuilderForTable(Table::$collection);
 
         $result = $queryBuilder
-            ->select(Table::$collection . '.index_name AS index_name')
+            ->select('index_name')
             ->from(Table::$collection)
             ->where(
                 $queryBuilder->expr()->in(
-                    Table::$collection . '.uid',
+                    'uid',
                     $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $uidArray, Connection::PARAM_INT_ARRAY))
                 )
             )
@@ -163,30 +163,31 @@ class CollectionRepository extends Repository
 
         return $queryBuilder
             ->select(
-                Table::$collection . '.uid AS uid', // required by getRecordOverlay()
-                Table::$collection . '.pid AS pid', // required by getRecordOverlay()
-                Table::$collection . '.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
-                Table::$collection . '.index_name AS index_name',
-                Table::$collection . '.index_search as index_query',
-                Table::$collection . '.label AS label',
-                Table::$collection . '.thumbnail AS thumbnail',
-                Table::$collection . '.description AS description',
-                Table::$collection . '.priority AS priority'
+                'uid', // required by getRecordOverlay()
+                'pid', // required by getRecordOverlay()
+                'sys_language_uid', // required by getRecordOverlay()
+                'index_name',
+                // TODO: check if this is correct
+                'index_search AS index_query',
+                'label',
+                'thumbnail',
+                'description',
+                'priority'
             )
             ->from(Table::$collection)
             ->where(
                 $selectedCollections,
                 $showUserDefinedCollections,
-                $queryBuilder->expr()->eq(Table::$collection . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in(Table::$collection . '.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq(Table::$collection . '.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
+                        $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                        $queryBuilder->expr()->eq('sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                     ),
-                    $queryBuilder->expr()->eq(Table::$collection . '.l18n_parent', 0)
+                    $queryBuilder->expr()->eq('l18n_parent', 0)
                 )
             )
-            ->orderBy(Table::$collection . '.label');
+            ->orderBy('label');
     }
 
     public static function findOneByPidAndUidAndLanguageWithAddtionalWhereClause($pid, $uid, $additionalWhere) {
@@ -195,27 +196,27 @@ class CollectionRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                Table::$collection . '.uid AS uid', // required by getRecordOverlay()
-                Table::$collection . '.pid AS pid', // required by getRecordOverlay()
-                Table::$collection . '.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
-                Table::$collection . '.index_name AS index_name',
-                Table::$collection . '.index_search as index_search',
-                Table::$collection . '.label AS label',
-                Table::$collection . '.description AS description',
-                Table::$collection . '.thumbnail AS thumbnail',
-                Table::$collection . '.fe_cruser_id'
+                'uid', // required by getRecordOverlay()
+                'pid', // required by getRecordOverlay()
+                'sys_language_uid', // required by getRecordOverlay()
+                'index_name',
+                'index_search',
+                'label',
+                'description',
+                'thumbnail',
+                'fe_cruser_id'
             )
             ->from(Table::$collection)
             ->where(
-                $queryBuilder->expr()->eq(Table::$collection . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(Table::$collection . '.uid', intval($uid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
+                $queryBuilder->expr()->eq('uid', intval($uid)),
                 $additionalWhere,
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in(Table::$collection . '.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq(Table::$collection . '.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
+                        $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                        $queryBuilder->expr()->eq('sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                     ),
-                    $queryBuilder->expr()->eq(Table::$collection . '.l18n_parent', 0)
+                    $queryBuilder->expr()->eq('l18n_parent', 0)
                 ),
                 Helper::whereExpression(Table::$collection)
             )

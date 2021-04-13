@@ -37,10 +37,10 @@ class StructureRepository extends Repository
 
         // Check for existing structure configuration.
         $result = $queryBuilder
-            ->select(Table::$structure . '.uid AS uid')
+            ->select('uid')
             ->from(Table::$structure)
             ->where(
-                $queryBuilder->expr()->eq(Table::$structure . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 Helper::whereExpression(Table::$structure)
             )
             ->execute();
@@ -55,13 +55,13 @@ class StructureRepository extends Repository
         // Get UID for structure type.
         $result = $queryBuilder
             ->select(
-                Table::$structure . '.uid AS uid',
-                Table::$structure . '.thumbnail AS thumbnail'
+                'uid',
+                'thumbnail'
             )
             ->from(Table::$structure)
             ->where(
-                $queryBuilder->expr()->eq(Table::$structure . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(Table::$structure . '.index_name', $queryBuilder->expr()->literal($indexName)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
+                $queryBuilder->expr()->eq('index_name', $queryBuilder->expr()->literal($indexName)),
                 Helper::whereExpression(Table::$structure)
             )
             ->setMaxResults(1)

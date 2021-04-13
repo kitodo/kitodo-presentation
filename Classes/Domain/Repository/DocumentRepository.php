@@ -39,11 +39,11 @@ class DocumentRepository extends Repository
             ->from(Table::$document)
             ->where(
                 $queryBuilder->expr()->eq(
-                    Table::$document . '.pid',
+                    'pid',
                     $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT)
                 )
             )
-            ->orderBy(Table::$document . '.uid', 'ASC')
+            ->orderBy('uid', 'ASC')
             ->execute();
 
         return $result;
@@ -55,15 +55,15 @@ class DocumentRepository extends Repository
 
         $result = $queryBuilder
         ->select(
-            Table::$document . '.uid AS uid',
-            Table::$document . '.metadata_sorting AS metadata_sorting',
-            Table::$document . '.volume_sorting AS volume_sorting',
-            Table::$document . '.partof AS partof'
+            'uid',
+            'metadata_sorting',
+            'volume_sorting',
+            'partof'
         )
         ->from(Table::$document)
         ->where(
-            $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
-            $queryBuilder->expr()->in(Table::$document . '.uid', $uidArray),
+            $queryBuilder->expr()->eq('pid', intval($pid)),
+            $queryBuilder->expr()->in('uid', $uidArray),
             Helper::whereExpression(Table::$document)
         )
         ->execute();
@@ -166,15 +166,15 @@ class DocumentRepository extends Repository
         // Get document's thumbnail and metadata from database.
         $result = $queryBuilder
             ->select(
-                Table::$document . '.uid AS uid',
-                Table::$document . '.thumbnail AS thumbnail',
-                Table::$document . '.metadata AS metadata'
+                'uid',
+                'thumbnail',
+                'metadata'
             )
             ->from(Table::$document)
             ->where(
                 $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid)),
-                    $queryBuilder->expr()->eq(Table::$document . '.partof', intval($uid))
+                    $queryBuilder->expr()->eq('uid', intval($uid)),
+                    $queryBuilder->expr()->eq('partof', intval($uid))
                 ),
                 Helper::whereExpression(Table::$document)
             )
@@ -188,19 +188,19 @@ class DocumentRepository extends Repository
         // Get all children of year anchor.
         $result = $queryBuilder
             ->select(
-                Table::$document . '.uid AS uid',
-                Table::$document . '.title AS title',
-                Table::$document . '.year AS year',
-                Table::$document . '.mets_label AS label',
-                Table::$document . '.mets_orderlabel AS orderlabel'
+                'uid',
+                'title',
+                'year',
+                'mets_label AS label',
+                'mets_orderlabel AS orderlabel'
             )
             ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(Table::$document . '.structure', $structure),
-                $queryBuilder->expr()->eq(Table::$document . '.partof', intval($uid)),
+                $queryBuilder->expr()->eq('structure', $structure),
+                $queryBuilder->expr()->eq('partof', intval($uid)),
                 Helper::whereExpression(Table::$document)
             )
-            ->orderBy(Table::$document . '.mets_orderlabel')
+            ->orderBy('mets_orderlabel')
             ->execute();
 
         return $result;
@@ -212,12 +212,12 @@ class DocumentRepository extends Repository
 
         $queryBuilder
             ->select(
-                Table::$document . '.uid AS uid',
-                Table::$document . '.pid AS pid',
-                Table::$document . '.record_id AS record_id',
-                Table::$document . '.partof AS partof',
-                Table::$document . '.thumbnail AS thumbnail',
-                Table::$document . '.location AS location'
+                'uid',
+                'pid',
+                'record_id',
+                'partof',
+                'thumbnail',
+                'location'
             )
             ->from(Table::$document)
             ->where($whereClause)
@@ -233,15 +233,15 @@ class DocumentRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                Table::$document . '.title AS title',
-                Table::$document . '.partof AS partof',
-                Table::$document . '.location AS location',
-                Table::$document . '.document_format AS document_format',
-                Table::$document . '.record_id AS record_id'
+                'title',
+                'partof',
+                'location',
+                'document_format',
+                'record_id'
             )
             ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid)),
+                $queryBuilder->expr()->eq('uid', intval($uid)),
                 Helper::whereExpression(Table::$document)
             )
             ->setMaxResults(1)
@@ -255,12 +255,12 @@ class DocumentRepository extends Repository
                 ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
-            ->select(Table::$document . '.tstamp AS tstamp')
+            ->select('tstamp')
             ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid))
+                $queryBuilder->expr()->eq('pid', intval($pid))
             )
-            ->orderBy(Table::$document . '.tstamp')
+            ->orderBy('tstamp')
             ->setMaxResults(1)
             ->execute();
             
@@ -273,13 +273,13 @@ class DocumentRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                Table::$document . '.location AS location',
-                Table::$document . '.document_format AS document_format'
+                '.location AS location',
+                '.document_format AS document_format'
             )
             ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(Table::$document . '.uid', intval($uid)),
-                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('uid', intval($uid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 Helper::whereExpression(Table::$document)
             )
             ->setMaxResults(1)
@@ -293,13 +293,13 @@ class DocumentRepository extends Repository
                 ->getQueryBuilderForTable(Table::$document);
 
         $result = $queryBuilder
-            ->select(Table::$document . '.*')
+            ->select('*')
             ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(Table::$document .'.record_id', $queryBuilder->expr()->literal($recordId))
+                $queryBuilder->expr()->eq('.pid', intval($pid)),
+                $queryBuilder->expr()->eq('record_id', $queryBuilder->expr()->literal($recordId))
             )
-            ->orderBy(Table::$document . '.tstamp')
+            ->orderBy('tstamp')
             ->setMaxResults(1)
             ->execute();
             
@@ -312,10 +312,10 @@ class DocumentRepository extends Repository
 
         // Get UID of document with given record identifier.
         $result = $queryBuilder
-            ->select(Table::$document . '.uid AS uid')
+            ->select('uid')
             ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(Table::$document . '.record_id', $queryBuilder->expr()->literal($recordId)),
+                $queryBuilder->expr()->eq('record_id', $queryBuilder->expr()->literal($recordId)),
                 Helper::whereExpression(Table::$document)
             )
             ->setMaxResults(1)
@@ -512,11 +512,11 @@ class DocumentRepository extends Repository
             ->getQueryBuilderForTable(Table::$document);
         
         $countTitles = $queryBuilder
-            ->count(Table::$document . '.uid')
+            ->count('uid')
             ->from(Table::$document)
             ->where(
-                $queryBuilder->expr()->eq(Table::$document . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(Table::$document . '.partof', 0),
+                $queryBuilder->expr()->eq('.pid', intval($pid)),
+                $queryBuilder->expr()->eq('partof', 0),
                 Helper::whereExpression(Table::$document)
             )
             ->execute()

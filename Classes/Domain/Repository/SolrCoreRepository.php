@@ -59,12 +59,12 @@ class SolrCoreRepository extends Repository
         // Check for existing Solr core.
         $result = $queryBuilder
             ->select(
-                Table::$solrCore . '.uid AS uid',
-                Table::$solrCore . '.pid AS pid'
+                'uid',
+                'pid'
             )
             ->from(Table::$solrCore)
             ->where(
-                $queryBuilder->expr()->in(Table::$solrCore . '.pid', [intval($pid), 0]),
+                $queryBuilder->expr()->in('pid', [intval($pid), 0]),
                 Helper::whereExpression(Table::$solrCore)
             )
             ->execute();
@@ -148,10 +148,10 @@ class SolrCoreRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                Table::$solrCore . '.index_name AS core'
+                'index_name AS core'
             )
             ->from(Table::$solrCore)
-            ->where($queryBuilder->expr()->eq(Table::$solrCore . '.uid', intval($uid)))
+            ->where($queryBuilder->expr()->eq('uid', intval($uid)))
             ->setMaxResults(1)
             ->execute();
 

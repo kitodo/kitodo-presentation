@@ -37,10 +37,10 @@ class MetadataRepository extends Repository
 
         // Check for existing metadata configuration.
         $result = $queryBuilder
-            ->select(Table::$metadata . '.uid AS uid')
+            ->select('uid')
             ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 Helper::whereExpression(Table::$metadata)
             )
             ->execute();
@@ -54,11 +54,11 @@ class MetadataRepository extends Repository
 
         // Check if there are any metadata to suggest.
         $result = $queryBuilder
-            ->select(Table::$metadata . '.*')
+            ->select('*')
             ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(Table::$metadata . '.index_autocomplete', 1),
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('index_autocomplete', 1),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 Helper::whereExpression(Table::$metadata)
             )
             ->setMaxResults(1)
@@ -74,21 +74,21 @@ class MetadataRepository extends Repository
         // Get metadata for lists and sorting.
         $result = $queryBuilder
             ->select(
-                Table::$metadata . '.index_name AS index_name',
-                Table::$metadata . '.wrap AS wrap',
-                Table::$metadata . '.is_listed AS is_listed',
-                Table::$metadata . '.is_sortable AS is_sortable'
+                'index_name',
+                'wrap',
+                'is_listed',
+                'is_sortable'
             )
             ->from(Table::$metadata)
             ->where(
                 $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq(Table::$metadata . '.is_listed', 1),
-                    $queryBuilder->expr()->eq(Table::$metadata . '.is_sortable', 1)
+                    $queryBuilder->expr()->eq('is_listed', 1),
+                    $queryBuilder->expr()->eq('is_sortable', 1)
                 ),
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 Helper::whereExpression(Table::$metadata)
             )
-            ->orderBy(Table::$metadata . '.sorting')
+            ->orderBy('sorting')
             ->execute();
 
         return $result;
@@ -101,17 +101,17 @@ class MetadataRepository extends Repository
         // Load index configuration.
         $result = $queryBuilder
             ->select(
-                Table::$metadata . '.index_name AS index_name',
-                Table::$metadata . '.index_tokenized AS index_tokenized',
-                Table::$metadata . '.index_indexed AS index_indexed'
+                'index_name',
+                'index_tokenized',
+                'index_indexed'
             )
             ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(Table::$metadata . '.is_listed', 1),
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('is_listed', 1),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 Helper::whereExpression(Table::$metadata)
             )
-            ->orderBy(Table::$metadata . '.sorting', 'ASC')
+            ->orderBy('sorting', 'ASC')
             ->execute();
         
         return $result;
@@ -124,19 +124,19 @@ class MetadataRepository extends Repository
         // Get the metadata indexing options.
         $result = $queryBuilder
             ->select(
-                Table::$metadata . '.index_name AS index_name',
-                Table::$metadata . '.index_tokenized AS index_tokenized',
-                Table::$metadata . '.index_stored AS index_stored',
-                Table::$metadata . '.index_indexed AS index_indexed',
-                Table::$metadata . '.is_sortable AS is_sortable',
-                Table::$metadata . '.is_facet AS is_facet',
-                Table::$metadata . '.is_listed AS is_listed',
-                Table::$metadata . '.index_autocomplete AS index_autocomplete',
-                Table::$metadata . '.index_boost AS index_boost'
+                'index_name',
+                'index_tokenized',
+                'index_stored',
+                'index_indexed',
+                'is_sortable',
+                'is_facet',
+                'is_listed',
+                'index_autocomplete',
+                'index_boost'
             )
             ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 Helper::whereExpression(Table::$metadata)
             )
             ->execute();
@@ -273,17 +273,17 @@ class MetadataRepository extends Repository
             ->removeByType(HiddenRestriction::class);
         $resultWithoutFormat = $queryBuilder
             ->select(
-                Table::$metadata . '.index_name AS index_name',
-                Table::$metadata . '.is_sortable AS is_sortable',
-                Table::$metadata . '.default_value AS default_value',
-                Table::$metadata . '.format AS format'
+                'index_name',
+                'is_sortable',
+                'default_value',
+                'format'
             )
             ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($cPid)),
-                $queryBuilder->expr()->eq(Table::$metadata . '.l18n_parent', 0),
-                $queryBuilder->expr()->eq(Table::$metadata . '.format', 0),
-                $queryBuilder->expr()->neq(Table::$metadata . '.default_value', $queryBuilder->createNamedParameter(''))
+                $queryBuilder->expr()->eq('pid', intval($cPid)),
+                $queryBuilder->expr()->eq('l18n_parent', 0),
+                $queryBuilder->expr()->eq('format', 0),
+                $queryBuilder->expr()->neq('default_value', $queryBuilder->createNamedParameter(''))
             )
             ->execute();
 
@@ -297,17 +297,17 @@ class MetadataRepository extends Repository
         // Get all indexed fields.
         $result = $queryBuilder
             ->select(
-                Table::$metadata . '.index_name AS index_name',
-                Table::$metadata . '.index_tokenized AS index_tokenized',
-                Table::$metadata . '.index_stored AS index_stored'
+                'index_name',
+                'index_tokenized',
+                'index_stored'
             )
             ->from(Table::$metadata)
             ->where(
-                $queryBuilder->expr()->eq(Table::$metadata . '.index_indexed', 1),
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid)),
+                $queryBuilder->expr()->eq('index_indexed', 1),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
                 $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->in(Table::$metadata . '.sys_language_uid', [-1, 0]),
-                    $queryBuilder->expr()->eq(Table::$metadata . '.l18n_parent', 0)
+                    $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                    $queryBuilder->expr()->eq('l18n_parent', 0)
                 ),
                 Helper::whereExpression(Table::$metadata)
             )
@@ -322,23 +322,23 @@ class MetadataRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                Table::$metadata . '.index_name AS index_name',
-                Table::$metadata . '.is_listed AS is_listed',
-                Table::$metadata . '.wrap AS wrap',
-                Table::$metadata . '.sys_language_uid AS sys_language_uid'
+                'index_name',
+                'is_listed',
+                'wrap',
+                'sys_language_uid'
             )
             ->from(Table::$metadata)
             ->where(
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in(Table::$metadata . '.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq(Table::$metadata . '.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
+                        $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                        $queryBuilder->expr()->eq('sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
                     ),
-                    $queryBuilder->expr()->eq(Table::$metadata . '.l18n_parent', 0)
+                    $queryBuilder->expr()->eq('l18n_parent', 0)
                 ),
-                $queryBuilder->expr()->eq(Table::$metadata . '.pid', intval($pid))
+                $queryBuilder->expr()->eq('pid', intval($pid))
             )
-            ->orderBy(Table::$metadata . '.sorting')
+            ->orderBy('sorting')
             ->execute();
 
         return $result;

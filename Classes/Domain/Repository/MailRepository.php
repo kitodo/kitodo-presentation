@@ -43,7 +43,7 @@ class MailRepository extends Repository
                 '1=1',
                 Helper::whereExpression(Table::$mail)
             )
-            ->orderBy(Table::$mail . '.sorting')
+            ->orderBy('sorting')
             ->execute();
 
         return $resultMail;
@@ -58,7 +58,7 @@ class MailRepository extends Repository
             ->select('*')
             ->from(Table::$mail)
             ->where(
-                $queryBuilder->expr()->eq(Table::$mail . '.uid', intval($uid)),
+                $queryBuilder->expr()->eq('uid', intval($uid)),
                 Helper::whereExpression(Table::$mail)
             )
             ->setMaxResults(1)

@@ -36,7 +36,7 @@ class FormatRepository extends Repository
 
         // Check existing format specifications.
         $result = $queryBuilder
-            ->select(Table::$format . '.type AS type')
+            ->select('type')
             ->from(Table::$format)
             ->where(
                 '1=1'
@@ -63,14 +63,14 @@ class FormatRepository extends Repository
         // Get available data formats from database.
         $result = $queryBuilder
             ->select(
-                Table::$format . '.type AS type',
-                Table::$format . '.root AS root',
-                Table::$format . '.namespace AS namespace',
-                Table::$format . '.class AS class'
+                'type',
+                'root',
+                'namespace',
+                'class'
             )
             ->from(Table::$format)
             ->where(
-                $queryBuilder->expr()->eq(Table::$format . '.pid', 0)
+                $queryBuilder->expr()->eq('pid', 0)
             )
             ->execute();
 

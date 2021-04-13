@@ -57,7 +57,7 @@ class PrinterRepository extends Repository
             ->select('*')
             ->from(Table::$printer)
             ->where(
-                $queryBuilder->expr()->eq(Table::$printer . '.uid', intval($uid)),
+                $queryBuilder->expr()->eq('uid', intval($uid)),
                 Helper::whereExpression(Table::$printer)
             )
             ->setMaxResults(1)

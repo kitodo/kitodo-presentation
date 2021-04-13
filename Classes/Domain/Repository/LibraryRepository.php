@@ -36,11 +36,11 @@ class LibraryRepository extends Repository
             ->getQueryBuilderForTable(Table::$library);
 
         $result = $queryBuilder
-            ->select(Table::$library . '.uid AS uid')
+            ->select('uid')
             ->from(Table::$library)
             ->where(
-                $queryBuilder->expr()->eq(Table::$library . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(Table::$library . '.index_name', $queryBuilder->expr()->literal($owner)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
+                $queryBuilder->expr()->eq('index_name', $queryBuilder->expr()->literal($owner)),
                 Helper::whereExpression(Table::$library)
             )
             ->setMaxResults(1)
@@ -55,14 +55,14 @@ class LibraryRepository extends Repository
 
         $result = $queryBuilder
             ->select(
-                Table::$library . '.label AS label',
-                Table::$library . '.oai_label AS oai_label',
-                Table::$library . '.contact AS contact'
+                'label',
+                'oai_label',
+                'contact'
             )
             ->from(Table::$library)
             ->where(
-                $queryBuilder->expr()->eq(Table::$library . '.pid', intval($pid)),
-                $queryBuilder->expr()->eq(Table::$library . '.uid', intval($uid)),
+                $queryBuilder->expr()->eq('pid', intval($pid)),
+                $queryBuilder->expr()->eq('uid', intval($uid)),
                 Helper::whereExpression(Table::$library)
             )
             ->setMaxResults(1)

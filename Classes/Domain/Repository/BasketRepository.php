@@ -41,7 +41,7 @@ class BasketRepository extends Repository
             ->where(
                 $queryBuilder
                     ->expr()
-                    ->eq(Table::$basket . '.fe_user_id', $feUserId),
+                    ->eq('fe_user_id', $feUserId),
                     Helper::whereExpression(Table::$basket)
                 )
             ->setMaxResults(1)
@@ -66,7 +66,7 @@ class BasketRepository extends Repository
             ->where(
                 $queryBuilder
                     ->expr()
-                    ->eq(Table::$basket . '.session_id', $queryBuilder->createNamedParameter($sessionId)),
+                    ->eq('session_id', $queryBuilder->createNamedParameter($sessionId)),
                     Helper::whereExpression(Table::$basket)
                 )
             ->setMaxResults(1)
