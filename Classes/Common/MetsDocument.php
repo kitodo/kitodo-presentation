@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -169,7 +170,7 @@ final class MetsDocument extends Document
         $fileLocation = $this->getFileLocation($id);
         if ($fileMimeType === 'application/vnd.kitodo.iiif') {
             $fileLocation = (strrpos($fileLocation, 'info.json') === strlen($fileLocation) - 9) ? $fileLocation : (strrpos($fileLocation, '/') === strlen($fileLocation) ? $fileLocation . 'info.json' : $fileLocation . '/info.json');
-            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
@@ -273,7 +274,7 @@ final class MetsDocument extends Document
             $attributes[$attribute] = (string) $value;
         }
         // Load plugin configuration.
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         // Extract identity information.
         $details = [];
         $details['id'] = $attributes['ID'];
@@ -846,7 +847,7 @@ final class MetsDocument extends Document
     {
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $useGrps = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
             if (!empty($extConf['fileGrpThumbs'])) {
                 $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
@@ -1010,7 +1011,7 @@ final class MetsDocument extends Document
                 return $this->thumbnail;
             }
             // Load extension configuration.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             if (empty($extConf['fileGrpThumbs'])) {
                 Helper::devLog('No fileGrp for thumbnails specified', DEVLOG_SEVERITY_WARNING);
                 $this->thumbnailLoaded = true;

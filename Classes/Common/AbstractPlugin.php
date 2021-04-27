@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -112,7 +113,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $conf = Helper::mergeRecursiveWithOverrule($generalConf, $conf);
         }
         // Read extension configuration.
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
         if (is_array($extConf)) {
             $conf = Helper::mergeRecursiveWithOverrule($extConf, $conf);
         }

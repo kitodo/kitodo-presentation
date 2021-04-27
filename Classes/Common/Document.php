@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -498,7 +499,7 @@ abstract class Document
             // Try to load a file from the url
             if (GeneralUtility::isValidUrl($location)) {
                 // Load extension configuration
-                $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+                $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
                 // Set user-agent to identify self when fetching XML data.
                 if (!empty($extConf['useragent'])) {
                     @ini_set('user_agent', $extConf['useragent']);
@@ -526,7 +527,7 @@ abstract class Document
                         $contentAsJsonArray = json_decode($content, true);
                         if ($contentAsJsonArray !== null) {
                             // Load plugin configuration.
-                            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+                            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
                             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
                             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
                             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
@@ -555,7 +556,7 @@ abstract class Document
                 self::$registry[Helper::digest($instance->location)] = $instance;
             }
             // Load extension configuration
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Save registry to session if caching is enabled.
             if (!empty($extConf['caching'])) {
                 Helper::saveToSession(self::$registry, get_class($instance));
@@ -661,7 +662,7 @@ abstract class Document
         // ... physical structure ...
         $this->_getPhysicalStructure();
         // ... and extension configuration.
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
         if (!empty($this->physicalStructureInfo[$id])) {
             while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
@@ -894,7 +895,7 @@ abstract class Document
         // Load XML / JSON-LD file.
         if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location)) {
             // Load extension configuration
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Set user-agent to identify self when fetching XML / JSON-LD data.
             if (!empty($extConf['useragent'])) {
                 @ini_set('user_agent', $extConf['useragent']);
@@ -1028,7 +1029,7 @@ abstract class Document
             return false;
         }
         // Load plugin configuration.
-        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_structures');
