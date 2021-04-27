@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Flow\JSONPath\JSONPath;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
@@ -229,7 +230,7 @@ final class IiifManifest extends Document
     {
         if (!$this->useGrpsLoaded) {
             // Get configured USE attributes.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             if (!empty($extConf['fileGrpImages'])) {
                 $this->useGrps['fileGrpImages'] = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
             }
@@ -261,7 +262,7 @@ final class IiifManifest extends Document
             if ($this->iiif == null || !($this->iiif instanceof ManifestInterface)) {
                 return null;
             }
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $iiifId = $this->iiif->getId();
             $physSeq[0] = $iiifId;
             $this->physicalStructureInfo[$physSeq[0]]['id'] = $iiifId;
@@ -799,7 +800,7 @@ final class IiifManifest extends Document
             // Load physical structure ...
             $this->_getPhysicalStructure();
             // ... and extension configuration.
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
             if (!empty($this->physicalStructureInfo[$id])) {
                 while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
@@ -867,7 +868,7 @@ final class IiifManifest extends Document
     {
         $fileResource = GeneralUtility::getUrl($location);
         if ($fileResource !== false) {
-            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
@@ -930,7 +931,7 @@ final class IiifManifest extends Document
                     $this->hasFulltext = true;
                     return;
                 }
-                $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+                $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
                 if ($extConf['indexAnnotations'] == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                         if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
@@ -986,7 +987,7 @@ final class IiifManifest extends Document
      */
     public function __wakeup()
     {
-        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         IiifHelper::setUrlReader(IiifUrlReader::getInstance());
         IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
         IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
