@@ -786,9 +786,10 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getRawText()
+     * @see Document::getFullText()
      */
-    public function getRawText($id)
+    //TODO: rewrite it to get full OCR
+    public function getFullText($id)
     {
         $rawText = '';
         // Get text from raw text array if available.
@@ -805,7 +806,7 @@ final class IiifManifest extends Document
             if (!empty($this->physicalStructureInfo[$id])) {
                 while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
                     if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
-                        $rawText = parent::getRawTextFromXml($id);
+                        $rawText = parent::getFullTextFromXml($id);
                         break;
                     }
                 }

@@ -21,6 +21,7 @@ namespace Kitodo\Dlf\Common;
  * @access public
  * @abstract
  */
+//TODO: check if this is still needed when actually full text xml is indexed
 interface FulltextInterface
 {
     /**
