@@ -668,6 +668,22 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Document::getFullText()
+     */
+    public function getFullText($id)
+    {
+        $fullText = '';
+
+        // Load fileGrps and check for full text files.
+        $this->_getFileGrps();
+        if ($this->hasFulltext) {
+            $fullText = $this->getFullTextFromXml($id);
+        }
+        return $fullText;
+    }
+
+    /**
+     * {@inheritDoc}
      * @see Document::getStructureDepth()
      */
     public function getStructureDepth($logId)

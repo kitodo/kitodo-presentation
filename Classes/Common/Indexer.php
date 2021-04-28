@@ -116,15 +116,16 @@ class Indexer
                 $updateQuery = self::$solr->service->createUpdate();
                 $updateQuery->addDeleteQuery('uid:' . $doc->uid);
                 self::$solr->service->update($updateQuery);
+                //TODO: handle problem with indexing documents without OCR
                 // Index every logical unit as separate Solr document.
-                foreach ($doc->tableOfContents as $logicalUnit) {
+                /*foreach ($doc->tableOfContents as $logicalUnit) {
                     if (!$errors) {
                         $errors = self::processLogical($doc, $logicalUnit);
                     } else {
                         break;
                     }
-                }
-                // Index fulltext files if available.
+                }*/
+                // Index full text files if available.
                 if ($doc->hasFulltext) {
                     foreach ($doc->physicalStructure as $pageNumber => $xmlId) {
                         if (!$errors) {
@@ -315,6 +316,8 @@ class Indexer
      */
     protected static function processLogical(Document &$doc, array $logicalUnit)
     {
+        $logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+
         $errors = 0;
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
@@ -406,6 +409,7 @@ class Indexer
                         'core.template.flashMessages'
                     );
                 }
+                $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
                 return 1;
             }
         }
@@ -436,10 +440,10 @@ class Indexer
      */
     protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
     {
-        if (
-            $doc->hasFulltext
-            && $fulltext = $doc->getRawText($physicalUnit['id'])
-        ) {
+        $logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+
+        $logger->error($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id']));
+        if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Create new Solr document.
@@ -463,7 +467,7 @@ class Indexer
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
-            $solrDoc->setField('fulltext', htmlspecialchars($fulltext));
+            $solrDoc->setField('fulltext', $fullText);
             // Add faceting information to physical sub-elements if applicable.
             foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
                 if (
@@ -503,6 +507,7 @@ class Indexer
                         true,
                         'core.template.flashMessages'
                     );
+                    $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
                 }
                 return 1;
             }

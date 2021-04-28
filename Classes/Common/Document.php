@@ -570,8 +570,9 @@ abstract class Document
             if (!empty($extConf['caching'])) {
                 Helper::saveToSession(self::$registry, get_class($instance));
             }
+            $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
-        $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($instance));
+
         // Return new instance.
         return $instance;
     }
@@ -638,6 +639,82 @@ abstract class Document
     }
 
     /**
+     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas. Text might be
+     * given as ALTO for METS or as annotations or ALTO for IIIF resources.
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
+     * of the Manifest / Range (IIIF)
+     *
+     * @return string The OCR full text
+     */
+    public abstract function getFullText($id);
+
+        /**
+     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
+     * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
+     * to be given in the Canvas' / Manifest's "seeAlso" property.
+     *
+     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
+     * of the Manifest / Range (IIIF)
+     *
+     * @return string The OCR full text
+     */
+    protected function getFullTextFromXml($id)
+    {
+        $fullText = '';
+        // Load available text formats, ...
+        $this->loadFormats();
+        // ... physical structure ...
+        $this->_getPhysicalStructure();
+        // ... and extension configuration.
+        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+        if (!empty($this->physicalStructureInfo[$id])) {
+            while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
+                if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
+                    // Get full text file.
+                    $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
+                    if ($file !== false) {
+                        // Turn off libxml's error logging.
+                        $libxmlErrors = libxml_use_internal_errors(true);
+                        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+                        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+                        // Load XML from file.
+                        $rawTextXml = simplexml_load_string($file);
+                        // Reset entity loader setting.
+                        libxml_disable_entity_loader($previousValueOfEntityLoader);
+                        // Reset libxml's error logging.
+                        libxml_use_internal_errors($libxmlErrors);
+                        // Get the root element's name as text format.
+                        $textFormat = strtoupper($rawTextXml->getName());
+                    } else {
+                        $this->logger->warning('Couldn\'t load full text file for structure node @ID "' . $id . '"');
+                        return $fullText;
+                    }
+                    break;
+                }
+            }
+        } else {
+            $this->logger->warning('Invalid structure node @ID "' . $id . '"');
+            return $fullText;
+        }
+        // Is this text format supported?
+        // This part actually differs from previous version of indexed OCR
+        if (!empty($file) && !empty($this->formats[$textFormat])) {
+            if (!empty($this->formats[$textFormat]['class'])) {
+                $fullText = $file;
+            }
+        } else {
+            $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
+        }
+        return $fullText;
+    }
+
+    /**
      * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas. Text might be
      * given as ALTO for METS or as annotations or ALTO for IIIF resources. If IIIF plain text annotations
      * with the motivation "painting" should be treated as full text representations, the extension has to be
@@ -652,6 +729,7 @@ abstract class Document
      *
      * @return string The physical structure node's / IIIF resource's raw text
      */
+    //TODO: check if this method is still needed somewhere, if not simply replace with getFullText
     public abstract function getRawText($id);
 
     /**
@@ -1301,6 +1379,7 @@ abstract class Document
         }
         // Add document to index.
         if ($core) {
+            //TODO: handling if this method returns failure
             Indexer::add($this, $core);
         } else {
             $this->logger->notice('Invalid UID "' . $core . '" for Solr core');
