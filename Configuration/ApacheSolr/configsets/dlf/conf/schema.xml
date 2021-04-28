@@ -42,8 +42,6 @@ limitations under the License.
         <fieldType name="text_ocr" class="solr.TextField" storeOffsetsWithPositions="true" termVectors="true">
             <!-- TODO: check why some filters are outcommented -->
             <analyzer type="index">
-                <!-- For loading external files as field values during indexing -->
-                <charFilter class="de.digitalcollections.solrocr.lucene.filters.ExternalUtf8ContentFilterFactory" />
                 <!-- For converting OCR to plaintext -->
                 <charFilter class="de.digitalcollections.solrocr.lucene.filters.OcrCharFilterFactory" />
                 
