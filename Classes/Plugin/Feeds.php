@@ -126,7 +126,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
                     $additionalWhere,
                     Helper::whereExpression('tx_dlf_documents'),
-                    Helper::whereExpression('tx_dlf_collections'),
+                    Helper::whereExpression('tx_dlf_collections')
                 )
                 ->groupBy('tx_dlf_documents.uid')
                 ->orderBy('tx_dlf_documents.tstamp', 'DESC')
