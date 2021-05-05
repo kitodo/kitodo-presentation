@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -328,7 +329,7 @@ class DataHandler
             && $table == 'tx_dlf_solrcores'
         ) {
             // Is core deletion allowed in extension configuration?
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
             if (!empty($extConf['solrAllowCoreDelete'])) {
                 // Delete core from Apache Solr as well.
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)

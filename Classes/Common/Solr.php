@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -314,7 +315,7 @@ class Solr
         if (empty($this->config)) {
             $config = [];
             // Extract extension configuration.
-            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Derive Solr scheme
             $config['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
             // Derive Solr host name.

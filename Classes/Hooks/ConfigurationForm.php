@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -207,6 +208,6 @@ class ConfigurationForm
         // Load localization file.
         $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
         // Get current configuration.
-        $this->conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));
+        $this->conf = array_merge(GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf'), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));
     }
 }
