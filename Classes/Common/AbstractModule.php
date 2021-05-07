@@ -132,7 +132,10 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     public function __construct()
     {
         $GLOBALS['LANG']->includeLLFile('EXT:' . $this->extKey . '/Resources/Private/Language/' . Helper::getUnqualifiedClassName(get_class($this)) . '.xml');
-        $this->conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+        // Read extension configuration.
+        if (isset($‪GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey]) && is_array($‪GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey])) {
+            $this->conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+        }
         $this->data = GeneralUtility::_GPmerged($this->prefixId);
     }
 }
