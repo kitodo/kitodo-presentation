@@ -113,7 +113,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $conf = Helper::mergeRecursiveWithOverrule($generalConf, $conf);
         }
         // Read extension configuration.
-        if (isset($‪GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey]) && is_array($‪GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey])) {
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey]) && is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey])) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
             if (is_array($extConf)) {
                 $conf = Helper::mergeRecursiveWithOverrule($extConf, $conf);
