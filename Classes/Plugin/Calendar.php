@@ -157,7 +157,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 $_day = date('j', $dateTimestamp);
                 $calendarIssuesByYear[$_year][$_month][$_day][] = $issue;
             } else {
-                Helper::devLog('Document with UID ' . $issue['uid'] . 'has no valid date of publication', DEVLOG_SEVERITY_WARNING);
+                $this->logger->warning('Document with UID ' . $issue['uid'] . 'has no valid date of publication');
             }
         }
         // Sort by years.

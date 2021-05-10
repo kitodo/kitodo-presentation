@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
@@ -48,6 +49,14 @@ use Ubl\Iiif\Tools\IiifHelper;
  */
 abstract class Document
 {
+    /**
+     * This holds the logger
+     *
+     * @var LogManager
+     * @access protected
+     */
+    protected $logger;
+
     /**
      * This holds the PID for the configuration
      *
@@ -562,6 +571,7 @@ abstract class Document
                 Helper::saveToSession(self::$registry, get_class($instance));
             }
         }
+        $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($instance));
         // Return new instance.
         return $instance;
     }
@@ -683,14 +693,14 @@ abstract class Document
                         // Get the root element's name as text format.
                         $textFormat = strtoupper($rawTextXml->getName());
                     } else {
-                        Helper::devLog('Couln\'t load fulltext file for structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+                        $this->logger->warning('Couldn\'t load fulltext file for structure node @ID "' . $id . '"');
                         return $rawText;
                     }
                     break;
                 }
             }
         } else {
-            Helper::devLog('Invalid structure node @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Invalid structure node @ID "' . $id . '"');
             return $rawText;
         }
         // Is this text format supported?
@@ -708,11 +718,11 @@ abstract class Document
                     $rawText = $obj->getRawText($rawTextXml);
                     $this->rawTextArray[$id] = $rawText;
                 } else {
-                    Helper::devLog('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"', DEVLOG_SEVERITY_WARNING);
+                    $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
                 }
             }
         } else {
-            Helper::devLog('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
         }
         return $rawText;
     }
@@ -731,6 +741,8 @@ abstract class Document
      */
     public static function getTitle($uid, $recursive = false)
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         $title = '';
         // Sanitize input.
         $uid = max(intval($uid), 0);
@@ -765,10 +777,10 @@ abstract class Document
                     $title = self::getTitle($partof, true);
                 }
             } else {
-                Helper::devLog('No document with UID ' . $uid . ' found or document not accessible', DEVLOG_SEVERITY_WARNING);
+                $logger->warning('No document with UID ' . $uid . ' found or document not accessible');
             }
         } else {
-            Helper::devLog('Invalid UID ' . $uid . ' for document', DEVLOG_SEVERITY_ERROR);
+            $logger->error('Invalid UID ' . $uid . ' for document');
         }
         return $title;
     }
@@ -903,7 +915,7 @@ abstract class Document
             // the actual loading is format specific
             return $this->loadLocation($location);
         } else {
-            Helper::devLog('Invalid file location "' . $location . '" for document loading', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Invalid file location "' . $location . '" for document loading');
         }
         return false;
     }
@@ -975,7 +987,7 @@ abstract class Document
         } elseif ($obj instanceof \DOMXPath) {
             $method = 'registerNamespace';
         } else {
-            Helper::devLog('Given object is neither a SimpleXMLElement nor a DOMXPath instance', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Given object is neither a SimpleXMLElement nor a DOMXPath instance');
             return;
         }
         // Register metadata format's namespaces.
@@ -997,7 +1009,7 @@ abstract class Document
     public function save($pid = 0, $core = 0)
     {
         if (\TYPO3_MODE !== 'BE') {
-            Helper::devLog('Saving a document is only allowed in the backend', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Saving a document is only allowed in the backend');
             return false;
         }
         // Make sure $pid is a non-negative integer.
@@ -1012,7 +1024,7 @@ abstract class Document
             // Retain current PID.
             $pid = $this->pid;
         } elseif (!$pid) {
-            Helper::devLog('Invalid PID ' . $pid . ' for document saving', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Invalid PID ' . $pid . ' for document saving');
             return false;
         }
         // Set PID for metadata definitions.
@@ -1025,7 +1037,7 @@ abstract class Document
         $metadata = $this->getTitledata($pid);
         // Check for record identifier.
         if (empty($metadata['record_id'][0])) {
-            Helper::devLog('No record identifier found to avoid duplication', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('No record identifier found to avoid duplication');
             return false;
         }
         // Load plugin configuration.
@@ -1049,7 +1061,7 @@ abstract class Document
         if ($resArray = $result->fetch()) {
             $structure = $resArray['uid'];
         } else {
-            Helper::devLog('Could not identify document/structure type "' . $queryBuilder->expr()->literal($metadata['type'][0]) . '"', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Could not identify document/structure type "' . $queryBuilder->expr()->literal($metadata['type'][0]) . '"');
             return false;
         }
         $metadata['type'][0] = $structure;
@@ -1291,7 +1303,7 @@ abstract class Document
         if ($core) {
             Indexer::add($this, $core);
         } else {
-            Helper::devLog('Invalid UID "' . $core . '" for Solr core', DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('Invalid UID "' . $core . '" for Solr core');
         }
         return true;
     }
@@ -1357,7 +1369,7 @@ abstract class Document
         // Set metadata definitions' PID.
         $cPid = ($this->cPid ? $this->cPid : $this->pid);
         if (!$cPid) {
-            Helper::devLog('Invalid PID ' . $cPid . ' for metadata definitions', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Invalid PID ' . $cPid . ' for metadata definitions');
             return [];
         }
         if (
@@ -1685,7 +1697,7 @@ abstract class Document
             // Document ready!
             $this->ready = true;
         } else {
-            Helper::devLog('No document with UID ' . $uid . ' found or document not accessible', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('No document with UID ' . $uid . ' found or document not accessible');
         }
     }
 
@@ -1705,7 +1717,7 @@ abstract class Document
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no getter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no getter function for property "' . $var . '"');
             return;
         } else {
             return $this->$method();
@@ -1743,7 +1755,7 @@ abstract class Document
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no setter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no setter function for property "' . $var . '"');
         } else {
             $this->$method($value);
         }

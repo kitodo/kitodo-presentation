@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -36,6 +37,14 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class Solr
 {
+    /**
+     * This holds the logger
+     *
+     * @var LogManager
+     * @access protected
+     */
+    protected $logger;
+
     /**
      * This holds the Solr configuration
      *
@@ -158,7 +167,7 @@ class Solr
                     // Nothing to do here.
                 }
             } else {
-                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+                $solr->logger->error('Apache Solr not available');
             }
         }
         return '';
@@ -252,6 +261,8 @@ class Solr
      */
     public static function getInstance($core = null)
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
             $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
@@ -261,7 +272,7 @@ class Solr
             empty($core)
             && $core !== null
         ) {
-            Helper::devLog('Invalid core UID or name given for Apache Solr', DEVLOG_SEVERITY_ERROR);
+            $logger->error('Invalid core UID or name given for Apache Solr');
         }
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
@@ -275,6 +286,7 @@ class Solr
         }
         // Create new instance...
         $instance = new self($core);
+        $instance->logger = $logger;
         // ...and save it to registry.
         if (!empty($instance->core)) {
             self::$registry[$instance->core] = $instance;
@@ -563,7 +575,7 @@ class Solr
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no getter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no getter function for property "' . $var . '"');
             return;
         } else {
             return $this->$method();
@@ -601,7 +613,7 @@ class Solr
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no setter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no setter function for property "' . $var . '"');
         } else {
             $this->$method($value);
         }

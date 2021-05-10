@@ -17,11 +17,12 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Provider class for additional "getDocmentType" function to the ExpressionLanguage.
+ * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
@@ -100,6 +101,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function loadDocument(array $piVars)
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         // Check for required variable.
         if (!empty($piVars['id'])) {
             // Get instance of document.
@@ -107,7 +110,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             if ($doc->ready) {
                 return $doc;
             } else {
-                Helper::devLog('Failed to load document with UID ' . $piVars['id'], DEVLOG_SEVERITY_WARNING);
+                $logger->warning('Failed to load document with UID ' . $piVars['id']);
             }
         } elseif (!empty($piVars['recordId'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -128,7 +131,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 // Try to load document.
                 return $this->loadDocument(['id' => $resArray['uid']]);
             } else {
-                Helper::devLog('Failed to load document with record ID "' . $piVars['recordId'] . '"', DEVLOG_SEVERITY_WARNING);
+                $logger->warning('Failed to load document with record ID "' . $piVars['recordId'] . '"');
             }
         }
     }

@@ -120,7 +120,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 $imageLink = $this->cObj->typoLink($label . $mimetypeLabel, $linkConf);
                 break;
             } else {
-                Helper::devLog('File not found in fileGrp "' . $fileGrp . '"', DEVLOG_SEVERITY_WARNING);
+                $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
             }
         }
         return $imageLink;

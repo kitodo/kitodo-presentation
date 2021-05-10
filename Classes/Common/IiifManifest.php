@@ -831,7 +831,7 @@ final class IiifManifest extends Document
                     }
                 }
             } else {
-                Helper::devLog('Invalid structure resource @id "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+                $this->logger->warning('Invalid structure resource @id "' . $id . '"');
                 return $rawText;
             }
             $this->rawTextArray[$id] = $rawText;
@@ -880,7 +880,7 @@ final class IiifManifest extends Document
                 }
             }
         }
-        Helper::devLog('Could not load IIIF manifest from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
+        $this->logger->error('Could not load IIIF manifest from "' . $location . '"');
         return false;
     }
 
@@ -997,7 +997,7 @@ final class IiifManifest extends Document
             $this->iiif = $resource;
             $this->init();
         } else {
-            Helper::devLog('Could not load IIIF after deserialization', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Could not load IIIF after deserialization');
         }
     }
 

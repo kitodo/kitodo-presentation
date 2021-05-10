@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -102,6 +103,8 @@ class UserFunc
      */
     protected function loadDocument(array $piVars)
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         // Check for required variable.
         if (!empty($piVars['id'])) {
             // Get instance of document.
@@ -109,7 +112,7 @@ class UserFunc
             if ($doc->ready) {
                 return $doc;
             } else {
-                Helper::devLog('Failed to load document with UID ' . $piVars['id'], DEVLOG_SEVERITY_WARNING);
+                $logger->warning('Failed to load document with UID ' . $piVars['id']);
             }
         } elseif (!empty($piVars['recordId'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -130,7 +133,7 @@ class UserFunc
                 // Try to load document.
                 return $this->loadDocument(['id' => $resArray['uid']]);
             } else {
-                Helper::devLog('Failed to load document with record ID "' . $piVars['recordId'] . '"', DEVLOG_SEVERITY_WARNING);
+                $logger->warning('Failed to load document with record ID "' . $piVars['recordId'] . '"');
             }
         }
     }

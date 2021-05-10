@@ -40,9 +40,6 @@
   "replace": {
     "typo3-ter/dlf": "self.version"
   },
-  "suggest": {
-    "devlog/devlog": "^3.0"
-  },
   "autoload": {
     "psr-4": {
       "Kitodo\\Dlf\\": "Classes/"

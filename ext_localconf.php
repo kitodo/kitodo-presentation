@@ -14,20 +14,20 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 // Define constants.
-if (!defined('DEVLOG_SEVERITY_OK')) {
-    define('DEVLOG_SEVERITY_OK', -1);
+if (!defined('LOG_SEVERITY_OK')) {
+    define('LOG_SEVERITY_OK', -1);
 }
-if (!defined('DEVLOG_SEVERITY_INFO')) {
-    define('DEVLOG_SEVERITY_INFO', 0);
+if (!defined('LOG_SEVERITY_INFO')) {
+    define('LOG_SEVERITY_INFO', 0);
 }
-if (!defined('DEVLOG_SEVERITY_NOTICE')) {
-    define('DEVLOG_SEVERITY_NOTICE', 1);
+if (!defined('LOG_SEVERITY_NOTICE')) {
+    define('LOG_SEVERITY_NOTICE', 1);
 }
-if (!defined('DEVLOG_SEVERITY_WARNING')) {
-    define('DEVLOG_SEVERITY_WARNING', 2);
+if (!defined('LOG_SEVERITY_WARNING')) {
+    define('LOG_SEVERITY_WARNING', 2);
 }
-if (!defined('DEVLOG_SEVERITY_ERROR')) {
-    define('DEVLOG_SEVERITY_ERROR', 3);
+if (!defined('LOG_SEVERITY_ERROR')) {
+    define('LOG_SEVERITY_ERROR', 3);
 }
 // Register plugins without addPItoST43() as this is not working with TYPO3 9.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
