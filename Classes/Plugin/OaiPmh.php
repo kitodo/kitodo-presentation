@@ -93,7 +93,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
 
         if ($result === -1) {
             // Deletion failed.
-            Helper::devLog('Could not delete expired resumption tokens', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Could not delete expired resumption tokens');
         }
     }
 
@@ -307,10 +307,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 // Import node into \DOMDocument.
                 $mets = $this->oai->importNode($root->item(0), true);
             } else {
-                Helper::devLog('No METS part found in document with location "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('No METS part found in document with location "' . $metadata['location'] . '"');
             }
         } else {
-            Helper::devLog('Could not load XML file from "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Could not load XML file from "' . $metadata['location'] . '"');
         }
         if ($mets === null) {
             $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!'), ENT_NOQUOTES, 'UTF-8'));
@@ -583,7 +583,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $adminEmail = htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES);
             $repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
         } else {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('Incomplete plugin configuration');
         }
         // Get earliest datestamp. Use a default value if that fails.
         $earliestDatestamp = '0000-00-00T00:00:00Z';
@@ -605,7 +605,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $timestamp = $resArray['tstamp'];
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
         } else {
-            Helper::devLog('No records found with PID ' . $this->conf['pages'], DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('No records found with PID ' . $this->conf['pages']);
         }
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
@@ -924,7 +924,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $documentSet = [];
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Apache Solr not available');
             return $documentSet;
         }
         if (intval($this->conf['solr_limit']) > 0) {
@@ -1080,7 +1080,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             if ($affectedRows === 1) {
                 $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
             } else {
-                Helper::devLog('Could not create resumption token', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Could not create resumption token');
                 return $this->error('badResumptionToken');
             }
         } else {

@@ -63,7 +63,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
             $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/Search/Suggester.js');
         } else {
-            Helper::devLog('No metadata fields configured for search suggestions', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('No metadata fields configured for search suggestions');
         }
     }
 
@@ -213,7 +213,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['facetsConf.'])) {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Incomplete plugin configuration');
             return '';
         }
         // Quit without doing anything if no facets are selected.
@@ -352,7 +352,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->setCache(false);
         // Quit without doing anything if required variables are not set.
         if (empty($this->conf['solrcore'])) {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Incomplete plugin configuration');
             return $content;
         }
         if (
@@ -498,7 +498,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             // Instantiate search object.
             $solr = Solr::getInstance($this->conf['solrcore']);
             if (!$solr->ready) {
-                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Apache Solr not available');
                 return $content;
             }
             // Set search parameters.
@@ -579,7 +579,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get applicable facets.
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Apache Solr not available');
             return [];
         }
         // Set needed parameters for facet search.

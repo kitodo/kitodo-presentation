@@ -505,7 +505,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                 // Instantiate search object.
                 $solr = Solr::getInstance($this->list->metadata['options']['core']);
                 if (!$solr->ready) {
-                    Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+                    $this->logger->error('Apache Solr not available');
                     return $content;
                 }
                 // Set search parameters.

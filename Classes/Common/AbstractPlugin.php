@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
@@ -35,6 +36,14 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     // Plugins are cached by default (@see setCache()).
     public $pi_USER_INT_obj = false;
     public $pi_checkCHash = true;
+
+    /**
+     * This holds the logger
+     *
+     * @var LogManager
+     * @access protected
+     */
+    protected $logger;
 
     /**
      * This holds the current document
@@ -96,6 +105,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     protected function init(array $conf)
     {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
+
         // Read FlexForm configuration.
         $flexFormConf = [];
         $this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);
@@ -147,7 +158,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = null;
-                Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Failed to load document with UID ' . $this->piVars['id']);
             } else {
                 // Set configuration PID.
                 $this->doc->cPid = $this->conf['pages'];
@@ -175,10 +186,10 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                Helper::devLog('Failed to load document with record ID "' . $this->piVars['recordId'] . '"', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Failed to load document with record ID "' . $this->piVars['recordId'] . '"');
             }
         } else {
-            Helper::devLog('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['pages'] . ' for document loading', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['pages'] . ' for document loading');
         }
     }
 

@@ -130,7 +130,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             array_unshift($metadata, $data);
         }
         if (empty($metadata)) {
-            Helper::devLog('No metadata found for document with UID ' . $this->doc->uid, DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('No metadata found for document with UID ' . $this->doc->uid);
             return $content;
         }
         ksort($metadata);

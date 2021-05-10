@@ -115,7 +115,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
             empty($page1Link)
             && empty($page2Link)
         ) {
-            Helper::devLog('File not found in fileGrps "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('File not found in fileGrps "' . $this->conf['fileGrpDownload'] . '"');
         }
         // Wrap URLs with HTML.
         $linkConf = [
@@ -174,7 +174,7 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
             ];
             $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), $linkConf);
         } else {
-            Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"');
         }
         return $workLink;
     }
