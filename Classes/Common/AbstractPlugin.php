@@ -12,9 +12,10 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
@@ -28,22 +29,16 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
  * @access public
  * @abstract
  */
-abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     public $extKey = 'dlf';
     public $prefixId = 'tx_dlf';
     public $scriptRelPath = 'Classes/Common/AbstractPlugin.php';
     // Plugins are cached by default (@see setCache()).
     public $pi_USER_INT_obj = false;
     public $pi_checkCHash = true;
-
-    /**
-     * This holds the logger
-     *
-     * @var LogManager
-     * @access protected
-     */
-    protected $logger;
 
     /**
      * This holds the current document
@@ -105,8 +100,6 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     protected function init(array $conf)
     {
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
-
         // Read FlexForm configuration.
         $flexFormConf = [];
         $this->cObj->readFlexformIntoConf($this->cObj->data['pi_flexform'], $flexFormConf);

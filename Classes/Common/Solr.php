@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -35,15 +37,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @property-read bool $ready Is the Solr service instantiated successfully?
  * @property-read \Solarium\Client $service This holds the Solr service object
  */
-class Solr
+class Solr implements LoggerAwareInterface
 {
-    /**
-     * This holds the logger
-     *
-     * @var LogManager
-     * @access protected
-     */
-    protected $logger;
+    use LoggerAwareTrait;
 
     /**
      * This holds the Solr configuration
@@ -286,7 +282,6 @@ class Solr
         }
         // Create new instance...
         $instance = new self($core);
-        $instance->logger = $logger;
         // ...and save it to registry.
         if (!empty($instance->core)) {
             self::$registry[$instance->core] = $instance;
