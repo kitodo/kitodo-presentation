@@ -12,8 +12,6 @@
 
 namespace Kitodo\Dlf\Common;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -49,9 +47,15 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read mixed $uid This holds the UID or the URL of the document
  * @abstract
  */
-abstract class Document implements LoggerAwareInterface
+abstract class Document
 {
-    use LoggerAwareTrait;
+    /**
+     * This holds the logger
+     *
+     * @var LogManager
+     * @access protected
+     */
+    protected $logger;
 
     /**
      * This holds the PID for the configuration
@@ -567,6 +571,7 @@ abstract class Document implements LoggerAwareInterface
                 Helper::saveToSession(self::$registry, get_class($instance));
             }
         }
+        $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($instance));
         // Return new instance.
         return $instance;
     }
