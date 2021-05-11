@@ -59,3 +59,10 @@ b. Download the required packages manually to vendor/solarium/solarium and vendo
 After the installation of the packages in non-composer mode you have to deactivate
 and (re-)activate the extension in the extension manager to trigger the TYPO3
 autoloader to rebuild the classmap.
+
+
+************
+Logging
+************
+
+Application uses default TYPO3 logging. It writes logs to the typo3_xyz.log file placed in \var\log.
