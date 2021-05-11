@@ -12,8 +12,10 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -27,15 +29,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @access public
  * @property array $metadata This holds the list's metadata
  */
-class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Core\SingletonInterface
+class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareInterface, SingletonInterface
 {
-    /**
-     * This holds the logger
-     *
-     * @var LogManager
-     * @access protected
-     */
-    protected $logger;
+    use LoggerAwareTrait;
 
     /**
      * This holds the number of documents in the list
