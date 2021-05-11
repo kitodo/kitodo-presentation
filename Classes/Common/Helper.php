@@ -213,16 +213,16 @@ class Helper
 
         switch ($severity) {
             case 0:
-                $logger->info(message);
+                $logger->info($message);
                 break;
             case 1:
-                $logger->notice(message);
+                $logger->notice($message);
                 break;
             case 2:
-                $logger->warning(message);
+                $logger->warning($message);
                 break;
             case 23:
-                $logger->error(message);
+                $logger->error($message);
                 break;
             default:
                 break;
