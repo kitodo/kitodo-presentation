@@ -61,8 +61,14 @@ and (re-)activate the extension in the extension manager to trigger the TYPO3
 autoloader to rebuild the classmap.
 
 
-************
+*******
 Logging
-************
+*******
 
-Application uses default TYPO3 logging. It writes logs to the typo3_xyz.log file placed in \var\log.
+The application uses default `TYPO3 logging framework <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/Logging/Index.html>`_.
+It writes logs to the typo3_xyz.log file placed in  :file:`<project-root>/var/log/` (Composer
+based installation).
+
+You influence the Loglevel by overwriting the writerConfiguration in
+:code:`$GLOBALS['TYPO3_CONF_VARS']['LOG']['writerConfiguration']`. Have a look at the
+documentation: https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/Logging/Configuration/Index.html#writer-configuration
