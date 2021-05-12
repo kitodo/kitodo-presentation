@@ -735,8 +735,6 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
         }
 
         $this->count = count($this->elements);
-
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 
     /**
