@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
@@ -27,8 +29,10 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
  * @access public
  * @abstract
  */
-abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     public $extKey = 'dlf';
     public $prefixId = 'tx_dlf';
     public $scriptRelPath = 'Classes/Common/AbstractPlugin.php';
@@ -147,7 +151,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = null;
-                Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Failed to load document with UID ' . $this->piVars['id']);
             } else {
                 // Set configuration PID.
                 $this->doc->cPid = $this->conf['pages'];
@@ -175,10 +179,10 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                Helper::devLog('Failed to load document with record ID "' . $this->piVars['recordId'] . '"', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Failed to load document with record ID "' . $this->piVars['recordId'] . '"');
             }
         } else {
-            Helper::devLog('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['pages'] . ' for document loading', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['pages'] . ' for document loading');
         }
     }
 

@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -75,9 +76,9 @@ class Helper
      */
     public static function addMessage($message, $title, $severity, $session = false, $queue = 'kitodo.default.flashMessages')
     {
-        $flashMessageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
-        $flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        $flashMessage = GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
             $message,
             $title,
@@ -170,18 +171,18 @@ class Helper
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
             || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
         ) {
-            self::devLog('OpenSSL library doesn\'t support cipher and/or hash algorithm', DEVLOG_SEVERITY_ERROR);
+            self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
             return false;
         }
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
-            self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
+            self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
         if (
             empty($encrypted)
             || strlen($encrypted) < openssl_cipher_iv_length(self::$cipherAlgorithm)
         ) {
-            self::devLog('Invalid parameters given for decryption', DEVLOG_SEVERITY_ERROR);
+            self::log('Invalid parameters given for decryption', LOG_SEVERITY_ERROR);
             return false;
         }
         // Split initialisation vector and encrypted data.
@@ -195,7 +196,7 @@ class Helper
     }
 
     /**
-     * Add a message to the TYPO3 developer log
+     * Add a message to the TYPO3 log
      *
      * @access public
      *
@@ -205,35 +206,26 @@ class Helper
      *
      * @return void
      */
-    public static function devLog($message, $severity = 0)
+    //TODO: find better way to handle logger in static class
+    public static function log($message, $severity = 0)
     {
-        if (isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'])) {
-            $stacktrace = debug_backtrace(0, 2);
-            // Set some defaults.
-            $caller = 'Kitodo\Dlf\Default\UnknownClass::unknownMethod';
-            $args = [];
-            $data = [];
-            if (!empty($stacktrace[1])) {
-                $caller = $stacktrace[1]['class'] . $stacktrace[1]['type'] . $stacktrace[1]['function'];
-                foreach ($stacktrace[1]['args'] as $arg) {
-                    if (is_bool($arg)) {
-                        $args[] = ($arg ? 'true' : 'false');
-                    } elseif (is_scalar($arg)) {
-                        $args[] = (string) $arg;
-                    } elseif (is_null($arg)) {
-                        $args[] = 'null';
-                    } elseif (is_array($arg)) {
-                        $args[] = '[data]';
-                        $data[] = $arg;
-                    } elseif (is_object($arg)) {
-                        $args[] = '[' . get_class($arg) . ']';
-                        $data[] = $arg;
-                    }
-                }
-            }
-            $arguments = '(' . implode(', ', $args) . ')';
-            $additionalData = (empty($data) ? false : $data);
-            /** @scrutinizer ignore-deprecated */ \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[' . $caller . $arguments . '] ' . $message, self::$extKey, $severity, $additionalData);
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
+        switch ($severity) {
+            case 0:
+                $logger->info($message);
+                break;
+            case 1:
+                $logger->notice($message);
+                break;
+            case 2:
+                $logger->warning($message);
+                break;
+            case 23:
+                $logger->error($message);
+                break;
+            default:
+                break;
         }
     }
 
@@ -249,7 +241,7 @@ class Helper
     public static function digest($string)
     {
         if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
-            self::devLog('OpenSSL library doesn\'t support hash algorithm', DEVLOG_SEVERITY_ERROR);
+            self::log('OpenSSL library doesn\'t support hash algorithm', LOG_SEVERITY_ERROR);
             return false;
         }
         // Hash string.
@@ -272,11 +264,11 @@ class Helper
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
             || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
         ) {
-            self::devLog('OpenSSL library doesn\'t support cipher and/or hash algorithm', DEVLOG_SEVERITY_ERROR);
+            self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
             return false;
         }
         if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
-            self::devLog('No encryption key set in TYPO3 configuration', DEVLOG_SEVERITY_ERROR);
+            self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
         // Generate random initialisation vector.
@@ -342,7 +334,7 @@ class Helper
         $hookObjects = [];
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
-                $hookObjects[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($classRef);
+                $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
         }
         return $hookObjects;
@@ -367,7 +359,7 @@ class Helper
             !$uid
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
-            self::devLog('Invalid UID "' . $uid . '" or table "' . $table . '"', DEVLOG_SEVERITY_ERROR);
+            self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
             return '';
         }
 
@@ -396,7 +388,7 @@ class Helper
         if ($resArray = $result->fetch()) {
             return $resArray['index_name'];
         } else {
-            self::devLog('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', DEVLOG_SEVERITY_WARNING);
+            self::log('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -434,13 +426,13 @@ class Helper
                 $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639);
             }
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             return $code;
         }
         if (!empty($lang)) {
             return $lang;
         } else {
-            self::devLog('Language code "' . $code . '" not found in ISO-639 table', DEVLOG_SEVERITY_NOTICE);
+            self::log('Language code "' . $code . '" not found in ISO-639 table', LOG_SEVERITY_NOTICE);
             return $code;
         }
     }
@@ -468,7 +460,7 @@ class Helper
             } elseif (\TYPO3_MODE === 'BE') {
                 self::$messages = $GLOBALS['LANG']->includeLLFile($file, false, true);
             } else {
-                self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+                self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             }
         }
         // Get translation.
@@ -478,7 +470,7 @@ class Helper
             } elseif (\TYPO3_MODE === 'BE') {
                 $translated = $GLOBALS['LANG']->getLLL($key, self::$messages);
             } else {
-                self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+                self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             }
         }
         // Escape HTML characters if applicable.
@@ -505,7 +497,7 @@ class Helper
             !$index_name
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
-            self::devLog('Invalid UID ' . $index_name . ' or table "' . $table . '"', DEVLOG_SEVERITY_ERROR);
+            self::log('Invalid UID ' . $index_name . ' or table "' . $table . '"', LOG_SEVERITY_ERROR);
             return '';
         }
 
@@ -535,7 +527,7 @@ class Helper
         if (count($allResults) == 1) {
             return $allResults[0]['uid'];
         } else {
-            self::devLog('No UID for given index_name "' . $index_name . '" and PID ' . $pid . ' found in table "' . $table . '"', DEVLOG_SEVERITY_WARNING);
+            self::log('No UID for given index_name "' . $index_name . '" and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
             return '';
         }
     }
@@ -595,7 +587,7 @@ class Helper
         ];
         $urn = strtolower($base . $id);
         if (preg_match('/[^a-z0-9:-]/', $urn)) {
-            self::devLog('Invalid chars in given parameters', DEVLOG_SEVERITY_WARNING);
+            self::log('Invalid chars in given parameters', LOG_SEVERITY_WARNING);
             return '';
         }
         $digits = '';
@@ -638,7 +630,7 @@ class Helper
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {
-            self::devLog('Invalid key "' . $key . '" for session data retrieval', DEVLOG_SEVERITY_WARNING);
+            self::log('Invalid key "' . $key . '" for session data retrieval', LOG_SEVERITY_WARNING);
             return;
         }
         // Get the session data.
@@ -647,7 +639,7 @@ class Helper
         } elseif (\TYPO3_MODE === 'BE') {
             return $GLOBALS['BE_USER']->getSessionData($key);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             return;
         }
     }
@@ -717,7 +709,7 @@ class Helper
             }
             return $dataHandler->substNEWwithIDs;
         } else {
-            self::devLog('Current backend user has no admin privileges', DEVLOG_SEVERITY_ERROR);
+            self::log('Current backend user has no admin privileges', LOG_SEVERITY_ERROR);
             return [];
         }
     }
@@ -756,7 +748,7 @@ class Helper
         // Cast to string for security reasons.
         $key = (string) $key;
         if (!$key) {
-            self::devLog('Invalid key "' . $key . '" for session data saving', DEVLOG_SEVERITY_WARNING);
+            self::log('Invalid key "' . $key . '" for session data saving', LOG_SEVERITY_WARNING);
             return false;
         }
         // Save value in session data.
@@ -768,7 +760,7 @@ class Helper
             $GLOBALS['BE_USER']->setAndSaveSessionData($key, $value);
             return true;
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             return false;
         }
     }
@@ -791,7 +783,7 @@ class Helper
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {
-            self::devLog('Invalid PID ' . $pid . ' for translation', DEVLOG_SEVERITY_WARNING);
+            self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $index_name;
         }
         // Check if "index_name" is an UID.
@@ -884,10 +876,10 @@ class Helper
                         }
                     }
                 } else {
-                    self::devLog('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible', DEVLOG_SEVERITY_NOTICE);
+                    self::log('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible', LOG_SEVERITY_NOTICE);
                 }
             } else {
-                self::devLog('No translations available for table "' . $table . '"', DEVLOG_SEVERITY_WARNING);
+                self::log('No translations available for table "' . $table . '"', LOG_SEVERITY_WARNING);
             }
         }
 
@@ -928,7 +920,7 @@ class Helper
                 ->expr()
                 ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::devLog('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', DEVLOG_SEVERITY_ERROR);
+            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             return '1=-1';
         }
     }

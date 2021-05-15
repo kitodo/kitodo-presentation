@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -26,8 +29,10 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @access public
  * @property array $metadata This holds the list's metadata
  */
-class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Core\SingletonInterface
+class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareInterface, SingletonInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * This holds the number of documents in the list
      * @see \Countable
@@ -132,7 +137,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if ($this->valid()) {
             return $this->getRecord($this->elements[$this->position]);
         } else {
-            Helper::devLog('Invalid position "' . $this->position . '" for list element', DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('Invalid position "' . $this->position . '" for list element');
             return;
         }
     }
@@ -304,7 +309,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             // Save record for later usage.
             $this->records[$element['u']] = $record;
         } else {
-            Helper::devLog('No UID of list element to fetch full record', DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('No UID of list element to fetch full record');
             $record = $element;
         }
         return $record;
@@ -341,7 +346,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             $position < 0
             || $position >= $this->count
         ) {
-            Helper::devLog('Invalid position "' . $position . '" for element moving', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Invalid position "' . $position . '" for element moving');
             return;
         }
         $steps = intval($steps);
@@ -349,7 +354,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if (($position + $steps) < 0
             || ($position + $steps) >= $this->count
         ) {
-            Helper::devLog('Invalid steps "' . $steps . '" for moving element at position "' . $position . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Invalid steps "' . $steps . '" for moving element at position "' . $position . '"');
             return;
         }
         $element = $this->remove($position);
@@ -427,7 +432,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if ($this->offsetExists($offset)) {
             return $this->getRecord($this->elements[$offset]);
         } else {
-            Helper::devLog('Invalid offset "' . $offset . '" for list element', DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('Invalid offset "' . $offset . '" for list element');
             return;
         }
     }
@@ -471,7 +476,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             $position < 0
             || $position >= $this->count
         ) {
-            Helper::devLog('Invalid position "' . $position . '" for element removing', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Invalid position "' . $position . '" for element removing');
             return;
         }
         $removed = array_splice($this->elements, $position, 1);
@@ -496,7 +501,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             $position < 0
             || $position >= $this->count
         ) {
-            Helper::devLog('Invalid position "' . $position . '" for element removing', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Invalid position "' . $position . '" for element removing');
             return;
         }
         $removed = array_splice($this->elements, $position, $length);
@@ -634,7 +639,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
         if ($this->count == count($newOrder)) {
             $this->elements = $newOrder;
         } else {
-            Helper::devLog('Sorted list elements do not match unsorted elements', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Sorted list elements do not match unsorted elements');
         }
     }
 
@@ -728,6 +733,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             // Add initial set of elements to the list.
             $this->elements = $elements;
         }
+
         $this->count = count($this->elements);
     }
 
@@ -759,7 +765,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no getter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no getter function for property "' . $var . '"');
             return;
         } else {
             return $this->$method();
@@ -797,7 +803,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, \TYPO3\CMS\Co
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no setter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no setter function for property "' . $var . '"');
         } else {
             $this->$method($value);
         }

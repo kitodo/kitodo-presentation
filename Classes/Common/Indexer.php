@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -92,6 +93,8 @@ class Indexer
      */
     public static function add(Document &$doc, $core = 0)
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         if (in_array($doc->uid, self::$processedDocs)) {
             return 0;
         } elseif (self::solrConnect($core, $doc->pid)) {
@@ -102,7 +105,7 @@ class Indexer
                 if ($parent->ready) {
                     $errors = self::add($parent, $core);
                 } else {
-                    Helper::devLog('Could not load parent document with UID ' . $doc->parentId, DEVLOG_SEVERITY_ERROR);
+                    $logger->error('Could not load parent document with UID ' . $doc->parentId);
                     return 1;
                 }
             }
@@ -182,7 +185,7 @@ class Indexer
                         'core.template.flashMessages'
                     );
                 }
-                Helper::devLog('Apache Solr threw exception: "' . $e->getMessage() . '"', DEVLOG_SEVERITY_ERROR);
+                $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
                 return 1;
             }
         } else {
@@ -195,7 +198,7 @@ class Indexer
                     'core.template.flashMessages'
                 );
             }
-            Helper::devLog('Could not connect to Apache Solr server', DEVLOG_SEVERITY_ERROR);
+            $logger->error('Could not connect to Apache Solr server');
             return 1;
         }
     }
@@ -212,10 +215,12 @@ class Indexer
      */
     public static function getIndexFieldName($index_name, $pid = 0)
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {
-            Helper::devLog('Invalid PID ' . $pid . ' for metadata configuration', DEVLOG_SEVERITY_ERROR);
+            $logger->error('Invalid PID ' . $pid . ' for metadata configuration');
             return '';
         }
         // Load metadata configuration.

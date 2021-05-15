@@ -199,7 +199,7 @@ final class MetsDocument extends Document
         ) {
             return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
         } else {
-            Helper::devLog('There is no file node with @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no file node with @ID "' . $id . '"');
             return '';
         }
     }
@@ -217,7 +217,7 @@ final class MetsDocument extends Document
         ) {
             return (string) $mimetype[0];
         } else {
-            Helper::devLog('There is no file node with @ID "' . $id . '" or no MIME type specified', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no file node with @ID "' . $id . '" or no MIME type specified');
             return '';
         }
     }
@@ -378,7 +378,7 @@ final class MetsDocument extends Document
             // Retain current PID.
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
         } elseif (!$cPid) {
-            Helper::devLog('Invalid PID ' . $cPid . ' for metadata definitions', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Invalid PID ' . $cPid . ' for metadata definitions');
             return [];
         }
         // Get metadata from parsed metadata array if available.
@@ -445,11 +445,11 @@ final class MetsDocument extends Document
                     ) {
                         $obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
                     } else {
-                        Helper::devLog('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->dmdSec[$dmdId]['type'] . '"', DEVLOG_SEVERITY_WARNING);
+                        $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->dmdSec[$dmdId]['type'] . '"');
                     }
                 }
             } else {
-                Helper::devLog('Unsupported metadata format "' . $this->dmdSec[$dmdId]['type'] . '" in dmdSec with @ID "' . $dmdId . '"', DEVLOG_SEVERITY_NOTICE);
+                $this->logger->notice('Unsupported metadata format "' . $this->dmdSec[$dmdId]['type'] . '" in dmdSec with @ID "' . $dmdId . '"');
                 // Continue searching for supported metadata with next @DMDID.
                 continue;
             }
@@ -642,7 +642,7 @@ final class MetsDocument extends Document
         if ($hasSupportedMetadata) {
             return $metadata;
         } else {
-            Helper::devLog('No supported metadata found for logical structure with @ID "' . $id . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('No supported metadata found for logical structure with @ID "' . $id . '"');
             return [];
         }
     }
@@ -694,7 +694,7 @@ final class MetsDocument extends Document
             // Register namespaces.
             $this->registerNamespaces($this->mets);
         } else {
-            Helper::devLog('No METS part found in document with UID ' . $this->uid, DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('No METS part found in document with UID ' . $this->uid);
         }
     }
 
@@ -722,7 +722,7 @@ final class MetsDocument extends Document
                 return true;
             }
         }
-        Helper::devLog('Could not load XML file from "' . $location . '"', DEVLOG_SEVERITY_ERROR);
+        $this->logger->error('Could not load XML file from "' . $location . '"');
         return false;
     }
 
@@ -1006,14 +1006,14 @@ final class MetsDocument extends Document
             // Retain current PID.
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
             if (!$cPid) {
-                Helper::devLog('Invalid PID ' . $cPid . ' for structure definitions', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Invalid PID ' . $cPid . ' for structure definitions');
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
             // Load extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             if (empty($extConf['fileGrpThumbs'])) {
-                Helper::devLog('No fileGrp for thumbnails specified', DEVLOG_SEVERITY_WARNING);
+                $this->logger->warning('No fileGrp for thumbnails specified');
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
@@ -1066,7 +1066,7 @@ final class MetsDocument extends Document
                     }
                 }
             } else {
-                Helper::devLog('No structure of type "' . $metadata['type'][0] . '" found in database', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('No structure of type "' . $metadata['type'][0] . '" found in database');
             }
             $this->thumbnailLoaded = true;
         }
@@ -1154,7 +1154,7 @@ final class MetsDocument extends Document
             // Rebuild the unserializable properties.
             $this->init();
         } else {
-            Helper::devLog('Could not load XML after deserialization', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Could not load XML after deserialization');
         }
     }
 }

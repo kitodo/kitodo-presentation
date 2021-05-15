@@ -198,7 +198,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages]);
                 break;
             } else {
-                Helper::devLog('File not found in fileGrp "' . $fileGrpImages . '"', DEVLOG_SEVERITY_WARNING);
+                $this->logger->warning('File not found in fileGrp "' . $fileGrpImages . '"');
             }
         }
         return $image;
@@ -236,7 +236,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         if (empty($fulltext)) {
-            Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpFulltext'] . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('File not found in fileGrp "' . $this->conf['fileGrpFulltext'] . '"');
         }
         return $fulltext;
     }

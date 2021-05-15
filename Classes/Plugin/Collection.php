@@ -55,7 +55,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->setCache(true);
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->conf['pages'])) {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Incomplete plugin configuration');
             return $content;
         }
         // Load template file.
@@ -143,7 +143,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Apache Solr not available');
             return $content;
         }
         // We only care about the UID and partOf in the results and want them sorted
@@ -319,7 +319,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                 $collectionData = $resArray;
             }
         } else {
-            Helper::devLog('No collection with UID ' . $id . ' found.', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('No collection with UID ' . $id . ' found.');
             return;
         }
         // Fetch corresponding document UIDs from Solr.
@@ -330,7 +330,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Apache Solr not available');
             return;
         }
         $params['fields'] = 'uid';
