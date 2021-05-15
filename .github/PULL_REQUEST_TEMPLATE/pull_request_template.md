@@ -18,7 +18,7 @@ If applicable, provide a working demo to help us review the changes. Alternative
  - OS version: [e.g. Windows Server 2019, Debian Linux 10.2]
  - RDBMS version: [e.g. MySQL 8.0.16, MariaDB 10.4.10]
  - Apache Solr version: [e.g. 8.3.0]
- - TYPO3 version: [e.g. 8.7.29]
+ - TYPO3 version: [e.g. 9.5.27]
  - PHP version: [e.g. 7.3.11]
 
 ## Migration
