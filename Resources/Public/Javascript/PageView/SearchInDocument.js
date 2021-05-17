@@ -189,6 +189,20 @@ function getNavigationButtons(start, numFound) {
     return buttons;
 }
 
+function triggerSearchAfterHitLoad() {
+    var queryParams = getCurrentQueryParams(getBaseUrl(" "));
+
+    for(var i = 0; i < queryParams.length; i++) {
+        var queryParam = queryParams[i].split('=');
+
+        if(queryParam[0].indexOf($("input[id='tx-dlf-search-in-document-highlight-word']").attr('name')) !== -1) {
+            $("input[id='tx-dlf-search-in-document-query']").val(decodeURIComponent(queryParam[1]));
+            $("#tx-dlf-search-in-document-form").submit();
+            break;
+        }
+    }
+}
+
 $(document).ready(function() {
     $("#tx-dlf-search-in-document-form").submit(function(event) {
         // Stop form from submitting normally
@@ -255,4 +269,6 @@ $(document).ready(function() {
         $('.results-active-indicator').remove();
         $('#tx-dlf-search-in-document-query').val('');
     });
+
+    triggerSearchAfterHitLoad();
 });
