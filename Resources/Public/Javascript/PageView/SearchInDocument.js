@@ -131,9 +131,6 @@ function getAllQueryParams(baseUrl, queryParams) {
  * @returns {array} array with params in form 'param' => 'value' 
  */
 function getNeededQueryParams(element) {
-    var searchWord = element['snippet'];
-    searchWord = searchWord.substring(searchWord.indexOf('<em>') + 4, searchWord.indexOf('</em>'));
-
     var id = $("input[id='tx-dlf-search-in-document-id']").attr('name');
     var highlightWord = $("input[id='tx-dlf-search-in-document-highlight-word']").attr('name');
     var page = $("input[id='tx-dlf-search-in-document-page']").attr('name');
@@ -145,7 +142,7 @@ function getNeededQueryParams(element) {
         queryParams[id] = element['uid'];
     }
     queryParams.push(highlightWord);
-    queryParams[highlightWord] = encodeURIComponent(searchWord);
+    queryParams[highlightWord] = encodeURIComponent($("input[id='tx-dlf-search-in-document-query']").val());
     queryParams.push(page);
     queryParams[page] = element['page'];
 
