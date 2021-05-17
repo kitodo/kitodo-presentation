@@ -570,9 +570,8 @@ abstract class Document
             if (!empty($extConf['caching'])) {
                 Helper::saveToSession(self::$registry, get_class($instance));
             }
-            $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+            $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($instance));
         }
-
         // Return new instance.
         return $instance;
     }
