@@ -116,15 +116,15 @@ class Indexer
                 $updateQuery = self::$solr->service->createUpdate();
                 $updateQuery->addDeleteQuery('uid:' . $doc->uid);
                 self::$solr->service->update($updateQuery);
-                //TODO: handle problem with indexing documents without OCR
+
                 // Index every logical unit as separate Solr document.
-                /*foreach ($doc->tableOfContents as $logicalUnit) {
+                foreach ($doc->tableOfContents as $logicalUnit) {
                     if (!$errors) {
                         $errors = self::processLogical($doc, $logicalUnit);
                     } else {
                         break;
                     }
-                }*/
+                }
                 // Index full text files if available.
                 if ($doc->hasFulltext) {
                     foreach ($doc->physicalStructure as $pageNumber => $xmlId) {
@@ -360,6 +360,7 @@ class Indexer
             $solrDoc->setField('terms', $metadata['terms']);
             $solrDoc->setField('restrictions', $metadata['restrictions']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+            $solrDoc->setField('fulltext', '');
             $coordinates = json_decode($metadata['coordinates'][0]);
             if (is_object($coordinates)) {
                 $solrDoc->setField('geom', json_encode($coordinates->features[0]));
