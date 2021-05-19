@@ -22,15 +22,15 @@ Requirements
 
 Kitodo.Presentation requires [TYPO3](https://get.typo3.org) with [PHP](https://secure.php.net). It uses [MySQL](https://www.mysql.com) or [MariaDB](https://mariadb.com) as database and [Apache Solr](https://lucene.apache.org/solr) via [Solarium](http://www.solarium-project.org/) as search engine backend.
 
-Currently **TYPO3 8 ELTS** and **TYPO3 9 LTS** are supported with the following system requirements:
+Currently **TYPO3 9.5 LTS** is supported with the following system requirements:
 
-| Component   | Constraints for 8 ELTS | Constraints for 9 LTS |
-| ----------- | ---------------------- | --------------------- |
-| TYPO3       | 8.7.x                  | 9.5.x                 |
-| PHP         | 7.3.x - 7.4.x          | 7.3.x - 7.4.x         |
-| MySQL       | 5.7.x                  | 5.7.x                 |
-| MariaDB     | 10.2.x - 10.2.26       | 10.2.x - 10.3.x       |
-| Apache Solr | 7.x                    | 7.x                   |
+| Component   | Constraints for 9 LTS |
+| ----------- | --------------------- |
+| TYPO3       | 9.5.x                 |
+| PHP         | 7.3.x - 7.4.x         |
+| MySQL       | 5.7.x                 |
+| MariaDB     | 10.2.x - 10.3.x       |
+| Apache Solr | 7.x - 8.x             |
 
 Application level dependencies are handled by [Composer](https://getcomposer.org) (see [composer.json](./composer.json)).
 
