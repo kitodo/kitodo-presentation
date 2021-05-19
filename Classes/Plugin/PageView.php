@@ -198,8 +198,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages]);
                 break;
             } else {
-                $this->logger->warning('File not found in fileGrp "' . $fileGrpImages . '"');
+                $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
             }
+        }
+        if (empty($image)) {
+            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->conf['fileGrpImages'] . '"');
         }
         return $image;
     }
@@ -233,10 +236,12 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
                 $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 break;
+            } else {
+                $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $fileGrpFulltext . '"');
             }
         }
         if (empty($fulltext)) {
-            $this->logger->warning('File not found in fileGrp "' . $this->conf['fileGrpFulltext'] . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->conf['fileGrpFulltext'] . '"');
         }
         return $fulltext;
     }
