@@ -77,6 +77,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 if ($doc === null) {
                     return $type;
                 }
+                // Set PID for metadata definitions.
+                $doc->cPid = $cPid;
+
                 $metadata = $doc->getTitledata($cPid);
                 if (!empty($metadata['type'][0])) {
                     // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.

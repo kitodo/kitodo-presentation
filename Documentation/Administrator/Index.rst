@@ -69,6 +69,6 @@ The application uses default `TYPO3 logging framework <https://docs.typo3.org/m/
 It writes logs to the typo3_xyz.log file placed in  :file:`<project-root>/var/log/` (Composer
 based installation).
 
-You influence the Loglevel by overwriting the writerConfiguration in
+You influence the Loglevel by overwriting the :code:`writerConfiguration` in
 :code:`$GLOBALS['TYPO3_CONF_VARS']['LOG']['writerConfiguration']`. Have a look at the
 documentation: https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/Logging/Configuration/Index.html#writer-configuration
