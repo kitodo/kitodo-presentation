@@ -74,16 +74,14 @@ class ConfigurationForm
     public function checkMetadataFormats()
     {
         // We need to do some bootstrapping manually as of TYPO3 9.
-        if (version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version(), '9.0.0', '>=')) {
-            // Load table configuration array into $GLOBALS['TCA'].
-            ExtensionManagementUtility::loadBaseTca(false);
-            // Get extension configuration from dlf/ext_localconf.php.
-            ExtensionManagementUtility::loadExtLocalconf(false);
-            // Initialize backend user into $GLOBALS['BE_USER'].
-            Bootstrap::initializeBackendUser();
-            // Initialize backend and ensure authenticated access.
-            Bootstrap::initializeBackendAuthentication();
-        }
+        // Load table configuration array into $GLOBALS['TCA'].
+        ExtensionManagementUtility::loadBaseTca(false);
+        // Get extension configuration from dlf/ext_localconf.php.
+        ExtensionManagementUtility::loadExtLocalconf(false);
+        // Initialize backend user into $GLOBALS['BE_USER'].
+        Bootstrap::initializeBackendUser();
+        // Initialize backend and ensure authenticated access.
+        Bootstrap::initializeBackendAuthentication();
 
         $nsDefined = [
             'MODS' => false,
