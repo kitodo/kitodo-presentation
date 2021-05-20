@@ -74,10 +74,13 @@ var dlfViewer = function(settings){
     this.highlightFieldParams = undefined;
 
     /**
-     * @type {string|undefined}
+     * Here is assigned default key from dlf extension, it can
+     * be overwritten by fulltextControl.searchHlParameters,
+     * if the full text is given for the document.
+     * @type {string}
      * @private
      */
-    this.highlightKeys = undefined;
+    this.highlightKeys = 'tx_dlf[highlight_word]';
 
     /**
      * @type {Object|undefined}
