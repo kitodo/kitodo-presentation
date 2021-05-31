@@ -197,7 +197,32 @@
             <label index="config.solrUser">Solr Server User: (default is "")</label>
             <label index="config.solrPass">Solr Server Password: (default is "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (default is "10")</label>
-            <label index="config.solrAllowCoreDelete">Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (Standard ist "FALSE")</label>
+            <label index="config.solrAllowCoreDelete">Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (default is "FALSE")</label>
+            <label index="config.solrFieldId">Solr Schema Field "id" : Unique identifier for the document in the index (default is "id")</label>
+            <label index="config.solrFieldUid">Solr Schema Field "uid" : Unique identifier for the document (or its top-level parent) in the TYPO3 database (default is "uid")</label>
+            <label index="config.solrFieldPid">Solr Schema Field "pid" : PageID for the document (or its top-level parent) in the TYPO3 database (default is "pid")</label>
+            <label index="config.solrFieldPage">Solr Schema Field "page" : Image number where this document starts (default is "page")</label>
+            <label index="config.solrFieldPartof">Solr Schema Field "partof" : Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! (default is "partof")</label>
+            <label index="config.solrFieldRoot">Solr Schema Field "root" : Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! (default is "root")</label>
+            <label index="config.solrFieldSid">Solr Schema Field "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (default is "sid")</label>
+            <label index="config.solrFieldToplevel">Solr Schema Field "toplevel" : Information if it is a top-level document (default is "toplevel")</label>
+            <label index="config.solrFieldType">Solr Schema Field "type" : Type of document (eg. monograph, chapter, etc.) (default is "type")</label>
+            <label index="config.solrFieldTitle">Solr Schema Field "title" : Title field is mandatory for identifying documents (default is "title")</label>
+            <label index="config.solrFieldVolume">Solr Schema Field "volume" : Volume field is mandatory for identifying documents (default is "volume")</label>
+            <label index="config.solrFieldThumbnail">Solr Schema Field "thumbnail" : URL of thumbnail image for the document (default is "thumbnail")</label>
+            <label index="config.solrFieldDefault">Solr Schema Field default" : CatchAll field (default is "default")</label>
+            <label index="config.solrFieldTimestamp">Solr Schema Field "timestamp" : (default is "timestamp")</label>
+            <label index="config.solrFieldAutocomplete">Solr Schema Field "autocomplete" : Autocomplete field for search form (default is "autocomplete")</label>
+            <label index="config.solrFieldFulltext">Solr Schema Field "fulltext" : Fulltext field for OCR results (default is "fulltext")</label>
+            <label index="config.solrFieldRecordId">Solr Schema Field "record_id" : Record ID of the document (required for OAI_DC output) (default is "record_id")</label>
+            <label index="config.solrFieldPurl">Solr Schema Field "purl" : Permanent URL of the document (required for EPICUR output) (default is "purl")</label>
+            <label index="config.solrFieldUrn">Solr Schema Field "urn" : URN of the Document (required for EPICUR output) (default is "urn")</label>
+            <label index="config.solrFieldLocation">Solr Schema Field "location" : Location of METS XML (required for METS output) (default is "location")</label>
+            <label index="config.solrFieldCollection">Solr Schema Field "collection" : Associated collection(s) of the document (default is "collection")</label>
+            <label index="config.solrFieldLicense">Solr Schema Field "license" : License (should be URI) (default is "license")</label>
+            <label index="config.solrFieldTerms">Solr Schema Field "terms" : Term of Use (should be URI) (default is "terms")</label>
+            <label index="config.solrFieldRestrictions">Solr Schema Field "restrictions" : Access Restrictions (should be URI) (default is "restrictions")</label>
+            <label index="config.solrFieldGeom">Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -383,6 +408,31 @@
             <label index="config.solrPass">Solr Server Kennwort: (Standard ist "")</label>
             <label index="config.solrTimeout">Solr Server Timeout: (Standard ist "10")</label>
             <label index="config.solrAllowCoreDelete">Löschen von Solr Kern zulassen?: Soll beim Löschen eines Solr Kerns im TYPO3 Backend auch der entsprechende Index in Apache Solr gelöscht werden? (Standard ist "FALSE")</label>
+            <label index="config.solrFieldId">Solr-Schema-Feld "id" : Unique identifier for the document in the index (Standard ist "id")</label>
+            <label index="config.solrFieldUid">Solr-Schema-Feld "uid" : Unique identifier for the document (or its top-level parent) in the TYPO3 database (Standard ist "uid")</label>
+            <label index="config.solrFieldPid">Solr-Schema-Feld "pid" : PageID for the document (or its top-level parent) in the TYPO3 database (Standard ist "pid")</label>
+            <label index="config.solrFieldPage">Solr-Schema-Feld "page" : Image number where this document starts (Standard ist "page")</label>
+            <label index="config.solrFieldPartof">Solr-Schema-Feld "partof" : Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! (Standard ist "partof")</label>
+            <label index="config.solrFieldRoot">Solr-Schema-Feld "root" : Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! (Standard ist "root")</label>
+            <label index="config.solrFieldSid">Solr-Schema-Feld "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (Standard ist "sid")</label>
+            <label index="config.solrFieldToplevel">Solr-Schema-Feld "toplevel" : Information if it is a top-level document (Standard ist "toplevel")</label>
+            <label index="config.solrFieldType">Solr-Schema-Feld "type" : Type of document (eg. monograph, chapter, etc.) (Standard ist "type")</label>
+            <label index="config.solrFieldTitle">Solr-Schema-Feld "title" : Title field is mandatory for identifying documents (Standard ist "title")</label>
+            <label index="config.solrFieldVolume">Solr-Schema-Feld "volume" : Volume field is mandatory for identifying documents (Standard ist "volume")</label>
+            <label index="config.solrFieldThumbnail">Solr-Schema-Feld "thumbnail" : URL of thumbnail image for the document (Standard ist "thumbnail")</label>
+            <label index="config.solrFieldDefault">Solr-Schema-Feld "default" : CatchAll field (Standard ist "default")</label>
+            <label index="config.solrFieldTimestamp">Solr-Schema-Feld "timestamp" : (Standard ist "timestamp")</label>
+            <label index="config.solrFieldAutocomplete">Solr-Schema-Feld "autocomplete" : Autocomplete field for search form (Standard ist "autocomplete")</label>
+            <label index="config.solrFieldFulltext">Solr-Schema-Feld "fulltext" : Fulltext field for OCR results (Standard ist "fulltext")</label>
+            <label index="config.solrFieldRecordId">Solr-Schema-Feld "record_id" : Record ID of the document (required for OAI_DC output) (Standard ist "record_id")</label>
+            <label index="config.solrFieldPurl">Solr-Schema-Feld "purl" : Permanent URL of the document (required for EPICUR output) (Standard ist "purl")</label>
+            <label index="config.solrFieldUrn">Solr-Schema-Feld "urn" : URN of the Document (required for EPICUR output) (Standard ist "urn")</label>
+            <label index="config.solrFieldLocation">Solr-Schema-Feld "location" : Location of METS XML (required for METS output) (Standard ist "location")</label>
+            <label index="config.solrFieldCollection">Solr-Schema-Feld "collection" : Associated collection(s) of the document (Standard ist "collection")</label>
+            <label index="config.solrFieldLicense">Solr-Schema-Feld "license" : License (should be URI) (Standard ist "license")</label>
+            <label index="config.solrFieldTerms">Solr-Schema-Feld "terms" : Term of Use (should be URI) (Standard ist "terms")</label>
+            <label index="config.solrFieldRestrictions">Solr-Schema-Feld "restrictions" : Access Restrictions (should be URI) (Standard ist "restrictions")</label>
+            <label index="config.solrFieldGeom">Solr-Schema-Feld "geom" : GeoJSON geometry for spatial search (Standard ist "geom")</label>
         </languageKey>
     </data>
 </T3locallang>
