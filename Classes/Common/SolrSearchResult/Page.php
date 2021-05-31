@@ -20,7 +20,8 @@ namespace Kitodo\Dlf\Common\SolrSearchResult;
  * @subpackage dlf
  * @access public
  */
-class Page {
+class Page
+{
 
     /**
      * The identifier of the page
@@ -64,7 +65,8 @@ class Page {
      *
      * @return void
      */
-    public function __construct($id, $page) {
+    public function __construct($id, $page)
+    {
         $this->id = $id;
         $this->name = $page['id'];
         $this->width = $page['width'];
@@ -78,7 +80,8 @@ class Page {
      *
      * @return int The page's identifier
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -89,7 +92,8 @@ class Page {
      *
      * @return string The page's name
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -100,7 +104,8 @@ class Page {
      *
      * @return int The page's width
      */
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->width;
     }
 
@@ -111,7 +116,8 @@ class Page {
      *
      * @return int The page's height
      */
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->height;
     }
 }

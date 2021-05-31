@@ -20,7 +20,8 @@ namespace Kitodo\Dlf\Common\SolrSearchResult;
  * @subpackage dlf
  * @access public
  */
-class Region {
+class Region
+{
 
     /**
      * The identifier of the region
@@ -104,7 +105,8 @@ class Region {
      *
      * @return void
      */
-    public function __construct($id, $region) {
+    public function __construct($id, $region)
+    {
         $this->id = $id;
         $this->pageId = $region['pageIdx'];
         $this->xBeginPosition = $region['ulx'];
@@ -123,7 +125,8 @@ class Region {
      *
      * @return int The region's identifier
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -134,7 +137,8 @@ class Region {
      *
      * @return int The region's page identifier
      */
-    public function getPageId() {
+    public function getPageId()
+    {
         return $this->pageId;
     }
 
@@ -145,7 +149,8 @@ class Region {
      *
      * @return int The region's horizontal beginning position
      */
-    public function getXBeginPosition() {
+    public function getXBeginPosition()
+    {
         return $this->xBeginPosition;
     }
 
@@ -156,7 +161,8 @@ class Region {
      *
      * @return int The region's horizontal ending position
      */
-    public function getXEndPosition() {
+    public function getXEndPosition()
+    {
         return $this->xEndPosition;
     }
 
@@ -167,7 +173,8 @@ class Region {
      *
      * @return int The region's vertical beginning position
      */
-    public function getYBeginPosition() {
+    public function getYBeginPosition()
+    {
         return $this->yBeginPosition;
     }
 
@@ -178,7 +185,8 @@ class Region {
      *
      * @return int The region's vertical ending position
      */
-    public function getYEndPosition() {
+    public function getYEndPosition()
+    {
         return $this->yEndPosition;
     }
 
@@ -189,7 +197,8 @@ class Region {
      *
      * @return int The region's width
      */
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->width;
     }
 
@@ -200,7 +209,8 @@ class Region {
      *
      * @return int The region's height
      */
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->height;
     }
 
@@ -211,7 +221,8 @@ class Region {
      *
      * @return string The region's text
      */
-    public function getText() {
+    public function getText()
+    {
         return $this->text;
     }
 }
