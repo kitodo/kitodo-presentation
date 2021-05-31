@@ -20,7 +20,8 @@ namespace Kitodo\Dlf\Common\SolrSearchResult;
  * @subpackage dlf
  * @access public
  */
-class Highlight {
+class Highlight
+{
 
     /**
      * The identifier in form 'w_h_x_y'
@@ -95,7 +96,8 @@ class Highlight {
      *
      * @return void
      */
-    public function __construct($highlight) {
+    public function __construct($highlight)
+    {
         $this->parentRegionId = $highlight['parentRegionIdx'];
         $this->xBeginPosition = $highlight['ulx'];
         $this->xEndPosition = $highlight['lrx'];
@@ -113,7 +115,8 @@ class Highlight {
      *
      * @return string The highlight's identifier
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -124,7 +127,8 @@ class Highlight {
      *
      * @return int The highlight's horizontal beginning position
      */
-    public function getXBeginPosition() {
+    public function getXBeginPosition()
+    {
         return $this->xBeginPosition;
     }
 
@@ -135,7 +139,8 @@ class Highlight {
      *
      * @return int The highlight's horizontal ending position
      */
-    public function getXEndPosition() {
+    public function getXEndPosition()
+    {
         return $this->xEndPosition;
     }
 
@@ -146,7 +151,8 @@ class Highlight {
      *
      * @return int The highlight's vertical beginning position
      */
-    public function getYBeginPosition() {
+    public function getYBeginPosition()
+    {
         return $this->yBeginPosition;
     }
 
@@ -157,7 +163,8 @@ class Highlight {
      *
      * @return int The highlight's vertical ending position
      */
-    public function getYEndPosition() {
+    public function getYEndPosition()
+    {
         return $this->yEndPosition;
     }
 
@@ -168,7 +175,8 @@ class Highlight {
      *
      * @return int The highlight's width
      */
-    public function getWidth() {
+    public function getWidth()
+    {
         return $this->width;
     }
 
@@ -179,7 +187,8 @@ class Highlight {
      *
      * @return int The highlight's height
      */
-    public function getHeight() {
+    public function getHeight()
+    {
         return $this->height;
     }
 }

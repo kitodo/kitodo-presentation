@@ -24,7 +24,8 @@ use Kitodo\Dlf\Common\SolrSearchResult\Region;
  * @subpackage dlf
  * @access public
  */
-class ResultDocument {
+class ResultDocument
+{
 
     /**
      * The identifier
@@ -101,7 +102,8 @@ class ResultDocument {
      *
      * @return void
      */
-    public function __construct($record, $highlighting, $fields) {
+    public function __construct($record, $highlighting, $fields)
+    {
         $this->id = $record[$fields['id']];
         $this->uid = $record[$fields['uid']];
         $this->page = $record[$fields['page']];
@@ -122,7 +124,8 @@ class ResultDocument {
      *
      * @return string The result's record identifier
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -133,7 +136,8 @@ class ResultDocument {
      *
      * @return string|null The result's record unified identifier
      */
-    public function getUid() {
+    public function getUid()
+    {
         return $this->uid;
     }
 
@@ -144,7 +148,8 @@ class ResultDocument {
      *
      * @return int The result's record page
      */
-    public function getPage() {
+    public function getPage()
+    {
         return $this->page;
     }
 
@@ -155,7 +160,8 @@ class ResultDocument {
      *
      * @return string All result's record snippets imploded to one string
      */
-    public function getSnippets() {
+    public function getSnippets()
+    {
         return $this->snippets;
     }
 
@@ -166,7 +172,8 @@ class ResultDocument {
      *
      * @return array(Page) All result's pages which contain search phrase
      */
-    public function getPages() {
+    public function getPages()
+    {
         return $this->pages;
     }
 
@@ -177,7 +184,8 @@ class ResultDocument {
      *
      * @return array(Region) All result's regions which contain search phrase
      */
-    public function getRegions() {
+    public function getRegions()
+    {
         return $this->regions;
     }
 
@@ -188,7 +196,8 @@ class ResultDocument {
      *
      * @return array(Highlight) All result's highlights of search phrase
      */
-    public function getHighlights() {
+    public function getHighlights()
+    {
         return $this->highlights;
     }
 
@@ -199,7 +208,8 @@ class ResultDocument {
      *
      * @return array(string) All result's highlights of search phrase
      */
-    public function getHighlightsIds() {
+    public function getHighlightsIds()
+    {
         $highlightsIds = [];
         foreach ($this->highlights as $highlight) {
             array_push($highlightsIds, $highlight->getId());
@@ -215,7 +225,8 @@ class ResultDocument {
      *
      * @return void
      */
-    private function parseSnippets() {
+    private function parseSnippets()
+    {
         $snippetArray = $this->getArrayByIndex('text');
 
         $this->snippets = !empty($snippetArray) ? implode(' [...] ', $snippetArray) : '';
@@ -229,7 +240,8 @@ class ResultDocument {
      *
      * @return void
      */
-    private function parsePages() {
+    private function parsePages()
+    {
         $pageArray = $this->getArrayByIndex('pages');
 
         $i = 0;
@@ -249,7 +261,8 @@ class ResultDocument {
      *
      * @return void
      */
-    private function parseRegions() {
+    private function parseRegions()
+    {
         $regionArray = $this->getArrayByIndex('regions');
 
         $i = 0;
@@ -269,7 +282,8 @@ class ResultDocument {
      *
      * @return void
      */
-    private function parseHighlights() {
+    private function parseHighlights()
+    {
         $highlightArray = $this->getArrayByIndex('highlights');
 
         foreach ($highlightArray as $highlights) {
@@ -290,7 +304,8 @@ class ResultDocument {
      *
      * @return array
      */
-    private function getArrayByIndex($index) {
+    private function getArrayByIndex($index)
+    {
         $objectArray = [];
         foreach ($this->snippetsForRecord as $snippet) {
             array_push($objectArray, $snippet[$index]);
