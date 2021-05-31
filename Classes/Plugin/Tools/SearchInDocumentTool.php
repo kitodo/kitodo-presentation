@@ -93,17 +93,9 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load template file.
         $this->getTemplate();
 
-        // Configure @action URL for form.
-        $linkConf = [
-            'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
-        ];
-
-        $encryptedSolr = $this->getEncryptedCoreName();
         // Fill markers.
         $markerArray = [
-            '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
+            '###ACTION_URL###' => $this->getActionUrl(),
             '###LABEL_QUERY###' => htmlspecialchars($this->pi_getLL('label.query')),
             '###LABEL_DELETE_SEARCH###' => htmlspecialchars($this->pi_getLL('label.delete_search')),
             '###LABEL_LOADING###' => htmlspecialchars($this->pi_getLL('label.loading')),
@@ -113,12 +105,66 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             '###LABEL_PREVIOUS###' => htmlspecialchars($this->pi_getLL('label.previous')),
             '###LABEL_PAGE###' => htmlspecialchars($this->pi_getLL('label.logicalPage')),
             '###LABEL_NORESULT###' => htmlspecialchars($this->pi_getLL('label.noresult')),
-            '###CURRENT_DOCUMENT###' => $this->doc->uid,
-            '###SOLR_ENCRYPTED###' => $encryptedSolr ? : '',
+            '###LABEL_QUERY_URL###' => $this->conf['queryInputName'],
+            '###LABEL_START###' => $this->conf['startInputName'],
+            '###LABEL_ID###' => $this->conf['idInputName'],
+            '###LABEL_PAGE_URL###' => $this->conf['pageInputName'],
+            '###LABEL_HIGHLIGHT_WORD###' => $this->conf['highlightWordInputName'],
+            '###LABEL_ENCRYPTED###' => $this->conf['encryptedInputName'],
+            '###CURRENT_DOCUMENT###' => $this->getCurrentDocumentId(),
+            '###SOLR_ENCRYPTED###' => $this->getEncryptedCoreName() ? : ''
         ];
 
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
+    }
+
+    /**
+     * Get the action url for search form
+     *
+     * @access protected
+     *
+     * @return string with action url for search form
+     */
+    protected function getActionUrl()
+    {
+        // Configure @action URL for form.
+        $linkConf = [
+            'parameter' => $GLOBALS['TSFE']->id,
+            'forceAbsoluteUrl' => 1,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+        ];
+
+        $actionUrl = $this->cObj->typoLink_URL($linkConf);
+
+        if (!empty($this->conf['searchUrl'])) {
+            $actionUrl = $this->conf['searchUrl'];
+        }
+        return $actionUrl;
+    }
+
+    /**
+     * Get current document id
+     *
+     * @access protected
+     *
+     * @return string with current document id
+     */
+    protected function getCurrentDocumentId()
+    {
+        $id = $this->doc->uid;
+
+        if (!empty($this->conf['documentIdUrlSchema'])) {
+            $arr = explode('*', $this->conf['documentIdUrlSchema']);
+
+            if (count($arr) == 2) {
+                $id = explode($arr[0], $id)[0];
+            } else if (count($arr) == 3) {
+                $sub = substr($id, strpos($id, $arr[0]) + strlen($arr[0]), strlen($id));
+                $id = substr($sub, 0, strpos($sub, $arr[2]));
+            }
+        }
+        return $id;
     }
 
     /**

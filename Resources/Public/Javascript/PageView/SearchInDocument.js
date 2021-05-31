@@ -15,9 +15,9 @@
   * @returns void
   */
 function nextResultPage() {
-    var currentstart = $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val();
+    var currentstart = $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start]']").val();
     var newstart = parseInt(currentstart) + 20;
-    $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(newstart);
+    $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start]']").val(newstart);
     $('#tx-dlf-search-in-document-form').submit();
 };
 
@@ -28,9 +28,9 @@ function nextResultPage() {
  * @returns void
  */
 function previousResultPage() {
-    var currentstart = $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val();
+    var currentstart = $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start]']").val();
     var newstart = (parseInt(currentstart) > 20) ? (parseInt(currentstart) - 20) : 0;
-    $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(newstart);
+    $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start]']").val(newstart);
     $('#tx-dlf-search-in-document-form').submit();
 };
 
@@ -40,7 +40,7 @@ function previousResultPage() {
  * @returns void
  */
 function resetStart() {
-    $("#tx-dlf-search-in-document-form input[name='tx_dlf[start]']").val(0);
+    $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start]']").val(0);
 }
 
 $(document).ready(function() {
@@ -56,11 +56,10 @@ $(document).ready(function() {
             "/",
             {
                 eID: "tx_dlf_search_in_document",
-                q: $( "input[name='tx_dlf[query]']" ).val(),
-                uid: $( "input[name='tx_dlf[id]']" ).val(),
-                start: $( "input[name='tx_dlf[start]']" ).val(),
-                encrypted: $( "input[name='tx_dlf[encrypted]']" ).val(),
-                hashed: $( "input[name='tx_dlf[hashed]']" ).val(),
+                q: $( "input[id='tx-dlf-search-in-document-query]']" ).val(),
+                uid: $( "input[id='tx-dlf-search-in-document-id]']" ).val(),
+                start: $( "input[id='tx-dlf-search-in-document-start]']" ).val(),
+                encrypted: $( "input[id='tx-dlf-search-in-document-encrypted]']" ).val(),
             },
             function(data) {
                 var resultItems = [];
