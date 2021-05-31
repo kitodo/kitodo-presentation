@@ -237,9 +237,10 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
                 && $this->metadata['options']['source'] == 'search'
             ) {
                 if ($this->solrConnect()) {
+                    $fields = Solr::getFields();
                     $params = [];
                     // Restrict the fields to the required ones
-                    $params['fields'] = 'uid,id,toplevel,thumbnail,page';
+                    $params['fields'] = $fields['uid'] . ',' . $fields['id'] .',' . $fields['toplevel'] . ',' . $fields['thumbnail'] . ',' . $fields['page'];
                     foreach ($this->solrConfig as $solr_name) {
                         $params['fields'] .= ',' . $solr_name;
                     }
@@ -248,7 +249,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
                         $params['component'] = [
                             'highlighting' => [
                                 'query' => Solr::escapeQuery($this->metadata['searchString']),
-                                'field' => 'fulltext',
+                                'field' => $fields['fulltext'],
                                 'usefastvectorhighlighter' => true
                             ]
                         ];
@@ -263,15 +264,15 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
                     // Extend filter query to get all documents with the same UID.
                     foreach ($params['filterquery'] as $key => $value) {
                         if (isset($value['query'])) {
-                            $params['filterquery'][$key]['query'] = $value['query'] . ' OR toplevel:true';
+                            $params['filterquery'][$key]['query'] = $value['query'] . ' OR ' . $fields['toplevel'] . ':true';
                         }
                     }
                     // Add filter query to get all documents with the required uid.
-                    $params['filterquery'][] = ['query' => 'uid:' . Solr::escapeQuery($record['uid'])];
+                    $params['filterquery'][] = ['query' => $fields['uid'] . ':' . Solr::escapeQuery($record['uid'])];
                     // Add sorting.
                     $params['sort'] = $this->metadata['options']['params']['sort'];
                     // Set query.
-                    $params['query'] = $this->metadata['options']['select'] . ' OR toplevel:true';
+                    $params['query'] = $this->metadata['options']['select'] . ' OR ' . $fields['toplevel'] . ':true';
                     // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
                     $selectQuery = $this->solr->service->createSelect($params);
                     $result = $this->solr->service->select($selectQuery);
@@ -294,7 +295,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
                             $record['metadata'] = $metadata;
                         } else {
                             $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : null;
-                            $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField('fulltext')[0] : '';
+                            $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField($fields['fulltext'])[0] : '';
                             $record['subparts'][$resArray->id] = [
                                 'uid' => $resArray->uid,
                                 'page' => $resArray->page,
