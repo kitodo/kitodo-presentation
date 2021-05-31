@@ -15,16 +15,16 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="singlePage">Download single page</label>
-            <label index="leftPage">Download left page</label>
-            <label index="rightPage">Download right page</label>
-            <label index="work">Download whole work</label>
+            <label index="singlePage">Download single page (PDF)</label>
+            <label index="leftPage">Download left page (PDF)</label>
+            <label index="rightPage">Download right page (PDF)</label>
+            <label index="work">Download whole work (PDF)</label>
         </languageKey>
         <languageKey index="de" type="array">
-            <label index="singlePage">Einzelseite herunterladen</label>
-            <label index="leftPage">Linke Seite herunterladen</label>
-            <label index="rightPage">Rechte Seite herunterladen</label>
-            <label index="work">Ganzes Werk herunterladen</label>
+            <label index="singlePage">Einzelseite herunterladen (PDF)</label>
+            <label index="leftPage">Linke Seite herunterladen (PDF)</label>
+            <label index="rightPage">Rechte Seite herunterladen (PDF)</label>
+            <label index="work">Ganzes Werk herunterladen (PDF)</label>
         </languageKey>
     </data>
 </T3locallang>
