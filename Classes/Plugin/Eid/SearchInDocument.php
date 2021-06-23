@@ -58,7 +58,7 @@ class SearchInDocument
         if ($solr->ready) {
             $query = $solr->service->createSelect();
             $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
-            $query->setQuery($fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] .':' . intval($parameters['uid']));
+            $query->setQuery($fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . intval($parameters['uid']));
             $query->setStart($count)->setRows(20);
             $hl = $query->getHighlighting();
             $hl->setFields([$fields['fulltext']]);

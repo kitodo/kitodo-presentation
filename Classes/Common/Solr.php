@@ -253,7 +253,8 @@ class Solr implements LoggerAwareInterface
      *
      * @return array fields
      */
-    public static function getFields() {
+    public static function getFields()
+    {
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
         $fields = [];
