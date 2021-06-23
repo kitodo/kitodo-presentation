@@ -116,7 +116,7 @@ class ext_update
         }
         foreach ($rows as $row) {
             if ($row['format'] === 0 && $row['xpath']) {
-                $uids[] = (int)$row['uid'];
+                $uids[] = (int) $row['uid'];
             }
         }
         return $uids;

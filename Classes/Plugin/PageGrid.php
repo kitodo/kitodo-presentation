@@ -55,7 +55,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         $markerArray['###PAGINATION###'] = htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['orderlabel']);
         // Get thumbnail or placeholder.
         $fileGrpsThumb = GeneralUtility::trimExplode(',', $this->conf['fileGrpThumbs']);
-        if (array_intersect($fileGrpsThumb, array_keys($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) !== [] ) {
+        if (array_intersect($fileGrpsThumb, array_keys($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) !== []) {
             while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
                 if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb])) {
                     $thumbnailFile = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb]);
