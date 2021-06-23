@@ -87,7 +87,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->delete('tx_dlf_tokens')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int)($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
+                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int) ($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
             )
             ->execute();
 
@@ -957,7 +957,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function generateOutputForDocumentList(DocumentList $documentListSet)
     {
-        $documentsToProcess = $documentListSet->removeRange(0, (int)$this->conf['limit']);
+        $documentsToProcess = $documentListSet->removeRange(0, (int) $this->conf['limit']);
         $verb = $this->piVars['verb'];
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
