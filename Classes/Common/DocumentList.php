@@ -240,7 +240,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
                     $fields = Solr::getFields();
                     $params = [];
                     // Restrict the fields to the required ones
-                    $params['fields'] = $fields['uid'] . ',' . $fields['id'] .',' . $fields['toplevel'] . ',' . $fields['thumbnail'] . ',' . $fields['page'];
+                    $params['fields'] = $fields['uid'] . ',' . $fields['id'] . ',' . $fields['toplevel'] . ',' . $fields['thumbnail'] . ',' . $fields['page'];
                     foreach ($this->solrConfig as $solr_name) {
                         $params['fields'] .= ',' . $solr_name;
                     }
