@@ -462,12 +462,12 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 ) {
                     // Search in document and all subordinates (valid for up to three levels of hierarchy).
                     $params['filterquery'][]['query'] = '_query_:"{!join from='
-                        . $fields['uid'] .' to=' . $fields['partof'] .'}'
-                        . $fields['uid'] .':{!join from=' . $fields['uid'] .' to=' . $fields['partof'] .'}'
-                        . $fields['uid'] .':' . $this->piVars['id'] . '"' . ' OR {!join from='
-                        . $fields['uid'] .' to=' . $fields['partof'] .'}'
-                        . $fields['uid'] .':' . $this->piVars['id'] . ' OR '
-                        . $fields['uid'] .':' . $this->piVars['id'];
+                        . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                        . $fields['uid'] . ':{!join from=' . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                        . $fields['uid'] . ':' . $this->piVars['id'] . '"' . ' OR {!join from='
+                        . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                        . $fields['uid'] . ':' . $this->piVars['id'] . ' OR '
+                        . $fields['uid'] . ':' . $this->piVars['id'];
                     $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
                 }
             }
