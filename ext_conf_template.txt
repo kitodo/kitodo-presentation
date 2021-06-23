@@ -46,3 +46,53 @@ solrPass =
 solrTimeout = 10
 # cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrAllowCoreDelete
 solrAllowCoreDelete = 0
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldId
+solrFieldId = id
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldUid
+solrFieldUid = uid
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldPid
+solrFieldPid = pid
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldPage
+solrFieldPage = page
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldPartof
+solrFieldPartof = partof
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldRoot
+solrFieldRoot = root
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldSid
+solrFieldSid = sid
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldToplevel
+solrFieldToplevel = toplevel
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldType
+solrFieldType = type
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldTitle
+solrFieldTitle = title
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldVolume
+solrFieldVolume = volume
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldThumbnail
+solrFieldThumbnail = thumbnail
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldDefault
+solrFieldDefault = default
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldTimestamp
+solrFieldTimestamp = timestamp
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldAutocomplete
+solrFieldAutocomplete = autocomplete
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldFulltext
+solrFieldFulltext = fulltext
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldRecordId
+solrFieldRecordId = record_id
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldPurl
+solrFieldPurl = purl
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldUrn
+solrFieldUrn = urn
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldLocation
+solrFieldLocation = location
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldCollection
+solrFieldCollection = collection
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldLicense
+solrFieldLicense = license
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldTerms
+solrFieldTerms = terms
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldRestrictions
+solrFieldRestrictions = restrictions
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldGeom
+solrFieldGeom = geom
