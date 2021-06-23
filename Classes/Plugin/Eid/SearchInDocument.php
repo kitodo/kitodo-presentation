@@ -48,22 +48,26 @@ class SearchInDocument
         if (empty($encrypted)) {
             throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
+
         $core = Helper::decrypt($encrypted);
+
         // Perform Solr query.
         $solr = Solr::getInstance($core);
+        $fields = Solr::getFields();
+
         if ($solr->ready) {
             $query = $solr->service->createSelect();
-            $query->setFields(['id', 'uid', 'page']);
-            $query->setQuery('fulltext:(' . Solr::escapeQuery((string) $parameters['q']) . ') AND uid:' . intval($parameters['uid']));
+            $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
+            $query->setQuery($fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . intval($parameters['uid']));
             $query->setStart($count)->setRows(20);
             $hl = $query->getHighlighting();
-            $hl->setFields(['fulltext']);
+            $hl->setFields([$fields['fulltext']]);
             $hl->setUseFastVectorHighlighter(true);
             $results = $solr->service->select($query);
             $output['numFound'] = $results->getNumFound();
             $highlighting = $results->getHighlighting();
             foreach ($results as $result) {
-                $snippet = $highlighting->getResult($result->id)->getField('fulltext');
+                $snippet = $highlighting->getResult($result->id)->getField($fields['fulltext']);
                 $document = [
                     'id' => $result->id,
                     'uid' => $result->uid,
