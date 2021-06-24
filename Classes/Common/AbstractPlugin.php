@@ -235,7 +235,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         if (!$cache) {
             $conf['no_cache'] = true;
         }
-        $conf['parameter'] = $altPageId ?: ($this->pi_tmpPageId ?: 'current');
+        $conf['parameter'] = $altPageId ? : ($this->pi_tmpPageId ? : 'current');
         $conf['additionalParams'] = $this->conf['parent.']['addParams'] . HttpUtility::buildQueryString($urlParameters, '&', true) . $this->pi_moreParams;
         // Add additional configuration for absolute URLs.
         $conf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;

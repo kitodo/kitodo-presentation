@@ -121,16 +121,16 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
                 )
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $this->conf['pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int)$this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $this->conf['pages'])),
                     $additionalWhere,
                     Helper::whereExpression('tx_dlf_documents'),
                     Helper::whereExpression('tx_dlf_collections')
                 )
                 ->groupBy('tx_dlf_documents.uid')
                 ->orderBy('tx_dlf_documents.tstamp', 'DESC')
-                ->setMaxResults((int)$this->conf['limit'])
+                ->setMaxResults((int) $this->conf['limit'])
                 ->execute();
             $rows = $result->fetchAll();
 

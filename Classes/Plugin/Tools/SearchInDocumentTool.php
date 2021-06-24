@@ -114,7 +114,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             '###LABEL_PAGE###' => htmlspecialchars($this->pi_getLL('label.logicalPage')),
             '###LABEL_NORESULT###' => htmlspecialchars($this->pi_getLL('label.noresult')),
             '###CURRENT_DOCUMENT###' => $this->doc->uid,
-            '###SOLR_ENCRYPTED###' => $encryptedSolr ?: '',
+            '###SOLR_ENCRYPTED###' => $encryptedSolr ? : '',
         ];
 
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
