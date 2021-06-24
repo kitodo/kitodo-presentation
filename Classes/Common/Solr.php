@@ -253,7 +253,8 @@ class Solr implements LoggerAwareInterface
      *
      * @return array fields
      */
-    public static function getFields() {
+    public static function getFields()
+    {
         $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
 
         $fields = [];
@@ -383,7 +384,7 @@ class Solr implements LoggerAwareInterface
                 $config['path'] .= 'solr/';
             }
             // Set connection timeout lower than PHP's max_execution_time.
-            $max_execution_time = intval(ini_get('max_execution_time')) ?: 30;
+            $max_execution_time = intval(ini_get('max_execution_time')) ? : 30;
             $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
             $this->config = $config;
         }
