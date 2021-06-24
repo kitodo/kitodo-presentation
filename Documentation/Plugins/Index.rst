@@ -1084,3 +1084,76 @@ Plugin allows also to configure (searchHlParameters) by which URL parameters wor
 The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
 
 **Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.
+
+
+Search in Document Tool
+^^^^^^^^^^^^^^^^^^^^^^^
+This plugin adds an possibility to search all appearances of the phrase in currently displayed document 
+
+:typoscript:`plugin.tx_dlf_searchindocumenttool.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+       Default
+   :Values:
+       Values
+
+ - :Property:
+       searchUrl
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+
+ - :Property:
+       documentIdUrlSchema
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+
+ - :Property:
+       idInputName
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+       tx_dlf[id]
+
+ - :Property:
+       queryInputName
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+       tx_dlf[query]
+
+ - :Property:
+       startInputName
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+       tx_dlf[start]
+ 
+ - :Property:
+       pageInputName
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+       tx_dlf[page]
+
+ - :Property:
+       highlightWordInputName
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+       tx_dlf[highlight_word]
+
+ - :Property:
+       encryptedInputName
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+       tx_dlf[encrypted]
