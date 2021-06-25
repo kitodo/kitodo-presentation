@@ -247,6 +247,47 @@ class Solr implements LoggerAwareInterface
     }
 
     /**
+     * Get fields for index.
+     *
+     * @access public
+     *
+     * @return array fields
+     */
+    public static function getFields()
+    {
+        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+        $fields = [];
+        $fields['id'] = $conf['solrFieldId'];
+        $fields['uid'] = $conf['solrFieldUid'];
+        $fields['pid'] = $conf['solrFieldPid'];
+        $fields['page'] = $conf['solrFieldPage'];
+        $fields['partof'] = $conf['solrFieldPartof'];
+        $fields['root'] = $conf['solrFieldRoot'];
+        $fields['sid'] = $conf['solrFieldSid'];
+        $fields['toplevel'] = $conf['solrFieldToplevel'];
+        $fields['type'] = $conf['solrFieldType'];
+        $fields['title'] = $conf['solrFieldTitle'];
+        $fields['volume'] = $conf['solrFieldVolume'];
+        $fields['thumbnail'] = $conf['solrFieldThumbnail'];
+        $fields['default'] = $conf['solrFieldDefault'];
+        $fields['timestamp'] = $conf['solrFieldTimestamp'];
+        $fields['autocomplete'] = $conf['solrFieldAutocomplete'];
+        $fields['fulltext'] = $conf['solrFieldFulltext'];
+        $fields['record_id'] = $conf['solrFieldRecordId'];
+        $fields['purl'] = $conf['solrFieldPurl'];
+        $fields['urn'] = $conf['solrFieldUrn'];
+        $fields['location'] = $conf['solrFieldLocation'];
+        $fields['collection'] = $conf['solrFieldCollection'];
+        $fields['license'] = $conf['solrFieldLicense'];
+        $fields['terms'] = $conf['solrFieldTerms'];
+        $fields['restrictions'] = $conf['solrFieldRestrictions'];
+        $fields['geom'] = $conf['solrFieldGeom'];
+
+        return $fields;
+    }
+
+    /**
      * This is a singleton class, thus instances must be created by this method
      *
      * @access public
@@ -343,7 +384,7 @@ class Solr implements LoggerAwareInterface
                 $config['path'] .= 'solr/';
             }
             // Set connection timeout lower than PHP's max_execution_time.
-            $max_execution_time = intval(ini_get('max_execution_time')) ?: 30;
+            $max_execution_time = intval(ini_get('max_execution_time')) ? : 30;
             $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
             $this->config = $config;
         }
