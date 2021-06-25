@@ -1013,9 +1013,11 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                     $output->appendChild($header);
                 }
             } else {
-                // Add sets.
+                // Add sets but only if oai_name field is not empty.
                 foreach (explode(' ', $resArray['collections']) as $spec) {
-                    $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
+                    if ($spec) {
+                        $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
+                    }
                 }
                 if ($verb === 'ListRecords') {
                     // Add record node.
