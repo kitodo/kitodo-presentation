@@ -83,6 +83,22 @@ function getBaseUrl(id) {
     return baseUrl;
 }
 
+function getHighlights(highlight) {
+    var highlights = "";
+
+    for(var i = 0; i < highlight.length; i++) {
+        if (highlights === "") {
+            highlights += highlight[i];
+        } else {
+            if(highlights.indexOf(highlight[i]) === -1) {
+                highlights += ';' + highlight[i];
+            }
+        }
+    }
+
+    return highlights;
+}
+
 /**
  * Get current URL query parameters.
  * It returns array of params in form 'param=value' if there are any params supplied in the given url. If there are none it returns empty array
@@ -149,22 +165,6 @@ function getNeededQueryParams(element) {
     queryParams['hl'] = encodeURIComponent(getHighlights(element['highlight']));
 
     return queryParams;
-}
-
-function getHighlights(highlight) {
-    var highlights = "";
-
-    for(var i = 0; i < highlight.length; i++) {
-        if (highlights === "") {
-            highlights += highlight[i];
-        } else {
-            if(highlights.indexOf(highlight[i]) === -1) {
-                highlights += ';' + highlight[i];
-            }
-        }
-    }
-
-    return highlights;
 }
 
 /**
@@ -239,7 +239,7 @@ function addImageHighlightAfterFirstLoad(data) {
         var page = getCurrentPage();
 
         data['documents'].forEach(function (element, i) {
-            if(element['page'] == page) {
+            if(element['page'] === page) {
                 if (element['highlight'].length > 0) {
                     if(tx_dlf_viewer.map != null) {
                         tx_dlf_viewer.displayHighlightWord(encodeURIComponent(getHighlights(element['highlight'])));
@@ -247,7 +247,7 @@ function addImageHighlightAfterFirstLoad(data) {
                         setTimeout(addImageHighlightAfterFirstLoad, 500, data);
                     }
                 }
-                addHighlightEffect(element['highlight'])
+                addHighlightEffect(element['highlight']);
             }
         });
     }

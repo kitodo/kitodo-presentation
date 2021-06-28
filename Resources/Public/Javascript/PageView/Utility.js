@@ -874,7 +874,7 @@ dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, co
     var features = [];
     featureCollection.forEach(function (ft) {
         if (ft.get('fulltext') !== undefined) {
-            if ((ft.get('width') + '_' + ft.get('height') + '_' + ft.get('hpos') + '_' + ft.get('vpos')) == coordinates) {
+            if ((ft.get('width') + '_' + ft.get('height') + '_' + ft.get('hpos') + '_' + ft.get('vpos')) === coordinates) {
                 features.push(ft);
             }
         }
