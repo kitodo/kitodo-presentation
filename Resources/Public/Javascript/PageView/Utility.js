@@ -865,16 +865,18 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
 };
 
 /**
- * Search a feature collcetion for a feature with the given text
+ * Search a feature collection for a feature with the given coordinates
  * @param {Array.<ol.Feature>} featureCollection
- * @param {string} text
+ * @param {string} coordinates
  * @return {Array.<ol.Feature>|undefined}
  */
-dlfUtils.searchFeatureCollectionForText = function (featureCollection, text) {
+dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
     var features = [];
     featureCollection.forEach(function (ft) {
         if (ft.get('fulltext') !== undefined) {
-            if (ft.get('fulltext').toLowerCase().indexOf(text.toLowerCase()) > -1) features.push(ft);
+            if ((ft.get('width') + '_' + ft.get('height') + '_' + ft.get('hpos') + '_' + ft.get('vpos')) == coordinates) {
+                features.push(ft);
+            }
         }
     });
     return features.length > 0 ? features : undefined;

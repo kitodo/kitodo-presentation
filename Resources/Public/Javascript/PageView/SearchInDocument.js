@@ -145,8 +145,26 @@ function getNeededQueryParams(element) {
     queryParams[highlightWord] = encodeURIComponent($("input[id='tx-dlf-search-in-document-query']").val());
     queryParams.push(page);
     queryParams[page] = element['page'];
+    queryParams.push('hl');
+    queryParams['hl'] = encodeURIComponent(getHighlights(element['highlight']));
 
     return queryParams;
+}
+
+function getHighlights(highlight) {
+    var highlights = "";
+
+    for(var i = 0; i < highlight.length; i++) {
+        if (highlights === "") {
+            highlights += highlight[i];
+        } else {
+            if(highlights.indexOf(highlight[i]) === -1) {
+                highlights += ';' + highlight[i];
+            }
+        }
+    }
+
+    return highlights;
 }
 
 /**
@@ -187,6 +205,52 @@ function getNavigationButtons(start, numFound) {
         buttons += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
     }
     return buttons;
+}
+
+function getCurrentPage() {
+    var page = 1;
+    var queryParams = getCurrentQueryParams(getBaseUrl(" "));
+
+    for(var i = 0; i < queryParams.length; i++) {
+        var queryParam = queryParams[i].split('=');
+
+        if(queryParam[0] === $("input[id='tx-dlf-search-in-document-page']").attr('name')) {
+            page = queryParam[1];
+        }
+    }
+
+    return page;
+}
+
+function addImageHighlightAfterFirstLoad(data) {
+    var queryParams = getCurrentQueryParams(getBaseUrl(" "));
+    var hlParameterFound = false;
+    
+    for(var i = 0; i < queryParams.length; i++) {
+        var queryParam = queryParams[i].split('=');
+
+        if(queryParam[0] === 'hl') {
+            hlParameterFound = true;
+            break;
+        }
+    }
+
+    if(!hlParameterFound && data['numFound'] > 0) {
+        var page = getCurrentPage();
+
+        data['documents'].forEach(function (element, i) {
+            if(element['page'] == page) {
+                if (element['highlight'].length > 0) {
+                    if(tx_dlf_viewer.map != null) {
+                        tx_dlf_viewer.displayHighlightWord(encodeURIComponent(getHighlights(element['highlight'])));
+                    } else {
+                        setTimeout(addImageHighlightAfterFirstLoad, 500, data);
+                    }
+                }
+                addHighlightEffect(element['highlight'])
+            }
+        });
+    }
 }
 
 function triggerSearchAfterHitLoad() {

@@ -80,7 +80,13 @@ var dlfViewer = function(settings){
      * @type {string}
      * @private
      */
-    this.highlightKeys = 'tx_dlf[highlight_word]';
+    this.highlightKeys = 'hl';
+ 
+    /**
+     * @type {string|undefined}
+     * @private
+     */
+     this.highlightWords = null;
 
     /**
      * @type {Object|undefined}
@@ -292,7 +298,10 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 /**
  * Displays highlight words
  */
-dlfViewer.prototype.displayHighlightWord = function() {
+dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
+    if(highlightWords != null) {
+        this.highlightWords = highlightWords;
+    }
 
     if (!dlfUtils.exists(this.highlightLayer)) {
 
@@ -349,10 +358,17 @@ dlfViewer.prototype.displayHighlightWord = function() {
     }
 
     if (hasOwnProperty && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
-        var value = urlParams[param],
-            values = decodeURIComponent(value).split(' '),
+        var value = undefined,
             fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
+
+        if(this.highlightWords != null) {
+            value = this.highlightWords;
+        } else {
+            value = urlParams[param];
+        }
+
+        var values = decodeURIComponent(value).split(';'),
 
         // check if there is another image / fulltext to look for
         if (this.images.length === 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
@@ -364,7 +380,7 @@ dlfViewer.prototype.displayHighlightWord = function() {
         var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
           fulltextData.getStringFeatures().concat(fulltextDataImageTwo.getStringFeatures());
         values.forEach($.proxy(function(value) {
-            var features = dlfUtils.searchFeatureCollectionForText(stringFeatures, value);
+            var features = dlfUtils.searchFeatureCollectionForCoordinates(stringFeatures, value);
             if (features !== undefined) {
                 for (var i = 0; i < features.length; i++) {
                     this.highlightLayer.getSource().addFeatures([features[i]]);
