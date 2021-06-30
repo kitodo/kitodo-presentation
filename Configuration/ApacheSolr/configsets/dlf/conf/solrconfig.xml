@@ -685,7 +685,13 @@
        provided with Solr is "SearchHandler" It delegates to a sequent
        of SearchComponents (see below) and supports distributed
        queries across multiple shards
-    -->
+
+    Instruct the request handlers you want to enable OCR highlighting for to include the
+    search component you defined above. This example uses the standard /select handler.
+
+    CAUTION: Make sure that the OCR highlight component is listed **before** the standard
+    highlighting component, but **after** the query component.
+  -->
   <requestHandler name="/select" class="solr.SearchHandler" default="true">
     <!-- default values for query parameters can be specified, these
          will be overridden by parameters in the request
@@ -702,6 +708,12 @@
          <str name="wt">xml</str> 
         -->
     </lst>
+
+    <arr name="components">
+          <str>query</str>
+          <str>ocrHighlight</str>
+          <str>highlight</str>
+      </arr>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
          multi-val params from the query (or the existing "defaults").
@@ -754,21 +766,6 @@
          <str>nameOfCustomComponent2</str>
        </arr>
       -->
-  </requestHandler>
-
-  <!--
-    Instruct the request handlers you want to enable OCR highlighting for to include the
-    search component you defined above. This example uses the standard /select handler.
-
-    CAUTION: Make sure that the OCR highlight component is listed **before** the standard
-    highlighting component, but **after** the query component.
-  -->
-  <requestHandler name="/select" class="solr.SearchHandler">
-      <arr name="components">
-          <str>query</str>
-          <str>ocrHighlight</str>
-          <str>highlight</str>
-      </arr>
   </requestHandler>
 
   <!-- A request handler that returns indented JSON by default -->
