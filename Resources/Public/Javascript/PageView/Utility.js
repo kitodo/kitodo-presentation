@@ -760,7 +760,7 @@ dlfUtils.isCorsEnabled = function (imageObjs) {
  * @return {boolean}
  */
 dlfUtils.isWebGLEnabled = function () {
-    if (!!window.WebGLRenderingContext) {
+    if (!window.WebGLRenderingContext) {
         var canvas = document.createElement("canvas"),
             rendererNames = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
             context = false;
@@ -772,7 +772,10 @@ dlfUtils.isWebGLEnabled = function () {
                     // WebGL is enabled;
                     return true;
                 }
-            } catch (e) {}
+            } catch (e) {
+                /* eslint no-console: ["error", { allow: ["info"] }] */
+                console.info(e);
+            }
         }
         // WebGL not supported
         return false;

@@ -461,7 +461,7 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
         if (this.layers_.hasOwnProperty(key)) {
             this.map.addLayer(this.layers_[String(key)]);
         }
-    };
+    }
 
     // show fulltext container
     var className = 'fulltext-visible';
