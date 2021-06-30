@@ -17,7 +17,9 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Plugin 'OAI-PMH Interface' for the 'dlf' extension
@@ -136,8 +138,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->piVars = [];
         // Set only allowed parameters.
         foreach ($allowedParams as $param) {
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP($param)) {
-                $this->piVars[$param] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP($param);
+            if (GeneralUtility::_GP($param)) {
+                $this->piVars[$param] = GeneralUtility::_GP($param);
             }
         }
     }
@@ -345,14 +347,14 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             // Resolve "EXT:" prefix in file path.
             if (strpos($this->conf['stylesheet'], 'EXT:') === 0) {
                 [$extKey, $filePath] = explode('/', substr($this->conf['stylesheet'], 4), 2);
-                if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey)) {
-                    $this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey)) . $filePath;
+                if (ExtensionManagementUtility::isLoaded($extKey)) {
+                    $this->conf['stylesheet'] = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($extKey)) . $filePath;
                 }
             }
-            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
+            $stylesheet = GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
         } else {
             // Use default stylesheet if no custom stylesheet is given.
-            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
+            $stylesheet = GeneralUtility::locationHeaderUrl(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
         }
         $this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="' . htmlspecialchars($stylesheet, ENT_NOQUOTES, 'UTF-8') . '"'));
         // Create root element.
@@ -755,7 +757,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage());
         }
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
         $resultSet->add($documentSet);
         $resultSet->metadata = [
