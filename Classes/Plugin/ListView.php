@@ -166,7 +166,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                             'parameter' => $this->conf['targetPid'],
                             'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
+                            'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
@@ -213,7 +213,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                 'parameter' => $this->conf['targetBasket'],
                 'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                 'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
+                'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
             ];
             $link = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('addBasket', '')), $conf);
             $markerArray['###BASKETBUTTON###'] = $link;
@@ -262,7 +262,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         if (!empty($this->piVars['logicalPage'])) {
-            $linkConf['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['logicalPage' => $this->piVars['logicalPage']], '', true, false);
+            $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, ['logicalPage' => $this->piVars['logicalPage']], '', true, false);
         }
         // Build HTML form.
         $sorting = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
@@ -344,7 +344,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                             'parameter' => $this->conf['targetPid'],
                             'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
+                            'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
@@ -392,7 +392,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     'parameter' => $this->conf['targetBasket'],
                     'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                     'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                    'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
+                    'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                 ];
                 $link = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('addBasket', '')), $conf);
                 $markerArray['###SUBBASKETBUTTON###'] = $link;
@@ -462,7 +462,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         // Don't cache the output.
         $this->setCache(false);
         // Load the list.
-        $this->list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $this->list = GeneralUtility::makeInstance(DocumentList::class);
         $currentEntry = $this->piVars['pointer'] * $this->conf['limit'];
         $lastEntry = ($this->piVars['pointer'] + 1) * $this->conf['limit'];
         // Check if it's a list of database records or Solr documents.

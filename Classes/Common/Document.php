@@ -905,7 +905,7 @@ abstract class Document
     protected function load($location)
     {
         // Load XML / JSON-LD file.
-        if (\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($location)) {
+        if (GeneralUtility::isValidUrl($location)) {
             // Load extension configuration
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Set user-agent to identify self when fetching XML / JSON-LD data.

@@ -83,7 +83,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
         if (
             !$this->conf['excludeOther']
             || empty($this->piVars['collection'])
-            || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])
+            || GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])
         ) {
             $additionalWhere = '';
             // Check for pre-selected collections.
@@ -172,7 +172,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                         'parameter' => $this->conf['targetPid'],
                         'forceAbsoluteUrl' => 1,
                         'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                        'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', true, false)
+                        'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', true, false)
                     ];
                     $item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));
                     // Add author if applicable.

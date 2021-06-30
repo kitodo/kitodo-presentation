@@ -62,11 +62,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     {
         return new ExpressionFunction(
             'getDocumentType',
-            function ()
+            function()
             {
                 // Not implemented, we only use the evaluator
             },
-            function ($arguments, $cPid)
+            function($arguments, $cPid)
             {
                 /** @var RequestWrapper $requestWrapper */
                 $requestWrapper = $arguments['request'];
