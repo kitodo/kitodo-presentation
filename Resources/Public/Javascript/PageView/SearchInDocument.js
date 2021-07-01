@@ -153,14 +153,20 @@ function getNeededQueryParams(element) {
 
     var queryParams = [];
         
-    if(getBaseUrl(element['uid']).split('?')[0].indexOf(element['uid']) === -1) {
+    if(id && getBaseUrl(element['uid']).split('?')[0].indexOf(element['uid']) === -1) {
         queryParams.push(id);
         queryParams[id] = element['uid'];
     }
-    queryParams.push(highlightWord);
-    queryParams[highlightWord] = encodeURIComponent($("input[id='tx-dlf-search-in-document-query']").val());
-    queryParams.push(page);
-    queryParams[page] = element['page'];
+
+    if(highlightWord) {
+        queryParams.push(highlightWord);
+        queryParams[highlightWord] = encodeURIComponent($("input[id='tx-dlf-search-in-document-query']").val());
+    }
+
+    if(page) {
+        queryParams.push(page);
+        queryParams[page] = element['page'];
+    }
 
     return queryParams;
 }
@@ -239,11 +245,12 @@ function addImageHighlight(data) {
 
 function triggerSearchAfterHitLoad() {
     var queryParams = getCurrentQueryParams(getBaseUrl(" "));
+    var searchedQueryParam = $("input[id='tx-dlf-search-in-document-highlight-word']").attr('name');
 
     for(var i = 0; i < queryParams.length; i++) {
         var queryParam = queryParams[i].split('=');
 
-        if(queryParam[0].indexOf($("input[id='tx-dlf-search-in-document-highlight-word']").attr('name')) !== -1) {
+        if(searchedQueryParam && queryParam[0].indexOf(searchedQueryParam) !== -1) {
             $("input[id='tx-dlf-search-in-document-query']").val(decodeURIComponent(queryParam[1]));
             $("#tx-dlf-search-in-document-form").submit();
             break;
