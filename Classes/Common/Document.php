@@ -652,7 +652,7 @@ abstract class Document
      */
     public abstract function getFullText($id);
 
-        /**
+    /**
      * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
      * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
      * to be given in the Canvas' / Manifest's "seeAlso" property.
@@ -700,6 +700,15 @@ abstract class Document
         return $fullText;
     }
 
+    /**
+     * Get format of the OCR full text
+     *
+     * @access private
+     *
+     * @param string $fileContent: content of the XML file
+     *
+     * @return string The format of the OCR full text
+     */
     private function getTextFormat($fileContent)
     {
         // Turn off libxml's error logging.
