@@ -670,7 +670,7 @@ abstract class Document
         // ... physical structure ...
         $this->_getPhysicalStructure();
         // ... and extension configuration.
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
         if (!empty($this->physicalStructureInfo[$id])) {
             while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {

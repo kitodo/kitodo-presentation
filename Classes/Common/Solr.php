@@ -255,7 +255,7 @@ class Solr implements LoggerAwareInterface
      */
     public static function getFields()
     {
-        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
 
         $fields = [];
         $fields['id'] = $conf['solrFieldId'];
