@@ -80,7 +80,7 @@ var dlfViewer = function(settings){
      * @type {string}
      * @private
      */
-    this.highlightKeys = 'hl';
+    this.highlightKeys = 'tx_dlf[highlight_word]';
  
     /**
      * @type {string|undefined}
