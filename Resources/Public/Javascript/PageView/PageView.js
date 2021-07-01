@@ -368,7 +368,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
             value = urlParams[param];
         }
 
-        var values = decodeURIComponent(value).split(';'),
+        var values = decodeURIComponent(value).split(';');
 
         // check if there is another image / fulltext to look for
         if (this.images.length === 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
