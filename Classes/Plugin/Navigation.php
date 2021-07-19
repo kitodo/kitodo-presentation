@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Plugin 'Navigation' for the 'dlf' extension
@@ -38,7 +40,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         if (!empty($this->conf['targetPid'])) {
             // Load the list.
-            $list = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+            $list = GeneralUtility::makeInstance(DocumentList::class);
             if (count($list) > 0) {
                 // Build typolink configuration array.
                 $conf = [
@@ -120,11 +122,11 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
                     (int) $this->piVars['page'] > 0
                     || empty($this->piVars['page'])
                 ) {
-                    $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+                    $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
                 } else {
                     $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
                 }
-                $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+                $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
             } else {
                 $this->piVars['page'] = 0;
                 $this->piVars['double'] = 0;
@@ -227,7 +229,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
             'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'ATagParams' => $aTagParams,
-            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', true, false),
+            'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', true, false),
             'title' => $label
         ];
         return $this->cObj->typoLink($label, $conf);
