@@ -94,7 +94,7 @@ class ReindexCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = getStartingPoint($input->getOption('pid'));
+        $startingPoint = $this->getStartingPoint($input->getOption('pid'));
 
         if ($startingPoint == 0) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');

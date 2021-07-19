@@ -51,7 +51,7 @@ class BaseCommand extends Command
      *
      * @return int matching uid of Solr core
      */
-    protected function getSolrCoreUid(array $solrCores, $inputSolr): int
+    protected function getSolrCoreUid(array $solrCores, $inputSolrId): int
     {
         if (MathUtility::canBeInterpretedAsInteger($inputSolrId)) {
             $solrCoreUid = MathUtility::forceIntegerInRange((int) $inputSolrId, 0);
