@@ -760,7 +760,7 @@ dlfUtils.isCorsEnabled = function (imageObjs) {
  * @return {boolean}
  */
 dlfUtils.isWebGLEnabled = function () {
-    if (!window.WebGLRenderingContext) {
+    if (!!window.WebGLRenderingContext) {
         var canvas = document.createElement("canvas"),
             rendererNames = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
             context = false;
