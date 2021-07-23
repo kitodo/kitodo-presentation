@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,6 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
+use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Document;
 use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\BaseoaipmhException;
@@ -34,7 +34,7 @@ use Phpoaipmh\Exception\BaseoaipmhException;
  * @subpackage dlf
  * @access public
  */
-class HarvestCommand extends Command
+class HarvestCommand extends BaseCommand
 {
     /**
      * Configure the command by defining the name, options and arguments
@@ -258,38 +258,6 @@ class HarvestCommand extends Command
         }
 
         $io->success('All done!');
-    }
-
-
-    /**
-     * Fetches all Solr cores on given page.
-     *
-     * @param int $pageId The UID of the Solr core or 0 to disable indexing
-     *
-     * @return array Array of valid Solr cores
-     */
-    protected function getSolrCores(int $pageId): array
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_solrcores');
-
-        $solrCores = [];
-        $result = $queryBuilder
-            ->select('uid', 'index_name')
-            ->from('tx_dlf_solrcores')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'pid',
-                    $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
-                )
-            )
-            ->execute();
-
-        while ($record = $result->fetch()) {
-            $solrCores[$record['index_name']] = $record['uid'];
-        }
-
-        return $solrCores;
     }
 
     /**
