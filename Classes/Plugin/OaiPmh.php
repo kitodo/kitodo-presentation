@@ -17,7 +17,9 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Plugin 'OAI-PMH Interface' for the 'dlf' extension
@@ -87,13 +89,13 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->delete('tx_dlf_tokens')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int)($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
+                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int) ($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
             )
             ->execute();
 
         if ($result === -1) {
             // Deletion failed.
-            Helper::devLog('Could not delete expired resumption tokens', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Could not delete expired resumption tokens');
         }
     }
 
@@ -136,8 +138,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->piVars = [];
         // Set only allowed parameters.
         foreach ($allowedParams as $param) {
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP($param)) {
-                $this->piVars[$param] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP($param);
+            if (GeneralUtility::_GP($param)) {
+                $this->piVars[$param] = GeneralUtility::_GP($param);
             }
         }
     }
@@ -307,10 +309,10 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 // Import node into \DOMDocument.
                 $mets = $this->oai->importNode($root->item(0), true);
             } else {
-                Helper::devLog('No METS part found in document with location "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('No METS part found in document with location "' . $metadata['location'] . '"');
             }
         } else {
-            Helper::devLog('Could not load XML file from "' . $metadata['location'] . '"', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Could not load XML file from "' . $metadata['location'] . '"');
         }
         if ($mets === null) {
             $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error', htmlspecialchars($this->pi_getLL('error', 'Error!'), ENT_NOQUOTES, 'UTF-8'));
@@ -345,14 +347,14 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             // Resolve "EXT:" prefix in file path.
             if (strpos($this->conf['stylesheet'], 'EXT:') === 0) {
                 [$extKey, $filePath] = explode('/', substr($this->conf['stylesheet'], 4), 2);
-                if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey)) {
-                    $this->conf['stylesheet'] = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey)) . $filePath;
+                if (ExtensionManagementUtility::isLoaded($extKey)) {
+                    $this->conf['stylesheet'] = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($extKey)) . $filePath;
                 }
             }
-            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
+            $stylesheet = GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
         } else {
             // Use default stylesheet if no custom stylesheet is given.
-            $stylesheet = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
+            $stylesheet = GeneralUtility::locationHeaderUrl(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
         }
         $this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="' . htmlspecialchars($stylesheet, ENT_NOQUOTES, 'UTF-8') . '"'));
         // Create root element.
@@ -583,7 +585,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $adminEmail = htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES);
             $repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
         } else {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('Incomplete plugin configuration');
         }
         // Get earliest datestamp. Use a default value if that fails.
         $earliestDatestamp = '0000-00-00T00:00:00Z';
@@ -605,7 +607,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $timestamp = $resArray['tstamp'];
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
         } else {
-            Helper::devLog('No records found with PID ' . $this->conf['pages'], DEVLOG_SEVERITY_NOTICE);
+            $this->logger->notice('No records found with PID ' . $this->conf['pages']);
         }
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
@@ -755,7 +757,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage());
         }
-        $resultSet = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(DocumentList::class);
+        $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
         $resultSet->add($documentSet);
         $resultSet->metadata = [
@@ -924,7 +926,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $documentSet = [];
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Apache Solr not available');
             return $documentSet;
         }
         if (intval($this->conf['solr_limit']) > 0) {
@@ -957,7 +959,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function generateOutputForDocumentList(DocumentList $documentListSet)
     {
-        $documentsToProcess = $documentListSet->removeRange(0, (int)$this->conf['limit']);
+        $documentsToProcess = $documentListSet->removeRange(0, (int) $this->conf['limit']);
         $verb = $this->piVars['verb'];
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -1013,9 +1015,11 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                     $output->appendChild($header);
                 }
             } else {
-                // Add sets.
+                // Add sets but only if oai_name field is not empty.
                 foreach (explode(' ', $resArray['collections']) as $spec) {
-                    $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
+                    if ($spec) {
+                        $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
+                    }
                 }
                 if ($verb === 'ListRecords') {
                     // Add record node.
@@ -1078,7 +1082,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             if ($affectedRows === 1) {
                 $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
             } else {
-                Helper::devLog('Could not create resumption token', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Could not create resumption token');
                 return $this->error('badResumptionToken');
             }
         } else {

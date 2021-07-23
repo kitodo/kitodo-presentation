@@ -116,7 +116,7 @@ class ext_update
         }
         foreach ($rows as $row) {
             if ($row['format'] === 0 && $row['xpath']) {
-                $uids[] = (int)$row['uid'];
+                $uids[] = (int) $row['uid'];
             }
         }
         return $uids;
@@ -296,9 +296,9 @@ class ext_update
     {
         $oldRecords = $this->oldFormatClasses();
         $newValues = [
-            'ALTO' => 'Kitodo\\\\Dlf\\\\Format\\\\Alto', // Those are effectively single backslashes
-            'MODS' => 'Kitodo\\\\Dlf\\\\Format\\\\Mods',
-            'TEIHDR' => 'Kitodo\\\\Dlf\\\\Format\\\\TeiHeader'
+            'ALTO' => 'Kitodo\\Dlf\\Format\\Alto', // Those are effectively single backslashes
+            'MODS' => 'Kitodo\\Dlf\\Format\\Mods',
+            'TEIHDR' => 'Kitodo\\Dlf\\Format\\TeiHeader'
         ];
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_formats');
 

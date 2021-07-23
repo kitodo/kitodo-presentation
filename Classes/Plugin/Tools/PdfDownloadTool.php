@@ -115,12 +115,13 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
             empty($page1Link)
             && empty($page2Link)
         ) {
-            Helper::devLog('File not found in fileGrps "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('File not found in fileGrps "' . $this->conf['fileGrpDownload'] . '"');
         }
         // Wrap URLs with HTML.
         $linkConf = [
             'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+            'extTarget' => '_blank'
         ];
         if (!empty($page1Link)) {
             $linkConf['parameter'] = $page1Link;
@@ -170,11 +171,12 @@ class PdfDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 'parameter' => $workLink,
                 'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                 'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                'title' => $this->pi_getLL('work', '')
+                'title' => $this->pi_getLL('work', ''),
+                'extTarget' => '_blank'
             ];
             $workLink = $this->cObj->typoLink($this->pi_getLL('work', ''), $linkConf);
         } else {
-            Helper::devLog('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('File not found in fileGrp "' . $this->conf['fileGrpDownload'] . '"');
         }
         return $workLink;
     }

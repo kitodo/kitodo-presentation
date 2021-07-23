@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -26,8 +29,10 @@ use TYPO3\CMS\Core\Utility\HttpUtility;
  * @access public
  * @abstract
  */
-abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     public $extKey = 'dlf';
     public $prefixId = 'tx_dlf';
     public $scriptRelPath = 'Classes/Common/AbstractPlugin.php';
@@ -112,14 +117,11 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $conf = Helper::mergeRecursiveWithOverrule($generalConf, $conf);
         }
         // Read extension configuration.
-        $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-        if (is_array($extConf)) {
-            $conf = Helper::mergeRecursiveWithOverrule($extConf, $conf);
-        }
-        // Read TYPO3_CONF_VARS configuration.
-        $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
-        if (is_array($varsConf)) {
-            $conf = Helper::mergeRecursiveWithOverrule($varsConf, $conf);
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey]) && is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey])) {
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+            if (is_array($extConf)) {
+                $conf = Helper::mergeRecursiveWithOverrule($extConf, $conf);
+            }
         }
         $this->conf = $conf;
         // Set default plugin variables.
@@ -149,7 +151,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = null;
-                Helper::devLog('Failed to load document with UID ' . $this->piVars['id'], DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Failed to load document with UID ' . $this->piVars['id']);
             } else {
                 // Set configuration PID.
                 $this->doc->cPid = $this->conf['pages'];
@@ -177,10 +179,10 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 // Try to load document.
                 $this->loadDocument();
             } else {
-                Helper::devLog('Failed to load document with record ID "' . $this->piVars['recordId'] . '"', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Failed to load document with record ID "' . $this->piVars['recordId'] . '"');
             }
         } else {
-            Helper::devLog('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['pages'] . ' for document loading', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['pages'] . ' for document loading');
         }
     }
 
@@ -229,45 +231,12 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      */
     public function pi_linkTP($str, $urlParameters = [], $cache = false, $altPageId = 0)
     {
-        // Remove when we don't need to support TYPO3 8.7 anymore.
-        if (version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version(), '9.0.0', '<')) {
-            return $this->pi_linkTP_fallback($str, $urlParameters, $cache, $altPageId);
-        }
-        // -->
         $conf = [];
         if (!$cache) {
             $conf['no_cache'] = true;
         }
-        $conf['parameter'] = $altPageId ?: ($this->pi_tmpPageId ?: 'current');
+        $conf['parameter'] = $altPageId ? : ($this->pi_tmpPageId ? : 'current');
         $conf['additionalParams'] = $this->conf['parent.']['addParams'] . HttpUtility::buildQueryString($urlParameters, '&', true) . $this->pi_moreParams;
-        // Add additional configuration for absolute URLs.
-        $conf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
-        $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
-        return $this->cObj->typoLink($str, $conf);
-    }
-
-    /**
-     * Link string to the current page (fallback for TYPO3 8.7)
-     * @see $this->pi_linkTP()
-     *
-     * @deprecated
-     *
-     * @access public
-     *
-     * @param string $str: The content string to wrap in <a> tags
-     * @param array $urlParameters: Array with URL parameters as key/value pairs
-     * @param bool $cache: Should the "no_cache" parameter be added?
-     * @param int $altPageId: Alternative page ID for the link.
-     *
-     * @return string The input string wrapped in <a> tags
-     */
-    public function pi_linkTP_fallback($str, $urlParameters = [], $cache = false, $altPageId = 0)
-    {
-        $conf = [];
-        $conf['useCacheHash'] = $this->pi_USER_INT_obj ? 0 : $cache;
-        $conf['no_cache'] = $this->pi_USER_INT_obj ? 0 : !$cache;
-        $conf['parameter'] = $altPageId ? $altPageId : ($this->pi_tmpPageId ? $this->pi_tmpPageId : $this->frontendController->id);
-        $conf['additionalParams'] = $this->conf['parent.']['addParams'] . GeneralUtility::implodeArrayForUrl('', $urlParameters, '', true) . $this->pi_moreParams;
         // Add additional configuration for absolute URLs.
         $conf['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
         $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';

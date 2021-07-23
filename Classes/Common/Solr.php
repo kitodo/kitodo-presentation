@@ -12,8 +12,12 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -33,8 +37,10 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @property-read bool $ready Is the Solr service instantiated successfully?
  * @property-read \Solarium\Client $service This holds the Solr service object
  */
-class Solr
+class Solr implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * This holds the Solr configuration
      *
@@ -157,7 +163,7 @@ class Solr
                     // Nothing to do here.
                 }
             } else {
-                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+                $solr->logger->error('Apache Solr not available');
             }
         }
         return '';
@@ -241,6 +247,47 @@ class Solr
     }
 
     /**
+     * Get fields for index.
+     *
+     * @access public
+     *
+     * @return array fields
+     */
+    public static function getFields()
+    {
+        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+
+        $fields = [];
+        $fields['id'] = $conf['solrFieldId'];
+        $fields['uid'] = $conf['solrFieldUid'];
+        $fields['pid'] = $conf['solrFieldPid'];
+        $fields['page'] = $conf['solrFieldPage'];
+        $fields['partof'] = $conf['solrFieldPartof'];
+        $fields['root'] = $conf['solrFieldRoot'];
+        $fields['sid'] = $conf['solrFieldSid'];
+        $fields['toplevel'] = $conf['solrFieldToplevel'];
+        $fields['type'] = $conf['solrFieldType'];
+        $fields['title'] = $conf['solrFieldTitle'];
+        $fields['volume'] = $conf['solrFieldVolume'];
+        $fields['thumbnail'] = $conf['solrFieldThumbnail'];
+        $fields['default'] = $conf['solrFieldDefault'];
+        $fields['timestamp'] = $conf['solrFieldTimestamp'];
+        $fields['autocomplete'] = $conf['solrFieldAutocomplete'];
+        $fields['fulltext'] = $conf['solrFieldFulltext'];
+        $fields['record_id'] = $conf['solrFieldRecordId'];
+        $fields['purl'] = $conf['solrFieldPurl'];
+        $fields['urn'] = $conf['solrFieldUrn'];
+        $fields['location'] = $conf['solrFieldLocation'];
+        $fields['collection'] = $conf['solrFieldCollection'];
+        $fields['license'] = $conf['solrFieldLicense'];
+        $fields['terms'] = $conf['solrFieldTerms'];
+        $fields['restrictions'] = $conf['solrFieldRestrictions'];
+        $fields['geom'] = $conf['solrFieldGeom'];
+
+        return $fields;
+    }
+
+    /**
      * This is a singleton class, thus instances must be created by this method
      *
      * @access public
@@ -251,6 +298,8 @@ class Solr
      */
     public static function getInstance($core = null)
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
             $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
@@ -260,7 +309,7 @@ class Solr
             empty($core)
             && $core !== null
         ) {
-            Helper::devLog('Invalid core UID or name given for Apache Solr', DEVLOG_SEVERITY_ERROR);
+            $logger->error('Invalid core UID or name given for Apache Solr');
         }
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
@@ -314,7 +363,7 @@ class Solr
         if (empty($this->config)) {
             $config = [];
             // Extract extension configuration.
-            $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$extKey]);
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Derive Solr scheme
             $config['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
             // Derive Solr host name.
@@ -335,7 +384,7 @@ class Solr
                 $config['path'] .= 'solr/';
             }
             // Set connection timeout lower than PHP's max_execution_time.
-            $max_execution_time = intval(ini_get('max_execution_time')) ?: 30;
+            $max_execution_time = intval(ini_get('max_execution_time')) ? : 30;
             $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
             $this->config = $config;
         }
@@ -562,7 +611,7 @@ class Solr
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no getter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no getter function for property "' . $var . '"');
             return;
         } else {
             return $this->$method();
@@ -600,7 +649,7 @@ class Solr
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
-            Helper::devLog('There is no setter function for property "' . $var . '"', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('There is no setter function for property "' . $var . '"');
         } else {
             $this->$method($value);
         }

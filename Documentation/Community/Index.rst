@@ -8,8 +8,9 @@
 
 .. _known-problems:
 
+#########
 Community
-=========
+#########
 
 GitHub Repository
 -----------------

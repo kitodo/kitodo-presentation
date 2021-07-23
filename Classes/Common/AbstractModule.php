@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Abstract module class for the 'dlf' extension
  *
@@ -96,7 +99,7 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function printContent()
     {
-        $this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
+        $this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
         $this->doc->setModuleTemplate('EXT:' . $this->extKey . '/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl');
         $this->doc->backPath = $GLOBALS['BACK_PATH'];
         $this->doc->bodyTagAdditions = 'class="ext-' . $this->extKey . '-modules"';
@@ -129,7 +132,10 @@ abstract class AbstractModule extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     public function __construct()
     {
         $GLOBALS['LANG']->includeLLFile('EXT:' . $this->extKey . '/Resources/Private/Language/' . Helper::getUnqualifiedClassName(get_class($this)) . '.xml');
-        $this->conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-        $this->data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefixId);
+        // Read extension configuration.
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey]) && is_array($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey])) {
+            $this->conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+        }
+        $this->data = GeneralUtility::_GPmerged($this->prefixId);
     }
 }

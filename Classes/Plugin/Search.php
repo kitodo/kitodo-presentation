@@ -63,7 +63,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
             $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/Search/Suggester.js');
         } else {
-            Helper::devLog('No metadata fields configured for search suggestions', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('No metadata fields configured for search suggestions');
         }
     }
 
@@ -213,7 +213,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->conf['facetsConf.'])) {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Incomplete plugin configuration');
             return '';
         }
         // Quit without doing anything if no facets are selected.
@@ -352,7 +352,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->setCache(false);
         // Quit without doing anything if required variables are not set.
         if (empty($this->conf['solrcore'])) {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Incomplete plugin configuration');
             return $content;
         }
         if (
@@ -407,16 +407,17 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             // Prepare query parameters.
             $params = [];
             $matches = [];
+            $fields = Solr::getFields();
             // Set search query.
             if (
                 (!empty($this->conf['fulltext']) && !empty($this->piVars['fulltext']))
-                || preg_match('/fulltext:\((.*)\)/', trim($this->piVars['query']), $matches)
+                || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->piVars['query']), $matches)
             ) {
                 // If the query already is a fulltext query e.g using the facets
                 $this->piVars['query'] = empty($matches[1]) ? $this->piVars['query'] : $matches[1];
                 // Search in fulltext field if applicable. Query must not be empty!
                 if (!empty($this->piVars['query'])) {
-                    $query = 'fulltext:(' . Solr::escapeQuery(trim($this->piVars['query'])) . ')';
+                    $query = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($this->piVars['query'])) . ')';
                 }
             } else {
                 // Retain given search field if valid.
@@ -460,9 +461,13 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                     && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
                 ) {
                     // Search in document and all subordinates (valid for up to three levels of hierarchy).
-                    $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $this->piVars['id'] . '"' .
-                        ' OR {!join from=uid to=partof}uid:' . $this->piVars['id'] .
-                        ' OR uid:' . $this->piVars['id'];
+                    $params['filterquery'][]['query'] = '_query_:"{!join from='
+                        . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                        . $fields['uid'] . ':{!join from=' . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                        . $fields['uid'] . ':' . $this->piVars['id'] . '"' . ' OR {!join from='
+                        . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                        . $fields['uid'] . ':' . $this->piVars['id'] . ' OR '
+                        . $fields['uid'] . ':' . $this->piVars['id'];
                     $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
                 }
             }
@@ -498,7 +503,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             // Instantiate search object.
             $solr = Solr::getInstance($this->conf['solrcore']);
             if (!$solr->ready) {
-                Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+                $this->logger->error('Apache Solr not available');
                 return $content;
             }
             // Set search parameters.
@@ -579,7 +584,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get applicable facets.
         $solr = Solr::getInstance($this->conf['solrcore']);
         if (!$solr->ready) {
-            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Apache Solr not available');
             return [];
         }
         // Set needed parameters for facet search.

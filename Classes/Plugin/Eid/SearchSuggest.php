@@ -33,7 +33,7 @@ class SearchSuggest
     /**
      * The main method of the eID script
      *
-    *  @param ServerRequestInterface $request
+     *  @param ServerRequestInterface $request
      * @return ResponseInterface XML response of search suggestions
      */
     public function main(ServerRequestInterface $request)

@@ -32,17 +32,14 @@
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "~8.7.32|~9.5.17",
-    "typo3/cms-tstemplate": "~8.7.32|~9.5.17",
+    "typo3/cms-core": "~9.5.26",
+    "typo3/cms-tstemplate": "~9.5.26",
     "caseyamcl/phpoaipmh": "^3.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
     "solarium/solarium": "^4.2|^5.2"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"
-  },
-  "suggest": {
-    "devlog/devlog": "^3.0"
   },
   "autoload": {
     "psr-4": {

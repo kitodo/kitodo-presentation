@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -73,16 +74,14 @@ class ConfigurationForm
     public function checkMetadataFormats()
     {
         // We need to do some bootstrapping manually as of TYPO3 9.
-        if (version_compare(\TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version(), '9.0.0', '>=')) {
-            // Load table configuration array into $GLOBALS['TCA'].
-            ExtensionManagementUtility::loadBaseTca(false);
-            // Get extension configuration from dlf/ext_localconf.php.
-            ExtensionManagementUtility::loadExtLocalconf(false);
-            // Initialize backend user into $GLOBALS['BE_USER'].
-            Bootstrap::initializeBackendUser();
-            // Initialize backend and ensure authenticated access.
-            Bootstrap::initializeBackendAuthentication();
-        }
+        // Load table configuration array into $GLOBALS['TCA'].
+        ExtensionManagementUtility::loadBaseTca(false);
+        // Get extension configuration from dlf/ext_localconf.php.
+        ExtensionManagementUtility::loadExtLocalconf(false);
+        // Initialize backend user into $GLOBALS['BE_USER'].
+        Bootstrap::initializeBackendUser();
+        // Initialize backend and ensure authenticated access.
+        Bootstrap::initializeBackendAuthentication();
 
         $nsDefined = [
             'MODS' => false,
@@ -207,6 +206,6 @@ class ConfigurationForm
         // Load localization file.
         $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
         // Get current configuration.
-        $this->conf = array_merge((array) unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));
+        $this->conf = array_merge(GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf'), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));
     }
 }

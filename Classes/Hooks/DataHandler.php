@@ -16,6 +16,9 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,8 +31,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  */
-class DataHandler
+class DataHandler implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Field post-processing hook for the process_datamap() method.
      *
@@ -94,7 +99,7 @@ class DataHandler
                     // Create new Solr core.
                     $fieldArray['index_name'] = Solr::createCore();
                     if (empty($fieldArray['index_name'])) {
-                        Helper::devLog('Could not create new Apache Solr core', DEVLOG_SEVERITY_ERROR);
+                        $this->logger->error('Could not create new Apache Solr core');
                         // Solr core could not be created, thus unset field array.
                         $fieldArray = [];
                     }
@@ -234,7 +239,7 @@ class DataHandler
                                 if ($doc->ready) {
                                     Indexer::add($doc, $resArray['core']);
                                 } else {
-                                    Helper::devLog('Failed to re-index document with UID ' . $id, DEVLOG_SEVERITY_ERROR);
+                                    $this->logger->error('Failed to re-index document with UID ' . $id);
                                 }
                             }
                         }
@@ -317,7 +322,7 @@ class DataHandler
                         if ($doc->ready) {
                             Indexer::add($doc, $resArray['core']);
                         } else {
-                            Helper::devLog('Failed to re-index document with UID ' . $id, DEVLOG_SEVERITY_ERROR);
+                            $this->logger->error('Failed to re-index document with UID ' . $id);
                         }
                         break;
                 }
@@ -328,7 +333,7 @@ class DataHandler
             && $table == 'tx_dlf_solrcores'
         ) {
             // Is core deletion allowed in extension configuration?
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dlf']);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
             if (!empty($extConf['solrAllowCoreDelete'])) {
                 // Delete core from Apache Solr as well.
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -371,7 +376,7 @@ class DataHandler
                             // Nothing to do here.
                         }
                     }
-                    Helper::devLog('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr', DEVLOG_SEVERITY_WARNING);
+                    $this->logger->warning('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr');
                 }
             }
         }

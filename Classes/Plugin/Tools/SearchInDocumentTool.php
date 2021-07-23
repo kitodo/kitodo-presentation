@@ -13,17 +13,15 @@
 namespace Kitodo\Dlf\Plugin\Tools;
 
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * SearchInDocument tool for the plugin 'Toolbox' of the 'dlf' extension
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
@@ -51,8 +49,6 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         if (!empty($this->cObj->data['conf'])) {
             $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
         }
-
-        $this->addSearchInDocumentJS();
 
         // Load current document.
         $this->loadDocument();
@@ -118,24 +114,11 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             '###LABEL_PAGE###' => htmlspecialchars($this->pi_getLL('label.logicalPage')),
             '###LABEL_NORESULT###' => htmlspecialchars($this->pi_getLL('label.noresult')),
             '###CURRENT_DOCUMENT###' => $this->doc->uid,
-            '###SOLR_ENCRYPTED###' => $encryptedSolr ?: '',
+            '###SOLR_ENCRYPTED###' => $encryptedSolr ? : '',
         ];
 
         $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
         return $this->pi_wrapInBaseClass($content);
-    }
-
-    /**
-     * Adds the JS files necessary for search in document
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    protected function addSearchInDocumentJS()
-    {
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->addJsFooterFile(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/Search/SearchInDocument.js');
     }
 
     /**

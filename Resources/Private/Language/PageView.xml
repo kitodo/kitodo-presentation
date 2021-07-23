@@ -24,7 +24,6 @@
             <label index="tt_content.pi_flexform.features.overviewmap">Overview Image</label>
             <label index="tt_content.pi_flexform.features.zoompanel">Zoom Panel</label>
             <label index="tt_content.pi_flexform.elementId">@ID value of the HTML element for the page view</label>
-            <label index="tt_content.pi_flexform.addJStoBody">Add Javascript files to ###JAVASCRIPT### template marker instead of page footer?</label>
             <label index="tt_content.pi_flexform.templateFile">Template file</label>
             <label index="tt_content.pi_flexform.useInternalProxy">Use Internal Proxy</label>
             <label index="tt_content.pi_flexform.crop">Enable cropping</label>
@@ -46,7 +45,6 @@
             <label index="tt_content.pi_flexform.features.overviewmap">Übersichtsbild</label>
             <label index="tt_content.pi_flexform.features.zoompanel">Zoom-Knöpfe</label>
             <label index="tt_content.pi_flexform.elementId">@ID-Wert des HTML-Elements für die Seitenansicht</label>
-            <label index="tt_content.pi_flexform.addJStoBody">Javascript-Dateien im ###JAVASCRIPT### Template-Marker anstatt im Footer ausgeben?</label>
             <label index="tt_content.pi_flexform.templateFile">HTML-Template</label>
             <label index="tt_content.pi_flexform.useInternalProxy">Internen Proxy verwenden</label>
             <label index="tt_content.pi_flexform.crop">Funktion zum Erstellen eines Bildausschnitts aktivieren</label>

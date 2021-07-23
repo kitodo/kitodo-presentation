@@ -14,20 +14,20 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 // Define constants.
-if (!defined('DEVLOG_SEVERITY_OK')) {
-    define('DEVLOG_SEVERITY_OK', -1);
+if (!defined('LOG_SEVERITY_OK')) {
+    define('LOG_SEVERITY_OK', -1);
 }
-if (!defined('DEVLOG_SEVERITY_INFO')) {
-    define('DEVLOG_SEVERITY_INFO', 0);
+if (!defined('LOG_SEVERITY_INFO')) {
+    define('LOG_SEVERITY_INFO', 0);
 }
-if (!defined('DEVLOG_SEVERITY_NOTICE')) {
-    define('DEVLOG_SEVERITY_NOTICE', 1);
+if (!defined('LOG_SEVERITY_NOTICE')) {
+    define('LOG_SEVERITY_NOTICE', 1);
 }
-if (!defined('DEVLOG_SEVERITY_WARNING')) {
-    define('DEVLOG_SEVERITY_WARNING', 2);
+if (!defined('LOG_SEVERITY_WARNING')) {
+    define('LOG_SEVERITY_WARNING', 2);
 }
-if (!defined('DEVLOG_SEVERITY_ERROR')) {
-    define('DEVLOG_SEVERITY_ERROR', 3);
+if (!defined('LOG_SEVERITY_ERROR')) {
+    define('LOG_SEVERITY_ERROR', 3);
 }
 // Register plugins without addPItoST43() as this is not working with TYPO3 9.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
@@ -230,25 +230,6 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][
 }
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'])) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'] = 87600; // 87600 seconds = 1 day
-}
-// Register Typoscript user function.
-if (\TYPO3_MODE === 'FE') {
-    /**
-     * docTypeCheck user function to use in Typoscript
-     * @example [userFunc = user_dlf_docTypeCheck($type, $pid)]
-     *
-     * @access public
-     *
-     * @param string $type The document type string to test for
-     * @param int $pid The PID for the metadata definitions
-     *
-     * @return bool true if document type matches, false if not
-     */
-    function user_dlf_docTypeCheck(string $type, int $pid): bool
-    {
-        $hook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Kitodo\Dlf\Hooks\UserFunc::class);
-        return ($hook->getDocumentType($pid) === $type);
-    }
 }
 // Add new renderType for TCA fields.
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
