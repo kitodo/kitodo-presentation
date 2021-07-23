@@ -412,7 +412,7 @@ class Helper
             !$uid
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
-            self::devLog('Invalid UID "' . $uid . '" or table "' . $table . '"', DEVLOG_SEVERITY_ERROR);
+            self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
             return '';
         }
 
@@ -441,7 +441,7 @@ class Helper
         if ($resArray = $result->fetch()) {
             return $resArray['label'];
         } else {
-            self::devLog('No "label" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', DEVLOG_SEVERITY_WARNING);
+            self::log('No "label" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
             return '';
         }
     }
