@@ -56,7 +56,7 @@ $(document).ready(function() {
             "/",
             {
                 eID: "tx_dlf_search_in_document",
-                q: $( "input[id='tx-dlf-search-in-document-query]']" ).val(),
+                q: $( "input[id='tx-dlf-search-in-document-query']" ).val(),
                 uid: $( "input[id='tx-dlf-search-in-document-id]']" ).val(),
                 start: $( "input[id='tx-dlf-search-in-document-start]']" ).val(),
                 encrypted: $( "input[id='tx-dlf-search-in-document-encrypted]']" ).val(),
