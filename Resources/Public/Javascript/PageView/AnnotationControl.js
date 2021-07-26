@@ -80,7 +80,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
                 this.selectedFeature_ = undefined;
                 this.showAnnotationText(undefined);
                 return;
-            };
+            }
             if (this.selectedFeature_) {
                 // remove old clicks
                 this.layers_.select.getSource().removeFeature(this.selectedFeature_);
