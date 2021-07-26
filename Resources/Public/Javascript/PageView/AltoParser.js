@@ -70,7 +70,7 @@ dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
     } else {
         var feature = new ol.Feature();
         feature.setProperties({'type': node.nodeName.toLowerCase()});
-    };
+    }
 
     // parse child nodes
     if (type === 'page') {
