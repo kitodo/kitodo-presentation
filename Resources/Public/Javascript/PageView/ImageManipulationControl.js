@@ -130,7 +130,7 @@ dlfViewerImageManipulationControl = function(options) {
 
                     for (var filter in this.filters_) {
                         glif.addFilter(filter, this.filters_[String(filter)]);
-                    };
+                    }
 
                     this.filterUpdated_ = false;
                 }
