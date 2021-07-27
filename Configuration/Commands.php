@@ -17,6 +17,9 @@
  * of \Symfony\Component\Console\Command\Command.
  */
 return [
+    'kitodo:harvest' => [
+        'class' => Kitodo\Dlf\Command\HarvestCommand::class
+    ],
     'kitodo:index' => [
         'class' => Kitodo\Dlf\Command\IndexCommand::class
     ],

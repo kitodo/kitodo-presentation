@@ -27,7 +27,7 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write int $cPid This holds the PID for the configuration
+ * @property int $cPid This holds the PID for the configuration
  * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
  * @property-read array $fileGrps This holds the file ID -> USE concordance
  * @property-read bool $hasFulltext Are there any fulltext files available?
@@ -589,7 +589,7 @@ final class MetsDocument extends Document
                 $metadata['title'][0] = '';
                 $metadata['title_sorting'][0] = '';
             }
-            // Add collections from database to toplevel element if document is already saved.
+            // Add collections and owner from database to toplevel element if document is already saved.
             if (
                 \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
                 && $id == $this->_getToplevelId()
@@ -634,6 +634,24 @@ final class MetsDocument extends Document
                         $metadata['collection'][] = $resArray['index_name'];
                     }
                 }
+
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_documents.owner AS owner'
+                    )
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
+                    )
+                    ->execute();
+
+                $resArray = $result->fetch();
+
+                $metadata['owner'][0] = $resArray['owner'];
             }
             // Extract metadata only from first supported dmdSec.
             $hasSupportedMetadata = true;
@@ -739,7 +757,7 @@ final class MetsDocument extends Document
      * {@inheritDoc}
      * @see Document::getParentDocumentUid()
      */
-    protected function getParentDocumentUidForSaving($pid, $core)
+    protected function getParentDocumentUidForSaving($pid, $core, $owner)
     {
         $partof = 0;
         // Get the closest ancestor of the current document which has a MPTR child.
@@ -750,7 +768,7 @@ final class MetsDocument extends Document
                 $parentDoc = self::getInstance($parentLocation, $pid);
                 if ($parentDoc->ready) {
                     if ($parentDoc->pid != $pid) {
-                        $parentDoc->save($pid, $core);
+                        $parentDoc->save($pid, $core, $owner);
                     }
                     $partof = $parentDoc->uid;
                 }
@@ -780,18 +798,6 @@ final class MetsDocument extends Document
     protected function getDocument()
     {
         return $this->mets;
-    }
-
-    /**
-     * This returns $this->cPid via __get()
-     *
-     * @access protected
-     *
-     * @return int The PID of the metadata definitions
-     */
-    protected function _getCPid()
-    {
-        return $this->cPid;
     }
 
     /**

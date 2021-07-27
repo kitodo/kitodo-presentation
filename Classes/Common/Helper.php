@@ -394,6 +394,59 @@ class Helper
     }
 
     /**
+     * Get the "label" for an UID
+     *
+     * @access public
+     *
+     * @param int $uid: The UID of the record
+     * @param string $table: Get the "label" from this table
+     * @param int $pid: Get the "label" from this page
+     *
+     * @return string "label" for the given UID
+     */
+    public static function getLabelFromUid($uid, $table, $pid = -1)
+    {
+        // Sanitize input.
+        $uid = max(intval($uid), 0);
+        if (
+            !$uid
+            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
+        ) {
+            self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
+            return '';
+        }
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+
+        $where = '';
+        // Should we check for a specific PID, too?
+        if ($pid !== -1) {
+            $pid = max(intval($pid), 0);
+            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
+        }
+
+        // Get label from database.
+        $result = $queryBuilder
+            ->select($table . '.label AS label')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq($table . '.uid', $uid),
+                $where,
+                self::whereExpression($table)
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        if ($resArray = $result->fetch()) {
+            return $resArray['label'];
+        } else {
+            self::log('No "label" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
+            return '';
+        }
+    }
+
+    /**
      * Get language name from ISO code
      *
      * @access public

@@ -28,7 +28,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write int $cPid This holds the PID for the configuration
+ * @property int $cPid This holds the PID for the configuration
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
@@ -1001,10 +1001,11 @@ abstract class Document
      *
      * @param int $pid: The PID of the saved record
      * @param int $core: The UID of the Solr core for indexing
+     * @param int|string $owner: UID or index_name of owner to set while indexing
      *
      * @return bool true on success or false on failure
      */
-    public function save($pid = 0, $core = 0)
+    public function save($pid = 0, $core = 0, $owner = null)
     {
         if (\TYPO3_MODE !== 'BE') {
             $this->logger->error('Saving a document is only allowed in the backend');
@@ -1130,53 +1131,57 @@ abstract class Document
             ->getQueryBuilderForTable('tx_dlf_libraries');
 
         // Get UID for owner.
-        $owner = !empty($metadata['owner'][0]) ? $metadata['owner'][0] : 'default';
-
-        $result = $queryBuilder
-            ->select('tx_dlf_libraries.uid AS uid')
-            ->from('tx_dlf_libraries')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.index_name', $queryBuilder->expr()->literal($owner)),
-                Helper::whereExpression('tx_dlf_libraries')
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        if ($resArray = $result->fetch()) {
-            $ownerUid = $resArray['uid'];
-        } else {
-            // Insert new library.
-            $libNewUid = uniqid('NEW');
-            $libData['tx_dlf_libraries'][$libNewUid] = [
-                'pid' => $pid,
-                'label' => $owner,
-                'index_name' => $owner,
-                'website' => '',
-                'contact' => '',
-                'image' => '',
-                'oai_label' => '',
-                'oai_base' => '',
-                'opac_label' => '',
-                'opac_base' => '',
-                'union_label' => '',
-                'union_base' => '',
-            ];
-            $substUid = Helper::processDBasAdmin($libData);
-            // Add new library's UID.
-            $ownerUid = $substUid[$libNewUid];
-            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
-                Helper::addMessage(
-                    htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
-                    Helper::getMessage('flash.attention', true),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                    true
-                );
-            }
+        if (empty($owner)) {
+            $owner = empty($metadata['owner'][0]) ? $metadata['owner'][0] : 'default';
         }
-        $metadata['owner'][0] = $ownerUid;
+        if (!MathUtility::canBeInterpretedAsInteger($owner)) {
+            $result = $queryBuilder
+                ->select('tx_dlf_libraries.uid AS uid')
+                ->from('tx_dlf_libraries')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($pid)),
+                    $queryBuilder->expr()->eq('tx_dlf_libraries.index_name', $queryBuilder->expr()->literal($owner)),
+                    Helper::whereExpression('tx_dlf_libraries')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            if ($resArray = $result->fetch()) {
+                $ownerUid = $resArray['uid'];
+            } else {
+                // Insert new library.
+                $libNewUid = uniqid('NEW');
+                $libData['tx_dlf_libraries'][$libNewUid] = [
+                    'pid' => $pid,
+                    'label' => $owner,
+                    'index_name' => $owner,
+                    'website' => '',
+                    'contact' => '',
+                    'image' => '',
+                    'oai_label' => '',
+                    'oai_base' => '',
+                    'opac_label' => '',
+                    'opac_base' => '',
+                    'union_label' => '',
+                    'union_base' => '',
+                ];
+                $substUid = Helper::processDBasAdmin($libData);
+                // Add new library's UID.
+                $ownerUid = $substUid[$libNewUid];
+                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                    Helper::addMessage(
+                        htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
+                        Helper::getMessage('flash.attention', true),
+                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
+                        true
+                    );
+                }
+            }
+            $owner = $ownerUid;
+        }
+        $metadata['owner'][0] = $owner;
         // Get UID of parent document.
-        $partof = $this->getParentDocumentUidForSaving($pid, $core);
+        $partof = $this->getParentDocumentUidForSaving($pid, $core, $owner);
         // Use the date of publication or title as alternative sorting metric for parts of multi-part works.
         if (!empty($partof)) {
             if (
@@ -1322,7 +1327,19 @@ abstract class Document
      *
      * @return int The parent document's id.
      */
-    protected abstract function getParentDocumentUidForSaving($pid, $core);
+    protected abstract function getParentDocumentUidForSaving($pid, $core, $owner);
+
+    /**
+     * This returns $this->cPid via __get()
+     *
+     * @access protected
+     *
+     * @return int The PID of the metadata definitions
+     */
+    protected function _getCPid()
+    {
+        return $this->cPid;
+    }
 
     /**
      * This returns $this->hasFulltext via __get()

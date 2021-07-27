@@ -147,13 +147,11 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.oai_base',
             'config' => [
-                'type' => 'group',
-                'internal_type' => 'db',
-                'allowed' => 'pages',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                'default' => 0,
+                'type' => 'input',
+                'size' => 30,
+                'max' => 255,
+                'eval' => 'nospace',
+                'default' => '',
             ],
         ],
         'opac_label' => [
