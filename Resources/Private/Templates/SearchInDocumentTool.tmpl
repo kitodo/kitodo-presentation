@@ -12,11 +12,13 @@
   <div>
     <label for="tx-dlf-search-query">###LABEL_QUERY###</label>
     <!-- Never change the @id of this input field! Otherwise search won't work! -->
-    <input type="text" id="tx-dlf-search-in-document-query" placeholder="###LABEL_SEARCH_IN_DOCUMENT###" name="tx_dlf[query]"></input>
-    <input type="submit" value="###LABEL_SUBMIT###" onclick="resetStart();"/>
-    <input type="hidden" name="tx_dlf[start]" value="0" />
-    <input type="hidden" name="tx_dlf[id]" value="###CURRENT_DOCUMENT###" />
-    <input type="hidden" name="tx_dlf[encrypted]" value="###SOLR_ENCRYPTED###" />
+    <input type="text" id="tx-dlf-search-in-document-query" placeholder="###LABEL_SEARCH_IN_DOCUMENT###" name="###LABEL_QUERY_URL###" />
+    <input type="submit" id="tx-dlf-search-in-document-button" value="###LABEL_SUBMIT###" onclick="resetStart();" />
+    <input type="hidden" id="tx-dlf-search-in-document-start" name="###LABEL_START###" value="0" />
+    <input type="hidden" id="tx-dlf-search-in-document-id" name="###LABEL_ID###" value="###CURRENT_DOCUMENT###" />
+    <input type="hidden" id="tx-dlf-search-in-document-page" name="###LABEL_PAGE_URL###" />
+    <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="###LABEL_HIGHLIGHT_WORD###" />
+    <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="###LABEL_ENCRYPTED###" value="###SOLR_ENCRYPTED###" />
   </div>
 </form>
 <div id="tx-dlf-search-in-document-loading" style="display: none;">###LABEL_LOADING###...</div>
