@@ -95,8 +95,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
 
         // Fill markers.
         $markerArray = [
-            '###ACTION_URL###' => $actionUrl,
-            '###CURRENT_DOCUMENT###' => $this->getCurrentDocumentId(),
+            '###ACTION_URL###' => getActionUrl(),
             '###LABEL_QUERY###' => htmlspecialchars($this->pi_getLL('label.query')),
             '###LABEL_DELETE_SEARCH###' => htmlspecialchars($this->pi_getLL('label.delete_search')),
             '###LABEL_LOADING###' => htmlspecialchars($this->pi_getLL('label.loading')),
@@ -112,6 +111,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             '###LABEL_PAGE_URL###' => $this->conf['pageInputName'],
             '###LABEL_HIGHLIGHT_WORD###' => $this->conf['highlightWordInputName'],
             '###LABEL_ENCRYPTED###' => $this->conf['encryptedInputName'],
+            '###CURRENT_DOCUMENT###' => $this->getCurrentDocumentId(),
             '###SOLR_ENCRYPTED###' => $this->getEncryptedCoreName() ? : ''
         ];
 
