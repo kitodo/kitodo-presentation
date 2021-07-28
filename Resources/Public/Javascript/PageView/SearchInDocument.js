@@ -269,7 +269,7 @@ $(document).ready(function() {
         $('#tx-dlf-search-in-document-button-previous').hide();
         // Send the data using post
         $.post(
-            "https://sdvtypo3ddbzeitungsportaldev.slub-dresden.de/",
+            "/",
             {
                 eID: "tx_dlf_search_in_document",
                 q: $( "input[id='tx-dlf-search-in-document-query']" ).val(),

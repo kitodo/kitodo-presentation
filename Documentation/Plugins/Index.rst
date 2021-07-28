@@ -1087,7 +1087,7 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-ful
 
 
 Search in Document Tool
-
+^^^^^^^^^^^^^^^^^^^^^^^
 This plugin adds an possibility to search all appearances of the phrase in currently displayed document 
 
 :typoscript:`plugin.tx_dlf_searchindocumenttool.`
