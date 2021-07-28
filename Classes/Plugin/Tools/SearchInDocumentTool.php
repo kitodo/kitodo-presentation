@@ -95,7 +95,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
 
         // Fill markers.
         $markerArray = [
-            '###ACTION_URL###' => getActionUrl(),
+            '###ACTION_URL###' => $this->getActionUrl(),
             '###LABEL_QUERY###' => htmlspecialchars($this->pi_getLL('label.query')),
             '###LABEL_DELETE_SEARCH###' => htmlspecialchars($this->pi_getLL('label.delete_search')),
             '###LABEL_LOADING###' => htmlspecialchars($this->pi_getLL('label.loading')),
