@@ -74,15 +74,6 @@ var dlfViewer = function(settings){
     this.highlightFieldParams = undefined;
 
     /**
-     * Here is assigned default key from dlf extension, it can
-     * be overwritten by fulltextControl.searchHlParameters,
-     * if the full text is given for the document.
-     * @type {string}
-     * @private
-     */
-    this.highlightKeys = 'tx_dlf[highlight_word]';
- 
-    /**
      * @type {string|undefined}
      * @private
      */
@@ -176,7 +167,6 @@ dlfViewer.prototype.addCustomControls = function() {
     if (this.fulltexts[0] !== undefined && this.fulltexts[0].length !== 0 && this.fulltexts[0].url !== '' && this.images.length === 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
         fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, this.images[0], this.fulltexts[0].url);
-        this.highlightKeys = fulltextControl.searchHlParameters;
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
@@ -341,34 +331,14 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         }
     }
 
-    // check keys for which highlighting should be made
-    var keys = this.highlightKeys.split(',');
-    // check if highlight by words is set
-    var urlParams = dlfUtils.getUrlParams();
-
-    var hasOwnProperty = false;
-    var param = '';
-
-    for(let key of keys) {
-        if(urlParams !== undefined && urlParams.hasOwnProperty(key.trim())) {
-            hasOwnProperty = true;
-            param = key.trim();
-            break;
-        }
-    }
-
-    if (hasOwnProperty && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
-        var value = undefined,
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
+        var values = [],
             fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
 
         if(this.highlightWords != null) {
-            value = this.highlightWords;
-        } else {
-            value = urlParams[param];
+            values = decodeURIComponent(this.highlightWords).split(';');
         }
-
-        var values = decodeURIComponent(value).split(';');
 
         // check if there is another image / fulltext to look for
         if (this.images.length === 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {

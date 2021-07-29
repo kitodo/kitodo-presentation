@@ -78,12 +78,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.fullTextScrollElement = this.dic['full-text-scroll-element'];
 
     /**
-     * @type {string}
-     * @private
-     */
-    this.searchHlParameters = this.dic['search-hl-parameters'];
-    
-    /**
      * @type {ol.Feature|undefined}
      * @private
      */
