@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -250,12 +251,21 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
         return $record;
     }
 
+    /**
+     * It gets SOLR result
+     *
+     * @access private
+     *
+     * @param array $record: for searched document
+     *
+     * @return array
+     */
     private function getSolrResult($record) {
         $fields = Solr::getFields();
 
         $query = $this->solr->service->createSelect();
         // Restrict the fields to the required ones
-        $query->setFields($fields['uid'], $fields['id'], $fields['toplevel'], $fields['thumbnail'], $fields['page']);
+        $query->setFields($fields['uid'] .',' . $fields['id'] .',' . $fields['toplevel'] .',' . $fields['thumbnail'] .',' . $fields['page']);
         foreach ($this->solrConfig as $solr_name) {
             $query->addField($solr_name);
         }
@@ -284,7 +294,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
         if ($this->metadata['fulltextSearch']) {
             $query->setQuery(
                 $fields['fulltext'] . ':' . Solr::escapeQuery($this->metadata['searchString']));
-                // TODO:toplevel documents throw error in SOLR PLugin: 
+                // TODO:toplevel documents throw error in SOLR PLugin:
                 // java.lang.RuntimeException: Could not determine OCR format for sample ''
                 //. ' OR ' . $fields['toplevel'] . ':true');
             $query->getHighlighting();
@@ -307,6 +317,17 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
         return $this->solr->service->createResult($query, $response);
     }
 
+    /**
+     * It processes SOLR result into record, which is
+     * going to be displayed in the frontend list.
+     *
+     * @access private
+     *
+     * @param array $record: for searched document
+     * @param array $result: found in the SOLR index
+     *
+     * @return array
+     */
     private function getSolrRecord($record, $result) {
         // If it is a fulltext search, fetch the highlighting results.
         if ($this->metadata['fulltextSearch']) {
