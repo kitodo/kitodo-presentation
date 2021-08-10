@@ -91,8 +91,8 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             }
         }
         // Add filter query for faceting.
-        if (!empty($this->piVars['fq'])) {
-            foreach ($this->piVars['fq'] as $filterQuery) {
+        if (!empty($searchForm->getFilterQuery())) {
+            foreach ($searchForm->getFilterQuery() as $filterQuery) {
                 $params['filterquery'][]['query'] = $filterQuery;
             }
         }
@@ -102,14 +102,14 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             || $this->settings['searchIn'] == 'all'
         ) {
             if (
-                !empty($this->piVars['id'])
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
+                !empty($searchForm->getDocumentId())
+                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchForm->getDocumentId())
             ) {
                 // Search in document and all subordinates (valid for up to three levels of hierarchy).
-                $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $this->piVars['id'] . '"' .
-                    ' OR {!join from=uid to=partof}uid:' . $this->piVars['id'] .
-                    ' OR uid:' . $this->piVars['id'];
-                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
+                $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $searchForm->getDocumentId() . '"' .
+                    ' OR {!join from=uid to=partof}uid:' . $searchForm->getDocumentId() .
+                    ' OR uid:' . $searchForm->getDocumentId();
+                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($searchForm->getDocumentId())));
             }
         }
         // Add filter query for in-collection searching.
@@ -118,10 +118,10 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             || $this->settings['searchIn'] == 'all'
         ) {
             if (
-                !empty($this->piVars['collection'])
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])
+                !empty($searchForm->getCollection())
+                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchForm->getCollection())
             ) {
-                $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], 'tx_dlf_collections', $this->settings['pages']);
+                $index_name = Helper::getIndexNameFromUid($searchForm->getCollection(), 'tx_dlf_collections', $this->settings['pages']);
                 $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
                 $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, 'tx_dlf_collections', $this->settings['pages']));
             }
@@ -176,9 +176,9 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         } else {
             // Keep some plugin variables.
             $linkConf['parameter'] = $this->settings['targetPid'];
-            if (!empty($this->piVars['order'])) {
-                $additionalParams['order'] = $this->piVars['order'];
-                $additionalParams['asc'] = !empty($this->piVars['asc']) ? '1' : '0';
+            if (!empty($searchForm->getOrder())) {
+                $additionalParams['order'] = $searchForm->getOrder();
+                $additionalParams['asc'] = !empty($searchForm->getAsc()) ? '1' : '0';
             }
         }
         $linkConf['forceAbsoluteUrl'] = !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0;
@@ -198,20 +198,15 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     public function mainAction(SearchForm $searchForm = NULL)
     {
         $settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-//        $this->init($conf);
+
         // Disable caching for this plugin.
-        $this->setCache(false);
+//        $this->setCache(false);
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
             Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
-//            return $content;
-            return $this->responseFactory->createHtmlResponse($this->view->render());
         }
-        if (
-//            !isset($this->piVars['query'])
-//            && empty($this->piVars['extQuery'])
-        !isset($searchForm) ||
-        (empty($searchForm->getQuery())
+        if (!isset($searchForm) ||
+            (empty($searchForm->getQuery())
             && empty($searchForm->getExtQuery()))
         ) {
             // Extract query and filter from last search.
@@ -244,38 +239,23 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 ->build();
 
             $this->view->assign('ACTION_URL', $uri);
-            $this->view->assign('LABEL_QUERY', (!empty($search['query']) ? htmlspecialchars($search['query']) : htmlspecialchars($this->pi_getLL('label.query'))));
             $this->view->assign('FIELD_QUERY', 'query');
             $this->view->assign('QUERY', (!empty($search['query']) ? htmlspecialchars($search['query']) : ''));
             $this->view->assign('FULLTEXT_SEARCH', $list->metadata['fulltextSearch']);
-            $this->view->assign('FIELD_DOC', ($this->settings['searchIn'] == 'document' || $this->settings['searchIn'] == 'all' ? $this->addCurrentDocument() : ''));
-            $this->view->assign('FIELD_COLL', ($this->settings['searchIn'] == 'collection' || $this->settings['searchIn'] == 'all' ? $this->addCurrentCollection() : ''));
-            $this->view->assign('ADDITIONAL_INPUTS', $this->addEncryptedCoreName());
+
             $this->view->assign('FACETS_MENU', $this->addFacetsMenu());
 
-//            // Fill markers.
-//            $markerArray = [
-//                '###ACTION_URL###' => $this->cObj->typoLink_URL($linkConf),
-//                '###LABEL_QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : htmlspecialchars($this->pi_getLL('label.query'))),
-//                '###LABEL_SUBMIT###' => htmlspecialchars($this->pi_getLL('label.submit')),
-//                '###FIELD_QUERY###' => $this->prefixId . '[query]',
-//                '###QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : ''),
-//                '###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
-//                '###FIELD_DOC###' => ($this->settings['searchIn'] == 'document' || $this->settings['searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
-//                '###FIELD_COLL###' => ($this->settings['searchIn'] == 'collection' || $this->settings['searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
-//                '###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
-//                '###FACETS_MENU###' => $this->addFacetsMenu(),
-//                '###LOGICAL_PAGE###' => $this->addLogicalPage()
-//            ];
+            $this->addEncryptedCoreName();
+
+            if ($this->settings['searchIn'] == 'collection' || $this->settings['searchIn'] == 'all') {
+                $this->addCurrentCollection();
+            }
+            if ($this->settings['searchIn'] == 'document' || $this->settings['searchIn'] == 'all') {
+                $this->addCurrentDocument($searchForm);
+            }
+
             // Get additional fields for extended search.
-            $extendedSearch = $this->addExtendedSearch();
-//            // Display search form.
-//            $content .= $this->templateService->substituteSubpart($this->templateService->substituteMarkerArray($this->template, $markerArray), '###EXT_SEARCH_ENTRY###', $extendedSearch);
-//            return $this->pi_wrapInBaseClass($content);
-
-            $this->view->assign('EXT_SEARCH_ENTRY', $extendedSearch);
-
-        } else {
+            $this->addExtendedSearch();
 
         }
         return $this->view->render();
@@ -284,35 +264,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     protected function pi_getLL($label)
     {
         return $GLOBALS['TSFE']->sL('LLL:EXT:dlf/Resources/Private/Language/Search.xml:' . $label);
-    }
-
-    /**
-     * Sets some configuration variables if the plugin is cached.
-     *
-     * @access protected
-     *
-     * @param bool $cache: Should the plugin be cached?
-     *
-     * @return void
-     */
-    protected function setCache($cache = true)
-    {
-//        TODO: FLUID/EXTBASE: CHECK HOW THE CACHE IS SET IN THE CONTROLLER ENVIRONMENT
-//        if ($cache) {
-//            // Set cObject type to "USER" (default).
-//            $this->pi_USER_INT_obj = false;
-//            $this->pi_checkCHash = true;
-//            if (count($this->piVars)) {
-//                // Check cHash or disable caching.
-//                $GLOBALS['TSFE']->reqCHash();
-//            }
-//        } else {
-//            // Set cObject type to "USER_INT".
-//            $this->pi_USER_INT_obj = true;
-//            $this->pi_checkCHash = false;
-//            // Plugins are of type "USER" by default, so convert it to "USER_INT".
-//            $this->cObj->convertToUserIntObject();
-//        }
     }
 
     /**
@@ -354,19 +305,19 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return string HTML input fields with current document's UID
      */
-    protected function addCurrentDocument()
+    protected function addCurrentDocument(SearchForm $searchForm)
     {
         // Load current list object.
         $list = GeneralUtility::makeInstance(DocumentList::class);
         // Load current document.
         if (
-            !empty($this->piVars['id'])
-            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
+            !empty($searchForm->getDocumentId())
+            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchForm->getDocumentId())
         ) {
             $this->loadDocument();
             // Get document's UID
             if ($this->doc->ready) {
-                return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . ($this->doc->uid) . '" />';
+                $this->view->assign('DOCUMENT_ID', $this->doc->uid);
             }
         } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
             // Get document's UID from search metadata.
@@ -381,10 +332,9 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 }
             }
             if (!empty($documentId)) {
-                return '<input type="hidden" name="' . $this->prefixId . '[id]" value="' . $documentId . '" />';
+                $this->view->assign('DOCUMENT_ID', $documentId);
             }
         }
-        return '';
     }
 
 
@@ -403,8 +353,8 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             !empty($list->metadata['options']['source'])
             && $list->metadata['options']['source'] == 'collection'
         ) {
+            $this->view->assign('COLLECTION_ID', $list->metadata['options']['select']);
             // Get collection's UID.
-            return '<input type="hidden" name="' . $this->prefixId . '[collection]" value="' . $list->metadata['options']['select'] . '" />';
         } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
             // Get collection's UID from search metadata.
             foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
@@ -416,9 +366,8 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                     $collectionId = Helper::getUidFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
                 }
             }
-            return '<input type="hidden" name="' . $this->prefixId . '[collection]" value="' . $collectionId . '" />';
+            $this->view->assign('COLLECTION_ID', $collectionId);
         }
-        return '';
     }
 
     /**
@@ -438,9 +387,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         }
         // Add encrypted fields to search form.
         if ($name !== false) {
-            return '<input type="hidden" name="' . $this->prefixId . '[encrypted]" value="' . $name . '" />';
-        } else {
-            return '';
+            $this->view->assign('ENCRYPTED_CORE_NAME', $name);
         }
     }
 
@@ -480,10 +427,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         // TODO: FACETS HMENU NOT WORKING
 
-//        debug($this->settings['facetsConf']);
-//        debug($TSconfig);
-//        debug($cObj->cObjGetSingle('HMENU', $TSconfig));
-//        exit;
         return $cObj->cObjGetSingle('HMENU', $TSconfig);
     }
 
@@ -523,7 +466,5 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $this->view->assign('extendedFields', $this->settings['extendedFields']);
         $this->view->assign('operators', $operatorOptions);
         $this->view->assign('searchFields', $fieldSelectorOptions);
-
-        return $extendedSearch;
     }
 }

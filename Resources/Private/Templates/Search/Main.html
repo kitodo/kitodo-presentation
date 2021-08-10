@@ -11,7 +11,12 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <f:form action="search" controller="Search" objectName="searchForm" method="post">
-    <label for="tx-dlf-search-query">{LABEL_QUERY}</label>
+    <label for="tx-dlf-search-query">
+        <f:if condition="{QUERY}">
+            <f:then>{QUERY -> f:format.htmlspecialchars()}</f:then>
+            <f:else><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.query"/></f:else>
+        </f:if>
+    </label>
 
     <f:form.textfield id="tx-dlf-search-query" property="query" value="{QUERY}" />
 
@@ -33,15 +38,26 @@
     <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: 'checked', else: '')}"/>
     <label for="tx-dlf-search-fulltext-yes"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.inFulltext"/></label>
 
-    <f:format.raw>
-        {FIELD_DOC}
-        {FIELD_COLL}
-    </f:format.raw>
+    <!-- Add current document -->
+    <f:if condition="{DOCUMENT_ID}">
+        <f:then>
+            <f:form.hidden property="documentId" value="{DOCUMENT_ID}"/>
+        </f:then>
+    </f:if>
 
     <!-- Add collection -->
+    <f:if condition="{COLLECTION_ID}">
+        <f:then>
+            <input type="hidden" property="collection" value="{COLLECTION_ID}" />
+        </f:then>
+    </f:if>
 
+    <f:if condition="{ENCRYPTED_CORE_NAME}">
+        <f:then>
+            <f:form.hidden property="encryptedCoreName" value="{ENCRYPTED_CORE_NAME}"/>
+        </f:then>
+    </f:if>
 
-    <f:format.raw>{ADDITIONAL_INPUTS}</f:format.raw>
     <div class="tx-dlf-search-extended">
         <f:for each="{extendedSlotCount}" as="slot" key="slot_label" iteration="slot_iterator">
             <f:form.select property="extOperator.{slot_iterator.index}" options="{operators}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}"/>
