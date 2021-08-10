@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Common;
 use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Solarium\QueryType\Select\Result\Result;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -258,7 +259,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      *
      * @param array $record: for searched document
      *
-     * @return array
+     * @return Result
      */
     private function getSolrResult($record) {
         $fields = Solr::getFields();
@@ -324,7 +325,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      * @access private
      *
      * @param array $record: for searched document
-     * @param array $result: found in the SOLR index
+     * @param Result $result: found in the SOLR index
      *
      * @return array
      */
