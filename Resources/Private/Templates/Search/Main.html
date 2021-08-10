@@ -1,0 +1,56 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<f:debug>{_all}</f:debug>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+
+<f:form action="search" controller="Search" objectName="searchForm" method="post">
+    <label for="tx-dlf-search-query">{LABEL_QUERY}</label>
+
+    <f:form.textfield id="tx-dlf-search-query" property="query" value="{QUERY}" />
+
+    <!-- Logical page -->
+    <f:if condition="{showLogicalPageField}">
+        <f:then>
+            <label for="tx-dlf-search-logical-page"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.logicalPage"/>: </label>
+            <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" property="logicalPage" />
+        </f:then>
+    </f:if>
+
+    <!-- The following element is needed for auto-completion! -->
+    <div id="tx-dlf-search-suggest"></div>
+    <f:form.submit value="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.submit')}" />
+
+    <!-- Fulltext switch -->
+    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: '', else: 'checked')}"/>
+    <label for="tx-dlf-search-fulltext-no"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.inMetadata"/></label>
+    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: 'checked', else: '')}"/>
+    <label for="tx-dlf-search-fulltext-yes"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.inFulltext"/></label>
+
+    <f:format.raw>
+        {FIELD_DOC}
+        {FIELD_COLL}
+    </f:format.raw>
+
+    <!-- Add collection -->
+
+
+    <f:format.raw>{ADDITIONAL_INPUTS}</f:format.raw>
+    <div class="tx-dlf-search-extended">
+        <f:for each="{extendedSlotCount}" as="slot" key="slot_label" iteration="slot_iterator">
+            <f:form.select property="extOperator.{slot_iterator.index}" options="{operators}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}"/>
+            <f:form.select property="extField.{slot_iterator.index}" options="{searchFields}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}"/>
+            <f:form.textfield property="extQuery.{slot_iterator.index}" class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"/>
+        </f:for>
+    </div>
+</f:form>
+
+<div class="tx-dlf-search-facets">{FACETS_MENU}</div>
+
+</html>
