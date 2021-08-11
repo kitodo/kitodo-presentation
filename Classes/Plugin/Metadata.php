@@ -62,25 +62,25 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             return $content;
         } else {
             // Set default values if not set.
-            if (!isset($this->conf['rootline'])) {
-                $this->conf['rootline'] = 0;
+            if (!isset($this->conf['settings..rootline'])) {
+                $this->conf['settings..rootline'] = 0;
             }
-            if (!isset($this->conf['originalIiifMetadata'])) {
-                $this->conf['originalIiifMetadata'] = 0;
+            if (!isset($this->conf['settings..originalIiifMetadata'])) {
+                $this->conf['settings..originalIiifMetadata'] = 0;
             }
-            if (!isset($this->conf['displayIiifDescription'])) {
-                $this->conf['displayIiifDescription'] = 1;
+            if (!isset($this->conf['settings..displayIiifDescription'])) {
+                $this->conf['settings..displayIiifDescription'] = 1;
             }
-            if (!isset($this->conf['displayIiifRights'])) {
-                $this->conf['displayIiifRights'] = 1;
+            if (!isset($this->conf['settings..displayIiifRights'])) {
+                $this->conf['settings..displayIiifRights'] = 1;
             }
-            if (!isset($this->conf['displayIiifLinks'])) {
-                $this->conf['displayIiifLinks'] = 1;
+            if (!isset($this->conf['settings..displayIiifLinks'])) {
+                $this->conf['settings..displayIiifLinks'] = 1;
             }
         }
-        $useOriginalIiifManifestMetadata = $this->conf['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
+        $useOriginalIiifManifestMetadata = $this->conf['settings.originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
         $metadata = [];
-        if ($this->conf['rootline'] < 2) {
+        if ($this->conf['settings.rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
             if (!empty($this->doc->physicalStructure[$this->piVars['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page']]])) {
@@ -92,13 +92,13 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             ksort($ids);
             reset($ids);
             // Check if we should display all metadata up to the root.
-            if ($this->conf['rootline'] == 1) {
+            if ($this->conf['settings.rootline'] == 1) {
                 foreach ($ids as $id) {
                     foreach ($id as $sid) {
                         if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->doc->getManifestMetadata($sid, $this->conf['pages']);
+                            $data = $this->doc->getManifestMetadata($sid, $this->conf['settings.pages']);
                         } else {
-                            $data = $this->doc->getMetadata($sid, $this->conf['pages']);
+                            $data = $this->doc->getMetadata($sid, $this->conf['settings.pages']);
                         }
                         if (!empty($data)) {
                             $data['_id'] = $sid;
@@ -111,9 +111,9 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 if (is_array($id)) {
                     foreach ($id as $sid) {
                         if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->doc->getManifestMetadata($sid, $this->conf['pages']);
+                            $data = $this->doc->getManifestMetadata($sid, $this->conf['settings.pages']);
                         } else {
-                            $data = $this->doc->getMetadata($sid, $this->conf['pages']);
+                            $data = $this->doc->getMetadata($sid, $this->conf['settings.pages']);
                         }
                         if (!empty($data)) {
                             $data['_id'] = $sid;
@@ -124,8 +124,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         // Get titledata?
-        if (empty($metadata) || ($this->conf['rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
-            $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId, $this->conf['pages']) : $this->doc->getTitleData($this->conf['pages']);
+        if (empty($metadata) || ($this->conf['settings.rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
+            $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId, $this->conf['settings.pages']) : $this->doc->getTitleData($this->conf['settings.pages']);
             $data['_id'] = $this->doc->toplevelId;
             array_unshift($metadata, $data);
         }
@@ -167,8 +167,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
         // Get list of metadata to show.
         $metaList = [];
         if ($useOriginalIiifManifestMetadata) {
-            if ($this->conf['iiifMetadataWrap']) {
-                $iiifwrap = $this->parseTS($this->conf['iiifMetadataWrap']);
+            if ($this->conf['settings.iiifMetadataWrap']) {
+                $iiifwrap = $this->parseTS($this->conf['settings.iiifMetadataWrap']);
             } else {
                 $iiifwrap['key.']['wrap'] = '<dt>|</dt>';
                 $iiifwrap['value.']['required'] = 1;
@@ -179,8 +179,8 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             $iiifLink['value.']['required'] = 1;
             $iiifLink['value.']['setContentToCurrent'] = 1;
             $iiifLink['value.']['typolink.']['parameter.']['current'] = 1;
-            $iiifLink['value.']['typolink.']['forceAbsoluteUrl'] = !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0;
-            $iiifLink['value.']['typolink.']['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http';
+            $iiifLink['value.']['typolink.']['forceAbsoluteUrl'] = !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0;
+            $iiifLink['value.']['typolink.']['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http';
             $iiifLink['value.']['wrap'] = '<dd>|</dd>';
             foreach ($metadataArray as $metadata) {
                 foreach ($metadata as $key => $group) {
@@ -210,7 +210,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                                 continue;
                             }
                             if (is_array($value)) {
-                                $this->cObj->data[$label] = implode($this->conf['separator'], $value);
+                                $this->cObj->data[$label] = implode($this->conf['settings.separator'], $value);
                             } else {
                                 $this->cObj->data[$label] = $value;
                             }
@@ -247,7 +247,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                         ),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
                     ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages']))
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['settings.pages']))
                 )
                 ->orderBy('tx_dlf_metadata.sorting')
                 ->execute();
@@ -256,10 +256,10 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                     $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
                 }
                 if ($resArray) {
-                    if ($this->conf['showFull'] || $resArray['is_listed']) {
+                    if ($this->conf['settings.showFull'] || $resArray['is_listed']) {
                         $metaList[$resArray['index_name']] = [
                             'wrap' => $resArray['wrap'],
-                            'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+                            'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['settings.pages'])
                         ];
                     }
                 }
@@ -272,7 +272,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->select('tx_dlf_collections.index_name AS index_name')
                 ->from('tx_dlf_collections')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages']))
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['settings.pages']))
                 )
                 ->execute();
             while ($resArray = $result->fetch()) {
@@ -286,7 +286,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                 // Load all the metadata values into the content object's data array.
                 foreach ($metadata as $index_name => $value) {
                     if (is_array($value)) {
-                        $this->cObj->data[$index_name] = implode($this->conf['separator'], $value);
+                        $this->cObj->data[$index_name] = implode($this->conf['settings.separator'], $value);
                     } else {
                         $this->cObj->data[$index_name] = $value;
                     }
@@ -299,7 +299,7 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                         $value = @array_shift($metadata[$index_name]);
                         if ($index_name == 'title') {
                             // Get title of parent document if needed.
-                            if (empty($value) && $this->conf['getTitle'] && $this->doc->parentId) {
+                            if (empty($value) && $this->conf['settings.getTitle'] && $this->doc->parentId) {
                                 $superiorTitle = Document::getTitle($this->doc->parentId, true);
                                 if (!empty($superiorTitle)) {
                                     $value = '[' . $superiorTitle . ']';
@@ -308,22 +308,22 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
                             if (!empty($value)) {
                                 $value = htmlspecialchars($value);
                                 // Link title to pageview.
-                                if ($this->conf['linkTitle'] && $metadata['_id']) {
+                                if ($this->conf['settings.linkTitle'] && $metadata['_id']) {
                                     $details = $this->doc->getLogicalStructure($metadata['_id']);
-                                    $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], true, $this->conf['targetPid']);
+                                    $value = $this->pi_linkTP($value, [$this->prefixId => ['id' => $this->doc->uid, 'page' => (!empty($details['points']) ? intval($details['points']) : 1)]], true, $this->conf['settings.targetPid']);
                                 }
                             }
                         } elseif ($index_name == 'owner' && !empty($value)) {
                             // Translate name of holding library.
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['settings.pages']));
                         } elseif ($index_name == 'type' && !empty($value)) {
                             // Translate document type.
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['settings.pages']));
                         } elseif ($index_name == 'collection' && !empty($value)) {
                             // Check if collections isn't hidden.
                             if (in_array($value, $collList)) {
                                 // Translate collection.
-                                $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['pages']));
+                                $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['settings.pages']));
                             } else {
                                 $value = '';
                             }

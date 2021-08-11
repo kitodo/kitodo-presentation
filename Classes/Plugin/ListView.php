@@ -75,7 +75,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function getPageBrowser()
     {
         // Get overall number of pages.
-        $maxPages = intval(ceil($this->list->metadata['options']['numberOfToplevelHits'] / $this->conf['limit']));
+        $maxPages = intval(ceil($this->list->metadata['options']['numberOfToplevelHits'] / $this->conf['settings.limit']));
         // Return empty pagebrowser if there is just one page.
         if ($maxPages < 2) {
             return '';
@@ -126,7 +126,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function getEntry($number, $template)
     {
-        $markerArray['###NUMBER###'] = ($this->piVars['pointer'] * $this->conf['limit']) + $number + 1;
+        $markerArray['###NUMBER###'] = ($this->piVars['pointer'] * $this->conf['settings.limit']) + $number + 1;
         $markerArray['###METADATA###'] = '';
         $markerArray['###THUMBNAIL###'] = '';
         $markerArray['###PREVIEW###'] = '';
@@ -143,7 +143,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     // Link title to pageview.
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
-                        if (empty($value) && $this->conf['getTitle']) {
+                        if (empty($value) && $this->conf['settings.getTitle']) {
                             $superiorTitle = Document::getTitle($this->list[$number]['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
@@ -163,18 +163,18 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                         }
                         $conf = [
                             'useCacheHash' => 1,
-                            'parameter' => $this->conf['targetPid'],
-                            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                            'parameter' => $this->conf['settings.targetPid'],
+                            'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                             'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['settings.pages']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['settings.pages']));
                     } elseif ($index_name == 'language' && !empty($value)) {
                         // Translate ISO 639 language code.
                         $value = htmlspecialchars(Helper::getLanguageName($value));
@@ -206,13 +206,13 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Basket button.
         $markerArray['###BASKETBUTTON###'] = '';
-        if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
+        if (!empty($this->conf['settings.basketButton']) && !empty($this->conf['settings.targetBasket'])) {
             $additionalParams = ['id' => $this->list[$number]['uid'], 'startpage' => $this->list[$number]['page'], 'addToBasket' => 'list'];
             $conf = [
                 'useCacheHash' => 1,
-                'parameter' => $this->conf['targetBasket'],
-                'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                'parameter' => $this->conf['settings.targetBasket'],
+                'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
             ];
             $link = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('addBasket', '')), $conf);
@@ -258,8 +258,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         // Configure @action URL for form.
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+            'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         if (!empty($this->piVars['logicalPage'])) {
             $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, ['logicalPage' => $this->piVars['logicalPage']], '', true, false);
@@ -319,7 +319,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     // Link title to pageview.
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
-                        if (empty($value) && $this->conf['getTitle']) {
+                        if (empty($value) && $this->conf['settings.getTitle']) {
                             $superiorTitle = Document::getTitle($subpart['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
@@ -341,19 +341,19 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                         $conf = [
                             // we don't want cHash in case of search parameters
                             'useCacheHash' => empty($this->list->metadata['searchString']) ? 1 : 0,
-                            'parameter' => $this->conf['targetPid'],
-                            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                            'parameter' => $this->conf['settings.targetPid'],
+                            'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                             'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                         ];
                         $value = $this->cObj->typoLink(htmlspecialchars($value), $conf);
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['settings.pages']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
                         $_value = $value;
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['settings.pages']));
                         // Add page number for single pages.
                         if ($_value == 'page') {
                             $value .= ' ' . intval($subpart['page']);
@@ -385,13 +385,13 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             // Basket button
             $markerArray['###SUBBASKETBUTTON###'] = '';
-            if (!empty($this->conf['basketButton']) && !empty($this->conf['targetBasket'])) {
+            if (!empty($this->conf['settings.basketButton']) && !empty($this->conf['settings.targetBasket'])) {
                 $additionalParams = ['id' => $this->list[$number]['uid'], 'startpage' => $subpart['page'], 'endpage' => $subpart['page'], 'logId' => $subpart['sid'], 'addToBasket' => 'subentry'];
                 $conf = [
                     'useCacheHash' => 1,
-                    'parameter' => $this->conf['targetBasket'],
-                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                    'parameter' => $this->conf['settings.targetBasket'],
+                    'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
                 ];
                 $link = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('addBasket', '')), $conf);
@@ -427,7 +427,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                     $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)
                 ),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['settings.pages'])),
                 Helper::whereExpression('tx_dlf_metadata')
             )
             ->orderBy('tx_dlf_metadata.sorting')
@@ -437,11 +437,11 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             if ($resArray['is_listed']) {
                 $this->metadata[$resArray['index_name']] = [
                     'wrap' => $resArray['wrap'],
-                    'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages'])
+                    'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['settings.pages'])
                 ];
             }
             if ($resArray['is_sortable']) {
-                $this->sortables[$resArray['index_name']] = Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['pages']);
+                $this->sortables[$resArray['index_name']] = Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->conf['settings.pages']);
             }
         }
     }
@@ -463,8 +463,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->setCache(false);
         // Load the list.
         $this->list = GeneralUtility::makeInstance(DocumentList::class);
-        $currentEntry = $this->piVars['pointer'] * $this->conf['limit'];
-        $lastEntry = ($this->piVars['pointer'] + 1) * $this->conf['limit'];
+        $currentEntry = $this->piVars['pointer'] * $this->conf['settings.limit'];
+        $lastEntry = ($this->piVars['pointer'] + 1) * $this->conf['settings.limit'];
         // Check if it's a list of database records or Solr documents.
         if (
             !empty($this->list->metadata['options']['source'])
@@ -499,7 +499,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             // Set some query parameters
             $listMetadata['options']['params']['start'] = $currentEntry;
-            $listMetadata['options']['params']['rows'] = $this->conf['limit'];
+            $listMetadata['options']['params']['rows'] = $this->conf['settings.limit'];
             // Search only if the query params have changed.
             if ($listMetadata['options']['params'] != $this->list->metadata['options']['params']) {
                 // Instantiate search object.
@@ -520,14 +520,14 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             // Save updated list.
             $this->list->save();
             $currentEntry = 0;
-            $lastEntry = $this->conf['limit'];
+            $lastEntry = $this->conf['settings.limit'];
         }
         // Load template file.
         $this->getTemplate();
         $subpartArray['entry'] = $this->templateService->getSubpart($this->template, '###ENTRY###');
         $subpartArray['subentry'] = $this->templateService->getSubpart($this->template, '###SUBENTRY###');
         // Set some variable defaults.
-        if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= $this->list->metadata['options']['numberOfToplevelHits']) {
+        if (!empty($this->piVars['pointer']) && (($this->piVars['pointer'] * $this->conf['settings.limit']) + 1) <= $this->list->metadata['options']['numberOfToplevelHits']) {
             $this->piVars['pointer'] = max(intval($this->piVars['pointer']), 0);
         } else {
             $this->piVars['pointer'] = 0;
@@ -549,8 +549,8 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
             $markerArray['###LISTTHUMBNAIL###'] = '';
         }
         if ($currentEntry) {
-            $currentEntry = ($this->piVars['pointer'] * $this->conf['limit']) + 1;
-            $lastEntry = ($this->piVars['pointer'] * $this->conf['limit']) + $this->conf['limit'];
+            $currentEntry = ($this->piVars['pointer'] * $this->conf['settings.limit']) + 1;
+            $lastEntry = ($this->piVars['pointer'] * $this->conf['settings.limit']) + $this->conf['settings.limit'];
             $markerArray['###COUNT###'] = htmlspecialchars(sprintf($this->pi_getLL('count'), $currentEntry, $lastEntry < $this->list->metadata['options']['numberOfToplevelHits'] ? $lastEntry : $this->list->metadata['options']['numberOfToplevelHits'], $this->list->metadata['options']['numberOfToplevelHits']));
         } else {
             $markerArray['###COUNT###'] = htmlspecialchars($this->pi_getLL('nohits', ''));

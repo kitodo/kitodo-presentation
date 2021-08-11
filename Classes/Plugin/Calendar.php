@@ -52,8 +52,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         $this->init($conf);
 
         // Set initial document (anchor or year file) if configured.
-        if (empty($this->piVars['id']) && !empty($this->conf['initialDocument'])) {
-            $this->piVars['id'] = $this->conf['initialDocument'];
+        if (empty($this->piVars['id']) && !empty($this->conf['settings..initialDocument'])) {
+            $this->piVars['id'] = $this->conf['settings..initialDocument'];
         }
 
         // Load current document.
@@ -173,7 +173,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             $lastMonth = 12;
             // Show calendar from first issue up to end of season if applicable.
             if (
-                empty($this->conf['showEmptyMonths'])
+                empty($this->conf['settings..showEmptyMonths'])
                 && count($calendarIssuesByYear) > 1
             ) {
                 if ($iteration == 1) {
@@ -204,8 +204,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+            'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->uid),
         ];
         $linkTitleData = $this->doc->getTitledata();
@@ -215,8 +215,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+            'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->parentId),
         ];
         $allYearsLink = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('allYears', '')) . ' ' . $this->doc->getTitle($this->doc->parentId), $linkConf);
@@ -301,9 +301,9 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                                         $dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
                                         $linkConf = [
                                             'useCacheHash' => 1,
-                                            'parameter' => $this->conf['targetPid'],
-                                            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                                            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                                            'parameter' => $this->conf['settings..targetPid'],
+                                            'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
+                                            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                                             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($issue['uid']),
                                             'ATagParams' => ' class="title"',
                                         ];
@@ -416,8 +416,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
                 $linkConf = [
                     'useCacheHash' => 1,
                     'parameter' => $GLOBALS['TSFE']->id,
-                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                    'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
+                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($year['uid']),
                     'title' => $titleAnchor . ': ' . $year['title']
                 ];
@@ -431,8 +431,8 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         $linkConf = [
             'useCacheHash' => 1,
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+            'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . $this->doc->uid,
         ];
         $allYearsLink = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('allYears', '')) . ' ' . $this->doc->getTitle($this->doc->uid), $linkConf);

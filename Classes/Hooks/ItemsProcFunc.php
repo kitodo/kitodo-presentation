@@ -100,7 +100,7 @@ class ItemsProcFunc
      */
     protected function generateList(&$params, $fields, $table, $sorting, $andWhere = '')
     {
-        $pages = $params['row']['pages'];
+        $pages = $params['row']['settings.pages'];
         if (!empty($pages)) {
             if (!is_array($pages)) {
                 $pages = [['uid' => $pages]];

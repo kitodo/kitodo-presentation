@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
@@ -39,8 +39,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <excludeOther>
+                    </settings.pages>
+                    <settings.excludeOther>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.excludeOther</label>
@@ -49,8 +49,8 @@
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </excludeOther>
-                    <linkTitle>
+                    </settings.excludeOther>
+                    <settings.linkTitle>
                         <TCEforms>
                             <onChange>reload</onChange>
                             <exclude>1</exclude>
@@ -60,10 +60,10 @@
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </linkTitle>
-                    <targetPid>
+                    </settings.linkTitle>
+                    <settings.targetPid>
                         <TCEforms>
-                            <displayCond>FIELD:linkTitle:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.linkTitle:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.targetPid</label>
                             <config>
@@ -81,8 +81,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </targetPid>
-                    <getTitle>
+                    </settings.targetPid>
+                    <settings.getTitle>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.getTitle</label>
@@ -91,8 +91,8 @@
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </getTitle>
-                    <showFull>
+                    </settings.getTitle>
+                    <settings.showFull>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.showFull</label>
@@ -101,8 +101,8 @@
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </showFull>
-                    <rootline>
+                    </settings.showFull>
+                    <settings.rootline>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.rootline</label>
@@ -128,8 +128,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </rootline>
-                    <originalIiifMetadata>
+                    </settings.rootline>
+                    <settings.originalIiifMetadata>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.originalIiifMetadata</label>
@@ -139,52 +139,52 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </originalIiifMetadata>
-                    <iiifMetadataWrap>
+                    </settings.originalIiifMetadata>
+                    <settings.iiifMetadataWrap>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.iiifMetadataWrap</label>
-                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>text</type>
                                 <default>key.wrap = &lt;dt&gt;|&lt;/dt&gt;&#13;value.required = 1&#13;value.wrap = &lt;dd&gt;|&lt;/dd&gt;</default>
                             </config>
                         </TCEforms>
-                    </iiifMetadataWrap>
-                    <displayIiifDescription>
+                    </settings.iiifMetadataWrap>
+                    <settings.displayIiifDescription>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifDescription</label>
-                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </displayIiifDescription>
-                    <displayIiifRights>
+                    </settings.displayIiifDescription>
+                    <settings.displayIiifRights>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifRights</label>
-                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </displayIiifRights>
-                    <displayIiifLinks>
+                    </settings.displayIiifRights>
+                    <settings.displayIiifLinks>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifLinks</label>
-                            <displayCond>FIELD:originalIiifMetadata:=:1</displayCond>
+                            <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </displayIiifLinks>
-                    <separator>
+                    </settings.displayIiifLinks>
+                    <settings.separator>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.separator</label>
@@ -194,8 +194,8 @@
                                 <default>#</default>
                             </config>
                         </TCEforms>
-                    </separator>
-                    <templateFile>
+                    </settings.separator>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.templateFile</label>
@@ -209,7 +209,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>

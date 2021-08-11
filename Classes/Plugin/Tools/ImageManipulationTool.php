@@ -44,7 +44,7 @@ class ImageManipulationTool extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->conf = Helper::mergeRecursiveWithOverrule($this->cObj->data['conf'], $this->conf);
         }
         // Set parent element for initialization.
-        $parentContainer = !empty($this->conf['parentContainer']) ? $this->conf['parentContainer'] : '.tx-dlf-imagemanipulationtool';
+        $parentContainer = !empty($this->conf['settings.parentContainer']) ? $this->conf['settings.parentContainer'] : '.tx-dlf-imagemanipulationtool';
         // Load template file.
         $this->getTemplate();
         $markerArray['###IMAGEMANIPULATION_SELECT###'] = '<span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools" data-dic="imagemanipulation-on:' . htmlspecialchars($this->pi_getLL('imagemanipulation-on', '')) . ';imagemanipulation-off:' . htmlspecialchars($this->pi_getLL('imagemanipulation-off', '')) . ';reset:' . htmlspecialchars($this->pi_getLL('reset', '')) . ';saturation:' . htmlspecialchars($this->pi_getLL('saturation', '')) . ';hue:' . htmlspecialchars($this->pi_getLL('hue', '')) . ';contrast:' . htmlspecialchars($this->pi_getLL('contrast', '')) . ';brightness:' . htmlspecialchars($this->pi_getLL('brightness', '')) . ';invert:' . htmlspecialchars($this->pi_getLL('invert', '')) . ';parentContainer:' . $parentContainer . '" title="' . htmlspecialchars($this->pi_getLL('no-support', '')) . '"></span>';

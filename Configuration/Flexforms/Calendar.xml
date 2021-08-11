@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
@@ -39,8 +39,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <targetPid>
+                    </settings.pages>
+                    <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.targetPid</label>
@@ -59,8 +59,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </targetPid>
-                    <initialDocument>
+                    </settings.targetPid>
+                    <settings.initialDocument>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.initialDocument</label>
@@ -79,8 +79,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </initialDocument>
-                    <showEmptyMonths>
+                    </settings.initialDocument>
+                    <settings.showEmptyMonths>
                       <TCEforms>
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.showEmptyMonths</label>
@@ -89,8 +89,8 @@
                           <default>1</default>
                         </config>
                       </TCEforms>
-                    </showEmptyMonths>
-                    <templateFile>
+                    </settings.showEmptyMonths>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.templateFile</label>
@@ -104,7 +104,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>
