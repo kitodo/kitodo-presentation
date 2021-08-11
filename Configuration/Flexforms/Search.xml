@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <onChange>reload</onChange>
                             <exclude>1</exclude>
@@ -41,8 +41,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <fulltext>
+                    </settings.pages>
+                    <settings.fulltext>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.fulltext</label>
@@ -62,10 +62,10 @@
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>
-                    </fulltext>
-                    <solrcore>
+                    </settings.fulltext>
+                    <settings.solrcore>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.solrcore</label>
                             <config>
@@ -77,10 +77,10 @@
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </solrcore>
-                    <extendedSlotCount>
+                    </settings.solrcore>
+                    <settings.extendedSlotCount>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.extSearch.slotCount</label>
                             <config>
@@ -93,10 +93,10 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </extendedSlotCount>
-                    <extendedFields>
+                    </settings.extendedSlotCount>
+                    <settings.extendedFields>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.extSearch.fields</label>
                             <config>
@@ -110,8 +110,8 @@
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </extendedFields>
-                    <searchIn>
+                    </settings.extendedFields>
+                    <settings.searchIn>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn</label>
@@ -140,10 +140,10 @@
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </searchIn>
-                    <collections>
+                    </settings.searchIn>
+                    <settings.collections>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.collections</label>
                             <config>
@@ -157,10 +157,10 @@
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </collections>
-                    <facets>
+                    </settings.collections>
+                    <settings.facets>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.facets</label>
                             <config>
@@ -174,10 +174,10 @@
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </facets>
-                    <facetCollections>
+                    </settings.facets>
+                    <settings.facetCollections>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.facetCollections</label>
                             <config>
@@ -191,10 +191,10 @@
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </facetCollections>
-                    <limitFacets>
+                    </settings.facetCollections>
+                    <settings.limitFacets>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.limitFacets</label>
                             <config>
@@ -207,8 +207,8 @@
                                 <default>15</default>
                             </config>
                         </TCEforms>
-                    </limitFacets>
-                    <resetFacets>
+                    </settings.limitFacets>
+                    <settings.resetFacets>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.resetFacets</label>
@@ -217,8 +217,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </resetFacets>
-                    <sortingFacets>
+                    </settings.resetFacets>
+                    <settings.sortingFacets>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.sortingFacets</label>
@@ -239,8 +239,8 @@
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </sortingFacets>
-                    <suggest>
+                    </settings.sortingFacets>
+                    <settings.suggest>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.suggest</label>
@@ -249,8 +249,8 @@
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </suggest>
-                    <showLogicalPageField>
+                    </settings.suggest>
+                    <settings.showLogicalPageField>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.showLogicalPageField</label>
@@ -259,8 +259,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </showLogicalPageField>
-                    <showSingleResult>
+                    </settings.showLogicalPageField>
+                    <settings.showSingleResult>
                         <TCEforms>
                             <onChange>reload</onChange>
                             <exclude>1</exclude>
@@ -270,8 +270,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </showSingleResult>
-                    <targetPid>
+                    </settings.showSingleResult>
+                    <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.targetPid</label>
@@ -290,10 +290,10 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </targetPid>
-                    <targetPidPageView>
+                    </settings.targetPid>
+                    <settings.targetPidPageView>
                         <TCEforms>
-                            <displayCond>FIELD:showSingleResult:=:1</displayCond>
+                            <displayCond>FIELD:settings.showSingleResult:=:1</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.targetPidPageView</label>
                             <config>
@@ -305,8 +305,8 @@
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>
-                    </targetPidPageView>
-                    <templateFile>
+                    </settings.targetPidPageView>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.templateFile</label>
@@ -320,7 +320,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>

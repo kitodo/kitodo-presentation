@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
@@ -39,8 +39,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <tools>
+                    </settings.pages>
+                    <settings.tools>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.pi_flexform.tools</label>
@@ -55,8 +55,8 @@
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </tools>
-                    <solrcore>
+                    </settings.tools>
+                    <settings.solrcore>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.solrcore</label>
@@ -69,8 +69,8 @@
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </solrcore>
-                    <fileGrpsImageDownload>
+                    </settings.solrcore>
+                    <settings.fileGrpsImageDownload>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.pi_flexform.fileGrps</label>
@@ -81,8 +81,8 @@
                                 <default>DEFAULT,MAX</default>
                             </config>
                         </TCEforms>
-                    </fileGrpsImageDownload>
-                    <templateFile>
+                    </settings.fileGrpsImageDownload>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.pi_flexform.templateFile</label>
@@ -96,7 +96,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>

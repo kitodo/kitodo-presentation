@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
@@ -33,8 +33,8 @@
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <pregeneration>
+                    </settings.pages>
+                    <settings.pregeneration>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.preGeneration</label>
@@ -43,8 +43,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </pregeneration>
-                    <pdfgenerate>
+                    </settings.pregeneration>
+                    <settings.pdfgenerate>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.pdfGenerate</label>
@@ -53,8 +53,8 @@
                                 <eval>required</eval>
                             </config>
                         </TCEforms>
-                    </pdfgenerate>
-                    <pdfdownload>
+                    </settings.pdfgenerate>
+                    <settings.pdfdownload>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.pdfDownload</label>
@@ -64,8 +64,8 @@
                                 <default></default>
                             </config>
                         </TCEforms>
-                    </pdfdownload>
-                    <pdfprint>
+                    </settings.pdfdownload>
+                    <settings.pdfprint>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.pdfPrint</label>
@@ -75,8 +75,8 @@
                                 <default></default>
                             </config>
                         </TCEforms>
-                    </pdfprint>
-                    <pdfparams>
+                    </settings.pdfprint>
+                    <settings.pdfparams>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.pdfParams</label>
@@ -86,8 +86,8 @@
                                 <default>##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##</default>
                             </config>
                         </TCEforms>
-                    </pdfparams>
-                    <pdfparamseparator>
+                    </settings.pdfparams>
+                    <settings.pdfparamseparator>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.pdfParamSeparator</label>
@@ -97,8 +97,8 @@
                                 <default>*</default>
                             </config>
                         </TCEforms>
-                    </pdfparamseparator>
-                    <basketGoToButton>
+                    </settings.pdfparamseparator>
+                    <settings.basketGoToButton>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.basketGoToButton</label>
@@ -107,8 +107,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </basketGoToButton>
-                    <targetBasket>
+                    </settings.basketGoToButton>
+                    <settings.targetBasket>
                         <TCEforms>
                             <exclude>1</exclude>
                                 <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.targetBasket</label>
@@ -127,8 +127,8 @@
                                     </wizards>
                                 </config>
                         </TCEforms>
-                    </targetBasket>
-                    <templateFile>
+                    </settings.targetBasket>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.pi_flexform.templateFile</label>
@@ -142,7 +142,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>

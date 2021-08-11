@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <onChange>reload</onChange>
                             <exclude>1</exclude>
@@ -40,10 +40,10 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <collections>
+                    </settings.pages>
+                    <settings.collections>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
+                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.pi_flexform.collections</label>
                             <config>
@@ -57,8 +57,8 @@
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </collections>
-                    <description>
+                    </settings.collections>
+                    <settings.description>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.pi_flexform.description</label>
@@ -70,7 +70,7 @@
                             </config>
                             <defaultExtras>richtext[undo,redo,cut,copy,paste,link,image,line,acronym,chMode,blockstylelabel,formatblock,blockstyle,textstylelabel,textstyle,bold,italic,unorderedlist,orderedlist]:rte_transform[mode=ts_css]</defaultExtras>
                         </TCEforms>
-                    </description>
+                    </settings.description>
                 </el>
             </ROOT>
         </sDEF>

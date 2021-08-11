@@ -51,10 +51,10 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
         $root->setAttribute('version', '2.0');
         // Add channel element.
         $channel = $rss->createElement('channel');
-        $channel->appendChild($rss->createElement('title', htmlspecialchars($this->conf['title'], ENT_NOQUOTES, 'UTF-8')));
+        $channel->appendChild($rss->createElement('title', htmlspecialchars($this->conf['settings..title'], ENT_NOQUOTES, 'UTF-8')));
         $channel->appendChild($rss->createElement('link', htmlspecialchars(GeneralUtility::locationHeaderUrl($this->pi_linkTP_keepPIvars_url()), ENT_NOQUOTES, 'UTF-8')));
-        if (!empty($this->conf['description'])) {
-            $channel->appendChild($rss->createElement('description', htmlspecialchars($this->conf['description'], ENT_QUOTES, 'UTF-8')));
+        if (!empty($this->conf['settings..description'])) {
+            $channel->appendChild($rss->createElement('description', htmlspecialchars($this->conf['settings..description'], ENT_QUOTES, 'UTF-8')));
         }
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -64,8 +64,8 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
             ->select('tx_dlf_libraries.label AS label')
             ->from('tx_dlf_libraries')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['library'])),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['settings..pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['settings..library'])),
                 Helper::whereExpression('tx_dlf_libraries')
             )
             ->setMaxResults(1)
@@ -78,19 +78,19 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
             $channel->appendChild($rss->createElement('copyright', htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
         }
         $channel->appendChild($rss->createElement('pubDate', date('r', $GLOBALS['EXEC_TIME'])));
-        $channel->appendChild($rss->createElement('generator', htmlspecialchars($this->conf['useragent'], ENT_NOQUOTES, 'UTF-8')));
+        $channel->appendChild($rss->createElement('generator', htmlspecialchars($this->conf['settings..useragent'], ENT_NOQUOTES, 'UTF-8')));
         // Add item elements.
         if (
-            !$this->conf['excludeOther']
+            !$this->conf['settings..excludeOther']
             || empty($this->piVars['collection'])
-            || GeneralUtility::inList($this->conf['collections'], $this->piVars['collection'])
+            || GeneralUtility::inList($this->conf['settings..collections'], $this->piVars['collection'])
         ) {
             $additionalWhere = '';
             // Check for pre-selected collections.
             if (!empty($this->piVars['collection'])) {
                 $additionalWhere = 'tx_dlf_collections.uid=' . intval($this->piVars['collection']);
-            } elseif (!empty($this->conf['collections'])) {
-                $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->conf['collections'])) . ')';
+            } elseif (!empty($this->conf['settings..collections'])) {
+                $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->conf['settings..collections'])) . ')';
             }
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -121,16 +121,16 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
                 )
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $this->conf['settings..pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $this->conf['settings..pages'])),
                     $additionalWhere,
                     Helper::whereExpression('tx_dlf_documents'),
                     Helper::whereExpression('tx_dlf_collections')
                 )
                 ->groupBy('tx_dlf_documents.uid')
                 ->orderBy('tx_dlf_documents.tstamp', 'DESC')
-                ->setMaxResults((int) $this->conf['limit'])
+                ->setMaxResults((int) $this->conf['settings..limit'])
                 ->execute();
             $rows = $result->fetchAll();
 
@@ -140,7 +140,7 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     $item = $rss->createElement('item');
                     $title = '';
                     // Get title of superior document.
-                    if ((empty($resArray['title']) || !empty($this->conf['prependSuperiorTitle']))
+                    if ((empty($resArray['title']) || !empty($this->conf['settings..prependSuperiorTitle']))
                         && !empty($resArray['partof'])
                     ) {
                         $superiorTitle = Document::getTitle($resArray['partof'], true);
@@ -169,9 +169,9 @@ class Feeds extends \Kitodo\Dlf\Common\AbstractPlugin
                     $item->appendChild($rss->createElement('title', htmlspecialchars($title, ENT_NOQUOTES, 'UTF-8')));
                     // Add link.
                     $linkConf = [
-                        'parameter' => $this->conf['targetPid'],
+                        'parameter' => $this->conf['settings..targetPid'],
                         'forceAbsoluteUrl' => 1,
-                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                         'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, ['id' => $resArray['uid']], '', true, false)
                     ];
                     $item->appendChild($rss->createElement('link', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8')));

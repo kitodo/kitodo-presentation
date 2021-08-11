@@ -54,7 +54,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         // Set pagination.
         $markerArray['###PAGINATION###'] = htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['orderlabel']);
         // Get thumbnail or placeholder.
-        $fileGrpsThumb = GeneralUtility::trimExplode(',', $this->conf['fileGrpThumbs']);
+        $fileGrpsThumb = GeneralUtility::trimExplode(',', $this->conf['settings.fileGrpThumbs']);
         if (array_intersect($fileGrpsThumb, array_keys($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) !== []) {
             while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
                 if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb])) {
@@ -62,8 +62,8 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
                     break;
                 }
             }
-        } elseif (!empty($this->conf['placeholder'])) {
-            $thumbnailFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['placeholder']);
+        } elseif (!empty($this->conf['settings.placeholder'])) {
+            $thumbnailFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['settings.placeholder']);
         } else {
             $thumbnailFile = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Images/PageGridPlaceholder.jpg';
         }
@@ -76,9 +76,9 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         $piVars['page'] = $number;
         $linkConf = [
             'useCacheHash' => 1,
-            'parameter' => $this->conf['targetPid'],
-            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+            'parameter' => $this->conf['settings.targetPid'],
+            'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', true, false),
             'title' => $markerArray['###PAGINATION###']
         ];
@@ -96,7 +96,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function getPageBrowser()
     {
         // Get overall number of pages.
-        $maxPages = intval(ceil($this->doc->numPages / $this->conf['limit']));
+        $maxPages = intval(ceil($this->doc->numPages / $this->conf['settings.limit']));
         // Return empty pagebrowser if there is just one page.
         if ($maxPages < 2) {
             return '';
@@ -105,7 +105,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         $separator = htmlspecialchars($this->pi_getLL('separator', ' - '));
         // Add link to previous page.
         if ($this->piVars['pointer'] > 0) {
-            $output = $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('prevPage', '<')), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['limit']) + 1], true) . $separator;
+            $output = $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('prevPage', '<')), ['pointer' => $this->piVars['pointer'] - 1, 'page' => (($this->piVars['pointer'] - 1) * $this->conf['settings.limit']) + 1], true) . $separator;
         } else {
             $output = '<span class="prev-page not-active">' . htmlspecialchars($this->pi_getLL('prevPage', '<')) . '</span>' . $separator;
         }
@@ -114,7 +114,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         while ($i < $maxPages) {
             if ($i < 3 || ($i > $this->piVars['pointer'] - 3 && $i < $this->piVars['pointer'] + 3) || $i > $maxPages - 4) {
                 if ($this->piVars['pointer'] != $i) {
-                    $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars(sprintf($this->pi_getLL('page', '%d'), $i + 1)), ['pointer' => $i, 'page' => ($i * $this->conf['limit']) + 1], true) . $separator;
+                    $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars(sprintf($this->pi_getLL('page', '%d'), $i + 1)), ['pointer' => $i, 'page' => ($i * $this->conf['settings.limit']) + 1], true) . $separator;
                 } else {
                     $output .= '<span class="active">' . htmlspecialchars(sprintf($this->pi_getLL('page', '%d'), $i + 1)) . '</span>' . $separator;
                 }
@@ -127,7 +127,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Add link to next page.
         if ($this->piVars['pointer'] < $maxPages - 1) {
-            $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('nextPage', '>')), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['limit'] + 1], true);
+            $output .= $this->pi_linkTP_keepPIvars(htmlspecialchars($this->pi_getLL('nextPage', '>')), ['pointer' => $this->piVars['pointer'] + 1, 'page' => ($this->piVars['pointer'] + 1) * $this->conf['settings.limit'] + 1], true);
         } else {
             $output .= '<span class="next-page not-active">' . htmlspecialchars($this->pi_getLL('nextPage', '>')) . '</span>';
         }
@@ -151,7 +151,7 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
         if (
             $this->doc === null
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpThumbs'])
+            || empty($this->conf['settings.fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
             return $content;
@@ -183,18 +183,18 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
         }
         if (!empty($this->piVars['page'])) {
-            $this->piVars['pointer'] = intval(floor(($this->piVars['page'] - 1) / $this->conf['limit']));
+            $this->piVars['pointer'] = intval(floor(($this->piVars['page'] - 1) / $this->conf['settings.limit']));
         }
         if (
             !empty($this->piVars['pointer'])
-            && (($this->piVars['pointer'] * $this->conf['limit']) + 1) <= $this->doc->numPages
+            && (($this->piVars['pointer'] * $this->conf['settings.limit']) + 1) <= $this->doc->numPages
         ) {
             $this->piVars['pointer'] = max(intval($this->piVars['pointer']), 0);
         } else {
             $this->piVars['pointer'] = 0;
         }
         // Iterate through visible page set and display thumbnails.
-        for ($i = $this->piVars['pointer'] * $this->conf['limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['limit']; $i < $j; $i++) {
+        for ($i = $this->piVars['pointer'] * $this->conf['settings.limit'], $j = ($this->piVars['pointer'] + 1) * $this->conf['settings.limit']; $i < $j; $i++) {
             // +1 because page counting starts at 1.
             $number = $i + 1;
             if ($number > $this->doc->numPages) {

@@ -51,7 +51,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
         if (
             $this->doc === null
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpFulltext'])
+            || empty($this->conf['settings.fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
             return $content;
@@ -75,7 +75,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Load template file.
         $this->getTemplate();
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['settings.fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext])) {
                 $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext];
@@ -87,8 +87,8 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
             . 'fulltext:' . htmlspecialchars($this->pi_getLL('fulltext', ''))
             . ';fulltext-on:' . htmlspecialchars($this->pi_getLL('fulltext-on', ''))
             . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', ''))
-            . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['activateFullTextInitially'], 0, 1, 0)
-            . ';full-text-scroll-element:' . $this->conf['fullTextScrollElement']
+            . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['settings.activateFullTextInitially'], 0, 1, 0)
+            . ';full-text-scroll-element:' . $this->conf['settings.fullTextScrollElement']
             . '">&nbsp;</a>';
         } else {
             $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';

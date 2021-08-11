@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
@@ -39,8 +39,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <excludeOther>
+                    </settings.pages>
+                    <settings.excludeOther>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.pi_flexform.excludeOther</label>
@@ -49,8 +49,8 @@
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </excludeOther>
-                    <basketButton>
+                    </settings.excludeOther>
+                    <settings.basketButton>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.pi_flexform.basketButton</label>
@@ -59,8 +59,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </basketButton>
-                    <targetBasket>
+                    </settings.basketButton>
+                    <settings.targetBasket>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.pi_flexform.targetBasket</label>
@@ -79,8 +79,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </targetBasket>
-                    <targetPid>
+                    </settings.targetBasket>
+                    <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.pi_flexform.targetPid</label>
@@ -99,8 +99,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </targetPid>
-                    <templateFile>
+                    </settings.targetPid>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.pi_flexform.templateFile</label>
@@ -114,7 +114,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>
