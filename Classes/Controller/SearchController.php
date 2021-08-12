@@ -227,9 +227,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             if (!empty($this->settings['suggest'])) {
                 $this->addAutocompleteJS();
             }
-            // Load template file.
-//            TODO: Extbase/Fluid Check template
-//            $this->getTemplate();
             // Configure @action URL for form.
             $linkConf = [
                 'parameter' => $GLOBALS['TSFE']->id,
