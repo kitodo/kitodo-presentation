@@ -30,6 +30,7 @@
 
     <!-- The following element is needed for auto-completion! -->
     <div id="tx-dlf-search-suggest"></div>
+
     <f:form.submit value="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.submit')}" />
 
     <!-- Fulltext switch -->
@@ -70,3 +71,7 @@
 <div class="tx-dlf-search-facets">{FACETS_MENU}</div>
 
 </html>
+
+<f:section name="FooterAssets">
+    <script src="{f:uri.resource(path: 'Javascript/Search/Suggester.js')}"></script>
+</f:section>

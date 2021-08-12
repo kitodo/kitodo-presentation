@@ -273,15 +273,14 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             ->from('tx_dlf_metadata')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_metadata.index_autocomplete', 1),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->settings['pages'])),
                 Helper::whereExpression('tx_dlf_metadata')
             )
             ->setMaxResults(1)
             ->execute();
 
         if ($result->rowCount() == 1) {
-            $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-            $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/Search/Suggester.js');
+
         } else {
             $this->logger->warning('No metadata fields configured for search suggestions');
         }
@@ -369,7 +368,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     protected function addEncryptedCoreName()
     {
         // Get core name.
-        $name = Helper::getIndexNameFromUid($this->conf['solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexNameFromUid($this->settings['solrcore'], 'tx_dlf_solrcores');
         // Encrypt core name.
         if (!empty($name)) {
             $name = Helper::encrypt($name);
