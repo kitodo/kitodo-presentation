@@ -227,21 +227,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             if (!empty($this->settings['suggest'])) {
                 $this->addAutocompleteJS();
             }
-            // Configure @action URL for form.
-            $linkConf = [
-                'parameter' => $GLOBALS['TSFE']->id,
-                'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0,
-                'forceAbsoluteUrl.' => ['scheme' => !empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http']
-            ];
-
-            // Assign variables to view
-            $uri = $this->uriBuilder->reset()
-                ->setTargetPageUid($GLOBALS['TSFE']->id)
-                ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
-                ->setAbsoluteUriScheme(!empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http')
-                ->build();
-
-            $this->view->assign('ACTION_URL', $uri);
+            
             $this->view->assign('FIELD_QUERY', 'query');
             $this->view->assign('QUERY', (!empty($search['query']) ? htmlspecialchars($search['query']) : ''));
             $this->view->assign('FULLTEXT_SEARCH', $list->metadata['fulltextSearch']);
