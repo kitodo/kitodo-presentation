@@ -32,7 +32,7 @@ class SearchForm extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $logicalPage;
+    protected $logicalPage = '';
 
     /**
      * @var int
@@ -57,7 +57,7 @@ class SearchForm extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $order;
+    protected $order = '';
 
     /**
      * @var int
