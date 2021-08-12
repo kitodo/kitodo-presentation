@@ -25,11 +25,17 @@ use \Kitodo\Dlf\Domain\Model\SearchForm;
 class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
     public $prefixId = 'tx_dlf';
+    public $extKey = 'dlf';
 
     /**
      * @var ConfigurationManager
      */
     protected $configurationManager;
+
+    /**
+     * @var \TYPO3\CMS\Core\Log\LogManager
+     */
+    protected $logger;
 
     /**
      * SearchController constructor.
@@ -38,6 +44,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     public function __construct(ConfigurationManager $configurationManager)
     {
         $this->configurationManager = $configurationManager;
+        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
     }
 
     /**
@@ -144,7 +151,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         // Instantiate search object.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
-            Helper::devLog('Apache Solr not available', DEVLOG_SEVERITY_ERROR);
+            $this->logger->error('Apache Solr not available');
             $this->redirect('main', 'Search', NULL);
             //return $this->responseFactory->createHtmlResponse($this->view->render());
         }
@@ -203,7 +210,8 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 //        $this->setCache(false);
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Incomplete plugin configuration');
+            return '';
         }
         if (!isset($searchForm) ||
             (empty($searchForm->getQuery())
@@ -294,7 +302,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
             $pageRenderer->addJsFooterFile(\TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/Search/Suggester.js');
         } else {
-            Helper::devLog('No metadata fields configured for search suggestions', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('No metadata fields configured for search suggestions');
         }
     }
 
@@ -402,7 +410,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->settings['facetsConf'])) {
-            Helper::devLog('Incomplete plugin configuration', DEVLOG_SEVERITY_WARNING);
+            $this->logger->warning('Incomplete plugin configuration');
             return '';
         }
         // Quit without doing anything if no facets are selected.
