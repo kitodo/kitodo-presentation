@@ -76,9 +76,9 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     protected function getTemplate($part = '###TEMPLATE###')
     {
         $this->templateService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
-        if (!empty($this->conf['settings..templateFile'])) {
+        if (!empty($this->conf['settings.templateFile'])) {
             // Load template file from configuration.
-            $templateFile = $this->conf['settings..templateFile'];
+            $templateFile = $this->conf['settings.templateFile'];
         } else {
             // Load default template from extension.
             $templateFile = 'EXT:' . $this->extKey . '/Resources/Private/Templates/' . Helper::getUnqualifiedClassName(get_class($this)) . '.tmpl';
@@ -143,10 +143,10 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         // Check for required variable.
         if (
             !empty($this->piVars['id'])
-            && !empty($this->conf['settings..pages'])
+            && !empty($this->conf['settings.pages'])
         ) {
-            // Should we exclude documents from other pages than $this->conf['settings..pages']?
-            $pid = (!empty($this->conf['settings..excludeOther']) ? intval($this->conf['settings..pages']) : 0);
+            // Should we exclude documents from other pages than $this->conf['settings.pages']?
+            $pid = (!empty($this->conf['settings.excludeOther']) ? intval($this->conf['settings.pages']) : 0);
             // Get instance of \Kitodo\Dlf\Common\Document.
             $this->doc = Document::getInstance($this->piVars['id'], $pid);
             if (!$this->doc->ready) {
@@ -155,7 +155,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
                 $this->logger->error('Failed to load document with UID ' . $this->piVars['id']);
             } else {
                 // Set configuration PID.
-                $this->doc->cPid = $this->conf['settings..pages'];
+                $this->doc->cPid = $this->conf['settings.pages'];
             }
         } elseif (!empty($this->piVars['recordId'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -183,7 +183,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
                 $this->logger->error('Failed to load document with record ID "' . $this->piVars['recordId'] . '"');
             }
         } else {
-            $this->logger->error('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['settings..pages'] . ' for document loading');
+            $this->logger->error('Invalid UID ' . $this->piVars['id'] . ' or PID ' . $this->conf['settings.pages'] . ' for document loading');
         }
     }
 
@@ -239,8 +239,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         $conf['parameter'] = $altPageId ? : ($this->pi_tmpPageId ? : 'current');
         $conf['additionalParams'] = $this->conf['settings.parent.']['addParams'] . HttpUtility::buildQueryString($urlParameters, '&', true) . $this->pi_moreParams;
         // Add additional configuration for absolute URLs.
-        $conf['forceAbsoluteUrl'] = !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0;
-        $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http';
+        $conf['forceAbsoluteUrl'] = !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0;
+        $conf['forceAbsoluteUrl.']['scheme'] = !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http';
         return $this->cObj->typoLink($str, $conf);
     }
 

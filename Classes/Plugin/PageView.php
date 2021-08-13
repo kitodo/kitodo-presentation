@@ -79,11 +79,11 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({
                         controls: ["' . implode('", "', $this->controls) . '"],
-                        div: "' . $this->conf['settings..elementId'] . '",
+                        div: "' . $this->conf['settings.elementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',
-                        useInternalProxy: ' . ($this->conf['settings..useInternalProxy'] ? 1 : 0) . '
+                        useInternalProxy: ' . ($this->conf['settings.useInternalProxy'] ? 1 : 0) . '
                     });
                 }
             });
@@ -104,14 +104,14 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $markerArray = [];
         if ($this->piVars['id']) {
-            if ($this->conf['settings..crop']) {
+            if ($this->conf['settings.crop']) {
                 $markerArray['###EDITBUTTON###'] = '<a href="javascript: tx_dlf_viewer.activateSelection();" title="' . htmlspecialchars($this->pi_getLL('editMode', '')) . '">' . htmlspecialchars($this->pi_getLL('editMode', '')) . '</a>';
                 $markerArray['###EDITREMOVE###'] = '<a href="javascript: tx_dlf_viewer.resetCropSelection();" title="' . htmlspecialchars($this->pi_getLL('editRemove', '')) . '">' . htmlspecialchars($this->pi_getLL('editRemove', '')) . '</a>';
             } else {
                 $markerArray['###EDITBUTTON###'] = '';
                 $markerArray['###EDITREMOVE###'] = '';
             }
-            if ($this->conf['settings..magnifier']) {
+            if ($this->conf['settings.magnifier']) {
                 $markerArray['###MAGNIFIER###'] = '<a href="javascript: tx_dlf_viewer.activateMagnifier();" title="' . htmlspecialchars($this->pi_getLL('magnifier', '')) . '">' . htmlspecialchars($this->pi_getLL('magnifier', '')) . '</a>';
             } else {
                 $markerArray['###MAGNIFIER###'] = '';
@@ -131,7 +131,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $markerArray = [];
         // Add basket button
-        if ($this->conf['settings..basketButton'] && $this->conf['settings..targetBasket'] && $this->piVars['id']) {
+        if ($this->conf['settings.basketButton'] && $this->conf['settings.targetBasket'] && $this->piVars['id']) {
             $label = htmlspecialchars($this->pi_getLL('addBasket', ''));
             $params = [
                 'id' => $this->piVars['id'],
@@ -141,9 +141,9 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                 $params['page'] = 1;
             }
             $basketConf = [
-                'parameter' => $this->conf['settings..targetBasket'],
-                'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
-                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                'parameter' => $this->conf['settings.targetBasket'],
+                'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $params, '', true, false),
                 'title' => $label
             ];
@@ -180,17 +180,17 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrpsImages = GeneralUtility::trimExplode(',', $this->conf['settings..fileGrpImages']);
+        $fileGrpsImages = GeneralUtility::trimExplode(',', $this->conf['settings.fileGrpImages']);
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages])) {
                 $image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages]);
-                if ($this->conf['settings..useInternalProxy']) {
+                if ($this->conf['settings.useInternalProxy']) {
                     // Configure @action URL for form.
                     $linkConf = [
                         'parameter' => $GLOBALS['TSFE']->id,
-                        'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
-                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                        'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                         'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($image['url']),
                     ];
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
@@ -202,7 +202,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         if (empty($image)) {
-            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->conf['settings..fileGrpImages'] . '"');
+            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->conf['settings.fileGrpImages'] . '"');
         }
         return $image;
     }
@@ -220,16 +220,16 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $fulltext = [];
         // Get fulltext link.
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['settings..fileGrpFulltext']);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['settings.fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
                 $fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext]);
-                if ($this->conf['settings..useInternalProxy']) {
+                if ($this->conf['settings.useInternalProxy']) {
                     // Configure @action URL for form.
                     $linkConf = [
                         'parameter' => $GLOBALS['TSFE']->id,
-                        'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
-                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                        'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                        'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                         'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
                     ];
                     $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
@@ -241,7 +241,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         if (empty($fulltext)) {
-            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->conf['settings..fileGrpFulltext'] . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->conf['settings.fileGrpFulltext'] . '"');
         }
         return $fulltext;
     }
@@ -351,7 +351,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->piVars['page'] + 1);
         }
         // Get the controls for the map.
-        $this->controls = explode(',', $this->conf['settings..features']);
+        $this->controls = explode(',', $this->conf['settings.features']);
         // Fill in the template markers.
         $markerArray = array_merge($this->addInteraction(), $this->addBasketForm());
         $this->addViewerJS();

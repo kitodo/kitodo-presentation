@@ -216,12 +216,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $entries = '';
         }
         // basket go to
-        if ($this->conf['settings..targetBasket'] && $this->conf['settings..basketGoToButton'] && $this->piVars['id']) {
+        if ($this->conf['settings.targetBasket'] && $this->conf['settings.basketGoToButton'] && $this->piVars['id']) {
             $label = htmlspecialchars($this->pi_getLL('goBasket', ''));
             $basketConf = [
-                'parameter' => $this->conf['settings..targetBasket'],
-                'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
-                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                'parameter' => $this->conf['settings.targetBasket'],
+                'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                 'title' => $label
             ];
             $markerArray['###BASKET###'] = $this->cObj->typoLink($label, $basketConf);
@@ -340,7 +340,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             if (!in_array($arrayKey, $items)) {
                 $items[$arrayKey] = $documentItem;
                 // replace url param placeholder
-                $pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->conf['settings..pdfparams']);
+                $pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->conf['settings.pdfparams']);
                 $pdfParams = str_replace("##docId##", $document->recordId, $pdfParams);
                 $pdfParams = str_replace("##startx##", $documentItem['startX'], $pdfParams);
                 $pdfParams = str_replace("##starty##", $documentItem['startY'], $pdfParams);
@@ -353,8 +353,8 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
                     // remove parameter endpage
                     $pdfParams = str_replace(",##endpage##", '', $pdfParams);
                 }
-                $pdfGenerateUrl = $this->conf['settings..pdfgenerate'] . $pdfParams;
-                if ($this->conf['settings..pregeneration']) {
+                $pdfGenerateUrl = $this->conf['settings.pdfgenerate'] . $pdfParams;
+                if ($this->conf['settings.pregeneration']) {
                     // send ajax request to webapp
                     $output .= '
      <script>
@@ -438,11 +438,11 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function openFromBasket($_piVars, $basketData)
     {
-        $pdfUrl = $this->conf['settings..pdfgenerate'];
+        $pdfUrl = $this->conf['settings.pdfgenerate'];
         foreach ($this->piVars['selected'] as $docValue) {
             if ($docValue['id']) {
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
-                $pdfUrl .= $docData['urlParams'] . $this->conf['settings..pdfparamseparator'];
+                $pdfUrl .= $docData['urlParams'] . $this->conf['settings.pdfparamseparator'];
             }
         }
         header('Location: ' . $pdfUrl);
@@ -465,7 +465,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         $document = Document::getInstance($id, 0);
         if ($document) {
             // replace url param placeholder
-            $urlParams = str_replace("##page##", intval($data['page']), $this->conf['settings..pdfparams']);
+            $urlParams = str_replace("##page##", intval($data['page']), $this->conf['settings.pdfparams']);
             $urlParams = str_replace("##docId##", $document->recordId, $urlParams);
             $urlParams = str_replace("##startpage##", intval($data['startpage']), $urlParams);
             if ($data['startpage'] != $data['endpage']) {
@@ -479,7 +479,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             $urlParams = str_replace("##endx##", $data['endX'] === "" ? "" : intval($data['endX']), $urlParams);
             $urlParams = str_replace("##endy##", $data['endY'] === "" ? "" : intval($data['endY']), $urlParams);
             $urlParams = str_replace("##rotation##", $data['rotation'] === "" ? "" : intval($data['rotation']), $urlParams);
-            $downloadUrl = $this->conf['settings..pdfgenerate'] . $urlParams;
+            $downloadUrl = $this->conf['settings.pdfgenerate'] . $urlParams;
             $title = $document->getTitle($id, true);
             if (empty($title)) {
                 $title = $this->pi_getLL('noTitle', '');
@@ -543,13 +543,13 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
         $mailData = $allResults[0];
         $mailText = htmlspecialchars($this->pi_getLL('mailBody', '')) . "\n";
         $numberOfPages = 0;
-        $pdfUrl = $this->conf['settings..pdfdownload'];
+        $pdfUrl = $this->conf['settings.pdfdownload'];
         // prepare links
         foreach ($this->piVars['selected'] as $docValue) {
             if ($docValue['id']) {
                 $explodeId = explode("_", $docValue['id']);
                 $docData = $this->getDocumentData($explodeId[0], $docValue);
-                $pdfUrl .= $docData['urlParams'] . $this->conf['settings..pdfparamseparator'];
+                $pdfUrl .= $docData['urlParams'] . $this->conf['settings.pdfparamseparator'];
                 $pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
                 if ($pages === 0) {
                     $numberOfPages = $numberOfPages + 1;
@@ -559,7 +559,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         // Remove leading/tailing pdfparamseperator
-        $pdfUrl = trim($pdfUrl, $this->conf['settings..pdfparamseparator']);
+        $pdfUrl = trim($pdfUrl, $this->conf['settings.pdfparamseparator']);
         $mailBody = $mailText . $pdfUrl;
         // Get hook objects.
         $hookObjects = Helper::getHookObjects($this->scriptRelPath);
@@ -584,7 +584,7 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
             ->send();
         // protocol
         $insertArray = [
-            'pid' => $this->conf['settings..pages'],
+            'pid' => $this->conf['settings.pages'],
             'file_name' => $pdfUrl,
             'count_pages' => $numberOfPages,
             'crdate' => time(),
@@ -618,12 +618,12 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function printDocument()
     {
-        $pdfUrl = $this->conf['settings..pdfprint'];
+        $pdfUrl = $this->conf['settings.pdfprint'];
         $numberOfPages = 0;
         foreach ($this->piVars['selected'] as $docId => $docValue) {
             if ($docValue['id']) {
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
-                $pdfUrl .= $docData['urlParams'] . $this->conf['settings..pdfparamseparator'];
+                $pdfUrl .= $docData['urlParams'] . $this->conf['settings.pdfparamseparator'];
                 $numberOfPages += $docData['pageNums'];
             }
         }
@@ -654,15 +654,15 @@ class Basket extends \Kitodo\Dlf\Common\AbstractPlugin
                 if ($docValue['id']) {
                     $explodeId = explode("_", $docId);
                     $docData = $this->getDocumentData($explodeId[0], $docValue);
-                    $pdfUrl .= $docData['urlParams'] . $this->conf['settings..pdfparamseparator'];
+                    $pdfUrl .= $docData['urlParams'] . $this->conf['settings.pdfparamseparator'];
                     $numberOfPages += $docData['pageNums'];
                 }
             }
-            $pdfUrl = trim($pdfUrl, $this->conf['settings..pdfparamseparator']);
+            $pdfUrl = trim($pdfUrl, $this->conf['settings.pdfparamseparator']);
         }
         // protocol
         $insertArray = [
-            'pid' => $this->conf['settings..pages'],
+            'pid' => $this->conf['settings.pages'],
             'file_name' => $pdfUrl,
             'count_pages' => $numberOfPages,
             'crdate' => time(),

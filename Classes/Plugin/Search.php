@@ -53,7 +53,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             ->from('tx_dlf_metadata')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_metadata.index_autocomplete', 1),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['settings..pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->conf['settings.pages'])),
                 Helper::whereExpression('tx_dlf_metadata')
             )
             ->setMaxResults(1)
@@ -150,7 +150,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function addEncryptedCoreName()
     {
         // Get core name.
-        $name = Helper::getIndexNameFromUid($this->conf['settings..solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexNameFromUid($this->conf['settings.solrcore'], 'tx_dlf_solrcores');
         // Encrypt core name.
         if (!empty($name)) {
             $name = Helper::encrypt($name);
@@ -175,8 +175,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         $extendedSearch = '';
         // Quit without doing anything if no fields for extended search are selected.
         if (
-            empty($this->conf['settings..extendedSlotCount'])
-            || empty($this->conf['settings..extendedFields'])
+            empty($this->conf['settings.extendedSlotCount'])
+            || empty($this->conf['settings.extendedFields'])
         ) {
             return $extendedSearch;
         }
@@ -187,11 +187,11 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         // Get field selector options.
         $fieldSelectorOptions = '';
-        $searchFields = GeneralUtility::trimExplode(',', $this->conf['settings..extendedFields'], true);
+        $searchFields = GeneralUtility::trimExplode(',', $this->conf['settings.extendedFields'], true);
         foreach ($searchFields as $searchField) {
-            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-' . $searchField . '" value="' . $searchField . '">' . Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['settings..pages']) . '</option>';
+            $fieldSelectorOptions .= '<option class="tx-dlf-search-field-option tx-dlf-search-field-' . $searchField . '" value="' . $searchField . '">' . Helper::translate($searchField, 'tx_dlf_metadata', $this->conf['settings.pages']) . '</option>';
         }
-        for ($i = 0; $i < $this->conf['settings..extendedSlotCount']; $i++) {
+        for ($i = 0; $i < $this->conf['settings.extendedSlotCount']; $i++) {
             $markerArray = [
                 '###EXT_SEARCH_OPERATOR###' => '<select class="tx-dlf-search-operator tx-dlf-search-operator-' . $i . '" name="' . $this->prefixId . '[extOperator][' . $i . ']">' . $operatorOptions . '</select>',
                 '###EXT_SEARCH_FIELDSELECTOR###' => '<select class="tx-dlf-search-field tx-dlf-search-field-' . $i . '" name="' . $this->prefixId . '[extField][' . $i . ']">' . $fieldSelectorOptions . '</select>',
@@ -217,20 +217,20 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             return '';
         }
         // Quit without doing anything if no facets are selected.
-        if (empty($this->conf['settings..facets']) && empty($this->conf['settings..facetCollections'])) {
+        if (empty($this->conf['settings.facets']) && empty($this->conf['settings.facetCollections'])) {
             return '';
         }
         // Get facets from plugin configuration.
         $facets = [];
-        foreach (GeneralUtility::trimExplode(',', $this->conf['settings..facets'], true) as $facet) {
-            $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['settings..pages']);
+        foreach (GeneralUtility::trimExplode(',', $this->conf['settings.facets'], true) as $facet) {
+            $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->conf['settings.pages']);
         }
         // Render facets menu.
         $TSconfig = [];
         $TSconfig['special'] = 'userfunction';
         $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\Search::class . '->makeFacetsMenuArray';
         $TSconfig['special.']['facets'] = $facets;
-        $TSconfig['special.']['limit'] = max(intval($this->conf['settings..limitFacets']), 1);
+        $TSconfig['special.']['limit'] = max(intval($this->conf['settings.limitFacets']), 1);
         $TSconfig = Helper::mergeRecursiveWithOverrule($this->conf['settings.facetsConf.'], $TSconfig);
         return $this->cObj->cObjGetSingle('HMENU', $TSconfig);
     }
@@ -248,7 +248,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $output = '';
         // Check for plugin configuration.
-        if (!empty($this->conf['settings..fulltext'])) {
+        if (!empty($this->conf['settings.fulltext'])) {
             $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-no" type="radio" name="' . $this->prefixId . '[fulltext]" value="0" ' . ($isFulltextSearch == 0 ? 'checked="checked"' : '') . ' />';
             $output .= ' <label for="tx-dlf-search-fulltext-no">' . htmlspecialchars($this->pi_getLL('label.inMetadata', '')) . '</label>';
             $output .= ' <input class="tx-dlf-search-fulltext" id="tx-dlf-search-fulltext-yes" type="radio" name="' . $this->prefixId . '[fulltext]" value="1" ' . ($isFulltextSearch == 1 ? 'checked="checked"' : '') . '/>';
@@ -268,7 +268,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $output = '';
         // Check for plugin configuration.
-        if (!empty($this->conf['settings..showLogicalPageField'])) {
+        if (!empty($this->conf['settings.showLogicalPageField'])) {
             $output .= ' <label for="tx-dlf-search-logical-page">' . htmlspecialchars($this->pi_getLL('label.logicalPage', '')) . ': </label>';
             $output .= ' <input class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" type="text" name="' . $this->prefixId . '[logicalPage]" />';
         }
@@ -294,13 +294,13 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Translate value.
         if ($field == 'owner_faceting') {
             // Translate name of holding library.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['settings..pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->conf['settings.pages']));
         } elseif ($field == 'type_faceting') {
             // Translate document type.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['settings..pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->conf['settings.pages']));
         } elseif ($field == 'collection_faceting') {
             // Translate name of collection.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['settings..pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->conf['settings.pages']));
         } elseif ($field == 'language_faceting') {
             // Translate ISO 639 language code.
             $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
@@ -319,7 +319,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $entryArray['ITEM_STATE'] = 'CUR';
             $state = 'ACTIFSUB';
             //Reset facets
-            if ($this->conf['settings..resetFacets']) {
+            if ($this->conf['settings.resetFacets']) {
                 //remove ($count) for selected facet in template
                 $entryArray['count'] = false;
                 //build link to delete selected facet
@@ -351,7 +351,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
         // Disable caching for this plugin.
         $this->setCache(false);
         // Quit without doing anything if required variables are not set.
-        if (empty($this->conf['settings..solrcore'])) {
+        if (empty($this->conf['settings.solrcore'])) {
             $this->logger->warning('Incomplete plugin configuration');
             return $content;
         }
@@ -368,7 +368,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 $search['params'] = $list->metadata['options']['params'];
             }
             // Add javascript for search suggestions if enabled and jQuery autocompletion is available.
-            if (!empty($this->conf['settings..suggest'])) {
+            if (!empty($this->conf['settings.suggest'])) {
                 $this->addAutocompleteJS();
             }
             // Load template file.
@@ -376,8 +376,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             // Configure @action URL for form.
             $linkConf = [
                 'parameter' => $GLOBALS['TSFE']->id,
-                'forceAbsoluteUrl' => !empty($this->conf['settings..forceAbsoluteUrl']) ? 1 : 0,
-                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings..forceAbsoluteUrl']) && !empty($this->conf['settings..forceAbsoluteUrlHttps']) ? 'https' : 'http']
+                'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http']
             ];
             // Fill markers.
             $markerArray = [
@@ -387,8 +387,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 '###FIELD_QUERY###' => $this->prefixId . '[query]',
                 '###QUERY###' => (!empty($search['query']) ? htmlspecialchars($search['query']) : ''),
                 '###FULLTEXTSWITCH###' => $this->addFulltextSwitch($list->metadata['fulltextSearch']),
-                '###FIELD_DOC###' => ($this->conf['settings..searchIn'] == 'document' || $this->conf['settings..searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
-                '###FIELD_COLL###' => ($this->conf['settings..searchIn'] == 'collection' || $this->conf['settings..searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
+                '###FIELD_DOC###' => ($this->conf['settings.searchIn'] == 'document' || $this->conf['settings.searchIn'] == 'all' ? $this->addCurrentDocument() : ''),
+                '###FIELD_COLL###' => ($this->conf['settings.searchIn'] == 'collection' || $this->conf['settings.searchIn'] == 'all' ? $this->addCurrentCollection() : ''),
                 '###ADDITIONAL_INPUTS###' => $this->addEncryptedCoreName(),
                 '###FACETS_MENU###' => $this->addFacetsMenu(),
                 '###LOGICAL_PAGE###' => $this->addLogicalPage()
@@ -410,7 +410,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             $fields = Solr::getFields();
             // Set search query.
             if (
-                (!empty($this->conf['settings..fulltext']) && !empty($this->piVars['fulltext']))
+                (!empty($this->conf['settings.fulltext']) && !empty($this->piVars['fulltext']))
                 || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->piVars['query']), $matches)
             ) {
                 // If the query already is a fulltext query e.g using the facets
@@ -421,7 +421,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
             } else {
                 // Retain given search field if valid.
-                $query = Solr::escapeQueryKeepField(trim($this->piVars['query']), $this->conf['settings..pages']);
+                $query = Solr::escapeQueryKeepField(trim($this->piVars['query']), $this->conf['settings.pages']);
             }
             // Add extended search query.
             if (
@@ -429,7 +429,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                 && is_array($this->piVars['extQuery'])
             ) {
                 $allowedOperators = ['AND', 'OR', 'NOT'];
-                $allowedFields = GeneralUtility::trimExplode(',', $this->conf['settings..extendedFields'], true);
+                $allowedFields = GeneralUtility::trimExplode(',', $this->conf['settings.extendedFields'], true);
                 $numberOfExtQueries = count($this->piVars['extQuery']);
                 for ($i = 0; $i < $numberOfExtQueries; $i++) {
                     if (!empty($this->piVars['extQuery'][$i])) {
@@ -440,7 +440,7 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
                             if (!empty($query)) {
                                 $query .= ' ' . $this->piVars['extOperator'][$i] . ' ';
                             }
-                            $query .= Indexer::getIndexFieldName($this->piVars['extField'][$i], $this->conf['settings..pages']) . ':(' . Solr::escapeQuery($this->piVars['extQuery'][$i]) . ')';
+                            $query .= Indexer::getIndexFieldName($this->piVars['extField'][$i], $this->conf['settings.pages']) . ':(' . Solr::escapeQuery($this->piVars['extQuery'][$i]) . ')';
                         }
                     }
                 }
@@ -453,8 +453,8 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             // Add filter query for in-document searching.
             if (
-                $this->conf['settings..searchIn'] == 'document'
-                || $this->conf['settings..searchIn'] == 'all'
+                $this->conf['settings.searchIn'] == 'document'
+                || $this->conf['settings.searchIn'] == 'all'
             ) {
                 if (
                     !empty($this->piVars['id'])
@@ -473,24 +473,24 @@ class Search extends \Kitodo\Dlf\Common\AbstractPlugin
             }
             // Add filter query for in-collection searching.
             if (
-                $this->conf['settings..searchIn'] == 'collection'
-                || $this->conf['settings..searchIn'] == 'all'
+                $this->conf['settings.searchIn'] == 'collection'
+                || $this->conf['settings.searchIn'] == 'all'
             ) {
                 if (
                     !empty($this->piVars['collection'])
                     && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->piVars['collection'])
                 ) {
-                    $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], 'tx_dlf_collections', $this->conf['settings..pages']);
+                    $index_name = Helper::getIndexNameFromUid($this->piVars['collection'], 'tx_dlf_collections', $this->conf['settings.pages']);
                     $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
-                    $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['settings..pages']));
+                    $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, 'tx_dlf_collections', $this->conf['settings.pages']));
                 }
             }
             // Add filter query for collection restrictions.
-            if ($this->conf['settings..collections']) {
-                $collIds = explode(',', $this->conf['settings..collections']);
+            if ($this->conf['settings.collections']) {
+                $collIds = explode(',', $this->conf['settings.collections']);
                 $collIndexNames = [];
                 foreach ($collIds as $collId) {
-                    $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['settings..pages']));
+                    $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->conf['settings.pages']));
                 }
                 // Last value is fake and used for distinction in $this->addCurrentCollection()
                 $params['filterquery'][]['query'] = 'collection_faceting:("' . implode('" OR "', $collIndexNames) . '" OR "FakeValueForDistinction")';

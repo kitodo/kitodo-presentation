@@ -62,20 +62,20 @@ class Metadata extends \Kitodo\Dlf\Common\AbstractPlugin
             return $content;
         } else {
             // Set default values if not set.
-            if (!isset($this->conf['settings..rootline'])) {
-                $this->conf['settings..rootline'] = 0;
+            if (!isset($this->conf['settings.rootline'])) {
+                $this->conf['settings.rootline'] = 0;
             }
-            if (!isset($this->conf['settings..originalIiifMetadata'])) {
-                $this->conf['settings..originalIiifMetadata'] = 0;
+            if (!isset($this->conf['settings.originalIiifMetadata'])) {
+                $this->conf['settings.originalIiifMetadata'] = 0;
             }
-            if (!isset($this->conf['settings..displayIiifDescription'])) {
-                $this->conf['settings..displayIiifDescription'] = 1;
+            if (!isset($this->conf['settings.displayIiifDescription'])) {
+                $this->conf['settings.displayIiifDescription'] = 1;
             }
-            if (!isset($this->conf['settings..displayIiifRights'])) {
-                $this->conf['settings..displayIiifRights'] = 1;
+            if (!isset($this->conf['settings.displayIiifRights'])) {
+                $this->conf['settings.displayIiifRights'] = 1;
             }
-            if (!isset($this->conf['settings..displayIiifLinks'])) {
-                $this->conf['settings..displayIiifLinks'] = 1;
+            if (!isset($this->conf['settings.displayIiifLinks'])) {
+                $this->conf['settings.displayIiifLinks'] = 1;
             }
         }
         $useOriginalIiifManifestMetadata = $this->conf['settings.originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
