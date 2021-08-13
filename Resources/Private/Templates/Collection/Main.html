@@ -1,0 +1,64 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+
+<div class="tx-dlf-collection">
+    <ul class="tx-dlf-collection-list">
+        <f:for each="{collections}" as="collection">
+            <li>
+                <h2>
+                    <f:link.action action="main"
+                                   pageUid="{currentPageUid}"
+                                   additionalParams="{'tx_dlf[collection]':collection.uid}"
+                                   absolute="{forceAbsoluteUrl}"
+                                   addQueryString="1"
+                                   argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
+                    >
+                        {collection.label -> f:format.htmlspecialchars()}
+                    </f:link.action>
+
+                    <f:if condition="{settings.targetFeed}">
+                        <span>
+                            <f:link.action action="main"
+                                           controller="Feeds"
+                                           pluginName="Feeds"
+                                           pageUid="{settings.targetFeed}"
+                                           additionalParams="{'tx_dlf[collection]':collection.uid}"
+                                           absolute="{forceAbsoluteUrl}"
+                                           addQueryString="1"
+                                           argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
+                            >
+                                <img src="{f:uri.image(src:'EXT:dlf/Resources/Public/Icons/txdlffeeds.png')}"
+                                     alt="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/Collection.xml:feedAlt')}"
+                                     title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/Collection.xml:feedTitle')}"
+                                />
+                            </f:link.action>
+                        </span>
+                    </f:if>
+                </h2>
+                <div class="tx-dlf-collection-thumbnail">
+                    <f:if condition="{collection.thumbnail}">
+                        <img alt="" title="{collection.label -> f:format.htmlspecialchars()}" src="{collection.thumbnail}" />';
+                    </f:if>
+                </div>
+                <f:format.html>{collection.description}</f:format.html>
+                <p class="tx-dlf-collection-counts">
+                    ({collection.countTitles}
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Collection.xml:{f:if(condition:'{collection.countTitles} > 1', then: 'titles', else: 'title')}" />
+                    /
+                    {collection.countVolumes}
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Collection.xml:{f:if(condition:'{collection.countTitles} > 1', then: 'volumes', else: 'volume')}" />)
+                </p>
+            </li>
+        </f:for>
+    </ul>
+</div>
+
