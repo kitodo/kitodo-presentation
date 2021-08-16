@@ -130,9 +130,9 @@ function getAllQueryParams(baseUrl, queryParams) {
     var queryParam;
     for(var i = 0; i < params.length; i++) {
         queryParam = params[i].split('=');
-        if(queryParams.indexOf(queryParam[0]) === -1) {
-            queryParams.push(queryParam[0]);
-            queryParams[queryParam[0]] = queryParam[1];
+        if(queryParams.indexOf(decodeURIComponent(queryParam[0])) === -1) {
+            queryParams.push(decodeURIComponent(queryParam[0]));
+            queryParams[decodeURIComponent(queryParam[0])] = queryParam[1];
         }
     }
     return queryParams;
@@ -218,8 +218,8 @@ function getCurrentPage() {
     for(var i = 0; i < queryParams.length; i++) {
         var queryParam = queryParams[i].split('=');
 
-        if(queryParam[0] === $("input[id='tx-dlf-search-in-document-page']").attr('name')) {
-            page = queryParam[1];
+        if(decodeURIComponent(queryParam[0]) === $("input[id='tx-dlf-search-in-document-page']").attr('name')) {
+            page = parseInt(queryParam[1], 10);
         }
     }
 
@@ -250,7 +250,7 @@ function triggerSearchAfterHitLoad() {
     for(var i = 0; i < queryParams.length; i++) {
         var queryParam = queryParams[i].split('=');
 
-        if(searchedQueryParam && queryParam[0].indexOf(searchedQueryParam) !== -1) {
+        if(searchedQueryParam && decodeURIComponent(queryParam[0]).indexOf(searchedQueryParam) !== -1) {
             $("input[id='tx-dlf-search-in-document-query']").val(decodeURIComponent(queryParam[1]));
             $("#tx-dlf-search-in-document-form").submit();
             break;
