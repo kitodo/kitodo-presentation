@@ -273,7 +273,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
         // Set additional query parameters.
         // Set reasonable limit for safety reasons.
         // We don't expect to get more than 10.000 hits per UID.
-        $query->setStart(0)->setRows(1000);
+        $query->setStart(0)->setRows(10000);
         // Take over existing filter queries.
         $filterQueries = isset($this->metadata['options']['params']['filterquery']) ? $this->metadata['options']['params']['filterquery'] : [];
         // Extend filter query to get all documents with the same UID.
