@@ -284,8 +284,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
             }
         }
         // Add filter query to get all documents with the required uid.
-        $filterQuery['key'] = $fields['uid'] . ':' . Solr::escapeQuery($record['uid']);
-        $query->addFilterQuery($filterQuery);
+        $query->createFilterQuery('uid')->setQuery($fields['uid'] . ':' . Solr::escapeQuery($record['uid']));
         // Add sorting.
         $query->addSort('score', $this->metadata['options']['params']['sort']['score']);
         // Set query.
