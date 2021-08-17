@@ -293,11 +293,6 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
 
         // If it is a fulltext search, enable highlighting.
         if ($this->metadata['fulltextSearch']) {
-            $query->setQuery(
-                $fields['fulltext'] . ':' . Solr::escapeQuery($this->metadata['searchString']));
-                // TODO:toplevel documents throw error in SOLR PLugin:
-                // java.lang.RuntimeException: Could not determine OCR format for sample ''
-                //. ' OR ' . $fields['toplevel'] . ':true');
             $query->getHighlighting();
         };
 
