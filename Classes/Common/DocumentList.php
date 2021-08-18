@@ -280,6 +280,10 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
         foreach ($filterQueries as $key => $value) {
             if (isset($value['query'])) {
                 $filterQuery[$key] = $value['query'] . ' OR ' . $fields['toplevel'] . ':true';
+                $filterQuery = [
+                    'key' => $key,
+                    'query' => $value['query'] . ' OR ' . $fields['toplevel'] . ':true'
+                ];
                 $query->addFilterQuery($filterQuery);
             }
         }
