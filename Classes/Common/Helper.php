@@ -196,6 +196,29 @@ class Helper
     }
 
     /**
+     * Get content of XML file as string or false if there is nothing.
+     *
+     * @access public
+     *
+     * @param string $content: content of file to read
+     *
+     * @return mixed
+     */
+    public static function getXmlFileAsString($content) {
+        // Turn off libxml's error logging.
+        $libxmlErrors = libxml_use_internal_errors(true);
+        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+        // Try to load XML from file.
+        $xml = simplexml_load_string($content);
+        // reset entity loader setting
+        libxml_disable_entity_loader($previousValueOfEntityLoader);
+        // Reset libxml's error logging.
+        libxml_use_internal_errors($libxmlErrors);
+        return $xml;
+    }
+
+    /**
      * Add a message to the TYPO3 log
      *
      * @access public
@@ -221,7 +244,7 @@ class Helper
             case 2:
                 $logger->warning($message);
                 break;
-            case 23:
+            case 3:
                 $logger->error($message);
                 break;
             default:
