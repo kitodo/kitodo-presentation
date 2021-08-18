@@ -450,7 +450,6 @@ class Indexer
     {
         $logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
-        $logger->error($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id']));
         if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
