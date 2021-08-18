@@ -77,6 +77,7 @@ class SearchInDocument
 
             $response = $solr->service->executeRequest($solrRequest);
             $result = $solr->service->createResult($query, $response);
+            /** @scrutinizer ignore-call */
             $output['numFound'] = $result->getNumFound();
             $data = $result->getData();
             $highlighting = $data['ocrHighlighting'];
