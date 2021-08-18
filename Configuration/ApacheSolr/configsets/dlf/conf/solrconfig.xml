@@ -711,6 +711,7 @@
 
     <arr name="components">
           <str>query</str>
+          <str>facet</str>
           <str>ocrHighlight</str>
           <str>highlight</str>
       </arr>
