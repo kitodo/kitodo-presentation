@@ -8,9 +8,9 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 <!-- ###TEMPLATE### -->
-<form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="###ACTION_URL###" method="post" enctype="multipart/form-data">
+<form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="###ACTION_URL###" method="get" enctype="multipart/form-data">
   <div>
-    <label for="tx-dlf-search-query">###LABEL_QUERY###</label>
+    <label for="tx-dlf-search-in-document-query">###LABEL_QUERY###</label>
     <!-- Never change the @id of this input field! Otherwise search won't work! -->
     <input type="text" id="tx-dlf-search-in-document-query" placeholder="###LABEL_SEARCH_IN_DOCUMENT###" name="###LABEL_QUERY_URL###" />
     <input type="submit" id="tx-dlf-search-in-document-button" value="###LABEL_SUBMIT###" onclick="resetStart();" />
