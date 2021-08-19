@@ -75,7 +75,7 @@ This configuration is written to *typo3conf/LocalConfiguration.php*::
 Avoid empty Workview
 ~~~~~~~~~~~~~~~~~~~~
 
-You may notice from time to time, the viewer page keeps empty even though you
+You may notice from time to time, the viewer page stays empty even though you
 pass the :code:`tx_dlf[id]` parameter.
 
 This happens, if someone called the viewer page without any parameters or with parameters
