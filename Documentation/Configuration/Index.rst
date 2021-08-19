@@ -79,7 +79,7 @@ You may notice from time to time, the viewer page stays empty even though you
 pass the :code:`tx_dlf[id]` parameter.
 
 This happens, if someone called the viewer page without any parameters or with parameters
-without a valid cHash. In this case, TYPO3 saves the page to it's cache. If you call the
+without a valid cHash. In this case, TYPO3 saves the page to its cache. If you call the
 viewer page again with any parameter and without a cHash, the cached page is
 delivered.
 
