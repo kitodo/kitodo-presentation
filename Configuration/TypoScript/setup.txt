@@ -5,6 +5,10 @@ config {
   concatenateCss = 1
 }
 
+plugin.tx_dlf_navigation.view {
+    pluginNamespace = tx_dlf
+}
+
 
 page {
   includeCSS {
