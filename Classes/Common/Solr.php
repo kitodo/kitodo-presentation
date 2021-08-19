@@ -132,6 +132,8 @@ class Solr implements LoggerAwareInterface
      */
     public static function createCore($core = '')
     {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         // Get next available core name if none given.
         if (empty($core)) {
             $core = 'dlfCore' . self::getNextCoreNumber();
@@ -163,7 +165,7 @@ class Solr implements LoggerAwareInterface
                     // Nothing to do here.
                 }
             } else {
-                $solr->logger->error('Apache Solr not available');
+                $logger->error('Apache Solr not available');
             }
         }
         return '';

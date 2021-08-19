@@ -35,7 +35,7 @@ Please run the following commands in your webroot where the TYPO3 :file:`compose
 
    .. code-block:: shell
 
-      composer require kitodo/presentation:^3.2
+      composer require kitodo/presentation:^3.3
 
 #. Install and Activate the Extension
 
