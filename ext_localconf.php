@@ -242,3 +242,15 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'priority' => 30,
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
 ];
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Navigation',
+    [
+        Navigation::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        Navigation::class => 'main',
+    ]
+);
