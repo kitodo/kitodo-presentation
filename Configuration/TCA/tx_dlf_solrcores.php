@@ -49,7 +49,6 @@ return [
                 'max' => 255,
                 'eval' => 'alphanum,nospace,required,unique',
                 'default' => '',
-                'readOnly' => true,
                 'fieldInformation' => [
                     'solrCoreStatus' => [
                         'renderType' => 'solrCoreStatus',

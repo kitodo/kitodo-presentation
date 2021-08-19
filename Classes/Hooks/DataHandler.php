@@ -100,8 +100,6 @@ class DataHandler implements LoggerAwareInterface
                     $fieldArray['index_name'] = Solr::createCore();
                     if (empty($fieldArray['index_name'])) {
                         $this->logger->error('Could not create new Apache Solr core');
-                        // Solr core could not be created, thus unset field array.
-                        $fieldArray = [];
                     }
                     break;
             }
