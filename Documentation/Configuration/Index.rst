@@ -36,10 +36,17 @@ After this step, the require tx_dlf_formats records are created on the root page
 TYPO3 Configuration
 ===================
 
-The navigation plugin provides a page selection dropdown input field. The
+Disable caching in certain situations
+-------------------------------------
+
+Navigation Plugin
+~~~~~~~~~~~~~~~~~
+
+The *navigation plugin* provides a page selection dropdown input field. The
 resulting action url cannot contain a valid cHash value.
 
-The default behaviour of TYPO3 is to call the pageNotFound handler and/or to show an exception:
+The default behaviour of TYPO3 is to call the pageNotFound handler and/or
+to show an exception:
 
 .. figure:: ../Images/Configuration/typo3_pagenotfoundonchasherror.png
    :width: 820px
@@ -47,11 +54,10 @@ The default behaviour of TYPO3 is to call the pageNotFound handler and/or to sho
 
    TYPO3 Error-Message "Reason: Request parameters could not be validated (&cHash empty)"
 
-This is not the desired behaviour. You should configure in
-:file:`ADMIN TOOLS -> Settings -> Configure Installation-Wide Options`
-:file:`$TYPO3_CONF_VARS['FE']['pageNotFoundOnCHashError']=0` to show the requested page
-instead. The caching will be disabled in this case. This was the default
-behaviour before TYPO3 6.x.
+This is not the desired behaviour. You should disable
+:code:`$TYPO3_CONF_VARS['FE']['pageNotFoundOnCHashError'] = 0` to show the
+requested page instead. The caching will be disabled in this case. This was
+the default behaviour before TYPO3 6.x.
 
 .. figure:: ../Images/Configuration/New\ TYPO3\ site\ \[TYPO3\ CMS\ 9.5.26\ .png
    :width: 820px
@@ -59,12 +65,40 @@ behaviour before TYPO3 6.x.
 
    TYPO3 Configuration of pageNotFoundOnCHashError in Settings Module
 
-This configuration is written to typo3conf/LocalConfiguration.php::
+This configuration is written to *typo3conf/LocalConfiguration.php*::
 
     'FE' => [
             'pageNotFoundOnCHashError' => '0',
-            'pageNotFound_handling' => '',
         ],
+
+
+Avoid empty Workview
+~~~~~~~~~~~~~~~~~~~~
+
+You may notice from time to time, the viewer page stays empty even though you
+pass the :code:`tx_dlf[id]` parameter.
+
+This happens, if someone called the viewer page without any parameters or with parameters
+without a valid cHash. In this case, TYPO3 saves the page to its cache. If you call the
+viewer page again with any parameter and without a cHash, the cached page is
+delivered.
+
+With the search plugin or the searchInDocument tool this may disable the search functionality.
+
+To avoid this, you must configure :code:`tx_dlf[id]` to require a cHash. Of
+course this is impossible to achieve so the system will process the page uncached.
+
+Add this setting to your *typo3conf/LocalConfiguration.php*::
+
+    'FE' => [
+        'cacheHash' => [
+            'requireCacheHashPresenceParameters' => [
+                'tx_dlf[id]',
+            ],
+        ],
+    ]
+
+Tip: Use the admin backend module: Settings -> Configure Installation-Wide Options
 
 
 TypoScript Basic Configuration
