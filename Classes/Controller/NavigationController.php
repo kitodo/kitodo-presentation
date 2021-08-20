@@ -106,15 +106,18 @@ class NavigationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
 
     /**
-     * @param int $page
+     * Main action
      */
-    public function mainAction($page = 1)
+    public function mainAction()
     {
+        $requestData = GeneralUtility::_GPmerged('tx_dlf');
+        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+
         if (empty($requestData['id'])) {
-            $requestData['id'] = GeneralUtility::_GET('tx_dlf')['id'];
+            return '';
         }
         if (empty($requestData['page'])) {
-            $requestData['page'] = $page;
+            $requestData['page'] = 1;
         }
         // Load current document.
         $this->loadDocument($requestData);

@@ -93,7 +93,7 @@
         </f:if>
     </div>
     <div class="tx-dlf-navigation-pageselect">
-        <f:form action="" method="POST" addQueryString="1" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" absolute="{forceAbsoluteUrl}">
+        <f:form action="" method="POST" fieldNamePrefix="tx_dlf" addQueryString="1" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" absolute="{forceAbsoluteUrl}">
             <label for="{uniqueId}">
                 <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:selectPage"/>
             </label>
