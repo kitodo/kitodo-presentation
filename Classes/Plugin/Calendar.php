@@ -63,7 +63,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             return $content;
         }
 
-        $metadata = $this->doc->getTitledata();
+        $metadata = $this->doc->getTitleData();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
@@ -208,7 +208,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
             'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'additionalParams' => '&' . $this->prefixId . '[id]=' . urlencode($this->doc->uid),
         ];
-        $linkTitleData = $this->doc->getTitledata();
+        $linkTitleData = $this->doc->getTitleData();
         $linkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
         $yearLink = $this->cObj->typoLink($linkTitle, $linkConf);
         // Link to years overview.

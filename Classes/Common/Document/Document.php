@@ -328,69 +328,6 @@ abstract class Document
     }
 
     /**
-     * This ensures that the recordId, if existent, is retrieved from the document
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param int $pid: ID of the configuration page with the recordId config
-     *
-     */
-    protected abstract function establishRecordId($pid);
-
-    /**
-     * Source document PHP object which is represented by a Document instance
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
-     * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
-     */
-    protected abstract function getDocument();
-
-    /**
-     * This gets the location of a downloadable file for a physical page or track
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
-     *
-     * @return string    The file's location as URL
-     */
-    public abstract function getDownloadLocation($id);
-
-    /**
-     * This gets the location of a file representing a physical page or track
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
-     *
-     * @return string The file's location as URL
-     */
-    public abstract function getFileLocation($id);
-
-    /**
-     * This gets the MIME type of a file representing a physical page or track
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @param string $id: The @ID attribute of the file node
-     *
-     * @return string The file's MIME type
-     */
-    public abstract function getFileMimeType($id);
-
-    /**
      * This is a singleton class, thus an instance must be created by this method
      *
      * @access public
@@ -548,19 +485,16 @@ abstract class Document
     }
 
     /**
-     * This gets details about a logical structure element
+     * Source document PHP object which is represented by a Document instance
      *
-     * @access public
+     * @access protected
      *
      * @abstract
      *
-     * @param string $id: The @ID attribute of the logical structure node (METS) or
-     * the @id property of the Manifest / Range (IIIF)
-     * @param bool $recursive: Whether to include the child elements / resources
-     *
-     * @return array Array of the element's id, label, type and physical page indexes/mptr link
+     * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
+     * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
      */
-    public abstract function getLogicalStructure($id, $recursive = false);
+    protected abstract function getDocument();
 
     /**
      * This extracts all the metadata for a logical structure node
@@ -577,6 +511,60 @@ abstract class Document
      * @return array The logical structure node's / the IIIF resource's parsed metadata array
      */
     public abstract function getMetadata($id, $cPid = 0);
+
+    /**
+     * This gets the location of a downloadable file for a physical page or track
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
+     *
+     * @return string    The file's location as URL
+     */
+    public abstract function getDownloadLocation($id);
+
+    /**
+     * This gets the location of a file representing a physical page or track
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
+     *
+     * @return string The file's location as URL
+     */
+    public abstract function getFileLocation($id);
+
+    /**
+     * This gets the MIME type of a file representing a physical page or track
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the file node
+     *
+     * @return string The file's MIME type
+     */
+    public abstract function getFileMimeType($id);
+
+    /**
+     * This gets details about a logical structure element
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id: The @ID attribute of the logical structure node (METS) or
+     * the @id property of the Manifest / Range (IIIF)
+     * @param bool $recursive: Whether to include the child elements / resources
+     *
+     * @return array Array of the element's id, label, type and physical page indexes/mptr link
+     */
+    public abstract function getLogicalStructure($id, $recursive = false);
 
     /**
      * This returns the first corresponding physical page number of a given logical page label
@@ -673,7 +661,7 @@ abstract class Document
      *
      * @return array The logical structure node's / resource's parsed metadata array
      */
-    public function getTitledata($cPid = 0)
+    public function getTitleData($cPid = 0)
     {
         $titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
         // Add information from METS structural map to titledata array.
@@ -696,33 +684,6 @@ abstract class Document
     }
 
     /**
-     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return it's depth.
-     *
-     * @access protected
-     *
-     * @param array $structure: logical structure array
-     * @param int $depth: current tree depth
-     * @param string $logId: ID of the logical structure whose depth is requested
-     *
-     * @return int|bool: false if structure with $logId is not a child of this substructure,
-     * or the actual depth.
-     */
-    protected function getTreeDepth($structure, $depth, $logId)
-    {
-        foreach ($structure as $element) {
-            if ($element['id'] == $logId) {
-                return $depth;
-            } elseif (array_key_exists('children', $element)) {
-                $foundInChildren = $this->getTreeDepth($element['children'], $depth + 1, $logId);
-                if ($foundInChildren !== false) {
-                    return $foundInChildren;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Get the tree depth of a logical structure element within the table of content
      *
      * @access public
@@ -733,109 +694,6 @@ abstract class Document
     public function getStructureDepth($logId)
     {
         return $this->getTreeDepth($this->_getTableOfContents(), 1, $logId);
-    }
-
-    /**
-     * This sets some basic class properties
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return void
-     */
-    protected abstract function init();
-
-    /**
-     * Reuse any document object that might have been already loaded to determine wether document is METS or IIIF
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
-     *
-     * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
-     */
-    protected abstract function setPreloadedDocument($preloadedDocument);
-
-    /**
-     * METS/IIIF specific part of loading a location
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param string $location: The URL of the file to load
-     *
-     * @return bool true on success or false on failure
-     */
-    protected abstract function loadLocation($location);
-
-    /**
-     * Load XML file / IIIF resource from URL
-     *
-     * @access protected
-     *
-     * @param string $location: The URL of the file to load
-     *
-     * @return bool true on success or false on failure
-     */
-    protected function load($location)
-    {
-        // Load XML / JSON-LD file.
-        if (GeneralUtility::isValidUrl($location)) {
-            // Load extension configuration
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            // Set user-agent to identify self when fetching XML / JSON-LD data.
-            if (!empty($extConf['useragent'])) {
-                @ini_set('user_agent', $extConf['useragent']);
-            }
-            // the actual loading is format specific
-            return $this->loadLocation($location);
-        } else {
-            $this->logger->error('Invalid file location "' . $location . '" for document loading');
-        }
-        return false;
-    }
-
-    /**
-     * Register all available data formats
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    protected function loadFormats()
-    {
-        if (!$this->formatsLoaded) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_formats');
-
-            // Get available data formats from database.
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_formats.type AS type',
-                    'tx_dlf_formats.root AS root',
-                    'tx_dlf_formats.namespace AS namespace',
-                    'tx_dlf_formats.class AS class'
-                )
-                ->from('tx_dlf_formats')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0)
-                )
-                ->execute();
-
-            while ($resArray = $result->fetch()) {
-                // Update format registry.
-                $this->formats[$resArray['type']] = [
-                    'rootElement' => $resArray['root'],
-                    'namespaceURI' => $resArray['namespace'],
-                    'class' => $resArray['class']
-                ];
-            }
-            $this->formatsLoaded = true;
-        }
     }
 
     /**
@@ -905,7 +763,7 @@ abstract class Document
             $this->uid = uniqid('NEW');
         }
         // Get metadata array.
-        $metadata = $this->getTitledata($pid);
+        $metadata = $this->getTitleData($pid);
         // Check for record identifier.
         if (empty($metadata['record_id'][0])) {
             $this->logger->error('No record identifier found to avoid duplication');
@@ -1187,6 +1045,18 @@ abstract class Document
     }
 
     /**
+     * This ensures that the recordId, if existent, is retrieved from the document
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param int $pid: ID of the configuration page with the recordId config
+     *
+     */
+    protected abstract function establishRecordId($pid);
+
+    /**
      * Get the ID of the parent document if the current document has one. Also save a parent document
      * to the database and the Solr index if their $pid and the current $pid differ.
      * Currently only applies to METS documents.
@@ -1198,6 +1068,136 @@ abstract class Document
      * @return int The parent document's id.
      */
     protected abstract function getParentDocumentUidForSaving($pid, $core, $owner);
+
+    /**
+     * This sets some basic class properties
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return void
+     */
+    protected abstract function init();
+
+    /**
+     * METS/IIIF specific part of loading a location
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param string $location: The URL of the file to load
+     *
+     * @return bool true on success or false on failure
+     */
+    protected abstract function loadLocation($location);
+
+    /**
+     * Reuse any document object that might have been already loaded to determine wether document is METS or IIIF
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
+     *
+     * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
+     */
+    protected abstract function setPreloadedDocument($preloadedDocument);
+
+    /**
+     * Load XML file / IIIF resource from URL
+     *
+     * @access protected
+     *
+     * @param string $location: The URL of the file to load
+     *
+     * @return bool true on success or false on failure
+     */
+    protected function load($location)
+    {
+        // Load XML / JSON-LD file.
+        if (GeneralUtility::isValidUrl($location)) {
+            // Load extension configuration
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            // Set user-agent to identify self when fetching XML / JSON-LD data.
+            if (!empty($extConf['useragent'])) {
+                @ini_set('user_agent', $extConf['useragent']);
+            }
+            // the actual loading is format specific
+            return $this->loadLocation($location);
+        } else {
+            $this->logger->error('Invalid file location "' . $location . '" for document loading');
+        }
+        return false;
+    }
+
+    /**
+     * Register all available data formats
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function loadFormats()
+    {
+        if (!$this->formatsLoaded) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_formats');
+
+            // Get available data formats from database.
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_formats.type AS type',
+                    'tx_dlf_formats.root AS root',
+                    'tx_dlf_formats.namespace AS namespace',
+                    'tx_dlf_formats.class AS class'
+                )
+                ->from('tx_dlf_formats')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0)
+                )
+                ->execute();
+
+            while ($resArray = $result->fetch()) {
+                // Update format registry.
+                $this->formats[$resArray['type']] = [
+                    'rootElement' => $resArray['root'],
+                    'namespaceURI' => $resArray['namespace'],
+                    'class' => $resArray['class']
+                ];
+            }
+            $this->formatsLoaded = true;
+        }
+    }
+
+    /**
+     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return it's depth.
+     *
+     * @access protected
+     *
+     * @param array $structure: logical structure array
+     * @param int $depth: current tree depth
+     * @param string $logId: ID of the logical structure whose depth is requested
+     *
+     * @return int|bool: false if structure with $logId is not a child of this substructure,
+     * or the actual depth.
+     */
+    protected function getTreeDepth($structure, $depth, $logId)
+    {
+        foreach ($structure as $element) {
+            if ($element['id'] == $logId) {
+                return $depth;
+            } elseif (array_key_exists('children', $element)) {
+                $foundInChildren = $this->getTreeDepth($element['children'], $depth + 1, $logId);
+                if ($foundInChildren !== false) {
+                    return $foundInChildren;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * This returns $this->cPid via __get()
