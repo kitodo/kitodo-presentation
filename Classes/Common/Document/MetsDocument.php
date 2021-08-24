@@ -10,12 +10,14 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common;
+namespace Kitodo\Dlf\Common\Document;
 
+use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
 
@@ -30,7 +32,6 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property int $cPid This holds the PID for the configuration
  * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
  * @property-read array $fileGrps This holds the file ID -> USE concordance
- * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
@@ -111,14 +112,6 @@ final class MetsDocument extends Document
     protected $mets;
 
     /**
-     * This holds the whole XML file as \SimpleXMLElement object
-     *
-     * @var \SimpleXMLElement
-     * @access protected
-     */
-    protected $xml;
-
-    /**
      * This adds metadata from METS structural map to metadata array.
      *
      * @access	public
@@ -141,7 +134,7 @@ final class MetsDocument extends Document
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::establishRecordId()
+     * @see Document::establishRecordId()
      */
     protected function establishRecordId($pid)
     {
@@ -150,7 +143,7 @@ final class MetsDocument extends Document
             $this->recordId = (string) $this->mets['OBJID'];
         }
         // Get hook objects.
-        $hookObjects = Helper::getHookObjects('Classes/Common/MetsDocument.php');
+        $hookObjects = Helper::getHookObjects('Classes/Common/Document/MetsDocument.php');
         // Apply hooks.
         foreach ($hookObjects as $hookObj) {
             if (method_exists($hookObj, 'construct_postProcessRecordId')) {
@@ -162,7 +155,7 @@ final class MetsDocument extends Document
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getDownloadLocation()
+     * @see Document::getDownloadLocation()
      */
     public function getDownloadLocation($id)
     {
@@ -188,7 +181,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFileLocation()
+     * @see Document::getFileLocation()
      */
     public function getFileLocation($id)
     {
@@ -206,7 +199,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFileMimeType()
+     * @see Document::getFileMimeType()
      */
     public function getFileMimeType($id)
     {
@@ -224,7 +217,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getLogicalStructure()
+     * @see Document::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
     {
@@ -364,7 +357,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getMetadata()
+     * @see Document::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
     {
@@ -591,7 +584,7 @@ final class MetsDocument extends Document
             }
             // Add collections and owner from database to toplevel element if document is already saved.
             if (
-                \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
+                MathUtility::canBeInterpretedAsInteger($this->uid)
                 && $id == $this->_getToplevelId()
             ) {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -667,7 +660,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFullText()
+     * @see FullTextDocument::getFullText()
      */
     public function getFullText($id)
     {
@@ -675,7 +668,7 @@ final class MetsDocument extends Document
 
         // Load fileGrps and check for full text files.
         $this->_getFileGrps();
-        if ($this->hasFulltext) {
+        if ($this->hasFullText) {
             $fullText = $this->getFullTextFromXml($id);
         }
         return $fullText;
@@ -697,7 +690,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::init()
+     * @see Document::init()
      */
     protected function init()
     {
@@ -715,7 +708,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::loadLocation()
+     * @see Document::loadLocation()
      */
     protected function loadLocation($location)
     {
@@ -734,7 +727,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::ensureHasFulltextIsSet()
+     * @see FullTextDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
     {
@@ -867,12 +860,12 @@ final class MetsDocument extends Document
                     }
                 }
             }
-            // Are there any fulltext files available?
+            // Are there any full text files available?
             if (
                 !empty($extConf['fileGrpFulltext'])
                 && array_intersect(GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']), $this->fileGrps) !== []
             ) {
-                $this->hasFulltext = true;
+                $this->hasFullText = true;
             }
             $this->fileGrpsLoaded = true;
         }
@@ -881,7 +874,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
+     * @see Document::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
     {
@@ -909,7 +902,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getPhysicalStructure()
+     * @see Document::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
     {
@@ -970,7 +963,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getSmLinks()
+     * @see Document::_getSmLinks()
      */
     protected function _getSmLinks()
     {
@@ -989,7 +982,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
+     * @see Document::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
     {
@@ -1069,7 +1062,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
+     * @see Document::_getToplevelId()
      */
     protected function _getToplevelId()
     {

@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Document\Document;
 
 /**
  * CLI Command for indexing single documents into database and Solr.

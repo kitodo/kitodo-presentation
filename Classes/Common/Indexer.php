@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\Document\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -85,7 +86,7 @@ class Indexer
      *
      * @access public
      *
-     * @param \Kitodo\Dlf\Common\Document &$doc: The document to add
+     * @param \Kitodo\Dlf\Common\Document\Document &$doc: The document to add
      * @param int $core: UID of the Solr core to use
      *
      * @return bool true on success or false on failure
@@ -123,7 +124,7 @@ class Indexer
                     }
                 }
                 // Index full text files if available.
-                if ($doc->hasFulltext) {
+                if ($doc->hasFullText) {
                     foreach ($doc->physicalStructure as $pageNumber => $xmlId) {
                         if ($success) {
                             $success = self::processPhysical($doc, $pageNumber, $doc->physicalStructureInfo[$xmlId]);
@@ -304,7 +305,7 @@ class Indexer
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
+     * @param \Kitodo\Dlf\Common\Document\Document &$doc: The METS document
      * @param array $logicalUnit: Array of the logical unit to process
      *
      * @return bool true on success or false on failure
@@ -433,7 +434,7 @@ class Indexer
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
+     * @param \Kitodo\Dlf\Common\Document\Document &$doc: The METS document
      * @param int $page: The page number
      * @param array $physicalUnit: Array of the physical unit to process
      *
@@ -441,7 +442,7 @@ class Indexer
      */
     protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
     {
-        if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
+        if ($doc->hasFullText && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Create new Solr document.

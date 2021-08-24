@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common;
+namespace Kitodo\Dlf\Common\Document;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -30,7 +30,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @subpackage dlf
  * @access public
  * @property int $cPid This holds the PID for the configuration
- * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read int $numPages The holds the total number of pages
@@ -104,16 +103,6 @@ abstract class Document
      * @access protected
      */
     protected $formatsLoaded = false;
-
-    /**
-     * Are there any fulltext files available? This also includes IIIF text annotations
-     * with motivation 'painting' if Kitodo.Presentation is configured to store text
-     * annotations as fulltext.
-     *
-     * @var bool
-     * @access protected
-     */
-    protected $hasFulltext = false;
 
     /**
      * Last searched logical and physical page
@@ -207,15 +196,6 @@ abstract class Document
     protected $pid = 0;
 
     /**
-     * This holds the documents' raw text pages with their corresponding
-     * structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
-     *
-     * @var array
-     * @access protected
-     */
-    protected $rawTextArray = [];
-
-    /**
      * Is the document instantiated successfully?
      *
      * @var bool
@@ -234,7 +214,7 @@ abstract class Document
     /**
      * This holds the singleton object of the document
      *
-     * @var array (\Kitodo\Dlf\Common\Document)
+     * @var array (\Kitodo\Dlf\Common\Document\Document)
      * @static
      * @access protected
      */
@@ -421,7 +401,7 @@ abstract class Document
      * @param int $pid: If > 0, then only document with this PID gets loaded
      * @param bool $forceReload: Force reloading the document instead of returning the cached instance
      *
-     * @return \Kitodo\Dlf\Common\Document Instance of this class, either MetsDocument or IiifManifest
+     * @return \Kitodo\Dlf\Common\Document\Document Instance of this class, either MetsDocument or IiifManifest
      */
     public static function &getInstance($uid, $pid = 0, $forceReload = false)
     {
@@ -629,100 +609,6 @@ abstract class Document
     }
 
     /**
-     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas. Text might be
-     * given as ALTO for METS or as annotations or ALTO for IIIF resources.
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
-     * of the Manifest / Range (IIIF)
-     *
-     * @return string The OCR full text
-     */
-    public abstract function getFullText($id);
-
-    /**
-     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
-     * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
-     * to be given in the Canvas' / Manifest's "seeAlso" property.
-     *
-     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
-     * of the Manifest / Range (IIIF)
-     *
-     * @return string The OCR full text
-     */
-    protected function getFullTextFromXml($id)
-    {
-        $fullText = '';
-        // Load available text formats, ...
-        $this->loadFormats();
-        // ... physical structure ...
-        $this->_getPhysicalStructure();
-        // ... and extension configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
-        if (!empty($this->physicalStructureInfo[$id])) {
-            while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
-                    // Get full text file.
-                    $fileContent = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
-                    if ($fileContent !== false) {
-                        $textFormat = $this->getTextFormat($fileContent);
-                    } else {
-                        $this->logger->warning('Couldn\'t load full text file for structure node @ID "' . $id . '"');
-                        return $fullText;
-                    }
-                    break;
-                }
-            }
-        } else {
-            $this->logger->warning('Invalid structure node @ID "' . $id . '"');
-            return $fullText;
-        }
-        // Is this text format supported?
-        // This part actually differs from previous version of indexed OCR
-        if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
-            $textMiniOcr = '';
-            if (!empty($this->formats[$textFormat]['class'])) {
-                $class = $this->formats[$textFormat]['class'];
-                // Get the raw text from class.
-                if (
-                    class_exists($class)
-                    && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
-                ) {
-                    // Load XML from file.
-                    $ocrTextXml = Helper::getXmlFileAsString($fileContent);
-                    $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
-                    $this->rawTextArray[$id] = $textMiniOcr;
-                } else {
-                    $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
-                }
-            }
-            $fullText = $textMiniOcr;
-        } else {
-            $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
-        }
-        return $fullText;
-    }
-
-    /**
-     * Get format of the OCR full text
-     *
-     * @access private
-     *
-     * @param string $fileContent: content of the XML file
-     *
-     * @return string The format of the OCR full text
-     */
-    private function getTextFormat($fileContent)
-    {
-        // Get the root element's name as text format.
-        return strtoupper(Helper::getXmlFileAsString($fileContent)->getName());
-    }
-
-    /**
      * This determines a title for the given document
      *
      * @access public
@@ -912,15 +798,6 @@ abstract class Document
         }
         return false;
     }
-
-    /**
-     * Analyze the document if it contains any fulltext that needs to be indexed.
-     *
-     * @access protected
-     *
-     * @abstract
-     */
-    protected abstract function ensureHasFulltextIsSet();
 
     /**
      * Register all available data formats
@@ -1335,19 +1212,6 @@ abstract class Document
     }
 
     /**
-     * This returns $this->hasFulltext via __get()
-     *
-     * @access protected
-     *
-     * @return bool Are there any fulltext files available?
-     */
-    protected function _getHasFulltext()
-    {
-        $this->ensureHasFulltextIsSet();
-        return $this->hasFulltext;
-    }
-
-    /**
      * This returns $this->location via __get()
      *
      * @access protected
@@ -1599,7 +1463,7 @@ abstract class Document
 
     /**
      * This is a singleton class, thus the constructor should be private/protected
-     * (Get an instance of this class by calling \Kitodo\Dlf\Common\Document::getInstance())
+     * (Get an instance of this class by calling \Kitodo\Dlf\Common\Document\Document::getInstance())
      *
      * @access protected
      *

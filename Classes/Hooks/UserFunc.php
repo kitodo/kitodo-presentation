@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Hooks;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Document\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Psr\Log\LoggerAwareInterface;

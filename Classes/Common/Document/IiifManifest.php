@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common;
+namespace Kitodo\Dlf\Common\Document;
 
 use Flow\JSONPath\JSONPath;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -39,7 +39,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @subpackage dlf
  * @access public
  * @property int $cPid This holds the PID for the configuration
- * @property-read bool $hasFulltext Are there any fulltext files available?
+ * @property-read bool $hasFullTextSet Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read int $numPages The holds the total number of pages
@@ -87,7 +87,7 @@ final class IiifManifest extends Document
      * @var bool
      * @access protected
      */
-    protected $hasFulltextSet = false;
+    protected $hasFullTextSet = false;
 
     /**
      * This holds the original manifest's parsed metadata array with their corresponding
@@ -289,8 +289,8 @@ final class IiifManifest extends Document
                 if (!empty($iiifAlto)) {
                     $this->mimeTypes[$iiifAlto[0]] = 'application/alto+xml';
                     $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext[0]] = $iiifAlto[0];
-                    $this->hasFulltext = true;
-                    $this->hasFulltextSet = true;
+                    $this->hasFullText = true;
+                    $this->hasFullTextSet = true;
                 }
             }
             if (!empty($this->iiif->getDefaultCanvases())) {
@@ -321,8 +321,8 @@ final class IiifManifest extends Document
                         foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'][] = $annotationContainer->getId();
                             if ($extConf['indexAnnotations']) {
-                                $this->hasFulltext = true;
-                                $this->hasFulltextSet = true;
+                                $this->hasFullText = true;
+                                $this->hasFullTextSet = true;
                             }
                         }
                     }
@@ -334,8 +334,8 @@ final class IiifManifest extends Document
                         if (!empty($alto)) {
                             $this->mimeTypes[$alto[0]] = 'application/alto+xml';
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseFulltext[0]] = $alto[0];
-                            $this->hasFulltext = true;
-                            $this->hasFulltextSet = true;
+                            $this->hasFullText = true;
+                            $this->hasFullTextSet = true;
                         }
                     }
                     if (!empty($fileUses)) {
@@ -797,7 +797,7 @@ final class IiifManifest extends Document
             return $this->rawTextArray[$id];
         }
         $this->ensureHasFulltextIsSet();
-        if ($this->hasFulltext) {
+        if ($this->hasFullText) {
             // Load physical structure ...
             $this->_getPhysicalStructure();
             // ... and extension configuration.
@@ -887,7 +887,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
+     * @see Document::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
     {
@@ -920,7 +920,7 @@ final class IiifManifest extends Document
          *  https://digi.ub.uni-heidelberg.de/diglit/iiif/hirsch_hamburg1933_04_25/manifest.json links
          *  https://digi.ub.uni-heidelberg.de/diglit/iiif/hirsch_hamburg1933_04_25/list/0001.json
          */
-        if (!$this->hasFulltextSet && $this->iiif instanceof ManifestInterface) {
+        if (!$this->hasFullTextSet && $this->iiif instanceof ManifestInterface) {
             $manifest = $this->iiif;
             $canvases = $manifest->getDefaultCanvases();
             foreach ($canvases as $canvas) {
@@ -928,8 +928,8 @@ final class IiifManifest extends Document
                     !empty($canvas->getSeeAlsoUrlsForFormat("application/alto+xml")) ||
                     !empty($canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/"))
                 ) {
-                    $this->hasFulltextSet = true;
-                    $this->hasFulltext = true;
+                    $this->hasFullTextSet = true;
+                    $this->hasFullText = true;
                     return;
                 }
                 $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
@@ -942,8 +942,8 @@ final class IiifManifest extends Document
                                     $annotation->getBody()->getFormat() == "text/plain" &&
                                     $annotation->getBody()->getChars() != null
                                 ) {
-                                    $this->hasFulltextSet = true;
-                                    $this->hasFulltext = true;
+                                    $this->hasFullTextSet = true;
+                                    $this->hasFullText = true;
                                     return;
                                 }
                             }
@@ -951,13 +951,13 @@ final class IiifManifest extends Document
                     }
                 }
             }
-            $this->hasFulltextSet = true;
+            $this->hasFullTextSet = true;
         }
     }
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
+     * @see Document::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
     {
@@ -966,7 +966,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
+     * @see Document::_getToplevelId()
      */
     protected function _getToplevelId()
     {

@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Plugin;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Document\Document;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

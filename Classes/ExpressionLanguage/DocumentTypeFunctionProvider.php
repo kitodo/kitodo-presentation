@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\ExpressionLanguage;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Document\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Psr\Log\LoggerAwareInterface;
@@ -110,7 +110,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @param array $piVars The current plugin variables containing a document identifier
      *
-     * @return \Kitodo\Dlf\Common\Document Instance of the current document
+     * @return \Kitodo\Dlf\Common\Document\Document Instance of the current document
      */
     protected function loadDocument(array $piVars)
     {

@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Document\Document;
 use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\BaseoaipmhException;
 

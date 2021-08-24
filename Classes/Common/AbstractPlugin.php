@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\Document\Document;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -43,7 +44,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
     /**
      * This holds the current document
      *
-     * @var \Kitodo\Dlf\Common\Document
+     * @var \Kitodo\Dlf\Common\Document\Document
      * @access protected
      */
     protected $doc;
@@ -146,7 +147,7 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
         ) {
             // Should we exclude documents from other pages than $this->conf['pages']?
             $pid = (!empty($this->conf['excludeOther']) ? intval($this->conf['pages']) : 0);
-            // Get instance of \Kitodo\Dlf\Common\Document.
+            // Get instance of \Kitodo\Dlf\Common\Document\Document.
             $this->doc = Document::getInstance($this->piVars['id'], $pid);
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
