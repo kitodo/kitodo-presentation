@@ -427,7 +427,6 @@ class CalendarController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
                     ) {
                         $dayLinks = '';
                         $dayLinksText = [];
-                        $dayLinksList = '';
                         $currentMonth = date('n', $currentDayTime);
                         if (is_array($calendarIssuesByMonth[$currentMonth])) {
                             foreach ($calendarIssuesByMonth[$currentMonth] as $id => $day) {
