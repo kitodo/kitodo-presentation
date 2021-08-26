@@ -106,3 +106,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-statistics.svg'
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'TableOfContents',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.tableofcontents.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-tableofcontents.svg'
+);
