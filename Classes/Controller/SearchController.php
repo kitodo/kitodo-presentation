@@ -415,19 +415,203 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         foreach (GeneralUtility::trimExplode(',', $this->settings['facets'], true) as $facet) {
             $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->settings['pages']);
         }
-        /** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj */
-        $cObj = $this->configurationManager->getContentObject();
-        // Render facets menu.
-        $TSconfig = [];
-        $TSconfig['special'] = 'userfunction';
-        $TSconfig['special.']['userFunc'] = '\Kitodo\Dlf\Plugin\Search::class->makeFacetsMenuArray';
-        $TSconfig['special.']['facets'] = $facets;
-        $TSconfig['special.']['limit'] = max(intval($this->settings['limitFacets']), 1);
-        $TSconfig = Helper::mergeRecursiveWithOverrule($this->settings['facetsConf'], $TSconfig);
 
-        // TODO: FACETS HMENU NOT WORKING
+        $this->view->assign('facetsMenu', $this->makeFacetsMenuArray($facets));
+    }
 
-        return $cObj->cObjGetSingle('HMENU', $TSconfig);
+    /**
+     * This builds a menu array for HMENU
+     *
+     * @access public
+     *
+     * @param string $content: The PlugIn content
+     * @param array $conf: The PlugIn configuration
+     *
+     * @return array HMENU array
+     */
+    public function makeFacetsMenuArray($facets)
+    {
+//        $this->init($conf);
+        $menuArray = [];
+        // Set default value for facet search.
+        $search = [
+            'query' => '*',
+            'params' => [
+                'component' => [
+                    'facetset' => [
+                        'facet' => []
+                    ]
+                ]
+            ]
+        ];
+        // Extract query and filter from last search.
+        $list = GeneralUtility::makeInstance(DocumentList::class);
+        if (!empty($list->metadata['options']['source'])) {
+            if ($list->metadata['options']['source'] == 'search') {
+                $search['query'] = $list->metadata['options']['select'];
+            }
+            $search['params'] = $list->metadata['options']['params'];
+        }
+        // Get applicable facets.
+        $solr = Solr::getInstance($this->settings['solrcore']);
+        if (!$solr->ready) {
+            $this->logger->error('Apache Solr not available');
+            return [];
+        }
+        // Set needed parameters for facet search.
+        if (empty($search['params']['filterquery'])) {
+            $search['params']['filterquery'] = [];
+        }
+
+        foreach (array_keys($facets) as $field) {
+            $search['params']['component']['facetset']['facet'][] = [
+                'type' => 'field',
+                'key' => $field,
+                'field' => $field,
+                'limit' => $this->settings['limitFacets'],
+                'sort' => isset($this->settings['sortingFacets']) ? $this->settings['sortingFacets'] : 'count'
+            ];
+        }
+
+        // Set additional query parameters.
+        $search['params']['start'] = 0;
+        $search['params']['rows'] = 0;
+        // Set query.
+        $search['params']['query'] = $search['query'];
+        // Perform search.
+        $selectQuery = $solr->service->createSelect($search['params']);
+        $results = $solr->service->select($selectQuery);
+        $facet = $results->getFacetSet();
+
+        $facetCollectionArray = [];
+
+        // replace everything expect numbers and comma
+        $facetCollections = preg_replace('/[^0-9,]/', '', $this->settings['facetCollections']);
+
+        if (!empty($facetCollections)) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_collections');
+
+            $result = $queryBuilder
+                ->select('tx_dlf_collections.index_name AS index_name')
+                ->from('tx_dlf_collections')
+                ->where(
+                    $queryBuilder->expr()->in(
+                        'tx_dlf_collections.uid',
+                        $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $facetCollections), Connection::PARAM_INT_ARRAY)
+                    )
+                )
+                ->execute();
+
+            while ($collection = $result->fetch()) {
+                $facetCollectionArray[] = $collection['index_name'];
+            }
+        }
+
+        // Process results.
+        foreach ($facet as $field => $values) {
+            $entryArray = [];
+            $entryArray['title'] = htmlspecialchars($facets[$field]);
+            $entryArray['count'] = 0;
+            $entryArray['_OVERRIDE_HREF'] = '';
+            $entryArray['doNotLinkIt'] = 1;
+            $entryArray['ITEM_STATE'] = 'NO';
+            // Count number of facet values.
+            $i = 0;
+            foreach ($values as $value => $count) {
+                if ($count > 0) {
+                    // check if facet collection configuration exists
+                    if (!empty($this->settings['facetCollections'])) {
+                        if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
+                            continue;
+                        }
+                    }
+                    $entryArray['count']++;
+                    if ($entryArray['ITEM_STATE'] == 'NO') {
+                        $entryArray['ITEM_STATE'] = 'IFSUB';
+                    }
+                    $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
+                    if (++$i == $this->settings['limit']) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+            $menuArray[] = $entryArray;
+        }
+        return $menuArray;
+    }
+
+    /**
+     * Creates an array for a HMENU entry of a facet value.
+     *
+     * @access protected
+     *
+     * @param string $field: The facet's index_name
+     * @param string $value: The facet's value
+     * @param int $count: Number of hits for this facet
+     * @param array $search: The parameters of the current search query
+     * @param string &$state: The state of the parent item
+     *
+     * @return array The array for the facet's menu entry
+     */
+    protected function getFacetsMenuEntry($field, $value, $count, $search, &$state)
+    {
+        $entryArray = [];
+        // Translate value.
+        if ($field == 'owner_faceting') {
+            // Translate name of holding library.
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['pages']));
+        } elseif ($field == 'type_faceting') {
+            // Translate document type.
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['pages']));
+        } elseif ($field == 'collection_faceting') {
+            // Translate name of collection.
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['pages']));
+        } elseif ($field == 'language_faceting') {
+            // Translate ISO 639 language code.
+            $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
+        } else {
+            $entryArray['title'] = htmlspecialchars($value);
+        }
+        $entryArray['count'] = $count;
+        $entryArray['doNotLinkIt'] = 0;
+        // Check if facet is already selected.
+        $queryColumn = array_column($search['params']['filterquery'], 'query');
+        $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
+        if ($index !== false) {
+            // Facet is selected, thus remove it from filter.
+            unset($queryColumn[$index]);
+            $queryColumn = array_values($queryColumn);
+            $entryArray['ITEM_STATE'] = 'CUR';
+            $state = 'ACTIFSUB';
+            //Reset facets
+            if ($this->settings['resetFacets']) {
+                //remove ($count) for selected facet in template
+                $entryArray['count'] = false;
+                //build link to delete selected facet
+                $uri = $this->uriBuilder->reset()
+                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setArguments(['tx_dlf' => ['query' => $search['query'], 'fq' => $queryColumn], 'tx_dlf_search' => ['action' => 'search']])
+                    ->setAddQueryString(true)
+                    ->build();
+                $entryArray['_OVERRIDE_HREF'] = $uri;
+                $entryArray['title'] = sprintf($this->pi_getLL('resetFacet', ''), $entryArray['title']);
+            }
+        } else {
+            // Facet is not selected, thus add it to filter.
+            $queryColumn[] = $field . ':("' . Solr::escapeQuery($value) . '")';
+            $entryArray['ITEM_STATE'] = 'NO';
+        }
+        $uri = $this->uriBuilder->reset()
+            ->setTargetPageUid($GLOBALS['TSFE']->id)
+            ->setArguments(['tx_dlf' => ['query' => $search['query'], 'fq' => $queryColumn], 'tx_dlf_search' => ['action' => 'search']])
+            ->setArgumentPrefix('tx_dlf')
+            ->build();
+        $entryArray['_OVERRIDE_HREF'] = $uri;
+
+        return $entryArray;
     }
 
     /**
