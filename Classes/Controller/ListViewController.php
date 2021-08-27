@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Kitodo\Dlf\Common\Document;
@@ -86,6 +87,11 @@ class ListViewController extends ActionController
     protected $metadataList = [];
 
     /**
+     * @var ExtensionConfiguration
+     */
+    protected $extensionConfiguration;
+
+    /**
      * ListViewController constructor.
      * @param $configurationManager
      */
@@ -93,6 +99,7 @@ class ListViewController extends ActionController
     {
         $this->configurationManager = $configurationManager;
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
     }
 
     /**
@@ -453,7 +460,7 @@ class ListViewController extends ActionController
         );
 
         $this->view->assign('pageToBasket', $this->settings['targetBasket']);
-        $this->view->assign('forceAbsoluteUrl', !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0);
+        $this->view->assign('forceAbsoluteUrl', !empty($this->extensionConfiguration['forceAbsoluteUrl']) ? 1 : 0);
         $this->view->assign('currentPageUid', $GLOBALS['TSFE']->id);
     }
 }
