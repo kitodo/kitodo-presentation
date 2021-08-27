@@ -84,7 +84,7 @@ class AudioplayerController extends ActionController
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // Load current document.
         $this->loadDocument($requestData);
