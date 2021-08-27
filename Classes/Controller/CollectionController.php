@@ -146,8 +146,7 @@ class CollectionController extends ActionController
 
         $result = $queryBuilder->execute();
         $count = $queryBuilder->count('uid')->execute()->fetchColumn(0);
-
-        $content = '';
+        
         if ($count == 1 && empty($this->settings['dont_show_single'])) {
             $resArray = $result->fetch();
             $this->showSingleCollection(intval($resArray['uid']));
