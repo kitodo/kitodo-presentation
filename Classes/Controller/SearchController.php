@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\DocumentList;
@@ -20,7 +21,6 @@ use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use \Kitodo\Dlf\Domain\Model\SearchForm;
 
 class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -48,75 +48,81 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     }
 
     /**
-     * @param SearchForm $searchForm
+     * Search action
      */
-    public function searchAction(SearchForm $searchForm = NULL)
+    public function searchAction()
     {
+        $requestData = GeneralUtility::_GPmerged('tx_dlf');
+        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+
         // Build label for result list.
         $label = htmlspecialchars($this->pi_getLL('search', ''));
-        if (!empty($searchForm->getQuery())) {
-            $label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), trim($searchForm->getQuery())));
+        if (!empty($requestData['query'])) {
+            $label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), trim($requestData['query'])));
         }
         // Prepare query parameters.
         $params = [];
         $matches = [];
         // Set search query.
         if (
-            (!empty($this->settings['fulltext']) && !empty($searchForm->getFulltext()))
-            || preg_match('/fulltext:\((.*)\)/', trim($searchForm->getQuery()), $matches)
+            (!empty($this->settings['fulltext']) && !empty($requestData['fulltext']))
+            || preg_match('/fulltext:\((.*)\)/', trim($requestData['query']), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
-            $searchForm->setQuery(empty($matches[1]) ? $searchForm->getQuery() : $matches[1]);
+            $requestData['query'] = empty($matches[1]) ? $requestData['query'] : $matches[1];
             // Search in fulltext field if applicable. Query must not be empty!
-            if (!empty($searchForm->getQuery())) {
-                $query = 'fulltext:(' . Solr::escapeQuery(trim($searchForm->getQuery())) . ')';
+            if (!empty($requestData['query'])) {
+                $query = 'fulltext:(' . Solr::escapeQuery(trim($requestData['query'])) . ')';
             }
         } else {
             // Retain given search field if valid.
-            $query = Solr::escapeQueryKeepField(trim($searchForm->getQuery()), $this->settings['pages']);
+            $query = Solr::escapeQueryKeepField(trim($requestData['query']), $this->settings['pages']);
         }
         // Add extended search query.
         if (
-            !empty($searchForm->getExtQuery())
-            && is_array($searchForm->getExtQuery())
+            !empty($requestData['extQuery'])
+            && is_array($requestData['extQuery'])
         ) {
             $allowedOperators = ['AND', 'OR', 'NOT'];
             $allowedFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
-            $numberOfExtQueries = count($searchForm->getExtQuery());
+            $numberOfExtQueries = count($requestData['extQuery']);
             for ($i = 0; $i < $numberOfExtQueries; $i++) {
-                if (!empty($searchForm->getExtQuery()[$i])) {
+                if (!empty($requestData['extQuery'][$i])) {
                     if (
-                        in_array($searchForm->getExtOperator()[$i], $allowedOperators)
-                        && in_array($searchForm->getExtField()[$i], $allowedFields)
+                        in_array($requestData['extOperator'][$i], $allowedOperators)
+                        && in_array($requestData['extField'][$i], $allowedFields)
                     ) {
                         if (!empty($query)) {
-                            $query .= ' ' . $searchForm->getExtOperator()[$i] . ' ';
+                            $query .= ' ' . $requestData['extOperator'][$i] . ' ';
                         }
-                        $query .= Indexer::getIndexFieldName($searchForm->getExtField()[$i], $this->settings['pages']) . ':(' . Solr::escapeQuery($searchForm->getExtQuery()[$i]) . ')';
+                        $query .= Indexer::getIndexFieldName($requestData['extField'][$i], $this->settings['pages']) . ':(' . Solr::escapeQuery($requestData['extQuery'][$i]) . ')';
                     }
                 }
             }
         }
         // Add filter query for faceting.
-        if (!empty($searchForm->getFilterQuery())) {
-            foreach ($searchForm->getFilterQuery() as $filterQuery) {
+        if (!empty($requestData['fq'])) {
+            foreach ($requestData['fq'] as $filterQuery) {
                 $params['filterquery'][]['query'] = $filterQuery;
             }
         }
+
         // Add filter query for in-document searching.
         if (
             $this->settings['searchIn'] == 'document'
             || $this->settings['searchIn'] == 'all'
         ) {
             if (
-                !empty($searchForm->getDocumentId())
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchForm->getDocumentId())
+                !empty($requestData['id'])
+                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($requestData['id'])
             ) {
                 // Search in document and all subordinates (valid for up to three levels of hierarchy).
-                $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $searchForm->getDocumentId() . '"' .
-                    ' OR {!join from=uid to=partof}uid:' . $searchForm->getDocumentId() .
-                    ' OR uid:' . $searchForm->getDocumentId();
-                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($searchForm->getDocumentId())));
+                $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $requestData['id'] . '"' .
+                    ' OR {!join from=uid to=partof}uid:' . $requestData['id'] .
+                    ' OR uid:' . $requestData['id'];
+                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($requestData['id'])));
             }
         }
         // Add filter query for in-collection searching.
@@ -125,10 +131,10 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             || $this->settings['searchIn'] == 'all'
         ) {
             if (
-                !empty($searchForm->getCollection())
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchForm->getCollection())
+                !empty($requestData['collection'])
+                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($requestData['collection'])
             ) {
-                $index_name = Helper::getIndexNameFromUid($searchForm->getCollection(), 'tx_dlf_collections', $this->settings['pages']);
+                $index_name = Helper::getIndexNameFromUid($requestData['collection'], 'tx_dlf_collections', $this->settings['pages']);
                 $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
                 $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, 'tx_dlf_collections', $this->settings['pages']));
             }
@@ -163,16 +169,16 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $list->metadata = [
             'label' => $label,
             'thumbnail' => '',
-            'searchString' => $searchForm->getQuery(),
-            'fulltextSearch' => (!empty($searchForm->getFulltext()) ? '1' : '0'),
+            'searchString' => $requestData['query'],
+            'fulltextSearch' => (!empty($requestData['fulltext']) ? '1' : '0'),
             'options' => $list->metadata['options']
         ];
         $list->save();
         // Clean output buffer.
         ob_end_clean();
         $additionalParams = [];
-        if (!empty($searchForm->getLogicalPage())) {
-            $additionalParams['logicalPage'] = $searchForm->getLogicalPage();
+        if (!empty($requestData['logicalPage'])) {
+            $additionalParams['logicalPage'] = $requestData['logicalPage'];
         }
         // Jump directly to the page view, if there is only one result and it is configured
         if ($list->metadata['options']['numberOfHits'] == 1 && !empty($this->settings['showSingleResult'])) {
@@ -183,9 +189,9 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         } else {
             // Keep some plugin variables.
             $linkConf['parameter'] = $this->settings['targetPid'];
-            if (!empty($searchForm->getOrder())) {
-                $additionalParams['order'] = $searchForm->getOrder();
-                $additionalParams['asc'] = !empty($searchForm->getAsc()) ? '1' : '0';
+            if (!empty($requestData['order'])) {
+                $additionalParams['order'] = $requestData['order'];
+                $additionalParams['asc'] = !empty($requestData['asc']) ? '1' : '0';
             }
         }
         $linkConf['forceAbsoluteUrl'] = !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0;
@@ -194,26 +200,26 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         // Send headers.
 //            header('Location: ' . GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
 //            exit;
-        return $this->forward('main', 'Search', NULL, ['searchForm' => NULL]);
+        $this->forward('main', 'Search', NULL, NULL);
     }
 
     /**
-     * @param SearchForm|null $searchForm
+     *
      * @return mixed
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function mainAction(SearchForm $searchForm = NULL)
+    public function mainAction()
     {
-        $settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
+        $requestData = GeneralUtility::_GPmerged('tx_dlf');
+        unset($requestData['__referrer'],$requestData['__trustedProperties']);
 
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
             $this->logger->warning('Incomplete plugin configuration');
             return '';
         }
-        if (!isset($searchForm) ||
-            (empty($searchForm->getQuery())
-            && empty($searchForm->getExtQuery()))
+        if (!isset($requestData['query'])
+            && empty($requestData['extQuery'])
         ) {
             // Extract query and filter from last search.
             $list = GeneralUtility::makeInstance(DocumentList::class);
@@ -223,31 +229,37 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 }
                 $search['params'] = $list->metadata['options']['params'];
             }
-            // Add javascript for search suggestions if enabled and jQuery autocompletion is available.
-            if (!empty($this->settings['suggest'])) {
-                $this->addAutocompleteJS();
+
+            // Add filter query for faceting.
+            if (!empty($requestData['fq'])) {
+                foreach ($requestData['fq'] as $filterQuery) {
+                    $params['filterquery'][]['query'] = $filterQuery;
+                }
             }
-            
-            $this->view->assign('FIELD_QUERY', 'query');
             $this->view->assign('QUERY', (!empty($search['query']) ? htmlspecialchars($search['query']) : ''));
             $this->view->assign('FULLTEXT_SEARCH', $list->metadata['fulltextSearch']);
-
-            $this->view->assign('FACETS_MENU', $this->addFacetsMenu());
-
-            $this->addEncryptedCoreName();
-
-            if ($this->settings['searchIn'] == 'collection' || $this->settings['searchIn'] == 'all') {
-                $this->addCurrentCollection();
-            }
-            if ($this->settings['searchIn'] == 'document' || $this->settings['searchIn'] == 'all') {
-                $this->addCurrentDocument($searchForm);
-            }
-
-            // Get additional fields for extended search.
-            $this->addExtendedSearch();
-
+        } else {
+            $this->view->assign('QUERY', (!empty($requestData['query']) ? htmlspecialchars($requestData['query']) : ''));
+            $this->view->assign('FULLTEXT_SEARCH', $requestData['fulltext']);
         }
-        return $this->view->render();
+        // Add javascript for search suggestions if enabled and jQuery autocompletion is available.
+        if (!empty($this->settings['suggest'])) {
+            $this->addAutocompleteJS();
+        }
+
+        $this->view->assign('FACETS_MENU', $this->addFacetsMenu());
+
+        $this->addEncryptedCoreName();
+
+        if ($this->settings['searchIn'] == 'collection' || $this->settings['searchIn'] == 'all') {
+            $this->addCurrentCollection();
+        }
+        if ($this->settings['searchIn'] == 'document' || $this->settings['searchIn'] == 'all') {
+            $this->addCurrentDocument($requestData);
+        }
+
+        // Get additional fields for extended search.
+        $this->addExtendedSearch();
     }
 
     protected function pi_getLL($label)
@@ -293,14 +305,14 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return string HTML input fields with current document's UID
      */
-    protected function addCurrentDocument(SearchForm $searchForm)
+    protected function addCurrentDocument($requestData)
     {
         // Load current list object.
         $list = GeneralUtility::makeInstance(DocumentList::class);
         // Load current document.
         if (
-            !empty($searchForm->getDocumentId())
-            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchForm->getDocumentId())
+            !empty($requestData['id'])
+            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($requestData['id'])
         ) {
             $this->loadDocument();
             // Get document's UID
@@ -427,13 +439,12 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function addExtendedSearch()
     {
-        $extendedSearch = '';
         // Quit without doing anything if no fields for extended search are selected.
         if (
             empty($this->settings['extendedSlotCount'])
             || empty($this->settings['extendedFields'])
         ) {
-            return $extendedSearch;
+            return '';
         }
         // Get operator options.
         $operatorOptions = [];

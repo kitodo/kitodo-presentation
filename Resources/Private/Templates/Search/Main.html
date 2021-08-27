@@ -9,7 +9,7 @@
 -->
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
-<f:form action="search" controller="Search" objectName="searchForm" method="post">
+<f:form action="search" controller="Search" fieldNamePrefix="tx_dlf" method="post">
     <label for="tx-dlf-search-query">
         <f:if condition="{QUERY}">
             <f:then>{QUERY -> f:format.htmlspecialchars()}</f:then>
@@ -17,13 +17,13 @@
         </f:if>
     </label>
 
-    <f:form.textfield id="tx-dlf-search-query" property="query" value="{QUERY}" />
+    <f:form.textfield id="tx-dlf-search-query" name="query" value="{QUERY}" />
 
     <!-- Logical page -->
     <f:if condition="{showLogicalPageField}">
         <f:then>
             <label for="tx-dlf-search-logical-page"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.logicalPage"/>: </label>
-            <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" property="logicalPage" />
+            <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" name="logicalPage" />
         </f:then>
     </f:if>
 
@@ -33,41 +33,63 @@
     <f:form.submit value="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.submit')}" />
 
     <!-- Fulltext switch -->
-    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: '', else: 'checked')}"/>
+    <f:form.radio name="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: '', else: 'checked')}"/>
     <label for="tx-dlf-search-fulltext-no"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.inMetadata"/></label>
-    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: 'checked', else: '')}"/>
+    <f:form.radio name="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: 'checked', else: '')}"/>
     <label for="tx-dlf-search-fulltext-yes"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.inFulltext"/></label>
 
     <!-- Add current document -->
     <f:if condition="{DOCUMENT_ID}">
         <f:then>
-            <f:form.hidden property="documentId" value="{DOCUMENT_ID}"/>
+            <f:form.hidden name="documentId" value="{DOCUMENT_ID}"/>
         </f:then>
     </f:if>
 
     <!-- Add collection -->
     <f:if condition="{COLLECTION_ID}">
         <f:then>
-            <input type="hidden" property="collection" value="{COLLECTION_ID}" />
+            <input type="hidden" name="collection" value="{COLLECTION_ID}" />
         </f:then>
     </f:if>
 
     <f:if condition="{ENCRYPTED_CORE_NAME}">
         <f:then>
-            <f:form.hidden property="encryptedCoreName" value="{ENCRYPTED_CORE_NAME}"/>
+            <f:form.hidden name="encryptedCoreName" value="{ENCRYPTED_CORE_NAME}"/>
         </f:then>
     </f:if>
 
     <div class="tx-dlf-search-extended">
         <f:for each="{extendedSlotCount}" as="slot" key="slot_label" iteration="slot_iterator">
-            <f:form.select property="extOperator.{slot_iterator.index}" options="{operators}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}"/>
-            <f:form.select property="extField.{slot_iterator.index}" options="{searchFields}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}"/>
-            <f:form.textfield property="extQuery.{slot_iterator.index}" class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"/>
+            <f:form.select name="extOperator.{slot_iterator.index}" options="{operators}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}"/>
+            <f:form.select name="extField.{slot_iterator.index}" options="{searchFields}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}"/>
+            <f:form.textfield name="extQuery.{slot_iterator.index}" class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"/>
         </f:for>
     </div>
 </f:form>
+<f:debug>{_all}</f:debug>
+<div class="tx-dlf-search-facets">
+    <f:for each="{facetsMenu}" as="facet">
+        <ul>
+            <li class="tx-dlf-search-no {f:if(condition: '{facet._SUB_MENU}', then: 'tx-dlf-search-ifsub')}">
+                {facet.title}
+            </li>
+            <f:if condition="{facet._SUB_MENU}">
+                <f:then>
+                    <ul>
+                        <f:for each="{facet._SUB_MENU}" as="values">
+                            <li class="">
+                                <f:link.typolink parameter="{values._OVERRIDE_HREF}">
+                                    {values.title}
+                                </f:link.typolink>
+                            </li>
+                        </f:for>
+                    </ul>
+                </f:then>
+            </f:if>
 
-<div class="tx-dlf-search-facets">{FACETS_MENU}</div>
+        </ul>
+    </f:for>
+</div>
 
 </html>
 
