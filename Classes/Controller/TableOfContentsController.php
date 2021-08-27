@@ -176,7 +176,7 @@ class TableOfContentsController extends ActionController
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->pluginConf['menuConf.'])) {
