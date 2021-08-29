@@ -116,7 +116,7 @@ class MetadataController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $this->cObj = $this->configurationManager->getContentObject();
 
