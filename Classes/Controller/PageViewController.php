@@ -170,6 +170,8 @@ class PageViewController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $this->addViewerJS();
 
         $this->view->assign('images', $this->images);
+        $this->view->assign('docId', $requestData['id']);
+        $this->view->assign('page', $requestData['page']);
     }
 
     /**
