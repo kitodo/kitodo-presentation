@@ -111,7 +111,7 @@ class NavigationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         if (empty($requestData['id'])) {
             return '';
