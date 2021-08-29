@@ -59,7 +59,7 @@ class BasketController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function basketAction() {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $basketData = $this->getBasketData();
 
@@ -108,7 +108,7 @@ class BasketController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function addAction() {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $basketData = $this->getBasketData();
 
@@ -127,7 +127,7 @@ class BasketController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
 
