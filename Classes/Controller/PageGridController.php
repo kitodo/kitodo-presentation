@@ -113,7 +113,7 @@ class PageGridController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
 
@@ -228,14 +228,6 @@ class PageGridController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         // unset($piVars['pagegrid']) is for DFG Viewer compatibility!
         unset($piVars['pointer'], $piVars['DATA'], $piVars['pagegrid']);
         $piVars['page'] = $number;
-        $linkConf = [
-            'useCacheHash' => 1,
-            'parameter' => $this->settings['targetPid'],
-            'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-            'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $piVars, '', true, false),
-            'title' => $markerArray['PAGINATION']
-        ];
         return $markerArray;
     }
 
