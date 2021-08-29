@@ -121,7 +121,7 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
 
