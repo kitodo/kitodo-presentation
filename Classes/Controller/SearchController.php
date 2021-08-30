@@ -197,9 +197,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $linkConf['forceAbsoluteUrl'] = !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0;
         $linkConf['forceAbsoluteUrl.']['scheme'] = !empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http';
         $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false);
-        // Send headers.
-//            header('Location: ' . GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
-//            exit;
         $this->forward('main', 'Search', NULL, NULL);
     }
 
@@ -212,6 +209,9 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'],$requestData['__trustedProperties']);
+
+//        $documents = $this->documentRepository->findAll();
+//        debug($documents);exit;
 
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
@@ -230,12 +230,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $search['params'] = $list->metadata['options']['params'];
             }
 
-            // Add filter query for faceting.
-            if (!empty($requestData['fq'])) {
-                foreach ($requestData['fq'] as $filterQuery) {
-                    $params['filterquery'][]['query'] = $filterQuery;
-                }
-            }
             $this->view->assign('QUERY', (!empty($search['query']) ? htmlspecialchars($search['query']) : ''));
             $this->view->assign('FULLTEXT_SEARCH', $list->metadata['fulltextSearch']);
         } else {
@@ -431,7 +425,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function makeFacetsMenuArray($facets)
     {
-//        $this->init($conf);
         $menuArray = [];
         // Set default value for facet search.
         $search = [
