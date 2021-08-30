@@ -138,6 +138,7 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
         foreach ($tools as $tool) {
             $tool = trim(str_replace('tx_dlf_', '', $tool));
             $this->$tool($requestData);
+            $this->view->assign($tool, true);
         }
     }
 
