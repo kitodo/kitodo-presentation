@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common\Document;
 
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Indexer;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;

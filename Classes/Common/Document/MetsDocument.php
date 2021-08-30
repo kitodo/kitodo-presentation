@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Common\Document;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\IiifUrlReader;
+use Kitodo\Dlf\Common\MetadataInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
@@ -49,7 +51,7 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
  * @property-read mixed $uid This holds the UID or the URL of the document
  */
-final class MetsDocument extends Document
+final class MetsDocument extends FullTextDocument
 {
     /**
      * This holds the whole XML file as string for serialization purposes
@@ -727,9 +729,9 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see FullTextDocument::ensureHasFulltextIsSet()
+     * @see FullTextDocument::ensureHasFullTextIsSet()
      */
-    protected function ensureHasFulltextIsSet()
+    protected function ensureHasFullTextIsSet()
     {
         // Are the fileGrps already loaded?
         if (!$this->fileGrpsLoaded) {

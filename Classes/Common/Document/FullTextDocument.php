@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common\Document;
 
+use Kitodo\Dlf\Common\FulltextInterface;
+use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Plugin;
 
+use Kitodo\Dlf\Common\Document\IiifManifest;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\IiifManifest;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;

@@ -56,7 +56,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read string $toplevelId This holds the toplevel manifest's @id
  * @property-read mixed $uid This holds the UID or the URL of the document
  */
-final class IiifManifest extends Document
+final class IiifManifest extends FullTextDocument
 {
     /**
      * This holds the manifest file as string for serialization purposes
@@ -786,7 +786,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getFullText()
+     * @see FullTextDocument::getFullText()
      */
     //TODO: rewrite it to get full OCR
     public function getFullText($id)

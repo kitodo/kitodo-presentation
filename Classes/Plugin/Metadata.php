@@ -13,8 +13,8 @@
 namespace Kitodo\Dlf\Plugin;
 
 use Kitodo\Dlf\Common\Document\Document;
+use Kitodo\Dlf\Common\Document\IiifManifest;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\IiifManifest;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Context\IRI;
