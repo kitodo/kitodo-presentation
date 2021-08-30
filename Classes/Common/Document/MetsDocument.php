@@ -714,16 +714,12 @@ final class MetsDocument extends FullTextDocument
      */
     protected function loadLocation($location)
     {
-        $fileResource = GeneralUtility::getUrl($location);
-        if ($fileResource !== false) {
-            $xml = Helper::getXmlFileAsString($fileResource);
-            // Set some basic properties.
-            if ($xml !== false) {
-                $this->xml = $xml;
-                return true;
-            }
+        $xml = $this->loadXMLLocation($location);
+        // Set some basic properties.
+        if ($xml !== false) {
+            $this->xml = $xml;
+            return true;
         }
-        $this->logger->error('Could not load XML file from "' . $location . '"');
         return false;
     }
 

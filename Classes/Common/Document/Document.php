@@ -51,6 +51,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  */
 abstract class Document
 {
+    use XMLDocument;
+
     /**
      * This holds the logger
      *
@@ -699,34 +701,6 @@ abstract class Document
     }
 
     /**
-     * Register all available namespaces for a \SimpleXMLElement object
-     *
-     * @access public
-     *
-     * @param \SimpleXMLElement|\DOMXPath &$obj: \SimpleXMLElement or \DOMXPath object
-     *
-     * @return void
-     */
-    public function registerNamespaces(&$obj)
-    {
-        // TODO Check usage. XML specific method does not seem to be used anywhere outside this class within the project, but it is public and may be used by extensions.
-        $this->loadFormats();
-        // Do we have a \SimpleXMLElement or \DOMXPath object?
-        if ($obj instanceof \SimpleXMLElement) {
-            $method = 'registerXPathNamespace';
-        } elseif ($obj instanceof \DOMXPath) {
-            $method = 'registerNamespace';
-        } else {
-            $this->logger->error('Given object is neither a SimpleXMLElement nor a DOMXPath instance');
-            return;
-        }
-        // Register metadata format's namespaces.
-        foreach ($this->formats as $enc => $conf) {
-            $obj->$method(strtolower($enc), $conf['namespaceURI']);
-        }
-    }
-
-    /**
      * This saves the document to the database and index
      *
      * @access public
@@ -1133,45 +1107,6 @@ abstract class Document
             $this->logger->error('Invalid file location "' . $location . '" for document loading');
         }
         return false;
-    }
-
-    /**
-     * Register all available data formats
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    protected function loadFormats()
-    {
-        if (!$this->formatsLoaded) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_formats');
-
-            // Get available data formats from database.
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_formats.type AS type',
-                    'tx_dlf_formats.root AS root',
-                    'tx_dlf_formats.namespace AS namespace',
-                    'tx_dlf_formats.class AS class'
-                )
-                ->from('tx_dlf_formats')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0)
-                )
-                ->execute();
-
-            while ($resArray = $result->fetch()) {
-                // Update format registry.
-                $this->formats[$resArray['type']] = [
-                    'rootElement' => $resArray['root'],
-                    'namespaceURI' => $resArray['namespace'],
-                    'class' => $resArray['class']
-                ];
-            }
-            $this->formatsLoaded = true;
-        }
     }
 
     /**
