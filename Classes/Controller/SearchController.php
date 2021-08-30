@@ -197,7 +197,8 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $linkConf['forceAbsoluteUrl'] = !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0;
         $linkConf['forceAbsoluteUrl.']['scheme'] = !empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http';
         $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false);
-        $this->forward('main', 'Search', NULL, NULL);
+
+        $this->redirect('main', 'Search', NULL, NULL);
     }
 
     /**
