@@ -25,7 +25,7 @@ $(
 					{
 						eID: "tx_dlf_search_suggest",
 						q: encodeURIComponent(request.term.toLowerCase()),
-						encrypted: $("input[name='tx_dlf_search[searchForm][encryptedCoreName]']").val(),
+						encrypted: $("input[name='tx_dlf[encryptedCoreName]']").val(),
 						hashed: $("input[name='tx_dlf[hashed]']").val()
 					},
 					function(data) {
