@@ -53,7 +53,7 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     public function searchAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'],$requestData['__trustedProperties']);
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
 
@@ -210,9 +210,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
-//        $documents = $this->documentRepository->findAll();
-//        debug($documents);exit;
 
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
