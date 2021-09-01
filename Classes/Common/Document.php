@@ -428,40 +428,13 @@ abstract class Document
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$forceReload) {
-            $regObj = Helper::digest($uid);
-            if (
-                is_object(self::$registry[$regObj])
-                && self::$registry[$regObj] instanceof self
-            ) {
-                // Check if instance has given PID.
-                if (
-                    !$pid
-                    || !self::$registry[$regObj]->pid
-                    || $pid == self::$registry[$regObj]->pid
-                ) {
-                    // Return singleton instance if available.
-                    return self::$registry[$regObj];
-                }
-            } else {
-                // Check the user's session...
-                $sessionData = Helper::loadFromSession(get_called_class());
-                if (
-                    is_object($sessionData[$regObj])
-                    && $sessionData[$regObj] instanceof self
-                ) {
-                    // Check if instance has given PID.
-                    if (
-                        !$pid
-                        || !$sessionData[$regObj]->pid
-                        || $pid == $sessionData[$regObj]->pid
-                    ) {
-                        // ...and restore registry.
-                        self::$registry[$regObj] = $sessionData[$regObj];
-                        return self::$registry[$regObj];
-                    }
-                }
+            $registeredInstance = self::getRegisteredInstance($uid, $pid);
+            if ($registeredInstance != null) {
+                // Return singleton instance if available.
+                return $registeredInstance;
             }
         }
+
         // Create new instance depending on format (METS or IIIF) ...
         $instance = null;
         $documentFormat = null;
@@ -575,6 +548,55 @@ abstract class Document
         }
         // Return new instance.
         return $instance;
+    }
+
+    /**
+     * Get registered instance of this class if there is any
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
+     * @param int $pid: If > 0, then only document with this PID gets loaded
+     *
+     * @return Document|null instance of this class or null when none registered instance
+     */
+    private static function getRegisteredInstance($uid, $pid) {
+        $regObj = Helper::digest($uid);
+        if (
+            is_object(self::$registry[$regObj])
+            && self::$registry[$regObj] instanceof self
+        ) {
+            // Check if instance has given PID.
+            if (
+                !$pid
+                || !self::$registry[$regObj]->pid
+                || $pid == self::$registry[$regObj]->pid
+            ) {
+                // Return singleton instance if available.
+                return self::$registry[$regObj];
+            }
+        } else {
+            // Check the user's session...
+            $sessionData = Helper::loadFromSession(get_called_class());
+            if (
+                is_object($sessionData[$regObj])
+                && $sessionData[$regObj] instanceof self
+            ) {
+                // Check if instance has given PID.
+                if (
+                    !$pid
+                    || !$sessionData[$regObj]->pid
+                    || $pid == $sessionData[$regObj]->pid
+                ) {
+                    // ...and restore registry.
+                    self::$registry[$regObj] = $sessionData[$regObj];
+                    return self::$registry[$regObj];
+                }
+            }
+        }
+        return null;
     }
 
     /**
