@@ -693,11 +693,29 @@ abstract class Document
         // Is this text format supported?
         // This part actually differs from previous version of indexed OCR
         if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
-            $fullText = $fileContent;
+            $fullText = $this->getFullTextWithoutImages($fileContent);
         } else {
             $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
         }
         return $fullText;
+    }
+
+     /**
+     * Get content of the OCR full text file without images
+     *
+     * @access private
+     *
+     * @param string $fileContent: content of the XML file
+     *
+     * @return string The content of the OCR full text file without images
+     */
+    private function getFullTextWithoutImages($fileContent)
+    {
+        $objectXml = $this->getFullTextAsObjectXML($fileContent);
+        if (isset($objectXml->Layout->Page->PrintSpace->Illustration)) {
+            unset($objectXml->Layout->Page->PrintSpace->Illustration);
+        }
+        return $objectXml->asXML();
     }
 
     /**
@@ -711,18 +729,33 @@ abstract class Document
      */
     private function getTextFormat($fileContent)
     {
+        // Get the root element's name as text format.
+        return strtoupper($this->getFullTextAsObjectXML($fileContent)->getName());
+    }
+
+    /**
+     * Get content of the OCR full text file
+     *
+     * @access private
+     *
+     * @param string $fileContent: content of the XML file
+     *
+     * @return \SimpleXMLElement content of the XML file as object
+     */
+    private function getFullTextAsObjectXML($fileContent)
+    {
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
         // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
         $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
         // Load XML from file.
-        $rawTextXml = simplexml_load_string($fileContent);
+        $objectXml = simplexml_load_string($fileContent);
         // Reset entity loader setting.
         libxml_disable_entity_loader($previousValueOfEntityLoader);
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
-        // Get the root element's name as text format.
-        return strtoupper($rawTextXml->getName());
+        // Get the root element
+        return $objectXml;
     }
 
     /**
