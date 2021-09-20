@@ -658,8 +658,8 @@ final class IiifManifest extends Document
             ->from('tx_dlf_metadataformat')
             ->from('tx_dlf_formats')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($pid)),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($cPid)),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
