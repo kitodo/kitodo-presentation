@@ -693,7 +693,22 @@ abstract class Document
         // Is this text format supported?
         // This part actually differs from previous version of indexed OCR
         if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
-            $fullText = $fileContent;
+            if (!empty($this->formats[$textFormat]['class'])) {
+                $class = $this->formats[$textFormat]['class'];
+                // Get the raw text from class.
+                if (
+                    class_exists($class)
+                    && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
+                ) {
+                    // Load XML from file.
+                    $rawTextXml = simplexml_load_string($fileContent);
+                    $rawText = $obj->getRawText($rawTextXml);
+                    $this->rawTextArray[$id] = $rawText;
+                } else {
+                    $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
+                }
+            }
+            $fullText = $rawText;
         } else {
             $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
         }
