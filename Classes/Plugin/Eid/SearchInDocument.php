@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\Response;
@@ -58,21 +59,38 @@ class SearchInDocument
         if ($solr->ready) {
             $query = $solr->service->createSelect();
             $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
-            $query->setQuery($fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . intval($parameters['uid']));
+            $query->setQuery($this->getQuery($fields, $parameters));
             $query->setStart($count)->setRows(20);
-            $hl = $query->getHighlighting();
-            $hl->setFields([$fields['fulltext']]);
-            $hl->setUseFastVectorHighlighter(true);
-            $results = $solr->service->select($query);
-            $output['numFound'] = $results->getNumFound();
-            $highlighting = $results->getHighlighting();
-            foreach ($results as $result) {
-                $snippet = $highlighting->getResult($result->id)->getField($fields['fulltext']);
+            $query->getHighlighting();
+            $solrRequest = $solr->service->createRequest($query);
+
+            // it is necessary to add the custom parameters to the request
+            // because query object doesn't allow custom parameters
+
+            // field for which highlighting is going to be performed,
+            // is required if you want to have OCR highlighting
+            $solrRequest->addParam('hl.ocr.fl', $fields['fulltext']);
+            // return the coordinates of highlighted search as absolute coordinates
+            $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
+            // max amount of snippets for a single page
+            $solrRequest->addParam('hl.snippets', 20);
+
+            $response = $solr->service->executeRequest($solrRequest);
+            $result = $solr->service->createResult($query, $response);
+            /** @scrutinizer ignore-call */
+            $output['numFound'] = $result->getNumFound();
+            $data = $result->getData();
+            $highlighting = $data['ocrHighlighting'];
+
+            foreach ($result as $record) {
+                $resultDocument = new ResultDocument($record, $highlighting, $fields);
+
                 $document = [
-                    'id' => $result->id,
-                    'uid' => $result->uid,
-                    'page' => $result->page,
-                    'snippet' => !empty($snippet) ? implode(' [...] ', $snippet) : ''
+                    'id' => $resultDocument->getId(),
+                    'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+                    'page' => $resultDocument->getPage(),
+                    'snippet' => $resultDocument->getSnippets(),
+                    'highlight' => $resultDocument->getHighlightsIds()
                 ];
                 $output['documents'][$count] = $document;
                 $count++;
@@ -83,5 +101,13 @@ class SearchInDocument
         $response = GeneralUtility::makeInstance(Response::class);
         $response->getBody()->write(json_encode($output));
         return $response;
+    }
+
+    private function getQuery($fields, $parameters) {
+        return $fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . $this->getUid($parameters['uid']);
+    }
+
+    private function getUid($uid) {
+        return is_numeric($uid) > 0  ? intval($uid) : $uid;
     }
 }

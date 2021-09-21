@@ -667,21 +667,18 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getRawText()
+     * @see \Kitodo\Dlf\Common\Document::getFullText()
      */
-    public function getRawText($id)
+    public function getFullText($id)
     {
-        $rawText = '';
-        // Get text from raw text array if available.
-        if (!empty($this->rawTextArray[$id])) {
-            return $this->rawTextArray[$id];
-        }
-        // Load fileGrps and check for fulltext files.
+        $fullText = '';
+
+        // Load fileGrps and check for full text files.
         $this->_getFileGrps();
         if ($this->hasFulltext) {
-            $rawText = $this->getRawTextFromXml($id);
+            $fullText = $this->getFullTextFromXml($id);
         }
-        return $rawText;
+        return $fullText;
     }
 
     /**

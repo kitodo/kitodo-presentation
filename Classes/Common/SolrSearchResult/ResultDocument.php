@@ -184,6 +184,7 @@ class ResultDocument
      *
      * @return array(Region) All result's regions which contain search phrase
      */
+
     public function getRegions()
     {
         return $this->regions;

@@ -12,8 +12,10 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Solarium\QueryType\Select\Result\Result;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -237,74 +239,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
                 && $this->metadata['options']['source'] == 'search'
             ) {
                 if ($this->solrConnect()) {
-                    $fields = Solr::getFields();
-                    $params = [];
-                    // Restrict the fields to the required ones
-                    $params['fields'] = $fields['uid'] . ',' . $fields['id'] . ',' . $fields['toplevel'] . ',' . $fields['thumbnail'] . ',' . $fields['page'];
-                    foreach ($this->solrConfig as $solr_name) {
-                        $params['fields'] .= ',' . $solr_name;
-                    }
-                    // If it is a fulltext search, enable highlighting.
-                    if ($this->metadata['fulltextSearch']) {
-                        $params['component'] = [
-                            'highlighting' => [
-                                'query' => Solr::escapeQuery($this->metadata['searchString']),
-                                'field' => $fields['fulltext'],
-                                'usefastvectorhighlighter' => true
-                            ]
-                        ];
-                    }
-                    // Set additional query parameters.
-                    $params['start'] = 0;
-                    // Set reasonable limit for safety reasons.
-                    // We don't expect to get more than 10.000 hits per UID.
-                    $params['rows'] = 10000;
-                    // Take over existing filter queries.
-                    $params['filterquery'] = isset($this->metadata['options']['params']['filterquery']) ? $this->metadata['options']['params']['filterquery'] : [];
-                    // Extend filter query to get all documents with the same UID.
-                    foreach ($params['filterquery'] as $key => $value) {
-                        if (isset($value['query'])) {
-                            $params['filterquery'][$key]['query'] = $value['query'] . ' OR ' . $fields['toplevel'] . ':true';
-                        }
-                    }
-                    // Add filter query to get all documents with the required uid.
-                    $params['filterquery'][] = ['query' => $fields['uid'] . ':' . Solr::escapeQuery($record['uid'])];
-                    // Add sorting.
-                    $params['sort'] = $this->metadata['options']['params']['sort'];
-                    // Set query.
-                    $params['query'] = $this->metadata['options']['select'] . ' OR ' . $fields['toplevel'] . ':true';
-                    // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
-                    $selectQuery = $this->solr->service->createSelect($params);
-                    $result = $this->solr->service->select($selectQuery);
-                    // If it is a fulltext search, fetch the highlighting results.
-                    if ($this->metadata['fulltextSearch']) {
-                        $highlighting = $result->getHighlighting();
-                    }
-                    // Process results.
-                    foreach ($result as $resArray) {
-                        // Prepare document's metadata.
-                        $metadata = [];
-                        foreach ($this->solrConfig as $index_name => $solr_name) {
-                            if (!empty($resArray->$solr_name)) {
-                                $metadata[$index_name] = (is_array($resArray->$solr_name) ? $resArray->$solr_name : [$resArray->$solr_name]);
-                            }
-                        }
-                        // Add metadata to list elements.
-                        if ($resArray->toplevel) {
-                            $record['thumbnail'] = $resArray->thumbnail;
-                            $record['metadata'] = $metadata;
-                        } else {
-                            $highlightedDoc = !empty($highlighting) ? $highlighting->getResult($resArray->id) : null;
-                            $highlight = !empty($highlightedDoc) ? $highlightedDoc->getField($fields['fulltext'])[0] : '';
-                            $record['subparts'][$resArray->id] = [
-                                'uid' => $resArray->uid,
-                                'page' => $resArray->page,
-                                'preview' => $highlight,
-                                'thumbnail' => $resArray->thumbnail,
-                                'metadata' => $metadata
-                            ];
-                        }
-                    }
+                    $result = $this->getSolrResult($record);
+                    $record = $this->getSolrRecord($record, $result);
                 }
             }
             // Save record for later usage.
@@ -312,6 +248,120 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
         } else {
             $this->logger->notice('No UID of list element to fetch full record');
             $record = $element;
+        }
+        return $record;
+    }
+
+    /**
+     * It gets SOLR result
+     *
+     * @access private
+     *
+     * @param array $record: for searched document
+     *
+     * @return Result
+     */
+    private function getSolrResult($record) {
+        $fields = Solr::getFields();
+
+        $query = $this->solr->service->createSelect();
+        // Restrict the fields to the required ones
+        $query->setFields($fields['uid'] .',' . $fields['id'] .',' . $fields['toplevel'] .',' . $fields['thumbnail'] .',' . $fields['page']);
+        foreach ($this->solrConfig as $solr_name) {
+            $query->addField($solr_name);
+        }
+        // Set additional query parameters.
+        // Set reasonable limit for safety reasons.
+        // We don't expect to get more than 10.000 hits per UID.
+        $query->setStart(0)->setRows(10000);
+        // Take over existing filter queries.
+        $filterQueries = isset($this->metadata['options']['params']['filterquery']) ? $this->metadata['options']['params']['filterquery'] : [];
+        // Extend filter query to get all documents with the same UID.
+        foreach ($filterQueries as $key => $value) {
+            if (isset($value['query'])) {
+                $filterQuery[$key] = $value['query'] . ' OR ' . $fields['toplevel'] . ':true';
+                $filterQuery = [
+                    'key' => $key,
+                    'query' => $value['query'] . ' OR ' . $fields['toplevel'] . ':true'
+                ];
+                $query->addFilterQuery($filterQuery);
+            }
+        }
+        // Add filter query to get all documents with the required uid.
+        $query->createFilterQuery('uid')->setQuery($fields['uid'] . ':' . Solr::escapeQuery($record['uid']));
+        // Add sorting.
+        $query->addSort('score', $this->metadata['options']['params']['sort']['score']);
+        // Set query.
+        $query->setQuery($this->metadata['options']['select'] . ' OR ' . $fields['toplevel'] . ':true');
+
+        // If it is a fulltext search, enable highlighting.
+        if ($this->metadata['fulltextSearch']) {
+            $query->getHighlighting();
+        };
+
+        $solrRequest = $this->solr->service->createRequest($query);
+
+        // If it is a fulltext search, enable highlighting.
+        if ($this->metadata['fulltextSearch']) {
+            // field for which highlighting is going to be performed,
+            // is required if you want to have OCR highlighting
+            $solrRequest->addParam('hl.ocr.fl', $fields['fulltext']);
+            // return the coordinates of highlighted search as absolute coordinates
+            $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
+            // max amount of snippets for a single page
+            $solrRequest->addParam('hl.snippets', 20);
+        }
+        // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
+        $response = $this->solr->service->executeRequest($solrRequest);
+        return $this->solr->service->createResult($query, $response);
+    }
+
+    /**
+     * It processes SOLR result into record, which is
+     * going to be displayed in the frontend list.
+     *
+     * @access private
+     *
+     * @param array $record: for searched document
+     * @param Result $result: found in the SOLR index
+     *
+     * @return array
+     */
+    private function getSolrRecord($record, $result) {
+        // If it is a fulltext search, fetch the highlighting results.
+        if ($this->metadata['fulltextSearch']) {
+            $data = $result->getData();
+            $highlighting = $data['ocrHighlighting'];
+        }
+
+        // Process results.
+        foreach ($result as $resArray) {
+            // Prepare document's metadata.
+            $metadata = [];
+            foreach ($this->solrConfig as $index_name => $solr_name) {
+                if (!empty($resArray->$solr_name)) {
+                    $metadata[$index_name] = (is_array($resArray->$solr_name) ? $resArray->$solr_name : [$resArray->$solr_name]);
+                }
+            }
+            // Add metadata to list elements.
+            if ($resArray->toplevel) {
+                $record['thumbnail'] = $resArray->thumbnail;
+                $record['metadata'] = $metadata;
+            } else {
+                $highlight = '';
+                if (!empty($highlighting)) {
+                    $resultDocument = new ResultDocument($resArray, $highlighting, Solr::getFields());
+                    $highlight = $resultDocument->getSnippets();
+                }
+
+                $record['subparts'][$resArray->id] = [
+                    'uid' => $resArray->uid,
+                    'page' => $resArray->page,
+                    'preview' => $highlight,
+                    'thumbnail' => $resArray->thumbnail,
+                    'metadata' => $metadata
+                ];
+            }
         }
         return $record;
     }
