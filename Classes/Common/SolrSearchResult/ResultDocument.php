@@ -309,7 +309,9 @@ class ResultDocument
     {
         $objectArray = [];
         foreach ($this->snippetsForRecord as $snippet) {
-            array_push($objectArray, $snippet[$index]);
+            if (!empty($snippet[$index])) {
+                array_push($objectArray, $snippet[$index]);
+            }
         }
         return $objectArray;
     }
