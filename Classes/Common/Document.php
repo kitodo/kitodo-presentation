@@ -469,76 +469,10 @@ abstract class Document
         $iiif = null;
         // Try to get document format from database
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
-            $queryBuilder
-                ->select(
-                    'tx_dlf_documents.location AS location',
-                    'tx_dlf_documents.document_format AS document_format'
-                )
-                ->from('tx_dlf_documents');
-
-            // Get UID of document with given record identifier.
-            if ($pid) {
-                $queryBuilder
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    );
-            } else {
-                $queryBuilder
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    );
-            }
-
-            $result = $queryBuilder
-                ->setMaxResults(1)
-                ->execute();
-
-            if ($resArray = $result->fetch()) {
-                $documentFormat = $resArray['document_format'];
-            }
+            $documentFormat = self::getDocumentFormatFromDatabase($uid, $pid);
         } else {
             // Get document format from content of remote document
-            // Cast to string for safety reasons.
-            $location = (string) $uid;
-            // Try to load a file from the url
-            if (GeneralUtility::isValidUrl($location)) {
-                // Load extension configuration
-                $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-                // Set user-agent to identify self when fetching XML data.
-                if (!empty($extConf['useragent'])) {
-                    @ini_set('user_agent', $extConf['useragent']);
-                }
-                $content = GeneralUtility::getUrl($location);
-                if ($content !== false) {
-                    $xml = Helper::getXmlFileAsString($content);
-                    if ($xml !== false) {
-                        /* @var $xml \SimpleXMLElement */
-                        $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-                        $xpathResult = $xml->xpath('//mets:mets');
-                        $documentFormat = !empty($xpathResult) ? 'METS' : null;
-                    } else {
-                        // Try to load file as IIIF resource instead.
-                        $contentAsJsonArray = json_decode($content, true);
-                        if ($contentAsJsonArray !== null) {
-                            // Load plugin configuration.
-                            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-                            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                            IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
-                            IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
-                            $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
-                            if ($iiif instanceof IiifResourceInterface) {
-                                $documentFormat = 'IIIF';
-                            }
-                        }
-                    }
-                }
-            }
+            $documentFormat = self::getDocumentFormatFromRemote($uid);
         }
         // Sanitize input.
         $pid = max(intval($pid), 0);
@@ -565,6 +499,109 @@ abstract class Document
         }
         // Return new instance.
         return $instance;
+    }
+
+    /**
+     * This gets the document format for documents stored in database.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
+     * @param int $pid: If > 0, then only document with this PID gets loaded
+     *
+     * @return string The document format
+     */
+    private static function getDocumentFormatFromDatabase($uid, $pid) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+        $queryBuilder
+            ->select(
+                'tx_dlf_documents.location AS location',
+                'tx_dlf_documents.document_format AS document_format'
+            )
+            ->from('tx_dlf_documents');
+
+        // Get UID of document with given record identifier.
+        if ($pid) {
+            $queryBuilder
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid)),
+                    Helper::whereExpression('tx_dlf_documents')
+                );
+        } else {
+            $queryBuilder
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
+                    Helper::whereExpression('tx_dlf_documents')
+                );
+        }
+
+        $result = $queryBuilder
+            ->setMaxResults(1)
+            ->execute();
+
+        if ($resArray = $result->fetch()) {
+            return $resArray['document_format'];
+        }
+
+        return '';
+    }
+
+    /**
+     * This gets the document format for remote documents.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
+     *
+     * @return string The document format
+     */
+    private static function getDocumentFormatFromRemote($uid) {
+        $documentFormat = '';
+
+        // Cast to string for safety reasons.
+        $location = (string) $uid;
+        // Try to load a file from the url
+        if (GeneralUtility::isValidUrl($location)) {
+            // Load extension configuration
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            // Set user-agent to identify self when fetching XML data.
+            if (!empty($extConf['useragent'])) {
+                @ini_set('user_agent', $extConf['useragent']);
+            }
+            $content = GeneralUtility::getUrl($location);
+            if ($content !== false) {
+                $xml = Helper::getXmlFileAsString($content);
+                if ($xml !== false) {
+                    /* @var $xml \SimpleXMLElement */
+                    $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
+                    $xpathResult = $xml->xpath('//mets:mets');
+                    $documentFormat = !empty($xpathResult) ? 'METS' : null;
+                } else {
+                    // Try to load file as IIIF resource instead.
+                    $contentAsJsonArray = json_decode($content, true);
+                    if ($contentAsJsonArray !== null) {
+                        // Load plugin configuration.
+                        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+                        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+                        IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
+                        IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
+                        $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
+                        if ($iiif instanceof IiifResourceInterface) {
+                            $documentFormat = 'IIIF';
+                        }
+                    }
+                }
+            }
+        }
+
+        return $documentFormat;
     }
 
     /**
