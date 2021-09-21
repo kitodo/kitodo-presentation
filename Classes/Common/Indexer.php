@@ -474,6 +474,7 @@ class Indexer
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+
             $solrDoc->setField('fulltext', $fullText);
             // Add faceting information to physical sub-elements if applicable.
             foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
@@ -514,8 +515,8 @@ class Indexer
                         true,
                         'core.template.flashMessages'
                     );
-                    $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
                 }
+                $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
                 return 1;
             }
         }
