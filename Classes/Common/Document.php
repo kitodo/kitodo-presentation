@@ -702,13 +702,13 @@ abstract class Document
                 ) {
                     // Load XML from file.
                     $rawTextXml = simplexml_load_string($fileContent);
-                    $rawText = $obj->getRawText($rawTextXml);
-                    $this->rawTextArray[$id] = $rawText;
+                    $textMiniOcr = $obj->getTextAsMiniOcr($rawTextXml);
+                    $this->rawTextArray[$id] = $textMiniOcr;
                 } else {
                     $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
                 }
             }
-            $fullText = $rawText;
+            $fullText = $textMiniOcr;
         } else {
             $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
         }
