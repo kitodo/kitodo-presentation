@@ -47,8 +47,6 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
         return $rawText;
     }
 
-
-
     /**
      * This extracts the fulltext data from ALTO XML and returns it in MiniOCR format
      *
@@ -60,7 +58,6 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      */
     public function getTextAsMiniOcr(\SimpleXMLElement $xml)
     {
-        $rawText = '';
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
 
         // get all text blocks
@@ -80,8 +77,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
                     foreach ($value->children() as $lkey => $word) {
                         if ($lkey == "String") {
                             $attributes = $word->attributes();
-                            $la =  Solr::escapeQuery((string) $attributes['CONTENT']);
-                            $newWord = $newLine->addChild('w',  htmlspecialchars(Solr::escapeQuery((string) $attributes['CONTENT'])) . ' ');
+                            $newWord = $newLine->addChild('w', htmlspecialchars(Solr::escapeQuery((string) $attributes['CONTENT'])) . ' ');
                             $newWord->addAttribute('x', (string) $attributes['HPOS'] . ' ' . (string) $attributes['VPOS'] . ' ' . (string) $attributes['WIDTH'] . ' ' . (string) $attributes['HEIGHT']);
                         }
                     }
