@@ -706,7 +706,7 @@ abstract class Document
                     $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
                     $this->rawTextArray[$id] = $textMiniOcr;
                 } else {
-                    $this->logger->warning('Invalid class/method "' . $class . '->getTextAsMiniOcr()" for text format "' . $textFormat . '"');
+                    $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
                 }
             }
             $fullText = $textMiniOcr;

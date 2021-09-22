@@ -24,6 +24,17 @@ namespace Kitodo\Dlf\Common;
 interface FulltextInterface
 {
     /**
+     * This extracts raw fulltext data from XML
+     *
+     * @access public
+     *
+     * @param \SimpleXMLElement $xml: The XML to extract the metadata from
+     *
+     * @return string The raw unformatted fulltext
+     */
+    public function getRawText(\SimpleXMLElement $xml);
+
+    /**
      * This extracts the fulltext data from ALTO XML and returns it in MiniOCR format
      *
      * @access public
