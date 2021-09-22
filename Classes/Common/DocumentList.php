@@ -261,12 +261,13 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      *
      * @return Result
      */
-    private function getSolrResult($record) {
+    private function getSolrResult($record)
+    {
         $fields = Solr::getFields();
 
         $query = $this->solr->service->createSelect();
         // Restrict the fields to the required ones
-        $query->setFields($fields['uid'] .',' . $fields['id'] .',' . $fields['toplevel'] .',' . $fields['thumbnail'] .',' . $fields['page']);
+        $query->setFields($fields['uid'] . ',' . $fields['id'] . ',' . $fields['toplevel'] . ',' . $fields['thumbnail'] . ',' . $fields['page']);
         foreach ($this->solrConfig as $solr_name) {
             $query->addField($solr_name);
         }
@@ -327,7 +328,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      *
      * @return array
      */
-    private function getSolrRecord($record, $result) {
+    private function getSolrRecord($record, $result)
+    {
         // If it is a fulltext search, fetch the highlighting results.
         if ($this->metadata['fulltextSearch']) {
             $data = $result->getData();
