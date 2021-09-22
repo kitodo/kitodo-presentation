@@ -116,7 +116,8 @@ class SearchInDocument
      *
      * @return string SOLR query
      */
-    private function getQuery($fields, $parameters) {
+    private function getQuery($fields, $parameters)
+    {
         return $fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . $this->getUid($parameters['uid']);
     }
 
@@ -130,7 +131,8 @@ class SearchInDocument
      *
      * @return int|string uid of the document
      */
-    private function getUid($uid) {
+    private function getUid($uid)
+    {
         return is_numeric($uid) ? intval($uid) : $uid;
     }
 }

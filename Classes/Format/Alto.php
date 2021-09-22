@@ -80,7 +80,8 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @return string The parsed word extracted from attribute
      */
-    private function getWord($attributes) {
+    private function getWord($attributes) 
+    {
         return htmlspecialchars((string) $attributes['CONTENT']) . ' ';
     }
 
@@ -93,7 +94,8 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @return string The parsed word coordinates extracted from attribute
      */
-    private function getCoordinates($attributes) {
+    private function getCoordinates($attributes)
+    {
         return (string) $attributes['HPOS'] . ' ' . (string) $attributes['VPOS'] . ' ' . (string) $attributes['WIDTH'] . ' ' . (string) $attributes['HEIGHT'];
     }
 }
