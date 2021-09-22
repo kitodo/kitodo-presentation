@@ -21,7 +21,6 @@ namespace Kitodo\Dlf\Common;
  * @access public
  * @abstract
  */
-
 interface FulltextInterface
 {
     /**

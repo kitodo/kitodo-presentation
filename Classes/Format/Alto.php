@@ -74,17 +74,47 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
             foreach ($block->children() as $key => $value) {
                 if ($key === "TextLine") {
                     $newLine = $newBlock->addChild('l');
-                    foreach ($value->children() as $lkey => $word) {
-                        if ($lkey == "String") {
+                    foreach ($value->children() as $wordKey => $word) {
+                        if ($wordKey == "String") {
                             $attributes = $word->attributes();
-                            $newWord = $newLine->addChild('w', htmlspecialchars(Solr::escapeQuery((string) $attributes['CONTENT'])) . ' ');
-                            $newWord->addAttribute('x', (string) $attributes['HPOS'] . ' ' . (string) $attributes['VPOS'] . ' ' . (string) $attributes['WIDTH'] . ' ' . (string) $attributes['HEIGHT']);
+                            $newWord = $newLine->addChild('w', $this->getWord($attributes));
+                            $newWord->addAttribute('x', $this->getCoordinates($attributes));
                         }
                     }
                 }
             }
         }
 
-        return $miniOcr->asXml();
+        $miniOcrXml = $miniOcr->asXml();
+        if(\is_string($miniOcrXml)) {
+            return $miniOcrXml;
+        }
+        return '';
+    }
+
+    /**
+     * This extracts and parses the word from attribute
+     *
+     * @access private
+     *
+     * @param \SimpleXMLElement $attributes: The XML to extract the word
+     *
+     * @return string The parsed word extracted from attribute
+     */
+    private function getWord($attributes) {
+        return htmlspecialchars(Solr::escapeQuery((string) $attributes['CONTENT'])) . ' ';
+    }
+
+    /**
+     * This extracts and parses the word coordinates from attributes
+     *
+     * @access private
+     *
+     * @param \SimpleXMLElement $attributes: The XML to extract the word coordinates
+     *
+     * @return string The parsed word coordinates extracted from attribute
+     */
+    private function getCoordinates($attributes) {
+        return (string) $attributes['HPOS'] . ' ' . (string) $attributes['VPOS'] . ' ' . (string) $attributes['WIDTH'] . ' ' . (string) $attributes['HEIGHT'];
     }
 }

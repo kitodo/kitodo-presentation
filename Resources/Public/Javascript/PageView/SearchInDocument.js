@@ -83,6 +83,13 @@ function getBaseUrl(id) {
     return baseUrl;
 }
 
+/**
+ * Get highlight coordinates as string separated by ';'.
+ * 
+ * @param {string} highlight
+ * 
+ * @returns {string}
+ */
 function getHighlights(highlight) {
     var highlights = "";
 
@@ -198,6 +205,14 @@ function getLink(element) {
     return link;
 }
 
+/**
+ * Get navigation buttons.
+ * 
+ * @param {int} start
+ * @param {numFound} start
+ * 
+ * @returns {string}
+ */
 function getNavigationButtons(start, numFound) {
     var buttons = "";
 
@@ -211,6 +226,11 @@ function getNavigationButtons(start, numFound) {
     return buttons;
 }
 
+/**
+ * Get current page.
+ * 
+ * @returns {int}
+ */
 function getCurrentPage() {
     var page = 1;
     var queryParams = getCurrentQueryParams(getBaseUrl(" "));
@@ -226,6 +246,13 @@ function getCurrentPage() {
     return page;
 }
 
+/**
+ * Add highlight to image.
+ * 
+ * @param {array} data
+ * 
+ * @returns void
+ */
 function addImageHighlight(data) {
     var page = getCurrentPage();
 
@@ -243,6 +270,11 @@ function addImageHighlight(data) {
     });
 }
 
+/**
+ * Trigger search for document loaded from hit list.
+ * 
+ * @returns void
+ */
 function triggerSearchAfterHitLoad() {
     var queryParams = getCurrentQueryParams(getBaseUrl(" "));
     var searchedQueryParam = $("input[id='tx-dlf-search-in-document-highlight-word']").attr('name');
@@ -262,7 +294,6 @@ $(document).ready(function() {
     $("#tx-dlf-search-in-document-form").submit(function(event) {
         // Stop form from submitting normally
         event.preventDefault();
-
         $('#tx-dlf-search-in-document-loading').show();
         $('#tx-dlf-search-in-document-clearing').hide();
         $('#tx-dlf-search-in-document-button-next').hide();
@@ -312,7 +343,8 @@ $(document).ready(function() {
                 $('#tx-dlf-search-in-document-results').html(resultList);
             },
             "json"
-        ).done(function (data) {
+        )
+        .done(function (data) {
             $('#tx-dfgviewer-sru-results-loading').hide();
             $('#tx-dfgviewer-sru-results-clearing').show();
         });
