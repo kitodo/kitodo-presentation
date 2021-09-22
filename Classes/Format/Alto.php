@@ -86,7 +86,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
         }
 
         $miniOcrXml = $miniOcr->asXml();
-        if(\is_string($miniOcrXml)) {
+        if (\is_string($miniOcrXml)) {
             return $miniOcrXml;
         }
         return '';
