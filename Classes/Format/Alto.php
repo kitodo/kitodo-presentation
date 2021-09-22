@@ -102,7 +102,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      * @return string The parsed word extracted from attribute
      */
     private function getWord($attributes) {
-        return htmlspecialchars(Solr::escapeQuery((string) $attributes['CONTENT'])) . ' ';
+        return htmlspecialchars((string) $attributes['CONTENT']) . ' ';
     }
 
     /**
