@@ -103,11 +103,31 @@ class SearchInDocument
         return $response;
     }
 
+    /**
+     * Build SOLR query for given fields and parameters.
+     *
+     * @access private
+     *
+     * @param array $fields array of SOLR index fields
+     * @param array $parameters parsed from request body
+     *
+     * @return string SOLR query
+     */
     private function getQuery($fields, $parameters) {
         return $fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . $this->getUid($parameters['uid']);
     }
 
+    /**
+     * Check if uid is number, if yes convert it to int,
+     * otherwise leave uid not changed.
+     *
+     * @access private
+     *
+     * @param string $uid of the document
+     *
+     * @return int|string uid of the document
+     */
     private function getUid($uid) {
-        return is_numeric($uid) > 0  ? intval($uid) : $uid;
+        return is_numeric($uid) ? intval($uid) : $uid;
     }
 }
