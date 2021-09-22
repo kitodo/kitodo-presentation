@@ -693,6 +693,7 @@ abstract class Document
         // Is this text format supported?
         // This part actually differs from previous version of indexed OCR
         if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
+            $textMiniOcr = '';
             if (!empty($this->formats[$textFormat]['class'])) {
                 $class = $this->formats[$textFormat]['class'];
                 // Get the raw text from class.
@@ -706,7 +707,6 @@ abstract class Document
                     $this->rawTextArray[$id] = $textMiniOcr;
                 } else {
                     $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
-                    $textMiniOcr = '';
                 }
             }
             $fullText = $textMiniOcr;
