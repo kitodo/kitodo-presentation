@@ -61,6 +61,7 @@ class SearchInDocument
             $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
             $query->setQuery($this->getQuery($fields, $parameters));
             $query->setStart($start)->setRows(20);
+            $query->addSort($fields['page'], $query::SORT_ASC);
             $query->getHighlighting();
             $solrRequest = $solr->service->createRequest($query);
 
