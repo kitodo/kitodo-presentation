@@ -1335,16 +1335,11 @@ abstract class Document
         }
         // Add document to index.
         if ($core) {
-            //TODO: change return of this method to true on success and false on failure
-            $hasErrors = Indexer::add($this, $core);
-            if ($hasErrors) {
-                return false;
-            }
+            return Indexer::add($this, $core);
         } else {
             $this->logger->notice('Invalid UID "' . $core . '" for Solr core');
             return false;
         }
-        return true;
     }
 
     /**

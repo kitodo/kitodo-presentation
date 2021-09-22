@@ -89,24 +89,24 @@ class Indexer
      * @param \Kitodo\Dlf\Common\Document &$doc: The document to add
      * @param int $core: UID of the Solr core to use
      *
-     * @return int 0 on success or 1 on failure
+     * @return bool true on success or false on failure
      */
     public static function add(Document &$doc, $core = 0)
     {
         $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
         if (in_array($doc->uid, self::$processedDocs)) {
-            return 0;
+            return true;
         } elseif (self::solrConnect($core, $doc->pid)) {
-            $errors = 0;
+            $success = true;
             // Handle multi-volume documents.
             if ($doc->parentId) {
                 $parent = Document::getInstance($doc->parentId, 0, true);
                 if ($parent->ready) {
-                    $errors = self::add($parent, $core);
+                    $success = self::add($parent, $core);
                 } else {
                     $logger->error('Could not load parent document with UID ' . $doc->parentId);
-                    return 1;
+                    return false;
                 }
             }
             try {
@@ -119,8 +119,8 @@ class Indexer
 
                 // Index every logical unit as separate Solr document.
                 foreach ($doc->tableOfContents as $logicalUnit) {
-                    if (!$errors) {
-                        $errors = self::processLogical($doc, $logicalUnit);
+                    if ($success) {
+                        $success = self::processLogical($doc, $logicalUnit);
                     } else {
                         break;
                     }
@@ -128,8 +128,8 @@ class Indexer
                 // Index full text files if available.
                 if ($doc->hasFulltext) {
                     foreach ($doc->physicalStructure as $pageNumber => $xmlId) {
-                        if (!$errors) {
-                            $errors = self::processPhysical($doc, $pageNumber, $doc->physicalStructureInfo[$xmlId]);
+                        if ($success) {
+                            $success = self::processPhysical($doc, $pageNumber, $doc->physicalStructureInfo[$xmlId]);
                         } else {
                             break;
                         }
@@ -157,7 +157,7 @@ class Indexer
                 $allResults = $result->fetchAll();
                 $resArray = $allResults[0];
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
-                    if (!$errors) {
+                    if ($success) {
                         Helper::addMessage(
                             htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
                             Helper::getMessage('flash.done', true),
@@ -175,7 +175,7 @@ class Indexer
                         );
                     }
                 }
-                return $errors;
+                return $success;
             } catch (\Exception $e) {
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
@@ -187,7 +187,7 @@ class Indexer
                     );
                 }
                 $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
-                return 1;
+                return false;
             }
         } else {
             if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
@@ -200,7 +200,7 @@ class Indexer
                 );
             }
             $logger->error('Could not connect to Apache Solr server');
-            return 1;
+            return false;
         }
     }
 
@@ -312,13 +312,13 @@ class Indexer
      * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
      * @param array $logicalUnit: Array of the logical unit to process
      *
-     * @return int 0 on success or 1 on failure
+     * @return bool true on success or false on failure
      */
     protected static function processLogical(Document &$doc, array $logicalUnit)
     {
         $logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
 
-        $errors = 0;
+        $success = true;
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
         if (!empty($metadata)) {
@@ -418,21 +418,21 @@ class Indexer
                     );
                 }
                 $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
-                return 1;
+                return false;
             }
         }
         // Check for child elements...
         if (!empty($logicalUnit['children'])) {
             foreach ($logicalUnit['children'] as $child) {
-                if (!$errors) {
+                if ($success) {
                     // ...and process them, too.
-                    $errors = self::processLogical($doc, $child);
+                    $success = self::processLogical($doc, $child);
                 } else {
                     break;
                 }
             }
         }
-        return $errors;
+        return $success;
     }
 
     /**
@@ -444,7 +444,7 @@ class Indexer
      * @param int $page: The page number
      * @param array $physicalUnit: Array of the physical unit to process
      *
-     * @return int 0 on success or 1 on failure
+     * @return bool true on success or false on failure
      */
     protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
     {
@@ -517,10 +517,10 @@ class Indexer
                     );
                 }
                 $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
-                return 1;
+                return false;
             }
         }
-        return 0;
+        return true;
     }
 
     /**
