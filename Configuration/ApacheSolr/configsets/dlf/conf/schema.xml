@@ -112,7 +112,7 @@ limitations under the License.
         <!-- PageID for the document (or its top-level parent) in the TYPO3 database. -->
         <field name="pid" type="int" indexed="true" stored="false" required="true" default="0" />
         <!-- Image number where this document starts. -->
-        <field name="page" type="int" indexed="false" stored="true" required="true" default="0" />
+        <field name="page" type="int" indexed="true" stored="true" required="true" default="0" docValues="true" />
         <!-- Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! -->
         <field name="partof" type="int" indexed="true" stored="true" required="true" default="0" docValues="true" />
         <!-- Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! -->

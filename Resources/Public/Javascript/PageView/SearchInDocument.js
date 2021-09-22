@@ -311,7 +311,7 @@ $(document).ready(function() {
             function(data) {
                 var resultItems = [];
                 var resultList = '<div class="results-active-indicator"></div><ul>';
-                var start = -1;
+                var start = $( "input[id='tx-dlf-search-in-document-start']" ).val();
                 if (data['numFound'] > 0) {
                     data['documents'].forEach(function (element, i) {
                         if (start < 0) {
