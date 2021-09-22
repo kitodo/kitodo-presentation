@@ -44,7 +44,7 @@ class SearchInDocument
         // Get input parameters and decrypt core name.
         $parameters = $request->getParsedBody();
         $encrypted = (string) $parameters['encrypted'];
-        $count = intval($parameters['start']);
+        $start = intval($parameters['start']);
         if (empty($encrypted)) {
             throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
@@ -59,7 +59,8 @@ class SearchInDocument
             $query = $solr->service->createSelect();
             $query->setFields([$fields['id'], $fields['uid'], $fields['page']]);
             $query->setQuery($fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $fields['uid'] . ':' . intval($parameters['uid']));
-            $query->setStart($count)->setRows(20);
+            $query->setStart($start)->setRows(20);
+            $query->addSort($fields['page'], $query::SORT_ASC);
             $hl = $query->getHighlighting();
             $hl->setFields([$fields['fulltext']]);
             $hl->setUseFastVectorHighlighter(true);
@@ -74,8 +75,7 @@ class SearchInDocument
                     'page' => $result->page,
                     'snippet' => !empty($snippet) ? implode(' [...] ', $snippet) : ''
                 ];
-                $output['documents'][$count] = $document;
-                $count++;
+                $output['documents'][] = $document;
             }
         }
         // Create response object.
