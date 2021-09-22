@@ -702,8 +702,8 @@ abstract class Document
                     && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
                 ) {
                     // Load XML from file.
-                    $rawTextXml = simplexml_load_string($fileContent);
-                    $textMiniOcr = $obj->getTextAsMiniOcr($rawTextXml);
+                    $ocrTextXml = $this->getXmlObject($fileContent);
+                    $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
                     $this->rawTextArray[$id] = $textMiniOcr;
                 } else {
                     $this->logger->warning('Invalid class/method "' . $class . '->getTextAsMiniOcr()" for text format "' . $textFormat . '"');
@@ -727,18 +727,33 @@ abstract class Document
      */
     private function getTextFormat($fileContent)
     {
+        // Get the root element's name as text format.
+        return strtoupper($this->getXmlObject($fileContent)->getName());
+    }
+
+    /**
+     * Get the OCR full text as object
+     *
+     * @access private
+     *
+     * @param string $fileContent: content of the XML file
+     *
+     * @return \SimpleXMLElement The OCR full text as object
+     */
+    private function getXmlObject($fileContent)
+    {
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
         // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
         $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
         // Load XML from file.
-        $rawTextXml = simplexml_load_string($fileContent);
+        $ocrTextXml = simplexml_load_string($fileContent);
         // Reset entity loader setting.
         libxml_disable_entity_loader($previousValueOfEntityLoader);
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
-        // Get the root element's name as text format.
-        return strtoupper($rawTextXml->getName());
+        // Get the root element.
+        return $ocrTextXml;
     }
 
     /**
