@@ -44,6 +44,9 @@ class SearchInDocument
         ];
         // Get input parameters and decrypt core name.
         $parameters = $request->getParsedBody();
+        if ($parameters === null) {
+            throw new \InvalidArgumentException('No parameters passed!', 1632322297);
+        }
         $encrypted = (string) $parameters['encrypted'];
         $start = intval($parameters['start']);
         if (empty($encrypted)) {
@@ -109,7 +112,7 @@ class SearchInDocument
      * @access private
      *
      * @param array $fields array of SOLR index fields
-     * @param array $parameters parsed from request body
+     * @param array|object $parameters parsed from request body
      *
      * @return string SOLR query
      */
