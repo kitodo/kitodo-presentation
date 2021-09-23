@@ -311,6 +311,8 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
             $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
             // max amount of snippets for a single page
             $solrRequest->addParam('hl.snippets', 20);
+            // we store the fulltext on page level and can disable this option
+            $solrRequest->addParam('hl.ocr.trackPages', 'off');
         }
         // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
         $response = $this->solr->service->executeRequest($solrRequest);

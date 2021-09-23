@@ -78,6 +78,8 @@ class SearchInDocument
             $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
             // max amount of snippets for a single page
             $solrRequest->addParam('hl.snippets', 20);
+            // we store the fulltext on page level and can disable this option
+            $solrRequest->addParam('hl.ocr.trackPages', 'off');
 
             $response = $solr->service->executeRequest($solrRequest);
             $result = $solr->service->createResult($query, $response);
