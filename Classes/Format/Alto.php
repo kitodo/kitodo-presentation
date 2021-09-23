@@ -12,8 +12,6 @@
 
 namespace Kitodo\Dlf\Format;
 
-use Kitodo\Dlf\Common\Solr;
-
 /**
  * Fulltext ALTO format class for the 'dlf' extension
  *
@@ -101,7 +99,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @return string The parsed word extracted from attribute
      */
-    private function getWord($attributes) 
+    private function getWord($attributes)
     {
         return htmlspecialchars((string) $attributes['CONTENT']) . ' ';
     }
