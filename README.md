@@ -31,6 +31,7 @@ Currently **TYPO3 9.5 LTS** is supported with the following system requirements:
 | MySQL       | 5.7.x                 |
 | MariaDB     | 10.2.x - 10.3.x       |
 | Apache Solr | 7.x - 8.x             |
+| OCR Highlighting Plugin | 0.7.1     |
 
 Application level dependencies are handled by [Composer](https://getcomposer.org) (see [composer.json](./composer.json)).
 
@@ -40,8 +41,6 @@ Kitodo. Key to digital objects
 [Kitodo](https://github.com/kitodo) is an open source software suite intended to support mass digitization projects for cultural heritage institutions. Kitodo is widely-used and cooperatively maintained by major German libraries and digitization service providers. The software implements international standards such as IIIF, METS, MODS, ALTO, TEI, and other formats. Kitodo consists of several independent modules serving different purposes such as controlling the digitization workflow, enriching descriptive and structural metadata, and presenting the results to the public in a modern and convenient way.
 
 To get more information, visit the [Kitodo homepage](https://www.kitodo.org). You can also follow Kitodo News on [Twitter](https://twitter.com/kitodo_org).
-
-[![Join the Gitter chat!](https://badges.gitter.im/Kitodo/Presentation.svg)](https://gitter.im/Kitodo/Presentation)
 
 ---
 
