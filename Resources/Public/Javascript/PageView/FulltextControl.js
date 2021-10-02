@@ -217,7 +217,7 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
     $("#tx-dlf-tools-fulltext")
         .text(this.dic['fulltext'])
         .attr('title', this.dic['fulltext']);
-    
+
     this.activate();
 };
 
@@ -330,12 +330,12 @@ dlfViewerFullTextControl.prototype.removeHighlightEffect = function(activeHoverT
 /**
  * Add highlight effect from full text view
  * @param {ol.Feature|undefined} textlineFeature
- * @param {any} hoverSourceTextline_ 
+ * @param {any} hoverSourceTextline_
  */
 dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature, hoverSourceTextline_) {
     if (textlineFeature) {
         var targetElem = $('#' + textlineFeature.getId());
-        
+
         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
             targetElem.addClass('highlight');
             setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement);
@@ -346,7 +346,7 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
 
 /**
  * Scroll to full text element if it is highlighted
- * @param {any} element 
+ * @param {any} element
  * @param {string} fullTextScrollElement
  */
 dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement) {
@@ -501,7 +501,7 @@ dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
     var content = textLine.get('content');
 
     for (var item of content) {
-        textLineSpan.append(getItemForTextLineSpan(item));
+        textLineSpan.append(this.getItemForTextLineSpan(item));
     }
 
     textLineSpan.append('<span class="sp"> </span>');
@@ -511,9 +511,9 @@ dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
 /**
  * Get item with id for string elements and without id
  * for spaces or text lines.
- * 
+ *
  * @param {Object} item
- * 
+ *
  * @return {string}
  */
 dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {

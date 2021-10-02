@@ -46,14 +46,14 @@ function resetStart() {
 /**
  * Add highlight effect for found search phrase.
  * @param {array} highlightIds
- * 
+ *
  * @returns void
  */
 function addHighlightEffect(highlightIds) {
     if (highlightIds.length > 0) {
         highlightIds.forEach(function (highlightId) {
             var targetElement = $('#' + highlightId);
-    
+
             if (targetElement.length > 0 && !targetElement.hasClass('highlight')) {
                 targetElement.addClass('highlight');
             }
@@ -63,9 +63,9 @@ function addHighlightEffect(highlightIds) {
 
 /**
  * Get base URL for snippet links.
- * 
+ *
  * @param {string} id
- * 
+ *
  * @returns {string}
  */
 function getBaseUrl(id) {
@@ -85,9 +85,9 @@ function getBaseUrl(id) {
 
 /**
  * Get highlight coordinates as string separated by ';'.
- * 
+ *
  * @param {string} highlight
- * 
+ *
  * @returns {string}
  */
 function getHighlights(highlight) {
@@ -109,10 +109,10 @@ function getHighlights(highlight) {
 /**
  * Get current URL query parameters.
  * It returns array of params in form 'param=value' if there are any params supplied in the given url. If there are none it returns empty array
- * 
+ *
  * @param {string} baseUrl
- * 
- * @returns {array} array with params or empty 
+ *
+ * @returns {array} array with params or empty
  */
 function getCurrentQueryParams(baseUrl) {
     if(baseUrl.indexOf('?') > 0) {
@@ -125,10 +125,10 @@ function getCurrentQueryParams(baseUrl) {
 /**
  * Get all URL query parameters for snippet links.
  * All means that it includes together params which were already supplied in the page url and params which are returned as search results.
- * 
+ *
  * @param {string} baseUrl
  * @param {array} queryParams
- * 
+ *
  * @returns {array} array with params in form 'param' => 'value'
  */
 function getAllQueryParams(baseUrl, queryParams) {
@@ -148,10 +148,10 @@ function getAllQueryParams(baseUrl, queryParams) {
 /**
  * Get needed URL query parameters.
  * It returns array of params as objects 'param' => 'value'. It contains exactly 3 params which are taken out of search result.
- * 
+ *
  * @param {array} element
- * 
- * @returns {array} array with params in form 'param' => 'value' 
+ *
+ * @returns {array} array with params in form 'param' => 'value'
  */
 function getNeededQueryParams(element) {
     var id = $("input[id='tx-dlf-search-in-document-id']").attr('name');
@@ -159,7 +159,7 @@ function getNeededQueryParams(element) {
     var page = $("input[id='tx-dlf-search-in-document-page']").attr('name');
 
     var queryParams = [];
-        
+
     if(id && getBaseUrl(element['uid']).split('?')[0].indexOf(element['uid']) === -1) {
         queryParams.push(id);
         queryParams[id] = element['uid'];
@@ -180,9 +180,9 @@ function getNeededQueryParams(element) {
 
 /**
  * Get snippet link.
- * 
+ *
  * @param {array} element
- * 
+ *
  * @returns {string}
  */
 function getLink(element) {
@@ -207,10 +207,10 @@ function getLink(element) {
 
 /**
  * Get navigation buttons.
- * 
+ *
  * @param {int} start
  * @param {numFound} start
- * 
+ *
  * @returns {string}
  */
 function getNavigationButtons(start, numFound) {
@@ -228,7 +228,7 @@ function getNavigationButtons(start, numFound) {
 
 /**
  * Get current page.
- * 
+ *
  * @returns {int}
  */
 function getCurrentPage() {
@@ -248,9 +248,9 @@ function getCurrentPage() {
 
 /**
  * Add highlight to image.
- * 
+ *
  * @param {array} data
- * 
+ *
  * @returns void
  */
 function addImageHighlight(data) {
@@ -272,7 +272,7 @@ function addImageHighlight(data) {
 
 /**
  * Trigger search for document loaded from hit list.
- * 
+ *
  * @returns void
  */
 function triggerSearchAfterHitLoad() {
@@ -321,7 +321,7 @@ $(document).ready(function() {
                             resultItems[element['page']] = '<span class="structure">'
                                 + $('#tx-dlf-search-in-document-label-page').text() + ' ' + element['page']
                                 + '</span><br />'
-                                + '<span ="textsnippet">'
+                                + '<span class="textsnippet">'
                                 + '<a href=\"' + getLink(element) + '\">' + element['snippet'] + '</a>'
                                 + '</span>';
                         }
