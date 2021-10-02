@@ -772,7 +772,10 @@ dlfUtils.isWebGLEnabled = function () {
                     // WebGL is enabled;
                     return true;
                 }
-            } catch (e) {}
+            } catch (e) {
+                /* eslint no-console: ["error", { allow: ["info"] }] */
+                console.info(e);
+            }
         }
         // WebGL not supported
         return false;

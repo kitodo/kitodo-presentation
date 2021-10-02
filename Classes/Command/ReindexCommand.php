@@ -12,16 +12,16 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Document;
 
 /**
@@ -32,7 +32,7 @@ use Kitodo\Dlf\Common\Document;
  * @subpackage dlf
  * @access public
  */
-class ReindexCommand extends Command
+class ReindexCommand extends BaseCommand
 {
     /**
      * Configure the command by defining the name, options and arguments
@@ -69,6 +69,12 @@ class ReindexCommand extends Command
                 '[UID|index_name] of the Solr core the document should be added to.'
             )
             ->addOption(
+                'owner',
+                'o',
+                InputOption::VALUE_OPTIONAL,
+                '[UID|index_name] of the Library which should be set as owner of the documents.'
+            )
+            ->addOption(
                 'all',
                 'a',
                 InputOption::VALUE_NONE,
@@ -94,10 +100,8 @@ class ReindexCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = 0;
-        if (MathUtility::canBeInterpretedAsInteger($input->getOption('pid'))) {
-            $startingPoint = MathUtility::forceIntegerInRange((int) $input->getOption('pid'), 0);
-        }
+        $startingPoint = $this->getStartingPoint($input->getOption('pid'));
+
         if ($startingPoint == 0) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
             exit(1);
@@ -108,11 +112,8 @@ class ReindexCommand extends Command
             && !is_array($input->getOption('solr'))
         ) {
             $allSolrCores = $this->getSolrCores($startingPoint);
-            if (MathUtility::canBeInterpretedAsInteger($input->getOption('solr'))) {
-                $solrCoreUid = MathUtility::forceIntegerInRange((int) $input->getOption('solr'), 0);
-            } else {
-                $solrCoreUid = $allSolrCores[$input->getOption('solr')];
-            }
+            $solrCoreUid = $this->getSolrCoreUid($allSolrCores, $input->getOption('solr'));
+
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
                 $output_solrCores = [];
@@ -130,6 +131,16 @@ class ReindexCommand extends Command
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
             exit(1);
+        }
+
+        if (!empty($input->getOption('owner'))) {
+            if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
+                $owner = MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1);
+            } else {
+                $owner = (string) $input->getOption('owner');
+            }
+        } else {
+            $owner = null;
         }
 
         if (!empty($input->getOption('all'))) {
@@ -154,13 +165,13 @@ class ReindexCommand extends Command
             $doc = Document::getInstance($document, $startingPoint, true);
             if ($doc->ready) {
                 if ($dryRun) {
-                    $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                    $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                 } else {
                     if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on UID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
                     }
                     // ...and save it to the database...
-                    if (!$doc->save($startingPoint, $solrCoreUid)) {
+                    if (!$doc->save($startingPoint, $solrCoreUid, $owner)) {
                         $io->error('ERROR: Document "' . $id . '" not saved and indexed.');
                     }
                 }
@@ -172,38 +183,6 @@ class ReindexCommand extends Command
         }
 
         $io->success('All done!');
-    }
-
-
-    /**
-     * Fetches all Solr cores on given page.
-     *
-     * @param int $pageId The UID of the Solr core or 0 to disable indexing
-     *
-     * @return array Array of valid Solr cores
-     */
-    protected function getSolrCores(int $pageId): array
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_solrcores');
-
-        $solrCores = [];
-        $result = $queryBuilder
-            ->select('uid', 'index_name')
-            ->from('tx_dlf_solrcores')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'pid',
-                    $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
-                )
-            )
-            ->execute();
-
-        while ($record = $result->fetch()) {
-            $solrCores[$record['index_name']] = $record['uid'];
-        }
-
-        return $solrCores;
     }
 
     /**

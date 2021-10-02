@@ -346,7 +346,7 @@ dlfViewer.prototype.displayHighlightWord = function() {
             param = key.trim();
             break;
         }
-    };
+    }
 
     if (hasOwnProperty && this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
         var value = urlParams[param],

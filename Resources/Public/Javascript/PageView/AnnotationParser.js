@@ -106,7 +106,7 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
         maxY = maxY === undefined ? feature.get('y2') : maxY < feature.get('y2') ? feature.get('y2') : maxY;
 
         annotationFeatures.push(feature);
-    };
+    }
 
     var width = maxX - minX,
         height = maxY - minY,

@@ -38,7 +38,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @package TYPO3
  * @subpackage dlf
  * @access public
- * @property-write int $cPid This holds the PID for the configuration
+ * @property int $cPid This holds the PID for the configuration
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
@@ -658,8 +658,8 @@ final class IiifManifest extends Document
             ->from('tx_dlf_metadataformat')
             ->from('tx_dlf_formats')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($pid)),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($cPid)),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
@@ -779,7 +779,7 @@ final class IiifManifest extends Document
      *
      * @see Document::getParentDocumentUidForSaving()
      */
-    protected function getParentDocumentUidForSaving($pid, $core)
+    protected function getParentDocumentUidForSaving($pid, $core, $owner)
     {
         // Do nothing.
     }

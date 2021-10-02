@@ -231,7 +231,7 @@ CREATE TABLE tx_dlf_libraries (
     contact varchar(255) DEFAULT '' NOT NULL,
     image mediumblob NOT NULL,
     oai_label varchar(255) DEFAULT '' NOT NULL,
-    oai_base int(11) DEFAULT '0' NOT NULL,
+    oai_base varchar(255) DEFAULT '' NOT NULL,
     opac_label varchar(255) DEFAULT '' NOT NULL,
     opac_base varchar(255) DEFAULT '' NOT NULL,
     union_label varchar(255) DEFAULT '' NOT NULL,

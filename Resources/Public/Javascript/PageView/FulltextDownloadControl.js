@@ -58,9 +58,9 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function() {
     var features = fullTextData.getTextblocks();
     var fileContent = '';
     if (features !== undefined) {
-        for (feature of features) {
+        for (var feature of features) {
             var textLines = feature.get('textlines');
-            for (textLine of textLines) {
+            for (var textLine of textLines) {
                 fileContent = fileContent.concat(this.appendTextLine(textLine));
             }
             fileContent = fileContent.concat('\n\n');
@@ -79,7 +79,7 @@ dlfViewerFullTextDownloadControl.prototype.appendTextLine = function(textLine) {
     var  fileContent = '';
     var content = textLine.get('content');
 
-    for (item of content) {
+    for (var item of content) {
         var fullText = item.get('fulltext');
         var fullTextLines = fullText.split(/\n/g);
         for (const [i, fullTextLine] of fullTextLines.entries()) {
