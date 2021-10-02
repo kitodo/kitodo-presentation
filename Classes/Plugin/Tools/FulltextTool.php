@@ -89,7 +89,7 @@ class FulltextTool extends \Kitodo\Dlf\Common\AbstractPlugin
             . ';fulltext-off:' . htmlspecialchars($this->pi_getLL('fulltext-off', ''))
             . ';activate-full-text-initially:' . MathUtility::forceIntegerInRange($this->conf['activateFullTextInitially'], 0, 1, 0)
             . ';full-text-scroll-element:' . $this->conf['fullTextScrollElement']
-            . ';search-hl-parameters:' . $this->conf['searchHlParameters'] . '">&nbsp;</a>';
+            . '">&nbsp;</a>';
         } else {
             $markerArray['###FULLTEXT_SELECT###'] = '<span class="no-fulltext">' . htmlspecialchars($this->pi_getLL('fulltext-not-available', '')) . '</span>';
         }

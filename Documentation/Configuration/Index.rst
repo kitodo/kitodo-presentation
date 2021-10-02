@@ -155,14 +155,31 @@ This extension doesn't include Solr, but just a prepared configuration set.
 To setup Apache Solr, perform the following steps:
 
 1. Make sure you have Apache Solr 7.7 or 8.8 and running.
-    Download Solr from https://solr.apache.org/downloads.html.
-    Other versions may work but are not tested.
 
-2. Copy the lib/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/dlf.
+   Download Solr from https://solr.apache.org/downloads.html.
+   Other versions may work but are not tested.
 
-3. Using basic authentication is optional but recommended.
-    The documentation is available here:
-    https://lucene.apache.org/solr/guide/7_4/basic-authentication-plugin.html
+2. Copy the config set to your solr home
+
+.. code-block:: bash
+
+      cp -r dlf/Configuration/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/
+
+3. Get the Solr OCR Highlighting plugin and put it into contrib directory.
+
+   The plugin is available on GitHub (https://github.com/dbmdz/solr-ocrhighlighting/releases).
+   The documentation can be found here: https://dbmdz.github.io/solr-ocrhighlighting/.
+
+   The Solr OCR Highlighting plugin is required for full text search as of Kitodo.Presentation 3.3.
+
+.. code-block:: bash
+
+      cp -r dlf/Configuration/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/
+
+4. Using basic authentication is optional but recommended.
+
+   The documentation is available here:
+   https://solr.apache.org/guide/8_8/basic-authentication-plugin.html
 
 
 .. _configuration-typoscript:

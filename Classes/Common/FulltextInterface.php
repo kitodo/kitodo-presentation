@@ -33,4 +33,15 @@ interface FulltextInterface
      * @return string The raw unformatted fulltext
      */
     public function getRawText(\SimpleXMLElement $xml);
+
+    /**
+     * This extracts the fulltext data from ALTO XML and returns it in MiniOCR format
+     *
+     * @access public
+     *
+     * @param \SimpleXMLElement $xml: The XML to extract the raw text from
+     *
+     * @return string The unformatted fulltext in MiniOCR format
+     */
+    public function getTextAsMiniOcr(\SimpleXMLElement $xml);
 }
