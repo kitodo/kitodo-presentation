@@ -499,20 +499,38 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
 dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
     var textLineSpan = $('<span class="textline" id="' + textLine.getId() + '">');
     var content = textLine.get('content');
-    
+
     for (var item of content) {
-        var span = $('<span class="' + item.get('type') + '" id="' + item.getId() + '"/>');
-        var spanText = item.get('fulltext');
-        var spanTextLines = spanText.split(/\n/g);
-        for (const [i, spanTextLine] of spanTextLines.entries()) {
-            span.append(document.createTextNode(spanTextLine));
-            if (i < spanTextLines.length - 1) {
-                span.append($('<br />'));
-            }
-        }
-        textLineSpan.append(span);
+        textLineSpan.append(getItemForTextLineSpan(item));
     }
 
-    textLineSpan.append('<span class="textline" id="sp"> </span>');
+    textLineSpan.append('<span class="sp"> </span>');
     $('#tx-dlf-fulltextselection').append(textLineSpan);
+};
+
+/**
+ * Get item with id for string elements and without id
+ * for spaces or text lines.
+ * 
+ * @param {Object} item
+ * 
+ * @return {string}
+ */
+dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {
+    var span = '';
+    if (item.get('type') === 'string') {
+        span = $('<span class="' + item.get('type') + '" id="' + item.getId() + '"/>');
+    } else {
+        span = $('<span class="' + item.get('type') + '"/>');
+    }
+
+    var spanText = item.get('fulltext');
+    var spanTextLines = spanText.split(/\n/g);
+    for (const [i, spanTextLine] of spanTextLines.entries()) {
+        span.append(document.createTextNode(spanTextLine));
+        if (i < spanTextLines.length - 1) {
+            span.append($('<br />'));
+        }
+    }
+    return span;
 };
