@@ -64,7 +64,7 @@ $(document).ready(function() {
             function(data) {
                 var resultItems = [];
                 var resultList = '<div class="results-active-indicator"></div><ul>';
-                var start = -1;
+                var start = $( "input[id='tx-dlf-search-in-document-start']" ).val();
                 if (data['numFound'] > 0) {
                     // Take the workview baseUrl from the form action.
                     // The URL may be in the following form
