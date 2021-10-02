@@ -204,7 +204,8 @@ class Helper
      *
      * @return mixed
      */
-    public static function getXmlFileAsString($content) {
+    public static function getXmlFileAsString($content)
+    {
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
         // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
