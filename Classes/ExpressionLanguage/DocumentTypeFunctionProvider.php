@@ -128,7 +128,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 ->from('tx_dlf_documents')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($piVars['recordId'])),
-                    Helper::whereExpression('tx_documents')
+                    Helper::whereExpression('tx_dlf_documents')
                 )
                 ->setMaxResults(1)
                 ->execute();
