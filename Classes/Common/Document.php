@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -1075,6 +1076,10 @@ abstract class Document
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
+        // Get hidden records, too.
+        $queryBuilder
+            ->getRestrictions()
+            ->removeByType(HiddenRestriction::class);
 
         // Get UIDs for collections.
         $result = $queryBuilder
@@ -1085,8 +1090,7 @@ abstract class Document
             ->from('tx_dlf_collections')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($pid)),
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-                Helper::whereExpression('tx_dlf_collections')
+                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0])
             )
             ->execute();
 
