@@ -74,6 +74,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 $type = 'undefined';
 
+                // It happens that $queryParams is an empty array.
+                if (empty($queryParams)) {
+                    return $type;
+                }
+
                 // Load document with current plugin parameters.
                 $doc = $this->loadDocument($queryParams[$this->prefixId]);
                 if ($doc === null) {

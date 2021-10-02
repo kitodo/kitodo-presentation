@@ -181,21 +181,21 @@ plugin e.g by setting some specific FLUID variables.
 
 This is an example usage of the TypoScript condition ("getDocumentType")::
 
-    [getDocumentType('{$config.storagePid}') === 'ephemera' or getDocumentType('{$config.storagePid}') === 'newspaper']
+    [getDocumentType({$config.storagePid}) === 'ephemera' or getDocumentType({$config.storagePid}) === 'newspaper']
     page.10.variables {
         isNewspaper = TEXT
         isNewspaper.value = newspaper_anchor
     }
     [END]
 
-    [getDocumentType('{$config.storagePid}') === 'year']
+    [getDocumentType({$config.storagePid}) === 'year']
     page.10.variables {
         isNewspaper = TEXT
         isNewspaper.value = newspaper_year
     }
     [END]
 
-    [getDocumentType('{$config.storagePid}') === 'issue']
+    [getDocumentType({$config.storagePid}) === 'issue']
     page.10.variables {
         isNewspaper = TEXT
         isNewspaper.value = newspaper_issue
