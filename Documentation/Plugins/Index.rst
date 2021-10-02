@@ -181,21 +181,21 @@ plugin e.g by setting some specific FLUID variables.
 
 This is an example usage of the TypoScript condition ("getDocumentType")::
 
-    [getDocumentType("{$config.storagePid}") == "ephemera" or getDocumentType("{$config.storagePid}") == "newspaper"]
+    [getDocumentType('{$config.storagePid}') === 'ephemera' or getDocumentType('{$config.storagePid}') === 'newspaper']
     page.10.variables {
         isNewspaper = TEXT
         isNewspaper.value = newspaper_anchor
     }
     [END]
 
-    [getDocumentType("{$config.storagePid}") == "year"]
+    [getDocumentType('{$config.storagePid}') === 'year']
     page.10.variables {
         isNewspaper = TEXT
         isNewspaper.value = newspaper_year
     }
     [END]
 
-    [getDocumentType("{$config.storagePid}") == "issue"]
+    [getDocumentType('{$config.storagePid}') === 'issue']
     page.10.variables {
         isNewspaper = TEXT
         isNewspaper.value = newspaper_issue
@@ -1088,7 +1088,7 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-ful
 
 Search in Document Tool
 ^^^^^^^^^^^^^^^^^^^^^^^
-This plugin adds an possibility to search all appearances of the phrase in currently displayed document 
+This plugin adds an possibility to search all appearances of the phrase in currently displayed document
 
 :typoscript:`plugin.tx_dlf_searchindocumenttool.`
 
@@ -1136,7 +1136,7 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[start]
- 
+
  - :Property:
        pageInputName
    :Data Type:
