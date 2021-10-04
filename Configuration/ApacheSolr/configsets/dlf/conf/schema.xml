@@ -15,7 +15,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<schema name="dlf" version="3.0">
+<schema name="dlf" version="1.6">
+    <!-- attribute "name" is the name of this schema and is only used for display purposes.
+       version="x.y" is Solr's version number for the schema syntax and
+       semantics.  It should not normally be changed by applications.
+       1.0: multiValued attribute did not exist, all fields are multiValued
+            by nature
+       1.1: multiValued attribute introduced, false by default
+       1.2: omitTermFreqAndPositions attribute introduced, true by default
+            except for text fields.
+       1.3: removed optional field compress feature
+       1.4: autoGeneratePhraseQueries attribute introduced to drive QueryParser
+            behavior when a single string produces multiple tokens.  Defaults
+            to off for version >= 1.4
+       1.5: omitNorms defaults to true for primitive field types
+            (int, float, boolean, string...)
+       1.6: useDocValuesAsStored defaults to true.
+    -->
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
         <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" />
@@ -44,7 +60,7 @@ limitations under the License.
             <analyzer type="index">
                 <!-- For converting OCR to plaintext -->
                 <charFilter class="de.digitalcollections.solrocr.lucene.filters.OcrCharFilterFactory" />
-                
+
                 <charFilter class="solr.HTMLStripCharFilterFactory" />
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.FlattenGraphFilterFactory" />
