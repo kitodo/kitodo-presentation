@@ -14,7 +14,7 @@
  *
  * Example:
  *
- * [getDocumentType("{$config.storagePid}") == "newspaper"]
+ * [getDocumentType({$config.storagePid}) === 'newspaper']
  *  page.10.variables {
  * 	 isNewspaper = TEXT
  *	 isNewspaper.value = newspaper_anchor
