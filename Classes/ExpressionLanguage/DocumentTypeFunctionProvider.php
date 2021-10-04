@@ -74,6 +74,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 $type = 'undefined';
 
+                // It happens that $queryParams is an empty array.
+                if (empty($queryParams)) {
+                    return $type;
+                }
+
                 // Load document with current plugin parameters.
                 $doc = $this->loadDocument($queryParams[$this->prefixId]);
                 if ($doc === null) {
@@ -128,7 +133,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 ->from('tx_dlf_documents')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($piVars['recordId'])),
-                    Helper::whereExpression('tx_documents')
+                    Helper::whereExpression('tx_dlf_documents')
                 )
                 ->setMaxResults(1)
                 ->execute();
