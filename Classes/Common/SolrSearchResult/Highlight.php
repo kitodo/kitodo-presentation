@@ -72,22 +72,6 @@ class Highlight
     private $yEndPosition;
 
     /**
-     * The width of found highlight
-     *
-     * @var int
-     * @access private
-     */
-    private $width;
-
-    /**
-     * The height of found highlight
-     *
-     * @var int
-     * @access private
-     */
-    private $height;
-
-    /**
      * The constructor for highlight.
      *
      * @access public
@@ -103,9 +87,7 @@ class Highlight
         $this->xEndPosition = $highlight['lrx'];
         $this->yBeginPosition = $highlight['uly'];
         $this->yEndPosition = $highlight['lry'];
-        $this->width = $highlight['lrx'] - $highlight['ulx'];
-        $this->height = $highlight['lry'] - $highlight['uly'];
-        $this->id = $this->width . '_' . $this->height . '_' . $this->xBeginPosition . '_' . $this->yBeginPosition;
+        $this->id = $this->xBeginPosition . '_' . $this->yBeginPosition;
     }
 
     /**
@@ -166,29 +148,5 @@ class Highlight
     public function getYEndPosition()
     {
         return $this->yEndPosition;
-    }
-
-    /**
-     * Get the highlight's width.
-     *
-     * @access public
-     *
-     * @return int The highlight's width
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * Get the highlight's height.
-     *
-     * @access public
-     *
-     * @return int The highlight's height
-     */
-    public function getHeight()
-    {
-        return $this->height;
     }
 }

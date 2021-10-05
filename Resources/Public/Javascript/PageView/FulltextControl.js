@@ -334,15 +334,12 @@ dlfViewerFullTextControl.prototype.removeHighlightEffect = function(activeHoverT
  */
 dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature, hoverSourceTextline_) {
     if (textlineFeature) {
-        var idParts = textlineFeature.getId().split("_");
-        if (idParts.length === 4) {
-            var targetElements = $("span[id$='_" + idParts[2] + "_" + idParts[3] + "']");
+        var targetElem = $('#' + textlineFeature.getId());
 
-            if (targetElements === 1 && targetElements[0].length > 0 && !targetElements[0].hasClass('highlight')) {
-                targetElements[0].addClass('highlight');
-                setTimeout(this.scrollToText, 1000, targetElements[0], this.fullTextScrollElement);
-                hoverSourceTextline_.addFeature(textlineFeature);
-            }
+        if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
+            targetElem.addClass('highlight');
+            setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement);
+            hoverSourceTextline_.addFeature(textlineFeature);
         }
     }
 };

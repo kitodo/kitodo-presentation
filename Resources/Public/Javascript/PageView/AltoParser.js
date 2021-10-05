@@ -43,15 +43,12 @@ var dlfAltoParser = function(opt_imageObj, opt_width, opt_height, opt_offset) {
 };
 
 /**
- * @param {number} width
- * @param {number} height
  * @param {number} hpos
  * @param {number} vpos
  * @private
  */
-dlfAltoParser.prototype.generateId_ = function(width, height, hpos, vpos) {
-    var heigt_ = isNaN(height) ? '0' : height;
-    return '' + width + '_' + heigt_ + '_' + hpos + '_' + vpos;
+dlfAltoParser.prototype.generateId_ = function(hpos, vpos) {
+    return '' + hpos + '_' + vpos;
 };
 
 /**
@@ -194,7 +191,7 @@ dlfAltoParser.prototype.parseFeatureWithGeometry_ = function(node) {
         hpos = parseInt(node.getAttribute("HPOS")),
         vpos = parseInt(node.getAttribute("VPOS")),
         type = node.nodeName.toLowerCase(),
-        id = this.generateId_(width, height, hpos, vpos),
+        id = this.generateId_(hpos, vpos),
         feature = new ol.Feature(geometry);
 
     feature.setId(id);
