@@ -144,7 +144,9 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
     }
 
     /**
-     * Get current document id
+     * Get current document id. As default the uid will be used.
+     * In case there is defined documentIdUrlSchema then the id will
+     * extracted from this URL.
      *
      * @access protected
      *
@@ -154,6 +156,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $id = $this->doc->uid;
 
+        // example: https://host.de/items/*id*/record
         if (!empty($this->conf['documentIdUrlSchema'])) {
             $arr = explode('*', $this->conf['documentIdUrlSchema']);
 

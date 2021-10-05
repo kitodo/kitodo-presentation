@@ -78,12 +78,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.fullTextScrollElement = this.dic['full-text-scroll-element'];
 
     /**
-     * @type {string}
-     * @private
-     */
-    this.searchHlParameters = this.dic['search-hl-parameters'];
-    
-    /**
      * @type {ol.Feature|undefined}
      * @private
      */
@@ -223,7 +217,7 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
     $("#tx-dlf-tools-fulltext")
         .text(this.dic['fulltext'])
         .attr('title', this.dic['fulltext']);
-    
+
     this.activate();
 };
 
@@ -336,12 +330,12 @@ dlfViewerFullTextControl.prototype.removeHighlightEffect = function(activeHoverT
 /**
  * Add highlight effect from full text view
  * @param {ol.Feature|undefined} textlineFeature
- * @param {any} hoverSourceTextline_ 
+ * @param {any} hoverSourceTextline_
  */
 dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature, hoverSourceTextline_) {
     if (textlineFeature) {
         var targetElem = $('#' + textlineFeature.getId());
-        
+
         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
             targetElem.addClass('highlight');
             setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement);
@@ -352,7 +346,7 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
 
 /**
  * Scroll to full text element if it is highlighted
- * @param {any} element 
+ * @param {any} element
  * @param {string} fullTextScrollElement
  */
 dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement) {
@@ -505,20 +499,38 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
 dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
     var textLineSpan = $('<span class="textline" id="' + textLine.getId() + '">');
     var content = textLine.get('content');
-    
+
     for (var item of content) {
-        var span = $('<span class="' + item.get('type') + '" id="' + item.getId() + '"/>');
-        var spanText = item.get('fulltext');
-        var spanTextLines = spanText.split(/\n/g);
-        for (const [i, spanTextLine] of spanTextLines.entries()) {
-            span.append(document.createTextNode(spanTextLine));
-            if (i < spanTextLines.length - 1) {
-                span.append($('<br />'));
-            }
-        }
-        textLineSpan.append(span);
+        textLineSpan.append(this.getItemForTextLineSpan(item));
     }
 
-    textLineSpan.append('<span class="textline" id="sp"> </span>');
+    textLineSpan.append('<span class="sp"> </span>');
     $('#tx-dlf-fulltextselection').append(textLineSpan);
+};
+
+/**
+ * Get item with id for string elements and without id
+ * for spaces or text lines.
+ *
+ * @param {Object} item
+ *
+ * @return {string}
+ */
+dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {
+    var span = '';
+    if (item.get('type') === 'string') {
+        span = $('<span class="' + item.get('type') + '" id="' + item.getId() + '"/>');
+    } else {
+        span = $('<span class="' + item.get('type') + '"/>');
+    }
+
+    var spanText = item.get('fulltext');
+    var spanTextLines = spanText.split(/\n/g);
+    for (const [i, spanTextLine] of spanTextLines.entries()) {
+        span.append(document.createTextNode(spanTextLine));
+        if (i < spanTextLines.length - 1) {
+            span.append($('<br />'));
+        }
+    }
+    return span;
 };

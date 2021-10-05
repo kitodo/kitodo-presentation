@@ -15,7 +15,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<schema name="dlf" version="3.0">
+<schema name="dlf" version="1.6">
+    <!-- attribute "name" is the name of this schema and is only used for display purposes.
+       version="x.y" is Solr's version number for the schema syntax and
+       semantics.  It should not normally be changed by applications.
+       1.0: multiValued attribute did not exist, all fields are multiValued
+            by nature
+       1.1: multiValued attribute introduced, false by default
+       1.2: omitTermFreqAndPositions attribute introduced, true by default
+            except for text fields.
+       1.3: removed optional field compress feature
+       1.4: autoGeneratePhraseQueries attribute introduced to drive QueryParser
+            behavior when a single string produces multiple tokens.  Defaults
+            to off for version >= 1.4
+       1.5: omitNorms defaults to true for primitive field types
+            (int, float, boolean, string...)
+       1.6: useDocValuesAsStored defaults to true.
+    -->
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
         <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" />
@@ -39,8 +55,12 @@ limitations under the License.
                 <filter class="solr.LowerCaseFilterFactory" />
             </analyzer>
         </fieldType>
-        <fieldType name="fulltext" class="solr.TextField" positionIncrementGap="100">
+        <fieldType name="text_ocr" class="solr.TextField" storeOffsetsWithPositions="true" termVectors="true">
+            <!-- TODO: check why some filters are outcommented -->
             <analyzer type="index">
+                <!-- For converting OCR to plaintext -->
+                <charFilter class="de.digitalcollections.solrocr.lucene.filters.OcrCharFilterFactory" />
+
                 <charFilter class="solr.HTMLStripCharFilterFactory" />
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.FlattenGraphFilterFactory" />
@@ -55,6 +75,9 @@ limitations under the License.
                 <filter class="solr.RemoveDuplicatesTokenFilterFactory" />
                 <!-- <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replacement="" replace="all" /> -->
             </analyzer>
+            <!-- query analysis chain, should not include the character filters for highlighting -->
+            <!-- TODO: which filters here are the character filters? -->
+            <!-- TODO: check why some filters are outcommented -->
             <analyzer type="query">
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true" />
@@ -127,7 +150,7 @@ limitations under the License.
         <!-- Autocomplete field for search form. -->
         <field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
         <!-- Fulltext field for OCR results. -->
-        <field name="fulltext" type="fulltext" indexed="true" stored="true" multiValued="false" default="" termVectors="true" termPositions="true" termOffsets="true" />
+        <field name="fulltext" type="text_ocr" indexed="true" stored="true" multiValued="false" default="" termVectors="true" termPositions="true" termOffsets="true" />
         <!-- Record ID of the document (required for OAI_DC output). -->
         <field name="record_id" type="string" indexed="true" stored="true" required="true" multiValued="false" default="" />
         <!-- Permanent URL of the document (required for EPICUR output). -->

@@ -571,8 +571,8 @@ abstract class Document
             if (!empty($extConf['caching'])) {
                 Helper::saveToSession(self::$registry, get_class($instance));
             }
+            $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($instance));
         }
-        $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($instance));
         // Return new instance.
         return $instance;
     }
@@ -639,10 +639,8 @@ abstract class Document
     }
 
     /**
-     * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas. Text might be
-     * given as ALTO for METS or as annotations or ALTO for IIIF resources. If IIIF plain text annotations
-     * with the motivation "painting" should be treated as full text representations, the extension has to be
-     * configured accordingly.
+     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas. Text might be
+     * given as ALTO for METS or as annotations or ALTO for IIIF resources.
      *
      * @access public
      *
@@ -651,23 +649,23 @@ abstract class Document
      * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
      *
-     * @return string The physical structure node's / IIIF resource's raw text
+     * @return string The OCR full text
      */
-    public abstract function getRawText($id);
+    public abstract function getFullText($id);
 
     /**
-     * This extracts the raw text for a physical structure node / IIIF Manifest / Canvas from an
-     * XML fulltext representation (currently only ALTO). For IIIF manifests, ALTO documents have
+     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
+     * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
      * to be given in the Canvas' / Manifest's "seeAlso" property.
      *
      * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
      * of the Manifest / Range (IIIF)
      *
-     * @return string The physical structure node's / IIIF resource's raw text from XML
+     * @return string The OCR full text
      */
-    protected function getRawTextFromXml($id)
+    protected function getFullTextFromXml($id)
     {
-        $rawText = '';
+        $fullText = '';
         // Load available text formats, ...
         $this->loadFormats();
         // ... physical structure ...
@@ -678,37 +676,25 @@ abstract class Document
         if (!empty($this->physicalStructureInfo[$id])) {
             while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
                 if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
-                    // Get fulltext file.
-                    $file = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
-                    if ($file !== false) {
-                        // Turn off libxml's error logging.
-                        $libxmlErrors = libxml_use_internal_errors(true);
-                        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
-                        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-                        // Load XML from file.
-                        $rawTextXml = simplexml_load_string($file);
-                        // Reset entity loader setting.
-                        libxml_disable_entity_loader($previousValueOfEntityLoader);
-                        // Reset libxml's error logging.
-                        libxml_use_internal_errors($libxmlErrors);
-                        // Get the root element's name as text format.
-                        $textFormat = strtoupper($rawTextXml->getName());
+                    // Get full text file.
+                    $fileContent = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
+                    if ($fileContent !== false) {
+                        $textFormat = $this->getTextFormat($fileContent);
                     } else {
-                        $this->logger->warning('Couldn\'t load fulltext file for structure node @ID "' . $id . '"');
-                        return $rawText;
+                        $this->logger->warning('Couldn\'t load full text file for structure node @ID "' . $id . '"');
+                        return $fullText;
                     }
                     break;
                 }
             }
         } else {
             $this->logger->warning('Invalid structure node @ID "' . $id . '"');
-            return $rawText;
+            return $fullText;
         }
         // Is this text format supported?
-        if (
-            !empty($rawTextXml)
-            && !empty($this->formats[$textFormat])
-        ) {
+        // This part actually differs from previous version of indexed OCR
+        if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
+            $textMiniOcr = '';
             if (!empty($this->formats[$textFormat]['class'])) {
                 $class = $this->formats[$textFormat]['class'];
                 // Get the raw text from class.
@@ -716,16 +702,59 @@ abstract class Document
                     class_exists($class)
                     && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
                 ) {
-                    $rawText = $obj->getRawText($rawTextXml);
-                    $this->rawTextArray[$id] = $rawText;
+                    // Load XML from file.
+                    $ocrTextXml = $this->getXmlObject($fileContent);
+                    $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
+                    $this->rawTextArray[$id] = $textMiniOcr;
                 } else {
                     $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
                 }
             }
+            $fullText = $textMiniOcr;
         } else {
             $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
         }
-        return $rawText;
+        return $fullText;
+    }
+
+    /**
+     * Get format of the OCR full text
+     *
+     * @access private
+     *
+     * @param string $fileContent: content of the XML file
+     *
+     * @return string The format of the OCR full text
+     */
+    private function getTextFormat($fileContent)
+    {
+        // Get the root element's name as text format.
+        return strtoupper($this->getXmlObject($fileContent)->getName());
+    }
+
+    /**
+     * Get the OCR full text as object
+     *
+     * @access private
+     *
+     * @param string $fileContent: content of the XML file
+     *
+     * @return \SimpleXMLElement The OCR full text as object
+     */
+    private function getXmlObject($fileContent)
+    {
+        // Turn off libxml's error logging.
+        $libxmlErrors = libxml_use_internal_errors(true);
+        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
+        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+        // Load XML from file.
+        $ocrTextXml = simplexml_load_string($fileContent);
+        // Reset entity loader setting.
+        libxml_disable_entity_loader($previousValueOfEntityLoader);
+        // Reset libxml's error logging.
+        libxml_use_internal_errors($libxmlErrors);
+        // Get the root element.
+        return $ocrTextXml;
     }
 
     /**
@@ -1310,11 +1339,11 @@ abstract class Document
         }
         // Add document to index.
         if ($core) {
-            Indexer::add($this, $core);
+            return Indexer::add($this, $core);
         } else {
             $this->logger->notice('Invalid UID "' . $core . '" for Solr core');
+            return false;
         }
-        return true;
     }
 
     /**
