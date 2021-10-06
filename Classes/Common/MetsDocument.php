@@ -721,16 +721,7 @@ final class MetsDocument extends Document
     {
         $fileResource = GeneralUtility::getUrl($location);
         if ($fileResource !== false) {
-            // Turn off libxml's error logging.
-            $libxmlErrors = libxml_use_internal_errors(true);
-            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-            $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-            // Load XML from file.
-            $xml = simplexml_load_string($fileResource);
-            // reset entity loader setting
-            libxml_disable_entity_loader($previousValueOfEntityLoader);
-            // Reset libxml's error logging.
-            libxml_use_internal_errors($libxmlErrors);
+            $xml = Helper::getXmlFileAsString($fileResource);
             // Set some basic properties.
             if ($xml !== false) {
                 $this->xml = $xml;
@@ -1145,12 +1136,7 @@ final class MetsDocument extends Document
      */
     public function __wakeup()
     {
-        // Turn off libxml's error logging.
-        $libxmlErrors = libxml_use_internal_errors(true);
-        // Reload XML from string.
-        $xml = @simplexml_load_string($this->asXML);
-        // Reset libxml's error logging.
-        libxml_use_internal_errors($libxmlErrors);
+        $xml = Helper::getXmlFileAsString($this->asXML);
         if ($xml !== false) {
             $this->asXML = '';
             $this->xml = $xml;
