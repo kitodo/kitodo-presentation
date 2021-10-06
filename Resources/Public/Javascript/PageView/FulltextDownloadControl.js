@@ -73,7 +73,7 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function() {
 /**
  * Append text line
  *
- * @param {string} textLine
+ * @param {ol.Feature} textLine
  */
 dlfViewerFullTextDownloadControl.prototype.appendTextLine = function(textLine) {
     var  fileContent = '';
@@ -89,5 +89,5 @@ dlfViewerFullTextDownloadControl.prototype.appendTextLine = function(textLine) {
             }
         }
     }
-    return fileContent.concat(fileContent);
+    return fileContent;
 };
