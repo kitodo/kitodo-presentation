@@ -516,17 +516,7 @@ abstract class Document
                 }
                 $content = GeneralUtility::getUrl($location);
                 if ($content !== false) {
-                    // TODO use single place to load xml
-                    // Turn off libxml's error logging.
-                    $libxmlErrors = libxml_use_internal_errors(true);
-                    // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-                    $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-                    // Try to load XML from file.
-                    $xml = simplexml_load_string($content);
-                    // reset entity loader setting
-                    libxml_disable_entity_loader($previousValueOfEntityLoader);
-                    // Reset libxml's error logging.
-                    libxml_use_internal_errors($libxmlErrors);
+                    $xml = Helper::getXmlFileAsString($content);
                     if ($xml !== false) {
                         /* @var $xml \SimpleXMLElement */
                         $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
@@ -703,7 +693,7 @@ abstract class Document
                     && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
                 ) {
                     // Load XML from file.
-                    $ocrTextXml = $this->getXmlObject($fileContent);
+                    $ocrTextXml = Helper::getXmlFileAsString($fileContent);
                     $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
                     $this->rawTextArray[$id] = $textMiniOcr;
                 } else {
@@ -729,32 +719,7 @@ abstract class Document
     private function getTextFormat($fileContent)
     {
         // Get the root element's name as text format.
-        return strtoupper($this->getXmlObject($fileContent)->getName());
-    }
-
-    /**
-     * Get the OCR full text as object
-     *
-     * @access private
-     *
-     * @param string $fileContent: content of the XML file
-     *
-     * @return \SimpleXMLElement The OCR full text as object
-     */
-    private function getXmlObject($fileContent)
-    {
-        // Turn off libxml's error logging.
-        $libxmlErrors = libxml_use_internal_errors(true);
-        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept.
-        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-        // Load XML from file.
-        $ocrTextXml = simplexml_load_string($fileContent);
-        // Reset entity loader setting.
-        libxml_disable_entity_loader($previousValueOfEntityLoader);
-        // Reset libxml's error logging.
-        libxml_use_internal_errors($libxmlErrors);
-        // Get the root element.
-        return $ocrTextXml;
+        return strtoupper(Helper::getXmlFileAsString($fileContent)->getName());
     }
 
     /**
