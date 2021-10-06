@@ -89,7 +89,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->delete('tx_dlf_tokens')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int) ($GLOBALS['EXEC_TIME'] - $this->conf['expired'])))
+                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp', $queryBuilder->createNamedParameter((int) ($GLOBALS['EXEC_TIME'] - $this->conf['settings.expired'])))
             )
             ->execute();
 
@@ -236,7 +236,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function getEpicurData(array $metadata)
     {
         // Define all XML elements with or without qualified namespace.
-        if (empty($this->conf['unqualified_epicur'])) {
+        if (empty($this->conf['settings.unqualified_epicur'])) {
             $epicur = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:epicur');
             $admin = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:administrative_data');
             $delivery = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:delivery');
@@ -343,15 +343,15 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         // Create XML document.
         $this->oai = new \DOMDocument('1.0', 'UTF-8');
         // Add processing instruction (aka XSL stylesheet).
-        if (!empty($this->conf['stylesheet'])) {
+        if (!empty($this->conf['settings.stylesheet'])) {
             // Resolve "EXT:" prefix in file path.
-            if (strpos($this->conf['stylesheet'], 'EXT:') === 0) {
-                [$extKey, $filePath] = explode('/', substr($this->conf['stylesheet'], 4), 2);
+            if (strpos($this->conf['settings.stylesheet'], 'EXT:') === 0) {
+                [$extKey, $filePath] = explode('/', substr($this->conf['settings.stylesheet'], 4), 2);
                 if (ExtensionManagementUtility::isLoaded($extKey)) {
-                    $this->conf['stylesheet'] = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($extKey)) . $filePath;
+                    $this->conf['settings.stylesheet'] = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($extKey)) . $filePath;
                 }
             }
-            $stylesheet = GeneralUtility::locationHeaderUrl($this->conf['stylesheet']);
+            $stylesheet = GeneralUtility::locationHeaderUrl($this->conf['settings.stylesheet']);
         } else {
             // Use default stylesheet if no custom stylesheet is given.
             $stylesheet = GeneralUtility::locationHeaderUrl(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
@@ -390,7 +390,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         $request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request', htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES, 'UTF-8'));
         if (!$this->error) {
@@ -410,7 +410,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         header('Content-Length: ' . strlen($content));
         header('Content-Type: text/xml; charset=utf-8');
         header('Date: ' . date('r', $GLOBALS['EXEC_TIME']));
-        header('Expires: ' . date('r', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
+        header('Expires: ' . date('r', $GLOBALS['EXEC_TIME'] + $this->conf['settings.expired']));
         echo $content;
         exit;
     }
@@ -465,7 +465,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             return $this->error('cannotDisseminateFormat');
         }
         $where = '';
-        if (!$this->conf['show_userdefined']) {
+        if (!$this->conf['settings.show_userdefined']) {
             $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
         }
 
@@ -484,8 +484,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $values = [
             $this->piVars['identifier'],
-            $this->conf['pages'],
-            $this->conf['pages']
+            $this->conf['settings.pages'],
+            $this->conf['settings.pages']
         ];
         $types = [
             Connection::PARAM_STR,
@@ -571,8 +571,8 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             )
             ->from('tx_dlf_libraries')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['library'])),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->conf['settings.pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->conf['settings.library'])),
                 Helper::whereExpression('tx_dlf_libraries')
             )
             ->setMaxResults(1)
@@ -597,7 +597,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->select('tx_dlf_documents.tstamp AS tstamp')
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages']))
+                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['settings.pages']))
             )
             ->orderBy('tx_dlf_documents.tstamp')
             ->setMaxResults(1)
@@ -607,12 +607,12 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             $timestamp = $resArray['tstamp'];
             $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
         } else {
-            $this->logger->notice('No records found with PID ' . $this->conf['pages']);
+            $this->logger->notice('No records found with PID ' . $this->conf['settings.pages']);
         }
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         $baseURL = htmlspecialchars($this->cObj->typoLink_URL($linkConf), ENT_NOQUOTES);
         // Add identification node.
@@ -691,7 +691,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->select('tx_dlf_documents.*')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['settings.pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->piVars['identifier']))
                 )
                 ->orderBy('tx_dlf_documents.tstamp')
@@ -788,7 +788,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         $where = '';
-        if (!$this->conf['show_userdefined']) {
+        if (!$this->conf['settings.show_userdefined']) {
             $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
         }
 
@@ -800,7 +800,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
             ->from('tx_dlf_collections')
             ->where(
                 $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['settings.pages'])),
                 $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', $queryBuilder->createNamedParameter('')),
                 $where,
                 Helper::whereExpression('tx_dlf_collections')
@@ -838,7 +838,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $solr_query = '';
         $where = '';
-        if (!$this->conf['show_userdefined']) {
+        if (!$this->conf['settings.show_userdefined']) {
             $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
         }
         // Check "set" for valid value.
@@ -853,7 +853,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
                 )
                 ->from('tx_dlf_collections')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['settings.pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_collections.oai_name', $queryBuilder->expr()->literal($this->piVars['set'])),
                     $where,
                     Helper::whereExpression('tx_dlf_collections')
@@ -924,13 +924,13 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
         $documentSet = [];
-        $solr = Solr::getInstance($this->conf['solrcore']);
+        $solr = Solr::getInstance($this->conf['settings.solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return $documentSet;
         }
-        if (intval($this->conf['solr_limit']) > 0) {
-            $solr->limit = intval($this->conf['solr_limit']);
+        if (intval($this->conf['settings.solr_limit']) > 0) {
+            $solr->limit = intval($this->conf['settings.solr_limit']);
         }
         // We only care about the UID in the results and want them sorted
         $parameters = [
@@ -959,7 +959,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function generateOutputForDocumentList(DocumentList $documentListSet)
     {
-        $documentsToProcess = $documentListSet->removeRange(0, (int) $this->conf['limit']);
+        $documentsToProcess = $documentListSet->removeRange(0, (int) $this->conf['settings.limit']);
         $verb = $this->piVars['verb'];
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -979,9 +979,9 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $values = [
             $documentsToProcess,
-            $this->conf['pages'],
-            $this->conf['pages'],
-            $this->conf['limit']
+            $this->conf['settings.pages'],
+            $this->conf['settings.pages'],
+            $this->conf['settings.limit']
         ];
         $types = [
             Connection::PARAM_INT_ARRAY,
@@ -1091,7 +1091,7 @@ class OaiPmh extends \Kitodo\Dlf\Common\AbstractPlugin
         }
         $resumptionToken->setAttribute('cursor', intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
         $resumptionToken->setAttribute('completeListSize', $documentListSet->metadata['completeListSize']);
-        $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['expired']));
+        $resumptionToken->setAttribute('expirationDate', gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->conf['settings.expired']));
         return $resumptionToken;
     }
 }

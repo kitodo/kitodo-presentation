@@ -48,7 +48,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
         if (
             $this->doc === null
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpsImageDownload'])
+            || empty($this->conf['settings.fileGrpsImageDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
             return $content;
@@ -94,7 +94,7 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['fileGrpsImageDownload']);
+        $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->conf['settings.fileGrpsImageDownload']);
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
@@ -112,8 +112,8 @@ class ImageDownloadTool extends \Kitodo\Dlf\Common\AbstractPlugin
                 }
                 $linkConf = [
                     'parameter' => $image['url'],
-                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                    'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'title' => $label . $mimetypeLabel,
                     'extTarget' => '_blank',
                     'additionalParams' => '',

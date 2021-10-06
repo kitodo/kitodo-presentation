@@ -38,16 +38,16 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
      */
     protected function getLinkToListview()
     {
-        if (!empty($this->conf['targetPid'])) {
+        if (!empty($this->conf['settings.targetPid'])) {
             // Load the list.
             $list = GeneralUtility::makeInstance(DocumentList::class);
             if (count($list) > 0) {
                 // Build typolink configuration array.
                 $conf = [
                     'useCacheHash' => 1,
-                    'parameter' => $this->conf['targetPid'],
-                    'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+                    'parameter' => $this->conf['settings.targetPid'],
+                    'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+                    'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
                     'title' => htmlspecialchars($this->pi_getLL('linkToList', ''))
                 ];
                 return $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('linkToList', '')), $conf);
@@ -68,8 +68,8 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         // Configure @action URL for form.
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+            'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
         $output = '<form action="' . $this->cObj->typoLink_URL($linkConf) . '" method="get"><div><input type="hidden" name="id" value="' . $GLOBALS['TSFE']->id . '" />';
         // Add plugin variables.
@@ -135,7 +135,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         // Load template file.
         $this->getTemplate();
         // Steps for X pages backward / forward. Double page view uses double steps.
-        $pageSteps = $this->conf['pageStep'] * ($this->piVars['double'] + 1);
+        $pageSteps = $this->conf['settings.pageStep'] * ($this->piVars['double'] + 1);
         // Link to first page.
         if ($this->piVars['page'] > 1) {
             $markerArray['###FIRST###'] = $this->makeLink(htmlspecialchars($this->pi_getLL('firstPage', '')), ['page' => 1]);
@@ -226,8 +226,8 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         $conf = [
             'useCacheHash' => 1,
             'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
+            'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
             'ATagParams' => $aTagParams,
             'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $overrulePIvars, '', true, false),
             'title' => $label

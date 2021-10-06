@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
@@ -39,8 +39,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <limit>
+                    </settings.pages>
+                    <settings.limit>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.pi_flexform.limit</label>
@@ -50,8 +50,8 @@
                                 <default>25</default>
                             </config>
                         </TCEforms>
-                    </limit>
-                    <targetPid>
+                    </settings.limit>
+                    <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.pi_flexform.targetPid</label>
@@ -70,8 +70,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </targetPid>
-                    <getTitle>
+                    </settings.targetPid>
+                    <settings.getTitle>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.pi_flexform.getTitle</label>
@@ -80,8 +80,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </getTitle>
-                    <basketButton>
+                    </settings.getTitle>
+                    <settings.basketButton>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.pi_flexform.basketButton</label>
@@ -90,8 +90,8 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </basketButton>
-                    <targetBasket>
+                    </settings.basketButton>
+                    <settings.targetBasket>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.pi_flexform.targetBasket</label>
@@ -104,8 +104,8 @@
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </targetBasket>
-                    <templateFile>
+                    </settings.targetBasket>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.pi_flexform.templateFile</label>
@@ -119,7 +119,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>

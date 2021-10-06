@@ -55,8 +55,8 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         if (
             $this->doc === null
             || $this->doc->numPages < 1
-            || empty($this->conf['fileGrpFulltext'])
-            || empty($this->conf['solrcore'])
+            || empty($this->conf['settings.fileGrpFulltext'])
+            || empty($this->conf['settings.solrcore'])
         ) {
             // Quit without doing anything if required variables are not set.
             return $content;
@@ -79,7 +79,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         }
 
         // Quit if no fulltext file is present
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['fileGrpFulltext']);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->conf['settings.fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext])) {
                 $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpFulltext];
@@ -105,12 +105,12 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
             '###LABEL_PREVIOUS###' => htmlspecialchars($this->pi_getLL('label.previous')),
             '###LABEL_PAGE###' => htmlspecialchars($this->pi_getLL('label.logicalPage')),
             '###LABEL_NORESULT###' => htmlspecialchars($this->pi_getLL('label.noresult')),
-            '###LABEL_QUERY_URL###' => $this->conf['queryInputName'],
-            '###LABEL_START###' => $this->conf['startInputName'],
-            '###LABEL_ID###' => $this->conf['idInputName'],
-            '###LABEL_PAGE_URL###' => $this->conf['pageInputName'],
-            '###LABEL_HIGHLIGHT_WORD###' => $this->conf['highlightWordInputName'],
-            '###LABEL_ENCRYPTED###' => $this->conf['encryptedInputName'],
+            '###LABEL_QUERY_URL###' => $this->conf['settings.queryInputName'],
+            '###LABEL_START###' => $this->conf['settings.startInputName'],
+            '###LABEL_ID###' => $this->conf['settings.idInputName'],
+            '###LABEL_PAGE_URL###' => $this->conf['settings.pageInputName'],
+            '###LABEL_HIGHLIGHT_WORD###' => $this->conf['settings.highlightWordInputName'],
+            '###LABEL_ENCRYPTED###' => $this->conf['settings.encryptedInputName'],
             '###CURRENT_DOCUMENT###' => $this->getCurrentDocumentId(),
             '###SOLR_ENCRYPTED###' => $this->getEncryptedCoreName() ? : ''
         ];
@@ -132,13 +132,13 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http']
+            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http']
         ];
 
         $actionUrl = $this->cObj->typoLink_URL($linkConf);
 
-        if (!empty($this->conf['searchUrl'])) {
-            $actionUrl = $this->conf['searchUrl'];
+        if (!empty($this->conf['settings.searchUrl'])) {
+            $actionUrl = $this->conf['settings.searchUrl'];
         }
         return $actionUrl;
     }
@@ -156,9 +156,10 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
     {
         $id = $this->doc->uid;
 
+
         // example: https://host.de/items/*id*/record
-        if (!empty($this->conf['documentIdUrlSchema'])) {
-            $arr = explode('*', $this->conf['documentIdUrlSchema']);
+        if (!empty($this->conf['settings.documentIdUrlSchema'])) {
+            $arr = explode('*', $this->conf['settings.documentIdUrlSchema']);
 
             if (count($arr) == 2) {
                 $id = explode($arr[0], $id)[0];
@@ -180,7 +181,7 @@ class SearchInDocumentTool extends \Kitodo\Dlf\Common\AbstractPlugin
     protected function getEncryptedCoreName()
     {
         // Get core name.
-        $name = Helper::getIndexNameFromUid($this->conf['solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexNameFromUid($this->conf['settings.solrcore'], 'tx_dlf_solrcores');
         // Encrypt core name.
         if (!empty($name)) {
             $name = Helper::encrypt($name);

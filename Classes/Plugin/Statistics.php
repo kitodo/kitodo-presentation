@@ -45,14 +45,14 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
         // Turn cache on.
         $this->setCache(true);
         // Quit without doing anything if required configuration variables are not set.
-        if (empty($this->conf['pages'])) {
+        if (empty($this->conf['settings.pages'])) {
             $this->logger->warning('Incomplete plugin configuration');
             return $content;
         }
         // Get description.
-        $content .= $this->pi_RTEcssText($this->conf['description']);
+        $content .= $this->pi_RTEcssText($this->conf['settings.description']);
         // Check for selected collections.
-        if ($this->conf['collections']) {
+        if ($this->conf['settings.collections']) {
             // Include only selected collections.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
@@ -79,10 +79,10 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                     )
                 )
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
-                    $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['settings.pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($this->conf['settings.pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
-                    $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $this->conf['collections']), Connection::PARAM_INT_ARRAY)),
+                    $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $this->conf['settings.collections']), Connection::PARAM_INT_ARRAY)),
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                 )
                 ->execute()
@@ -124,10 +124,10 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                         )
                     )
                     ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
-                        $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($this->conf['pages'])),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['settings.pages'])),
+                        $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($this->conf['settings.pages'])),
                         $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery),
-                        $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $this->conf['collections']), Connection::PARAM_INT_ARRAY)),
+                        $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $this->conf['settings.collections']), Connection::PARAM_INT_ARRAY)),
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
                     ->execute()
@@ -141,7 +141,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->count('tx_dlf_documents.uid')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['settings.pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
                     Helper::whereExpression('tx_dlf_documents')
                 )
@@ -166,7 +166,7 @@ class Statistics extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->count('tx_dlf_documents.uid')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['settings.pages'])),
                     $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
                 )
                 ->execute()

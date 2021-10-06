@@ -53,7 +53,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['pages']);
+        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['settings.pages']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
@@ -63,25 +63,25 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             !empty($entry['points'])
             && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($entry['points'])
         ) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['page' => $entry['points']], true, false, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['page' => $entry['points']], true, false, $this->conf['settings.targetPid']);
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
+            if ($this->conf['settings.basketButton']) {
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['settings.targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
             }
         } elseif (
             !empty($entry['points'])
             && is_string($entry['points'])
         ) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['points'], 'page' => 1], true, false, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['points'], 'page' => 1], true, false, $this->conf['settings.targetPid']);
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
+            if ($this->conf['settings.basketButton']) {
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['settings.targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
             }
         } elseif (!empty($entry['targetUid'])) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['targetUid'], 'page' => 1], true, false, $this->conf['targetPid']);
+            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['targetUid'], 'page' => 1], true, false, $this->conf['settings.targetPid']);
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->conf['basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], true, false, $this->conf['targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
+            if ($this->conf['settings.basketButton']) {
+                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], true, false, $this->conf['settings.targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
             }
         }
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
@@ -99,7 +99,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             // 3. Current menu node points to another file
             // 4. Current menu node has no corresponding images
             if (
-                !empty($this->conf['menuConf.']['expAll'])
+                !empty($this->conf['settings.menuConf.']['expAll'])
                 || $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
                 || empty($this->doc->smLinks['l2p'][$entry['id']])
@@ -217,8 +217,8 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
             $excludeOtherWhere = '';
-            if ($this->conf['excludeOther']) {
-                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->conf['pages']);
+            if ($this->conf['settings.excludeOther']) {
+                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->conf['settings.pages']);
             }
             // Check if there are any metadata to suggest.
             $result = $queryBuilder

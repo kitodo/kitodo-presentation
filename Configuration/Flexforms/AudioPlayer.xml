@@ -20,7 +20,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
@@ -39,8 +39,8 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <excludeOther>
+                    </settings.pages>
+                    <settings.excludeOther>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/AudioPlayer.xml:tt_content.pi_flexform.excludeOther</label>
@@ -49,8 +49,8 @@
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </excludeOther>
-                    <elementId>
+                    </settings.excludeOther>
+                    <settings.elementId>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/AudioPlayer.xml:tt_content.pi_flexform.elementId</label>
@@ -60,8 +60,8 @@
                                 <default>tx-dlf-audio</default>
                             </config>
                         </TCEforms>
-                    </elementId>
-                    <templateFile>
+                    </settings.elementId>
+                    <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/AudioPlayer.xml:tt_content.pi_flexform.templateFile</label>
@@ -75,7 +75,7 @@
                                 <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>

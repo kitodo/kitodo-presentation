@@ -50,7 +50,7 @@ class Toolbox extends \Kitodo\Dlf\Common\AbstractPlugin
         ];
         // Get template subpart for tools.
         $subpart = $this->templateService->getSubpart($this->template, '###TOOLS###');
-        $tools = explode(',', $this->conf['tools']);
+        $tools = explode(',', $this->conf['settings.tools']);
         // Add the tools to the toolbox.
         foreach ($tools as $tool) {
             $tool = trim($tool);
