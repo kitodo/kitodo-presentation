@@ -394,10 +394,14 @@ dlfViewer.prototype.init = function(controlNames) {
             });
 
             // Position image according to user preferences
-            var lon = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
-              lat = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
-              zoom = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
-            if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lon) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(lat) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoom)) {
+            var lonCk = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
+              latCk = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
+              zoomCk = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
+            if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lonCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(latCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoomCk)) {
+                var lon = Number(lonCk),
+                  lat = Number(latCk),
+                  zoom = Number(zoomCk);
+
                 // make sure, zoom center is on viewport
                 var center = this.map.getView().getCenter();
                 if ((lon < (2.2 * center[0])) && (lat < (-0.2 * center[1])) && (lat > (2.2 * center[1]))) {
