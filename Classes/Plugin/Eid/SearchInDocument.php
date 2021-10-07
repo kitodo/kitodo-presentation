@@ -77,7 +77,7 @@ class SearchInDocument
             // return the coordinates of highlighted search as absolute coordinates
             $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
             // max amount of snippets for a single page
-            $solrRequest->addParam('hl.snippets', 20);
+            $solrRequest->addParam('hl.snippets', 40);
             // we store the fulltext on page level and can disable this option
             $solrRequest->addParam('hl.ocr.trackPages', 'off');
 
