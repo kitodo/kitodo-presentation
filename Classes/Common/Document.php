@@ -736,8 +736,6 @@ abstract class Document
      */
     public static function getTitle($uid, $recursive = false)
     {
-        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-
         $title = '';
         // Sanitize input.
         $uid = max(intval($uid), 0);
@@ -772,10 +770,10 @@ abstract class Document
                     $title = self::getTitle($partof, true);
                 }
             } else {
-                $logger->warning('No document with UID ' . $uid . ' found or document not accessible');
+                Helper::log('No document with UID ' . $uid . ' found or document not accessible', LOG_SEVERITY_WARNING);
             }
         } else {
-            $logger->error('Invalid UID ' . $uid . ' for document');
+            Helper::log('Invalid UID ' . $uid . ' for document', LOG_SEVERITY_ERROR);
         }
         return $title;
     }

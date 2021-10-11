@@ -230,10 +230,9 @@ class Helper
      *
      * @return void
      */
-    //TODO: find better way to handle logger in static class
     public static function log($message, $severity = 0)
     {
-        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
 
         switch ($severity) {
             case 0:

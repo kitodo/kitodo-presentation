@@ -132,8 +132,6 @@ class Solr implements LoggerAwareInterface
      */
     public static function createCore($core = '')
     {
-        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-
         // Get next available core name if none given.
         if (empty($core)) {
             $core = 'dlfCore' . self::getNextCoreNumber();
@@ -165,7 +163,7 @@ class Solr implements LoggerAwareInterface
                     // Nothing to do here.
                 }
             } else {
-                $logger->error('Apache Solr not available');
+                Helper::log('Apache Solr not available', LOG_SEVERITY_ERROR);
             }
         }
         return '';
@@ -300,8 +298,6 @@ class Solr implements LoggerAwareInterface
      */
     public static function getInstance($core = null)
     {
-        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
             $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
@@ -311,7 +307,7 @@ class Solr implements LoggerAwareInterface
             empty($core)
             && $core !== null
         ) {
-            $logger->error('Invalid core UID or name given for Apache Solr');
+            Helper::log('Invalid core UID or name given for Apache Solr', LOG_SEVERITY_ERROR);
         }
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
