@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -93,8 +92,6 @@ class Indexer
      */
     public static function add(Document &$doc, $core = 0)
     {
-        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-
         if (in_array($doc->uid, self::$processedDocs)) {
             return true;
         } elseif (self::solrConnect($core, $doc->pid)) {
@@ -105,7 +102,7 @@ class Indexer
                 if ($parent->ready) {
                     $success = self::add($parent, $core);
                 } else {
-                    $logger->error('Could not load parent document with UID ' . $doc->parentId);
+                    Helper::log('Could not load parent document with UID ' . $doc->parentId, LOG_SEVERITY_ERROR);
                     return false;
                 }
             }
@@ -186,7 +183,7 @@ class Indexer
                         'core.template.flashMessages'
                     );
                 }
-                $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
+                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
                 return false;
             }
         } else {
@@ -199,7 +196,7 @@ class Indexer
                     'core.template.flashMessages'
                 );
             }
-            $logger->error('Could not connect to Apache Solr server');
+            Helper::log('Could not connect to Apache Solr server', LOG_SEVERITY_ERROR);
             return false;
         }
     }
@@ -216,12 +213,10 @@ class Indexer
      */
     public static function getIndexFieldName($index_name, $pid = 0)
     {
-        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$pid) {
-            $logger->error('Invalid PID ' . $pid . ' for metadata configuration');
+            Helper::log('Invalid PID ' . $pid . ' for metadata configuration', LOG_SEVERITY_ERROR);
             return '';
         }
         // Load metadata configuration.
@@ -316,8 +311,6 @@ class Indexer
      */
     protected static function processLogical(Document &$doc, array $logicalUnit)
     {
-        $logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-
         $success = true;
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
@@ -332,7 +325,7 @@ class Indexer
             // Replace owner UID with index_name.
             if (
                 !empty($metadata['owner'][0])
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])
+                && MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])
             ) {
                 $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], 'tx_dlf_libraries', $doc->cPid);
             }
@@ -417,7 +410,7 @@ class Indexer
                         'core.template.flashMessages'
                     );
                 }
-                $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
+                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
                 return false;
             }
         }
@@ -448,8 +441,6 @@ class Indexer
      */
     protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
     {
-        $logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-
         if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
@@ -516,7 +507,7 @@ class Indexer
                         'core.template.flashMessages'
                     );
                 }
-                $logger->error('Apache Solr threw exception: "' . $e->getMessage() . '"');
+                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
                 return false;
             }
         }
