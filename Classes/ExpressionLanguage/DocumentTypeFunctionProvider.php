@@ -74,8 +74,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 $type = 'undefined';
 
-                // It happens that $queryParams is an empty array.
-                if (empty($queryParams)) {
+                // It happens that $queryParams is an empty array or does not contain a key 'tx_dlf'
+                // in case of other contexts. In this case we have to return here to avoid log messages.
+                if (empty($queryParams) || !isset($queryParams[$this->prefixId])) {
                     return $type;
                 }
 
