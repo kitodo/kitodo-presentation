@@ -47,7 +47,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'alphanum,nospace,required,unique',
+                'eval' => 'alphanum,nospace,unique',
                 'default' => '',
                 'fieldInformation' => [
                     'solrCoreStatus' => [

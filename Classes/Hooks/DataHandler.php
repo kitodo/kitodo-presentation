@@ -97,7 +97,7 @@ class DataHandler implements LoggerAwareInterface
                     // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
                     // Create new Solr core.
-                    $fieldArray['index_name'] = Solr::createCore();
+                    $fieldArray['index_name'] = Solr::createCore($fieldArray['index_name']);
                     if (empty($fieldArray['index_name'])) {
                         $this->logger->error('Could not create new Apache Solr core');
                     }
