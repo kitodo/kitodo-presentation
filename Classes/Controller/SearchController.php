@@ -11,16 +11,16 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -234,10 +234,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $this->view->assign('QUERY', (!empty($requestData['query']) ? htmlspecialchars($requestData['query']) : ''));
             $this->view->assign('FULLTEXT_SEARCH', $requestData['fulltext']);
         }
-        // Add javascript for search suggestions if enabled and jQuery autocompletion is available.
-        if (!empty($this->settings['suggest'])) {
-            $this->addAutocompleteJS();
-        }
 
         $this->view->assign('FACETS_MENU', $this->addFacetsMenu());
 
@@ -257,37 +253,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     protected function pi_getLL($label)
     {
         return $GLOBALS['TSFE']->sL('LLL:EXT:dlf/Resources/Private/Language/Search.xml:' . $label);
-    }
-
-    /**
-     * Adds the JS files necessary for search suggestions
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    protected function addAutocompleteJS()
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
-        // Check if there are any metadata to suggest.
-        $result = $queryBuilder
-            ->select('tx_dlf_metadata.*')
-            ->from('tx_dlf_metadata')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.index_autocomplete', 1),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->settings['pages'])),
-                Helper::whereExpression('tx_dlf_metadata')
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        if ($result->rowCount() == 1) {
-
-        } else {
-            $this->logger->warning('No metadata fields configured for search suggestions');
-        }
     }
 
     /**

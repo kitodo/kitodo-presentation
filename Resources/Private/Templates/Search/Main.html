@@ -94,5 +94,7 @@
 </html>
 
 <f:section name="FooterAssets">
-    <script src="{f:uri.resource(path: 'Javascript/Search/Suggester.js')}"></script>
+    <f:if condition="{settings.suggest}">
+        <script src="{f:uri.resource(path: 'Javascript/Search/Suggester.js')}"></script>
+    </f:if>
 </f:section>
