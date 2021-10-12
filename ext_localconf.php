@@ -242,3 +242,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'priority' => 30,
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
 ];
+
+// Add migration wizards
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
+    = \Kitodo\Dlf\Updates\MigrateSettings::class;
