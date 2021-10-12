@@ -254,3 +254,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
         Search::class => 'main, search',
     ]
 );
+// Add migration wizards
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
+    = \Kitodo\Dlf\Updates\MigrateSettings::class;
