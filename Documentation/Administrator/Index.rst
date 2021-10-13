@@ -62,6 +62,28 @@ autoloader to rebuild the classmap.
 
 
 *******
+Upgrade
+*******
+
+This section contains version specific instructions on upgrading an existing Kitodo.Presentation installation.
+
+Version 3.2 -> 3.3
+==================
+
+Version 3.3 introduce the usage of the OCR Highlighting Plugin for Solr. The plugin can be found at GitHub: https://github.com/dbmdz/solr-ocrhighlighting. This plugin is now mandatory if you are using the full texts feature.
+
+Steps to Upgrade
+----------------
+
+a. Get the latest release ("jar"-file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.7.1 is the minimum version number.
+b. Copy the jar-file (e.g. "solr-ocrhighlighting-0.7.1.jar") to the contrib/ocrsearch/lib/ directory of your Solr.
+c. Copy the updated schema.xml to your Solr configsets in $SOLR_HOME/configsets/dlf/
+d. Copy the schema.xml from EXT:dlf/Configuration/ApacheSolr/configsets/dlf/conf/ to all of your Solr cores. E.g. $SOLR_HOME/data/dlfCore0/conf/
+e. Restart Solr.
+f. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
+
+
+*******
 Logging
 *******
 
