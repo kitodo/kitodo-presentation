@@ -11,34 +11,15 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use Kitodo\Dlf\Common\Helper;
 
 class FeedsController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
     public $prefixId = 'tx_dlf';
-
-    /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
-     * SearchController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-    }
 
     /**
      *
