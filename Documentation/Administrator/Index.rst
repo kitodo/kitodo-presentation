@@ -70,7 +70,11 @@ This section contains version specific instructions on upgrading an existing Kit
 Version 3.2 -> 3.3
 ==================
 
-Version 3.3 introduce the usage of the OCR Highlighting Plugin for Solr. The plugin can be found at GitHub: https://github.com/dbmdz/solr-ocrhighlighting. This plugin is now mandatory if you are using the full texts feature.
+Version 3.3 introduce the usage of the OCR Highlighting Plugin for Solr. The plugin can be found at
+GitHub: https://github.com/dbmdz/solr-ocrhighlighting. This plugin is now mandatory if you are using the full texts feature.
+
+Please note: The full text is stored in Solr index in a XML format (`MiniOCR <https://dbmdz.github.io/solr-ocrhighlighting/formats/#miniocr>`_).
+This will rise the demand for storage space. You should therefore monitor the disc usage during reindexing.
 
 Steps to Upgrade
 ----------------
