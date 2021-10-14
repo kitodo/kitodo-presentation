@@ -111,11 +111,10 @@
       "externs/topojson.js"
     ],
     "define": [
-      "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=true",
       "ol.ENABLE_PROJ4JS=false",
       "ol.ENABLE_VECTOR=true",
-      "goog.DEBUG=false"
+      "ol.DEBUG=false"
     ],
     "compilation_level": "ADVANCED_OPTIMIZATIONS",
     "output_wrapper": "(function(){%output%})();",
