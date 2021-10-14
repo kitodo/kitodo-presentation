@@ -30,27 +30,23 @@ ol.Map.prototype.getZoomRange = function() {
  * @param {number} zoomLevel
  */
 ol.Map.prototype.zoom = function(zoomLevel) {
-    var view = this.getView(),
-        resolution = view.getResolution();
-    this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
+    var view = this.getView();
+    view.animate({
+        'zoom': zoomLevel,
         'duration': 500
-    }));
-    view.setZoom(zoomLevel);
+    });
 };
 
 /**
- * Zooms in the map. Uses ol.animation for smooth zooming
+ * Zooms in the map. Uses view.animate for smooth zooming
  */
 ol.Map.prototype.zoomIn = function() {
     var view = this.getView(),
-        zoomLevel = view.getZoom() + 1,
-        resolution = view.getResolution();
-    this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
+        zoomLevel = view.getZoom() + 1;
+    view.animate({
+        'zoom': zoomLevel,
         'duration': 500
-    }));
-    view.setZoom(zoomLevel);
+    });
 };
 
 /**
@@ -58,13 +54,11 @@ ol.Map.prototype.zoomIn = function() {
  */
 ol.Map.prototype.zoomOut = function() {
     var view = this.getView(),
-        zoomLevel = view.getZoom() - 1,
-     resolution = view.getResolution();
-    this.beforeRender(ol.animation.zoom({
-        'resolution': resolution,
+        zoomLevel = view.getZoom() - 1;
+    view.animate({
+        'zoom': zoomLevel,
         'duration': 500
-    }));
-    view.setZoom(zoomLevel);
+    });
 };
 
 /**
@@ -75,14 +69,12 @@ ol.Map.prototype.zoomOut = function() {
  */
 ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
     var view = this.getView(),
-        resolution = view.getResolution(),
         duration = opt_duration !== undefined ? opt_duration : 500;
-    this.beforeRender(ol.animation.zoom({
-        resolution,
-        duration
-    }));
-    view.setCenter(center);
-    view.setZoom(zoomLevel);
+    view.animate({
+        'center': center,
+        'zoom': zoomLevel,
+        'duration': duration
+    });
 };
 
 /**
@@ -94,12 +86,11 @@ ol.Map.prototype.rotate = function(rotation) {
         rotate = view.getRotation() + (rotation *  Math.PI/180),
         center = view.getCenter();
 
-    this.beforeRender(ol.animation.rotate({
-        'rotation':view.getRotation(),
-        'anchor':center,
-        'duration':200
-    }));
-    view.rotate(rotate, center);
+    view.animate({
+        'rotation': rotate,
+        'anchor': center,
+        'duration': 200
+    });
     if (this.ov_view !== null && this.ov_view !== undefined) {
         this.ov_view.rotate(rotate);
     }

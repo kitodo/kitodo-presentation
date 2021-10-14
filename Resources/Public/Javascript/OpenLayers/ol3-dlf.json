@@ -1,7 +1,5 @@
 {
   "exports": [
-    "ol.animation.rotate",
-    "ol.animation.zoom",
     "ol.Collection",
     "ol.Collection#getArray",
     "ol.control.Control",
@@ -56,7 +54,6 @@
     "ol.Map#addControl",
     "ol.Map#addInteraction",
     "ol.Map#addLayer",
-    "ol.Map#beforeRender",
     "ol.Map#forEachFeatureAtPixel",
     "ol.Map#getEventCoordinate",
     "ol.Map#getLayers",
@@ -95,6 +92,7 @@
     "ol.View#rotate",
     "ol.View#setCenter",
     "ol.View#setResolution",
+    "ol.View#setRotation",
     "ol.View#setZoom",
     "ol.View#un",
     "ol.webgl.Context#getGL",
