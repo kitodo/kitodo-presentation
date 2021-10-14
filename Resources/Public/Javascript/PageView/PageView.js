@@ -331,7 +331,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         }
     }
 
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
+    if (this.fulltexts[0] !== undefined && this.fulltexts[0].length !== 0 && this.fulltexts[0].url !== '' && this.images.length > 0) {
         var values = [],
             fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
@@ -341,7 +341,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         }
 
         // check if there is another image / fulltext to look for
-        if (this.images.length === 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
+        if (this.images.length === 2 && this.fulltexts[1] !== undefined && this.fulltexts[1].length !== 0 && this.fulltexts[1].url !== '') {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
             fulltextDataImageTwo = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width);
