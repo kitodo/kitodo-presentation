@@ -756,6 +756,22 @@ dlfUtils.isCorsEnabled = function (imageObjs) {
 };
 
 /**
+ * Checks if {@link obj} is a valid object describing the location of a
+ * fulltext (@see PageView::getFulltext in PageView.php).
+ *
+ * @param {any} obj The object to test.
+ * @return {boolean}
+ */
+dlfUtils.isFulltextDescriptor = function (obj) {
+    return (
+        typeof obj === 'object'
+        && obj !== null
+        && 'url' in obj
+        && obj.url !== ''
+    );
+};
+
+/**
  * Functions checks if WebGL is enabled in the browser
  * @return {boolean}
  */
