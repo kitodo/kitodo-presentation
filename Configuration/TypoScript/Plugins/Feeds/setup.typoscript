@@ -1,3 +1,12 @@
+plugin.tx_dlf_feeds {
+	view {
+		templateRootPaths {
+			0 = EXT:dlf/Resources/Private/Templates/Feeds
+			1 = {$plugin.tx_dlf.feed.templateRootPath}
+		}
+	}
+}
+
 page = PAGE
 page.10 < styles.content.get
 
