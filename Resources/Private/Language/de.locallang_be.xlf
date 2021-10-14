@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-14T15:49:58Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="flexform.collections" approved="yes">
+				<source><![CDATA[Collections]]></source>
+				<target><![CDATA[Kollektionen]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.excludeOther" approved="yes">
+				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
+				<target><![CDATA[Nur Dokumente der ausgewählten Kollektion(en) berücksichtigen]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.library" approved="yes">
+				<source><![CDATA[Providing library]]></source>
+				<target><![CDATA[Mandant]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.limit" approved="yes">
+				<source><![CDATA[Number of documents]]></source>
+				<target><![CDATA[Anzahl der Dokumente]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.prependSuperiorTitle" approved="yes">
+				<source><![CDATA[Prepend title of superior work to title?]]></source>
+				<target><![CDATA[Titel übergeordneter Werke anzeigen?]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.sheet_general" approved="yes">
+				<source><![CDATA[Options]]></source>
+				<target><![CDATA[Einstellungen]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.targetPid" approved="yes">
+				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "DLF: Seitenansicht")]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.description" approved="yes">
+				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Feeds Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.flexform.description" approved="yes">
+				<source><![CDATA[Feed's description]]></source>
+				<target><![CDATA[Beschreibung des Feeds]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.flexform.title" approved="yes">
+				<source><![CDATA[Feed's title]]></source>
+				<target><![CDATA[Titel des Feeds]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.title" approved="yes">
+				<source><![CDATA[Kitodo: Feeds]]></source>
+				<target><![CDATA[Kitodo: Feeds]]></target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

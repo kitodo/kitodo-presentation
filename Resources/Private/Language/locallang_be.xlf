@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-14T15:44:45Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="flexform.collections">
+				<source><![CDATA[Collections]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.excludeOther">
+				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.library">
+				<source><![CDATA[Providing library]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.limit">
+				<source><![CDATA[Number of documents]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.prependSuperiorTitle">
+				<source><![CDATA[Prepend title of superior work to title?]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.sheet_general">
+				<source><![CDATA[Options]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.targetPid">
+				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.description">
+				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.flexform.description">
+				<source><![CDATA[Feed's description]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.flexform.title">
+				<source><![CDATA[Feed's title]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.title">
+				<source><![CDATA[Kitodo: Feeds]]></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
