@@ -75,7 +75,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_search']
 // Plugin "statistics".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_statistics'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_statistics'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_statistics', 'dlf_statistics'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_statistics', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Statistics.xml');
 // Plugin "tableofcontents".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_tableofcontents'] = 'layout,select_key,pages,recursive';
@@ -100,6 +99,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-feeds.svg'
 );
+
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Kitodo.Dlf',
     'Statistics',
