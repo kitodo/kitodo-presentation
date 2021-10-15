@@ -5,6 +5,9 @@ plugin.tx_dlf_feeds {
 			1 = {$plugin.tx_dlf.feed.templateRootPath}
 		}
 	}
+  settings {
+    title = fake title
+  }
 }
 
 page = PAGE

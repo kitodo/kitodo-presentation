@@ -36,6 +36,9 @@ class FeedsController extends AbstractController
      */
     public function mainAction()
     {
+        // access to GET parameter tx_dlf_feeds['collection']
+        $requestData = $this->request->getArguments();
+
         // get library information
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_libraries');
@@ -50,7 +53,8 @@ class FeedsController extends AbstractController
             ->setMaxResults(1)
             ->execute();
 
-        $feedMeta=[];
+        $feedMeta = [];
+        $documents = [];
 
         if ($resArray = $result->fetch()) {
             $feedMeta['copyright'] = $resArray['label'];
@@ -58,82 +62,95 @@ class FeedsController extends AbstractController
             $this->logger->error('Failed to fetch label of selected library with "' . $this->settings['library'] . '"');
         }
 
-        // get documents
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+        if (
+            !$this->settings['excludeOther']
+            || empty($requestData['collection'])
+            || GeneralUtility::inList($this->settings['collections'], $requestData['collection'])
+        ) {
+            $additionalWhere = '';
+            // Check for pre-selected collections.
+            if (!empty($requestData['collection'])) {
+                $additionalWhere = 'tx_dlf_collections.uid=' . intval($requestData['collection']);
+            } elseif (!empty($this->settings['collections'])) {
+                $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->settings['collections'])) . ')';
+            }
 
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.partof AS partof',
-                'tx_dlf_documents.title AS title',
-                'tx_dlf_documents.volume AS volume',
-                'tx_dlf_documents.author AS author',
-                'tx_dlf_documents.record_id AS record_id',
-                'tx_dlf_documents.tstamp AS tstamp',
-                'tx_dlf_documents.crdate AS crdate'
-            )
-            ->from('tx_dlf_documents')
-            ->join(
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_documents_collections_mm',
-                $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
-            )
-            ->join(
-                'tx_dlf_documents_collections_mm',
-                'tx_dlf_collections',
-                'tx_dlf_collections',
-                $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
-            )
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
-                $additionalWhere,
-                Helper::whereExpression('tx_dlf_documents'),
-                Helper::whereExpression('tx_dlf_collections')
-            )
-            ->groupBy('tx_dlf_documents.uid')
-            ->orderBy('tx_dlf_documents.tstamp', 'DESC')
-            ->setMaxResults((int) $this->settings['limit'])
-            ->execute();
+            // get documents
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
 
-        $rows = $result->fetchAll();
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_documents.uid AS uid',
+                    'tx_dlf_documents.partof AS partof',
+                    'tx_dlf_documents.title AS title',
+                    'tx_dlf_documents.volume AS volume',
+                    'tx_dlf_documents.author AS author',
+                    'tx_dlf_documents.record_id AS record_id',
+                    'tx_dlf_documents.tstamp AS tstamp',
+                    'tx_dlf_documents.crdate AS crdate'
+                )
+                ->from('tx_dlf_documents')
+                ->join(
+                    'tx_dlf_documents',
+                    'tx_dlf_relations',
+                    'tx_dlf_documents_collections_mm',
+                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
+                )
+                ->join(
+                    'tx_dlf_documents_collections_mm',
+                    'tx_dlf_collections',
+                    'tx_dlf_collections',
+                    $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
+                )
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
+                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
+                    $additionalWhere
+                )
+                ->groupBy('tx_dlf_documents.uid')
+                ->orderBy('tx_dlf_documents.tstamp', 'DESC')
+                ->setMaxResults((int) $this->settings['limit'])
+                ->execute();
 
-        foreach ($rows as $resArray) {
+            $rows = $result->fetchAll();
 
-            $title = '';
-            // Get title of superior document.
-            if ((empty($resArray['title']) || !empty($this->settings['prependSuperiorTitle']))
-                && !empty($resArray['partof'])
-            ) {
-                $superiorTitle = Document::getTitle($resArray['partof'], true);
-                if (!empty($superiorTitle)) {
-                    $title .= '[' . $superiorTitle . ']';
+            foreach ($rows as $resArray) {
+
+                $title = '';
+                // Get title of superior document.
+                if ((empty($resArray['title']) || !empty($this->settings['prependSuperiorTitle']))
+                    && !empty($resArray['partof'])
+                ) {
+                    $superiorTitle = Document::getTitle($resArray['partof'], true);
+                    if (!empty($superiorTitle)) {
+                        $title .= '[' . $superiorTitle . ']';
+                    }
                 }
-            }
-            // Get title of document.
-            if (!empty($resArray['title'])) {
-                $title .= ' ' . $resArray['title'];
-            }
-            // Set default title if empty.
-            if (empty($title)) {
-                $title = LocalizationUtility::translate('noTitle', 'dlf');
-            }
-            // Append volume information.
-            if (!empty($resArray['volume'])) {
-                $title .= ', ' . LocalizationUtility::translate('volume', 'dlf') . ' ' . $resArray['volume'];
-            }
-            // Is this document new or updated?
-            if ($resArray['crdate'] == $resArray['tstamp']) {
-                $title = LocalizationUtility::translate('plugins.feeds.new', 'dlf') . ' ' . trim($title);
-            } else {
-                $title =  LocalizationUtility::translate('plugins.feeds.update', 'dlf') . ' ' . trim($title);
+                // Get title of document.
+                if (!empty($resArray['title'])) {
+                    $title .= ' ' . $resArray['title'];
+                }
+                // Set default title if empty.
+                if (empty($title)) {
+                    $title = LocalizationUtility::translate('noTitle', 'dlf');
+                }
+                // Append volume information.
+                if (!empty($resArray['volume'])) {
+                    $title .= ', ' . LocalizationUtility::translate('volume', 'dlf') . ' ' . $resArray['volume'];
+                }
+                // Is this document new or updated?
+                if ($resArray['crdate'] == $resArray['tstamp']) {
+                    $title = LocalizationUtility::translate('plugins.feeds.new', 'dlf') . ' ' . trim($title);
+                } else {
+                    $title =  LocalizationUtility::translate('plugins.feeds.update', 'dlf') . ' ' . trim($title);
+                }
+
+                $resArray['title'] = $title;
+                $documents[] = $resArray;
             }
 
-            $resArray['title'] = $title;
-            $documents[] = $resArray;
         }
 
         $this->view->assign('documents', $documents);
