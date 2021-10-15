@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-14T15:49:58Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-15T14:15:26Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -30,8 +30,16 @@
 				<target><![CDATA[Einstellungen]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.targetPid" approved="yes">
-				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
+				<source><![CDATA[Target page (with "Kitodo: List View" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "DLF: Seitenansicht")]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.targetPidPageView" approved="yes">
+				<source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "Kitodo: Seitenansicht")]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.templateFile" approved="yes">
+				<source><![CDATA[Template file]]></source>
+				<target><![CDATA[HTML-Template]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description" approved="yes">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
@@ -48,6 +56,106 @@
 			<trans-unit id="plugins.feeds.title" approved="yes">
 				<source><![CDATA[Kitodo: Feeds]]></source>
 				<target><![CDATA[Kitodo: Feeds]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.description" approved="yes">
+				<source><![CDATA[Search Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Suche Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.collections" approved="yes">
+				<source><![CDATA[Restrict search to these collections]]></source>
+				<target><![CDATA[Suche auf diese Kollektionen einschränken]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.extSearch.fields" approved="yes">
+				<source><![CDATA[Fields for extended search]]></source>
+				<target><![CDATA[Felder für erweiterte Suche]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.extSearch.slotCount" approved="yes">
+				<source><![CDATA[Number of search slots]]></source>
+				<target><![CDATA[Anzahl Suchfelder]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets" approved="yes">
+				<source><![CDATA[Show these facets]]></source>
+				<target><![CDATA[Diese Facetten anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.collections" approved="yes">
+				<source><![CDATA[Use only this collections as facet]]></source>
+				<target><![CDATA[Folgende Kollektionen als Facetten anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.limit" approved="yes">
+				<source><![CDATA[Maximum facet values]]></source>
+				<target><![CDATA[Maximale Facettenwerte]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.reset" approved="yes">
+				<source><![CDATA[Allow to reset facets]]></source>
+				<target><![CDATA[Facetten zurücksetzen erlauben]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.sorting" approved="yes">
+				<source><![CDATA[Facet sorting]]></source>
+				<target><![CDATA[Facetten Sortierung]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.sorting.count" approved="yes">
+				<source><![CDATA[Count (highest count first)]]></source>
+				<target><![CDATA[Anzahl (höchste Anzahl zuerst)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.sorting.index" approved="yes">
+				<source><![CDATA[Lexicographic by indexed term (alphabetically for terms in the ASCII range)]]></source>
+				<target><![CDATA[Lexikographisch nach indexiertem Begriff (alphabetisch für Begriffe im ASCII-Bereich)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.fulltext" approved="yes">
+				<source><![CDATA[Enable full text search?]]></source>
+				<target><![CDATA[Volltext-Suche aktivieren?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn" approved="yes">
+				<source><![CDATA[Restrict search to current document or collection?]]></source>
+				<target><![CDATA[Suche auf aktuelle/s Kollektion/Dokument einschränken?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn.all" approved="yes">
+				<source><![CDATA[both]]></source>
+				<target><![CDATA[beides]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn.collection" approved="yes">
+				<source><![CDATA[collection only]]></source>
+				<target><![CDATA[nur Kollektion]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn.document" approved="yes">
+				<source><![CDATA[document only (incl. subordinates)]]></source>
+				<target><![CDATA[nur Dokument (inkl. Unterordnungen)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.separator" approved="yes">
+				<source><![CDATA[Separator for metadata in TS array]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "DLF: Listenansicht")]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.showLogicalPageField" approved="yes">
+				<source><![CDATA[Show field for logical page?]]></source>
+				<target><![CDATA[Feld für logische Seite anzeigen?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.showSingleResult" approved="yes">
+				<source><![CDATA[Show single result in Page View?]]></source>
+				<target><![CDATA[Einzelnes Ergebnis in Seitenansicht anzeigen?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.solrcore" approved="yes">
+				<source><![CDATA[Solr Core]]></source>
+				<target><![CDATA[Solr Kern]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.suggest" approved="yes">
+				<source><![CDATA[Show search suggestions]]></source>
+				<target><![CDATA[Suchvorschläge anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.title" approved="yes">
+				<source><![CDATA[Kitodo: Search]]></source>
+				<target><![CDATA[Kitodo: Suche]]></target>
+			</trans-unit>
+			<trans-unit id="text.no" approved="yes">
+				<source><![CDATA[No]]></source>
+				<target><![CDATA[Nein]]></target>
+			</trans-unit>
+			<trans-unit id="text.none" approved="yes">
+				<source><![CDATA[none]]></source>
+				<target><![CDATA[nein]]></target>
+			</trans-unit>
+			<trans-unit id="text.yes" approved="yes">
+				<source><![CDATA[Yes]]></source>
+				<target><![CDATA[Ja]]></target>
 			</trans-unit>
 		</body>
 	</file>

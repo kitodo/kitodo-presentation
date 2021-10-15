@@ -24,7 +24,10 @@
 				<source><![CDATA[Options]]></source>
 			</trans-unit>
 			<trans-unit id="flexform.targetPid">
-				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
+				<source><![CDATA[Target page (with "Kitodo: List View" plugin)]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.targetPidPageView">
+				<source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
@@ -37,6 +40,87 @@
 			</trans-unit>
 			<trans-unit id="plugins.feeds.title">
 				<source><![CDATA[Kitodo: Feeds]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.title">
+				<source><![CDATA[Kitodo: Search]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.description">
+				<source><![CDATA[Search Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.collections">
+				<source><![CDATA[Use only this collections as facet]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.fulltext">
+				<source><![CDATA[Enable full text search?]]></source>
+			</trans-unit>
+			<trans-unit id="text.yes">
+				<source><![CDATA[Yes]]></source>
+			</trans-unit>
+			<trans-unit id="text.no">
+				<source><![CDATA[No]]></source>
+			</trans-unit>
+			<trans-unit id="text.none">
+				<source><![CDATA[none]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.solrcore">
+				<source><![CDATA[Solr Core]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.extSearch.slotCount">
+				<source><![CDATA[Number of search slots]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.extSearch.fields">
+				<source><![CDATA[Fields for extended search]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.collections">
+				<source><![CDATA[Restrict search to these collections]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn">
+				<source><![CDATA[Restrict search to current document or collection?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn.document">
+				<source><![CDATA[document only (incl. subordinates)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn.collection">
+				<source><![CDATA[collection only]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.searchIn.all">
+				<source><![CDATA[both]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets">
+				<source><![CDATA[Show these facets]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.limit">
+				<source><![CDATA[Maximum facet values]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.reset">
+				<source><![CDATA[Allow to reset facets]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.sorting">
+				<source><![CDATA[Facet sorting]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.sorting.count">
+				<source><![CDATA[Count (highest count first)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.facets.sorting.index">
+				<source><![CDATA[Lexicographic by indexed term (alphabetically for terms in the ASCII range)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.suggest">
+				<source><![CDATA[Show search suggestions]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.suggest">
+				<source><![CDATA[Show search suggestions]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.separator">
+				<source><![CDATA[Separator for metadata in TS array]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.templateFile">
+				<source><![CDATA[Template file]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.showLogicalPageField">
+				<source><![CDATA[Show field for logical page?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.showSingleResult">
+				<source><![CDATA[Show single result in Page View?]]></source>
 			</trans-unit>
 		</body>
 	</file>

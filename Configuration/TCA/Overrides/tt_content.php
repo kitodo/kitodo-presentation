@@ -96,7 +96,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Kitodo.Dlf',
     'Search',
-    'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_search',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-search.svg'
 );
 
