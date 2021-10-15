@@ -16,7 +16,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -45,7 +45,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.collections</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
                             <config>
                                 <type>select</type>
                                 <items type="array"></items>
@@ -61,7 +61,7 @@
                     <settings.excludeOther>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.excludeOther</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
@@ -72,7 +72,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.library</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.library</label>
                             <config>
                                 <type>select</type>
                                 <items type="array"></items>
@@ -86,7 +86,7 @@
                     <settings.limit>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.limit</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.limit</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,num,int</eval>
@@ -97,7 +97,7 @@
                     <settings.prependSuperiorTitle>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.prependSuperiorTitle</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.prependSuperiorTitle</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
@@ -107,7 +107,7 @@
                     <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.targetPid</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPid</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -127,7 +127,7 @@
                     <settings.title>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.title</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.flexform.title</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,trim</eval>
@@ -137,7 +137,7 @@
                     <settings.description>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.pi_flexform.description</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.flexform.description</label>
                             <config>
                                 <type>input</type>
                                 <eval>trim</eval>
