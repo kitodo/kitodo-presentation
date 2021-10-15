@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,23 +9,28 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Plugin;
+namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\Document;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
- * Plugin 'Table Of Contents' for the 'dlf' extension
+ * Controller for plugin 'Table Of Contents' for the 'dlf' extension
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
+class TableOfContentsController extends ActionController
 {
-    public $scriptRelPath = 'Classes/Plugin/TableOfContents.php';
+    protected $prefixId = 'tx_dlf';
 
     /**
      * This holds the active entries according to the currently selected page
@@ -37,12 +41,45 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
     protected $activeEntries = [];
 
     /**
+     * @var ExtensionConfiguration
+     */
+    protected $extensionConfiguration;
+
+    /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+
+    /**
+     * @var \TYPO3\CMS\Core\Log\LogManager
+     */
+    protected $logger;
+
+    /**
+     * @var array
+     */
+    protected $pluginConf;
+
+    /**
+     * SearchController constructor.
+     */
+    public function __construct()
+    {
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $this->logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+
+        // Read plugin TS configuration.
+        $this->pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_tableofcontents.'];
+    }
+
+    /**
      * This builds an array for one menu entry
      *
      * @access protected
      *
-     * @param array $entry: The entry's array from \Kitodo\Dlf\Common\Document->getLogicalStructure
-     * @param bool $recursive: Whether to include the child entries
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Document->getLogicalStructure
+     * @param bool $recursive : Whether to include the child entries
      *
      * @return array HMENU array for menu entry
      */
@@ -53,7 +90,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->conf['settings.pages']);
+        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['pages']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
@@ -61,27 +98,39 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
         // Build menu links based on the $entry['points'] array.
         if (
             !empty($entry['points'])
-            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($entry['points'])
+            && MathUtility::canBeInterpretedAsInteger($entry['points'])
         ) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['page' => $entry['points']], true, false, $this->conf['settings.targetPid']);
+            $entryArray['page'] = $entry['points'];
+
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->conf['settings.basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['settings.targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
+            if ($this->settings['basketButton']) {
+                $entryArray['basketButton'] = [
+                    'logId' => $entry['id'],
+                    'startpage' => $entry['points']
+                ];
             }
         } elseif (
             !empty($entry['points'])
             && is_string($entry['points'])
         ) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['points'], 'page' => 1], true, false, $this->conf['settings.targetPid']);
+            $entryArray['id'] = $entry['points'];
+            $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->conf['settings.basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['points']], true, false, $this->conf['settings.targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
+            if ($this->settings['basketButton']) {
+                $entryArray['basketButton'] = [
+                    'logId' => $entry['id'],
+                    'startpage' => $entry['points']
+                ];
             }
         } elseif (!empty($entry['targetUid'])) {
-            $entryArray['_OVERRIDE_HREF'] = $this->pi_linkTP_keepPIvars_url(['id' => $entry['targetUid'], 'page' => 1], true, false, $this->conf['settings.targetPid']);
+            $entryArray['id'] = $entry['targetUid'];
+            $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->conf['settings.basketButton']) {
-                $entryArray['basketButtonHref'] = '<a href="' . $this->pi_linkTP_keepPIvars_url(['addToBasket' => 'toc', 'logId' => $entry['id'], 'startpage' => $entry['targetUid']], true, false, $this->conf['settings.targetBasket']) . '">' . htmlspecialchars($this->pi_getLL('basketButton', '')) . '</a>';
+            if ($this->settings['basketButton']) {
+                $entryArray['basketButton'] = [
+                    'logId' => $entry['id'],
+                    'startpage' => $entry['targetUid']
+                ];
             }
         }
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
@@ -99,7 +148,7 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             // 3. Current menu node points to another file
             // 4. Current menu node has no corresponding images
             if (
-                !empty($this->conf['settings.menuConf.']['expAll'])
+                !empty($this->pluginConf['menuConf.']['expAll'])
                 || $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
                 || empty($this->doc->smLinks['l2p'][$entry['id']])
@@ -123,84 +172,73 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
      * The main method of the PlugIn
      *
      * @access public
-     *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
-     * @return string The content that is displayed on the website
      */
-    public function main($content, $conf)
+    public function mainAction()
     {
-        $this->init($conf);
+        $requestData = GeneralUtility::_GPmerged('tx_dlf');
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
+
         // Check for typoscript configuration to prevent fatal error.
-        if (empty($this->conf['settings.menuConf.'])) {
+        if (empty($this->pluginConf['menuConf.'])) {
             $this->logger->warning('Incomplete plugin configuration');
-            return $content;
         }
-        // Load template file.
-        $this->getTemplate();
-        $TSconfig = [];
-        $TSconfig['special'] = 'userfunction';
-        $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\TableOfContents::class . '->makeMenuArray';
-        $TSconfig = Helper::mergeRecursiveWithOverrule($this->conf['settings.menuConf.'], $TSconfig);
-        $markerArray['###TOCMENU###'] = $this->cObj->cObjGetSingle('HMENU', $TSconfig);
-        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $this->pi_wrapInBaseClass($content);
+
+        $this->view->assign('toc', $this->makeMenuArray($requestData));
     }
 
     /**
      * This builds a menu array for HMENU
      *
      * @access public
-     *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
+     * @param array $requestData
      * @return array HMENU array
      */
-    public function makeMenuArray($content, $conf)
+    public function makeMenuArray($requestData)
     {
-        $this->init($conf);
         // Load current document.
-        $this->loadDocument();
+        $this->loadDocument($requestData);
         if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
             return [];
         } else {
-            if (!empty($this->piVars['logicalPage'])) {
-                $this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
+            if (!empty($requestData['logicalPage'])) {
+                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
-                unset($this->piVars['logicalPage']);
+                unset($requestData['logicalPage']);
             }
             // Set default values for page if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
             if (
-                (int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])
+                (int)$requestData['page'] > 0
+                || empty($requestData['page'])
             ) {
-                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = MathUtility::forceIntegerInRange((int)$requestData['page'],
+                    1, $this->doc->numPages, 1);
             } else {
-                $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
             }
-            $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'],
+                0, 1, 0);
         }
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
             !empty($this->doc->physicalStructure)
-            || !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->doc->uid)
+            || !MathUtility::canBeInterpretedAsInteger($this->doc->uid)
         ) {
             // Get all logical units the current page or track is a part of.
             if (
-                !empty($this->piVars['page'])
+                !empty($requestData['page'])
                 && !empty($this->doc->physicalStructure)
             ) {
-                $this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]], (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page']]]);
+                $this->activeEntries = array_merge((array)$this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]],
+                    (array)$this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page']]]);
                 if (
-                    !empty($this->piVars['double'])
-                    && $this->piVars['page'] < $this->doc->numPages
+                    !empty($requestData['double'])
+                    && $requestData['page'] < $this->doc->numPages
                 ) {
-                    $this->activeEntries = array_merge($this->activeEntries, (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->piVars['page'] + 1]]);
+                    $this->activeEntries = array_merge($this->activeEntries,
+                        (array)$this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page'] + 1]]);
                 }
             }
             // Go through table of contents and create all menu entries.
@@ -217,8 +255,8 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
             $excludeOtherWhere = '';
-            if ($this->conf['settings.excludeOther']) {
-                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->conf['settings.pages']);
+            if ($this->settings['excludeOther']) {
+                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->settings['pages']);
             }
             // Check if there are any metadata to suggest.
             $result = $queryBuilder
@@ -268,5 +306,62 @@ class TableOfContents extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         return $menuArray;
+    }
+
+    // TODO: Needs to be placed in an abstract class
+    /**
+     * Loads the current document into $this->doc
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function loadDocument($requestData)
+    {
+        // Check for required variable.
+        if (
+            !empty($requestData['id'])
+            && !empty($this->settings['pages'])
+        ) {
+            // Should we exclude documents from other pages than $this->settings['pages']?
+            $pid = (!empty($this->settings['excludeOther']) ? intval($this->settings['pages']) : 0);
+            // Get instance of \Kitodo\Dlf\Common\Document.
+            $this->doc = Document::getInstance($requestData['id'], $pid);
+            if (!$this->doc->ready) {
+                // Destroy the incomplete object.
+                $this->doc = null;
+                $this->logger->error('Failed to load document with UID ' . $requestData['id']);
+            } else {
+                // Set configuration PID.
+                $this->doc->cPid = $this->settings['pages'];
+            }
+        } elseif (!empty($requestData['recordId'])) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            // Get UID of document with given record identifier.
+            $result = $queryBuilder
+                ->select('tx_dlf_documents.uid AS uid')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($requestData['recordId'])),
+                    Helper::whereExpression('tx_dlf_documents')
+                )
+                ->setMaxResults(1)
+                ->execute();
+
+            if ($resArray = $result->fetch()) {
+                $requestData['id'] = $resArray['uid'];
+                // Set superglobal $_GET array and unset variables to avoid infinite looping.
+                $_GET[$this->prefixId]['id'] = $requestData['id'];
+                unset($requestData['recordId'], $_GET[$this->prefixId]['recordId']);
+                // Try to load document.
+                $this->loadDocument();
+            } else {
+                $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
+            }
+        } else {
+            $this->logger->error('Invalid UID ' . $requestData['id'] . ' or PID ' . $this->settings['pages'] . ' for document loading');
+        }
     }
 }
