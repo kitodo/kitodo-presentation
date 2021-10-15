@@ -34,3 +34,9 @@ if (!defined('TYPO3_MODE')) {
     'Configuration/TypoScript/Toolbox/',
     'Toolbox Default Tool Templates'
 );
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'Configuration/TypoScript/Plugins/Feeds/',
+    'RSS Feed Plugin Configuration'
+);

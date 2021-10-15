@@ -318,6 +318,16 @@ The collection plugin shows one collection, all collections or selected collecti
 Feeds
 -----
 
+The feeds plugin renders a RSS 2.0 feed of last updated documents of all or a specific collection.
+
+The following steps are necessary to activate the plugin:
+
+a. Create a new page "Feed" with slug "feed".
+b. Create an extension template on this page and include the TypoScript template of the feeds plugin.
+c. Place the "Kitodo Feeds" plugin on it and configure it for your needs.
+
+The TypoScript part is necessary to switch the page rendering to a different page object.
+
 :typoscript:`plugin.tx_dlf_feeds.`
 
 .. t3-field-list-table::
@@ -1151,4 +1161,3 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[encrypted]
-

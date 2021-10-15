@@ -165,7 +165,7 @@ To setup Apache Solr, perform the following steps:
 
       cp -r dlf/Configuration/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/
 
-3. Get the Solr OCR Highlighting plugin and put it into contrib directory.
+3. Get the Solr OCR Highlighting plugin and put it into contrib-directory.
 
    The plugin is available on GitHub (https://github.com/dbmdz/solr-ocrhighlighting/releases).
    The documentation can be found here: https://dbmdz.github.io/solr-ocrhighlighting/.
@@ -174,7 +174,7 @@ To setup Apache Solr, perform the following steps:
 
 .. code-block:: bash
 
-      cp -r dlf/Configuration/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/
+      cp solr-ocrhighlighting-0.7.1.jar to contrib/ocrsearch/lib/
 
 4. Using basic authentication is optional but recommended.
 

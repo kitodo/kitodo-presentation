@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-14T15:44:38Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="noTitle">
+				<source><![CDATA[[no title]]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.new">
+				<source><![CDATA[NEW:]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.feeds.update">
+				<source><![CDATA[UPDATE:]]></source>
+			</trans-unit>
+			<trans-unit id="volume">
+				<source><![CDATA[Volume]]></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
