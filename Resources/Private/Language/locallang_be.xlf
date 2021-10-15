@@ -38,6 +38,9 @@
 			<trans-unit id="plugins.feeds.title">
 				<source><![CDATA[Kitodo: Feeds]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.title">
+				<source><![CDATA[Kitodo: Table of Contents]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
