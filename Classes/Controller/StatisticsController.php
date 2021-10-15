@@ -11,7 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\Connection;
@@ -27,27 +26,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * @subpackage dlf
  * @access public
  */
-class StatisticsController extends ActionController
+class StatisticsController extends AbstractController
 {
-    /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
-     * SearchController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-    }
 
     /**
      * The main method of the PlugIn
@@ -191,15 +171,15 @@ class StatisticsController extends ActionController
         }
 
         // Set replacements.
-        $args['###TITLES###'] = $countTitles . htmlspecialchars(
+        $args['###TITLES###'] = $countTitles . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                'LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:'.($countTitles > 1 ? 'titles': 'title')
+                ($countTitles > 1 ? 'titles' : 'title'), 'dlf'
             )
         );
 
-        $args['###VOLUMES###'] = $countVolumes . htmlspecialchars(
+        $args['###VOLUMES###'] = $countVolumes . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                'LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:'.($countVolumes > 1 ? 'volumes': 'volume')
+                ($countTitles > 1 ? 'volumes' : 'volume'), 'dlf'
             )
         );
 

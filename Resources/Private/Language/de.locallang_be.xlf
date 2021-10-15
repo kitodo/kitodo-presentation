@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-14T15:49:58Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-15T12:27:02Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -48,6 +48,18 @@
 			<trans-unit id="plugins.feeds.title" approved="yes">
 				<source><![CDATA[Kitodo: Feeds]]></source>
 				<target><![CDATA[Kitodo: Feeds]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.description" approved="yes">
+				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Statistik Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.flexform.description" approved="yes">
+				<source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
+				<target><![CDATA[Beschreibung (Platzhalter: ###TITLES### und ###VOLUMES###)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.title" approved="yes">
+				<source><![CDATA[Kitodo: Statistics]]></source>
+				<target><![CDATA[Kitodo: Statistik]]></target>
 			</trans-unit>
 		</body>
 	</file>

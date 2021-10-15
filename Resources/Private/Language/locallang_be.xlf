@@ -38,6 +38,15 @@
 			<trans-unit id="plugins.feeds.title">
 				<source><![CDATA[Kitodo: Feeds]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.statistics.title">
+				<source><![CDATA[Kitodo: Statistics]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.description">
+				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.flexform.description">
+				<source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
