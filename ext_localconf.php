@@ -255,6 +255,18 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     ]
 );
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Statistics',
+    [
+        Statistics::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        Statistics::class => '',
+    ]
+);
+
 // Add migration wizards
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
     = \Kitodo\Dlf\Updates\MigrateSettings::class;
