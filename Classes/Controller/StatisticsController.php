@@ -11,15 +11,14 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Conrtoller for the plugin 'Statistics' for the 'dlf' extension
+ * Controller for the plugin 'Statistics' for the 'dlf' extension
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
