@@ -40,8 +40,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_feeds {
         iconIdentifier = tx-dlf-feeds
-        title = LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.description
         tt_content_defValues {
           CType = list
           list_type = dlf_feeds
@@ -112,8 +112,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_statistics {
         iconIdentifier = tx-dlf-statistics
-        title = LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.description
         tt_content_defValues {
           CType = list
           list_type = dlf_statistics
@@ -121,8 +121,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_tableofcontents {
         iconIdentifier = tx-dlf-tableofcontents
-        title = LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.description
         tt_content_defValues {
           CType = list
           list_type = dlf_tableofcontents
