@@ -120,6 +120,8 @@ The command `kitodo:index` is used for indexing a single document::
        Show processed documents uid and location with indexing parameters.
    :Example:
 
+.. _reindex_collections:
+
 Reindex collections
 -------------------
 
