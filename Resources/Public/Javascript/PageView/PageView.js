@@ -355,7 +355,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
                 for (var i = 0; i < features.length; i++) {
                     this.highlightLayer.getSource().addFeatures([features[i]]);
                 }
-            };
+            }
         }, this));
     };
 };
