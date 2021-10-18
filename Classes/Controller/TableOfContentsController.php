@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
  */
 class TableOfContentsController extends AbstractController
 {
-    protected $prefixId = 'tx_dlf';
-
     /**
      * This holds the active entries according to the currently selected page
      *
@@ -294,6 +292,4 @@ class TableOfContentsController extends AbstractController
         }
         return $menuArray;
     }
-
-    // TODO: Needs to be placed in an abstract class
 }
