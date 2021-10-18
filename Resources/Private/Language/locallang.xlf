@@ -15,7 +15,16 @@
 				<source><![CDATA[UPDATE:]]></source>
 			</trans-unit>
 			<trans-unit id="volume">
-				<source><![CDATA[Volume]]></source>
+				<source><![CDATA[volume]]></source>
+			</trans-unit>
+			<trans-unit id="volumes">
+				<source><![CDATA[volumes]]></source>
+			</trans-unit>
+			<trans-unit id="title">
+				<source><![CDATA[title]]></source>
+			</trans-unit>
+			<trans-unit id="titles">
+				<source><![CDATA[titles]]></source>
 			</trans-unit>
 		</body>
 	</file>
