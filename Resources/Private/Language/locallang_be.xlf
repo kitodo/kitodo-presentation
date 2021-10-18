@@ -46,6 +46,7 @@
 			</trans-unit>
 			<trans-unit id="plugins.statistics.flexform.description">
 				<source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.tableofcontents.title">
 				<source><![CDATA[Kitodo: Table of Contents]]></source>
 			</trans-unit>

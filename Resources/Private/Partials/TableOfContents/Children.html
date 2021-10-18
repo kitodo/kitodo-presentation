@@ -1,3 +1,4 @@
+<f:comment>
 <!--
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -7,7 +8,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
 -->
-
+</f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <f:for each="{children}" as="child">
@@ -37,25 +38,26 @@
                 <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
             </f:then>
             <f:else>
-                <f:link.action action="main"
-                               pageUid="{settings.targetPid}"
-                               additionalParams="{f:if(condition:'{child.id}', then:'{\'tx_dlf[id]\':child.id, \'tx_dlf[page]\':child.page}', else: '{\'tx_dlf[page]\':child.page}')}"
-                               addQueryString="1"
-                            title="{f:if(condition:'{child.type}', then: '{child.type}', else: '{child.orderlabel}')}
-                ">
-                    <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
+                <f:link.action
+                    action="main"
+                    pageUid="{settings.targetPid}"
+                    additionalParams="{f:if(condition:'{child.id}', then:'{\'tx_dlf[id]\':child.id, \'tx_dlf[page]\':child.page}', else: '{\'tx_dlf[page]\':child.page}')}"
+                    addQueryString="1"
+                    title="{f:if(condition:'{child.type}', then: '{child.type}', else: '{child.orderlabel}')}">
+                        <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
                 </f:link.action>
             </f:else>
         </f:if>
 
         <f:if condition="{settings.basketButton} && {settings.targetBasket}">
             <span class="tx-dlf-basket-button">
-                    <f:link.action pageUid="{settings.targetBasket}" action="main" controller="Basket"
-                                   additionalParams="{'tx_dlf[addToBasket]':'toc', 'tx_dlf[logId]':child.basketButton.logId, 'tx_dlf[startpage]':child.basketButton.startpage}"
-                                   addQueryString="1"
-
-                    >
-                        <f:translate key="LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:basketButton" />
+                    <f:link.action
+                        pageUid="{settings.targetBasket}"
+                        action="main"
+                        controller="Basket"
+                        additionalParams="{'tx_dlf[addToBasket]':'toc', 'tx_dlf[logId]':child.basketButton.logId, 'tx_dlf[startpage]':child.basketButton.startpage}"
+                        addQueryString="1">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:basketButton" />
                     </f:link.action>
             </span>
         </f:if>
