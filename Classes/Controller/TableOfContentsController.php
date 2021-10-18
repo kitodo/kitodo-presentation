@@ -154,9 +154,9 @@ class TableOfContentsController extends AbstractController
     }
 
     /**
-     * The main method of the PlugIn
+     * The main method of the plugin
      *
-     * @access public
+     * @return void
      */
     public function mainAction()
     {
