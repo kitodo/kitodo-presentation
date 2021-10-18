@@ -265,3 +265,15 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
         TableOfContents::class => '',
     ]
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'PageGrid',
+    [
+        PageGrid::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        PageGrid::class => '',
+    ]
+);
