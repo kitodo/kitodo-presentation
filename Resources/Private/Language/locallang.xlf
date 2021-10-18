@@ -26,6 +26,10 @@
 			<trans-unit id="titles">
 				<source><![CDATA[titles]]></source>
 			</trans-unit>
+			<trans-unit id="AddToBasket">
+				<source><![CDATA[Add to basket]]></source>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

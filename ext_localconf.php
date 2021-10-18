@@ -98,12 +98,6 @@ plugin.tx_dlf_search {
 }
 tt_content.list.20.dlf_search < plugin.tx_dlf_search
 
-plugin.tx_dlf_statistics = USER
-plugin.tx_dlf_statistics {
-    userFunc = Kitodo\Dlf\Plugin\Statistics->main
-}
-tt_content.list.20.dlf_statistics < plugin.tx_dlf_statistics
-
 plugin.tx_dlf_toolbox = USER
 plugin.tx_dlf_toolbox {
     userFunc = Kitodo\Dlf\Plugin\Toolbox->main
@@ -231,6 +225,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
 ];
 
+// Add migration wizards
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
+    = \Kitodo\Dlf\Updates\MigrateSettings::class;
+
+
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',
     'Feeds',
@@ -254,10 +253,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
         Statistics::class => '',
     ]
 );
-
-// Add migration wizards
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
-    = \Kitodo\Dlf\Updates\MigrateSettings::class;
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',

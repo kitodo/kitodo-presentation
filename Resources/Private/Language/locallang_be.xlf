@@ -26,6 +26,9 @@
 			<trans-unit id="flexform.targetPid">
 				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
 			</trans-unit>
+			<trans-unit id="flexform.targetBasket">
+				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.feeds.description">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
 			</trans-unit>
@@ -49,6 +52,18 @@
 			</trans-unit>
 			<trans-unit id="plugins.tableofcontents.title">
 				<source><![CDATA[Kitodo: Table of Contents]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.description">
+				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.description">
+				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.showBasketButton">
+				<source><![CDATA[Show basket button]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.templateFile">
+				<source><![CDATA[Template file]]></source>
 			</trans-unit>
 		</body>
 	</file>

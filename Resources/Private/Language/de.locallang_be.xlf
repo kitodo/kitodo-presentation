@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-15T12:27:02Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-18T09:31:44Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -29,9 +29,21 @@
 				<source><![CDATA[Options]]></source>
 				<target><![CDATA[Einstellungen]]></target>
 			</trans-unit>
+			<trans-unit id="flexform.showBasketButton" approved="yes">
+				<source><![CDATA[Show basket button]]></source>
+				<target><![CDATA[Zeige Warenkorb Button an]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.targetBasket" approved="yes">
+				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "DLF: Warenkorb")]]></target>
+			</trans-unit>
 			<trans-unit id="flexform.targetPid" approved="yes">
 				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "DLF: Seitenansicht")]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.templateFile" approved="yes">
+				<source><![CDATA[Template file]]></source>
+				<target><![CDATA[HTML-Template]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description" approved="yes">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
@@ -60,6 +72,14 @@
 			<trans-unit id="plugins.statistics.title" approved="yes">
 				<source><![CDATA[Kitodo: Statistics]]></source>
 				<target><![CDATA[Kitodo: Statistik]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.description" approved="yes">
+				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Inhaltsverzeichnis Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.title" approved="yes">
+				<source><![CDATA[Kitodo: Table of Contents]]></source>
+				<target><![CDATA[Kitodo: Inhaltsverzeichnis]]></target>
 			</trans-unit>
 		</body>
 	</file>
