@@ -1,0 +1,48 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+<div class="tx-dlf-pagegrid">
+    <div class="tx-dlf-pagegrid-pagebrowser">
+        <f:for each="{pageBrowser}" as="page" iteration="pageIterator">
+            <f:if condition="{page.additionalParams}">
+                <f:then>
+                    <f:link.action addQueryString="1" additionalParams="{page.additionalParams}">
+                        <span class="{page.class}">{page.text}</span>
+                    </f:link.action>
+                </f:then>
+                <f:else>
+                    <span class="{page.class}">
+                        {page.text}
+                    </span>
+                </f:else>
+            </f:if>
+        </f:for>
+
+    </div>
+    <ol class="tx-dlf-pagegrid-list">
+        <f:for each="{pageGridEntries}" as="entry" iteration="iterator">
+            <li class="tx-dlf-pagegrid-###STATE###" value="{entry.NUMBER}">
+                <div class="tx-dlf-pagegrid-thumbnail">
+                    <f:link.action arguments="{targetPid}"
+                                   argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
+                                   addQueryString="1" additionalParams="{entry.additionalParams}">
+                        <img alt="{entry.PAGINATION}" src="{entry.THUMBNAIL}" />
+                    </f:link.action>
+                </div>
+                <div class="tx-dlf-pagegrid-pagination">
+                    {entry.PAGINATION}
+                </div>
+            </li>
+        </f:for>
+    </ol>
+</div>
+
+
+</html>

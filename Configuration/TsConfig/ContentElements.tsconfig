@@ -85,8 +85,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_pagegrid {
         iconIdentifier = tx-dlf-pagegrid
-        title = LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.title
+        description = LLL:EXT:dlf/Resources/Private/Language//locallang_be.xlf:plugins.pagegrid.description
         tt_content_defValues {
           CType = list
           list_type = dlf_pagegrid

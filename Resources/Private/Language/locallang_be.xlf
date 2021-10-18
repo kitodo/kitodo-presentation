@@ -65,6 +65,9 @@
 			<trans-unit id="flexform.templateFile">
 				<source><![CDATA[Template file]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.pagegrid.title">
+				<source><![CDATA[Kitodo: Page Grid]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
