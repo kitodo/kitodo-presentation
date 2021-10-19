@@ -67,6 +67,16 @@ Upgrade
 
 This section contains version specific instructions on upgrading an existing Kitodo.Presentation installation.
 
+Version 3.3 -> 4.0
+==================
+
+Plugin Page Grid
+----------------
+
+The plugin use the fluid widget.paginate viewhelper now. The markup has changed. You need to check and adopt your design.
+
+The pagination can be configured by TypoScript. The flexform setting `limit` is changed to default `paginate.itemsPerPage`.
+
 Version 3.2 -> 3.3
 ==================
 
