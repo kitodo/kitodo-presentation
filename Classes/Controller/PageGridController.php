@@ -16,8 +16,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageGridController extends AbstractController
 {
-    public $extKey = 'dlf';
-
     /**
      * The main method of the plugin
      *
@@ -28,7 +26,7 @@ class PageGridController extends AbstractController
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         $this->loadDocument($requestData);
         if (
@@ -60,7 +58,7 @@ class PageGridController extends AbstractController
      * @access protected
      *
      * @param int $number: The page to render
-     * @param string $fileGrpThumbs: the file group of thumbs
+     * @param string $fileGrpThumbs: the file group(s) of thumbs
      *
      * @return array The rendered entry ready for fluid
      */
@@ -73,16 +71,16 @@ class PageGridController extends AbstractController
 
         // Get thumbnail or placeholder.
         $fileGrpsThumb = GeneralUtility::trimExplode(',', $fileGrpThumbs);
-        if (array_intersect($fileGrpsThumb, array_keys($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) !== []) {
-            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb])) {
-                    $entry['thumbnail'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb]);
-                    break;
+        if (is_array($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) {
+            if (array_intersect($fileGrpsThumb, array_keys($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) !== []) {
+                while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+                    if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb])) {
+                        $entry['thumbnail'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb]);
+                        break;
+                    }
                 }
             }
         }
-
         return $entry;
     }
-
 }
