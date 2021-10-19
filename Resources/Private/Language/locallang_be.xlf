@@ -68,7 +68,7 @@
 			<trans-unit id="plugins.pagegrid.title">
 				<source><![CDATA[Kitodo: Page Grid]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.pagegrid.title">
+			<trans-unit id="plugins.pagegrid.description">
 				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.pagegrid.limit">
