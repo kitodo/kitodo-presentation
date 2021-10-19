@@ -1,3 +1,4 @@
+<f:comment>
 <!--
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -7,42 +8,39 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
 -->
+</f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
-<div class="tx-dlf-pagegrid">
-    <div class="tx-dlf-pagegrid-pagebrowser">
-        <f:for each="{pageBrowser}" as="page" iteration="pageIterator">
-            <f:if condition="{page.additionalParams}">
-                <f:then>
-                    <f:link.action addQueryString="1" additionalParams="{page.additionalParams}">
-                        <span class="{page.class}">{page.text}</span>
-                    </f:link.action>
-                </f:then>
-                <f:else>
-                    <span class="{page.class}">
-                        {page.text}
-                    </span>
-                </f:else>
-            </f:if>
-        </f:for>
+    <div class="tx-dlf-pagegrid">
+        <f:widget.paginate objects="{pageGridEntries}" as="paginatedEntries" configuration="{'itemsPerPage': settings.limit, 'insertAbove' = 1}">
+            <ol class="tx-dlf-pagegrid-list">
+                <f:for each="{paginatedEntries}" as="entry" iteration="iterator">
+                    <li class="tx-dlf-pagegrid-{entry.state}" value="{entry.page}">
+                        <div class="tx-dlf-pagegrid-thumbnail">
+                            <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': docUid, 'tx_dlf[page]': entry.page}">
+                                <f:if condition="{entry.thumbnail}">
+                                    <f:then>
+                                        <img alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" src="{entry.thumbnail}" maxWidth="250" />
+                                    </f:then>
+                                    <f:else>
+                                        <f:if condition="{settings.placeholder}">
+                                            <f:then>
+                                                <f:image src="{settings.placeholder}" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" maxWidth="250" />
+                                            </f:then>
+                                            <f:else>
+                                                <f:image src="EXT:dlf/Resources/Public/Images/PageGridPlaceholder.jpg" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" maxWidth="250" />
+                                            </f:else>
+                                        </f:if>
 
+                                    </f:else>
+                                </f:if>
+                            </f:link.page>
+                        </div>
+                        <div class="tx-dlf-pagegrid-pagination">
+                            {entry.pagination}
+                        </div>
+                    </li>
+                </f:for>
+            </ol>
+        </f:widget.paginate>
     </div>
-    <ol class="tx-dlf-pagegrid-list">
-        <f:for each="{pageGridEntries}" as="entry" iteration="iterator">
-            <li class="tx-dlf-pagegrid-###STATE###" value="{entry.NUMBER}">
-                <div class="tx-dlf-pagegrid-thumbnail">
-                    <f:link.action arguments="{targetPid}"
-                                   argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
-                                   addQueryString="1" additionalParams="{entry.additionalParams}">
-                        <img alt="{entry.PAGINATION}" src="{entry.THUMBNAIL}" />
-                    </f:link.action>
-                </div>
-                <div class="tx-dlf-pagegrid-pagination">
-                    {entry.PAGINATION}
-                </div>
-            </li>
-        </f:for>
-    </ol>
-</div>
-
-
 </html>

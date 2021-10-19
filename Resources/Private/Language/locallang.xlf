@@ -29,7 +29,12 @@
 			<trans-unit id="AddToBasket">
 				<source><![CDATA[Add to basket]]></source>
 			</trans-unit>
-
+			<trans-unit id="thumbnail">
+				<source><![CDATA[Thumbnail]]></source>
+			</trans-unit>
+			<trans-unit id="page">
+				<source><![CDATA[Page]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

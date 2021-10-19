@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-18T09:31:44Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-19T14:40:54Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -60,6 +60,18 @@
 			<trans-unit id="plugins.feeds.title" approved="yes">
 				<source><![CDATA[Kitodo: Feeds]]></source>
 				<target><![CDATA[Kitodo: Feeds]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.limit" approved="yes">
+				<source><![CDATA[Thumbnails per page]]></source>
+				<target><![CDATA[Vorschaubilder pro Seite]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.placeholder" approved="yes">
+				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
+				<target><![CDATA[Platzhalter Bild für Seiten ohne Vorschaubild]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.title" approved="yes">
+				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Seitenvorschau Plugin für Kitodo.Presentation]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.statistics.description" approved="yes">
 				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>

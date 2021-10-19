@@ -16,7 +16,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -43,7 +43,7 @@
                     <settings.limit>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.pi_flexform.limit</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.limit</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,num,int</eval>
@@ -54,7 +54,7 @@
                     <settings.placeholder>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.pi_flexform.placeholder</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.placeholder</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>
@@ -68,7 +68,7 @@
                     <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.pi_flexform.targetPid</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPid</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -88,7 +88,7 @@
                     <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.pi_flexform.templateFile</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.templateFile</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-18T09:32:15Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-19T14:40:08Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -13,6 +13,10 @@
 				<source><![CDATA[[no title]]]></source>
 				<target><![CDATA[[kein Titel]]]></target>
 			</trans-unit>
+			<trans-unit id="page" approved="yes">
+				<source><![CDATA[Page]]></source>
+				<target><![CDATA[Seite]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.feeds.new" approved="yes">
 				<source><![CDATA[NEW:]]></source>
 				<target><![CDATA[NEU:]]></target>
@@ -20,6 +24,10 @@
 			<trans-unit id="plugins.feeds.update" approved="yes">
 				<source><![CDATA[UPDATE:]]></source>
 				<target><![CDATA[UPDATE:]]></target>
+			</trans-unit>
+			<trans-unit id="thumbnail" approved="yes">
+				<source><![CDATA[Thumbnail]]></source>
+				<target><![CDATA[Vorschaubild]]></target>
 			</trans-unit>
 			<trans-unit id="title" approved="yes">
 				<source><![CDATA[title]]></source>
