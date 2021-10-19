@@ -42,3 +42,18 @@ page {
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
   }
 }
+
+plugin.tx_dlf_pagegrid {
+    settings {
+        paginate {
+            itemsPerPage = 10
+            insertAbove = 1
+            insertBelow = 1
+            lessPages = 1
+            forcedNumberOfLinks = 5
+            pagesBefore = 3
+            pagesAfter = 3
+            section =
+        }
+    }
+}

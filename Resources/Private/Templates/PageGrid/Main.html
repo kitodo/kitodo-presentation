@@ -11,7 +11,8 @@
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
     <div class="tx-dlf-pagegrid">
-        <f:widget.paginate objects="{pageGridEntries}" as="paginatedEntries" configuration="{'itemsPerPage': settings.limit, 'insertAbove' = 1}">
+        <f:debug>{_all}</f:debug>
+        <f:widget.paginate objects="{pageGridEntries}" as="paginatedEntries" configuration="{settings.paginate}">
             <ol class="tx-dlf-pagegrid-list">
                 <f:for each="{paginatedEntries}" as="entry" iteration="iterator">
                     <li class="tx-dlf-pagegrid-{entry.state}" value="{entry.page}">
@@ -30,7 +31,6 @@
                                                 <f:image src="EXT:dlf/Resources/Public/Images/PageGridPlaceholder.jpg" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" maxWidth="250" />
                                             </f:else>
                                         </f:if>
-
                                     </f:else>
                                 </f:if>
                             </f:link.page>
