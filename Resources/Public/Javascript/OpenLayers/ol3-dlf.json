@@ -2,6 +2,7 @@
   "exports": [
     "ol.Collection",
     "ol.Collection#getArray",
+    "ol.Collection#item",
     "ol.control.Control",
     "ol.control.Control#changed",
     "ol.control.Zoom",
