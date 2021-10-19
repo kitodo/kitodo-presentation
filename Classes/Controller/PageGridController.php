@@ -13,15 +13,9 @@ namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 
 class PageGridController extends AbstractController
 {
-    public $prefixId = 'tx_dlf';
     public $extKey = 'dlf';
 
     /**
