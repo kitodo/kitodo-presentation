@@ -164,7 +164,7 @@ dlfViewer.prototype.addCustomControls = function() {
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0].length !== 0 && this.fulltexts[0].url !== '' && this.images.length === 1) {
+    if (dlfUtils.isFulltextDescriptor(this.fulltexts[0]) && this.images.length === 1) {
         fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
         fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, this.images[0], this.fulltexts[0].url);
     } else {
@@ -331,7 +331,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         }
     }
 
-    if (this.fulltexts[0] !== undefined && this.fulltexts[0].url !== '' && this.images.length > 0) {
+    if (dlfUtils.isFulltextDescriptor(this.fulltexts[0]) && this.images.length > 0) {
         var values = [],
             fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]),
             fulltextDataImageTwo = undefined;
@@ -341,7 +341,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         }
 
         // check if there is another image / fulltext to look for
-        if (this.images.length === 2 & this.fulltexts[1] !== undefined && this.fulltexts[1].url !== '') {
+        if (this.images.length === 2 && dlfUtils.isFulltextDescriptor(this.fulltexts[1])) {
             var image = $.extend({}, this.images[1]);
             image.width = image.width + this.images[0].width;
             fulltextDataImageTwo = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width);
@@ -355,7 +355,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
                 for (var i = 0; i < features.length; i++) {
                     this.highlightLayer.getSource().addFeatures([features[i]]);
                 }
-            };
+            }
         }, this));
     };
 };

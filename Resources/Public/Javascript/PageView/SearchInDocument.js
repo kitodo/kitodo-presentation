@@ -19,7 +19,7 @@ function nextResultPage() {
     var newStart = parseInt(currentStart) + 20;
     $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(newStart);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 /**
  * This function decreases the start parameter of the search form and submits
@@ -32,7 +32,7 @@ function previousResultPage() {
     var newStart = (parseInt(currentStart) > 20) ? (parseInt(currentStart) - 20) : 0;
     $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(newStart);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 /**
  * This function resets the start parameter on new queries.

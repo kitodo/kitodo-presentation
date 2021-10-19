@@ -104,7 +104,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
             // hover in case of dragging
             if (event['dragging']) {
                 return;
-            };
+            }
 
             var hoverSourceAnnotation = this.layers_.hoverAnnotation.getSource(),
                 hoverSourceAnnotationList = this.layers_.hoverAnnotationList.getSource(),
