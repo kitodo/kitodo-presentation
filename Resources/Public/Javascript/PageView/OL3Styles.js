@@ -57,6 +57,9 @@ dlfViewerOL3Styles.invisibleStyle = function() {
         'stroke': new ol.style.Stroke({
             'color': 'rgba(170,0,0,0)',
             'width': 1
+        }),
+        'fill': new ol.style.Fill({
+            'color': 'transparent'
         })
     });
 

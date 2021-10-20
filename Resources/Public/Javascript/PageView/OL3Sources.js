@@ -308,12 +308,9 @@ dlfViewerSource.IIIF = function(options) {
         crossOrigin: origin,
         projection,
         tileGrid,
-        tileUrlFunction
+        tileUrlFunction,
+        tileLoadFunction: dlfViewerSource.tileLoadFunction.bind(this, [tileWidth, tileHeight])
     };
-
-    if (ol.has.CANVAS) {
-        tileImageParams.tileLoadFunction = dlfViewerSource.tileLoadFunction.bind(this, [tileWidth, tileHeight]);
-    }
 
     return new ol.source.TileImage(tileImageParams);
 };

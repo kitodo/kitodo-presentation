@@ -390,7 +390,6 @@ dlfViewer.prototype.init = function(controlNames) {
                 // necessary for proper working of the keyboard events
                 keyboardEventTarget: document,
                 view: dlfUtils.createOl3View(this.images),
-                renderer: 'canvas'
             });
 
             // Position image according to user preferences
