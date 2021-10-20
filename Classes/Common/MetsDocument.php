@@ -268,34 +268,10 @@ final class MetsDocument extends Doc
      */
     protected function getLogicalStructureInfo(\SimpleXMLElement $structure, $recursive = false)
     {
-        // Get attributes.
-        foreach ($structure->attributes() as $attribute => $value) {
-            $attributes[$attribute] = (string) $value;
-        }
         // Load plugin configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         // Extract identity information.
-        $details = [];
-        $details['id'] = $attributes['ID'];
-        $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
-        $details['order'] = (isset($attributes['ORDER']) ? $attributes['ORDER'] : '');
-        $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
-        $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
-        $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
-        $details['volume'] = '';
-        // Set volume information only if no label is set and this is the toplevel structure element.
-        if (
-            empty($details['label'])
-            && $details['id'] == $this->_getToplevelId()
-        ) {
-            $metadata = $this->getMetadata($details['id']);
-            if (!empty($metadata['volume'][0])) {
-                $details['volume'] = $metadata['volume'][0];
-            }
-        }
-        $details['pagination'] = '';
-        $details['type'] = $attributes['TYPE'];
-        $details['thumbnailId'] = '';
+        $details = $this->getLogicalStructureDetails($structure);
         // Load smLinks.
         $this->_getSmLinks();
         // Load physical structure.
@@ -358,6 +334,46 @@ final class MetsDocument extends Doc
                 $details['children'][] = $this->getLogicalStructureInfo($child, true);
             }
         }
+        return $details;
+    }
+
+    /**
+     * This gets basic details about a logical structure element
+     *
+     * @access protected
+     *
+     * @param \SimpleXMLElement $structure: The logical structure node
+     *
+     * @return array Array of the element's id, label, type and physical page indexes/mptr link
+     */
+    private function getLogicalStructureDetails(\SimpleXMLElement $structure) {
+        // Get attributes.
+        foreach ($structure->attributes() as $attribute => $value) {
+            $attributes[$attribute] = (string) $value;
+        }
+
+        // Extract identity information.
+        $details = [];
+        $details['id'] = $attributes['ID'];
+        $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
+        $details['order'] = (isset($attributes['ORDER']) ? $attributes['ORDER'] : '');
+        $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
+        $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
+        $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
+        $details['volume'] = '';
+        // Set volume information only if no label is set and this is the toplevel structure element.
+        if (
+            empty($details['label'])
+            && $details['id'] == $this->_getToplevelId()
+        ) {
+            $metadata = $this->getMetadata($details['id']);
+            if (!empty($metadata['volume'][0])) {
+                $details['volume'] = $metadata['volume'][0];
+            }
+        }
+        $details['pagination'] = '';
+        $details['type'] = $attributes['TYPE'];
+        $details['thumbnailId'] = '';
         return $details;
     }
 
