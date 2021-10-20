@@ -521,14 +521,16 @@ dlfViewer.prototype.initCropping = function () {
     value = 'LineString';
     maxPoints = 2;
     geometryFunction = function(coordinates, geometry) {
-        if (!geometry) {
-            geometry = new ol.geom.Polygon(null);
-        }
         var start = coordinates[0];
         var end = coordinates[1];
-        geometry.setCoordinates([
+        var geom_coordinates = [
             [start, [start[0], end[1]], end, [end[0], start[1]], start]
-        ]);
+        ];
+        if (geometry) {
+            geometry.setCoordinates(geom_coordinates);
+        } else {
+            geometry = new ol.geom.Polygon(geom_coordinates);
+        }
 
         // add to basket button
         var extent = geometry.getExtent();
