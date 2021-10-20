@@ -315,13 +315,7 @@ class Indexer
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
         if (!empty($metadata)) {
-            // Remove appended "valueURI" from authors' names for indexing.
-            if (is_array($metadata['author'])) {
-                foreach ($metadata['author'] as $i => $author) {
-                    $splitName = explode(chr(31), $author);
-                    $metadata['author'][$i] = $splitName[0];
-                }
-            }
+        $metadata['author'] = self::removeAppendsFromAuthor($metadata['author']);
             // set Owner if available
             if ($document->getOwner()) {
                 $metadata['owner'][0] = $document->getOwner()->getIndexName();
@@ -329,10 +323,7 @@ class Indexer
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = $updateQuery->createDocument();
-            // Create unique identifier from document's UID and unit's XML ID.
-            $solrDoc->setField('id', $document->getUid() . $logicalUnit['id']);
-            $solrDoc->setField('uid', $document->getUid());
-            $solrDoc->setField('pid', $document->getPid());
+            $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
             if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                 $solrDoc->setField('page', $logicalUnit['points']);
             }
@@ -341,12 +332,8 @@ class Indexer
             } elseif (!empty($logicalUnit['thumbnailId'])) {
                 $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
             }
-            $solrDoc->setField('partof', $document->getPartof());
-            $solrDoc->setField('root', $doc->rootId);
-            $solrDoc->setField('sid', $logicalUnit['id']);
             // There can be only one toplevel unit per UID, independently of backend configuration
             $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
-            $solrDoc->setField('type', $logicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
             $solrDoc->setField('record_id', $metadata['record_id'][0]);
@@ -356,8 +343,6 @@ class Indexer
             $solrDoc->setField('license', $metadata['license']);
             $solrDoc->setField('terms', $metadata['terms']);
             $solrDoc->setField('restrictions', $metadata['restrictions']);
-            $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
-            $solrDoc->setField('fulltext', '');
             $coordinates = json_decode($metadata['coordinates'][0]);
             if (is_object($coordinates)) {
                 $solrDoc->setField('geom', json_encode($coordinates->features[0]));
@@ -445,11 +430,7 @@ class Indexer
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
-            $solrDoc = $updateQuery->createDocument();
-            // Create unique identifier from document's UID and unit's XML ID.
-            $solrDoc->setField('id', $document->getUid() . $physicalUnit['id']);
-            $solrDoc->setField('uid', $document->getUid());
-            $solrDoc->setField('pid', $document->getPid());
+            $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
             $solrDoc->setField('page', $page);
             $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
             while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
@@ -458,9 +439,6 @@ class Indexer
                     break;
                 }
             }
-            $solrDoc->setField('partof', $document->getPartof());
-            $solrDoc->setField('root', $doc->rootId);
-            $solrDoc->setField('sid', $physicalUnit['id']);
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
@@ -477,10 +455,7 @@ class Indexer
                         if (in_array($index_name, self::$fields['facets'])) {
                             // Remove appended "valueURI" from authors' names for indexing.
                             if ($index_name == 'author') {
-                                foreach ($data as $i => $author) {
-                                    $splitName = explode(chr(31), $author);
-                                    $data[$i] = $splitName[0];
-                                }
+                                $data = self::removeAppendsFromAuthor($data);
                             }
                             // Add facets to index.
                             $solrDoc->setField($index_name . '_faceting', $data);
@@ -542,6 +517,52 @@ class Indexer
             }
         }
         return true;
+    }
+
+    /**
+     * Get SOLR document with set standard fields (identical for logical and physical unit)
+     *
+     * @access private
+     *
+     * @param \Solarium\QueryType\Update\Query\Query $updateQuery solarium query
+     * @param \Kitodo\Dlf\Domain\Model\Document $document: The METS document
+     * @param array $unit: Array of the logical or physical unit to process
+     * @param string $fullText: Text containing full text for indexing
+     *
+     * @return \Solarium\Core\Query\DocumentInterface
+     */
+    private static function getSolrDocument($updateQuery, $document, $unit, $fullText = '') {
+        $solrDoc = $updateQuery->createDocument();
+        // Create unique identifier from document's UID and unit's XML ID.
+        $solrDoc->setField('id', $document->getUid() . $unit['id']);
+        $solrDoc->setField('uid', $document->getUid());
+        $solrDoc->setField('pid', $document->getPid());
+        $solrDoc->setField('partof', $document->getPartof());
+        $solrDoc->setField('root', $document->getDoc()->rootId);
+        $solrDoc->setField('sid', $unit['id']);
+        $solrDoc->setField('type', $unit['type'], self::$fields['fieldboost']['type']);
+        $solrDoc->setField('collection', $document->getDoc()->metadataArray[$document->getDoc()->toplevelId]['collection']);
+        $solrDoc->setField('fulltext', $fullText);
+        return $solrDoc;
+    }
+
+    /**
+     * Remove appended "valueURI" from authors' names for indexing.
+     *
+     * @access private
+     *
+     * @param array|string $authors: Array or string containing author/authors
+     *
+     * @return array|string
+     */
+    private static function removeAppendsFromAuthor($authors) {
+        if (is_array($authors)) {
+            foreach ($authors as $i => $author) {
+                $splitName = explode(chr(31), $author);
+                $authors[$i] = $splitName[0];
+            }
+        }
+        return $authors;
     }
 
     /**
