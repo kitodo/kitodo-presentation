@@ -73,6 +73,7 @@ class Calendar extends \Kitodo\Dlf\Common\AbstractPlugin
         switch ($type) {
             case 'newspaper':
             case 'ephemera':
+            case 'journal':
                 return $this->years($content, $conf);
             case 'year':
                 return $this->calendar($content, $conf);
