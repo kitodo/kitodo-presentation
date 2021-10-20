@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-19T15:05:41Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-20T14:24:46Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -60,6 +60,18 @@
 			<trans-unit id="plugins.feeds.title" approved="yes">
 				<source><![CDATA[Kitodo: Feeds]]></source>
 				<target><![CDATA[Kitodo: Feeds]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.description" approved="yes">
+				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Navigation Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.pageStep" approved="yes">
+				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
+				<target><![CDATA[Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.title" approved="yes">
+				<source><![CDATA[Kitodo: Navigation]]></source>
+				<target><![CDATA[Kitodo: Navigation]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.pagegrid.description" approved="yes">
 				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>

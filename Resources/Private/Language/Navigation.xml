@@ -15,12 +15,6 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="tt_content.plugin.title">Navigation</label>
-            <label index="tt_content.plugin.description">Navigation Plugin for Kitodo.Presentation</label>
-            <label index="tt_content.pi_flexform.sheet_general">Options</label>
-            <label index="tt_content.pi_flexform.pageStep">How many pages should be skipped by "fast-forward" and "rewind" buttons?</label>
-            <label index="tt_content.pi_flexform.targetPid">Target page (with "DLF: List View" plugin)</label>
-            <label index="tt_content.pi_flexform.templateFile">Template file</label>
             <label index="firstPage">First Page</label>
             <label index="backXPages">Back %s Pages</label>
             <label index="prevPage">Previous Page</label>
