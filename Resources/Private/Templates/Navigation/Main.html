@@ -1,0 +1,183 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+    <f:if condition="{numPages} > 0">
+        <f:then>
+            <div class="tx-dlf-navigation-double">
+                <f:if condition="{double}">
+                    <f:then>
+                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePageOn"/>
+                        </f:link.action>
+                    </f:then>
+                    <f:else>
+                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'1'}">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePageOn"/>
+                        </f:link.action>
+                    </f:else>
+                </f:if>
+            </div>
+            <div class="tx-dlf-navigation-double+">
+                <f:if condition="{double} && {page} < {numPages}">
+                    <f:then>
+                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + 1}'}">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePage+1"/>
+                        </f:link.action>
+                    </f:then>
+                    <f:else>
+                        <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePage+1') -> f:format.htmlspecialchars()}">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePage+1"/>
+                        </span>
+                    </f:else>
+                </f:if>
+            </div>
+        </f:then>
+        <f:else>
+            <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePageOn') -> f:format.htmlspecialchars()}">
+                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePageOn"/>
+            </span>
+            <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePage+1') -> f:format.htmlspecialchars()}">
+                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:doublePage+1"/>
+            </span>
+        </f:else>
+    </f:if>
+
+    <div class="tx-dlf-navigation-first">
+        <f:if condition="{page} > 1">
+            <f:then>
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'1'}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:firstPage"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:firstPage') -> f:format.htmlspecialchars()}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:firstPage"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
+
+    <div class="tx-dlf-navigation-back">
+        <f:if condition="{page} > {pageSteps}">
+            <f:then>
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page - pageSteps}'}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:backXPages" arguments="{0: '{pageSteps}'}"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:backXPages', arguments: '{0: pageSteps}') -> f:format.htmlspecialchars()}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:backXPages" arguments="{0: '{pageSteps}'}"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
+    <div class="tx-dlf-navigation-prev-1">
+        <f:if condition="{page} > {double + 1}">
+            <f:then>
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page - 1 + double}'}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:prevPage"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:prevPage') -> f:format.htmlspecialchars()}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:prevPage"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
+    <div class="tx-dlf-navigation-pageselect">
+        <f:form action="" method="POST" fieldNamePrefix="tx_dlf" addQueryString="1" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" absolute="{forceAbsoluteUrl}">
+            <label for="{uniqueId}">
+                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:selectPage"/>
+            </label>
+            <f:form.select id="{uniqueId}" name="page" options="{pageOptions}" value="{page}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
+            </f:form.select>
+        </f:form>
+    </div>
+    <div class="tx-dlf-navigation-next">
+        <f:if condition="{page} < {numPages}">
+            <f:then>
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + 1}'}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:nextPage"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:nextPage') -> f:format.htmlspecialchars()}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:nextPage"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
+    <div class="tx-dlf-navigation-fwd">
+        <f:if condition="{page} <= {numPages - pageSteps}">
+            <f:then>
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + pageSteps}'}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:forwardXPages" arguments="{0: '{pageSteps}'}"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:forwardXPages', arguments: '{0: pageSteps}') -> f:format.htmlspecialchars()}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:forwardXPages" arguments="{0: '{pageSteps}'}"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
+    <div class="tx-dlf-navigation-last">
+        <f:if condition="{page} < {numPages}">
+            <f:then>
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{numPages}'}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:lastPage"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:lastPage') -> f:format.htmlspecialchars()}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:lastPage"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
+    <div class="tx-dlf-navigation-listview">
+        <f:link.typolink parameter="{pageToList}" absolute="{forceAbsoluteUrl}" title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:linkToList') -> f:format.htmlspecialchars()}">
+            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:linkToList"/>
+        </f:link.typolink>
+    </div>
+    <div class="tx-dlf-navigation-zoom-in">
+        <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:zoomIn') -> f:format.htmlspecialchars()}">
+            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:zoomIn"/>
+        </span>
+    </div>
+    <div class="tx-dlf-navigation-zoom-out">
+        <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:zoomOut') -> f:format.htmlspecialchars()}">
+            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:zoomOut"/>
+        </span>
+    </div>
+    <div class="tx-dlf-navigation-fullscreen">
+        <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:zoomFullscreen') -> f:format.htmlspecialchars()}">
+            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:zoomFullscreen"/>
+        </span>
+    </div>
+    <div class="tx-dlf-navigation-rotate-left">
+        <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:rotateLeft') -> f:format.htmlspecialchars()}">
+            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:rotateLeft"/>
+        </span>
+    </div>
+    <div class="tx-dlf-navigation-rotate-right">
+        <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:rotateRight') -> f:format.htmlspecialchars()}">
+            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:rotateRight"/>
+        </span>
+    </div>
+    <div class="tx-dlf-navigation-rotate-reset">
+        <span title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:rotateReset') -> f:format.htmlspecialchars()}">
+            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:rotateReset"/>
+        </span>
+    </div>
+
+
+</html>
