@@ -50,7 +50,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_metadata
 // Plugin "navigation".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_navigation'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_navigation'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_navigation', 'dlf_navigation'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_navigation', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Navigation.xml');
 // Plugin "oaipmh".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_oaipmh'] = 'layout,select_key,pages,recursive';
@@ -90,7 +89,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_validator', 'dlf_validator'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_validator', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Validator.xml');
 
-
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Kitodo.Dlf',
     'Feeds',
@@ -116,5 +114,12 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'Kitodo.Dlf',
     'PageGrid',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-navigation.svg'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'Navigation',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-navigation.svg'
 );
