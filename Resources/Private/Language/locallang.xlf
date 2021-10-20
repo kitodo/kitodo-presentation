@@ -35,6 +35,66 @@
 			<trans-unit id="page">
 				<source><![CDATA[Page]]></source>
 			</trans-unit>
+			<trans-unit id="firstPage">
+				<source><![CDATA[First Page]]></source>
+			</trans-unit>
+			<trans-unit id="backXPages">
+				<source><![CDATA[Back %s Pages]]></source>
+			</trans-unit>
+			<trans-unit id="prevPage">
+				<source><![CDATA[Previous Page]]></source>
+			</trans-unit>
+			<trans-unit id="selectPage">
+				<source><![CDATA[Page]]></source>
+			</trans-unit>
+			<trans-unit id="nextPage">
+				<source><![CDATA[Next Page]]></source>
+			</trans-unit>
+			<trans-unit id="forwardXPages">
+				<source><![CDATA[Forward %s Pages]]></source>
+			</trans-unit>
+			<trans-unit id="lastPage">
+				<source><![CDATA[Last Page]]></source>
+			</trans-unit>
+			<trans-unit id="doublePageOn">
+				<source><![CDATA[Show double pages]]></source>
+			</trans-unit>
+			<trans-unit id="doublePageOff">
+				<source><![CDATA[Show single page]]></source>
+			</trans-unit>
+			<trans-unit id="doublePageOff">
+				<source><![CDATA[Show single page]]></source>
+			</trans-unit>
+			<trans-unit id="doublePageOff">
+				<source><![CDATA[Show single page]]></source>
+			</trans-unit>
+			<trans-unit id="doublePageOff">
+				<source><![CDATA[Show single page]]></source>
+			</trans-unit>
+			<trans-unit id="doublePage+1">
+				<source><![CDATA[Adjust recto/verso]]></source>
+			</trans-unit>
+			<trans-unit id="linkToList">
+				<source><![CDATA[Return to list view]]></source>
+			</trans-unit>
+			<trans-unit id="zoomIn">
+				<source><![CDATA[Zoom In]]></source>
+			</trans-unit>
+			<trans-unit id="zoomOut">
+				<source><![CDATA[Zoom Out]]></source>
+			</trans-unit>
+			<trans-unit id="zoomFullscreen">
+				<source><![CDATA[Fullscreen Mode]]></source>
+			</trans-unit>
+			<trans-unit id="rotateLeft">
+				<source><![CDATA[Rotate Left]]></source>
+			</trans-unit>
+			<trans-unit id="rotateRight">
+				<source><![CDATA[Rotate Right]]></source>
+			</trans-unit>
+			<trans-unit id="rotateReset">
+				<source><![CDATA[Reset Rotation]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-20T14:24:46Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-20T14:50:48Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -40,6 +40,10 @@
 			<trans-unit id="flexform.targetPid" approved="yes">
 				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "DLF: Seitenansicht")]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.targetPidListView" approved="yes">
+				<source><![CDATA[Target page (with "DLF: List View" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "DLF: Listenansicht")]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.templateFile" approved="yes">
 				<source><![CDATA[Template file]]></source>
