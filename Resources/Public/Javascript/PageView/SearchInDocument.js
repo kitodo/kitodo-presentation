@@ -259,7 +259,7 @@ function addImageHighlight(data) {
     data['documents'].forEach(function (element, i) {
         if(element['page'] === page) {
             if (element['highlight'].length > 0) {
-                if(tx_dlf_viewer.map != null) {
+                if (typeof tx_dlf_viewer !== 'undefined' && tx_dlf_viewer.map != null) { // eslint-disable-line camelcase
                     tx_dlf_viewer.displayHighlightWord(encodeURIComponent(getHighlights(element['highlight'])));
                 } else {
                     setTimeout(addImageHighlight, 500, data);
