@@ -80,12 +80,6 @@ plugin.tx_dlf_oaipmh {
 }
 tt_content.list.20.dlf_oaipmh < plugin.tx_dlf_oaipmh
 
-plugin.tx_dlf_pagegrid = USER
-plugin.tx_dlf_pagegrid {
-    userFunc = Kitodo\Dlf\Plugin\PageGrid->main
-}
-tt_content.list.20.dlf_pagegrid < plugin.tx_dlf_pagegrid
-
 plugin.tx_dlf_pageview = USER
 plugin.tx_dlf_pageview {
     userFunc = Kitodo\Dlf\Plugin\PageView->main
@@ -263,5 +257,17 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         TableOfContents::class => '',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'PageGrid',
+    [
+        PageGrid::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        PageGrid::class => '',
     ]
 );

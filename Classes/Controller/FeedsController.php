@@ -30,7 +30,7 @@ class FeedsController extends AbstractController
     }
 
     /**
-     * action main
+     * The main method of the plugin
      *
      * @return void
      */

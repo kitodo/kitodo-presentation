@@ -65,6 +65,18 @@
 			<trans-unit id="flexform.templateFile">
 				<source><![CDATA[Template file]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.pagegrid.title">
+				<source><![CDATA[Kitodo: Page Grid]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.description">
+				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.limit">
+				<source><![CDATA[Thumbnails per page]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.placeholder">
+				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

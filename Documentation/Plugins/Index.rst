@@ -661,7 +661,7 @@ Page Grid
    :Default:
 
  - :Property:
-       limit
+       paginate.itemsPerPage
    :Data Type:
        :ref:`t3tsref:data-type-integer`
    :Default:
