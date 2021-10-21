@@ -40,14 +40,14 @@ class CalendarController extends AbstractController
         $this->loadDocument($requestData);
         if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $metadata = $this->doc->getTitledata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
-            return '';
+            return;
         }
 
         switch ($type) {
@@ -61,8 +61,6 @@ class CalendarController extends AbstractController
                 break;
         }
 
-        // Nothing to do here.
-        return '';
     }
 
     /**
@@ -73,7 +71,7 @@ class CalendarController extends AbstractController
      * @param string $content: The PlugIn content
      * @param array $conf: The PlugIn configuration
      *
-     * @return string The content that is displayed on the website
+     * @return void
      */
     public function calendarAction()
     {
@@ -212,7 +210,7 @@ class CalendarController extends AbstractController
      *
      * @param integer $id
      *
-     * @return string The content that is displayed on the website
+     * @return void
      */
     public function yearsAction($id = 0)
     {
@@ -227,7 +225,7 @@ class CalendarController extends AbstractController
         $this->loadDocument($requestData);
         if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         // Get the title of the anchor file
