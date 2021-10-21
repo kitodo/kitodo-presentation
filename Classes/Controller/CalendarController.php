@@ -215,9 +215,6 @@ class CalendarController extends AbstractController
             return;
         }
 
-        // Get the title of the anchor file
-        $titleAnchor = $this->doc->getTitle($this->doc->uid);
-
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
