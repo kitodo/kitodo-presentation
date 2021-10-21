@@ -15,9 +15,9 @@
     <div class="meta-header">
         <div class="year-anchor">
             <div class="year-anchor">
-                <f:link.typolink parameter="{allYearsLink}">
-                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:allYears" /> {allYearDocTitle}
-                </f:link.typolink>
+                <f:link.page additionalParams="{'tx_dlf[id]': parentDocumentId}">
+                    <f:translate key="calendar.allYears" /> {allYearDocTitle}
+                </f:link.page>
             </div>
         </div>
         <div class="year">
@@ -27,10 +27,10 @@
         </div>
         <div class="calendar-list-selection">
             <a class="select-calendar-view {calendarViewActive}">
-                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:label.view_calendar" />
+                <f:translate key="calendar.view_calendar" />
             </a>
             <a class="select-list-view {listViewActive}">
-                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:label.view_list" />
+                <f:translate key="calendar.view_list" />
             </a>
         </div>
     </div>

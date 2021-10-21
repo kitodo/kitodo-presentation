@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-20T14:54:34Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-21T15:17:51Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -12,6 +12,22 @@
 			<trans-unit id="backXPages" approved="yes">
 				<source><![CDATA[Back %s Pages]]></source>
 				<target><![CDATA[%s Seiten zurück]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.allYears" approved="yes">
+				<source><![CDATA[All years overview - ]]></source>
+				<target><![CDATA[Jahrgangsübersicht - ]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.please_choose_year" approved="yes">
+				<source><![CDATA[Please choose a year first.]]></source>
+				<target><![CDATA[Bitte wählen Sie zunächst einen Jahrgang aus.]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.view_calendar" approved="yes">
+				<source><![CDATA[Calendar]]></source>
+				<target><![CDATA[Kalender]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.view_list" approved="yes">
+				<source><![CDATA[List View]]></source>
+				<target><![CDATA[Listenansicht]]></target>
 			</trans-unit>
 			<trans-unit id="doublePage+1" approved="yes">
 				<source><![CDATA[Adjust recto/verso]]></source>

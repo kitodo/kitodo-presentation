@@ -78,11 +78,17 @@ class CalendarController extends AbstractController
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
+        // access arguments passed by the mainAction()
+        $mainrquestData = $this->request->getArguments();
+
+        // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
+        $requestData = array_merge($requestData, $mainrquestData);
+
         // Load current document.
         $this->loadDocument($requestData);
         if ($this->doc === null) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -196,7 +202,7 @@ class CalendarController extends AbstractController
             ->build();
         $allYearsLink = $uri;
 
-        $this->view->assign('allYearsLink', $allYearsLink);
+        $this->view->assign('parentDocumentId', $this->doc->parentId);
         $this->view->assign('allYearDocTitle', $this->doc->getTitle($this->doc->parentId));
         $this->view->assign('calendarViewActive', count($this->allIssues) > 5 ? 'active' : '');
         $this->view->assign('listViewActive', count($this->allIssues) < 6 ? 'active' : '');
@@ -208,18 +214,18 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @param integer $id
-     *
      * @return void
      */
-    public function yearsAction($id = 0)
+    public function yearsAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        if (empty($requestData) && !empty($id)) {
-            $requestData['id'] = $id;
-        }
+        // access arguments passed by the mainAction()
+        $mainrquestData = $this->request->getArguments();
+
+        // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
+        $requestData = array_merge($requestData, $mainrquestData);
 
         // Load current document.
         $this->loadDocument($requestData);
