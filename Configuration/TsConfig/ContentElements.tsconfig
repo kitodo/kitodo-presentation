@@ -4,8 +4,8 @@ mod.wizards.newContentElement.wizardItems {
     elements {
       tx_dlf_audioplayer {
         iconIdentifier = tx-dlf-audioplayer
-        title = LLL:EXT:dlf/Resources/Private/Language/AudioPlayer.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/AudioPlayer.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.audioplayer.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.audioplayer.description
         tt_content_defValues {
           CType = list
           list_type = dlf_audioplayer

@@ -8,8 +8,11 @@
 			<trans-unit id="flexform.collections">
 				<source><![CDATA[Collections]]></source>
 			</trans-unit>
-			<trans-unit id="flexform.excludeOther">
+			<trans-unit id="flexform.excludeOtherCollections">
 				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.excludeOther">
+				<source><![CDATA[Show only documents from the selected page]]></source>
 			</trans-unit>
 			<trans-unit id="flexform.library">
 				<source><![CDATA[Providing library]]></source>
@@ -88,6 +91,15 @@
 			</trans-unit>
 			<trans-unit id="plugins.navigation.flexform.pageStep">
 				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.title">
+				<source><![CDATA[Kitodo: Audio Player]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.description">
+				<source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.flexform.elementId">
+				<source><![CDATA[@ID value of the HTML element for the audio player]]></source>
 			</trans-unit>
 		</body>
 	</file>

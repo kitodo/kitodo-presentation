@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,25 +9,28 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Plugin;
+namespace Kitodo\Dlf\Controller;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
- * Plugin AudioPlayer for the 'dlf' extension
+ * Controller for the plugin AudioPlayer for the 'dlf' extension
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
+class AudioplayerController extends AbstractController
 {
-    public $scriptRelPath = 'Classes/Plugin/AudioPlayer.php';
+    /**
+     * @var string
+     */
+    protected $extKey = 'dlf';
 
     /**
      * Holds the current audio file's URL, MIME type and optional label
@@ -71,47 +73,44 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
     }
 
     /**
-     * The main method of the PlugIn
+     * The main method of the plugin
      *
-     * @access public
-     *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
-     * @return string The content that is displayed on the website
+     * @return void
      */
-    public function main($content, $conf)
+    public function mainAction()
     {
-        $this->init($conf);
+        $requestData = GeneralUtility::_GPmerged('tx_dlf');
+        unset($requestData['__referrer'], $requestData['__trustedProperties']);
+
         // Load current document.
-        $this->loadDocument();
+        $this->loadDocument($requestData);
         if (
             $this->doc === null
             || $this->doc->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
-            return $content;
+            return;
         } else {
             // Set default values if not set.
-            // $this->piVars['page'] may be integer or string (physical structure @ID)
+            // $requestData['page'] may be integer or string (physical structure @ID)
             if (
-                (int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])
+                (int) $requestData['page'] > 0
+                || empty($requestData['page'])
             ) {
-                $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
             } else {
-                $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
             }
-            $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         }
         // Check if there are any audio files available.
-        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->conf['settings.fileGrpAudio']);
+        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->settings['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio])) {
+            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpAudio])) {
                 // Get audio data.
-                $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio]);
-                $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['label'];
-                $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['files'][$fileGrpAudio]);
+                $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpAudio]);
+                $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['label'];
+                $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpAudio]);
                 break;
             }
         }
@@ -120,10 +119,8 @@ class AudioPlayer extends \Kitodo\Dlf\Common\AbstractPlugin
             $this->addPlayerJS();
         } else {
             // Quit without doing anything if required variables are not set.
-            return $content;
+            return;
         }
-        // Load template file.
-        $this->getTemplate();
-        return $this->pi_wrapInBaseClass($content);
     }
+
 }

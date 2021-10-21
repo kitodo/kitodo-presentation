@@ -63,7 +63,7 @@ class FeedsController extends AbstractController
         }
 
         if (
-            !$this->settings['excludeOther']
+            !$this->settings['excludeOtherCollections']
             || empty($requestData['collection'])
             || GeneralUtility::inList($this->settings['collections'], $requestData['collection'])
         ) {
