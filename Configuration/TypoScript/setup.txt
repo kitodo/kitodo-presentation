@@ -5,7 +5,6 @@ config {
   concatenateCss = 1
 }
 
-
 page {
   includeCSS {
     jPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css

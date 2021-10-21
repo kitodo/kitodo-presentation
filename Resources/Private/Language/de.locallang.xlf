@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-19T14:40:08Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-20T14:54:34Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -8,6 +8,42 @@
 			<trans-unit id="AddToBasket" approved="yes">
 				<source><![CDATA[Add to basket]]></source>
 				<target><![CDATA[Zum Warenkorb hinzufügen]]></target>
+			</trans-unit>
+			<trans-unit id="backXPages" approved="yes">
+				<source><![CDATA[Back %s Pages]]></source>
+				<target><![CDATA[%s Seiten zurück]]></target>
+			</trans-unit>
+			<trans-unit id="doublePage+1" approved="yes">
+				<source><![CDATA[Adjust recto/verso]]></source>
+				<target><![CDATA[Recto/Verso korrigieren]]></target>
+			</trans-unit>
+			<trans-unit id="doublePageOff" approved="yes">
+				<source><![CDATA[Show single page]]></source>
+				<target><![CDATA[Einzelseitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="doublePageOn" approved="yes">
+				<source><![CDATA[Show double pages]]></source>
+				<target><![CDATA[Doppelseitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="firstPage" approved="yes">
+				<source><![CDATA[First Page]]></source>
+				<target><![CDATA[Erste Seite]]></target>
+			</trans-unit>
+			<trans-unit id="forwardXPages" approved="yes">
+				<source><![CDATA[Forward %s Pages]]></source>
+				<target><![CDATA[%s Seiten weiter]]></target>
+			</trans-unit>
+			<trans-unit id="lastPage" approved="yes">
+				<source><![CDATA[Last Page]]></source>
+				<target><![CDATA[Letzte Seite]]></target>
+			</trans-unit>
+			<trans-unit id="linkToList" approved="yes">
+				<source><![CDATA[Return to list view]]></source>
+				<target><![CDATA[Zurück zur Listenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="nextPage" approved="yes">
+				<source><![CDATA[Next Page]]></source>
+				<target><![CDATA[Nächste Seite]]></target>
 			</trans-unit>
 			<trans-unit id="noTitle" approved="yes">
 				<source><![CDATA[[no title]]]></source>
@@ -24,6 +60,26 @@
 			<trans-unit id="plugins.feeds.update" approved="yes">
 				<source><![CDATA[UPDATE:]]></source>
 				<target><![CDATA[UPDATE:]]></target>
+			</trans-unit>
+			<trans-unit id="prevPage" approved="yes">
+				<source><![CDATA[Previous Page]]></source>
+				<target><![CDATA[Vorherige Seite]]></target>
+			</trans-unit>
+			<trans-unit id="rotateLeft" approved="yes">
+				<source><![CDATA[Rotate Left]]></source>
+				<target><![CDATA[Ansicht nach links drehen]]></target>
+			</trans-unit>
+			<trans-unit id="rotateReset" approved="yes">
+				<source><![CDATA[Reset Rotation]]></source>
+				<target><![CDATA[Drehung zurücksetzen]]></target>
+			</trans-unit>
+			<trans-unit id="rotateRight" approved="yes">
+				<source><![CDATA[Rotate Right]]></source>
+				<target><![CDATA[Ansicht nach rechts drehen]]></target>
+			</trans-unit>
+			<trans-unit id="selectPage" approved="yes">
+				<source><![CDATA[Page]]></source>
+				<target><![CDATA[Seite]]></target>
 			</trans-unit>
 			<trans-unit id="thumbnail" approved="yes">
 				<source><![CDATA[Thumbnail]]></source>
@@ -44,6 +100,18 @@
 			<trans-unit id="volumes" approved="yes">
 				<source><![CDATA[volumes]]></source>
 				<target><![CDATA[Bände]]></target>
+			</trans-unit>
+			<trans-unit id="zoomFullscreen" approved="yes">
+				<source><![CDATA[Fullscreen Mode]]></source>
+				<target><![CDATA[Vollansicht]]></target>
+			</trans-unit>
+			<trans-unit id="zoomIn" approved="yes">
+				<source><![CDATA[Zoom In]]></source>
+				<target><![CDATA[Ansicht vergrößern]]></target>
+			</trans-unit>
+			<trans-unit id="zoomOut" approved="yes">
+				<source><![CDATA[Zoom Out]]></source>
+				<target><![CDATA[Ansicht verkleinern]]></target>
 			</trans-unit>
 		</body>
 	</file>

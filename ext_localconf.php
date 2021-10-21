@@ -68,12 +68,6 @@ plugin.tx_dlf_metadata {
 }
 tt_content.list.20.dlf_metadata < plugin.tx_dlf_metadata
 
-plugin.tx_dlf_navigation = USER
-plugin.tx_dlf_navigation {
-    userFunc = Kitodo\Dlf\Plugin\Navigation->main
-}
-tt_content.list.20.dlf_navigation < plugin.tx_dlf_navigation
-
 plugin.tx_dlf_oaipmh = USER_INT
 plugin.tx_dlf_oaipmh {
     userFunc = Kitodo\Dlf\Plugin\OaiPmh->main
@@ -269,5 +263,17 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         PageGrid::class => '',
+        ]
+    );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Navigation',
+    [
+        Navigation::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        Navigation::class => '',
     ]
 );

@@ -26,6 +26,9 @@
 			<trans-unit id="flexform.targetPid">
 				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
 			</trans-unit>
+			<trans-unit id="flexform.targetPidListView">
+				<source><![CDATA[Target page (with "DLF: List View" plugin)]]></source>
+			</trans-unit>
 			<trans-unit id="flexform.targetBasket">
 				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
 			</trans-unit>
@@ -76,6 +79,15 @@
 			</trans-unit>
 			<trans-unit id="plugins.pagegrid.placeholder">
 				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.title">
+				<source><![CDATA[Kitodo: Navigation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.description">
+				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.pageStep">
+				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
 			</trans-unit>
 		</body>
 	</file>

@@ -11,7 +11,6 @@
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
     <div class="tx-dlf-pagegrid">
-        <f:debug>{_all}</f:debug>
         <f:widget.paginate objects="{pageGridEntries}" as="paginatedEntries" configuration="{settings.paginate}">
             <ol class="tx-dlf-pagegrid-list">
                 <f:for each="{paginatedEntries}" as="entry" iteration="iterator">
