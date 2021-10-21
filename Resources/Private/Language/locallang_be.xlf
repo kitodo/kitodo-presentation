@@ -101,6 +101,18 @@
 			<trans-unit id="plugins.audioplayer.flexform.elementId">
 				<source><![CDATA[@ID value of the HTML element for the audio player]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.calendar.title">
+				<source><![CDATA[Kitodo: Calendar]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.description">
+				<source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.initialDocument">
+				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.showEmptyMonths">
+				<source><![CDATA[Show months without issues in calendar?]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

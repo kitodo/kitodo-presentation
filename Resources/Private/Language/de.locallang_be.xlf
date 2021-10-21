@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-21T09:03:15Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-21T15:14:29Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -64,6 +64,22 @@
 			<trans-unit id="plugins.audioplayer.title" approved="yes">
 				<source><![CDATA[Kitodo: Audio Player]]></source>
 				<target><![CDATA[Kitodo: Audio Player]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.description" approved="yes">
+				<source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Kalender Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.initialDocument" approved="yes">
+				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
+				<target><![CDATA[Anfangsdokument (z.B. vom Typ "newspaper" oder "ephemera)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.showEmptyMonths" approved="yes">
+				<source><![CDATA[Show months without issues in calendar?]]></source>
+				<target><![CDATA[Zeige Monate ohne Ausgaben im Kalender?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.title" approved="yes">
+				<source><![CDATA[Kitodo: Calendar]]></source>
+				<target><![CDATA[Kitodo: Kalender]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description" approved="yes">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
