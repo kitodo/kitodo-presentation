@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-20T14:50:48Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-21T09:03:15Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -10,6 +10,10 @@
 				<target><![CDATA[Kollektionen]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.excludeOther" approved="yes">
+				<source><![CDATA[Show only documents from the selected page]]></source>
+				<target><![CDATA[Nur Dokumente der ausgewählten Seite anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.excludeOtherCollections" approved="yes">
 				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
 				<target><![CDATA[Nur Dokumente der ausgewählten Kollektion(en) berücksichtigen]]></target>
 			</trans-unit>
@@ -48,6 +52,18 @@
 			<trans-unit id="flexform.templateFile" approved="yes">
 				<source><![CDATA[Template file]]></source>
 				<target><![CDATA[HTML-Template]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.description" approved="yes">
+				<source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Audio Player Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.flexform.elementId" approved="yes">
+				<source><![CDATA[@ID value of the HTML element for the audio player]]></source>
+				<target><![CDATA[@ID-Wert des HTML-Elements für den Audioplayer]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.title" approved="yes">
+				<source><![CDATA[Kitodo: Audio Player]]></source>
+				<target><![CDATA[Kitodo: Audio Player]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description" approved="yes">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>

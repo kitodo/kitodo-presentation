@@ -353,7 +353,7 @@ The TypoScript part is necessary to switch the page rendering to a different pag
    :Default:
 
  - :Property:
-        excludeOther_
+       excludeOtherCollections
    :Data Type:
         :ref:`t3tsref:data-type-boolean`
    :Default:
