@@ -95,6 +95,18 @@
 			<trans-unit id="rotateReset">
 				<source><![CDATA[Reset Rotation]]></source>
 			</trans-unit>
+			<trans-unit id="calendar.allYears">
+				<source><![CDATA[All years overview - ]]></source>
+			</trans-unit>
+			<trans-unit id="calendar.please_choose_year">
+				<source><![CDATA[Please choose a year first.]]></source>
+			</trans-unit>
+			<trans-unit id="calendar.view_calendar">
+				<source><![CDATA[Calendar]]></source>
+			</trans-unit>
+			<trans-unit id="calendar.view_list">
+				<source><![CDATA[List View]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

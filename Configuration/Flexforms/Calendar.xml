@@ -16,7 +16,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -43,7 +43,7 @@
                     <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.targetPid</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.flexform.targetPid</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -63,7 +63,7 @@
                     <settings.initialDocument>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.initialDocument</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.initialDocument</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -83,7 +83,7 @@
                     <settings.showEmptyMonths>
                       <TCEforms>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.showEmptyMonths</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.showEmptyMonths</label>
                         <config>
                           <type>check</type>
                           <default>1</default>
@@ -93,7 +93,7 @@
                     <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.pi_flexform.templateFile</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.flexform.templateFile</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>

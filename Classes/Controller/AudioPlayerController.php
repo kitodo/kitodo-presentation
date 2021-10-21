@@ -11,9 +11,9 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
@@ -122,5 +122,4 @@ class AudioplayerController extends AbstractController
             return;
         }
     }
-
 }
