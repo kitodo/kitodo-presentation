@@ -16,7 +16,6 @@ if (!defined('TYPO3_MODE')) {
 // Plugin "audioplayer".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_audioplayer'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_audioplayer'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_audioplayer', 'dlf_audioplayer'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_audioplayer', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/AudioPlayer.xml');
 // Plugin "basket".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_basket'] = 'layout,select_key,pages,recursive';
@@ -26,7 +25,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_basket']
 // Plugin "calendar".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_calendar'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_calendar'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_calendar', 'dlf_calendar'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_calendar', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Calendar.xml');
 // Plugin "collection".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_collection'] = 'layout,select_key,pages,recursive';
@@ -123,9 +121,17 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-navigation.svg'
 );
+
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Kitodo.Dlf',
     'AudioPlayer',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.audioplayer.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-audioplayer.svg'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'Calendar',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-calendar.svg'
 );
