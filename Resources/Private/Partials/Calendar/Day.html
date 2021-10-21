@@ -1,0 +1,21 @@
+<f:if condition="{day}">
+    <f:then>
+        <div class="issues">
+            <f:if condition="{day.issues}">
+                <f:then>
+                    <h4>{day.dayValue -> f:format.html()}</h4>
+                </f:then>
+                <f:else>
+                    {day.dayValue -> f:format.html()}
+                </f:else>
+            </f:if>
+            <div class="dayLinkList">
+                <f:for each="{day.issues}" as="issue">
+                    <f:link.typolink parameter="{issue.url}">
+                        {issue.text}
+                    </f:link.typolink>
+                </f:for>
+            </div>
+        </div>
+    </f:then>
+</f:if>
