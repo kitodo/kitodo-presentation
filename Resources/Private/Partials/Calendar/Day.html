@@ -22,10 +22,10 @@
                 </f:else>
             </f:if>
             <div class="dayLinkList">
-                <f:for each="{day.issues}" as="issue">
-                    <f:link.typolink parameter="{issue.url}">
-                        {issue.text}
-                    </f:link.typolink>
+                <f:for each="{day.issues}" as="item">
+                    <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
+                        {item.text}
+                    </f:link.page>
                 </f:for>
             </div>
         </div>

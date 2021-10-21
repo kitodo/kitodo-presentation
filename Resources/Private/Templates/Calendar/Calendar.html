@@ -21,15 +21,15 @@
             </div>
         </div>
         <div class="year">
-            <f:link.typolink parameter="{yearLink}">
-                {yearLinkText}
-            </f:link.typolink>
+            <f:link.page additionalParams="{'tx_dlf[id]': documentId}">
+                {yearLinkTitle}
+            </f:link.page>
         </div>
         <div class="calendar-list-selection">
-            <a class="select-calendar-view {calendarViewActive}">
+            <a class="select-calendar-view {f:if(condition:'calendarData->f:count() > 5', then : 'active')}">
                 <f:translate key="calendar.view_calendar" />
             </a>
-            <a class="select-list-view {listViewActive}">
+            <a class="select-list-view {f:if(condition:'calendarData->f:count() < 6', then : 'active')}">
                 <f:translate key="calendar.view_list" />
             </a>
         </div>
@@ -91,9 +91,9 @@
                 <li>
                     <span class="listview-date">{issueDay.dateString}</span>
                     <f:for each="{issueDay.items}" as="item">
-                        <f:link.typolink parameter="{item.url}">
+                        <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
                             {item.text}
-                        </f:link.typolink>
+                        </f:link.page>
                     </f:for>
                 </li>
             </f:for>

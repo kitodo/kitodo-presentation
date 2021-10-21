@@ -13,9 +13,9 @@
     <div class="tx-dlf-calendar-years">
         <div class="meta-header">
             <div class="year-anchor">
-                <f:link.typolink parameter="{allYearsLink}" title="{yearNameLinkTitle}">
+                <f:link.page additionalParams="{'tx_dlf[id]': documentId}">
                     <f:translate key="calendar.allYears" /> {allYearDocTitle}
-                </f:link.typolink>
+                </f:link.page>
             </div>
             <div class="meta-hint-year">
                 <f:translate key="calendar.please_choose_year" />
@@ -23,11 +23,11 @@
         </div>
         <div class="year-view">
             <ul>
-                <f:for each="{yearName}" as="yearNameEntry">
+                <f:for each="{yearName}" as="yearEntry">
                     <li class="year">
-                        <f:link.typolink parameter="{yearNameEntry.yearNameLink}">
-                            {yearNameEntry.yearName}
-                        </f:link.typolink>
+                        <f:link.page additionalParams="{'tx_dlf[id]': yearEntry.documentId}">
+                            {yearEntry.title}
+                        </f:link.page>
                     </li>
                 </f:for>
             </ul>

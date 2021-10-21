@@ -181,32 +181,13 @@ class CalendarController extends AbstractController
         $this->view->assign('issueData', $issueData);
 
         // Link to current year.
-        $uri = $this->uriBuilder->reset()
-            ->setTargetPageUid($GLOBALS['TSFE']->id)
-            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
-            ->setArguments([$this->prefixId . '[id]' => urlencode($this->doc->uid)])
-            ->build();
-
         $linkTitleData = $this->doc->getTitledata();
-        $linkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
-        $yearLink = $uri;
+        $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
-        $this->view->assign('yearLink', $yearLink);
-        $this->view->assign('yearLinkText', $linkTitle);
-
-        // Link to years overview.
-        $uri = $this->uriBuilder->reset()
-            ->setTargetPageUid($GLOBALS['TSFE']->id)
-            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
-            ->setArguments([$this->prefixId . '[id]' => urlencode($this->doc->parentId)])
-            ->build();
-        $allYearsLink = $uri;
-
+        $this->view->assign('documentId', $this->doc->uid);
+        $this->view->assign('yearLinkTitle', $yearLinkTitle);
         $this->view->assign('parentDocumentId', $this->doc->parentId);
         $this->view->assign('allYearDocTitle', $this->doc->getTitle($this->doc->parentId));
-        $this->view->assign('calendarViewActive', count($this->allIssues) > 5 ? 'active' : '');
-        $this->view->assign('listViewActive', count($this->allIssues) < 6 ? 'active' : '');
-
     }
 
     /**
@@ -268,29 +249,15 @@ class CalendarController extends AbstractController
         $yearArray = [];
         if (count($years) > 0) {
             foreach ($years as $year) {
-                $uri = $this->uriBuilder->reset()
-                    ->setTargetPageUid($GLOBALS['TSFE']->id)
-                    ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
-                    ->setArguments([$this->prefixId . '[id]' => urlencode($year['uid'])])
-                    ->build();
-
                 $yearArray[] = [
-                    'yearNameLinkTitle' => $titleAnchor . ': ' . $year['title'],
-                    'yearNameLink' => $uri,
-                    'yearName' => $year['title']
+                    'documentId' => $year['uid'],
+                    'title' => $year['title']
                 ];
             }
             $this->view->assign('yearName', $yearArray);
         }
-        // Link to years overview (should be itself here)
-        $uri = $this->uriBuilder->reset()
-            ->setTargetPageUid($GLOBALS['TSFE']->id)
-            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
-            ->setArguments(['tx_dlf[id]' => $this->doc->uid])
-            ->build();
-        $allYearsLink = $uri;
 
-        $this->view->assign('allYearsLink', $allYearsLink);
+        $this->view->assign('documentId', $this->doc->uid);
         $this->view->assign('allYearDocTitle', $this->doc->getTitle($this->doc->uid));
     }
 
@@ -355,20 +322,14 @@ class CalendarController extends AbstractController
                                     foreach ($day as $issue) {
                                         $dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
 
-                                        $uri = $this->uriBuilder->reset()
-                                            ->setTargetPageUid($this->settings['targetPid'])
-                                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
-                                            ->setArguments([$this->prefixId . '[id]' => urlencode($issue['uid'])])
-                                            ->build();
-
                                         $dayLinksText[] = [
-                                            'url' => $uri,
+                                            'documentId' => $issue['uid'],
                                             'text' => $dayLinkLabel
                                         ];
 
                                         // Save issue for list view.
                                         $this->allIssues[$currentDayTime][] = [
-                                            'url' => $uri,
+                                            'documentId' => $issue['uid'],
                                             'text' => $dayLinkLabel
                                         ];
                                     }
