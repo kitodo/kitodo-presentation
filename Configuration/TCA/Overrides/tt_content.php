@@ -123,3 +123,9 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-navigation.svg'
 );
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'AudioPlayer',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.audioplayer.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-audioplayer.svg'
+);

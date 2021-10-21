@@ -32,12 +32,6 @@ if (!defined('LOG_SEVERITY_ERROR')) {
 // Register plugins without addPItoST43() as this is not working with TYPO3 9.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
     '
-plugin.tx_dlf_audioplayer = USER
-plugin.tx_dlf_audioplayer {
-    userFunc = Kitodo\Dlf\Plugin\AudioPlayer->main
-}
-tt_content.list.20.dlf_audioplayer < plugin.tx_dlf_audioplayer
-
 plugin.tx_dlf_basket = USER_INT
 plugin.tx_dlf_basket {
     userFunc = Kitodo\Dlf\Plugin\Basket->main
@@ -213,6 +207,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
 ];
 
+
 // Add migration wizards
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
     = \Kitodo\Dlf\Updates\MigrateSettings::class;
@@ -275,5 +270,17 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         Navigation::class => '',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'AudioPlayer',
+    [
+        AudioPlayer::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        AudioPlayer::class => '',
     ]
 );
