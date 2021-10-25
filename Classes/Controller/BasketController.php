@@ -176,7 +176,8 @@ class BasketController extends AbstractController
      *
      * @return array The found data from user session.
      */
-    protected function getBasketData() {
+    protected function getBasketData()
+    {
         // get user session
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -487,7 +488,7 @@ class BasketController extends AbstractController
             ->getConnectionForTable('tx_dlf_basket')
             ->update(
                 'tx_dlf_basket',
-                 $update,
+                    $update,
                 ['uid' => (int) $basketData['uid']]
             );
         $basketData['doc_ids'] = $items;
