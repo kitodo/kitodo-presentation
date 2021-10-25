@@ -12,52 +12,22 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use Kitodo\Dlf\Common\Document;
-use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use \Kitodo\Dlf\Domain\Model\SearchForm;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class BasketController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class BasketController extends AbstractController
 {
-    public $prefixId = 'tx_dlf';
-    public $extKey = 'dlf';
-
     /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
-     * SearchController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-    }
-
-    /**
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * Different actions which depends on the choosen action (form)
+     *
+     * @return void
      */
-    public function basketAction() {
+    public function basketAction()
+    {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
@@ -102,11 +72,12 @@ class BasketController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     }
 
     /**
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * Add documents to the basket
+     *
+     * @return void
      */
-    public function addAction() {
+    public function addAction()
+    {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
@@ -124,12 +95,17 @@ class BasketController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $this->redirect('main');
     }
 
+    /**
+     * The main method of the plugin
+     *
+     * @return void
+     */
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         $basketData = $this->getBasketData();
 
@@ -196,16 +172,13 @@ class BasketController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             }
             $this->view->assign('entries', $entries);
         }
-        // go to basket link
-        if ($this->settings['targetBasket'] && $this->settings['basketGoToButton']) {
-            $uri = $this->uriBuilder->reset()
-                ->setTargetPageUid($this->settings['targetBasket'])
-                ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
-                ->build();
-            $this->view->assign('goToBasketUri', $uri);
-        }
     }
 
+    /**
+     * The basket data from user session.
+     *
+     * @return array The found data from user session.
+     */
     protected function getBasketData() {
         // get user session
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
