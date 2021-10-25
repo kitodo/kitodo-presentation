@@ -34,6 +34,14 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected $extConf;
 
     /**
+     * This holds the current document
+     *
+     * @var \Kitodo\Dlf\Common\Document
+     * @access protected
+     */
+    protected $doc;
+
+    /**
      * Loads the current document into $this->doc
      *
      * @access protected
