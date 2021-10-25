@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\IiifManifest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -32,6 +33,30 @@ class PageViewController extends AbstractController
      * @access protected
      */
     protected $controls = [];
+
+    /**
+     * Holds the current images' URLs and MIME types
+     *
+     * @var array
+     * @access protected
+     */
+    protected $images = [];
+
+    /**
+     * Holds the current fulltexts' URLs
+     *
+     * @var array
+     * @access protected
+     */
+    protected $fulltexts = [];
+
+    /**
+     * Holds the current AnnotationLists / AnnotationPages
+     *
+     * @var array
+     * @access protected
+     */
+    protected $annotationContainers = [];
 
     /**
      * The main method of the plugin
