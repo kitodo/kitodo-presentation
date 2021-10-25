@@ -27,6 +27,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     use LoggerAwareTrait;
 
     /**
+     * @var
+     */
+    protected $extConf;
+
+    /**
      * Loads the current document into $this->doc
      *
      * @access protected

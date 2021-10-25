@@ -22,11 +22,6 @@ use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 class PageViewController extends AbstractController
 {
     /**
-     * @var
-     */
-    protected $extConf;
-
-    /**
      * Holds the controls to add to the map
      *
      * @var array

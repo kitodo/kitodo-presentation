@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -89,7 +88,6 @@ class BasketController extends AbstractController
             && $requestData['addToBasket']
         ) {
             $returnData = $this->addToBasket($requestData, $basketData);
-            $basketData = $returnData['basketData'];
             $this->view->assign('pregenerateJs', $returnData['jsOutput']);
         }
 
@@ -105,8 +103,6 @@ class BasketController extends AbstractController
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         $basketData = $this->getBasketData();
 
