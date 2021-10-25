@@ -61,7 +61,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_pagegrid
 // Plugin "pageview".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_pageview'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_pageview'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_pageview', 'dlf_pageview'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_pageview', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/PageView.xml');
 // Plugin "search".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_search'] = 'layout,select_key,pages,recursive';
@@ -112,7 +111,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'Kitodo.Dlf',
     'PageGrid',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.title',
-    'EXT:dlf/Resources/Public/Icons/tx-dlf-navigation.svg'
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-pagegrid.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -134,4 +133,11 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'Calendar',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-calendar.svg'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'PageView',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-pageview.svg'
 );
