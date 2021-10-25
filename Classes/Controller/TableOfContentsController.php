@@ -123,7 +123,7 @@ class TableOfContentsController extends AbstractController
         }
         // Build sub-menu if available and called recursively.
         if (
-            $recursive == true
+            $recursive === true
             && !empty($entry['children'])
         ) {
             // Build sub-menu only if one of the following conditions apply:
