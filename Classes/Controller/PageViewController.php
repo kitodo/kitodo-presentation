@@ -139,7 +139,7 @@ class PageViewController extends AbstractController
     protected function addViewerJS()
     {
         // Viewer configuration.
-        $viewerConfiguration = '<script type="text/javascript">
+        $viewerConfiguration = '<script>
             $(document).ready(function() {
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({

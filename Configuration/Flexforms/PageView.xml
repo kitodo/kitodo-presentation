@@ -84,16 +84,6 @@
                             </config>
                         </TCEforms>
                     </settings.elementId>
-                    <settings.crop>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.crop</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
-                    </settings.crop>
                     <settings.useInternalProxy>
                         <TCEforms>
                             <exclude>1</exclude>
@@ -104,30 +94,44 @@
                             </config>
                         </TCEforms>
                     </settings.useInternalProxy>
-                    <settings.magnifier>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.magnifier</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
-                    </settings.magnifier>
                     <settings.basketButton>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
+                            <onChange>reload</onChange>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
                     </settings.basketButton>
+                    <settings.basket.crop>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.crop</label>
+                            <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </settings.basket.crop>
+                    <settings.basket.magnifier>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.magnifier</label>
+                            <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </settings.basket.magnifier>
                     <settings.targetBasket>
                         <TCEforms>
                             <exclude>1</exclude>
                                 <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
+                                <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                                 <config>
                                     <type>group</type>
                                     <internal_type>db</internal_type>
