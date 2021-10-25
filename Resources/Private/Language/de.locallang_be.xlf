@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-21T15:14:29Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T09:46:27Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -124,6 +124,42 @@
 			<trans-unit id="plugins.pagegrid.title" approved="yes">
 				<source><![CDATA[Kitodo: Page Grid]]></source>
 				<target><![CDATA[Kitodo: Seitenvorschau]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.description" approved="yes">
+				<source><![CDATA[Pageview Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Seitenansicht Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.crop" approved="yes">
+				<source><![CDATA[Enable cropping]]></source>
+				<target><![CDATA[Funktion zum Erstellen eines Bildausschnitts aktivieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.elementId" approved="yes">
+				<source><![CDATA[@ID value of the HTML element for the page view]]></source>
+				<target><![CDATA[@ID-Wert des HTML-Elements für die Seitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features" approved="yes">
+				<source><![CDATA[Map features]]></source>
+				<target><![CDATA[Bedienelemente]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features.overviewmap" approved="yes">
+				<source><![CDATA[Overview Image]]></source>
+				<target><![CDATA[Übersichtsbild]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features.zoompanel" approved="yes">
+				<source><![CDATA[Zoom Panel]]></source>
+				<target><![CDATA[Zoom-Knöpfe]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.magnifier" approved="yes">
+				<source><![CDATA[Activate magnifier]]></source>
+				<target><![CDATA[Lupenfunktion aktivieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.useInternalProxy" approved="yes">
+				<source><![CDATA[Use Internal Proxy]]></source>
+				<target><![CDATA[Internen Proxy verwenden]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.title" approved="yes">
+				<source><![CDATA[Kitodo: Pageview]]></source>
+				<target><![CDATA[Kitodo: Seitenansicht]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.statistics.description" approved="yes">
 				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>

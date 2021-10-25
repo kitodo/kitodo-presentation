@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-14T15:44:45Z">
+	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-25T09:43:48Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -8,11 +8,11 @@
 			<trans-unit id="flexform.collections">
 				<source><![CDATA[Collections]]></source>
 			</trans-unit>
-			<trans-unit id="flexform.excludeOtherCollections">
-				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
-			</trans-unit>
 			<trans-unit id="flexform.excludeOther">
 				<source><![CDATA[Show only documents from the selected page]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.excludeOtherCollections">
+				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
 			</trans-unit>
 			<trans-unit id="flexform.library">
 				<source><![CDATA[Providing library]]></source>
@@ -26,14 +26,41 @@
 			<trans-unit id="flexform.sheet_general">
 				<source><![CDATA[Options]]></source>
 			</trans-unit>
+			<trans-unit id="flexform.showBasketButton">
+				<source><![CDATA[Show basket button]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.targetBasket">
+				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
+			</trans-unit>
 			<trans-unit id="flexform.targetPid">
 				<source><![CDATA[Target page (with "DLF: Page View" plugin)]]></source>
 			</trans-unit>
 			<trans-unit id="flexform.targetPidListView">
 				<source><![CDATA[Target page (with "DLF: List View" plugin)]]></source>
 			</trans-unit>
-			<trans-unit id="flexform.targetBasket">
-				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
+			<trans-unit id="flexform.templateFile">
+				<source><![CDATA[Template file]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.description">
+				<source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.flexform.elementId">
+				<source><![CDATA[@ID value of the HTML element for the audio player]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.title">
+				<source><![CDATA[Kitodo: Audio Player]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.description">
+				<source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.initialDocument">
+				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.showEmptyMonths">
+				<source><![CDATA[Show months without issues in calendar?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.title">
+				<source><![CDATA[Kitodo: Calendar]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
@@ -47,32 +74,14 @@
 			<trans-unit id="plugins.feeds.title">
 				<source><![CDATA[Kitodo: Feeds]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.statistics.title">
-				<source><![CDATA[Kitodo: Statistics]]></source>
+			<trans-unit id="plugins.navigation.description">
+				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.statistics.description">
-				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
+			<trans-unit id="plugins.navigation.flexform.pageStep">
+				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.statistics.flexform.description">
-				<source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.tableofcontents.title">
-				<source><![CDATA[Kitodo: Table of Contents]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.tableofcontents.description">
-				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.tableofcontents.description">
-				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.showBasketButton">
-				<source><![CDATA[Show basket button]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.templateFile">
-				<source><![CDATA[Template file]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.title">
-				<source><![CDATA[Kitodo: Page Grid]]></source>
+			<trans-unit id="plugins.navigation.title">
+				<source><![CDATA[Kitodo: Navigation]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.pagegrid.description">
 				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
@@ -83,35 +92,50 @@
 			<trans-unit id="plugins.pagegrid.placeholder">
 				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.title">
-				<source><![CDATA[Kitodo: Navigation]]></source>
+			<trans-unit id="plugins.pagegrid.title">
+				<source><![CDATA[Kitodo: Page Grid]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.description">
-				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
+			<trans-unit id="plugins.pageview.description">
+				<source><![CDATA[Pageview Plugin for Kitodo.Presentation]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.pageStep">
-				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
+			<trans-unit id="plugins.pageview.flexform.crop">
+				<source><![CDATA[Enable cropping]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.audioplayer.title">
-				<source><![CDATA[Kitodo: Audio Player]]></source>
+			<trans-unit id="plugins.pageview.flexform.elementId">
+				<source><![CDATA[@ID value of the HTML element for the page view]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.audioplayer.description">
-				<source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
+			<trans-unit id="plugins.pageview.flexform.features">
+				<source><![CDATA[Map features]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.audioplayer.flexform.elementId">
-				<source><![CDATA[@ID value of the HTML element for the audio player]]></source>
+			<trans-unit id="plugins.pageview.flexform.features.overviewmap">
+				<source><![CDATA[Overview Image]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.calendar.title">
-				<source><![CDATA[Kitodo: Calendar]]></source>
+			<trans-unit id="plugins.pageview.flexform.features.zoompanel">
+				<source><![CDATA[Zoom Panel]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.calendar.description">
-				<source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>
+			<trans-unit id="plugins.pageview.flexform.magnifier">
+				<source><![CDATA[Activate magnifier]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.calendar.flexform.initialDocument">
-				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
+			<trans-unit id="plugins.pageview.flexform.useInternalProxy">
+				<source><![CDATA[Use Internal Proxy]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.calendar.flexform.showEmptyMonths">
-				<source><![CDATA[Show months without issues in calendar?]]></source>
+			<trans-unit id="plugins.pageview.title">
+				<source><![CDATA[Kitodo: Pageview]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.description">
+				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.flexform.description">
+				<source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.title">
+				<source><![CDATA[Kitodo: Statistics]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.description">
+				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.title">
+				<source><![CDATA[Kitodo: Table of Contents]]></source>
 			</trans-unit>
 		</body>
 	</file>
