@@ -21,7 +21,6 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfmetadata.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => 'encoded',
         'hideTable' => 1,
     ],

@@ -21,7 +21,6 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfformats.png',
         'rootLevel' => 1,
-        'dividers2tabs' => 2,
         'searchFields' => 'type,class',
     ],
     'feInterface' => [

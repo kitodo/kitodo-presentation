@@ -26,6 +26,21 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 {
     use LoggerAwareTrait;
 
+    public $prefixId = 'tx_dlf';
+
+    /**
+     * @var
+     */
+    protected $extConf;
+
+    /**
+     * This holds the current document
+     *
+     * @var \Kitodo\Dlf\Common\Document
+     * @access protected
+     */
+    protected $doc;
+
     /**
      * Loads the current document into $this->doc
      *

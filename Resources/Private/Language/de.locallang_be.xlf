@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T09:46:27Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T12:58:25Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -64,6 +64,42 @@
 			<trans-unit id="plugins.audioplayer.title" approved="yes">
 				<source><![CDATA[Kitodo: Audio Player]]></source>
 				<target><![CDATA[Kitodo: Audio Player]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.description" approved="yes">
+				<source><![CDATA[Basket Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Warenkorb Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.basketGoToButton" approved="yes">
+				<source><![CDATA[Add go to basket button]]></source>
+				<target><![CDATA["Zum Warenkorb" Button hinzufügen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfDownload" approved="yes">
+				<source><![CDATA[PDF download URL (without parameters)]]></source>
+				<target><![CDATA[URL zum Download der PDF Dokumente (ohne Parameter)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfGenerate" approved="yes">
+				<source><![CDATA[PDF generate URL (without parameters)]]></source>
+				<target><![CDATA[URL zum Generieren der PDF Dokumente (ohne Parameter)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfParamSeparator" approved="yes">
+				<source><![CDATA[Parameter separator (for multiple documents)]]></source>
+				<target><![CDATA[Zeichen zum Separieren der Parameter eines Dokuments]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfParams" approved="yes">
+				<source><![CDATA[Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)]]></source>
+				<target><![CDATA[Parameter zu den genannten URLs (mit Platzhalter für die Parameter z.B. ##startX##,##startY##)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfPrint" approved="yes">
+				<source><![CDATA[PDF print URL (without parameters)]]></source>
+				<target><![CDATA[URL zum Drucken der PDF Dokumente (ohne Parameter)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.preGeneration" approved="yes">
+				<source><![CDATA[Send ajax request for pdf pre generation]]></source>
+				<target><![CDATA[Ajax Request verschicken, um PDF vorzeitig zu generieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.title" approved="yes">
+				<source><![CDATA[Kitodo: Basket]]></source>
+				<target><![CDATA[Kitodo: Warenkorb]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.calendar.description" approved="yes">
 				<source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>

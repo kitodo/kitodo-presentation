@@ -137,6 +137,33 @@
 			<trans-unit id="plugins.tableofcontents.title">
 				<source><![CDATA[Kitodo: Table of Contents]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.basket.title">
+				<source><![CDATA[Kitodo: Basket]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.description">
+				<source><![CDATA[Basket Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.basketGoToButton">
+				<source><![CDATA[Add go to basket button]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfGenerate">
+				<source><![CDATA[PDF generate URL (without parameters)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfDownload">
+				<source><![CDATA[PDF download URL (without parameters)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfPrint">
+				<source><![CDATA[PDF print URL (without parameters)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfParams">
+				<source><![CDATA[Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfParamSeparator">
+				<source><![CDATA[Parameter separator (for multiple documents)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.preGeneration">
+				<source><![CDATA[Send ajax request for pdf pre generation]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

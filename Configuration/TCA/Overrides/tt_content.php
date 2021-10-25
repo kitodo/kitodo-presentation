@@ -20,7 +20,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_audiopla
 // Plugin "basket".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_basket'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_basket'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_basket', 'dlf_basket'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_basket', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Basket.xml');
 // Plugin "calendar".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_calendar'] = 'layout,select_key,pages,recursive';
@@ -140,4 +139,11 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'PageView',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-pageview.svg'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'Basket',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-basket.svg'
 );
