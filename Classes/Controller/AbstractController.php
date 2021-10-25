@@ -26,6 +26,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 {
     use LoggerAwareTrait;
 
+    public $prefixId = 'tx_dlf';
+
     /**
      * @var
      */

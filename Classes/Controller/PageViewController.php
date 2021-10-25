@@ -131,7 +131,7 @@ class PageViewController extends AbstractController
                     // Configure @action URL for form.
                     $uri = $this->uriBuilder->reset()
                         ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
+                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
                         ->setArguments(['eID' => 'tx_dlf_pageview_proxy', 'url' => urlencode($fulltext['url'])])
                         ->build();
 
@@ -144,7 +144,7 @@ class PageViewController extends AbstractController
             }
         }
         if (empty($fulltext)) {
-            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->conf['settings.fileGrpFulltext'] . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpFulltext'] . '"');
         }
         return $fulltext;
     }
@@ -255,7 +255,7 @@ class PageViewController extends AbstractController
                     // Configure @action URL for form.
                     $uri = $this->uriBuilder->reset()
                         ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? 1 : 0)
+                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
                         ->setArguments(['eID' => 'tx_dlf_pageview_proxy', 'url' => urlencode($image['url'])])
                         ->build();
                     $image['url'] = $uri;
