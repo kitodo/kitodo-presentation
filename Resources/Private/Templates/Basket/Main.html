@@ -47,9 +47,9 @@
     <div>
         <div>
             <f:form.select name="basket_action"
-                options="{0: '{f:translate(key: \'LLL:EXT:dlf/Resources/Private/Language/Basket.xml:chooseAction\')}',
-                'download': '{f:translate(key: \'LLL:EXT:dlf/Resources/Private/Language/Basket.xml:download\')}',
-                'remove': '{f:translate(key: \'LLL:EXT:dlf/Resources/Private/Language/Basket.xml:remove\')}'}" />
+                options="{0: '{f:translate(key: \'basket.chooseAction\')}',
+                'download': '{f:translate(key: \'basket.download\')}',
+                'remove': '{f:translate(key: \'basket.remove\')}'}" />
         </div>
         <div>
             <f:form.select options="{mailSelect}" name="mail_action"/>
@@ -69,7 +69,7 @@
     <f:then>
         <div class="tx-dlf-goto-basket">
             <f:link.page pageUid="{settings.targetBasket}">
-                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Basket.xml:goBasket"/>
+                <f:translate key="basket.goBasket"/>
             </f:link.page>
         </div>
     </f:then>

@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class BasketController extends AbstractController
 {
@@ -113,9 +114,9 @@ class BasketController extends AbstractController
             if (is_object($basketData['doc_ids'])) {
                 $basketData['doc_ids'] = get_object_vars($basketData['doc_ids']);
             }
-            $count = sprintf($this->pi_getLL('count'), count($basketData['doc_ids']));
+            $count = sprintf(LocalizationUtility::translate('basket.count', 'dlf'), count($basketData['doc_ids']));
         } else {
-            $count = sprintf($this->pi_getLL('count'), 0);
+            $count = sprintf(LocalizationUtility::translate('basket.count', 'dlf'), 0);
         }
         $this->view->assign('count', $count);
 
@@ -135,7 +136,7 @@ class BasketController extends AbstractController
 
         $mailSelect = [];
         if ($resultMail->rowCount() > 0) {
-            $mailSelect[0] = htmlspecialchars($this->pi_getLL('chooseMail', ''));
+            $mailSelect[0] = htmlspecialchars(LocalizationUtility::translate('basket.chooseMail', 'dlf'));
             while ($row = $resultMail->fetch()) {
                 $mailSelect[$row['uid']] = htmlspecialchars($row['name']) . ' (' . htmlspecialchars($row['mail']) . ')';
             }
@@ -157,7 +158,7 @@ class BasketController extends AbstractController
 
         $printSelect = [];
         if ($resultPrinter->rowCount() > 0) {
-            $printSelect[0] = htmlspecialchars($this->pi_getLL('choosePrinter', ''));
+            $printSelect[0] = htmlspecialchars(LocalizationUtility::translate('basket.choosePrinter', 'dlf'));
             while ($row = $resultPrinter->fetch()) {
                 $printSelect[$row['uid']] = htmlspecialchars($row['label']);
             }
@@ -317,20 +318,20 @@ class BasketController extends AbstractController
 
             $title = $document->getTitle($id, true);
             if (empty($title)) {
-                $title = $this->pi_getLL('noTitle', '');
+                $title = LocalizationUtility::translate('basket.noTitle', 'dlf');
             }
 
             // Set page and cutout information
             $info = '';
             if ($data['startX'] != '' && $data['endX'] != '') {
                 // cutout
-                $info .= htmlspecialchars($this->pi_getLL('cutout', '')) . ' ';
+                $info .= htmlspecialchars(LocalizationUtility::translate('basket.cutout', 'dlf')) . ' ';
             }
             if ($data['startpage'] == $data['endpage']) {
                 // One page
-                $info .= htmlspecialchars($this->pi_getLL('page', '')) . ' ' . $data['startpage'];
+                $info .= htmlspecialchars(LocalizationUtility::translate('page', 'dlf')) . ' ' . $data['startpage'];
             } else {
-                $info .= htmlspecialchars($this->pi_getLL('page', '')) . ' ' . $data['startpage'] . '-' . $data['endpage'];
+                $info .= htmlspecialchars(LocalizationUtility::translate('page', 'dlf')) . ' ' . $data['startpage'] . '-' . $data['endpage'];
             }
             $downloadLink = '<a href="' . $downloadUrl . '" target="_blank">' . htmlspecialchars($title) . '</a> (' . $info . ')';
             if ($data['startpage'] == $data['endpage']) {
@@ -525,7 +526,7 @@ class BasketController extends AbstractController
 
         $allResults = $resultMail->fetchAll();
         $mailData = $allResults[0];
-        $mailText = htmlspecialchars($this->pi_getLL('mailBody', '')) . "\n";
+        $mailText = htmlspecialchars(LocalizationUtility::translate('basket.mailBody', 'dlf')) . "\n";
         $numberOfPages = 0;
         $pdfUrl = $this->settings['pdfdownload'];
         // prepare links
@@ -559,7 +560,7 @@ class BasketController extends AbstractController
         // Prepare and send the message
         $mail
             // subject
-            ->setSubject($this->pi_getLL('mailSubject', ''))
+            ->setSubject(LocalizationUtility::translate('basket.mailSubject', 'dlf'))
             // Set the From address with an associative array
             ->setFrom($from)
             // Set the To addresses with an associative array
@@ -673,11 +674,5 @@ class BasketController extends AbstractController
 
         $this->redirectToUri($pdfUrl);
     }
-
-    protected function pi_getLL($label)
-    {
-        return $GLOBALS['TSFE']->sL('LLL:EXT:dlf/Resources/Private/Language/Basket.xml:' . $label);
-    }
-
 
 }

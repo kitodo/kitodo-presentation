@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T11:35:30Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T14:39:39Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -17,6 +17,30 @@
 				<source><![CDATA[Add to basket]]></source>
 				<target><![CDATA[Zum Warenkorb hinzufügen]]></target>
 			</trans-unit>
+			<trans-unit id="basket.chooseAction" approved="yes">
+				<source><![CDATA[Choose an action]]></source>
+				<target><![CDATA[Aktion auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.chooseMail" approved="yes">
+				<source><![CDATA[Choose a mail]]></source>
+				<target><![CDATA[E-Mail Empfänger auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.choosePrinter" approved="yes">
+				<source><![CDATA[Choose a printer]]></source>
+				<target><![CDATA[Drucker auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.count" approved="yes">
+				<source><![CDATA[%d Entries]]></source>
+				<target><![CDATA[%d Einträge]]></target>
+			</trans-unit>
+			<trans-unit id="basket.cutout" approved="yes">
+				<source><![CDATA[Cutout]]></source>
+				<target><![CDATA[Ausschnitt]]></target>
+			</trans-unit>
+			<trans-unit id="basket.download" approved="yes">
+				<source><![CDATA[Download]]></source>
+				<target><![CDATA[Herunterladen]]></target>
+			</trans-unit>
 			<trans-unit id="basket.editMode" approved="yes">
 				<source><![CDATA[Set cutout]]></source>
 				<target><![CDATA[Ausschnitt auswählen]]></target>
@@ -25,9 +49,29 @@
 				<source><![CDATA[Remove cutout]]></source>
 				<target><![CDATA[Ausschnitt entfernen]]></target>
 			</trans-unit>
+			<trans-unit id="basket.goBasket" approved="yes">
+				<source><![CDATA[Go to basket]]></source>
+				<target><![CDATA[Zum Warenkorb]]></target>
+			</trans-unit>
 			<trans-unit id="basket.magnifier" approved="yes">
 				<source><![CDATA[Magnifier]]></source>
 				<target><![CDATA[Lupe]]></target>
+			</trans-unit>
+			<trans-unit id="basket.mailBody" approved="yes">
+				<source><![CDATA[The following documents are sent to you by Kitodo.Presentation:]]></source>
+				<target><![CDATA[Folgende Dokumente wurden über die Kitodo.Presentation Extension an Sie verschickt:]]></target>
+			</trans-unit>
+			<trans-unit id="basket.mailSubject" approved="yes">
+				<source><![CDATA[Kitodo.Presentation - Document]]></source>
+				<target><![CDATA[Kitodo.Presentation - Dokument]]></target>
+			</trans-unit>
+			<trans-unit id="basket.noTitle" approved="yes">
+				<source><![CDATA[No title]]></source>
+				<target><![CDATA[Kein Titel vorhanden]]></target>
+			</trans-unit>
+			<trans-unit id="basket.remove" approved="yes">
+				<source><![CDATA[Remove]]></source>
+				<target><![CDATA[Entfernen]]></target>
 			</trans-unit>
 			<trans-unit id="calendar.allYears" approved="yes">
 				<source><![CDATA[All years overview - ]]></source>

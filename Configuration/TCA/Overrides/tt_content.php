@@ -20,7 +20,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_audiopla
 // Plugin "basket".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_basket'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_basket'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_basket', 'dlf_basket'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_basket', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Basket.xml');
 // Plugin "calendar".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_calendar'] = 'layout,select_key,pages,recursive';

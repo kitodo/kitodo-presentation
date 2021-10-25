@@ -13,8 +13,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_basket {
         iconIdentifier = tx-dlf-basket
-        title = LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.description
         tt_content_defValues {
           CType = list
           list_type = dlf_basket

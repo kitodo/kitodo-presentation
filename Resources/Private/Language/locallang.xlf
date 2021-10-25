@@ -119,6 +119,39 @@
 			<trans-unit id="basket.addBasket">
 				<source><![CDATA[Add to basket]]></source>
 			</trans-unit>
+			<trans-unit id="basket.goBasket">
+				<source><![CDATA[Go to basket]]></source>
+			</trans-unit>
+			<trans-unit id="basket.chooseAction">
+				<source><![CDATA[Choose an action]]></source>
+			</trans-unit>
+			<trans-unit id="basket.download">
+				<source><![CDATA[Download]]></source>
+			</trans-unit>
+			<trans-unit id="basket.remove">
+				<source><![CDATA[Remove]]></source>
+			</trans-unit>
+			<trans-unit id="basket.mailSubject">
+				<source><![CDATA[Kitodo.Presentation - Document]]></source>
+			</trans-unit>
+			<trans-unit id="basket.mailBody">
+				<source><![CDATA[The following documents are sent to you by Kitodo.Presentation:]]></source>
+			</trans-unit>
+			<trans-unit id="basket.cutout">
+				<source><![CDATA[Cutout]]></source>
+			</trans-unit>
+			<trans-unit id="basket.choosePrinter">
+				<source><![CDATA[Choose a printer]]></source>
+			</trans-unit>
+			<trans-unit id="basket.chooseMail">
+				<source><![CDATA[Choose a mail]]></source>
+			</trans-unit>
+			<trans-unit id="basket.noTitle">
+				<source><![CDATA[No title]]></source>
+			</trans-unit>
+			<trans-unit id="basket.count">
+				<source><![CDATA[%d Entries]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
