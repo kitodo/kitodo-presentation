@@ -307,3 +307,15 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
         PageView::class => '',
     ]
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Basket',
+    [
+        Basket::class => 'main, add, basket',
+    ],
+    // non-cacheable actions
+    [
+        Basket::class => 'main, add, basket',
+    ]
+);

@@ -141,3 +141,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-pageview.svg'
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'Basket',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-basket.svg'
+);
