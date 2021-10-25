@@ -47,8 +47,8 @@ class FeedsController extends AbstractController
             ->select('tx_dlf_libraries.label AS label')
             ->from('tx_dlf_libraries')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', (int)$this->settings['pages']),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', (int)$this->settings['library'])
+                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', (int) $this->settings['pages']),
+                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', (int) $this->settings['library'])
             )
             ->setMaxResults(1)
             ->execute();
@@ -144,7 +144,7 @@ class FeedsController extends AbstractController
                 if ($resArray['crdate'] == $resArray['tstamp']) {
                     $title = LocalizationUtility::translate('plugins.feeds.new', 'dlf') . ' ' . trim($title);
                 } else {
-                    $title =  LocalizationUtility::translate('plugins.feeds.update', 'dlf') . ' ' . trim($title);
+                    $title = LocalizationUtility::translate('plugins.feeds.update', 'dlf') . ' ' . trim($title);
                 }
 
                 $resArray['title'] = $title;
