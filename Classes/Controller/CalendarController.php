@@ -59,10 +59,10 @@ class CalendarController extends AbstractController
         switch ($type) {
             case 'newspaper':
             case 'ephemera':
-                $this->forward('years', NULL, NULL, $requestData);
+                $this->forward('years', null, null, $requestData);
                 break;
             case 'year':
-                $this->forward('calendar', NULL, NULL, $requestData);
+                $this->forward('calendar', null, null, $requestData);
                 break;
             case 'issue':
             default:
