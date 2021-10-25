@@ -295,3 +295,15 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
         Calendar::class => '',
     ]
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'PageView',
+    [
+        PageView::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        PageView::class => '',
+    ]
+);

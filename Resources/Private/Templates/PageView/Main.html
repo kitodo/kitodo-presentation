@@ -1,0 +1,68 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+<div id="tx-dlf-map" class="tx-dlf-map">
+    <div id="tx-dlf-fulltextselection"></div>
+    <div id="tx-dlf-annotationselection"></div>
+</div>
+<div id="ov_map"></div>
+
+<div class="tx-dlf-navigation-edit">
+    <f:if condition="{settings.crop}">
+        <f:then>
+            <a href="javascript: tx_dlf_viewer.activateSelection();" title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/PageView.xml:editMode')}">
+                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/PageView.xml:editMode"/>
+            </a>
+        </f:then>
+    </f:if>
+</div>
+<div class="tx-dlf-navigation-editRemove">
+    <f:if condition="{settings.crop}">
+        <f:then>
+            <a href="javascript: tx_dlf_viewer.resetCropSelection();" title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/PageView.xml:editRemove')}">
+                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/PageView.xml:editRemove"/>
+            </a>
+        </f:then>
+    </f:if>
+</div>
+<div class="tx-dlf-navigation-magnifier">
+    <f:if condition="{settings.magnifier}">
+        <f:then>
+            <a href="javascript: tx_dlf_viewer.activateMagnifier();" title="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/PageView.xml:magnifier')}">
+                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/PageView.xml:magnifier"/>
+            </a>
+        </f:then>
+    </f:if>
+</div>
+
+<div class="tx-dlf-interaction-addbasket">
+    <f:if condition="{settings.basketButton} && {settings.targetBasket}">
+        <f:then>
+            <f:form id="addToBasketForm" pluginName="basket" controller="Basket" action="add" additionalParams="{'tx_dlf[addToBasket]': '1'}" absolute="{forceAbsoluteUrl}" pageUid="{settings.targetBasket}" fieldNamePrefix="tx_dlf">
+                <f:form.hidden name="id" value="{docId}" id="id"/>
+                <f:form.hidden name="startpage" value="{page}" id="startpage"/>
+                <f:form.hidden name="endpage" value="{page}" id="endpage"/>
+                <f:form.hidden name="startX" value="" id="startX"/>
+                <f:form.hidden name="startY" value="" id="startY"/>
+                <f:form.hidden name="endX" value="" id="endX"/>
+                <f:form.hidden name="endY" value="" id="endY"/>
+                <f:form.hidden name="rotation" value="" id="rotation"/>
+                <f:form.submit value="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/PageView.xml:addBasket')}" />
+            </f:form>
+
+        </f:then>
+    </f:if>
+</div>
+
+<f:format.raw>
+    {viewerConfiguration}
+</f:format.raw>
+
+</html>
