@@ -11,10 +11,13 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-use Kitodo\Dlf\Common\Document;
 
 /**
  *

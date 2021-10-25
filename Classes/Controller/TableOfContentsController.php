@@ -123,7 +123,7 @@ class TableOfContentsController extends AbstractController
         }
         // Build sub-menu if available and called recursively.
         if (
-            $recursive == true
+            $recursive === true
             && !empty($entry['children'])
         ) {
             // Build sub-menu only if one of the following conditions apply:
@@ -193,10 +193,10 @@ class TableOfContentsController extends AbstractController
             // Set default values for page if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
             if (
-                (int)$requestData['page'] > 0
+                (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int)$requestData['page'],
+                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'],
                     1, $this->doc->numPages, 1);
             } else {
                 $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
@@ -215,14 +215,14 @@ class TableOfContentsController extends AbstractController
                 !empty($requestData['page'])
                 && !empty($this->doc->physicalStructure)
             ) {
-                $this->activeEntries = array_merge((array)$this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]],
-                    (array)$this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page']]]);
+                $this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]],
+                    (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page']]]);
                 if (
                     !empty($requestData['double'])
                     && $requestData['page'] < $this->doc->numPages
                 ) {
                     $this->activeEntries = array_merge($this->activeEntries,
-                        (array)$this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page'] + 1]]);
+                        (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page'] + 1]]);
                 }
             }
             // Go through table of contents and create all menu entries.

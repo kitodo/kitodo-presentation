@@ -19,7 +19,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class CalendarController extends AbstractController
 {
-    public $prefixId = 'tx_dlf';
+    /**
+     * This holds all issues for the list view.
+     *
+     * @var array
+     * @access protected
+     */
+    protected $allIssues = [];
 
     /**
      * The main method of the plugin
@@ -53,9 +59,11 @@ class CalendarController extends AbstractController
         switch ($type) {
             case 'newspaper':
             case 'ephemera':
-                $this->forward('years', NULL, NULL, $requestData);
+                $this->forward('years', null, null, $requestData);
+                break;
             case 'year':
-                $this->forward('calendar', NULL, NULL, $requestData);
+                $this->forward('calendar', null, null, $requestData);
+                break;
             case 'issue':
             default:
                 break;
