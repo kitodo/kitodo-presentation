@@ -23,7 +23,6 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfbasket.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => '',
     ],
     'interface' => [

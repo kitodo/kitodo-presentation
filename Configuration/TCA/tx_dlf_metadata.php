@@ -27,7 +27,6 @@ return [
         ],
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfmetadata.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => 'label,index_name',
     ],
     'feInterface' => [
