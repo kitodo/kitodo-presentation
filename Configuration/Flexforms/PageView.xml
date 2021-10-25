@@ -16,7 +16,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -43,7 +43,7 @@
                     <settings.excludeOther>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.excludeOther</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
@@ -53,16 +53,16 @@
                     <settings.features>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.features</label>
                             <config>
                                 <type>select</type>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.overviewmap</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.features.overviewmap</numIndex>
                                         <numIndex index="1">OverviewMap</numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.features.zoompanel</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.features.zoompanel</numIndex>
                                         <numIndex index="1">ZoomPanel</numIndex>
                                     </numIndex>
                                 </items>
@@ -76,7 +76,7 @@
                     <settings.elementId>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.elementId</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.elementId</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,alphanum_x,nospace</eval>
@@ -84,50 +84,54 @@
                             </config>
                         </TCEforms>
                     </settings.elementId>
-                    <settings.crop>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.crop</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
-                    </settings.crop>
                     <settings.useInternalProxy>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.useInternalProxy</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.useInternalProxy</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
                     </settings.useInternalProxy>
-                    <settings.magnifier>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.magnifier</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
-                    </settings.magnifier>
                     <settings.basketButton>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.basketButton</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
+                            <onChange>reload</onChange>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
                     </settings.basketButton>
+                    <settings.basket.crop>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.crop</label>
+                            <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </settings.basket.crop>
+                    <settings.basket.magnifier>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.magnifier</label>
+                            <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </settings.basket.magnifier>
                     <settings.targetBasket>
                         <TCEforms>
                             <exclude>1</exclude>
-                                <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.targetBasket</label>
+                                <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
+                                <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                                 <config>
                                     <type>group</type>
                                     <internal_type>db</internal_type>
@@ -147,7 +151,7 @@
                     <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.pi_flexform.templateFile</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.templateFile</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>

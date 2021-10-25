@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-21T15:17:51Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T11:35:30Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -12,6 +12,22 @@
 			<trans-unit id="backXPages" approved="yes">
 				<source><![CDATA[Back %s Pages]]></source>
 				<target><![CDATA[%s Seiten zurück]]></target>
+			</trans-unit>
+			<trans-unit id="basket.addBasket" approved="yes">
+				<source><![CDATA[Add to basket]]></source>
+				<target><![CDATA[Zum Warenkorb hinzufügen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.editMode" approved="yes">
+				<source><![CDATA[Set cutout]]></source>
+				<target><![CDATA[Ausschnitt auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.editRemove" approved="yes">
+				<source><![CDATA[Remove cutout]]></source>
+				<target><![CDATA[Ausschnitt entfernen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.magnifier" approved="yes">
+				<source><![CDATA[Magnifier]]></source>
+				<target><![CDATA[Lupe]]></target>
 			</trans-unit>
 			<trans-unit id="calendar.allYears" approved="yes">
 				<source><![CDATA[All years overview - ]]></source>

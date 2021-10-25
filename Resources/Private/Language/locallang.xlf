@@ -107,6 +107,18 @@
 			<trans-unit id="calendar.view_list">
 				<source><![CDATA[List View]]></source>
 			</trans-unit>
+			<trans-unit id="basket.editMode">
+				<source><![CDATA[Set cutout]]></source>
+			</trans-unit>
+			<trans-unit id="basket.editRemove">
+				<source><![CDATA[Remove cutout]]></source>
+			</trans-unit>
+			<trans-unit id="basket.magnifier">
+				<source><![CDATA[Magnifier]]></source>
+			</trans-unit>
+			<trans-unit id="basket.addBasket">
+				<source><![CDATA[Add to basket]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
