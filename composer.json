@@ -25,15 +25,16 @@
     "docs": "https://docs.typo3.org/p/kitodo/presentation/master/en-us/"
   },
   "require": {
-    "php": "^7.3|^7.4",
+    "php": "^7.3",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "~9.5.26",
-    "typo3/cms-tstemplate": "~9.5.26",
+    "typo3/cms-core": "^9.5",
+    "typo3/cms-extbase": "^9.5",
+    "typo3/cms-tstemplate": "^9.5",
     "caseyamcl/phpoaipmh": "^3.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
     "solarium/solarium": "^4.2|^5.2"
