@@ -30,16 +30,11 @@ class ToolboxController extends AbstractController
 
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
-        // Quit without doing anything if required variable is not set.
-        if (empty($requestData['id'])) {
-            return;
-        }
+        // Load current document.
+        $this->loadDocument($requestData);
 
         $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         $this->view->assign('double', $requestData['double']);
-
-        // Load current document.
-        $this->loadDocument($requestData);
 
         $tools = explode(',', $this->settings['tools']);
         // Add the tools to the toolbox.

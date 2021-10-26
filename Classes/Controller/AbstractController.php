@@ -88,7 +88,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 $_GET[$this->prefixId]['id'] = $requestData['id'];
                 unset($requestData['recordId'], $_GET[$this->prefixId]['recordId']);
                 // Try to load document.
-                $this->loadDocument();
+                $this->loadDocument($requestData);
             } else {
                 $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
             }

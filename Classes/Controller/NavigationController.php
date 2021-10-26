@@ -27,9 +27,6 @@ class NavigationController extends AbstractController
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        if (empty($requestData['id'])) {
-            return '';
-        }
         if (empty($requestData['page'])) {
             $requestData['page'] = 1;
         }
