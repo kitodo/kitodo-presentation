@@ -13,12 +13,24 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class FeedsController extends AbstractController
 {
+
+    /**
+     * @var LibraryRepository
+     */
+    private $libraryRepository;
+
+    public function injectLibraryRepository(LibraryRepository $libraryRepository)
+    {
+        $this->libraryRepository = $libraryRepository;
+    }
+
     /**
      * Initializes the current action
      *
@@ -40,24 +52,13 @@ class FeedsController extends AbstractController
         $requestData = $this->request->getArguments();
 
         // get library information
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_libraries');
-
-        $result = $queryBuilder
-            ->select('tx_dlf_libraries.label AS label')
-            ->from('tx_dlf_libraries')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', (int) $this->settings['pages']),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', (int) $this->settings['library'])
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $library = $this->libraryRepository->getLibrary($this->settings['library'], $this->settings['pages'])->getFirst();
 
         $feedMeta = [];
         $documents = [];
 
-        if ($resArray = $result->fetch()) {
-            $feedMeta['copyright'] = $resArray['label'];
+        if ($library) {
+            $feedMeta['copyright'] = $library->getLabel();
         } else {
             $this->logger->error('Failed to fetch label of selected library with "' . $this->settings['library'] . '"');
         }
