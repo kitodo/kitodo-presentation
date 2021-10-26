@@ -164,6 +164,21 @@
 			<trans-unit id="plugins.basket.flexform.preGeneration">
 				<source><![CDATA[Send ajax request for pdf pre generation]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.toolbox.title">
+				<source><![CDATA[Kitodo: Toolbox]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.description">
+				<source><![CDATA[Toolbox Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.flexform.tools">
+				<source><![CDATA[Tools]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.flexform.fileGrps">
+				<source><![CDATA[Page fileGrps used by image download tool: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.solrcore">
+				<source><![CDATA[Solr Core]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
