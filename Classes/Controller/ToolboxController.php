@@ -231,7 +231,7 @@ class ToolboxController extends AbstractController
      *
      * @param int $page: Page number
      *
-     * @return string Link to image file with given label
+     * @return array Array of image links and image format information
      */
     protected function getImage($page)
     {
@@ -384,7 +384,7 @@ class ToolboxController extends AbstractController
         if (!empty($workLink)) {
             $workLink = $workLink;
         } else {
-            $this->logger->warning('File not found in fileGrp "' . $this->conf['settings.fileGrpDownload'] . '"');
+            $this->logger->warning('File not found in fileGrps "' . $this->extConf['fileGrpDownload'] . '"');
         }
         return $workLink;
     }
@@ -507,12 +507,11 @@ class ToolboxController extends AbstractController
     protected function getEncryptedCoreName()
     {
         // Get core name.
-        $name = Helper::getIndexNameFromUid($this->conf['settings.solrcore'], 'tx_dlf_solrcores');
+        $name = Helper::getIndexNameFromUid($this->settings['solrcore'], 'tx_dlf_solrcores');
         // Encrypt core name.
         if (!empty($name)) {
             $name = Helper::encrypt($name);
         }
         return $name;
     }
-
 }

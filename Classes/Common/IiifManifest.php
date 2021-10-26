@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Common;
 use Flow\JSONPath\JSONPath;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationInterface;
