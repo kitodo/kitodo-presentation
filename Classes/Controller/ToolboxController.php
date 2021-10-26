@@ -11,123 +11,28 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use \Kitodo\Dlf\Domain\Model\SearchForm;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class ToolboxController extends AbstractController
 {
-    public $prefixId = 'tx_dlf';
-    public $extKey = 'dlf';
-
     /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
-     * @var
-     */
-    protected $extConf;
-
-    /**
-     * Holds the controls to add to the map
-     *
-     * @var array
-     * @access protected
-     */
-    protected $controls = [];
-
-    /**
-     * SearchController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-    }
-
-    // TODO: Needs to be placed in an abstract class
-    /**
-     * Loads the current document into $this->doc
-     *
-     * @access protected
+     * The main method of the plugin
      *
      * @return void
-     */
-    protected function loadDocument($requestData)
-    {
-        // Check for required variable.
-        if (
-            !empty($requestData['id'])
-            && !empty($this->settings['pages'])
-        ) {
-            // Should we exclude documents from other pages than $this->settings['pages']?
-            $pid = (!empty($this->settings['excludeOther']) ? intval($this->settings['pages']) : 0);
-            // Get instance of \Kitodo\Dlf\Common\Document.
-            $this->doc = Document::getInstance($requestData['id'], $pid);
-            if (!$this->doc->ready) {
-                // Destroy the incomplete object.
-                $this->doc = null;
-                $this->logger->error('Failed to load document with UID ' . $requestData['id']);
-            } else {
-                // Set configuration PID.
-                $this->doc->cPid = $this->settings['pages'];
-            }
-        } elseif (!empty($requestData['recordId'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
-            // Get UID of document with given record identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($requestData['recordId'])),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
-
-            if ($resArray = $result->fetch()) {
-                $requestData['id'] = $resArray['uid'];
-                // Set superglobal $_GET array and unset variables to avoid infinite looping.
-                $_GET[$this->prefixId]['id'] = $requestData['id'];
-                unset($requestData['recordId'], $_GET[$this->prefixId]['recordId']);
-                // Try to load document.
-                $this->loadDocument();
-            } else {
-                $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
-            }
-        } else {
-            $this->logger->error('Invalid UID ' . $requestData['id'] . ' or PID ' . $this->settings['pages'] . ' for document loading');
-        }
-    }
-
-    /**
-     * Main method toolbox
      */
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         // Quit without doing anything if required variable is not set.
         if (empty($requestData['id'])) {
-            return '';
+            return;
         }
 
         // Load current document.
@@ -145,15 +50,16 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
     /**
      * Renders the annotation tool
      * @param $requestData
-     * @return string|void
+     * @return void
      */
-    public function annotationtool($requestData) {
+    public function annotationtool($requestData)
+    {
         if (
             $this->doc === null
             || $this->doc->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             if (!empty($requestData['logicalPage'])) {
                 $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
@@ -187,16 +93,17 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
     /**
      * Renders the fulltext download tool
      * @param $requestData
-     * @return string|void
+     * @return void
      */
-    public function fulltextdownloadtool($requestData) {
+    public function fulltextdownloadtool($requestData)
+    {
         if (
             $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             if (!empty($requestData['logicalPage'])) {
                 $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
@@ -233,16 +140,17 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
     /**
      * Renders the fulltext tool
      * @param $requestData
-     * @return string|void
+     * @return void
      */
-    public function fulltexttool($requestData) {
+    public function fulltexttool($requestData)
+    {
         if (
             $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             if (!empty($requestData['logicalPage'])) {
                 $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
@@ -279,16 +187,17 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
     /**
      * Renders the image download tool
      * @param $requestData
-     * @return string|void
+     * @return void
      */
-    public function imagedownloadtool($requestData) {
+    public function imagedownloadtool($requestData)
+    {
         if (
             $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->settings['fileGrpsImageDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             if (!empty($requestData['logicalPage'])) {
                 $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
@@ -361,7 +270,8 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
      * Renders the image manipulation tool
      * @param $requestData
      */
-    public function imagemanipulationtool($requestData) {
+    public function imagemanipulationtool($requestData)
+    {
         // Set parent element for initialization.
         $parentContainer = !empty($this->settings['parentContainer']) ? $this->settings['parentContainer'] : '.tx-dlf-imagemanipulationtool';
 
@@ -372,16 +282,17 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
     /**
      * Renders the PDF download tool
      * @param $requestData
-     * @return string|void
+     * @return void
      */
-    public function pdfdownloadtool($requestData) {
+    public function pdfdownloadtool($requestData)
+    {
         if (
             $this->doc === null
             || $this->doc->numPages < 1
             || empty($this->extConf['fileGrpDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             if (!empty($requestData['logicalPage'])) {
                 $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
@@ -487,9 +398,10 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
     /**
      * Renders the searchInDocument tool
      * @param $requestData
-     * @return string|void
+     * @return void
      */
-    public function searchindocumenttool($requestData) {
+    public function searchindocumenttool($requestData)
+    {
         if (
             $this->doc === null
             || $this->doc->numPages < 1
@@ -497,7 +409,7 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
             || empty($this->settings['solrcore'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             if (!empty($requestData['logicalPage'])) {
                 $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
@@ -525,7 +437,7 @@ class ToolboxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
             }
         }
         if (empty($fullTextFile)) {
-            return '';
+            return;
         }
 
         // Fill markers.
