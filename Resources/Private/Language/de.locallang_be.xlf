@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T12:58:25Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-26T14:01:06Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -36,6 +36,10 @@
 			<trans-unit id="flexform.showBasketButton" approved="yes">
 				<source><![CDATA[Show basket button]]></source>
 				<target><![CDATA[Zeige Warenkorb Button an]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.solrcore" approved="yes">
+				<source><![CDATA[Solr Core]]></source>
+				<target><![CDATA[Solr Kern]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.targetBasket" approved="yes">
 				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
@@ -216,6 +220,22 @@
 			<trans-unit id="plugins.tableofcontents.title" approved="yes">
 				<source><![CDATA[Kitodo: Table of Contents]]></source>
 				<target><![CDATA[Kitodo: Inhaltsverzeichnis]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.description" approved="yes">
+				<source><![CDATA[Toolbox Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Werkzeugkasten Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.flexform.fileGrps" approved="yes">
+				<source><![CDATA[Page fileGrps used by image download tool: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")]]></source>
+				<target><![CDATA[Seiten fileGrps für das Werkzeug Bild-Download: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX")]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.flexform.tools" approved="yes">
+				<source><![CDATA[Tools]]></source>
+				<target><![CDATA[Werkzeuge]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.title" approved="yes">
+				<source><![CDATA[Kitodo: Toolbox]]></source>
+				<target><![CDATA[Kitodo: Werkzeugkasten]]></target>
 			</trans-unit>
 		</body>
 	</file>

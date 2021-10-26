@@ -1,0 +1,203 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+
+<ul>
+    <f:if condition="{annotationtool}">
+        <f:then>
+            <li>
+                <span class="tx-dlf-tools-annotations">
+                    <f:if condition="{annotationTool}">
+                        <f:then>
+                            <a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:{f:translate(key: 'tools.annotation.on')};annotations-off:{f:translate(key: 'tools.annotation.off')}">
+                                <f:format.html>&nbsp;</f:format.html>
+                            </a>
+                        </f:then>
+                        <f:else>
+                            <span class="no-annotations">
+                                <f:translate key="tools.annotation.not-available"/>
+                            </span>
+                        </f:else>
+                    </f:if>
+                </span>
+            </li>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{imagemanipulationtool}">
+        <f:then>
+            <li>
+                <span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools"
+                        data-dic="imagemanipulation-on:{f:translate(key: 'tools.imagemanipulation.on')};
+                                imagemanipulation-off:{f:translate(key: 'tools.imagemanipulation.off')};
+                                reset:{f:translate(key: 'tools.imagemanipulation.reset')};
+                                saturation:{f:translate(key: 'tools.imagemanipulation.saturation')};
+                                hue:{f:translate(key: 'tools.imagemanipulation.hue')};
+                                contrast:{f:translate(key: 'tools.imagemanipulation.contrast')};
+                                brightness:{f:translate(key: 'tools.imagemanipulation.brightness')};
+                                invert:{f:translate(key: 'tools.imagemanipulation.invert')};
+                                parentContainer:{parentContainer}"
+                        title="{f:translate(key: 'tools.imagemanipulation.no-support')}">
+                </span>
+            </li>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{imagedownloadtool} && {imageDownload}">
+        <f:then>
+            <li>
+                <span class="tx-dlf-tools-imagedownload">
+                    <f:if condition="{double} === 0">
+                        <f:then>
+                            <f:link.external uri="{imageDownload.0.url}">
+                                <f:translate key="downloadSinglePage" /> {imageDownload.0.mimetypeLabel}
+                            </f:link.external>
+                        </f:then>
+                        <f:else>
+                            <f:link.external uri="{imageDownload.0.url}">
+                                <f:translate key="downloadLeftPage" /> {imageDownload.0.mimetypeLabel}
+                            </f:link.external>
+                            <f:if condition="{imageDownload.1}">
+                                <f:then>
+                                    <span class="tx-dlf-tools-imagedownload">
+                                        <f:link.external uri="{imageDownload.1.url}">
+                                            <f:translate key="downloadRightPage" /> {imageDownload.1.mimetypeLabel}
+                                        </f:link.external>
+                                    </span>
+                                </f:then>
+                            </f:if>
+                        </f:else>
+                    </f:if>
+                </span>
+            </li>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{fulltexttool}">
+        <f:then>
+            <li>
+                <span class="tx-dlf-tools-fulltext">
+                    <f:if condition="{fulltext}">
+                        <f:then>
+                            <a class="select switchoff" id="tx-dlf-tools-fulltext" title=""
+                                data-dic="fulltext:{f:translate(key: 'tools.fulltext')}
+                                        ;fulltext-on:{f:translate(key: 'tools.fulltext.on')}
+                                        ;fulltext-off:{f:translate(key: 'tools.fulltext.off')}
+                                        ;activate-full-text-initially:{activateFullTextInitially}
+                                        ;full-text-scroll-element:{settings.fullTextScrollElement}
+                                        ;search-hl-parameters:{settings.searchHlParameters}">
+                                &nbsp;
+                            </a>
+                        </f:then>
+                        <f:else>
+                            <span class="no-fulltext">
+                                <f:translate key="tools.fulltext.not-available"/>
+                            </span>
+                        </f:else>
+                    </f:if>
+                </span>
+            </li>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{fulltextdownloadtool}">
+        <f:then>
+            <li>
+                <span class="tx-dlf-tools-fulltextdownload">
+                    <f:if condition="{fulltextDownload}">
+                        <f:then>
+                            <a href="#" id="tx-dlf-tools-fulltextdownload"
+                                title="{f:translate(key: 'tools.fulltextdownload.download-current-page')}">
+                                <f:translate key="tools.fulltextdownload.download-current-page"/>
+                            </a>
+                        </f:then>
+                        <f:else>
+                            <span class="no-fulltext">
+                                <f:translate key="tools.fulltext.not-available"/>
+                            </span>
+                        </f:else>
+                    </f:if>
+                </span>
+            </li>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{pdfdownloadtool}">
+        <f:then>
+            <li>
+                <span class="tx-dlf-tools-pdf-page">
+                    <f:if condition="{double} === 0">
+                        <f:then>
+                            <f:link.external uri="{pageLinks.0}">
+                                <f:translate key="downloadSinglePage" /> (PDF)
+                            </f:link.external>
+                        </f:then>
+                        <f:else>
+                            <f:link.external uri="{pageLinks.0}">
+                                <f:translate key="downloadLeftPage" /> (PDF)
+                            </f:link.external>
+                            <f:if condition="{pageLinks.1}">
+                                <f:then>
+                                    <f:link.external uri="{pageLinks.1}">
+                                        <f:translate key="downloadRightPage" /> (PDF)
+                                    </f:link.external>
+                                </f:then>
+                            </f:if>
+                        </f:else>
+                    </f:if>
+                </span>
+                <span class="tx-dlf-tools-pdf-work">
+                    <f:if condition="{workLink}">
+                        <f:then>
+                            <f:link.external uri="{workLink}">
+                                <f:translate key="downloadWork"/> (PDF)
+                            </f:link.external>
+                        </f:then>
+                    </f:if>
+                </span>
+            </li>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{searchindocumenttool}">
+        <f:then>
+            <li>
+                <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{ACTION_URL}" method="get" enctype="multipart/form-data">
+                    <div>
+                        <label for="tx-dlf-search-in-document-query">
+                            <f:translate key="tools.searchindocument.query"/>
+                        </label>
+                        <!-- Never change the @id of this input field! Otherwise search won't work! -->
+                        <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{LABEL_QUERY_URL}" />
+                        <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'tools.searchindocument.submit')}" onclick="resetStart();" />
+                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{LABEL_START}" value="0" />
+                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{LABEL_ID}" value="{CURRENT_DOCUMENT}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{LABEL_PAGE_URL}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{LABEL_HIGHLIGHT_WORD}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{LABEL_ENCRYPTED}" value="{SOLR_ENCRYPTED}" />
+                    </div>
+                </form>
+                <div id="tx-dlf-search-in-document-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>
+                <div id="tx-dlf-search-in-document-clearing"><f:translate key="tools.searchindocument.deleteSearch"/>...</div>
+                <div id="tx-dlf-search-in-document-results"></div>
+                <div id="tx-dlf-search-in-document-labels" style="display:none;">
+                    <span id="tx-dlf-search-in-document-label-next"><f:translate key="tools.searchindocument.next"/></span>
+                    <span id="tx-dlf-search-in-document-label-previous"><f:translate key="tools.searchindocument.previous"/></span>
+                    <span id="tx-dlf-search-in-document-label-page"><f:translate key="tools.searchindocument.logicalPage"/></span>
+                    <span id="tx-dlf-search-in-document-label-noresult"><f:translate key="tools.searchindocument.noresult"/></span>
+                </div>
+            </li>
+        </f:then>
+    </f:if>
+</ul>
+
+</html>

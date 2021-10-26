@@ -152,6 +152,99 @@
 			<trans-unit id="basket.count">
 				<source><![CDATA[%d Entries]]></source>
 			</trans-unit>
+			<trans-unit id="downloadLeftPage">
+				<source><![CDATA[Download left page]]></source>
+			</trans-unit>
+			<trans-unit id="downloadRightPage">
+				<source><![CDATA[Download right page]]></source>
+			</trans-unit>
+			<trans-unit id="downloadSinglePage">
+				<source><![CDATA[Download single page]]></source>
+			</trans-unit>
+			<trans-unit id="downloadWork">
+				<source><![CDATA[Download whole work]]></source>
+			</trans-unit>
+			<trans-unit id="tools.annotation.on">
+				<source><![CDATA[Display Annotations]]></source>
+			</trans-unit>
+			<trans-unit id="tools.annotation.off">
+				<source><![CDATA[Hide Annotations]]></source>
+			</trans-unit>
+			<trans-unit id="tools.annotation.not-available">
+				<source><![CDATA[No Annotations available]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.on">
+				<source><![CDATA[Activate image manipulation]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.off">
+				<source><![CDATA[Deactivate image manipulation]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.reset">
+				<source><![CDATA[Reset]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.saturation">
+				<source><![CDATA[Saturation]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.saturation">
+				<source><![CDATA[Saturation]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.hue">
+				<source><![CDATA[Hue]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.contrast">
+				<source><![CDATA[Contrast]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.no-support">
+				<source><![CDATA[Image manipulation is not supported]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.invert">
+				<source><![CDATA[Color inverting]]></source>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.brightness">
+				<source><![CDATA[Brightness]]></source>
+			</trans-unit>
+			<trans-unit id="tools.fulltext">
+				<source><![CDATA[Full text]]></source>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.on">
+				<source><![CDATA[Activate full text]]></source>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.off">
+				<source><![CDATA[Deactivate full text]]></source>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.not-available">
+				<source><![CDATA[No full text available]]></source>
+			</trans-unit>
+			<trans-unit id="tools.fulltextdownload.download-current-page">
+				<source><![CDATA[Current page (TXT)]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.query">
+				<source><![CDATA[Search for:]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.submit">
+				<source><![CDATA[Search]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.logicalPage">
+				<source><![CDATA[Page]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.searchInDocument">
+				<source><![CDATA[Search in document]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.deleteSearch">
+				<source><![CDATA[Delete Search]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.next">
+				<source><![CDATA[next]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.previous">
+				<source><![CDATA[previous]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.noresult">
+				<source><![CDATA[No result found in current document.]]></source>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.loading">
+				<source><![CDATA[Loading...]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
