@@ -35,6 +35,9 @@ class ToolboxController extends AbstractController
             return;
         }
 
+        $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
+        $this->view->assign('double', $requestData['double']);
+
         // Load current document.
         $this->loadDocument($requestData);
 
@@ -76,7 +79,6 @@ class ToolboxController extends AbstractController
             } else {
                 $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
             }
-            $requestData['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         }
 
         $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['annotationContainers'];
@@ -120,7 +122,6 @@ class ToolboxController extends AbstractController
             } else {
                 $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
             }
-            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         }
         // Get text download.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
@@ -167,7 +168,6 @@ class ToolboxController extends AbstractController
             } else {
                 $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
             }
-            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         }
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
@@ -214,15 +214,12 @@ class ToolboxController extends AbstractController
             } else {
                 $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
             }
-            $requestData['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         }
         $imageArray = [];
         // Get left or single page download.
+        $imageArray[0] = $this->getImage($requestData['page']);
         if ($requestData['double'] == 1) {
-            $imageArray['left'] = $this->getImage($requestData['page'], $this->pi_getLL('leftPage', ''));
-            $imageArray['right'] = $this->getImage($requestData['page'] + 1, $this->pi_getLL('rightPage', ''));
-        } else {
-            $imageArray['left'] = $this->getImage($requestData['page'], $this->pi_getLL('singlePage', ''));
+            $imageArray[1] = $this->getImage($requestData['page'] + 1);
         }
         $this->view->assign('imageDownload', $imageArray);
     }
@@ -233,11 +230,10 @@ class ToolboxController extends AbstractController
      * @access protected
      *
      * @param int $page: Page number
-     * @param string $label: Link title and label
      *
      * @return string Link to image file with given label
      */
-    protected function getImage($page, $label)
+    protected function getImage($page)
     {
         $image = [];
         // Get @USE value of METS fileGrp.
@@ -257,7 +253,7 @@ class ToolboxController extends AbstractController
                     default:
                         $mimetypeLabel = '';
                 }
-                $image['title'] = $label . $mimetypeLabel;
+                $image['mimetypeLabel'] = $mimetypeLabel;
                 break;
             } else {
                 $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
@@ -309,11 +305,9 @@ class ToolboxController extends AbstractController
             } else {
                 $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
             }
-            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         }
         // Get single page downloads.
         $this->view->assign('pageLinks', $this->getPageLink($requestData));
-        $this->view->assign('double', $requestData['double']);
         // Get work download.
         $this->view->assign('workLink', $this->getWorkLink());
     }
@@ -355,10 +349,10 @@ class ToolboxController extends AbstractController
         }
 
         if (!empty($page1Link)) {
-            $pageLinkArray['pageUrl1'] = $page1Link;
+            $pageLinkArray[0] = $page1Link;
         }
         if (!empty($page2Link)) {
-            $pageLinkArray['pageUrl2'] = $page2Link;
+            $pageLinkArray[1] = $page2Link;
         }
         return $pageLinkArray;
     }
@@ -521,13 +515,4 @@ class ToolboxController extends AbstractController
         return $name;
     }
 
-    /**
-     * Translate helper function
-     * @param $label
-     * @return mixed
-     */
-    protected function pi_getLL($label)
-    {
-        return $GLOBALS['TSFE']->sL('LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:' . $label);
-    }
 }

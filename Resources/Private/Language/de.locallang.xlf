@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-25T14:39:39Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-26T19:35:48Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -101,6 +101,22 @@
 				<source><![CDATA[Show double pages]]></source>
 				<target><![CDATA[Doppelseitenansicht]]></target>
 			</trans-unit>
+			<trans-unit id="downloadLeftPage" approved="yes">
+				<source><![CDATA[Download left page]]></source>
+				<target><![CDATA[Linke Seite herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="downloadRightPage" approved="yes">
+				<source><![CDATA[Download right page]]></source>
+				<target><![CDATA[Rechte Seite herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="downloadSinglePage" approved="yes">
+				<source><![CDATA[Download single page]]></source>
+				<target><![CDATA[Einzelseite herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="downloadWork" approved="yes">
+				<source><![CDATA[Download whole work]]></source>
+				<target><![CDATA[Ganzes Werk herunterladen]]></target>
+			</trans-unit>
 			<trans-unit id="firstPage" approved="yes">
 				<source><![CDATA[First Page]]></source>
 				<target><![CDATA[Erste Seite]]></target>
@@ -168,6 +184,110 @@
 			<trans-unit id="titles" approved="yes">
 				<source><![CDATA[titles]]></source>
 				<target><![CDATA[Titel]]></target>
+			</trans-unit>
+			<trans-unit id="tools.annotation.not-available" approved="yes">
+				<source><![CDATA[No Annotations available]]></source>
+				<target><![CDATA[Keine Annotationen vorhanden]]></target>
+			</trans-unit>
+			<trans-unit id="tools.annotation.off" approved="yes">
+				<source><![CDATA[Hide Annotations]]></source>
+				<target><![CDATA[Annotationen verbergen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.annotation.on" approved="yes">
+				<source><![CDATA[Display Annotations]]></source>
+				<target><![CDATA[Annotationen anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext" approved="yes">
+				<source><![CDATA[Full text]]></source>
+				<target><![CDATA[Volltext]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.not-available" approved="yes">
+				<source><![CDATA[No full text available]]></source>
+				<target><![CDATA[Keine Volltexte vorhanden]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.off" approved="yes">
+				<source><![CDATA[Deactivate full text]]></source>
+				<target><![CDATA[Volltext aus]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.on" approved="yes">
+				<source><![CDATA[Activate full text]]></source>
+				<target><![CDATA[Volltext an]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltextdownload.download-current-page" approved="yes">
+				<source><![CDATA[Current page (TXT)]]></source>
+				<target><![CDATA[Aktuelle Seite (TXT)]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.brightness" approved="yes">
+				<source><![CDATA[Brightness]]></source>
+				<target><![CDATA[Helligkeit]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.contrast" approved="yes">
+				<source><![CDATA[Contrast]]></source>
+				<target><![CDATA[Kontrast]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.hue" approved="yes">
+				<source><![CDATA[Hue]]></source>
+				<target><![CDATA[Färbung]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.invert" approved="yes">
+				<source><![CDATA[Color inverting]]></source>
+				<target><![CDATA[Farbinvertierung]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.no-support" approved="yes">
+				<source><![CDATA[Image manipulation is not supported]]></source>
+				<target><![CDATA[Bildbearbeitung wird nicht unterstützt]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.off" approved="yes">
+				<source><![CDATA[Deactivate image manipulation]]></source>
+				<target><![CDATA[Bildbearbeitung aus]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.on" approved="yes">
+				<source><![CDATA[Activate image manipulation]]></source>
+				<target><![CDATA[Bildbearbeitung an]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.reset" approved="yes">
+				<source><![CDATA[Reset]]></source>
+				<target><![CDATA[Zurücksetzen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.saturation" approved="yes">
+				<source><![CDATA[Saturation]]></source>
+				<target><![CDATA[Sättigung]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.deleteSearch" approved="yes">
+				<source><![CDATA[Delete Search]]></source>
+				<target><![CDATA[Suche löschen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.loading" approved="yes">
+				<source><![CDATA[Loading...]]></source>
+				<target><![CDATA[Laden...]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.logicalPage" approved="yes">
+				<source><![CDATA[Page]]></source>
+				<target><![CDATA[Seite]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.next" approved="yes">
+				<source><![CDATA[next]]></source>
+				<target><![CDATA[weiter]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.noresult" approved="yes">
+				<source><![CDATA[No result found in current document.]]></source>
+				<target><![CDATA[Kein Ergebnis im aktuellen Dokument gefunden.]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.previous" approved="yes">
+				<source><![CDATA[previous]]></source>
+				<target><![CDATA[zurück]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.query" approved="yes">
+				<source><![CDATA[Search for:]]></source>
+				<target><![CDATA[Suchen nach:]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
+				<source><![CDATA[Search in document]]></source>
+				<target><![CDATA[Im Dokument suchen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.submit" approved="yes">
+				<source><![CDATA[Search]]></source>
+				<target><![CDATA[Suchen]]></target>
 			</trans-unit>
 			<trans-unit id="volume" approved="yes">
 				<source><![CDATA[volume]]></source>
