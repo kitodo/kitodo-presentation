@@ -27,17 +27,17 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $index_name;
+    protected $indexName;
 
     /**
      * @var string
      */
-    protected $index_search;
+    protected $indexSearch;
 
     /**
      * @var string
      */
-    protected $oai_name;
+    protected $oaiName;
 
     /**
      * @var string
@@ -106,15 +106,15 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexName(): string
     {
-        return $this->index_name;
+        return $this->indexName;
     }
 
     /**
-     * @param string $index_name
+     * @param string $indexName
      */
-    public function setIndexName(string $index_name): void
+    public function setIndexName(string $indexName): void
     {
-        $this->index_name = $index_name;
+        $this->indexName = $indexName;
     }
 
     /**
@@ -122,15 +122,15 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexSearch(): string
     {
-        return $this->index_search;
+        return $this->indexSearch;
     }
 
     /**
-     * @param string $index_search
+     * @param string $indexSearch
      */
-    public function setIndexSearch(string $index_search): void
+    public function setIndexSearch(string $indexSearch): void
     {
-        $this->index_search = $index_search;
+        $this->indexSearch = $indexSearch;
     }
 
     /**
@@ -138,15 +138,15 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOaiName(): string
     {
-        return $this->oai_name;
+        return $this->oaiName;
     }
 
     /**
-     * @param string $oai_name
+     * @param string $oaiName
      */
-    public function setOaiName(string $oai_name): void
+    public function setOaiName(string $oaiName): void
     {
-        $this->oai_name = $oai_name;
+        $this->oaiName = $oaiName;
     }
 
     /**

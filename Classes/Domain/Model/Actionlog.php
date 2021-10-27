@@ -12,22 +12,22 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
-class Actionlog extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
+class ActionLog extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
      * @var int
      */
-    protected $user_id;
+    protected $userId;
 
     /**
      * @var string
      */
-    protected $file_name;
+    protected $fileName;
 
     /**
      * @var int
      */
-    protected $count_pages;
+    protected $countPages;
 
     /**
      * @var string
@@ -44,15 +44,15 @@ class Actionlog extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getUserId(): int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
     /**
-     * @param int $user_id
+     * @param int $userId
      */
-    public function setUserId(int $user_id): void
+    public function setUserId(int $userId): void
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
     }
 
     /**
@@ -60,15 +60,15 @@ class Actionlog extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getFileName(): string
     {
-        return $this->file_name;
+        return $this->fileName;
     }
 
     /**
-     * @param string $file_name
+     * @param string $fileName
      */
-    public function setFileName(string $file_name): void
+    public function setFileName(string $fileName): void
     {
-        $this->file_name = $file_name;
+        $this->fileName = $fileName;
     }
 
     /**
@@ -76,15 +76,15 @@ class Actionlog extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getCountPages(): int
     {
-        return $this->count_pages;
+        return $this->countPages;
     }
 
     /**
-     * @param int $count_pages
+     * @param int $countPages
      */
-    public function setCountPages(int $count_pages): void
+    public function setCountPages(int $countPages): void
     {
-        $this->count_pages = $count_pages;
+        $this->countPages = $countPages;
     }
 
     /**

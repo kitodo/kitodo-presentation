@@ -50,15 +50,15 @@ class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getSessionId(): string
     {
-        return $this->session_id;
+        return $this->sessionId;
     }
 
     /**
-     * @param string $session_id
+     * @param string $sessionId
      */
-    public function setSessionId(string $session_id): void
+    public function setSessionId(string $sessionId): void
     {
-        $this->session_id = $session_id;
+        $this->sessionId = $sessionId;
     }
 
     /**

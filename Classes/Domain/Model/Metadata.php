@@ -27,7 +27,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $index_name;
+    protected $indexName;
 
     /**
      * @var int
@@ -37,7 +37,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $default_value;
+    protected $defaultValue;
 
     /**
      * @var string
@@ -47,42 +47,42 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var int
      */
-    protected $index_tokenized;
+    protected $indexTokenized;
 
     /**
      * @var int
      */
-    protected $index_stored;
+    protected $indexStored;
 
     /**
      * @var int
      */
-    protected $index_indexed;
+    protected $indexIndexed;
 
     /**
      * @var float
      */
-    protected $index_boost;
+    protected $indexBoost;
 
     /**
      * @var int
      */
-    protected $is_sortable;
+    protected $isSortable;
 
     /**
      * @var int
      */
-    protected $is_facet;
+    protected $isFacet;
 
     /**
      * @var int
      */
-    protected $is_listed;
+    protected $isListed;
 
     /**
      * @var int
      */
-    protected $index_autocomplete;
+    protected $indexAutocomplete;
 
     /**
      * @var int
@@ -126,15 +126,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexName(): string
     {
-        return $this->index_name;
+        return $this->indexName;
     }
 
     /**
-     * @param string $index_name
+     * @param string $indexName
      */
-    public function setIndexName(string $index_name): void
+    public function setIndexName(string $indexName): void
     {
-        $this->index_name = $index_name;
+        $this->indexName = $indexName;
     }
 
     /**
@@ -158,15 +158,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getDefaultValue(): string
     {
-        return $this->default_value;
+        return $this->defaultValue;
     }
 
     /**
-     * @param string $default_value
+     * @param string $defaultValue
      */
-    public function setDefaultValue(string $default_value): void
+    public function setDefaultValue(string $defaultValue): void
     {
-        $this->default_value = $default_value;
+        $this->defaultValue = $defaultValue;
     }
 
     /**
@@ -190,15 +190,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexTokenized(): int
     {
-        return $this->index_tokenized;
+        return $this->indexTokenized;
     }
 
     /**
-     * @param int $index_tokenized
+     * @param int $indexTokenized
      */
-    public function setIndexTokenized(int $index_tokenized): void
+    public function setIndexTokenized(int $indexTokenized): void
     {
-        $this->index_tokenized = $index_tokenized;
+        $this->indexTokenized = $indexTokenized;
     }
 
     /**
@@ -206,15 +206,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexStored(): int
     {
-        return $this->index_stored;
+        return $this->indexStored;
     }
 
     /**
-     * @param int $index_stored
+     * @param int $indexStored
      */
-    public function setIndexStored(int $index_stored): void
+    public function setIndexStored(int $indexStored): void
     {
-        $this->index_stored = $index_stored;
+        $this->indexStored = $indexStored;
     }
 
     /**
@@ -222,15 +222,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexIndexed(): int
     {
-        return $this->index_indexed;
+        return $this->indexIndexed;
     }
 
     /**
-     * @param int $index_indexed
+     * @param int $indexIndexed
      */
-    public function setIndexIndexed(int $index_indexed): void
+    public function setIndexIndexed(int $indexIndexed): void
     {
-        $this->index_indexed = $index_indexed;
+        $this->indexIndexed = $indexIndexed;
     }
 
     /**
@@ -238,15 +238,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexBoost(): float
     {
-        return $this->index_boost;
+        return $this->indexBoost;
     }
 
     /**
-     * @param float $index_boost
+     * @param float $indexBoost
      */
-    public function setIndexBoost(float $index_boost): void
+    public function setIndexBoost(float $indexBoost): void
     {
-        $this->index_boost = $index_boost;
+        $this->indexBoost = $indexBoost;
     }
 
     /**
@@ -254,15 +254,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIsSortable(): int
     {
-        return $this->is_sortable;
+        return $this->isSortable;
     }
 
     /**
-     * @param int $is_sortable
+     * @param int $isSortable
      */
-    public function setIsSortable(int $is_sortable): void
+    public function setIsSortable(int $isSortable): void
     {
-        $this->is_sortable = $is_sortable;
+        $this->isSortable = $isSortable;
     }
 
     /**
@@ -270,15 +270,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIsFacet(): int
     {
-        return $this->is_facet;
+        return $this->isFacet;
     }
 
     /**
-     * @param int $is_facet
+     * @param int $isFacet
      */
-    public function setIsFacet(int $is_facet): void
+    public function setIsFacet(int $isFacet): void
     {
-        $this->is_facet = $is_facet;
+        $this->isFacet = $isFacet;
     }
 
     /**
@@ -286,15 +286,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIsListed(): int
     {
-        return $this->is_listed;
+        return $this->isListed;
     }
 
     /**
-     * @param int $is_listed
+     * @param int $isListed
      */
-    public function setIsListed(int $is_listed): void
+    public function setIsListed(int $isListed): void
     {
-        $this->is_listed = $is_listed;
+        $this->isListed = $isListed;
     }
 
     /**
@@ -302,15 +302,15 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexAutocomplete(): int
     {
-        return $this->index_autocomplete;
+        return $this->indexAutocomplete;
     }
 
     /**
-     * @param int $index_autocomplete
+     * @param int $indexAutocomplete
      */
-    public function setIndexAutocomplete(int $index_autocomplete): void
+    public function setIndexAutocomplete(int $indexAutocomplete): void
     {
-        $this->index_autocomplete = $index_autocomplete;
+        $this->indexAutocomplete = $indexAutocomplete;
     }
 
     /**

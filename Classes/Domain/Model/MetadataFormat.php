@@ -17,7 +17,7 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var int
      */
-    protected $parent_id;
+    protected $parentId;
     /**
      * @var int
      */
@@ -29,7 +29,7 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $xpath_sorting;
+    protected $xpathSorting;
     /**
      * @var int
      */
@@ -40,15 +40,15 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getParentId(): int
     {
-        return $this->parent_id;
+        return $this->parentId;
     }
 
     /**
-     * @param int $parent_id
+     * @param int $parentId
      */
-    public function setParentId(int $parent_id): void
+    public function setParentId(int $parentId): void
     {
-        $this->parent_id = $parent_id;
+        $this->parentId = $parentId;
     }
 
     /**
@@ -88,15 +88,15 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getXpathSorting(): string
     {
-        return $this->xpath_sorting;
+        return $this->xpathSorting;
     }
 
     /**
-     * @param string $xpath_sorting
+     * @param string $xpathSorting
      */
-    public function setXpathSorting(string $xpath_sorting): void
+    public function setXpathSorting(string $xpathSorting): void
     {
-        $this->xpath_sorting = $xpath_sorting;
+        $this->xpathSorting = $xpathSorting;
     }
 
     /**

@@ -213,7 +213,7 @@ class ListView extends \Kitodo\Dlf\Common\AbstractPlugin
                 'parameter' => $this->conf['settings.targetBasket'],
                 'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
                 'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
+                'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false) . '&tx_dlf_basket[action]=add&tx_dlf_basket[controller]=Basket'
             ];
             $link = $this->cObj->typoLink(htmlspecialchars($this->pi_getLL('addBasket', '')), $conf);
             $markerArray['###BASKETBUTTON###'] = $link;

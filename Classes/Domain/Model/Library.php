@@ -22,7 +22,7 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $index_name;
+    protected $indexName;
 
     /**
      * @var string
@@ -42,32 +42,32 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $oai_label;
+    protected $oaiLabel;
 
     /**
      * @var string
      */
-    protected $oai_base;
+    protected $oaiBase;
 
     /**
      * @var string
      */
-    protected $opac_label;
+    protected $opacLabel;
 
     /**
      * @var string
      */
-    protected $opac_base;
+    protected $opacBase;
 
     /**
      * @var string
      */
-    protected $union_label;
+    protected $unionLabel;
 
     /**
      * @var string
      */
-    protected $union_base;
+    protected $unionBase;
 
     /**
      * @return string
@@ -90,15 +90,15 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexName(): string
     {
-        return $this->index_name;
+        return $this->indexName;
     }
 
     /**
-     * @param string $index_name
+     * @param string $indexName
      */
-    public function setIndexName(string $index_name): void
+    public function setIndexName(string $indexName): void
     {
-        $this->index_name = $index_name;
+        $this->indexName = $indexName;
     }
 
     /**
@@ -154,15 +154,15 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOaiLabel(): string
     {
-        return $this->oai_label;
+        return $this->oaiLabel;
     }
 
     /**
-     * @param string $oai_label
+     * @param string $oaiLabel
      */
-    public function setOaiLabel(string $oai_label): void
+    public function setOaiLabel(string $oaiLabel): void
     {
-        $this->oai_label = $oai_label;
+        $this->oaiLabel = $oaiLabel;
     }
 
     /**
@@ -170,15 +170,15 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOaiBase(): string
     {
-        return $this->oai_base;
+        return $this->oaiBase;
     }
 
     /**
-     * @param string $oai_base
+     * @param string $oaiBase
      */
-    public function setOaiBase(string $oai_base): void
+    public function setOaiBase(string $oaiBase): void
     {
-        $this->oai_base = $oai_base;
+        $this->oaiBase = $oaiBase;
     }
 
     /**
@@ -186,15 +186,15 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOpacLabel(): string
     {
-        return $this->opac_label;
+        return $this->opacLabel;
     }
 
     /**
-     * @param string $opac_label
+     * @param string $opacLabel
      */
-    public function setOpacLabel(string $opac_label): void
+    public function setOpacLabel(string $opacLabel): void
     {
-        $this->opac_label = $opac_label;
+        $this->opacLabel = $opacLabel;
     }
 
     /**
@@ -202,15 +202,15 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOpacBase(): string
     {
-        return $this->opac_base;
+        return $this->opacBase;
     }
 
     /**
-     * @param string $opac_base
+     * @param string $opacBase
      */
-    public function setOpacBase(string $opac_base): void
+    public function setOpacBase(string $opacBase): void
     {
-        $this->opac_base = $opac_base;
+        $this->opacBase = $opacBase;
     }
 
     /**
@@ -218,15 +218,15 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getUnionLabel(): string
     {
-        return $this->union_label;
+        return $this->unionLabel;
     }
 
     /**
-     * @param string $union_label
+     * @param string $unionLabel
      */
-    public function setUnionLabel(string $union_label): void
+    public function setUnionLabel(string $unionLabel): void
     {
-        $this->union_label = $union_label;
+        $this->unionLabel = $unionLabel;
     }
 
     /**
@@ -234,15 +234,15 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getUnionBase(): string
     {
-        return $this->union_base;
+        return $this->unionBase;
     }
 
     /**
-     * @param string $union_base
+     * @param string $unionBase
      */
-    public function setUnionBase(string $union_base): void
+    public function setUnionBase(string $unionBase): void
     {
-        $this->union_base = $union_base;
+        $this->unionBase = $unionBase;
     }
 
 }

@@ -22,7 +22,7 @@ class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $index_name;
+    protected $indexName;
 
     /**
      * @return string
@@ -45,15 +45,15 @@ class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexName(): string
     {
-        return $this->index_name;
+        return $this->indexName;
     }
 
     /**
-     * @param string $index_name
+     * @param string $indexName
      */
-    public function setIndexName(string $index_name): void
+    public function setIndexName(string $indexName): void
     {
-        $this->index_name = $index_name;
+        $this->indexName = $indexName;
     }
 
 }

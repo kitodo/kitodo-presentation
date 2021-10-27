@@ -4,10 +4,10 @@ plugin.tx_dlf {
         #storagePid = {$plugin.tx_dlf.persistence.storagePid}
         #storagePid = 2
         classes {
-            Kitodo\Dlf\Domain\Model\Actionlog {
+            Kitodo\Dlf\Domain\Model\ActionLog {
                 mapping {
                     tableName = tx_dlf_actionlog
-                    recordType = \Kitodo\Dlf\Domain\Model\Actionlog
+                    recordType = \Kitodo\Dlf\Domain\Model\ActionLog
                 }
             }
             Kitodo\Dlf\Domain\Model\Basket {

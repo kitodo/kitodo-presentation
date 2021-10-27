@@ -22,7 +22,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $prod_id;
+    protected $prodId;
 
     /**
      * @var string
@@ -32,17 +32,17 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $record_id;
+    protected $recordId;
 
     /**
      * @var string
      */
-    protected $opac_id;
+    protected $opacId;
 
     /**
      * @var string
      */
-    protected $union_id;
+    protected $unionId;
 
     /**
      * @var string
@@ -57,7 +57,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $title_sorting;
+    protected $titleSorting;
 
     /**
      * @var string
@@ -87,7 +87,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $metadata_sorting;
+    protected $metadataSorting;
 
     /**
      * @var int
@@ -107,7 +107,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $volume_sorting;
+    protected $volumeSorting;
 
     /**
      * @var string
@@ -127,12 +127,12 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $out_of_print;
+    protected $outOfPrint;
 
     /**
      * @var string
      */
-    protected $rights_info;
+    protected $rightsInfo;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection>
@@ -142,12 +142,12 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $mets_label;
+    protected $metsLabel;
 
     /**
      * @var string
      */
-    protected $mets_orderlabel;
+    protected $metsOrderlabel;
 
     /**
      * @var int
@@ -167,7 +167,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $document_format;
+    protected $documentFormat;
 
     /**
      * @return string
@@ -190,15 +190,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getProdId(): string
     {
-        return $this->prod_id;
+        return $this->prodId;
     }
 
     /**
-     * @param string $prod_id
+     * @param string $prodId
      */
-    public function setProdId(string $prod_id): void
+    public function setProdId(string $prodId): void
     {
-        $this->prod_id = $prod_id;
+        $this->prodId = $prodId;
     }
 
     /**
@@ -222,15 +222,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getRecordId(): string
     {
-        return $this->record_id;
+        return $this->recordId;
     }
 
     /**
-     * @param string $record_id
+     * @param string $recordId
      */
-    public function setRecordId(string $record_id): void
+    public function setRecordId(string $recordId): void
     {
-        $this->record_id = $record_id;
+        $this->recordId = $recordId;
     }
 
     /**
@@ -238,15 +238,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOpacId(): string
     {
-        return $this->opac_id;
+        return $this->opacId;
     }
 
     /**
-     * @param string $opac_id
+     * @param string $opacId
      */
-    public function setOpacId(string $opac_id): void
+    public function setOpacId(string $opacId): void
     {
-        $this->opac_id = $opac_id;
+        $this->opacId = $opacId;
     }
 
     /**
@@ -254,15 +254,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getUnionId(): string
     {
-        return $this->union_id;
+        return $this->unionId;
     }
 
     /**
-     * @param string $union_id
+     * @param string $unionId
      */
-    public function setUnionId(string $union_id): void
+    public function setUnionId(string $unionId): void
     {
-        $this->union_id = $union_id;
+        $this->unionId = $unionId;
     }
 
     /**
@@ -302,15 +302,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getTitleSorting(): string
     {
-        return $this->title_sorting;
+        return $this->titleSorting;
     }
 
     /**
-     * @param string $title_sorting
+     * @param string $titleSorting
      */
-    public function setTitleSorting(string $title_sorting): void
+    public function setTitleSorting(string $titleSorting): void
     {
-        $this->title_sorting = $title_sorting;
+        $this->titleSorting = $titleSorting;
     }
 
     /**
@@ -398,15 +398,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getMetadataSorting(): string
     {
-        return $this->metadata_sorting;
+        return $this->metadataSorting;
     }
 
     /**
-     * @param string $metadata_sorting
+     * @param string $metadataSorting
      */
-    public function setMetadataSorting(string $metadata_sorting): void
+    public function setMetadataSorting(string $metadataSorting): void
     {
-        $this->metadata_sorting = $metadata_sorting;
+        $this->metadataSorting = $metadataSorting;
     }
 
     /**
@@ -462,15 +462,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getVolumeSorting(): string
     {
-        return $this->volume_sorting;
+        return $this->volumeSorting;
     }
 
     /**
-     * @param string $volume_sorting
+     * @param string $volumeSorting
      */
-    public function setVolumeSorting(string $volume_sorting): void
+    public function setVolumeSorting(string $volumeSorting): void
     {
-        $this->volume_sorting = $volume_sorting;
+        $this->volumeSorting = $volumeSorting;
     }
 
     /**
@@ -526,15 +526,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOutOfPrint(): string
     {
-        return $this->out_of_print;
+        return $this->outOfPrint;
     }
 
     /**
-     * @param string $out_of_print
+     * @param string $outOfPrint
      */
-    public function setOutOfPrint(string $out_of_print): void
+    public function setOutOfPrint(string $outOfPrint): void
     {
-        $this->out_of_print = $out_of_print;
+        $this->outOfPrint = $outOfPrint;
     }
 
     /**
@@ -542,15 +542,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getRightsInfo(): string
     {
-        return $this->rights_info;
+        return $this->rightsInfo;
     }
 
     /**
-     * @param string $rights_info
+     * @param string $rightsInfo
      */
-    public function setRightsInfo(string $rights_info): void
+    public function setRightsInfo(string $rightsInfo): void
     {
-        $this->rights_info = $rights_info;
+        $this->rightsInfo = $rightsInfo;
     }
 
     /**
@@ -574,15 +574,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getMetsLabel(): string
     {
-        return $this->mets_label;
+        return $this->metsLabel;
     }
 
     /**
-     * @param string $mets_label
+     * @param string $metsLabel
      */
-    public function setMetsLabel(string $mets_label): void
+    public function setMetsLabel(string $metsLabel): void
     {
-        $this->mets_label = $mets_label;
+        $this->metsLabel = $metsLabel;
     }
 
     /**
@@ -590,15 +590,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getMetsOrderlabel(): string
     {
-        return $this->mets_orderlabel;
+        return $this->metsOrderlabel;
     }
 
     /**
-     * @param string $mets_orderlabel
+     * @param string $metsOrderlabel
      */
-    public function setMetsOrderlabel(string $mets_orderlabel): void
+    public function setMetsOrderlabel(string $metsOrderlabel): void
     {
-        $this->mets_orderlabel = $mets_orderlabel;
+        $this->metsOrderlabel = $metsOrderlabel;
     }
 
     /**
@@ -654,15 +654,15 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getDocumentFormat(): string
     {
-        return $this->document_format;
+        return $this->documentFormat;
     }
 
     /**
-     * @param string $document_format
+     * @param string $documentFormat
      */
-    public function setDocumentFormat(string $document_format): void
+    public function setDocumentFormat(string $documentFormat): void
     {
-        $this->document_format = $document_format;
+        $this->documentFormat = $documentFormat;
     }
 
 }

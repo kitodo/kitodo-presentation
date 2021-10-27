@@ -27,12 +27,12 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var string
      */
-    protected $index_name;
+    protected $indexName;
 
     /**
      * @var string
      */
-    protected $oai_name;
+    protected $oaiName;
 
     /**
      * @var int
@@ -81,15 +81,15 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getIndexName(): string
     {
-        return $this->index_name;
+        return $this->indexName;
     }
 
     /**
-     * @param string $index_name
+     * @param string $indexName
      */
-    public function setIndexName(string $index_name): void
+    public function setIndexName(string $indexName): void
     {
-        $this->index_name = $index_name;
+        $this->indexName = $indexName;
     }
 
     /**
@@ -97,15 +97,15 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     public function getOaiName(): string
     {
-        return $this->oai_name;
+        return $this->oaiName;
     }
 
     /**
-     * @param string $oai_name
+     * @param string $oaiName
      */
-    public function setOaiName(string $oai_name): void
+    public function setOaiName(string $oaiName): void
     {
-        $this->oai_name = $oai_name;
+        $this->oaiName = $oaiName;
     }
 
     /**
@@ -139,5 +139,5 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     {
         $this->status = $status;
     }
-
+    
 }
