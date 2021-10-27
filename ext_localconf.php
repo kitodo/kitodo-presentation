@@ -214,6 +214,18 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',
+    'Search',
+    [
+        Search::class => 'main, search',
+    ],
+    // non-cacheable actions
+    [
+        Search::class => 'main, search',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
     'Feeds',
     [
         Feeds::class => 'main',
