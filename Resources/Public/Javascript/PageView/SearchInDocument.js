@@ -19,7 +19,7 @@ function nextResultPage() {
     var newStart = parseInt(currentStart) + 20;
     $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(newStart);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 /**
  * This function decreases the start parameter of the search form and submits
@@ -32,7 +32,7 @@ function previousResultPage() {
     var newStart = (parseInt(currentStart) > 20) ? (parseInt(currentStart) - 20) : 0;
     $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(newStart);
     $('#tx-dlf-search-in-document-form').submit();
-};
+}
 
 /**
  * This function resets the start parameter on new queries.
@@ -259,7 +259,7 @@ function addImageHighlight(data) {
     data['documents'].forEach(function (element, i) {
         if(element['page'] === page) {
             if (element['highlight'].length > 0) {
-                if(tx_dlf_viewer.map != null) {
+                if (typeof tx_dlf_viewer !== 'undefined' && tx_dlf_viewer.map != null) { // eslint-disable-line camelcase
                     tx_dlf_viewer.displayHighlightWord(encodeURIComponent(getHighlights(element['highlight'])));
                 } else {
                     setTimeout(addImageHighlight, 500, data);

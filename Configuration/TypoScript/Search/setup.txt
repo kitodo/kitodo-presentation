@@ -1,4 +1,4 @@
-plugin.tx_dlf_search.facetsConf {
+plugin.tx_dlf_search.settings.facetsConf {
     expAll = 0
     1 = TMENU
     1 {
