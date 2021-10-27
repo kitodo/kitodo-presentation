@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-26T19:35:48Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-27T09:34:27Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -169,6 +169,54 @@
 				<source><![CDATA[Rotate Right]]></source>
 				<target><![CDATA[Ansicht nach rechts drehen]]></target>
 			</trans-unit>
+			<trans-unit id="search.and" approved="yes">
+				<source><![CDATA[and]]></source>
+				<target><![CDATA[und]]></target>
+			</trans-unit>
+			<trans-unit id="search.for" approved="yes">
+				<source><![CDATA[for "%s"]]></source>
+				<target><![CDATA[nach "%s"]]></target>
+			</trans-unit>
+			<trans-unit id="search.in" approved="yes">
+				<source><![CDATA[in "%s"]]></source>
+				<target><![CDATA[in "%s"]]></target>
+			</trans-unit>
+			<trans-unit id="search.inFulltext" approved="yes">
+				<source><![CDATA[in fulltext]]></source>
+				<target><![CDATA[im Volltext]]></target>
+			</trans-unit>
+			<trans-unit id="search.inMetadata" approved="yes">
+				<source><![CDATA[in metadata]]></source>
+				<target><![CDATA[in Metadaten]]></target>
+			</trans-unit>
+			<trans-unit id="search.logicalPage" approved="yes">
+				<source><![CDATA[Page]]></source>
+				<target><![CDATA[Seite]]></target>
+			</trans-unit>
+			<trans-unit id="search.not" approved="yes">
+				<source><![CDATA[not]]></source>
+				<target><![CDATA[nicht]]></target>
+			</trans-unit>
+			<trans-unit id="search.or" approved="yes">
+				<source><![CDATA[or]]></source>
+				<target><![CDATA[oder]]></target>
+			</trans-unit>
+			<trans-unit id="search.query" approved="yes">
+				<source><![CDATA[Search for:]]></source>
+				<target><![CDATA[Suchen nach:]]></target>
+			</trans-unit>
+			<trans-unit id="search.resetFacet" approved="yes">
+				<source><![CDATA[Reset selection (%s)]]></source>
+				<target><![CDATA[Auswahl entfernen (%s)]]></target>
+			</trans-unit>
+			<trans-unit id="search.search" approved="yes">
+				<source><![CDATA[Search]]></source>
+				<target><![CDATA[Suche]]></target>
+			</trans-unit>
+			<trans-unit id="search.submit" approved="yes">
+				<source><![CDATA[Search]]></source>
+				<target><![CDATA[Suchen]]></target>
+			</trans-unit>
 			<trans-unit id="selectPage" approved="yes">
 				<source><![CDATA[Page]]></source>
 				<target><![CDATA[Seite]]></target>
@@ -262,7 +310,7 @@
 				<target><![CDATA[Laden...]]></target>
 			</trans-unit>
 			<trans-unit id="tools.searchindocument.logicalPage" approved="yes">
-				<source><![CDATA[Page]]></source>
+				<source><![CDATA[]]></source>
 				<target><![CDATA[Seite]]></target>
 			</trans-unit>
 			<trans-unit id="tools.searchindocument.next" approved="yes">
@@ -278,7 +326,7 @@
 				<target><![CDATA[zurück]]></target>
 			</trans-unit>
 			<trans-unit id="tools.searchindocument.query" approved="yes">
-				<source><![CDATA[Search for:]]></source>
+				<source><![CDATA[]]></source>
 				<target><![CDATA[Suchen nach:]]></target>
 			</trans-unit>
 			<trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
@@ -286,7 +334,7 @@
 				<target><![CDATA[Im Dokument suchen]]></target>
 			</trans-unit>
 			<trans-unit id="tools.searchindocument.submit" approved="yes">
-				<source><![CDATA[Search]]></source>
+				<source><![CDATA[]]></source>
 				<target><![CDATA[Suchen]]></target>
 			</trans-unit>
 			<trans-unit id="volume" approved="yes">

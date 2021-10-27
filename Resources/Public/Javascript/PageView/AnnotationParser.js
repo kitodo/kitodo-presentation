@@ -118,7 +118,7 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
     for (var i = 0; i < listCoordinatesWithoutScale[0].length; i++) {
         coordinatesRescale.push([(scale * listCoordinatesWithoutScale[0][i][0]),
             0 - (scale * listCoordinatesWithoutScale[0][i][1])]);
-    };
+    }
     var listGeometry = new ol.geom.Polygon([coordinatesRescale]),
         listFeature = new ol.Feature(listGeometry);
 
