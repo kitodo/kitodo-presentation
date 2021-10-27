@@ -8,8 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <v:format.pregReplace subject="{documentList.metadata.searchString}" pattern="/\s\s+/" replacement=";" as="highlightWord" />
 
@@ -29,14 +28,14 @@
                                 <f:then>
                                     <f:if condition="{logicalPage}">
                                         <f:then>
-                                            <v:variable.set name="params" value="{
+                                            <f:variable name="params" value="{
                                                         'tx_dlf[id]':subentry.uid,
                                                         'tx_dlf[page]':subentry.page,
                                                         'tx_dlf[highlight_word]':highlightWord
                                                         'tx_dlf[logicalPage]':logicalPage}" />
                                         </f:then>
                                         <f:else>
-                                            <v:variable.set name="params" value="{
+                                            <f:variable name="params" value="{
                                                             'tx_dlf[id]':subentry.uid,
                                                             'tx_dlf[page]':subentry.page,
                                                             'tx_dlf[highlight_word]':highlightWord}" />

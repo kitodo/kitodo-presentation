@@ -8,8 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <f:if condition="{maxPages} >= 2">
     <p class="tx-dlf-listview-pagebrowser">
@@ -45,7 +44,7 @@
             </f:format.htmlSpecialChars>
         </span>
 
-        <v:variable.set name="skip" value="false"/>
+        <f:variable name="skip" value="false"/>
         <f:for each="{i -> v:iterator.range(low: 1, high: '{maxPages}')}" key="pagePointer" as="pageNumber">
             <f:if condition="
                 {pagePointer} < 3 ||
@@ -78,7 +77,7 @@
                             </span>
                         </f:else>
                     </f:if>
-                    <v:variable.set name="skip" value="true"/>
+                    <f:variable name="skip" value="true"/>
                 </f:then>
                 <f:else>
                     <f:if condition="{skip} == 'true'">
@@ -88,7 +87,7 @@
                                 default="..."
                             />
                         </f:format.htmlSpecialChars>
-                        <v:variable.set name="skip" value="false"/>
+                        <f:variable name="skip" value="false"/>
                     </f:if>
                 </f:else>
             </f:if>

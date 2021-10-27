@@ -8,8 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <f:if condition="{sortables}">
 
@@ -21,7 +20,7 @@
             additionalParams="{f:if(condition: '{logicalPage}', then:'{logicalPage:logicalPage}', else:'{}')}"
     >
         <div>
-            <v:variable.set name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
+            <f:variable name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
             <label for="{uniqId}">
                 <f:format.htmlSpecialChars>
                     <f:translate key="listview.orderBy"/>
@@ -49,7 +48,7 @@
                 </f:for>
             </f:form.select>
 
-            <v:variable.set name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
+            <f:variable name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
             <label for="{uniqId}">
                 <f:format.htmlSpecialChars>
                     <f:translate key="listview.direction"/>
@@ -62,7 +61,7 @@
             </f:comment>
             <f:for each="{documentList.metadata.options}" key="optionKey" as="optionValue">
                 <f:if condition="{optionKey} == 'order.asc'">
-                    <v:variable.set name="orderAsc" value="{optionValue}" />
+                    <f:variable  name="orderAsc" value="{optionValue}" />
                 </f:if>
             </f:for>
 

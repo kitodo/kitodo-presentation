@@ -272,9 +272,6 @@
 			<trans-unit id="listview.count">
 				<source><![CDATA[Entries %d to %d of %d.]]></source>
 			</trans-unit>
-			<trans-unit id="listview.count">
-				<source><![CDATA[Entries %d to %d of %d.]]></source>
-			</trans-unit>
 			<trans-unit id="listview.prevPage">
 				<source><![CDATA[&lt;]]></source>
 			</trans-unit>

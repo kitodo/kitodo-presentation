@@ -8,35 +8,40 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
-<f:for each="{documentList}" key="entryIndex" as="entry" iteration="iterator">
-    <v:variable.set name="pageOffset" value="{p -> v:math.product(a:'{pointer}', b:'{settings.limit}')}"/>
-    <v:variable.set name="entryNumber" value="{p -> v:math.sum(a:'{pageOffset}', b:'{iterator.cycle}')}"/>
+<f:for each="{documentList}" key="entryIndex" as="entry" iteration="docIterator">
+    <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
+    <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
+    <f:variable name="allDocuments" value="{documents->f:count()}" />
+    <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />
 
-    <li value="{entryNumber}">
+    <f:comment>
+        <f:variable name="pageOffset" value="{p -> math.product(a:'{pointer}', b:'{settings.limit}')}"/>
+    </f:comment>
+
+    <li value="{settings.limit * pageOffset + docIterator.index}">
         <div class="tx-dlf-listview-thumbnail">
             <img alt="{metadataList.{entryIndex}.thumbnail.alt}" src="{metadataList.{entryIndex}.thumbnail.src}" />
         </div>
 
         <dl>
             <f:for each="{metadataList.{entryIndex}.metadata}" key="indexName" as="field">
-                <dlf:stdWrap wrap="{field.wrap}">
+                <stdWrap wrap="{field.wrap}">
                     <dlf:stdWrap wrap="{field.label.wrap}">{field.label.value}</dlf:stdWrap>
                     <f:for each="{field.values}" as="value">
-                        <dlf:stdWrap wrap="{value.wrap}">
+                        <stdWrap wrap="{value.wrap}">
                             <f:if condition="{indexName} == 'title'">
                                 <f:then>
                                     <f:if condition="{logicalPage}">
                                         <f:then>
-                                            <v:variable.set name="params" value="{
+                                            <f:variable name="params" value="{
                                                         'tx_dlf[id]':entry.uid,
                                                         'tx_dlf[page]':entry.page,
                                                         'tx_dlf[logicalPage]':logicalPage}" />
                                         </f:then>
                                         <f:else>
-                                            <v:variable.set name="params" value="{
+                                            <f:variable name="params" value="{
                                                             'tx_dlf[id]':entry.uid,
                                                             'tx_dlf[page]':entry.page}" />
                                         </f:else>
@@ -51,9 +56,9 @@
                                     {value.value}
                                 </f:else>
                             </f:if>
-                        </dlf:stdWrap>
+                        </stdWrap>
                     </f:for>
-                </dlf:stdWrap>
+                </stdWrap>
             </f:for>
         </dl>
 

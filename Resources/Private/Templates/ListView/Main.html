@@ -1,3 +1,4 @@
+<f:comment>
 <!--
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -7,9 +8,8 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
 -->
-
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <div class="tx-dlf-listview">
 
@@ -35,7 +35,7 @@
     <p class="tx-dlf-listview-counts">
         <f:if condition="{currentEntry}">
             <f:then>
-                <v:variable.set
+                <f:variable
                     name="toEntry"
                     value="{f:if(condition:'{lastEntry} < {documentList.metadata.options.numberOfToplevelHits}',then:'{lastEntry}',else:'{documentList.metadata.options.numberOfToplevelHits}')}"
                 />
@@ -54,10 +54,11 @@
         </f:if>
     </p>
 
+    <f:comment>
     <f:render partial="ListView/SortingForm" arguments="{_all}" />
 
     <f:render partial="ListView/PageBrowser" arguments="{_all}" />
-
+</f:comment>
     <ol class="tx-dlf-listview-list">
         <f:render partial="ListView/Entries" arguments="{_all}" />
     </ol>
