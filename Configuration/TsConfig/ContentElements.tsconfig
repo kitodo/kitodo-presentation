@@ -4,8 +4,8 @@ mod.wizards.newContentElement.wizardItems {
     elements {
       tx_dlf_audioplayer {
         iconIdentifier = tx-dlf-audioplayer
-        title = LLL:EXT:dlf/Resources/Private/Language/AudioPlayer.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/AudioPlayer.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.audioplayer.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.audioplayer.description
         tt_content_defValues {
           CType = list
           list_type = dlf_audioplayer
@@ -13,8 +13,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_basket {
         iconIdentifier = tx-dlf-basket
-        title = LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Basket.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.description
         tt_content_defValues {
           CType = list
           list_type = dlf_basket
@@ -22,8 +22,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_calendar {
         iconIdentifier = tx-dlf-calendar
-        title = LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Calendar.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.description
         tt_content_defValues {
           CType = list
           list_type = dlf_calendar
@@ -40,8 +40,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_feeds {
         iconIdentifier = tx-dlf-feeds
-        title = LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Feeds.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.description
         tt_content_defValues {
           CType = list
           list_type = dlf_feeds
@@ -67,8 +67,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_navigation {
         iconIdentifier = tx-dlf-navigation
-        title = LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Navigation.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.description
         tt_content_defValues {
           CType = list
           list_type = dlf_navigation
@@ -85,8 +85,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_pagegrid {
         iconIdentifier = tx-dlf-pagegrid
-        title = LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/PageGrid.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.description
         tt_content_defValues {
           CType = list
           list_type = dlf_pagegrid
@@ -94,8 +94,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_pageview {
         iconIdentifier = tx-dlf-pageview
-        title = LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/PageView.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.description
         tt_content_defValues {
           CType = list
           list_type = dlf_pageview
@@ -112,8 +112,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_statistics {
         iconIdentifier = tx-dlf-statistics
-        title = LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Statistics.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.description
         tt_content_defValues {
           CType = list
           list_type = dlf_statistics
@@ -121,8 +121,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_tableofcontents {
         iconIdentifier = tx-dlf-tableofcontents
-        title = LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/TableOfContents.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.description
         tt_content_defValues {
           CType = list
           list_type = dlf_tableofcontents
@@ -130,8 +130,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_toolbox {
         iconIdentifier = tx-dlf-toolbox
-        title = LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.description
         tt_content_defValues {
           CType = list
           list_type = dlf_toolbox

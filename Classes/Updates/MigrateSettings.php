@@ -96,7 +96,7 @@ class MigrateSettings implements UpgradeWizardInterface
                 ->execute();
 
             // exit if at least one update statement is not successful
-            if (!((bool)$updateResult)) {
+            if (!((bool) $updateResult)) {
                 return false;
             }
         }
@@ -162,7 +162,7 @@ class MigrateSettings implements UpgradeWizardInterface
      */
     protected function migrateFlexformSettings(string $oldValue): string
     {
-        $xml = simplexml_load_string ($oldValue);
+        $xml = simplexml_load_string($oldValue);
 
         // get all field elements
         $fields = $xml->xpath("//field");
@@ -184,12 +184,12 @@ class MigrateSettings implements UpgradeWizardInterface
      */
     protected function checkForOldSettings(string $flexFormXml): bool
     {
-        $xml = simplexml_load_string ($flexFormXml);
+        $xml = simplexml_load_string($flexFormXml);
 
         // get all field elements with value of attribute index not containing "settings."
         $fields = $xml->xpath("//field[not(starts-with(@index, 'settings.'))]");
 
-        return (bool)$fields;
+        return (bool) $fields;
     }
 
 }

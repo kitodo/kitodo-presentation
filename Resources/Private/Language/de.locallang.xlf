@@ -1,13 +1,149 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-14T15:50:39Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-26T19:35:48Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+			<trans-unit id="AddToBasket" approved="yes">
+				<source><![CDATA[Add to basket]]></source>
+				<target><![CDATA[Zum Warenkorb hinzufügen]]></target>
+			</trans-unit>
+			<trans-unit id="backXPages" approved="yes">
+				<source><![CDATA[Back %s Pages]]></source>
+				<target><![CDATA[%s Seiten zurück]]></target>
+			</trans-unit>
+			<trans-unit id="basket.addBasket" approved="yes">
+				<source><![CDATA[Add to basket]]></source>
+				<target><![CDATA[Zum Warenkorb hinzufügen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.chooseAction" approved="yes">
+				<source><![CDATA[Choose an action]]></source>
+				<target><![CDATA[Aktion auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.chooseMail" approved="yes">
+				<source><![CDATA[Choose a mail]]></source>
+				<target><![CDATA[E-Mail Empfänger auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.choosePrinter" approved="yes">
+				<source><![CDATA[Choose a printer]]></source>
+				<target><![CDATA[Drucker auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.count" approved="yes">
+				<source><![CDATA[%d Entries]]></source>
+				<target><![CDATA[%d Einträge]]></target>
+			</trans-unit>
+			<trans-unit id="basket.cutout" approved="yes">
+				<source><![CDATA[Cutout]]></source>
+				<target><![CDATA[Ausschnitt]]></target>
+			</trans-unit>
+			<trans-unit id="basket.download" approved="yes">
+				<source><![CDATA[Download]]></source>
+				<target><![CDATA[Herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.editMode" approved="yes">
+				<source><![CDATA[Set cutout]]></source>
+				<target><![CDATA[Ausschnitt auswählen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.editRemove" approved="yes">
+				<source><![CDATA[Remove cutout]]></source>
+				<target><![CDATA[Ausschnitt entfernen]]></target>
+			</trans-unit>
+			<trans-unit id="basket.goBasket" approved="yes">
+				<source><![CDATA[Go to basket]]></source>
+				<target><![CDATA[Zum Warenkorb]]></target>
+			</trans-unit>
+			<trans-unit id="basket.magnifier" approved="yes">
+				<source><![CDATA[Magnifier]]></source>
+				<target><![CDATA[Lupe]]></target>
+			</trans-unit>
+			<trans-unit id="basket.mailBody" approved="yes">
+				<source><![CDATA[The following documents are sent to you by Kitodo.Presentation:]]></source>
+				<target><![CDATA[Folgende Dokumente wurden über die Kitodo.Presentation Extension an Sie verschickt:]]></target>
+			</trans-unit>
+			<trans-unit id="basket.mailSubject" approved="yes">
+				<source><![CDATA[Kitodo.Presentation - Document]]></source>
+				<target><![CDATA[Kitodo.Presentation - Dokument]]></target>
+			</trans-unit>
+			<trans-unit id="basket.noTitle" approved="yes">
+				<source><![CDATA[No title]]></source>
+				<target><![CDATA[Kein Titel vorhanden]]></target>
+			</trans-unit>
+			<trans-unit id="basket.remove" approved="yes">
+				<source><![CDATA[Remove]]></source>
+				<target><![CDATA[Entfernen]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.allYears" approved="yes">
+				<source><![CDATA[All years overview - ]]></source>
+				<target><![CDATA[Jahrgangsübersicht - ]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.please_choose_year" approved="yes">
+				<source><![CDATA[Please choose a year first.]]></source>
+				<target><![CDATA[Bitte wählen Sie zunächst einen Jahrgang aus.]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.view_calendar" approved="yes">
+				<source><![CDATA[Calendar]]></source>
+				<target><![CDATA[Kalender]]></target>
+			</trans-unit>
+			<trans-unit id="calendar.view_list" approved="yes">
+				<source><![CDATA[List View]]></source>
+				<target><![CDATA[Listenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="doublePage+1" approved="yes">
+				<source><![CDATA[Adjust recto/verso]]></source>
+				<target><![CDATA[Recto/Verso korrigieren]]></target>
+			</trans-unit>
+			<trans-unit id="doublePageOff" approved="yes">
+				<source><![CDATA[Show single page]]></source>
+				<target><![CDATA[Einzelseitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="doublePageOn" approved="yes">
+				<source><![CDATA[Show double pages]]></source>
+				<target><![CDATA[Doppelseitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="downloadLeftPage" approved="yes">
+				<source><![CDATA[Download left page]]></source>
+				<target><![CDATA[Linke Seite herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="downloadRightPage" approved="yes">
+				<source><![CDATA[Download right page]]></source>
+				<target><![CDATA[Rechte Seite herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="downloadSinglePage" approved="yes">
+				<source><![CDATA[Download single page]]></source>
+				<target><![CDATA[Einzelseite herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="downloadWork" approved="yes">
+				<source><![CDATA[Download whole work]]></source>
+				<target><![CDATA[Ganzes Werk herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="firstPage" approved="yes">
+				<source><![CDATA[First Page]]></source>
+				<target><![CDATA[Erste Seite]]></target>
+			</trans-unit>
+			<trans-unit id="forwardXPages" approved="yes">
+				<source><![CDATA[Forward %s Pages]]></source>
+				<target><![CDATA[%s Seiten weiter]]></target>
+			</trans-unit>
+			<trans-unit id="lastPage" approved="yes">
+				<source><![CDATA[Last Page]]></source>
+				<target><![CDATA[Letzte Seite]]></target>
+			</trans-unit>
+			<trans-unit id="linkToList" approved="yes">
+				<source><![CDATA[Return to list view]]></source>
+				<target><![CDATA[Zurück zur Listenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="nextPage" approved="yes">
+				<source><![CDATA[Next Page]]></source>
+				<target><![CDATA[Nächste Seite]]></target>
+			</trans-unit>
 			<trans-unit id="noTitle" approved="yes">
 				<source><![CDATA[[no title]]]></source>
 				<target><![CDATA[[kein Titel]]]></target>
+			</trans-unit>
+			<trans-unit id="page" approved="yes">
+				<source><![CDATA[Page]]></source>
+				<target><![CDATA[Seite]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.new" approved="yes">
 				<source><![CDATA[NEW:]]></source>
@@ -17,9 +153,161 @@
 				<source><![CDATA[UPDATE:]]></source>
 				<target><![CDATA[UPDATE:]]></target>
 			</trans-unit>
+			<trans-unit id="prevPage" approved="yes">
+				<source><![CDATA[Previous Page]]></source>
+				<target><![CDATA[Vorherige Seite]]></target>
+			</trans-unit>
+			<trans-unit id="rotateLeft" approved="yes">
+				<source><![CDATA[Rotate Left]]></source>
+				<target><![CDATA[Ansicht nach links drehen]]></target>
+			</trans-unit>
+			<trans-unit id="rotateReset" approved="yes">
+				<source><![CDATA[Reset Rotation]]></source>
+				<target><![CDATA[Drehung zurücksetzen]]></target>
+			</trans-unit>
+			<trans-unit id="rotateRight" approved="yes">
+				<source><![CDATA[Rotate Right]]></source>
+				<target><![CDATA[Ansicht nach rechts drehen]]></target>
+			</trans-unit>
+			<trans-unit id="selectPage" approved="yes">
+				<source><![CDATA[Page]]></source>
+				<target><![CDATA[Seite]]></target>
+			</trans-unit>
+			<trans-unit id="thumbnail" approved="yes">
+				<source><![CDATA[Thumbnail]]></source>
+				<target><![CDATA[Vorschaubild]]></target>
+			</trans-unit>
+			<trans-unit id="title" approved="yes">
+				<source><![CDATA[title]]></source>
+				<target><![CDATA[Titel]]></target>
+			</trans-unit>
+			<trans-unit id="titles" approved="yes">
+				<source><![CDATA[titles]]></source>
+				<target><![CDATA[Titel]]></target>
+			</trans-unit>
+			<trans-unit id="tools.annotation.not-available" approved="yes">
+				<source><![CDATA[No Annotations available]]></source>
+				<target><![CDATA[Keine Annotationen vorhanden]]></target>
+			</trans-unit>
+			<trans-unit id="tools.annotation.off" approved="yes">
+				<source><![CDATA[Hide Annotations]]></source>
+				<target><![CDATA[Annotationen verbergen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.annotation.on" approved="yes">
+				<source><![CDATA[Display Annotations]]></source>
+				<target><![CDATA[Annotationen anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext" approved="yes">
+				<source><![CDATA[Full text]]></source>
+				<target><![CDATA[Volltext]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.not-available" approved="yes">
+				<source><![CDATA[No full text available]]></source>
+				<target><![CDATA[Keine Volltexte vorhanden]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.off" approved="yes">
+				<source><![CDATA[Deactivate full text]]></source>
+				<target><![CDATA[Volltext aus]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltext.on" approved="yes">
+				<source><![CDATA[Activate full text]]></source>
+				<target><![CDATA[Volltext an]]></target>
+			</trans-unit>
+			<trans-unit id="tools.fulltextdownload.download-current-page" approved="yes">
+				<source><![CDATA[Current page (TXT)]]></source>
+				<target><![CDATA[Aktuelle Seite (TXT)]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.brightness" approved="yes">
+				<source><![CDATA[Brightness]]></source>
+				<target><![CDATA[Helligkeit]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.contrast" approved="yes">
+				<source><![CDATA[Contrast]]></source>
+				<target><![CDATA[Kontrast]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.hue" approved="yes">
+				<source><![CDATA[Hue]]></source>
+				<target><![CDATA[Färbung]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.invert" approved="yes">
+				<source><![CDATA[Color inverting]]></source>
+				<target><![CDATA[Farbinvertierung]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.no-support" approved="yes">
+				<source><![CDATA[Image manipulation is not supported]]></source>
+				<target><![CDATA[Bildbearbeitung wird nicht unterstützt]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.off" approved="yes">
+				<source><![CDATA[Deactivate image manipulation]]></source>
+				<target><![CDATA[Bildbearbeitung aus]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.on" approved="yes">
+				<source><![CDATA[Activate image manipulation]]></source>
+				<target><![CDATA[Bildbearbeitung an]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.reset" approved="yes">
+				<source><![CDATA[Reset]]></source>
+				<target><![CDATA[Zurücksetzen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.imagemanipulation.saturation" approved="yes">
+				<source><![CDATA[Saturation]]></source>
+				<target><![CDATA[Sättigung]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.deleteSearch" approved="yes">
+				<source><![CDATA[Delete Search]]></source>
+				<target><![CDATA[Suche löschen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.loading" approved="yes">
+				<source><![CDATA[Loading...]]></source>
+				<target><![CDATA[Laden...]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.logicalPage" approved="yes">
+				<source><![CDATA[Page]]></source>
+				<target><![CDATA[Seite]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.next" approved="yes">
+				<source><![CDATA[next]]></source>
+				<target><![CDATA[weiter]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.noresult" approved="yes">
+				<source><![CDATA[No result found in current document.]]></source>
+				<target><![CDATA[Kein Ergebnis im aktuellen Dokument gefunden.]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.previous" approved="yes">
+				<source><![CDATA[previous]]></source>
+				<target><![CDATA[zurück]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.query" approved="yes">
+				<source><![CDATA[Search for:]]></source>
+				<target><![CDATA[Suchen nach:]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
+				<source><![CDATA[Search in document]]></source>
+				<target><![CDATA[Im Dokument suchen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.searchindocument.submit" approved="yes">
+				<source><![CDATA[Search]]></source>
+				<target><![CDATA[Suchen]]></target>
+			</trans-unit>
 			<trans-unit id="volume" approved="yes">
-				<source><![CDATA[Volume]]></source>
+				<source><![CDATA[volume]]></source>
 				<target><![CDATA[Band]]></target>
+			</trans-unit>
+			<trans-unit id="volumes" approved="yes">
+				<source><![CDATA[volumes]]></source>
+				<target><![CDATA[Bände]]></target>
+			</trans-unit>
+			<trans-unit id="zoomFullscreen" approved="yes">
+				<source><![CDATA[Fullscreen Mode]]></source>
+				<target><![CDATA[Vollansicht]]></target>
+			</trans-unit>
+			<trans-unit id="zoomIn" approved="yes">
+				<source><![CDATA[Zoom In]]></source>
+				<target><![CDATA[Ansicht vergrößern]]></target>
+			</trans-unit>
+			<trans-unit id="zoomOut" approved="yes">
+				<source><![CDATA[Zoom Out]]></source>
+				<target><![CDATA[Ansicht verkleinern]]></target>
 			</trans-unit>
 		</body>
 	</file>

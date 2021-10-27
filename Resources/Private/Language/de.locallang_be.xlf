@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-15T14:15:26Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-26T14:01:06Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -10,6 +10,10 @@
 				<target><![CDATA[Kollektionen]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.excludeOther" approved="yes">
+				<source><![CDATA[Show only documents from the selected page]]></source>
+				<target><![CDATA[Nur Dokumente der ausgewählten Seite anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.excludeOtherCollections" approved="yes">
 				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
 				<target><![CDATA[Nur Dokumente der ausgewählten Kollektion(en) berücksichtigen]]></target>
 			</trans-unit>
@@ -29,6 +33,18 @@
 				<source><![CDATA[Options]]></source>
 				<target><![CDATA[Einstellungen]]></target>
 			</trans-unit>
+			<trans-unit id="flexform.showBasketButton" approved="yes">
+				<source><![CDATA[Show basket button]]></source>
+				<target><![CDATA[Zeige Warenkorb Button an]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.solrcore" approved="yes">
+				<source><![CDATA[Solr Core]]></source>
+				<target><![CDATA[Solr Kern]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.targetBasket" approved="yes">
+				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "DLF: Warenkorb")]]></target>
+			</trans-unit>
 			<trans-unit id="flexform.targetPid" approved="yes">
 				<source><![CDATA[Target page (with "Kitodo: List View" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "DLF: Seitenansicht")]]></target>
@@ -37,9 +53,77 @@
 				<source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "Kitodo: Seitenansicht")]]></target>
 			</trans-unit>
+			<trans-unit id="flexform.targetPidListView" approved="yes">
+				<source><![CDATA[Target page (with "DLF: List View" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "DLF: Listenansicht")]]></target>
+			</trans-unit>
 			<trans-unit id="flexform.templateFile" approved="yes">
 				<source><![CDATA[Template file]]></source>
 				<target><![CDATA[HTML-Template]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.description" approved="yes">
+				<source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Audio Player Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.flexform.elementId" approved="yes">
+				<source><![CDATA[@ID value of the HTML element for the audio player]]></source>
+				<target><![CDATA[@ID-Wert des HTML-Elements für den Audioplayer]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.audioplayer.title" approved="yes">
+				<source><![CDATA[Kitodo: Audio Player]]></source>
+				<target><![CDATA[Kitodo: Audio Player]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.description" approved="yes">
+				<source><![CDATA[Basket Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Warenkorb Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.basketGoToButton" approved="yes">
+				<source><![CDATA[Add go to basket button]]></source>
+				<target><![CDATA["Zum Warenkorb" Button hinzufügen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfDownload" approved="yes">
+				<source><![CDATA[PDF download URL (without parameters)]]></source>
+				<target><![CDATA[URL zum Download der PDF Dokumente (ohne Parameter)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfGenerate" approved="yes">
+				<source><![CDATA[PDF generate URL (without parameters)]]></source>
+				<target><![CDATA[URL zum Generieren der PDF Dokumente (ohne Parameter)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfParamSeparator" approved="yes">
+				<source><![CDATA[Parameter separator (for multiple documents)]]></source>
+				<target><![CDATA[Zeichen zum Separieren der Parameter eines Dokuments]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfParams" approved="yes">
+				<source><![CDATA[Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)]]></source>
+				<target><![CDATA[Parameter zu den genannten URLs (mit Platzhalter für die Parameter z.B. ##startX##,##startY##)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.pdfPrint" approved="yes">
+				<source><![CDATA[PDF print URL (without parameters)]]></source>
+				<target><![CDATA[URL zum Drucken der PDF Dokumente (ohne Parameter)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.flexform.preGeneration" approved="yes">
+				<source><![CDATA[Send ajax request for pdf pre generation]]></source>
+				<target><![CDATA[Ajax Request verschicken, um PDF vorzeitig zu generieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.basket.title" approved="yes">
+				<source><![CDATA[Kitodo: Basket]]></source>
+				<target><![CDATA[Kitodo: Warenkorb]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.description" approved="yes">
+				<source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Kalender Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.initialDocument" approved="yes">
+				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
+				<target><![CDATA[Anfangsdokument (z.B. vom Typ "newspaper" oder "ephemera)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.showEmptyMonths" approved="yes">
+				<source><![CDATA[Show months without issues in calendar?]]></source>
+				<target><![CDATA[Zeige Monate ohne Ausgaben im Kalender?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.calendar.title" approved="yes">
+				<source><![CDATA[Kitodo: Calendar]]></source>
+				<target><![CDATA[Kitodo: Kalender]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description" approved="yes">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
@@ -156,6 +240,106 @@
 			<trans-unit id="text.yes" approved="yes">
 				<source><![CDATA[Yes]]></source>
 				<target><![CDATA[Ja]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.description" approved="yes">
+				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Navigation Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.pageStep" approved="yes">
+				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
+				<target><![CDATA[Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.title" approved="yes">
+				<source><![CDATA[Kitodo: Navigation]]></source>
+				<target><![CDATA[Kitodo: Navigation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.description" approved="yes">
+				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Seitenvorschau Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.limit" approved="yes">
+				<source><![CDATA[Thumbnails per page]]></source>
+				<target><![CDATA[Vorschaubilder pro Seite]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.placeholder" approved="yes">
+				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
+				<target><![CDATA[Platzhalter Bild für Seiten ohne Vorschaubild]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.title" approved="yes">
+				<source><![CDATA[Kitodo: Page Grid]]></source>
+				<target><![CDATA[Kitodo: Seitenvorschau]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.description" approved="yes">
+				<source><![CDATA[Pageview Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Seitenansicht Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.crop" approved="yes">
+				<source><![CDATA[Enable cropping]]></source>
+				<target><![CDATA[Funktion zum Erstellen eines Bildausschnitts aktivieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.elementId" approved="yes">
+				<source><![CDATA[@ID value of the HTML element for the page view]]></source>
+				<target><![CDATA[@ID-Wert des HTML-Elements für die Seitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features" approved="yes">
+				<source><![CDATA[Map features]]></source>
+				<target><![CDATA[Bedienelemente]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features.overviewmap" approved="yes">
+				<source><![CDATA[Overview Image]]></source>
+				<target><![CDATA[Übersichtsbild]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features.zoompanel" approved="yes">
+				<source><![CDATA[Zoom Panel]]></source>
+				<target><![CDATA[Zoom-Knöpfe]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.magnifier" approved="yes">
+				<source><![CDATA[Activate magnifier]]></source>
+				<target><![CDATA[Lupenfunktion aktivieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.useInternalProxy" approved="yes">
+				<source><![CDATA[Use Internal Proxy]]></source>
+				<target><![CDATA[Internen Proxy verwenden]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.title" approved="yes">
+				<source><![CDATA[Kitodo: Pageview]]></source>
+				<target><![CDATA[Kitodo: Seitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.description" approved="yes">
+				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Statistik Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.flexform.description" approved="yes">
+				<source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
+				<target><![CDATA[Beschreibung (Platzhalter: ###TITLES### und ###VOLUMES###)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.statistics.title" approved="yes">
+				<source><![CDATA[Kitodo: Statistics]]></source>
+				<target><![CDATA[Kitodo: Statistik]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.description" approved="yes">
+				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Inhaltsverzeichnis Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.tableofcontents.title" approved="yes">
+				<source><![CDATA[Kitodo: Table of Contents]]></source>
+				<target><![CDATA[Kitodo: Inhaltsverzeichnis]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.description" approved="yes">
+				<source><![CDATA[Toolbox Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Werkzeugkasten Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.flexform.fileGrps" approved="yes">
+				<source><![CDATA[Page fileGrps used by image download tool: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")]]></source>
+				<target><![CDATA[Seiten fileGrps für das Werkzeug Bild-Download: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX")]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.flexform.tools" approved="yes">
+				<source><![CDATA[Tools]]></source>
+				<target><![CDATA[Werkzeuge]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.toolbox.title" approved="yes">
+				<source><![CDATA[Kitodo: Toolbox]]></source>
+				<target><![CDATA[Kitodo: Werkzeugkasten]]></target>
 			</trans-unit>
 		</body>
 	</file>
