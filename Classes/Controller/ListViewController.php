@@ -13,14 +13,12 @@ namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -33,10 +31,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * @subpackage dlf
  * @access public
  */
-class ListViewController extends ActionController
+class ListViewController extends AbstractController
 {
-    const PARAMETER_PREFIX = 'tx_dlf';
-
     /**
      * This holds the field wrap of the metadata
      *
@@ -70,37 +66,11 @@ class ListViewController extends ActionController
     protected $sortables = [];
 
     /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
      * Enriched documentList data for the view.
      *
      * @var array
      */
     protected $metadataList = [];
-
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
-
-    /**
-     * ListViewController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-    }
 
     /**
      * Renders one entry of the list
@@ -356,13 +326,19 @@ class ListViewController extends ActionController
     }
 
     /**
-     * The main method of the PlugIn
+     * The main method of the plugin
+     *
+     * @return void
      */
     public function mainAction()
     {
-        $sort = GeneralUtility::_GP(self::PARAMETER_PREFIX)['sort'];
-        $pointer = GeneralUtility::_GP(self::PARAMETER_PREFIX)['pointer'];
-        $logicalPage = GeneralUtility::_GP(self::PARAMETER_PREFIX)['logicalPage'];
+        $requestData = GeneralUtility::_GPmerged('tx_dlf');
+
+        $sort = $requestData['sort'];
+        $pointer = $requestData['pointer'];
+        $logicalPage = $requestData['logicalPage'];
+
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         // Load the list.
         $this->list = GeneralUtility::makeInstance(DocumentList::class);
@@ -460,7 +436,7 @@ class ListViewController extends ActionController
         );
 
         $this->view->assign('pageToBasket', $this->settings['targetBasket']);
-        $this->view->assign('forceAbsoluteUrl', !empty($this->extensionConfiguration['forceAbsoluteUrl']) ? 1 : 0);
+        $this->view->assign('forceAbsoluteUrl', !empty($this->extConf['forceAbsoluteUrl']) ? 1 : 0);
         $this->view->assign('currentPageUid', $GLOBALS['TSFE']->id);
     }
 }
