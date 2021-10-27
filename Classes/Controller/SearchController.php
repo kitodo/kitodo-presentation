@@ -246,7 +246,7 @@ class SearchController extends AbstractController
             !empty($requestData['id'])
             && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($requestData['id'])
         ) {
-            $this->loadDocument();
+            $this->loadDocument($requestData);
             // Get document's UID
             if ($this->doc->ready) {
                 $this->view->assign('DOCUMENT_ID', $this->doc->uid);
@@ -572,6 +572,7 @@ class SearchController extends AbstractController
         foreach ($searchFields as $searchField) {
             $fieldSelectorOptions[$searchField] = Helper::translate($searchField, 'tx_dlf_metadata', $this->settings['pages']);
         }
+        $slotCountArray = [];
         for ($i = 0; $i < $this->settings['extendedSlotCount']; $i++) {
             $slotCountArray[] = $i;
         }
