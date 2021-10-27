@@ -207,11 +207,11 @@ class BasketController extends AbstractController
             $GLOBALS['TSFE']->fe_user->sesData_change = true;
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
-            $basket = $this->basketRepository->findBasketBySessionId($sessionId)->getFirst();
+            $basket = $this->basketRepository->findOneBySessionId($sessionId)->getFirst();
 
         }
         // session already exists
-        if ($basket === 0) {
+        if ($basket === NULL) {
             // create new basket in db
             $insertArray['fe_user_id'] = $GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0;
             $insertArray['session_id'] = $sessionId;
@@ -512,7 +512,7 @@ class BasketController extends AbstractController
         // send mail
         $mailId = $requestData['mail_action'];
 
-        $mailObject = $this->mailRepository->findByUid($mailId)->getFirst();
+        $mailObject = $this->mailRepository->findByUid(intval($mailId))->getFirst();
 
         $mailText = htmlspecialchars(LocalizationUtility::translate('basket.mailBody', 'dlf')) . "\n";
         $numberOfPages = 0;
