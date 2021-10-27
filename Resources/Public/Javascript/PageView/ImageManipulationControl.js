@@ -157,7 +157,7 @@ dlfViewerImageManipulationControl = function(options) {
                 value = FILTERS_DEFAULT_[String(type)];
 
                 $(sliderEl).slider('value', value);
-            };
+            }
         }, this)
     };
 };

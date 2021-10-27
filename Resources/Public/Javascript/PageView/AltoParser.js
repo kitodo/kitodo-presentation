@@ -173,7 +173,7 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
         };
 
         pageFeatures.push(feature);
-    };
+    }
 
     return pageFeatures;
 };
