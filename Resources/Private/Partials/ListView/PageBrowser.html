@@ -1,0 +1,120 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+
+<f:if condition="{maxPages} >= 2">
+    <p class="tx-dlf-listview-pagebrowser">
+        <f:if condition="{pointer} > 0">
+            <f:then>
+                <f:link.action action="main" arguments="{pointer:'{p -> v:math.subtract(a:\'{pointer}\', b:\'1\')}'}">
+                    <f:format.htmlSpecialChars>
+                        <f:translate
+                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:prevPage"
+                            default="<"
+                        />
+                    </f:format.htmlSpecialChars>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span>
+                    <f:format.htmlSpecialChars>
+                        <f:translate
+                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:prevPage"
+                            default="<"
+                        />
+                    </f:format.htmlSpecialChars>
+                </span>
+            </f:else>
+        </f:if>
+
+        <span class="separator">
+            <f:format.htmlSpecialChars>
+                <f:translate
+                    key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:separator"
+                    arguments="{0: ' - '}"
+                />
+            </f:format.htmlSpecialChars>
+        </span>
+
+        <v:variable.set name="skip" value="false"/>
+        <f:for each="{i -> v:iterator.range(low: 1, high: '{maxPages}')}" key="pagePointer" as="pageNumber">
+            <f:if condition="
+                {pagePointer} < 3 ||
+                (
+                    {pagePointer} > {p -> v:math.subtract(a:'{pointer}', b:'3')} &&
+                    {pagePointer} < {p -> v:math.sum(a:'{pointer}', b:'3')}
+                ) ||
+                {pagePointer} > {p -> v:math.subtract(a:'{maxPages}', b:'4')}
+            ">
+                <f:then>
+                    <f:if condition="{pointer} != {pagePointer}">
+                        <f:then>
+                            <f:link.action action="main" arguments="{pointer:'{pagePointer}'}">
+                                <f:format.htmlSpecialChars>
+                                    <f:translate
+                                        key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:page"
+                                        default="%d"
+                                        arguments="{0:pageNumber}"
+                                    />
+                                </f:format.htmlSpecialChars>
+                            </f:link.action>
+                        </f:then>
+                        <f:else>b
+                            <span class="active">
+                                <f:translate
+                                 key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:page"
+                                 default="%d"
+                                 arguments="{0:pageNumber}"
+                                />
+                            </span>
+                        </f:else>
+                    </f:if>
+                    <v:variable.set name="skip" value="true"/>
+                </f:then>
+                <f:else>
+                    <f:if condition="{skip} == 'true'">
+                        <f:format.htmlSpecialChars>
+                            <f:translate
+                                key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:skip"
+                                default="..."
+                            />
+                        </f:format.htmlSpecialChars>
+                        <v:variable.set name="skip" value="false"/>
+                    </f:if>
+                </f:else>
+            </f:if>
+        </f:for>
+
+        <f:if condition="{pointer} < {p -> v:math.subtract(a:'{maxPages}', b:'1')}">
+            <f:then>
+                <f:link.action action="main" arguments="{pointer:'{p -> v:math.sum(a:\'{pointer}\', b:\'1\')}'}">
+                    <f:format.htmlSpecialChars>
+                        <f:translate
+                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:nextPage"
+                            default=">"
+                        />
+                    </f:format.htmlSpecialChars>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span>
+                    <f:format.htmlSpecialChars>
+                        <f:translate
+                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:nextPage"
+                            default=">"
+                        />
+                    </f:format.htmlSpecialChars>
+                </span>
+            </f:else>
+        </f:if>
+    </p>
+</f:if>
