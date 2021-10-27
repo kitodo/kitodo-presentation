@@ -24,7 +24,7 @@
             <v:variable.set name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
             <label for="{uniqId}">
                 <f:format.htmlSpecialChars>
-                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:orderBy"/>
+                    <f:translate key="listview.orderBy"/>
                 </f:format.htmlSpecialChars>
             </label>
             <f:form.select id="{uniqId}" property="order" additionalAttributes="{onchange:'javascript:this.form.submit();'}">
@@ -33,7 +33,7 @@
                             {f:if(condition:'{documentList.metadata.options.order} == \'score\'', then:' selected="selected"', else:'')}
                     >
                     <f:format.htmlSpecialChars>
-                        <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:relevance" />
+                        <f:translate key="listview.relevance" />
                     </f:format.htmlSpecialChars>
                     </option>
                 </f:if>
@@ -52,7 +52,7 @@
             <v:variable.set name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
             <label for="{uniqId}">
                 <f:format.htmlSpecialChars>
-                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:direction"/>
+                    <f:translate key="listview.direction"/>
                 </f:format.htmlSpecialChars>
             </label>
 
@@ -71,14 +71,14 @@
                         {f:if(condition:'{orderAsc}', then:' selected="selected"', else:'')}
                 >
                     <f:format.htmlSpecialChars>
-                        <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:direction.asc"/>
+                        <f:translate key="listview.direction.asc"/>
                     </f:format.htmlSpecialChars>
                 </option>
                 <option value="0"
                         {f:if(condition:'{orderAsc} != 1', then:' selected="selected"', else:'')}
                 >
                     <f:format.htmlSpecialChars>
-                        <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:direction.desc"/>
+                        <f:translate key="listview.direction.desc"/>
                     </f:format.htmlSpecialChars>
                 </option>
             </f:form.select>

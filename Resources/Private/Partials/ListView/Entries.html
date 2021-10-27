@@ -43,7 +43,6 @@
                                     </f:if>
 
                                     <f:link.page pageUid="{settings.targetPid}"
-                                                 absolute="{forceAbsoluteUrl}"
                                                  additionalParams="{params}">
                                         {value.value}
                                     </f:link.page>
@@ -67,9 +66,8 @@
         <div>
             <f:if condition="{settings.basketButton} && {settings.targetBasket}">
                 <f:link.page pageUid="{settings.targetBasket}"
-                             absolute="{forceAbsoluteUrl}"
                              additionalParams="{'tx_dlf[id]':entry.uid, 'tx_dlf[startpage]':entry.page, 'tx_dlf[addToBasket]':'list'}">
-                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:addBasket"/>
+                    <f:translate key="AddToBasket"/>
                 </f:link.page>
             </f:if>
         </div>

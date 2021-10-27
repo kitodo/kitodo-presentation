@@ -103,10 +103,7 @@ class ListViewController extends AbstractController
                         }
                         // Set fake title if still not present.
                         if (empty($value)) {
-                            $value = LocalizationUtility::translate(
-                                'LLL:EXT:dlf/Resources/Private/Language/ListView.xml:noTitle',
-                                'dlf'
-                            );
+                            $value = LocalizationUtility::translate('noTitle', 'dlf');
                         }
                         $imgAlt = htmlspecialchars($value);
                         $value = htmlspecialchars($value);
@@ -224,10 +221,7 @@ class ListViewController extends AbstractController
                         }
                         // Set fake title if still not present.
                         if (empty($value)) {
-                            $value = LocalizationUtility::translate(
-                                'LLL:EXT:dlf/Resources/Private/Language/ListView.xml:noTitle',
-                                'dlf'
-                            );
+                            $value = LocalizationUtility::translate('noTitle', 'dlf');
                         }
                         $imgAlt = htmlspecialchars($value);
                         $value = htmlspecialchars($value);

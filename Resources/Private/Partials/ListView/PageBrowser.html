@@ -18,7 +18,7 @@
                 <f:link.action action="main" arguments="{pointer:'{p -> v:math.subtract(a:\'{pointer}\', b:\'1\')}'}">
                     <f:format.htmlSpecialChars>
                         <f:translate
-                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:prevPage"
+                            key="listview.prevPage"
                             default="<"
                         />
                     </f:format.htmlSpecialChars>
@@ -28,7 +28,7 @@
                 <span>
                     <f:format.htmlSpecialChars>
                         <f:translate
-                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:prevPage"
+                            key="listview.prevPage"
                             default="<"
                         />
                     </f:format.htmlSpecialChars>
@@ -39,7 +39,7 @@
         <span class="separator">
             <f:format.htmlSpecialChars>
                 <f:translate
-                    key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:separator"
+                    key="listview.separator"
                     arguments="{0: ' - '}"
                 />
             </f:format.htmlSpecialChars>
@@ -61,7 +61,7 @@
                             <f:link.action action="main" arguments="{pointer:'{pagePointer}'}">
                                 <f:format.htmlSpecialChars>
                                     <f:translate
-                                        key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:page"
+                                        key="listview.page"
                                         default="%d"
                                         arguments="{0:pageNumber}"
                                     />
@@ -71,7 +71,7 @@
                         <f:else>b
                             <span class="active">
                                 <f:translate
-                                 key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:page"
+                                 key="listview.page"
                                  default="%d"
                                  arguments="{0:pageNumber}"
                                 />
@@ -84,7 +84,7 @@
                     <f:if condition="{skip} == 'true'">
                         <f:format.htmlSpecialChars>
                             <f:translate
-                                key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:skip"
+                                key="listview.skip"
                                 default="..."
                             />
                         </f:format.htmlSpecialChars>
@@ -99,7 +99,7 @@
                 <f:link.action action="main" arguments="{pointer:'{p -> v:math.sum(a:\'{pointer}\', b:\'1\')}'}">
                     <f:format.htmlSpecialChars>
                         <f:translate
-                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:nextPage"
+                            key="listview.nextPage"
                             default=">"
                         />
                     </f:format.htmlSpecialChars>
@@ -109,7 +109,7 @@
                 <span>
                     <f:format.htmlSpecialChars>
                         <f:translate
-                            key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:nextPage"
+                            key="listview.nextPage"
                             default=">"
                         />
                     </f:format.htmlSpecialChars>

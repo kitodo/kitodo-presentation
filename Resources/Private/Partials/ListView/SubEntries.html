@@ -44,7 +44,6 @@
                                     </f:if>
 
                                     <f:link.page pageUid="{settings.targetPid}"
-                                                 absolute="{forceAbsoluteUrl}"
                                                  additionalParams="{params}"
                                                  noCacheHash = "{f:if(condition:'{documentList.metadata.searchString}', then: 'false', else: 'true')}">
                                         {value.value}
@@ -64,9 +63,8 @@
     <div>
         <f:if condition="{settings.basketButton} && {settings.targetBasket}">
             <f:link.page pageUid="{settings.targetBasket}"
-                         absolute="{forceAbsoluteUrl}"
                          additionalParams="{'tx_dlf[id]':entry.uid, 'tx_dlf[startpage]':subentry.page, 'tx_dlf[endpage]':subentry.page, 'tx_dlf[logId]':subentry.sid, 'tx_dlf[addToBasket]':'subentry'}">
-                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:addBasket"/>
+                <f:translate key="AddToBasket"/>
             </f:link.page>
         </f:if>
     </div>
