@@ -24,8 +24,11 @@ class FeedsController extends AbstractController
     /**
      * @var LibraryRepository
      */
-    private $libraryRepository;
+    protected $libraryRepository;
 
+    /**
+     * @param LibraryRepository $libraryRepository
+     */
     public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
         $this->libraryRepository = $libraryRepository;
@@ -52,7 +55,7 @@ class FeedsController extends AbstractController
         $requestData = $this->request->getArguments();
 
         // get library information
-        $library = $this->libraryRepository->getLibrary($this->settings['library'], $this->settings['pages'])->getFirst();
+        $library = $this->libraryRepository->findByUid($this->settings['library']);
 
         $feedMeta = [];
         $documents = [];

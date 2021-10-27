@@ -115,5 +115,4 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
         $this->mandatory = $mandatory;
     }
 
-
 }

@@ -98,7 +98,4 @@ class Printer extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
         $this->print = $print;
     }
 
-
-
-
 }

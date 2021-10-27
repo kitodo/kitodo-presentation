@@ -28,25 +28,27 @@ class BasketController extends AbstractController
     /**
      * @var BasketRepository
      */
-    private $basketRepository;
+    protected $basketRepository;
 
     /**
      * @var MailRepository
      */
-    private $mailRepository;
+    protected $mailRepository;
 
     /**
      * @var PrinterRepository
      */
-    private $printerRepository;
+    protected $printerRepository;
 
+    /**
+     * @param BasketRepository $basketRepository
+     */
     public function injectBasketRepository(BasketRepository $basketRepository)
     {
         $this->basketRepository = $basketRepository;
     }
 
     /**
-     * Inject the mail repository
      * @param MailRepository $mailRepository
      */
     public function injectMailRepository(MailRepository $mailRepository)
@@ -55,7 +57,6 @@ class BasketController extends AbstractController
     }
 
     /**
-     * Inject the printer repository
      * @param PrinterRepository $printerRepository
      */
     public function injectPrinterRepository(PrinterRepository $printerRepository)

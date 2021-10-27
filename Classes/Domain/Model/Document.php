@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Domain\Model;
 
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
-
     /**
      * @var string
      */
@@ -665,6 +664,5 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     {
         $this->document_format = $document_format;
     }
-
 
 }
