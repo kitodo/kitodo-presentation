@@ -174,11 +174,11 @@
                 <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{ACTION_URL}" method="get" enctype="multipart/form-data">
                     <div>
                         <label for="tx-dlf-search-in-document-query">
-                            <f:translate key="tools.searchindocument.query"/>
+                            <f:translate key="search.query"/>
                         </label>
                         <!-- Never change the @id of this input field! Otherwise search won't work! -->
                         <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{LABEL_QUERY_URL}" />
-                        <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'tools.searchindocument.submit')}" onclick="resetStart();" />
+                        <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
                         <input type="hidden" id="tx-dlf-search-in-document-start" name="{LABEL_START}" value="0" />
                         <input type="hidden" id="tx-dlf-search-in-document-id" name="{LABEL_ID}" value="{CURRENT_DOCUMENT}" />
                         <input type="hidden" id="tx-dlf-search-in-document-page" name="{LABEL_PAGE_URL}" />

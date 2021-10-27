@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -37,9 +38,9 @@ class SearchController extends AbstractController
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
 
         // Build label for result list.
-        $label = htmlspecialchars($this->pi_getLL('search', ''));
+        $label = htmlspecialchars(LocalizationUtility::translate('search.search', 'dlf'));
         if (!empty($requestData['query'])) {
-            $label .= htmlspecialchars(sprintf($this->pi_getLL('for', ''), trim($requestData['query'])));
+            $label .= ' ' . htmlspecialchars(sprintf(LocalizationUtility::translate('search.for', 'dlf'), trim($requestData['query'])));
         }
         // Prepare query parameters.
         $params = [];
@@ -101,7 +102,7 @@ class SearchController extends AbstractController
                 $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $requestData['id'] . '"' .
                     ' OR {!join from=uid to=partof}uid:' . $requestData['id'] .
                     ' OR uid:' . $requestData['id'];
-                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($requestData['id'])));
+                $label .= ' ' . htmlspecialchars(sprintf(LocalizationUtility::translate('search.in', 'dlf'), Document::getTitle($requestData['id'])));
             }
         }
         // Add filter query for in-collection searching.
@@ -115,7 +116,7 @@ class SearchController extends AbstractController
             ) {
                 $index_name = Helper::getIndexNameFromUid($requestData['collection'], 'tx_dlf_collections', $this->settings['pages']);
                 $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
-                $label .= sprintf($this->pi_getLL('in', '', true), Helper::translate($index_name, 'tx_dlf_collections', $this->settings['pages']));
+                $label .= ' ' . sprintf(LocalizationUtility::translate('search.in', 'dlf'), Helper::translate($index_name, 'tx_dlf_collections', $this->settings['pages']));
             }
         }
         // Add filter query for collection restrictions.
@@ -227,11 +228,6 @@ class SearchController extends AbstractController
 
         // Get additional fields for extended search.
         $this->addExtendedSearch();
-    }
-
-    protected function pi_getLL($label)
-    {
-        return $GLOBALS['TSFE']->sL('LLL:EXT:dlf/Resources/Private/Language/Search.xml:' . $label);
     }
 
     /**
@@ -532,7 +528,7 @@ class SearchController extends AbstractController
                     ->setAddQueryString(true)
                     ->build();
                 $entryArray['_OVERRIDE_HREF'] = $uri;
-                $entryArray['title'] = sprintf($this->pi_getLL('resetFacet', ''), $entryArray['title']);
+                $entryArray['title'] = sprintf(LocalizationUtility::translate('search.resetFacet', 'dlf'), $entryArray['title']);
             }
         } else {
             // Facet is not selected, thus add it to filter.
@@ -568,7 +564,7 @@ class SearchController extends AbstractController
         // Get operator options.
         $operatorOptions = [];
         foreach (['AND', 'OR', 'NOT'] as $operator) {
-            $operatorOptions[$operator] = htmlspecialchars($this->pi_getLL($operator, ''));
+            $operatorOptions[$operator] = htmlspecialchars(LocalizationUtility::translate('search.'.$operator, 'dlf'));
         }
         // Get field selector options.
         $fieldSelectorOptions = [];

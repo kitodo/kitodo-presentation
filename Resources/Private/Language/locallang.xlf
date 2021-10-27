@@ -5,6 +5,36 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+			<trans-unit id="search.inFulltext">
+				<source><![CDATA[in fulltext]]></source>
+			</trans-unit>
+			<trans-unit id="search.inMetadata">
+				<source><![CDATA[in metadata]]></source>
+			</trans-unit>
+			<trans-unit id="search.search">
+				<source><![CDATA[Search]]></source>
+			</trans-unit>
+			<trans-unit id="search.search">
+				<source><![CDATA[Search]]></source>
+			</trans-unit>
+			<trans-unit id="search.for">
+				<source><![CDATA[for "%s"]]></source>
+			</trans-unit>
+			<trans-unit id="search.in">
+				<source><![CDATA[in "%s"]]></source>
+			</trans-unit>
+			<trans-unit id="search.and">
+				<source><![CDATA[and]]></source>
+			</trans-unit>
+			<trans-unit id="search.or">
+				<source><![CDATA[or]]></source>
+			</trans-unit>
+			<trans-unit id="search.not">
+				<source><![CDATA[not]]></source>
+			</trans-unit>
+			<trans-unit id="search.resetFacet">
+				<source><![CDATA[Reset selection (%s)]]></source>
+			</trans-unit>
 			<trans-unit id="AddToBasket">
 				<source><![CDATA[Add to basket]]></source>
 			</trans-unit>
@@ -197,7 +227,7 @@
 			<trans-unit id="tools.searchindocument.loading">
 				<source><![CDATA[Loading...]]></source>
 			</trans-unit>
-			<trans-unit id="tools.searchindocument.logicalPage">
+			<trans-unit id="search.logicalPage">
 				<source><![CDATA[Page]]></source>
 			</trans-unit>
 			<trans-unit id="tools.searchindocument.next">
@@ -209,13 +239,13 @@
 			<trans-unit id="tools.searchindocument.previous">
 				<source><![CDATA[previous]]></source>
 			</trans-unit>
-			<trans-unit id="tools.searchindocument.query">
+			<trans-unit id="search.query">
 				<source><![CDATA[Search for:]]></source>
 			</trans-unit>
 			<trans-unit id="tools.searchindocument.searchInDocument">
 				<source><![CDATA[Search in document]]></source>
 			</trans-unit>
-			<trans-unit id="tools.searchindocument.submit">
+			<trans-unit id="search.submit">
 				<source><![CDATA[Search]]></source>
 			</trans-unit>
 			<trans-unit id="volume">

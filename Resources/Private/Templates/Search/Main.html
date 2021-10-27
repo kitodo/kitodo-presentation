@@ -13,7 +13,7 @@
     <label for="tx-dlf-search-query">
         <f:if condition="{QUERY}">
             <f:then>{QUERY -> f:format.htmlspecialchars()}</f:then>
-            <f:else><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.query"/></f:else>
+            <f:else><f:translate key="search.query"/></f:else>
         </f:if>
     </label>
 
@@ -22,7 +22,7 @@
     <!-- Logical page -->
     <f:if condition="{showLogicalPageField}">
         <f:then>
-            <label for="tx-dlf-search-logical-page"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.logicalPage"/>: </label>
+            <label for="tx-dlf-search-logical-page"><f:translate key="search.logicalPage"/>: </label>
             <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" name="logicalPage" />
         </f:then>
     </f:if>
@@ -30,13 +30,13 @@
     <!-- The following element is needed for auto-completion! -->
     <div id="tx-dlf-search-suggest"></div>
 
-    <f:form.submit value="{f:translate(key: 'LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.submit')}" />
+    <f:form.submit value="{f:translate(key: 'search.submit')}" />
 
     <!-- Fulltext switch -->
     <f:form.radio name="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: '', else: 'checked')}"/>
-    <label for="tx-dlf-search-fulltext-no"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.inMetadata"/></label>
+    <label for="tx-dlf-search-fulltext-no"><f:translate key="search.inMetadata"/></label>
     <f:form.radio name="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: 'checked', else: '')}"/>
-    <label for="tx-dlf-search-fulltext-yes"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/Search.xml:label.inFulltext"/></label>
+    <label for="tx-dlf-search-fulltext-yes"><f:translate key="search.inFulltext"/></label>
 
     <!-- Add current document -->
     <f:if condition="{DOCUMENT_ID}">
