@@ -512,7 +512,7 @@ class BasketController extends AbstractController
         // send mail
         $mailId = $requestData['mail_action'];
 
-        $mail = $this->mailRepository->findByUid($mailId)->getFirst();
+        $mailObject = $this->mailRepository->findByUid($mailId)->getFirst();
 
         $mailText = htmlspecialchars(LocalizationUtility::translate('basket.mailBody', 'dlf')) . "\n";
         $numberOfPages = 0;
@@ -552,7 +552,7 @@ class BasketController extends AbstractController
             // Set the From address with an associative array
             ->setFrom($from)
             // Set the To addresses with an associative array
-            ->setTo([$mail->getMail() => $mail->getName()])
+            ->setTo([$mailObject->getMail() => $mailObject->getName()])
             ->setBody($mailBody, 'text/html')
             ->send();
         // protocol
@@ -566,12 +566,12 @@ class BasketController extends AbstractController
             // internal user
             $insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
             $insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-            $insertArray['label'] = 'Mail: ' . $mail->getMail();
+            $insertArray['label'] = 'Mail: ' . $mailObject->getMail();
         } else {
             // external user
             $insertArray['user_id'] = 0;
             $insertArray['name'] = 'n/a';
-            $insertArray['label'] = 'Mail: ' . $mail->getMail();
+            $insertArray['label'] = 'Mail: ' . $mailObject->getMail();
         }
         // add action to protocol
         GeneralUtility::makeInstance(ConnectionPool::class)
