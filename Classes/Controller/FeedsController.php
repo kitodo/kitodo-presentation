@@ -52,7 +52,7 @@ class FeedsController extends AbstractController
         $requestData = $this->request->getArguments();
 
         // get library information
-        $library = $this->libraryRepository->getLibrary($this->settings['library'], $this->settings['pages'])->getFirst();
+        $library = $this->libraryRepository->findByUid($this->settings['library']);
 
         $feedMeta = [];
         $documents = [];

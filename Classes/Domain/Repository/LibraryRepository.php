@@ -14,17 +14,4 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 class LibraryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-    // Feeds.php line 63
-    public function getLibrary($uid, $pid) {
-        $query = $this->createQuery();
-
-        $querySettings = $query->getQuerySettings();
-        $querySettings->setStoragePageIds([$pid]);
-
-        $query->equals('uid', $uid);
-
-        return $query->execute();
-    }
-
-
 }

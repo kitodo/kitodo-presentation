@@ -245,6 +245,4 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
         $this->union_base = $union_base;
     }
 
-
-
 }
