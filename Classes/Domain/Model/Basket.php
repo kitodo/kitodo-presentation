@@ -18,10 +18,12 @@ class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var string
      */
     protected $label;
+
     /**
      * @var string
      */
     protected $sessionId;
+
     /**
      * @var string|null
      */
@@ -74,6 +76,5 @@ class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     {
         $this->docIds = $docIds;
     }
-
 
 }

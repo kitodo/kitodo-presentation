@@ -18,58 +18,72 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var int
      */
     protected $sorting;
+
     /**
      * @var string
      */
     protected $label;
+
     /**
      * @var string
      */
     protected $index_name;
+
     /**
      * @var int
      */
     protected $format;
+
     /**
      * @var string
      */
     protected $default_value;
+
     /**
      * @var string
      */
     protected $wrap;
+
     /**
      * @var int
      */
     protected $index_tokenized;
+
     /**
      * @var int
      */
     protected $index_stored;
+
     /**
      * @var int
      */
     protected $index_indexed;
+
     /**
      * @var float
      */
     protected $index_boost;
+
     /**
      * @var int
      */
     protected $is_sortable;
+
     /**
      * @var int
      */
     protected $is_facet;
+
     /**
      * @var int
      */
     protected $is_listed;
+
     /**
      * @var int
      */
     protected $index_autocomplete;
+
     /**
      * @var int
      */
@@ -314,6 +328,5 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     {
         $this->status = $status;
     }
-
 
 }

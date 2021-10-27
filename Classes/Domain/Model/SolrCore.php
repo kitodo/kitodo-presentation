@@ -56,5 +56,4 @@ class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
         $this->index_name = $index_name;
     }
 
-
 }

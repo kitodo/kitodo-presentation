@@ -24,8 +24,11 @@ class FeedsController extends AbstractController
     /**
      * @var LibraryRepository
      */
-    private $libraryRepository;
+    protected $libraryRepository;
 
+    /**
+     * @param LibraryRepository $libraryRepository
+     */
     public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
         $this->libraryRepository = $libraryRepository;

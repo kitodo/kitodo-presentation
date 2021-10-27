@@ -18,22 +18,27 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var int
      */
     protected $toplevel;
+
     /**
      * @var string
      */
     protected $label;
+
     /**
      * @var string
      */
     protected $index_name;
+
     /**
      * @var string
      */
     protected $oai_name;
+
     /**
      * @var int
      */
     protected $thumbnail;
+
     /**
      * @var int
      */
@@ -134,7 +139,5 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     {
         $this->status = $status;
     }
-
-
 
 }

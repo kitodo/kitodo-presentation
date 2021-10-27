@@ -98,5 +98,4 @@ class Format extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
         $this->class = $class;
     }
 
-
 }
