@@ -49,8 +49,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_listview {
         iconIdentifier = tx-dlf-listview
-        title = LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/ListView.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.listview.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.listview.description
         tt_content_defValues {
           CType = list
           list_type = dlf_listview
