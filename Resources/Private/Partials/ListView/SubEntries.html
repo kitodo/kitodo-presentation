@@ -1,0 +1,73 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+
+<v:format.pregReplace subject="{documentList.metadata.searchString}" pattern="/\s\s+/" replacement=";" as="highlightWord" />
+
+<f:for each="{entry.subparts}" key="subentryIndex" as="subentry">
+    <li>
+        <div class="tx-dlf-listview-thumbnail">
+            <img alt="{v:variable.get(name: 'metadataList.{entryIndex}.subparts.{subentryIndex}.thumbnail.alt')}"
+                 src="{v:variable.get(name: 'metadataList.{entryIndex}.subparts.{subentryIndex}.thumbnail.src')}}" />
+        </div>
+        <dl>
+            <f:for each="{v:variable.get(name: 'metadataList.{entryIndex}.subparts.{subentryIndex}.metadata')}" key="subentryIndexName" as="subentryField">
+                <dlf:stdWrap wrap="{subentryField.wrap}">
+                    <dlf:stdWrap wrap="{subentryField.label.wrap}">{subentryField.label.value}</dlf:stdWrap>
+                    <f:for each="{subentryField.values}" as="value">
+                        <dlf:stdWrap wrap="{value.wrap}">
+                            <f:if condition="{subentryIndexName} == 'title'">
+                                <f:then>
+                                    <f:if condition="{logicalPage}">
+                                        <f:then>
+                                            <v:variable.set name="params" value="{
+                                                        'tx_dlf[id]':subentry.uid,
+                                                        'tx_dlf[page]':subentry.page,
+                                                        'tx_dlf[highlight_word]':highlightWord
+                                                        'tx_dlf[logicalPage]':logicalPage}" />
+                                        </f:then>
+                                        <f:else>
+                                            <v:variable.set name="params" value="{
+                                                            'tx_dlf[id]':subentry.uid,
+                                                            'tx_dlf[page]':subentry.page,
+                                                            'tx_dlf[highlight_word]':highlightWord}" />
+                                        </f:else>
+                                    </f:if>
+
+                                    <f:link.page pageUid="{settings.targetPid}"
+                                                 absolute="{forceAbsoluteUrl}"
+                                                 additionalParams="{params}"
+                                                 noCacheHash = "{f:if(condition:'{documentList.metadata.searchString}', then: 'false', else: 'true')}">
+                                        {value.value}
+                                    </f:link.page>
+                                </f:then>
+                                <f:else>
+                                    {value.value}
+                                </f:else>
+                            </f:if>
+                        </dlf:stdWrap>
+                    </f:for>
+                </dlf:stdWrap>
+            </f:for>
+        </dl>
+        <div class="tx-dlf-listview-preview">{subentry.preview}</div>
+    </li>
+    <div>
+        <f:if condition="{settings.basketButton} && {settings.targetBasket}">
+            <f:link.page pageUid="{settings.targetBasket}"
+                         absolute="{forceAbsoluteUrl}"
+                         additionalParams="{'tx_dlf[id]':entry.uid, 'tx_dlf[startpage]':subentry.page, 'tx_dlf[endpage]':subentry.page, 'tx_dlf[logId]':subentry.sid, 'tx_dlf[addToBasket]':'subentry'}">
+                <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:addBasket"/>
+            </f:link.page>
+        </f:if>
+    </div>
+</f:for>

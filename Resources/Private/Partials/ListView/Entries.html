@@ -1,0 +1,77 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+
+<f:for each="{documentList}" key="entryIndex" as="entry" iteration="iterator">
+    <v:variable.set name="pageOffset" value="{p -> v:math.product(a:'{pointer}', b:'{settings.limit}')}"/>
+    <v:variable.set name="entryNumber" value="{p -> v:math.sum(a:'{pageOffset}', b:'{iterator.cycle}')}"/>
+
+    <li value="{entryNumber}">
+        <div class="tx-dlf-listview-thumbnail">
+            <img alt="{metadataList.{entryIndex}.thumbnail.alt}" src="{metadataList.{entryIndex}.thumbnail.src}" />
+        </div>
+
+        <dl>
+            <f:for each="{metadataList.{entryIndex}.metadata}" key="indexName" as="field">
+                <dlf:stdWrap wrap="{field.wrap}">
+                    <dlf:stdWrap wrap="{field.label.wrap}">{field.label.value}</dlf:stdWrap>
+                    <f:for each="{field.values}" as="value">
+                        <dlf:stdWrap wrap="{value.wrap}">
+                            <f:if condition="{indexName} == 'title'">
+                                <f:then>
+                                    <f:if condition="{logicalPage}">
+                                        <f:then>
+                                            <v:variable.set name="params" value="{
+                                                        'tx_dlf[id]':entry.uid,
+                                                        'tx_dlf[page]':entry.page,
+                                                        'tx_dlf[logicalPage]':logicalPage}" />
+                                        </f:then>
+                                        <f:else>
+                                            <v:variable.set name="params" value="{
+                                                            'tx_dlf[id]':entry.uid,
+                                                            'tx_dlf[page]':entry.page}" />
+                                        </f:else>
+                                    </f:if>
+
+                                    <f:link.page pageUid="{settings.targetPid}"
+                                                 absolute="{forceAbsoluteUrl}"
+                                                 additionalParams="{params}">
+                                        {value.value}
+                                    </f:link.page>
+                                </f:then>
+                                <f:else>
+                                    {value.value}
+                                </f:else>
+                            </f:if>
+                        </dlf:stdWrap>
+                    </f:for>
+                </dlf:stdWrap>
+            </f:for>
+        </dl>
+
+        <div class="tx-dlf-listview-preview">{entry.preview}</div>
+
+        <ol>
+            <f:render partial="ListView/SubEntries" arguments="{_all}" />
+        </ol>
+
+        <div>
+            <f:if condition="{settings.basketButton} && {settings.targetBasket}">
+                <f:link.page pageUid="{settings.targetBasket}"
+                             absolute="{forceAbsoluteUrl}"
+                             additionalParams="{'tx_dlf[id]':entry.uid, 'tx_dlf[startpage]':entry.page, 'tx_dlf[addToBasket]':'list'}">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:addBasket"/>
+                </f:link.page>
+            </f:if>
+        </div>
+    </li>
+</f:for>

@@ -1,0 +1,87 @@
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:v="http://typo3.org/ns/vhs/ViewHelpers">
+
+<f:if condition="{sortables}">
+
+    <f:form action="main" name="sort" object="{sort}"
+            addQueryString="1"
+            argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
+            enctype="multipart/form-data" method="POST"
+            fieldNamePrefix="tx_dlf"
+            additionalParams="{f:if(condition: '{logicalPage}', then:'{logicalPage:logicalPage}', else:'{}')}"
+    >
+        <div>
+            <v:variable.set name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
+            <label for="{uniqId}">
+                <f:format.htmlSpecialChars>
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:orderBy"/>
+                </f:format.htmlSpecialChars>
+            </label>
+            <f:form.select id="{uniqId}" property="order" additionalAttributes="{onchange:'javascript:this.form.submit();'}">
+                <f:if condition="{documentList.metadata.options.source} == 'search'">
+                    <option value="score"
+                            {f:if(condition:'{documentList.metadata.options.order} == \'score\'', then:' selected="selected"', else:'')}
+                    >
+                    <f:format.htmlSpecialChars>
+                        <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:relevance" />
+                    </f:format.htmlSpecialChars>
+                    </option>
+                </f:if>
+
+                <f:for each="{sortables}" key="indexName" as="label">
+                    <option value="{indexName -> f:format.htmlSpecialChars()}"
+                            {f:if(condition:'{documentList.metadata.options.order} == {indexName}', then:' selected="selected"', else:'')}
+                    >
+                    <f:format.htmlSpecialChars>
+                        {label}
+                    </f:format.htmlSpecialChars>
+                    </option>
+                </f:for>
+            </f:form.select>
+
+            <v:variable.set name="uniqId" value="{uid -> v:system.uniqId(prefix:'ListView-')}" />
+            <label for="{uniqId}">
+                <f:format.htmlSpecialChars>
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:direction"/>
+                </f:format.htmlSpecialChars>
+            </label>
+
+            <f:comment>
+                TODO: Find a better solution for accessing variables with a dot in the key/name.
+                {documentList.metadata.options.'order.asc'}
+            </f:comment>
+            <f:for each="{documentList.metadata.options}" key="optionKey" as="optionValue">
+                <f:if condition="{optionKey} == 'order.asc'">
+                    <v:variable.set name="orderAsc" value="{optionValue}" />
+                </f:if>
+            </f:for>
+
+            <f:form.select id="{uniqId}" property="asc" additionalAttributes="{onchange:'javascript:this.form.submit();'}">
+                <option value="1"
+                        {f:if(condition:'{orderAsc}', then:' selected="selected"', else:'')}
+                >
+                    <f:format.htmlSpecialChars>
+                        <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:direction.asc"/>
+                    </f:format.htmlSpecialChars>
+                </option>
+                <option value="0"
+                        {f:if(condition:'{orderAsc} != 1', then:' selected="selected"', else:'')}
+                >
+                    <f:format.htmlSpecialChars>
+                        <f:translate key="LLL:EXT:dlf/Resources/Private/Language/ListView.xml:direction.desc"/>
+                    </f:format.htmlSpecialChars>
+                </option>
+            </f:form.select>
+        </div>
+    </f:form>
+</f:if>
