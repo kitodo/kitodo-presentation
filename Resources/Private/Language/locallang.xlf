@@ -263,6 +263,33 @@
 			<trans-unit id="zoomOut">
 				<source><![CDATA[Zoom Out]]></source>
 			</trans-unit>
+			<trans-unit id="oaipmh.badVerb">
+				<source><![CDATA[Value of the verb argument is not a legal OAI-PMH verb or the verb argument is missing.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.badArgument">
+				<source><![CDATA[The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.badResumptionToken">
+				<source><![CDATA[The value of the resumptionToken argument is invalid or expired.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.cannotDisseminateFormat">
+				<source><![CDATA[The metadata format identified by the value given for the metadataPrefix argument is not supported by the item or by the repository.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.idDoesNotExist">
+				<source><![CDATA[The value of the identifier argument is unknown or illegal in this repository.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.noRecordsMatch">
+				<source><![CDATA[The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.noMetadataFormats">
+				<source><![CDATA[There are no metadata formats available for the specified item.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.noSetHierarchy">
+				<source><![CDATA[The repository does not support sets or the value of the set argument is invalid.]]></source>
+			</trans-unit>
+			<trans-unit id="oaipmh.error">
+				<source><![CDATA[An error occurred, please try again later. If this happens consistently, please contact the administrator.]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
