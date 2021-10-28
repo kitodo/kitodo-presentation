@@ -12,14 +12,12 @@
 namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -32,7 +30,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * @subpackage dlf
  * @access public
  */
-class OaiPmhController extends ActionController
+class OaiPmhController extends AbstractController
 {
     const  EXTKEY = 'dlf';
 
@@ -87,25 +85,9 @@ class OaiPmhController extends ActionController
     protected $configurationManager;
 
     /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
      * @var array
      */
     protected $parameters = [];
-
-    /**
-     * SearchController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-    }
 
     /**
      * Delete expired resumption tokens
@@ -396,6 +378,9 @@ class OaiPmhController extends ActionController
     {
         // Get GET and POST variables.
         $this->getUrlParams();
+
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
         // Create XML document.
@@ -454,7 +439,7 @@ class OaiPmhController extends ActionController
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1,
             'forceAbsoluteUrl.' => [
-                'scheme' => !empty($this->extensionConfiguration['forceAbsoluteUrlHttps']) ? 'https' : 'http'
+                'scheme' => !empty($this->extConf['forceAbsoluteUrlHttps']) ? 'https' : 'http'
             ]
         ];
         $request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request',
@@ -689,7 +674,7 @@ class OaiPmhController extends ActionController
             'parameter' => $GLOBALS['TSFE']->id,
             'forceAbsoluteUrl' => 1,
             'forceAbsoluteUrl.' => [
-                'scheme' => !empty($this->extensionConfiguration['forceAbsoluteUrlHttps']) ? 'https' : 'http'
+                'scheme' => !empty($this->extConf['forceAbsoluteUrlHttps']) ? 'https' : 'http'
             ]
         ];
         $baseURL = htmlspecialchars(
