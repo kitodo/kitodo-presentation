@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-26T14:01:06Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-28T09:53:14Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -45,13 +45,13 @@
 				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "DLF: Warenkorb")]]></target>
 			</trans-unit>
-			<trans-unit id="flexform.targetPidPageView" approved="yes">
-				<source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
-				<target><![CDATA[Zielseite (mit Plugin "Kitodo: Seitenansicht")]]></target>
-			</trans-unit>
 			<trans-unit id="flexform.targetPidListView" approved="yes">
 				<source><![CDATA[Target page (with "Kitodo: List View" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "Kitodo: Listenansicht")]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.targetPidPageView" approved="yes">
+				<source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "Kitodo: Seitenansicht")]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.templateFile" approved="yes">
 				<source><![CDATA[Template file]]></source>
@@ -137,6 +137,102 @@
 				<source><![CDATA[Kitodo: Feeds]]></source>
 				<target><![CDATA[Kitodo: Feeds]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.navigation.description" approved="yes">
+				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Navigation Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.pageStep" approved="yes">
+				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
+				<target><![CDATA[Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.title" approved="yes">
+				<source><![CDATA[Kitodo: Navigation]]></source>
+				<target><![CDATA[Kitodo: Navigation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.description" approved="yes">
+				<source><![CDATA[OAI-PMH Interface Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[OAI-PMH-Schnittstelle Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.expired" approved="yes">
+				<source><![CDATA[Expiration time for resumption token (seconds)]]></source>
+				<target><![CDATA[Gültigkeitsdauer des Resumption Tokens (Sekunden)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.limit" approved="yes">
+				<source><![CDATA[Records per request]]></source>
+				<target><![CDATA[Datensätze pro Abfrage]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.show_userdefined" approved="yes">
+				<source><![CDATA[Show user-defined collections?]]></source>
+				<target><![CDATA[Benutzerdefinierte Kollektionen anzeigen?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.solr_limit" approved="yes">
+				<source><![CDATA[Maximum Solr results]]></source>
+				<target><![CDATA[Maximale Solr-Ergebnisse]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.stylesheet" approved="yes">
+				<source><![CDATA[Transformation stylesheet]]></source>
+				<target><![CDATA[XSL-Stylesheet]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.unqualified_epicur" approved="yes">
+				<source><![CDATA[Use unqualified epicur?]]></source>
+				<target><![CDATA[Unqualifiziertes Epicur verwenden?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.title" approved="yes">
+				<source><![CDATA[Kitodo: OAI-PMH Interface]]></source>
+				<target><![CDATA[Kitodo: OAI-PMH-Schnittstelle]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.description" approved="yes">
+				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Seitenvorschau Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.limit" approved="yes">
+				<source><![CDATA[Thumbnails per page]]></source>
+				<target><![CDATA[Vorschaubilder pro Seite]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.placeholder" approved="yes">
+				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
+				<target><![CDATA[Platzhalter Bild für Seiten ohne Vorschaubild]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pagegrid.title" approved="yes">
+				<source><![CDATA[Kitodo: Page Grid]]></source>
+				<target><![CDATA[Kitodo: Seitenvorschau]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.description" approved="yes">
+				<source><![CDATA[Pageview Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Seitenansicht Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.crop" approved="yes">
+				<source><![CDATA[Enable cropping]]></source>
+				<target><![CDATA[Funktion zum Erstellen eines Bildausschnitts aktivieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.elementId" approved="yes">
+				<source><![CDATA[@ID value of the HTML element for the page view]]></source>
+				<target><![CDATA[@ID-Wert des HTML-Elements für die Seitenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features" approved="yes">
+				<source><![CDATA[Map features]]></source>
+				<target><![CDATA[Bedienelemente]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features.overviewmap" approved="yes">
+				<source><![CDATA[Overview Image]]></source>
+				<target><![CDATA[Übersichtsbild]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.features.zoompanel" approved="yes">
+				<source><![CDATA[Zoom Panel]]></source>
+				<target><![CDATA[Zoom-Knöpfe]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.magnifier" approved="yes">
+				<source><![CDATA[Activate magnifier]]></source>
+				<target><![CDATA[Lupenfunktion aktivieren]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.useInternalProxy" approved="yes">
+				<source><![CDATA[Use Internal Proxy]]></source>
+				<target><![CDATA[Internen Proxy verwenden]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.title" approved="yes">
+				<source><![CDATA[Kitodo: Pageview]]></source>
+				<target><![CDATA[Kitodo: Seitenansicht]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.search.description" approved="yes">
 				<source><![CDATA[Search Plugin for Kitodo.Presentation]]></source>
 				<target><![CDATA[Suche Plugin für Kitodo.Presentation]]></target>
@@ -213,10 +309,6 @@
 				<source><![CDATA[Show single result in Page View?]]></source>
 				<target><![CDATA[Einzelnes Ergebnis in Seitenansicht anzeigen?]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.search.flexform.solrcore" approved="yes">
-				<source><![CDATA[Solr Core]]></source>
-				<target><![CDATA[Solr Kern]]></target>
-			</trans-unit>
 			<trans-unit id="plugins.search.flexform.suggest" approved="yes">
 				<source><![CDATA[Show search suggestions]]></source>
 				<target><![CDATA[Suchvorschläge anzeigen]]></target>
@@ -224,82 +316,6 @@
 			<trans-unit id="plugins.search.title" approved="yes">
 				<source><![CDATA[Kitodo: Search]]></source>
 				<target><![CDATA[Kitodo: Suche]]></target>
-			</trans-unit>
-			<trans-unit id="text.no" approved="yes">
-				<source><![CDATA[No]]></source>
-				<target><![CDATA[Nein]]></target>
-			</trans-unit>
-			<trans-unit id="text.none" approved="yes">
-				<source><![CDATA[none]]></source>
-				<target><![CDATA[nein]]></target>
-			</trans-unit>
-			<trans-unit id="text.yes" approved="yes">
-				<source><![CDATA[Yes]]></source>
-				<target><![CDATA[Ja]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.description" approved="yes">
-				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
-				<target><![CDATA[Navigation Plugin für Kitodo.Presentation]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.pageStep" approved="yes">
-				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
-				<target><![CDATA[Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.title" approved="yes">
-				<source><![CDATA[Kitodo: Navigation]]></source>
-				<target><![CDATA[Kitodo: Navigation]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.description" approved="yes">
-				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
-				<target><![CDATA[Seitenvorschau Plugin für Kitodo.Presentation]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.limit" approved="yes">
-				<source><![CDATA[Thumbnails per page]]></source>
-				<target><![CDATA[Vorschaubilder pro Seite]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.placeholder" approved="yes">
-				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
-				<target><![CDATA[Platzhalter Bild für Seiten ohne Vorschaubild]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.title" approved="yes">
-				<source><![CDATA[Kitodo: Page Grid]]></source>
-				<target><![CDATA[Kitodo: Seitenvorschau]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.description" approved="yes">
-				<source><![CDATA[Pageview Plugin for Kitodo.Presentation]]></source>
-				<target><![CDATA[Seitenansicht Plugin für Kitodo.Presentation]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.crop" approved="yes">
-				<source><![CDATA[Enable cropping]]></source>
-				<target><![CDATA[Funktion zum Erstellen eines Bildausschnitts aktivieren]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.elementId" approved="yes">
-				<source><![CDATA[@ID value of the HTML element for the page view]]></source>
-				<target><![CDATA[@ID-Wert des HTML-Elements für die Seitenansicht]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.features" approved="yes">
-				<source><![CDATA[Map features]]></source>
-				<target><![CDATA[Bedienelemente]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.features.overviewmap" approved="yes">
-				<source><![CDATA[Overview Image]]></source>
-				<target><![CDATA[Übersichtsbild]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.features.zoompanel" approved="yes">
-				<source><![CDATA[Zoom Panel]]></source>
-				<target><![CDATA[Zoom-Knöpfe]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.magnifier" approved="yes">
-				<source><![CDATA[Activate magnifier]]></source>
-				<target><![CDATA[Lupenfunktion aktivieren]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.useInternalProxy" approved="yes">
-				<source><![CDATA[Use Internal Proxy]]></source>
-				<target><![CDATA[Internen Proxy verwenden]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.title" approved="yes">
-				<source><![CDATA[Kitodo: Pageview]]></source>
-				<target><![CDATA[Kitodo: Seitenansicht]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.statistics.description" approved="yes">
 				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
@@ -336,6 +352,18 @@
 			<trans-unit id="plugins.toolbox.title" approved="yes">
 				<source><![CDATA[Kitodo: Toolbox]]></source>
 				<target><![CDATA[Kitodo: Werkzeugkasten]]></target>
+			</trans-unit>
+			<trans-unit id="text.no" approved="yes">
+				<source><![CDATA[No]]></source>
+				<target><![CDATA[Nein]]></target>
+			</trans-unit>
+			<trans-unit id="text.none" approved="yes">
+				<source><![CDATA[none]]></source>
+				<target><![CDATA[nein]]></target>
+			</trans-unit>
+			<trans-unit id="text.yes" approved="yes">
+				<source><![CDATA[Yes]]></source>
+				<target><![CDATA[Ja]]></target>
 			</trans-unit>
 		</body>
 	</file>

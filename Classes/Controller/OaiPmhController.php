@@ -368,9 +368,7 @@ class OaiPmhController extends AbstractController
     }
 
     /**
-     * The main method of the PlugIn
-     *
-     * @access public
+     * The main method of the plugin
      *
      * @return void
      */

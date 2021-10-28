@@ -15,18 +15,6 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="tt_content.plugin.title">OAI-PMH Interface</label>
-            <label index="tt_content.plugin.description">OAI-PMH Interface Plugin for Kitodo.Presentation</label>
-            <label index="tt_content.pi_flexform.sheet_general">Options</label>
-            <label index="tt_content.pi_flexform.library">Providing library</label>
-            <label index="tt_content.pi_flexform.limit">Records per request</label>
-            <label index="tt_content.pi_flexform.expired">Expiration time for resumption token (seconds)</label>
-            <label index="tt_content.pi_flexform.show_userdefined">Show user-defined collections?</label>
-            <label index="tt_content.pi_flexform.solrcore">Solr Core</label>
-            <label index="tt_content.pi_flexform.solr_limit">Maximum Solr results</label>
-            <label index="tt_content.pi_flexform.stylesheet">Transformation stylesheet</label>
-            <label index="tt_content.pi_flexform.unqualified_epicur">Use unqualified epicur?</label>
-
             <label index="badArgument">The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.</label>
             <label index="badResumptionToken">The value of the resumptionToken argument is invalid or expired.</label>
             <label index="badVerb">Value of the verb argument is not a legal OAI-PMH verb or the verb argument is missing.</label>
@@ -38,17 +26,6 @@
             <label index="error">An error occurred, please try again later. If this happens consistently, please contact the administrator.</label>
         </languageKey>
         <languageKey index="de" type="array">
-            <label index="tt_content.plugin.title">OAI-PMH-Schnittstelle</label>
-            <label index="tt_content.plugin.description">OAI-PMH-Schnittstelle Plugin für Kitodo.Presentation</label>
-            <label index="tt_content.pi_flexform.sheet_general">Einstellungen</label>
-            <label index="tt_content.pi_flexform.library">Mandant</label>
-            <label index="tt_content.pi_flexform.limit">Datensätze pro Abfrage</label>
-            <label index="tt_content.pi_flexform.expired">Gültigkeitsdauer des Resumption Tokens (Sekunden)</label>
-            <label index="tt_content.pi_flexform.show_userdefined">Benutzerdefinierte Kollektionen anzeigen?</label>
-            <label index="tt_content.pi_flexform.solrcore">Solr Kern</label>
-            <label index="tt_content.pi_flexform.solr_limit">Maximale Solr-Ergebnisse</label>
-            <label index="tt_content.pi_flexform.stylesheet">XSL-Stylesheet</label>
-            <label index="tt_content.pi_flexform.unqualified_epicur">Unqualifiziertes Epicur verwenden?</label>
             <label index="badArgument">Die Anfrage enthält ungültige Parameter, es fehlen benötigte Parameter oder Parameter haben ungültige Werte.</label>
             <label index="badResumptionToken">Das "resumptionToken" ist ungültig oder abgelaufen.</label>
             <label index="badVerb">Der Parameter "verb" fehlt oder hat keinen gültigen OAI-PMH-Wert.</label>

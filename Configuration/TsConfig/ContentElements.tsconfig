@@ -76,8 +76,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_oaipmh {
         iconIdentifier = tx-dlf-oaipmh
-        title = LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.description
         tt_content_defValues {
           CType = list
           list_type = dlf_oaipmh
