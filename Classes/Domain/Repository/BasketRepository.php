@@ -15,12 +15,4 @@ namespace Kitodo\Dlf\Domain\Repository;
 class BasketRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
-    public function findBasketBySessionId($sessionId)
-    {
-        $query = $this->createQuery();
-
-        $query->matching($query->equals('session_id', $sessionId));
-
-        return $query->execute();
-    }
 }
