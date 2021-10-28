@@ -32,8 +32,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class OaiPmhController extends AbstractController
 {
-    const  EXTKEY = 'dlf';
-
     /**
      * Initializes the current action
      *
@@ -644,7 +642,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return void
      */
     protected function verbListIdentifiers()
     {
@@ -676,7 +674,9 @@ class OaiPmhController extends AbstractController
             'completeListSize' => count($documentSet),
             'metadataPrefix' => $this->parameters['metadataPrefix'],
         ];
-        return $this->generateOutputForDocumentList($resultSet);
+
+        $resultSet =  $this->generateOutputForDocumentList($resultSet);
+        $this->view->assign('listIdentifiers', $resultSet);
     }
 
     /**
@@ -827,7 +827,6 @@ class OaiPmhController extends AbstractController
         $allResults = $result->fetchAll();
 
         $this->view->assign('oaiSets', $allResults);
-
     }
 
     /**
@@ -1002,14 +1001,18 @@ class OaiPmhController extends AbstractController
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $documents = $connection->executeQuery($sql, $values, $types);
 
-        $output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
+        //$output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
         while ($resArray = $documents->fetch()) {
+            // we need the collections as array later
+            $resArray['collections'] = explode(' ', $resArray['collections']);
+            $records[] = $resArray;
+            continue;
             // Add header node.
-            $header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
-            $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier',
-                htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
-            $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp',
-                gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
+            // $header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
+            // $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier',
+            //     htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
+            // $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp',
+            //     gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
             // Check if document is deleted or hidden.
             // TODO: Use TYPO3 API functions here!
             if (
@@ -1063,6 +1066,9 @@ class OaiPmhController extends AbstractController
                 }
             }
         }
+        return $records;
+
+
         $output->appendChild($this->generateResumptionTokenForDocumentListSet($documentListSet));
         return $output;
     }

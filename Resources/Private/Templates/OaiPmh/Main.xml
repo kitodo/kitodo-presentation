@@ -16,11 +16,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
     <responseDate><f:format.date format="Y-m-d\TH:i:s\Z">now</f:format.date></responseDate>
-    <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: '{key}{value}') -> f:for(each:'{parameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
+    <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: ' {key}="{value}"') -> f:for(each:'{parameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
     <f:switch expression="{parameters.verb}">
         <f:case value="GetRecord">ListSets</f:case>
         <f:case value="Identify"><f:render section="Identify" arguments="{oaiIdentifyInfo: oaiIdentifyInfo}"/></f:case>
-        <f:case value="ListIdentifiers">ListSets</f:case>
+        <f:case value="ListIdentifiers"><f:render section="ListIdentifiers" arguments="{listIdentifiers: listIdentifiers}"/></f:case>
         <f:case value="ListMetadataFormats">ListSets</f:case>
         <f:case value="ListRecords">ListSets</f:case>
         <f:case value="ListSets"><f:render section="ListSets" arguments="{oaiSets: oaiSets}" /></f:case>
@@ -52,6 +52,29 @@
                     </set>
                 </f:for>
             </ListSets>
+        </f:then>
+        <f:else>
+            <error code="noSetHierarchy"><f:translate key="oaipmh.noSetHierarchy" /></error>
+        </f:else>
+    </f:if>
+</f:section>
+
+<f:section name="ListIdentifiers">
+    <f:if condition="{listIdentifiers -> f:count()} >= 1 ">
+        <f:then>
+            <ListIdentifiers>
+                <f:for each="{listIdentifiers}" as="record">
+                    <header{f:if(condition: '{record.deleted} || {record.hidden}', then: ' status="deleted"')}>
+                        <identifier>{record.record_id}</identifier>
+                        <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                        <f:for each="{record.collections}" as="collection">
+                            <f:if condition="{collection}">
+                                <setSpec>{collection}</setSpec>
+                            </f:if>
+                        </f:for>
+                    </header>
+                </f:for>
+            </ListIdentifiers>
         </f:then>
         <f:else>
             <error code="noSetHierarchy"><f:translate key="oaipmh.noSetHierarchy" /></error>
