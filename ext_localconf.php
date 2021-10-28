@@ -343,3 +343,15 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
         Toolbox::class => '',
     ]
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'OaiPmh',
+    [
+        OaiPmh::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        OaiPmh::class => 'main',
+    ]
+);
