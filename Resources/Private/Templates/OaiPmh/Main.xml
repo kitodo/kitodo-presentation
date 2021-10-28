@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:if condition="{settings.stylesheet}">
+    <f:then>
+        <?xml-stylesheet type="text/xsl" href="{f:uri.typolink(parameter:'{settings.stylesheet}', absolute:'1')}"?>
+    </f:then>
+    <f:else>
+        <?xml-stylesheet type="text/xsl" href="{f:uri.resource(path:'Stylesheets/OaiPmh.xsl', absolute:'1')}"?>
+    </f:else>
+</f:if>
+<OAI-PMH
+    xmlns="http://www.openarchives.org/OAI/2.0/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate><f:format.date format="Y-m-d\TH:i:s\Z">now</f:format.date></responseDate>
+    <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: '{key}{value}') -> f:for(each:'{parameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
+    <f:switch expression="{parameters.verb}">
+        <f:case value="GetRecord">ListSets</f:case>
+        <f:case value="Identify"><f:render section="Identify" arguments="{oaiIdentifyInfo: oaiIdentifyInfo}"/></f:case>
+        <f:case value="ListIdentifiers">ListSets</f:case>
+        <f:case value="ListMetadataFormats">ListSets</f:case>
+        <f:case value="ListRecords">ListSets</f:case>
+        <f:case value="ListSets"><f:render section="ListSets" arguments="{oaiSets: oaiSets}" /></f:case>
+        <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
+    </f:switch>
+</OAI-PMH>
+</html>
+
+<f:section name="Identify">
+    <Identify>
+        <repositoryName>{oaiIdentifyInfo.oai_label}</repositoryName>
+        <baseURL><f:uri.page absolute="1" /></baseURL>
+        <protocolVersion>2.0</protocolVersion>
+        <adminEmail>{oaiIdentifyInfo.contact}</adminEmail>
+        <earliestDatestamp>{oaiIdentifyInfo.earliestDatestamp}</earliestDatestamp>
+        <deletedRecord>transient</deletedRecord>
+        <granularity>YYYY-MM-DDThh:mm:ssZ</granularity>
+    </Identify>
+</f:section>
+
+<f:section name="ListSets">
+    <f:if condition="{oaiSets -> f:count()} >= 1 ">
+        <f:then>
+            <ListSets>
+                <f:for each="{oaiSets}" as="set">
+                    <set>
+                        <setSpec>{set.oai_name}</setSpec>
+                        <setName>{set.label}</setName>
+                    </set>
+                </f:for>
+            </ListSets>
+        </f:then>
+        <f:else>
+            <error code="noSetHierarchy"><f:translate key="oaipmh.noSetHierarchy" /></error>
+        </f:else>
+    </f:if>
+</f:section>

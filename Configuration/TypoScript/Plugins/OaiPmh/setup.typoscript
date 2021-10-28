@@ -1,8 +1,8 @@
-plugin.tx_dlf_feeds {
+plugin.tx_dlf_oaipmh {
 	view {
 		templateRootPaths {
-			0 = EXT:dlf/Resources/Private/Templates/Feeds
-			1 = {$plugin.tx_dlf.feed.templateRootPath}
+			0 = EXT:dlf/Resources/Private/Templates/OaiPmh
+			1 = {$plugin.tx_dlf.oaipmh.templateRootPath}
 		}
 	}
   settings {
@@ -19,11 +19,11 @@ config {
    # no xhtml tags
    xhtml_cleaning = none
    admPanel = 0
-   config.debug = 0
+   debug = 0
 
    # define charset
    metaCharset = utf-8
-   additionalHeaders.10.header = Content-Type:application/rss+xml;charset=utf-8
+   additionalHeaders.10.header = Content-Type:text/xml;charset=utf-8
    disablePrefixComment = 1
    linkVars >
 }

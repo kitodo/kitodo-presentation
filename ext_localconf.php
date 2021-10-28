@@ -32,18 +32,6 @@ if (!defined('LOG_SEVERITY_ERROR')) {
 // Register plugins without addPItoST43() as this is not working with TYPO3 9.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
     '
-plugin.tx_dlf_basket = USER_INT
-plugin.tx_dlf_basket {
-    userFunc = Kitodo\Dlf\Plugin\Basket->main
-}
-tt_content.list.20.dlf_basket < plugin.tx_dlf_basket
-
-plugin.tx_dlf_calendar = USER
-plugin.tx_dlf_calendar {
-    userFunc = Kitodo\Dlf\Plugin\Calendar->main
-}
-tt_content.list.20.dlf_calendar < plugin.tx_dlf_calendar
-
 plugin.tx_dlf_collection = USER
 plugin.tx_dlf_collection {
     userFunc = Kitodo\Dlf\Plugin\Collection->main
@@ -62,30 +50,6 @@ plugin.tx_dlf_metadata {
 }
 tt_content.list.20.dlf_metadata < plugin.tx_dlf_metadata
 
-plugin.tx_dlf_oaipmh = USER_INT
-plugin.tx_dlf_oaipmh {
-    userFunc = Kitodo\Dlf\Plugin\OaiPmh->main
-}
-tt_content.list.20.dlf_oaipmh < plugin.tx_dlf_oaipmh
-
-plugin.tx_dlf_pageview = USER
-plugin.tx_dlf_pageview {
-    userFunc = Kitodo\Dlf\Plugin\PageView->main
-}
-tt_content.list.20.dlf_pageview < plugin.tx_dlf_pageview
-
-plugin.tx_dlf_search = USER
-plugin.tx_dlf_search {
-    userFunc = Kitodo\Dlf\Plugin\Search->main
-}
-tt_content.list.20.dlf_search < plugin.tx_dlf_search
-
-plugin.tx_dlf_toolbox = USER
-plugin.tx_dlf_toolbox {
-    userFunc = Kitodo\Dlf\Plugin\Toolbox->main
-}
-tt_content.list.20.dlf_toolbox < plugin.tx_dlf_toolbox
-
 plugin.tx_dlf_validator = USER_INT
 plugin.tx_dlf_validator {
     userFunc = Kitodo\Dlf\Plugin\Validator->main
@@ -97,42 +61,6 @@ plugin.tx_dlf_fulltexttool {
     userFunc = Kitodo\Dlf\Plugin\Tools\FulltextTool->main
 }
 tt_content.list.20.dlf_fulltexttool < plugin.tx_dlf_fulltexttool
-
-plugin.tx_dlf_annotationtool = USER
-plugin.tx_dlf_annotationtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\AnnotationTool->main
-}
-tt_content.list.20.dlf_annotationtool < plugin.tx_dlf_annotationtool
-
-plugin.tx_dlf_fulltextdownloadtool = USER
-plugin.tx_dlf_fulltextdownloadtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\FulltextDownloadTool->main
-}
-tt_content.list.20.dlf_fulltextdownloadtool < plugin.tx_dlf_fulltextdownloadtool
-
-plugin.tx_dlf_imagedownloadtool = USER
-plugin.tx_dlf_imagedownloadtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\ImageDownloadTool->main
-}
-tt_content.list.20.dlf_imagedownloadtool < plugin.tx_dlf_imagedownloadtool
-
-plugin.tx_dlf_imagemanipulationtool = USER
-plugin.tx_dlf_imagemanipulationtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\ImageManipulationTool->main
-}
-tt_content.list.20.dlf_imagemanipulationtool < plugin.tx_dlf_imagemanipulationtool
-
-plugin.tx_dlf_pdfdownloadtool = USER
-plugin.tx_dlf_pdfdownloadtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\PdfDownloadTool->main
-}
-tt_content.list.20.dlf_pdfdownloadtool < plugin.tx_dlf_pdfdownloadtool
-
-plugin.tx_dlf_searchindocumenttool = USER
-plugin.tx_dlf_searchindocumenttool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\SearchInDocumentTool->main
-}
-tt_content.list.20.dlf_searchindocumenttool < plugin.tx_dlf_searchindocumenttool
 '
 );
 // Register plugin icons.

@@ -35,6 +35,16 @@ class OaiPmhController extends AbstractController
     const  EXTKEY = 'dlf';
 
     /**
+     * Initializes the current action
+     *
+     * @return void
+     */
+    public function initializeAction()
+    {
+        $this->request->setFormat('xml');
+    }
+
+    /**
      * Did an error occur?
      *
      * @var bool
@@ -114,25 +124,6 @@ class OaiPmhController extends AbstractController
             // Deletion failed.
             $this->logger->warning('Could not delete expired resumption tokens');
         }
-    }
-
-    /**
-     * Process error
-     *
-     * @access protected
-     *
-     * @param string $type : Error type
-     *
-     * @return \DOMElement XML node to add to the OAI response
-     */
-    protected function error($type)
-    {
-        $this->error = true;
-        $message = LocalizationUtility::translate('LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:'.$type);
-        $error = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'error',
-            htmlspecialchars((!empty($message)? $message: $type), ENT_NOQUOTES, 'UTF-8'));
-        $error->setAttribute('code', $type);
-        return $error;
     }
 
     /**
@@ -374,51 +365,25 @@ class OaiPmhController extends AbstractController
      */
     public function mainAction()
     {
-        // Get GET and POST variables.
+        // Get allowed GET and POST variables.
         $this->getUrlParams();
 
+        // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
-        // Create XML document.
-        $this->oai = new \DOMDocument('1.0', 'UTF-8');
-        // Add processing instruction (aka XSL stylesheet).
-        if (!empty($this->settings['stylesheet'])) {
-            // Resolve "EXT:" prefix in file path.
-            if (strpos($this->settings['stylesheet'], 'EXT:') === 0) {
-                [$extKey, $filePath] = explode('/', substr($this->settings['stylesheet'], 4), 2);
-                if (ExtensionManagementUtility::isLoaded($extKey)) {
-                    $this->settings['stylesheet'] = PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($extKey)) . $filePath;
-                }
-            }
-            $stylesheet = GeneralUtility::locationHeaderUrl($this->settings['stylesheet']);
-        } else {
-            // Use default stylesheet if no custom stylesheet is given.
-            $stylesheet = GeneralUtility::locationHeaderUrl(PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath(self::EXTKEY)) . 'Resources/Public/Stylesheets/OaiPmh.xsl');
-        }
 
-        $this->oai->appendChild($this->oai->createProcessingInstruction('xml-stylesheet',
-            'type="text/xsl" href="' . htmlspecialchars($stylesheet, ENT_NOQUOTES, 'UTF-8') . '"'));
-        // Create root element.
-        $root = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'OAI-PMH');
-        $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi',
-            'http://www.w3.org/2001/XMLSchema-instance');
-        $root->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation',
-            'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd');
-        // Add response date.
-        $root->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'responseDate',
-            gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'])));
-        // Get response data.
+        $this->view->assign('parameters', $this->parameters);
+
         switch ($this->parameters['verb']) {
             case 'GetRecord':
                 $response = $this->verbGetRecord();
                 break;
             case 'Identify':
-                $response = $this->verbIdentify();
+                $this->verbIdentify();
                 break;
             case 'ListIdentifiers':
-                $response = $this->verbListIdentifiers();
+                $this->verbListIdentifiers();
                 break;
             case 'ListMetadataFormats':
                 $response = $this->verbListMetadataFormats();
@@ -427,11 +392,17 @@ class OaiPmhController extends AbstractController
                 $response = $this->verbListRecords();
                 break;
             case 'ListSets':
-                $response = $this->verbListSets();
+                $this->verbListSets();
                 break;
-            default:
-                $response = $this->error('badVerb');
         }
+
+        return;
+        // Create XML document.
+        // $this->oai = new \DOMDocument('1.0', 'UTF-8');
+
+        // Create root element.
+        $root = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'OAI-PMH');
+
         // Add request.
         $linkConf = [
             'parameter' => $GLOBALS['TSFE']->id,
@@ -607,19 +578,11 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return void
      */
     protected function verbIdentify()
     {
-        // Check for invalid arguments.
-        if (count($this->parameters) > 1) {
-            return $this->error('badArgument');
-        }
         // Get repository name and administrative contact.
-        // Use default values for an installation with incomplete plugin configuration.
-        $adminEmail = 'unknown@example.org';
-        $repositoryName = 'Kitodo.Presentation OAI-PMH Interface (default configuration)';
-
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_libraries');
 
@@ -631,21 +594,27 @@ class OaiPmhController extends AbstractController
             ->from('tx_dlf_libraries')
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->settings['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->settings['library'])),
-                Helper::whereExpression('tx_dlf_libraries')
+                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->settings['library']))
             )
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
-
-        if (count($allResults) == 1) {
-            $resArray = $allResults[0];
-            $adminEmail = htmlspecialchars(trim(str_replace('mailto:', '', $resArray['contact'])), ENT_NOQUOTES);
-            $repositoryName = htmlspecialchars($resArray['oai_label'], ENT_NOQUOTES);
-        } else {
+        $oaiIdentifyInfo = $result->fetch();
+        if (!$oaiIdentifyInfo) {
             $this->logger->notice('Incomplete plugin configuration');
         }
+
+        // Use default values for an installation with incomplete plugin configuration.
+        if (empty($oaiIdentifyInfo['oai_label'])) {
+            $oaiIdentifyInfo['oai_label'] = 'Kitodo.Presentation OAI-PMH Interface (default configuration)';
+            $this->logger->notice('Incomplete plugin configuration (oai_label is missing)');
+        }
+
+        if (empty($oaiIdentifyInfo['contact'])) {
+            $oaiIdentifyInfo['contact'] = 'unknown@example.org';
+            $this->logger->notice('Incomplete plugin configuration (contact is missing)');
+        }
+
         // Get earliest datestamp. Use a default value if that fails.
         $earliestDatestamp = '0000-00-00T00:00:00Z';
 
@@ -663,39 +632,11 @@ class OaiPmhController extends AbstractController
             ->execute();
 
         if ($resArray = $result->fetch()) {
-            $timestamp = $resArray['tstamp'];
-            $earliestDatestamp = gmdate('Y-m-d\TH:i:s\Z', $timestamp);
+            $oaiIdentifyInfo['earliestDatestamp'] = gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp']);
         } else {
             $this->logger->notice('No records found with PID ' . $this->settings['pages']);
         }
-        $linkConf = [
-            'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1,
-            'forceAbsoluteUrl.' => [
-                'scheme' => !empty($this->extConf['forceAbsoluteUrlHttps']) ? 'https' : 'http'
-            ]
-        ];
-        $baseURL = htmlspecialchars(
-            $this->configurationManager->getContentObject()->typoLink_URL($linkConf), ENT_NOQUOTES
-        );
-
-        // Add identification node.
-        $Identify = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'Identify');
-        $Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'repositoryName',
-            $repositoryName));
-        $Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'baseURL',
-            $baseURL));
-        $Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'protocolVersion',
-            '2.0'));
-        $Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'adminEmail',
-            $adminEmail));
-        $Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'earliestDatestamp',
-            $earliestDatestamp));
-        $Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'deletedRecord',
-            'transient'));
-        $Identify->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'granularity',
-            'YYYY-MM-DDThh:mm:ssZ'));
-        return $Identify;
+        $this->view->assign('oaiIdentifyInfo', $oaiIdentifyInfo);
     }
 
     /**
@@ -847,7 +788,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return void
      */
     protected function verbListSets()
     {
@@ -885,19 +826,8 @@ class OaiPmhController extends AbstractController
 
         $allResults = $result->fetchAll();
 
-        if (count($allResults) < 1) {
-            return $this->error('noSetHierarchy');
-        }
-        $ListSets = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListSets');
-        foreach ($allResults as $resArray) {
-            $set = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'set');
-            $set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec',
-                htmlspecialchars($resArray['oai_name'], ENT_NOQUOTES, 'UTF-8')));
-            $set->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setName',
-                htmlspecialchars($resArray['label'], ENT_NOQUOTES, 'UTF-8')));
-            $ListSets->appendChild($set);
-        }
-        return $ListSets;
+        $this->view->assign('oaiSets', $allResults);
+
     }
 
     /**
