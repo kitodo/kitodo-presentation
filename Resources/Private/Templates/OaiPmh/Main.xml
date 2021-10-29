@@ -21,7 +21,7 @@
         <f:case value="GetRecord">ListSets</f:case>
         <f:case value="Identify"><f:render section="Identify" arguments="{oaiIdentifyInfo: oaiIdentifyInfo}"/></f:case>
         <f:case value="ListIdentifiers"><f:render section="ListIdentifiers" arguments="{listIdentifiers: listIdentifiers}"/></f:case>
-        <f:case value="ListMetadataFormats">ListSets</f:case>
+        <f:case value="ListMetadataFormats"><f:render section="ListMetadataFormats" arguments="{metadataFormats: metadataFormats}"/></f:case>
         <f:case value="ListRecords">ListSets</f:case>
         <f:case value="ListSets"><f:render section="ListSets" arguments="{oaiSets: oaiSets}" /></f:case>
         <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
@@ -76,8 +76,21 @@
                 </f:for>
             </ListIdentifiers>
         </f:then>
-        <f:else>
-            <error code="noSetHierarchy"><f:translate key="oaipmh.noSetHierarchy" /></error>
-        </f:else>
+    </f:if>
+</f:section>
+
+<f:section name="ListMetadataFormats">
+    <f:if condition="{metadataFormats -> f:count()} >= 1 ">
+        <f:then>
+            <ListMetadataFormats>
+                <f:for each="{metadataFormats}" as="record">
+                    <metadataFormat>
+                        <metadataPrefix>{record.prefix}</metadataPrefix>
+                        <schema>{record.schema}</schema>
+                        <metadataNamespace>{record.namespace}</metadataNamespace>
+                    </metadataFormat>
+                </f:for>
+            </ListMetadataFormats>
+        </f:then>
     </f:if>
 </f:section>

@@ -384,7 +384,7 @@ class OaiPmhController extends AbstractController
                 $this->verbListIdentifiers();
                 break;
             case 'ListMetadataFormats':
-                $response = $this->verbListMetadataFormats();
+                $this->verbListMetadataFormats();
                 break;
             case 'ListRecords':
                 $response = $this->verbListRecords();
@@ -684,17 +684,13 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return void
      */
     protected function verbListMetadataFormats()
     {
         $resArray = [];
-        // Check for invalid arguments.
-        if (count($this->parameters) > 1) {
-            if (empty($this->parameters['identifier']) || count($this->parameters) > 2) {
-                return $this->error('badArgument');
-            }
-
+        // check for the optional "identifier" parameter
+        if (isset($this->parameters['identifier'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -705,23 +701,18 @@ class OaiPmhController extends AbstractController
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->settings['pages'])),
                     $queryBuilder->expr()->eq('tx_dlf_documents.record_id',
-                        $queryBuilder->expr()->literal($this->parameters['identifier']))
+                    $queryBuilder->expr()->literal($this->parameters['identifier']))
                 )
                 ->orderBy('tx_dlf_documents.tstamp')
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) < 1) {
-                return $this->error('idDoesNotExist');
-            }
-            $resArray = $allResults[0];
+            $resArray = $result->fetch();
         }
-        // Add metadata formats node.
-        $ListMetadaFormats = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'ListMetadataFormats');
+
         foreach ($this->formats as $prefix => $details) {
             if (!empty($resArray)) {
+                // check, if all required fields are available for a given identifier
                 foreach ($details['requiredFields'] as $required) {
                     if (empty($resArray[$required])) {
                         // Skip metadata formats whose requirements are not met.
@@ -729,16 +720,11 @@ class OaiPmhController extends AbstractController
                     }
                 }
             }
-            // Add format node.
-            $format = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadataFormat');
-            $format->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadataPrefix',
-                htmlspecialchars($prefix, ENT_NOQUOTES, 'UTF-8')));
-            $format->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'schema',
-                htmlspecialchars($details['schema'], ENT_NOQUOTES, 'UTF-8')));
-            $format->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
-                'metadataNamespace', htmlspecialchars($details['namespace'], ENT_NOQUOTES, 'UTF-8')));
-            $ListMetadaFormats->appendChild($format);
+            $details['prefix'] = $prefix;
+            $resultSet[] = $details;
         }
+        $this->view->assign('metadataFormats', $resultSet);
+
         return $ListMetadaFormats;
     }
 
