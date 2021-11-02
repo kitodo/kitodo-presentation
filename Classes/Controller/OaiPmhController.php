@@ -312,9 +312,7 @@ class OaiPmhController extends AbstractController
             ->setMaxResults(1)
             ->execute();
 
-        $resArray = $result->fetch();
-
-        if ($resArray !== false && is_array($resArray['options'])) {
+        if ($resArray = $result->fetch()) {
             return unserialize($resArray['options']);
         } else {
             // No resumption token found or resumption token expired.
@@ -487,7 +485,7 @@ class OaiPmhController extends AbstractController
             } else {
                 // return next chunk of documents
                 $resultSet = $this->resume();
-                if ($resultSet instanceof \DocumentList) {
+                if ($resultSet instanceof DocumentList) {
                     $listIdentifiers =  $this->generateOutputForDocumentList($resultSet);
                     $this->view->assign('listIdentifiers', $listIdentifiers);
                 }
