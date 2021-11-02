@@ -18,9 +18,6 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Controller for the plugin 'OAI-PMH Interface' for the 'dlf' extension
@@ -259,10 +256,9 @@ class OaiPmhController extends AbstractController
 
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
-
-        $this->view->assign('parameters', $this->parameters);
 
         switch ($this->parameters['verb']) {
             case 'GetRecord':
@@ -285,6 +281,7 @@ class OaiPmhController extends AbstractController
                 break;
         }
 
+        $this->view->assign('parameters', $this->parameters);
         $this->view->assign('error', $this->error);
 
         return;
@@ -295,7 +292,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return array Array of uids
      */
     protected function resume()
     {
@@ -309,21 +306,21 @@ class OaiPmhController extends AbstractController
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
                 $queryBuilder->expr()->eq('tx_dlf_tokens.token',
-                    $queryBuilder->expr()->literal($this->parameters['resumptionToken']))
+                    $queryBuilder->expr()->literal($this->parameters['resumptionToken'])
+                )
             )
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
+        $resArray = $result->fetch();
 
-        if (count($allResults) < 1) {
+        if ($resArray !== false && is_array($resArray['options'])) {
+            return unserialize($resArray['options']);
+        } else {
             // No resumption token found or resumption token expired.
-            $this->error = 'badResumptionToken'     ;
-            return;
+            $this->error = 'badResumptionToken';
+            return [];
         }
-        $resArray = $allResults[0];
-        $resultSet = unserialize($resArray['options']);
-        return $this->generateOutputForDocumentList($resultSet);
     }
 
     /**
@@ -488,7 +485,13 @@ class OaiPmhController extends AbstractController
                 $this->error = 'badArgument';
                 return;
             } else {
-                return $this->resume();
+                // return next chunk of documents
+                $resultSet = $this->resume();
+                if ($resultSet instanceof \DocumentList) {
+                    $listIdentifiers =  $this->generateOutputForDocumentList($resultSet);
+                    $this->view->assign('listIdentifiers', $listIdentifiers);
+                }
+                return;
             }
         }
         // "metadataPrefix" is required and "identifier" is not allowed.
@@ -506,6 +509,7 @@ class OaiPmhController extends AbstractController
             $this->error = 'idDoesNotExist';
             return;
         }
+        // create new and empty documentlist
         $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
         $resultSet->add($documentSet);
@@ -514,8 +518,8 @@ class OaiPmhController extends AbstractController
             'metadataPrefix' => $this->parameters['metadataPrefix'],
         ];
 
-        $resultSet =  $this->generateOutputForDocumentList($resultSet);
-        $this->view->assign('listIdentifiers', $resultSet);
+        $listIdentifiers =  $this->generateOutputForDocumentList($resultSet);
+        $this->view->assign('listIdentifiers', $listIdentifiers);
     }
 
     /**
@@ -583,7 +587,12 @@ class OaiPmhController extends AbstractController
                 $this->error = 'badArgument';
                 return;
             } else {
-                return $this->resume();
+                // return next chunk of documents
+                $resultSet = $this->resume();
+                $listRecords =  $this->generateOutputForDocumentList($resultSet);
+                $this->parameters['metadataPrefix'] = $resultSet->metadata['metadataPrefix'];
+                $this->view->assign('listRecords', $listRecords);
+                return;
             }
         }
         if (empty($this->parameters['metadataPrefix']) || !empty($this->parameters['identifier'])) {
@@ -668,7 +677,6 @@ class OaiPmhController extends AbstractController
      * @access protected
      *
      * @return array Array of matching records
-     * @throws \Exception
      */
     protected function fetchDocumentUIDs()
     {
@@ -704,7 +712,8 @@ class OaiPmhController extends AbstractController
             $allResults = $result->fetchAll();
 
             if (count($allResults) < 1) {
-                throw new \Exception('noSetHierarchy');
+                $this->error = 'noSetHierarchy';
+                return;
             }
             $resArray = $allResults[0];
             if ($resArray['index_query'] != "") {
@@ -734,7 +743,8 @@ class OaiPmhController extends AbstractController
                     $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
                 $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
             } else {
-                throw new \Exception('badArgument');
+                $this->error = 'badArgument';
+                return;
             }
         }
         $until = "*";
@@ -783,7 +793,8 @@ class OaiPmhController extends AbstractController
         ];
         $result = $solr->search_raw($solr_query, $parameters);
         if (empty($result)) {
-            throw new \Exception('noRecordsMatch');
+            $this->error = 'noRecordsMatch';
+            return;
         }
         foreach ($result as $doc) {
             $documentSet[] = $doc->uid;
@@ -797,7 +808,7 @@ class OaiPmhController extends AbstractController
      *
      * @param \Kitodo\Dlf\Common\DocumentList $documentListSet
      *
-     * @return \DOMElement XML of enriched records
+     * @return array of enriched records
      */
     protected function generateOutputForDocumentList(DocumentList $documentListSet)
     {
@@ -834,7 +845,6 @@ class OaiPmhController extends AbstractController
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $documents = $connection->executeQuery($sql, $values, $types);
 
-        //$output = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', $verb);
         while ($resArray = $documents->fetch()) {
             // we need the collections as array later
             $resArray['collections'] = explode(' ', $resArray['collections']);
@@ -861,10 +871,10 @@ class OaiPmhController extends AbstractController
 
             $records[] = $resArray;
         }
+
+        $this->generateResumptionTokenForDocumentListSet($documentListSet);
+
         return $records;
-
-
-        $output->appendChild($this->generateResumptionTokenForDocumentListSet($documentListSet));
     }
 
     /**
@@ -874,7 +884,7 @@ class OaiPmhController extends AbstractController
      *
      * @param \Kitodo\Dlf\Common\DocumentList $documentListSet
      *
-     * @return \DOMElement XML for resumption token
+     * @return void
      */
     protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet)
     {
@@ -893,8 +903,7 @@ class OaiPmhController extends AbstractController
                 ->execute();
 
             if ($affectedRows === 1) {
-                $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
-                    'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
+                $resumptionToken = $token;
             } else {
                 $this->logger->error('Could not create resumption token');
                 $this->error = 'badResumptionToken';
@@ -902,13 +911,17 @@ class OaiPmhController extends AbstractController
             }
         } else {
             // Result set complete. We don't need a token.
-            $resumptionToken = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'resumptionToken');
+            $resumptionToken = '';
         }
-        $resumptionToken->setAttribute('cursor',
-            intval($documentListSet->metadata['completeListSize']) - count($documentListSet));
-        $resumptionToken->setAttribute('completeListSize', $documentListSet->metadata['completeListSize']);
-        $resumptionToken->setAttribute('expirationDate',
-            gmdate('Y-m-d\TH:i:s\Z', $GLOBALS['EXEC_TIME'] + $this->settings['expired']));
-        return $resumptionToken;
+
+        $resumptionTokenInfo = [];
+        $resumptionTokenInfo['token'] = $resumptionToken;
+        $resumptionTokenInfo['cursor'] = $documentListSet->metadata['completeListSize'] - count($documentListSet);
+        $resumptionTokenInfo['completeListSize'] = $documentListSet->metadata['completeListSize'];
+        $expireDateTime = new \DateTime();
+        $expireDateTime->add(new \DateInterval('PT' .$this->settings['expired'] . 'S'));
+        $resumptionTokenInfo['expired'] = $expireDateTime;
+
+        $this->view->assign('resumptionToken', $resumptionTokenInfo);
     }
 }
