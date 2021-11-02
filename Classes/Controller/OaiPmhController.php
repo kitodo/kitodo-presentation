@@ -158,52 +158,40 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $metadata : The metadata array
+     * @param array $record : The full record array
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return array $metadata: The mapped metadata array
      */
-    protected function getDcData(array $metadata)
+    protected function getDcData(array $record)
     {
-        $oai_dc = $this->oai->createElementNS($this->formats['oai_dc']['namespace'], 'oai_dc:dc');
-        $oai_dc->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:dc', 'http://purl.org/dc/elements/1.1/');
-        $oai_dc->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi',
-            'http://www.w3.org/2001/XMLSchema-instance');
-        $oai_dc->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation',
-            $this->formats['oai_dc']['namespace'] . ' ' . $this->formats['oai_dc']['schema']);
-        $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier',
-            htmlspecialchars($metadata['record_id'], ENT_NOQUOTES, 'UTF-8')));
-        if (!empty($metadata['purl'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier',
-                htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8')));
+        $metadata = [];
+
+        $metadata[] = ['dc:identifier' => $record['record_id']];
+
+        if (!empty($record['purl'])) {
+            $metadata[] = ['dc:identifier' => $record['purl']];
         }
-        if (!empty($metadata['prod_id'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier',
-                'kitodo:production:' . htmlspecialchars($metadata['prod_id'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['prod_id'])) {
+            $metadata[] = ['dc:identifier' => $record['prod_id']];
         }
-        if (!empty($metadata['urn'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:identifier',
-                htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['urn'])) {
+            $metadata[] = ['dc:identifier' => $record['urn']];
         }
-        if (!empty($metadata['title'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:title',
-                htmlspecialchars($metadata['title'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['title'])) {
+            $metadata[] = ['dc:title' => $record['title']];
         }
-        if (!empty($metadata['author'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:creator',
-                htmlspecialchars($metadata['author'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['author'])) {
+            $metadata[] = ['dc:creator' => $record['author']];
         }
-        if (!empty($metadata['year'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:date',
-                htmlspecialchars($metadata['year'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['year'])) {
+            $metadata[] = ['dc:date' => $record['year']];
         }
-        if (!empty($metadata['place'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:coverage',
-                htmlspecialchars($metadata['place'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['place'])) {
+            $metadata[] = ['dc:coverage' => $record['place']];
         }
-        $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:format',
-            'application/mets+xml'));
-        $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:type', 'Text'));
-        if (!empty($metadata['partof'])) {
+        $record[] = ['dc:format' => $record['application/mets+xml']];
+        $record[] = ['dc:type' => $record['Text']];
+        if (!empty($record['partof'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -217,106 +205,28 @@ class OaiPmhController extends AbstractController
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) == 1) {
-                $partof = $allResults[0];
-                $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:relation',
-                    htmlspecialchars($partof['record_id'], ENT_NOQUOTES, 'UTF-8')));
+            if ($partof = $result->fetch()) {
+                $metadata[] = ['dc:relation' => $partof['record_id']];
             }
         }
-        if (!empty($metadata['license'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights',
-                htmlspecialchars($metadata['license'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['license'])) {
+            $metadata[] = ['dc:rights' => $record['license']];
         }
-        if (!empty($metadata['terms'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights',
-                htmlspecialchars($metadata['terms'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['terms'])) {
+            $metadata[] = ['dc:rights' => $record['terms']];
         }
-        if (!empty($metadata['restrictions'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights',
-                htmlspecialchars($metadata['restrictions'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['restrictions'])) {
+            $metadata[] = ['dc:rights' => $record['restrictions']];
         }
-        if (!empty($metadata['out_of_print'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights',
-                htmlspecialchars($metadata['out_of_print'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['out_of_print'])) {
+            $metadata[] = ['dc:rights' => $record['out_of_print']];
         }
-        if (!empty($metadata['rights_info'])) {
-            $oai_dc->appendChild($this->oai->createElementNS('http://purl.org/dc/elements/1.1/', 'dc:rights',
-                htmlspecialchars($metadata['rights_info'], ENT_NOQUOTES, 'UTF-8')));
+        if (!empty($record['rights_info'])) {
+            $metadata[] = ['dc:rights' => $record['rights_info']];
         }
-        return $oai_dc;
+        return $metadata;
     }
 
-    /**
-     * Get epicur data.
-     * @see http://www.persistent-identifier.de/?link=210
-     *
-     * @access protected
-     *
-     * @param array $metadata : The metadata array
-     *
-     * @return \DOMElement XML node to add to the OAI response
-     */
-    protected function getEpicurData(array $metadata)
-    {
-        // Define all XML elements with or without qualified namespace.
-        if (empty($this->settings['unqualified_epicur'])) {
-            $epicur = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:epicur');
-            $admin = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:administrative_data');
-            $delivery = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:delivery');
-            $update = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:update_status');
-            $transfer = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:transfer');
-            $format = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:format', 'text/html');
-            $record = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:record');
-            $identifier = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier',
-                htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8'));
-            $resource = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:resource');
-            $ident = $this->oai->createElementNS($this->formats['epicur']['namespace'], 'epicur:identifier',
-                htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8'));
-        } else {
-            $epicur = $this->oai->createElement('epicur');
-            $epicur->setAttribute('xmlns', $this->formats['epicur']['namespace']);
-            $admin = $this->oai->createElement('administrative_data');
-            $delivery = $this->oai->createElement('delivery');
-            $update = $this->oai->createElement('update_status');
-            $transfer = $this->oai->createElement('transfer');
-            $format = $this->oai->createElement('format', 'text/html');
-            $record = $this->oai->createElement('record');
-            $identifier = $this->oai->createElement('identifier',
-                htmlspecialchars($metadata['urn'], ENT_NOQUOTES, 'UTF-8'));
-            $resource = $this->oai->createElement('resource');
-            $ident = $this->oai->createElement('identifier',
-                htmlspecialchars($metadata['purl'], ENT_NOQUOTES, 'UTF-8'));
-        }
-        // Add attributes and build XML tree.
-        $epicur->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi',
-            'http://www.w3.org/2001/XMLSchema-instance');
-        $epicur->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:schemaLocation',
-            $this->formats['epicur']['namespace'] . ' ' . $this->formats['epicur']['schema']);
-        // Do we update an URN or register a new one?
-        if ($metadata['tstamp'] == $metadata['crdate']) {
-            $update->setAttribute('type', 'urn_new');
-        } else {
-            $update->setAttribute('type', 'url_update_general');
-        }
-        $delivery->appendChild($update);
-        $transfer->setAttribute('type', 'http');
-        $delivery->appendChild($transfer);
-        $admin->appendChild($delivery);
-        $epicur->appendChild($admin);
-        $identifier->setAttribute('scheme', 'urn:nbn:de');
-        $record->appendChild($identifier);
-        $ident->setAttribute('scheme', 'url');
-        $ident->setAttribute('type', 'frontpage');
-        $ident->setAttribute('role', 'primary');
-        $resource->appendChild($ident);
-        $format->setAttribute('scheme', 'imt');
-        $resource->appendChild($format);
-        $record->appendChild($resource);
-        $epicur->appendChild($record);
-        return $epicur;
-    }
 
     /**
      * Get METS data.
@@ -324,26 +234,28 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $metadata : The metadata array
+     * @param array $record : The full record array
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return $metadata: The mapped metadata array
      */
-    protected function getMetsData(array $metadata)
+    protected function getMetsData(array $record)
     {
         $mets = null;
         // Load METS file.
         $xml = new \DOMDocument();
-        if ($xml->load($metadata['location'])) {
+        if ($xml->load($record['location'])) {
             // Get root element.
             $root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
             if ($root->item(0) instanceof \DOMNode) {
                 // Import node into \DOMDocument.
-                $mets = $this->oai->importNode($root->item(0), true);
+                $mets = $xml->saveXML();
+                // Remove leading line
+                $mets = substr($mets, strpos($mets, '>'));
             } else {
-                $this->logger->error('No METS part found in document with location "' . $metadata['location'] . '"');
+                $this->logger->error('No METS part found in document with location "' . $record['location'] . '"');
             }
         } else {
-            $this->logger->error('Could not load XML file from "' . $metadata['location'] . '"');
+            $this->logger->error('Could not load XML file from "' . $record['location'] . '"');
         }
         if ($mets === null) {
             $errorMessage = LocalizationUtility::translate('LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:error');
@@ -387,7 +299,7 @@ class OaiPmhController extends AbstractController
                 $this->verbListMetadataFormats();
                 break;
             case 'ListRecords':
-                $response = $this->verbListRecords();
+                $this->verbListRecords();
                 break;
             case 'ListSets':
                 $this->verbListSets();
@@ -766,7 +678,9 @@ class OaiPmhController extends AbstractController
             'completeListSize' => count($documentSet),
             'metadataPrefix' => $this->parameters['metadataPrefix'],
         ];
-        return $this->generateOutputForDocumentList($resultSet);
+
+        $resultSet =  $this->generateOutputForDocumentList($resultSet);
+        $this->view->assign('listRecords', $resultSet);
     }
 
     /**
@@ -991,6 +905,27 @@ class OaiPmhController extends AbstractController
         while ($resArray = $documents->fetch()) {
             // we need the collections as array later
             $resArray['collections'] = explode(' ', $resArray['collections']);
+
+            if ($verb === 'ListRecords') {
+                // Add metadata node.
+                $metadataPrefix = $this->parameters['metadataPrefix'];
+                if (!$metadataPrefix) {
+                    // If we resume an action the metadataPrefix is stored with the documentSet
+                    $metadataPrefix = $documentListSet->metadata['metadataPrefix'];
+                }
+                switch ($metadataPrefix) {
+                    case 'oai_dc':
+                        $resArray['metadata'] = $this->getDcData($resArray);
+                        break;
+                    case 'epicur':
+                        $resArray['metadata'] = $resArray;
+                        break;
+                    case 'mets':
+                        $resArray['metadata'] = $this->getMetsData($resArray);
+                        break;
+                }
+            }
+
             $records[] = $resArray;
             continue;
             // Add header node.
