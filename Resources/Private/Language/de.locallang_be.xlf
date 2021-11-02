@@ -173,10 +173,6 @@
 				<source><![CDATA[Transformation stylesheet]]></source>
 				<target><![CDATA[XSL-Stylesheet]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.unqualified_epicur" approved="yes">
-				<source><![CDATA[Use unqualified epicur?]]></source>
-				<target><![CDATA[Unqualifiziertes Epicur verwenden?]]></target>
-			</trans-unit>
 			<trans-unit id="plugins.oaipmh.title" approved="yes">
 				<source><![CDATA[Kitodo: OAI-PMH Interface]]></source>
 				<target><![CDATA[Kitodo: OAI-PMH-Schnittstelle]]></target>

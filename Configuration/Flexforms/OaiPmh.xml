@@ -132,16 +132,6 @@
                             </config>
                         </TCEforms>
                     </settings.stylesheet>
-                    <settings.unqualified_epicur>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.unqualified_epicur</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
-                    </settings.unqualified_epicur>
                 </el>
             </ROOT>
         </sDEF>

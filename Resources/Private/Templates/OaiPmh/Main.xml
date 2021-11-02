@@ -18,8 +18,8 @@
     <responseDate><f:format.date format="Y-m-d\TH:i:s\Z">now</f:format.date></responseDate>
     <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: ' {key}="{value}"') -> f:for(each:'{parameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
     <f:switch expression="{parameters.verb}">
-        <f:case value="GetRecord">ListSets</f:case>
         <f:case value="Identify"><f:render section="Identify" arguments="{oaiIdentifyInfo: oaiIdentifyInfo}"/></f:case>
+        <f:case value="GetRecord"><f:render section="GetRecord" arguments="{record: record, parameters: parameters}"/></f:case>
         <f:case value="ListIdentifiers"><f:render section="ListIdentifiers" arguments="{listIdentifiers: listIdentifiers}"/></f:case>
         <f:case value="ListMetadataFormats"><f:render section="ListMetadataFormats" arguments="{metadataFormats: metadataFormats}"/></f:case>
         <f:case value="ListRecords"><f:render section="ListRecords" arguments="{listRecords: listRecords, parameters: parameters}"/></f:case>
@@ -39,6 +39,93 @@
         <deletedRecord>transient</deletedRecord>
         <granularity>YYYY-MM-DDThh:mm:ssZ</granularity>
     </Identify>
+</f:section>
+
+<f:section name="GetRecord">
+    <GetRecord>
+        <record>
+        <f:if condition="{record.deleted} || {record.hidden}">
+            <f:then>
+                <header status="deleted">
+                    <identifier>{record.record_id}</identifier>
+                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                    <f:for each="{record.collections}" as="collection">
+                        <f:if condition="{collection}">
+                            <setSpec>{collection}</setSpec>
+                        </f:if>
+                    </f:for>
+                </header>
+            </f:then>
+            <f:else>
+                <header>
+                    <identifier>{record.record_id}</identifier>
+                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                    <f:for each="{record.collections}" as="collection">
+                        <f:if condition="{collection}">
+                            <setSpec>{collection}</setSpec>
+                        </f:if>
+                    </f:for>
+                </header>
+                <metadata>
+                        <f:switch expression="{parameters.metadataPrefix}">
+                            <f:case value="oai_dc">
+                                <oai_dc:dc
+                                    xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                                    xmlns:dc="http://purl.org/dc/elements/1.1/"
+                                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                    xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/
+                                    http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+                                        <f:for each="{record.metadata}" as="metadata">
+                                            <f:for each="{metadata}" as="value" key="key">
+                                                <{key}>{value}</{key}>
+                                            </f:for>
+                                        </f:for>
+                                </oai_dc:dc>
+                            </f:case>
+                            <f:case value="mets">
+                                <f:if condition="{record.metadata}">
+                                    <f:then>
+                                        <f:format.raw>
+                                            {record.metadata}
+                                        </f:format.raw>
+                                    </f:then>
+                                    <f:else>
+                                        <f:variable name="kitodoerror" value="kitodo:error" />
+                                        <{kitodoerror} xmlns="http://kitodo.org/">
+                                            <f:translate key="oaipmh.error" />
+                                        </{kitodoerror}>
+                                    </f:else>
+                                </f:if>
+                            </f:case>
+                            <f:case value="epicur">
+                                <epicur
+                                    xmlns="urn:nbn:de:1111-2004033116"
+                                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                    xsi:schemaLocation="urn:nbn:de:1111-2004033116
+                                    http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd">
+
+                                    <administrative_data>
+                                        <delivery><f:comment>Do we update an URN or register a new one?</f:comment>
+                                            <update_status type="{f:if(condition:'{record.crdate} == {record.tstamp}', then: 'urn_new', else: 'url_update_general')}"/>
+                                            <transfer type="http"/>
+                                        </delivery>
+                                    </administrative_data>
+                                    <record>
+                                        <identifier scheme="urn:nbn:de">{record.urn}</identifier>
+                                        <resource>
+                                            <identifier scheme="url" type="frontpage" role="primary">{record.purl}</identifier>
+                                            <format scheme="imt">text/html</format>
+                                        </resource>
+                                    </record>
+                                </epicur>
+                            </f:case>
+                            <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
+                        </f:switch>
+                </metadata>
+            </f:else>
+        </f:if>
+        </record>
+    </GetRecord>
 </f:section>
 
 <f:section name="ListSets">
@@ -113,7 +200,9 @@
                             <f:case value="mets">
                                 <f:if condition="{record.metadata}">
                                     <f:then>
-                                        {record.metadata}
+                                        <f:format.raw>
+                                            {record.metadata}
+                                        </f:format.raw>
                                     </f:then>
                                     <f:else>
                                         <f:variable name="kitodoerror" value="kitodo:error" />
@@ -136,7 +225,6 @@
                                             <transfer type="http"/>
                                         </delivery>
                                     </administrative_data>
-
                                     <record>
                                         <identifier scheme="urn:nbn:de">{record.urn}</identifier>
                                         <resource>

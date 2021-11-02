@@ -257,14 +257,6 @@ class OaiPmhController extends AbstractController
         } else {
             $this->logger->error('Could not load XML file from "' . $record['location'] . '"');
         }
-        if ($mets === null) {
-            $errorMessage = LocalizationUtility::translate('LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:error');
-            $mets = $this->oai->createElementNS('http://kitodo.org/', 'kitodo:error',
-                htmlspecialchars(
-                    (!empty($errorMessage)?  $errorMessage: 'Error!'), ENT_NOQUOTES, 'UTF-8'
-                )
-            );
-        }
         return $mets;
     }
 
@@ -287,7 +279,7 @@ class OaiPmhController extends AbstractController
 
         switch ($this->parameters['verb']) {
             case 'GetRecord':
-                $response = $this->verbGetRecord();
+                $this->verbGetRecord();
                 break;
             case 'Identify':
                 $this->verbIdentify();
@@ -391,7 +383,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return void
      */
     protected function verbGetRecord()
     {
@@ -444,43 +436,24 @@ class OaiPmhController extends AbstractController
                 return $this->error('cannotDisseminateFormat');
             }
         }
-        $GetRecord = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'GetRecord');
-        $recordNode = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
-        $headerNode = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
-        $headerNode->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier',
-            htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
-        $headerNode->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp',
-            gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
-        // Handle deleted documents.
-        // TODO: Use TYPO3 API functions here!
-        if (
-            $resArray['deleted']
-            || $resArray['hidden']
-        ) {
-            $headerNode->setAttribute('status', 'deleted');
-            $recordNode->appendChild($headerNode);
-        } else {
-            foreach (explode(' ', $resArray['collections']) as $spec) {
-                $headerNode->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'setSpec',
-                    htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
-            }
-            $recordNode->appendChild($headerNode);
-            $metadataNode = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
-            switch ($this->parameters['metadataPrefix']) {
-                case 'oai_dc':
-                    $metadataNode->appendChild($this->getDcData($resArray));
-                    break;
-                case 'epicur':
-                    $metadataNode->appendChild($this->getEpicurData($resArray));
-                    break;
-                case 'mets':
-                    $metadataNode->appendChild($this->getMetsData($resArray));
-                    break;
-            }
-            $recordNode->appendChild($metadataNode);
+
+        // we need the collections as array later
+        $resArray['collections'] = explode(' ', $resArray['collections']);
+
+        // Add metadata
+        switch ($this->parameters['metadataPrefix']) {
+            case 'oai_dc':
+                $resArray['metadata'] = $this->getDcData($resArray);
+                break;
+            case 'epicur':
+                $resArray['metadata'] = $resArray;
+                break;
+            case 'mets':
+                $resArray['metadata'] = $this->getMetsData($resArray);
+                break;
         }
-        $GetRecord->appendChild($recordNode);
-        return $GetRecord;
+
+        $this->view->assign('record', $resArray);
     }
 
     /**

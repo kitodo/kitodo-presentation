@@ -281,9 +281,6 @@
 			<trans-unit id="plugins.oaipmh.flexform.stylesheet">
 				<source><![CDATA[Transformation stylesheet]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.unqualified_epicur">
-				<source><![CDATA[Use unqualified epicur?]]></source>
-			</trans-unit>
 		</body>
 	</file>
 </xliff>
