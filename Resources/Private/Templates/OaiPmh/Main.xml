@@ -17,15 +17,24 @@
     xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
     <responseDate><f:format.date format="Y-m-d\TH:i:s\Z">now</f:format.date></responseDate>
     <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: ' {key}="{value}"') -> f:for(each:'{parameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
-    <f:switch expression="{parameters.verb}">
-        <f:case value="Identify"><f:render section="Identify" arguments="{oaiIdentifyInfo: oaiIdentifyInfo}"/></f:case>
-        <f:case value="GetRecord"><f:render section="GetRecord" arguments="{record: record, parameters: parameters}"/></f:case>
-        <f:case value="ListIdentifiers"><f:render section="ListIdentifiers" arguments="{listIdentifiers: listIdentifiers}"/></f:case>
-        <f:case value="ListMetadataFormats"><f:render section="ListMetadataFormats" arguments="{metadataFormats: metadataFormats}"/></f:case>
-        <f:case value="ListRecords"><f:render section="ListRecords" arguments="{listRecords: listRecords, parameters: parameters}"/></f:case>
-        <f:case value="ListSets"><f:render section="ListSets" arguments="{oaiSets: oaiSets}" /></f:case>
-        <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
-    </f:switch>
+    <f:if condition="{error}">
+        <f:then>
+            <error code="{error}">
+                <f:translate key="oaipmh.{error}" />
+            </error>
+        </f:then>
+        <f:else>
+            <f:switch expression="{parameters.verb}">
+                <f:case value="Identify"><f:render section="Identify" arguments="{oaiIdentifyInfo: oaiIdentifyInfo}"/></f:case>
+                <f:case value="GetRecord"><f:render section="GetRecord" arguments="{record: record, parameters: parameters}"/></f:case>
+                <f:case value="ListIdentifiers"><f:render section="ListIdentifiers" arguments="{listIdentifiers: listIdentifiers}"/></f:case>
+                <f:case value="ListMetadataFormats"><f:render section="ListMetadataFormats" arguments="{metadataFormats: metadataFormats}"/></f:case>
+                <f:case value="ListRecords"><f:render section="ListRecords" arguments="{listRecords: listRecords, parameters: parameters}"/></f:case>
+                <f:case value="ListSets"><f:render section="ListSets" arguments="{oaiSets: oaiSets}" /></f:case>
+                <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
+            </f:switch>
+        </f:else>
+    </f:if>
 </OAI-PMH>
 </html>
 

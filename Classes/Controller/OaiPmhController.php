@@ -45,18 +45,10 @@ class OaiPmhController extends AbstractController
     /**
      * Did an error occur?
      *
-     * @var bool
+     * @var string
      * @access protected
      */
-    protected $error = false;
-
-    /**
-     * This holds the OAI DOM object
-     *
-     * @var \DOMDocument
-     * @access protected
-     */
-    protected $oai;
+    protected $error;
 
     /**
      * This holds the configuration for all supported metadata prefixes
@@ -86,11 +78,6 @@ class OaiPmhController extends AbstractController
      * @var ExtensionConfiguration
      */
     protected $extensionConfiguration;
-
-    /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
 
     /**
      * @var array
@@ -298,49 +285,9 @@ class OaiPmhController extends AbstractController
                 break;
         }
 
+        $this->view->assign('error', $this->error);
+
         return;
-        // Create XML document.
-        // $this->oai = new \DOMDocument('1.0', 'UTF-8');
-
-        // Create root element.
-        $root = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'OAI-PMH');
-
-        // Add request.
-        $linkConf = [
-            'parameter' => $GLOBALS['TSFE']->id,
-            'forceAbsoluteUrl' => 1,
-            'forceAbsoluteUrl.' => [
-                'scheme' => !empty($this->extConf['forceAbsoluteUrlHttps']) ? 'https' : 'http'
-            ]
-        ];
-        $request = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'request',
-            htmlspecialchars(
-                $this->configurationManager->getContentObject()->typoLink_URL($linkConf),
-                ENT_NOQUOTES, 'UTF-8'
-            )
-        );
-        if (!$this->error) {
-            foreach ($this->parameters as $key => $value) {
-                $request->setAttribute($key, htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8'));
-            }
-        }
-        $root->appendChild($request);
-        $root->appendChild($response);
-        $this->oai->appendChild($root);
-        $content = $this->oai->saveXML();
-        // Clean output buffer.
-        ob_end_clean();
-        // Send headers.
-
-        header('HTTP/1.1 200 OK');
-        header('Cache-Control: no-cache');
-        header('Content-Length: ' . strlen($content));
-        header('Content-Type: text/xml; charset=utf-8');
-        header('Date: ' . date('r', $GLOBALS['EXEC_TIME']));
-        header('Expires: ' . date('r', $GLOBALS['EXEC_TIME'] + $this->settings['expired']));
-
-        echo $content;
-        exit;
     }
 
     /**
@@ -371,7 +318,8 @@ class OaiPmhController extends AbstractController
 
         if (count($allResults) < 1) {
             // No resumption token found or resumption token expired.
-            return $this->error('badResumptionToken');
+            $this->error = 'badResumptionToken'     ;
+            return;
         }
         $resArray = $allResults[0];
         $resultSet = unserialize($resArray['options']);
@@ -388,10 +336,12 @@ class OaiPmhController extends AbstractController
     protected function verbGetRecord()
     {
         if (count($this->parameters) !== 3 || empty($this->parameters['metadataPrefix']) || empty($this->parameters['identifier'])) {
-            return $this->error('badArgument');
+            $this->error = 'badArgument'     ;
+            return;
         }
         if (!array_key_exists($this->parameters['metadataPrefix'], $this->formats)) {
-            return $this->error('cannotDisseminateFormat');
+            $this->error = 'cannotDisseminateFormat'     ;
+            return;
         }
         $where = '';
         if (!$this->settings['show_userdefined']) {
@@ -427,13 +377,13 @@ class OaiPmhController extends AbstractController
         $resArray = $statement->fetch();
 
         if (!$resArray['uid']) {
-            return $this->error('idDoesNotExist');
+            return $this->error = 'idDoesNotExist';
         }
 
         // Check for required fields.
         foreach ($this->formats[$this->parameters['metadataPrefix']]['requiredFields'] as $required) {
             if (empty($resArray[$required])) {
-                return $this->error('cannotDisseminateFormat');
+                return $this->error = 'cannotDisseminateFormat';
             }
         }
 
@@ -535,22 +485,26 @@ class OaiPmhController extends AbstractController
         if (!empty($this->parameters['resumptionToken'])) {
             // "resumptionToken" is an exclusive argument.
             if (count($this->parameters) > 2) {
-                return $this->error('badArgument');
+                $this->error = 'badArgument';
+                return;
             } else {
                 return $this->resume();
             }
         }
         // "metadataPrefix" is required and "identifier" is not allowed.
         if (empty($this->parameters['metadataPrefix']) || !empty($this->parameters['identifier'])) {
-            return $this->error('badArgument');
+            $this->error = 'badArgument';
+            return;
         }
         if (!in_array($this->parameters['metadataPrefix'], array_keys($this->formats))) {
-            return $this->error('cannotDisseminateFormat');
+            $this->error = 'cannotDisseminateFormat';
+            return;
         }
         try {
             $documentSet = $this->fetchDocumentUIDs();
         } catch (\Exception $exception) {
-            return $this->error($exception->getMessage());
+            $this->error = 'idDoesNotExist';
+            return;
         }
         $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
@@ -618,7 +572,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \DOMElement XML node to add to the OAI response
+     * @return void
      */
     protected function verbListRecords()
     {
@@ -626,23 +580,27 @@ class OaiPmhController extends AbstractController
         if (!empty($this->parameters['resumptionToken'])) {
             // "resumptionToken" is an exclusive argument.
             if (count($this->parameters) > 2) {
-                return $this->error('badArgument');
+                $this->error = 'badArgument';
+                return;
             } else {
                 return $this->resume();
             }
         }
         if (empty($this->parameters['metadataPrefix']) || !empty($this->parameters['identifier'])) {
             // "metadataPrefix" is required and "identifier" is not allowed.
-            return $this->error('badArgument');
+            $this->error = 'badArgument';
+            return;
         }
         // Check "metadataPrefix" for valid value.
         if (!in_array($this->parameters['metadataPrefix'], array_keys($this->formats))) {
-            return $this->error('cannotDisseminateFormat');
+            $this->error = 'cannotDisseminateFormat';
+            return;
         }
         try {
             $documentSet = $this->fetchDocumentUIDs();
         } catch (\Exception $exception) {
-            return $this->error($exception->getMessage());
+            $this->error = 'idDoesNotExist';
+            return;
         }
         $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
@@ -671,9 +629,11 @@ class OaiPmhController extends AbstractController
         // Check for invalid arguments.
         if (count($this->parameters) > 1) {
             if (!empty($this->parameters['resumptionToken'])) {
-                return $this->error('badResumptionToken');
+                $this->error = 'badResumptionToken';
+                return;
             } else {
-                return $this->error('badArgument');
+                $this->error = 'badArgument';
+                return;
             }
         }
         $where = '';
@@ -789,10 +749,10 @@ class OaiPmhController extends AbstractController
                     $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
                 $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
                 if ($from != "*" && $from > $until) {
-                    throw new \Exception('badArgument');
+                    $this->error = 'badArgument';
                 }
             } else {
-                throw new \Exception('badArgument');
+                $this->error = 'badArgument';
             }
         }
         // Check "from" and "until" for same granularity.
@@ -801,7 +761,7 @@ class OaiPmhController extends AbstractController
             && !empty($this->parameters['until'])
         ) {
             if (strlen($this->parameters['from']) != strlen($this->parameters['until'])) {
-                throw new \Exception('badArgument');
+                $this->error = 'badArgument';
             }
         }
         $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
@@ -900,71 +860,11 @@ class OaiPmhController extends AbstractController
             }
 
             $records[] = $resArray;
-            continue;
-            // Add header node.
-            // $header = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'header');
-            // $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'identifier',
-            //     htmlspecialchars($resArray['record_id'], ENT_NOQUOTES, 'UTF-8')));
-            // $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'datestamp',
-            //     gmdate('Y-m-d\TH:i:s\Z', $resArray['tstamp'])));
-            // Check if document is deleted or hidden.
-            // TODO: Use TYPO3 API functions here!
-            if (
-                $resArray['deleted']
-                || $resArray['hidden']
-            ) {
-                // Add "deleted" status.
-                $header->setAttribute('status', 'deleted');
-                if ($verb === 'ListRecords') {
-                    // Add record node.
-                    $record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
-                    $record->appendChild($header);
-                    $output->appendChild($record);
-                } elseif ($verb === 'ListIdentifiers') {
-                    $output->appendChild($header);
-                }
-            } else {
-                // Add sets but only if oai_name field is not empty.
-                foreach (explode(' ', $resArray['collections']) as $spec) {
-                    if ($spec) {
-                        $header->appendChild($this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/',
-                            'setSpec', htmlspecialchars($spec, ENT_NOQUOTES, 'UTF-8')));
-                    }
-                }
-                if ($verb === 'ListRecords') {
-                    // Add record node.
-                    $record = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'record');
-                    $record->appendChild($header);
-                    // Add metadata node.
-                    $metadata = $this->oai->createElementNS('http://www.openarchives.org/OAI/2.0/', 'metadata');
-                    $metadataPrefix = $this->parameters['metadataPrefix'];
-                    if (!$metadataPrefix) {
-                        // If we resume an action the metadataPrefix is stored with the documentSet
-                        $metadataPrefix = $documentListSet->metadata['metadataPrefix'];
-                    }
-                    switch ($metadataPrefix) {
-                        case 'oai_dc':
-                            $metadata->appendChild($this->getDcData($resArray));
-                            break;
-                        case 'epicur':
-                            $metadata->appendChild($this->getEpicurData($resArray));
-                            break;
-                        case 'mets':
-                            $metadata->appendChild($this->getMetsData($resArray));
-                            break;
-                    }
-                    $record->appendChild($metadata);
-                    $output->appendChild($record);
-                } elseif ($verb === 'ListIdentifiers') {
-                    $output->appendChild($header);
-                }
-            }
         }
         return $records;
 
 
         $output->appendChild($this->generateResumptionTokenForDocumentListSet($documentListSet));
-        return $output;
     }
 
     /**
@@ -997,7 +897,8 @@ class OaiPmhController extends AbstractController
                     'resumptionToken', htmlspecialchars($token, ENT_NOQUOTES, 'UTF-8'));
             } else {
                 $this->logger->error('Could not create resumption token');
-                return $this->error('badResumptionToken');
+                $this->error = 'badResumptionToken';
+                return;
             }
         } else {
             // Result set complete. We don't need a token.
