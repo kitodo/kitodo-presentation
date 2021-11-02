@@ -18,18 +18,22 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var int
      */
     protected $parentId;
+
     /**
      * @var int
      */
     protected $encoded;
+
     /**
      * @var string
      */
     protected $xpath;
+
     /**
      * @var string
      */
     protected $xpathSorting;
+
     /**
      * @var int
      */

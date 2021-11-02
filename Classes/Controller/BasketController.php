@@ -201,17 +201,16 @@ class BasketController extends AbstractController
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
 
         if ($GLOBALS['TSFE']->loginUser) {
-            $basket = $this->basketRepository->findByfe_user_id((int) $GLOBALS['TSFE']->fe_user->user['uid'])->getFirst();
+            $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
         } else {
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
             $GLOBALS['TSFE']->fe_user->sesData_change = true;
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
             $basket = $this->basketRepository->findOneBySessionId($sessionId)->getFirst();
-
         }
         // session already exists
-        if ($basket === NULL) {
+        if ($basket === null) {
             // create new basket in db
             $insertArray['fe_user_id'] = $GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0;
             $insertArray['session_id'] = $sessionId;

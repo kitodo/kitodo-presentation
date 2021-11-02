@@ -15,6 +15,16 @@ namespace Kitodo\Dlf\Domain\Model;
 class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
+     * @var string|null
+     */
+    protected $docIds;
+
+    /**
+     * @var int
+     */
+    protected $feUserId;
+
+    /**
      * @var string
      */
     protected $label;
@@ -24,10 +34,38 @@ class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      */
     protected $sessionId;
 
+
     /**
-     * @var string|null
+     * @return string|null
      */
-    protected $docIds;
+    public function getDocIds(): ?string
+    {
+        return $this->docIds;
+    }
+
+    /**
+     * @param string|null $docIds
+     */
+    public function setDocIds(?string $docIds): void
+    {
+        $this->docIds = $docIds;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFeUserId(): int
+    {
+        return $this->feUserId;
+    }
+
+    /**
+     * @param int $feUserId
+     */
+    public function setFeUserId(int $feUserId): void
+    {
+        $this->feUserId = $feUserId;
+    }
 
     /**
      * @return string
@@ -59,22 +97,6 @@ class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     public function setSessionId(string $sessionId): void
     {
         $this->sessionId = $sessionId;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDocIds(): ?string
-    {
-        return $this->docIds;
-    }
-
-    /**
-     * @param string|null $docIds
-     */
-    public function setDocIds(?string $docIds): void
-    {
-        $this->docIds = $docIds;
     }
 
 }
