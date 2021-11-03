@@ -1,3 +1,4 @@
+<f:comment>
 <!--
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -7,18 +8,16 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
 -->
-
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:for each="{documentList}" key="entryIndex" as="entry" iteration="docIterator">
     <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
-    <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
+    <f:variable name="pageOffset" value="{settings.limit * currentPage}" />
     <f:variable name="allDocuments" value="{documents->f:count()}" />
-    <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />
-
-    <f:comment>
-        <f:variable name="pageOffset" value="{p -> math.product(a:'{pointer}', b:'{settings.limit}')}"/>
-    </f:comment>
+    <f:variable name="numDocuments" value="{pageOffset + settings.limit}" />
 
     <li value="{settings.limit * pageOffset + docIterator.index}">
         <div class="tx-dlf-listview-thumbnail">
@@ -28,7 +27,7 @@
         <dl>
             <f:for each="{metadataList.{entryIndex}.metadata}" key="indexName" as="field">
                 <stdWrap wrap="{field.wrap}">
-                    <dlf:stdWrap wrap="{field.label.wrap}">{field.label.value}</dlf:stdWrap>
+                    <kitodo:stdWrap wrap="{field.label.wrap}">{field.label.value}</kitodo:stdWrap>
                     <f:for each="{field.values}" as="value">
                         <stdWrap wrap="{value.wrap}">
                             <f:if condition="{indexName} == 'title'">

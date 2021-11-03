@@ -416,6 +416,15 @@ class ListViewController extends AbstractController
             $lastEntry = ($pointer * $this->settings['limit']) + $this->settings['limit'];
         }
 
+        // Pagination of Results
+        // pass the currentPage to the fluid template to calculate current index of search result
+        if (empty($requestData['@widget_0'])) {
+            $widgetPage = ['currentPage' => 1];
+        } else {
+            $widgetPage = $requestData['@widget_0'];
+        }
+
+        $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('documentList', $this->list);
         $this->view->assign('metadataList', $this->metadataList);
         $this->view->assign('metadataConfig', $this->metadata);

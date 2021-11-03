@@ -32,7 +32,6 @@ class StdWrapViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-        //$value = $this->arguments['value'];
         $wrap = $this->arguments['wrap'];
 
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);

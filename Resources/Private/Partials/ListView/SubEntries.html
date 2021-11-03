@@ -1,3 +1,4 @@
+<f:comment>
 <!--
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -7,23 +8,23 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
 -->
-
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
-
-<v:format.pregReplace subject="{documentList.metadata.searchString}" pattern="/\s\s+/" replacement=";" as="highlightWord" />
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:for each="{entry.subparts}" key="subentryIndex" as="subentry">
     <li>
         <div class="tx-dlf-listview-thumbnail">
-            <img alt="{v:variable.get(name: 'metadataList.{entryIndex}.subparts.{subentryIndex}.thumbnail.alt')}"
-                 src="{v:variable.get(name: 'metadataList.{entryIndex}.subparts.{subentryIndex}.thumbnail.src')}}" />
+            <img alt="{metadataList.{entryIndex}.subparts.{subentryIndex}.thumbnail.alt}"
+                 src="{metadataList.{entryIndex}.subparts.{subentryIndex}.thumbnail.src}}" />
         </div>
         <dl>
-            <f:for each="{v:variable.get(name: 'metadataList.{entryIndex}.subparts.{subentryIndex}.metadata')}" key="subentryIndexName" as="subentryField">
-                <dlf:stdWrap wrap="{subentryField.wrap}">
-                    <dlf:stdWrap wrap="{subentryField.label.wrap}">{subentryField.label.value}</dlf:stdWrap>
+            <f:for each="{metadataList.{entryIndex}.subparts.{subentryIndex}.metadata}" key="subentryIndexName" as="subentryField">
+                <kitodo:stdWrap wrap="{subentryField.wrap}">
+                    <kitodo:stdWrap wrap="{subentryField.label.wrap}">{subentryField.label.value}</kitodo:stdWrap>
                     <f:for each="{subentryField.values}" as="value">
-                        <dlf:stdWrap wrap="{value.wrap}">
+                        <kitodo:stdWrap wrap="{value.wrap}">
                             <f:if condition="{subentryIndexName} == 'title'">
                                 <f:then>
                                     <f:if condition="{logicalPage}">
@@ -52,9 +53,9 @@
                                     {value.value}
                                 </f:else>
                             </f:if>
-                        </dlf:stdWrap>
+                        </kitodo:stdWrap>
                     </f:for>
-                </dlf:stdWrap>
+                </kitodo:stdWrap>
             </f:for>
         </dl>
         <div class="tx-dlf-listview-preview">{subentry.preview}</div>
