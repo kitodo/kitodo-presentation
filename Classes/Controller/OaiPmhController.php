@@ -292,9 +292,9 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \Kitodo\Dlf\Common\DocumentList list of uids
+     * @return \Kitodo\Dlf\Common\DocumentList|null list of uids
      */
-    protected function resume()
+    protected function resume(): ?DocumentList
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_tokens');
@@ -317,7 +317,7 @@ class OaiPmhController extends AbstractController
         } else {
             // No resumption token found or resumption token expired.
             $this->error = 'badResumptionToken';
-            return [];
+            return null;
         }
     }
 
@@ -585,9 +585,11 @@ class OaiPmhController extends AbstractController
             } else {
                 // return next chunk of documents
                 $resultSet = $this->resume();
-                $listRecords =  $this->generateOutputForDocumentList($resultSet);
-                $this->parameters['metadataPrefix'] = $resultSet->metadata['metadataPrefix'];
-                $this->view->assign('listRecords', $listRecords);
+                if ($resultSet instanceof DocumentList) {
+                    $listRecords =  $this->generateOutputForDocumentList($resultSet);
+                    $this->parameters['metadataPrefix'] = $resultSet->metadata['metadataPrefix'];
+                    $this->view->assign('listRecords', $listRecords);
+                }
                 return;
             }
         }
