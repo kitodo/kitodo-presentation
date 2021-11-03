@@ -53,11 +53,13 @@
             </f:else>
         </f:if>
     </p>
-<f:comment>
+
     <f:render partial="ListView/SortingForm" arguments="{_all}" />
 
+    <f:comment>
     <f:render partial="ListView/PageBrowser" arguments="{_all}" />
 </f:comment>
+
     <ol class="tx-dlf-listview-list">
         <f:render partial="ListView/Entries" arguments="{_all}" />
     </ol>

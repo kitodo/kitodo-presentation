@@ -344,14 +344,14 @@ class ListViewController extends AbstractController
             !empty($this->list->metadata['options']['source'])
             && $this->list->metadata['options']['source'] == 'collection'
             && ((!empty($sort['order']) && $sort['order'] != $this->list->metadata['options']['order'])
-                || (isset($sort['asc']) && $sort['asc'] != $this->list->metadata['options']['order.asc']))
+                || (isset($sort['orderBy']) && $sort['orderBy'] != $this->list->metadata['options']['orderBy']))
         ) {
             // Order list by given field.
-            $this->list->sort($sort['order'], (bool) $sort['asc']);
+            $this->list->sort($sort['order'], $sort['orderBy'] == 'asc' ? true : false);
             // Update list's metadata.
             $listMetadata = $this->list->metadata;
             $listMetadata['options']['order'] = $sort['order'];
-            $listMetadata['options']['order.asc'] = (bool) $sort['asc'];
+            $listMetadata['options']['orderBy'] = $sort['orderBy'];
             $this->list->metadata = $listMetadata;
             // Save updated list.
             $this->list->save();
@@ -362,12 +362,12 @@ class ListViewController extends AbstractController
             $listMetadata = $this->list->metadata;
             // Sort the list if applicable.
             if ((!empty($sort['order']) && $sort['order'] != $listMetadata['options']['order'])
-                || (isset($sort['asc']) && $sort['asc'] != $listMetadata['options']['order.asc'])
+                || (isset($sort['orderBy']) && $sort['orderBy'] != $listMetadata['options']['orderBy'])
             ) {
                 // Update list's metadata.
                 $listMetadata['options']['params']['sort'] = [$sort['order'] . "_sorting" => (bool) $sort['asc'] ? 'asc' : 'desc'];
                 $listMetadata['options']['order'] = $sort['order'];
-                $listMetadata['options']['order.asc'] = (bool) $sort['asc'];
+                $listMetadata['options']['orderBy'] = $sort['orderBy'];
                 // Reset pointer.
                 $pointer = 0;
             }
