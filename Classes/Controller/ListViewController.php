@@ -424,22 +424,23 @@ class ListViewController extends AbstractController
             $widgetPage = $requestData['@widget_0'];
         }
 
+        // convert documentList to array --> use widget.pagination viewhelper
+        foreach ($this->list as $listElement) {
+            $documentList[] = $listElement;
+        }
         $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('documentList', $this->list);
+        $this->view->assign('documentListArray', $documentList);
         $this->view->assign('metadataList', $this->metadataList);
         $this->view->assign('metadataConfig', $this->metadata);
         $this->view->assign('currentEntry', $currentEntry);
         $this->view->assign('lastEntry', $lastEntry);
-        $this->view->assign('pointer', $pointer);
         $this->view->assign('sortables', $this->sortables);
         $this->view->assign('logicalPage', $logicalPage);
         $this->view->assign(
             'maxPages',
             intval(ceil($this->list->metadata['options']['numberOfToplevelHits'] / $this->settings['limit']))
         );
-
-        $this->view->assign('pageToBasket', $this->settings['targetBasket']);
         $this->view->assign('forceAbsoluteUrl', !empty($this->extConf['forceAbsoluteUrl']) ? 1 : 0);
-        $this->view->assign('currentPageUid', $GLOBALS['TSFE']->id);
     }
 }
