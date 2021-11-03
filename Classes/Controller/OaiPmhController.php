@@ -509,11 +509,13 @@ class OaiPmhController extends AbstractController
         // create new and empty documentlist
         $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
-        $resultSet->add($documentSet);
-        $resultSet->metadata = [
-            'completeListSize' => count($documentSet),
-            'metadataPrefix' => $this->parameters['metadataPrefix'],
-        ];
+        if (is_array($documentSet)) {
+            $resultSet->add($documentSet);
+            $resultSet->metadata = [
+                'completeListSize' => count($documentSet),
+                'metadataPrefix' => $this->parameters['metadataPrefix'],
+            ];
+        }
 
         $listIdentifiers =  $this->generateOutputForDocumentList($resultSet);
         $this->view->assign('listIdentifiers', $listIdentifiers);
@@ -611,11 +613,13 @@ class OaiPmhController extends AbstractController
         }
         $resultSet = GeneralUtility::makeInstance(DocumentList::class);
         $resultSet->reset();
-        $resultSet->add($documentSet);
-        $resultSet->metadata = [
-            'completeListSize' => count($documentSet),
-            'metadataPrefix' => $this->parameters['metadataPrefix'],
-        ];
+        if (is_array($documentSet)) {
+            $resultSet->add($documentSet);
+            $resultSet->metadata = [
+                'completeListSize' => count($documentSet),
+                'metadataPrefix' => $this->parameters['metadataPrefix'],
+            ];
+        }
 
         $resultSet =  $this->generateOutputForDocumentList($resultSet);
         $this->view->assign('listRecords', $resultSet);
@@ -674,7 +678,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return array Array of matching records
+     * @return array|null Array of matching records
      */
     protected function fetchDocumentUIDs()
     {
@@ -711,7 +715,7 @@ class OaiPmhController extends AbstractController
 
             if (count($allResults) < 1) {
                 $this->error = 'noSetHierarchy';
-                return;
+                return null;
             }
             $resArray = $allResults[0];
             if ($resArray['index_query'] != "") {
@@ -742,7 +746,7 @@ class OaiPmhController extends AbstractController
                 $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
             } else {
                 $this->error = 'badArgument';
-                return;
+                return null;
             }
         }
         $until = "*";
@@ -811,6 +815,10 @@ class OaiPmhController extends AbstractController
     protected function generateOutputForDocumentList(DocumentList $documentListSet)
     {
         $documentsToProcess = $documentListSet->removeRange(0, (int)$this->settings['limit']);
+        if ($documentsToProcess === null) {
+            $this->error = 'noRecordsMatch';
+            return [];
+        }
         $verb = $this->parameters['verb'];
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
