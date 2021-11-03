@@ -220,7 +220,7 @@ class OaiPmhController extends AbstractController
      *
      * @param array $record : The full record array
      *
-     * @return $metadata: The mapped metadata array
+     * @return string: The fetched METS XML
      */
     protected function getMetsData(array $record)
     {
@@ -292,7 +292,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return array Array of uids
+     * @return \Kitodo\Dlf\Common\DocumentList list of uids
      */
     protected function resume()
     {
@@ -372,13 +372,15 @@ class OaiPmhController extends AbstractController
         $resArray = $statement->fetch();
 
         if (!$resArray['uid']) {
-            return $this->error = 'idDoesNotExist';
+            $this->error = 'idDoesNotExist';
+            return;
         }
 
         // Check for required fields.
         foreach ($this->formats[$this->parameters['metadataPrefix']]['requiredFields'] as $required) {
             if (empty($resArray[$required])) {
-                return $this->error = 'cannotDisseminateFormat';
+                $this->error = 'cannotDisseminateFormat';
+                return;
             }
         }
 
@@ -442,9 +444,6 @@ class OaiPmhController extends AbstractController
             $oaiIdentifyInfo['contact'] = 'unknown@example.org';
             $this->logger->notice('Incomplete plugin configuration (contact is missing)');
         }
-
-        // Get earliest datestamp. Use a default value if that fails.
-        $earliestDatestamp = '0000-00-00T00:00:00Z';
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
@@ -551,6 +550,7 @@ class OaiPmhController extends AbstractController
             $resArray = $result->fetch();
         }
 
+        $resultSet = [];
         foreach ($this->formats as $prefix => $details) {
             if (!empty($resArray)) {
                 // check, if all required fields are available for a given identifier
@@ -565,8 +565,6 @@ class OaiPmhController extends AbstractController
             $resultSet[] = $details;
         }
         $this->view->assign('metadataFormats', $resultSet);
-
-        return $ListMetadaFormats;
     }
 
     /**
@@ -843,6 +841,7 @@ class OaiPmhController extends AbstractController
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $documents = $connection->executeQuery($sql, $values, $types);
 
+        $records = [];
         while ($resArray = $documents->fetch()) {
             // we need the collections as array later
             $resArray['collections'] = explode(' ', $resArray['collections']);
