@@ -16,7 +16,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -45,7 +45,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.collections</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.collections</label>
                             <config>
                                 <type>select</type>
                                 <items type="array"/>
@@ -76,20 +76,20 @@
                     <settings.show_userdefined>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.show_userdefined</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.show_userdefined</label>
                             <config>
                                 <type>select</type>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.show_userdefined.all</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.show_userdefined.all</numIndex>
                                         <numIndex index="1">-1</numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.show_userdefined.none</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.show_userdefined.none</numIndex>
                                         <numIndex index="1">0</numIndex>
                                     </numIndex>
                                     <numIndex index="2" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.show_userdefined.exclusive</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.show_userdefined.exclusive</numIndex>
                                         <numIndex index="1">1</numIndex>
                                     </numIndex>
                                 </items>
@@ -102,7 +102,7 @@
                     <settings.dont_show_single>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.dont_show_single</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.dont_show_single</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
@@ -112,7 +112,7 @@
                     <settings.randomize>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.randomize</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.randomize</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
@@ -122,7 +122,7 @@
                     <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.targetPid</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -142,7 +142,7 @@
                     <settings.targetFeed>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.targetFeed</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidFeed</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -156,7 +156,7 @@
                     <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.templateFile</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.templateFile</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>

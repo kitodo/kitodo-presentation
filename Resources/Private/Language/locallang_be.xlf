@@ -272,6 +272,36 @@
 			<trans-unit id="plugins.listview.flexform.getTitle">
 				<source><![CDATA[Show title of parent document if document has no title itself]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.collection.title">
+				<source><![CDATA[Kitodo: Collection]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.description">
+				<source><![CDATA[Collection Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.collections">
+				<source><![CDATA[Show only these collections]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined">
+				<source><![CDATA[Show user-defined collections?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined.all">
+				<source><![CDATA[both]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined.none">
+				<source><![CDATA[no]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined.exclusive">
+				<source><![CDATA[exclusively]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.dont_show_single">
+				<source><![CDATA[Show single collection in overview?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.randomize">
+				<source><![CDATA[Randomize sorting?]]></source>
+			</trans-unit>
+			<trans-unit id="flexform.targetPidFeed">
+				<source><![CDATA[Target page (with "Kitodo: Feeds" plugin)]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

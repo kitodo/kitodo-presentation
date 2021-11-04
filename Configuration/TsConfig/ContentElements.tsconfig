@@ -31,8 +31,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_collection {
         iconIdentifier = tx-dlf-collection
-        title = LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.plugin.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.description
         tt_content_defValues {
           CType = list
           list_type = dlf_collection
