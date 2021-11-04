@@ -425,6 +425,7 @@ class ListViewController extends AbstractController
         }
 
         // convert documentList to array --> use widget.pagination viewhelper
+        $documentList = [];
         foreach ($this->list as $listElement) {
             $documentList[] = $listElement;
         }
