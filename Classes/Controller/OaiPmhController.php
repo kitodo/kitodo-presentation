@@ -317,7 +317,7 @@ class OaiPmhController extends AbstractController
         } else {
             // No resumption token found or resumption token expired.
             $this->error = 'badResumptionToken';
-            return null;
+            return;
         }
     }
 
@@ -715,7 +715,7 @@ class OaiPmhController extends AbstractController
 
             if (count($allResults) < 1) {
                 $this->error = 'noSetHierarchy';
-                return null;
+                return;
             }
             $resArray = $allResults[0];
             if ($resArray['index_query'] != "") {
@@ -746,7 +746,7 @@ class OaiPmhController extends AbstractController
                 $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
             } else {
                 $this->error = 'badArgument';
-                return null;
+                return;
             }
         }
         $until = "*";
