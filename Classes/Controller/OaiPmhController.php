@@ -98,7 +98,7 @@ class OaiPmhController extends AbstractController
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
                 $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp',
-                    $queryBuilder->createNamedParameter((int)($GLOBALS['EXEC_TIME'] - $this->settings['expired'])))
+                    $queryBuilder->createNamedParameter((int) ($GLOBALS['EXEC_TIME'] - $this->settings['expired'])))
             )
             ->execute();
 
@@ -331,11 +331,11 @@ class OaiPmhController extends AbstractController
     protected function verbGetRecord()
     {
         if (count($this->parameters) !== 3 || empty($this->parameters['metadataPrefix']) || empty($this->parameters['identifier'])) {
-            $this->error = 'badArgument'     ;
+            $this->error = 'badArgument';
             return;
         }
         if (!array_key_exists($this->parameters['metadataPrefix'], $this->formats)) {
-            $this->error = 'cannotDisseminateFormat'     ;
+            $this->error = 'cannotDisseminateFormat';
             return;
         }
         $where = '';
@@ -485,7 +485,7 @@ class OaiPmhController extends AbstractController
                 // return next chunk of documents
                 $resultSet = $this->resume();
                 if ($resultSet instanceof DocumentList) {
-                    $listIdentifiers =  $this->generateOutputForDocumentList($resultSet);
+                    $listIdentifiers = $this->generateOutputForDocumentList($resultSet);
                     $this->view->assign('listIdentifiers', $listIdentifiers);
                 }
                 return;
@@ -517,7 +517,7 @@ class OaiPmhController extends AbstractController
             ];
         }
 
-        $listIdentifiers =  $this->generateOutputForDocumentList($resultSet);
+        $listIdentifiers = $this->generateOutputForDocumentList($resultSet);
         $this->view->assign('listIdentifiers', $listIdentifiers);
     }
 
@@ -588,7 +588,7 @@ class OaiPmhController extends AbstractController
                 // return next chunk of documents
                 $resultSet = $this->resume();
                 if ($resultSet instanceof DocumentList) {
-                    $listRecords =  $this->generateOutputForDocumentList($resultSet);
+                    $listRecords = $this->generateOutputForDocumentList($resultSet);
                     $this->parameters['metadataPrefix'] = $resultSet->metadata['metadataPrefix'];
                     $this->view->assign('listRecords', $listRecords);
                 }
@@ -621,7 +621,7 @@ class OaiPmhController extends AbstractController
             ];
         }
 
-        $resultSet =  $this->generateOutputForDocumentList($resultSet);
+        $resultSet = $this->generateOutputForDocumentList($resultSet);
         $this->view->assign('listRecords', $resultSet);
     }
 
@@ -814,7 +814,7 @@ class OaiPmhController extends AbstractController
      */
     protected function generateOutputForDocumentList(DocumentList $documentListSet)
     {
-        $documentsToProcess = $documentListSet->removeRange(0, (int)$this->settings['limit']);
+        $documentsToProcess = $documentListSet->removeRange(0, (int) $this->settings['limit']);
         if ($documentsToProcess === null) {
             $this->error = 'noRecordsMatch';
             return [];
@@ -926,7 +926,7 @@ class OaiPmhController extends AbstractController
         $resumptionTokenInfo['cursor'] = $documentListSet->metadata['completeListSize'] - count($documentListSet);
         $resumptionTokenInfo['completeListSize'] = $documentListSet->metadata['completeListSize'];
         $expireDateTime = new \DateTime();
-        $expireDateTime->add(new \DateInterval('PT' .$this->settings['expired'] . 'S'));
+        $expireDateTime->add(new \DateInterval('PT' . $this->settings['expired'] . 'S'));
         $resumptionTokenInfo['expired'] = $expireDateTime;
 
         $this->view->assign('resumptionToken', $resumptionTokenInfo);
