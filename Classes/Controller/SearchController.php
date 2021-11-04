@@ -138,7 +138,7 @@ class SearchController extends AbstractController
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
-            $this->redirect('main', 'Search', NULL);
+            $this->redirect('main', 'Search', null);
             //return $this->responseFactory->createHtmlResponse($this->view->render());
         }
         // Set search parameters.
@@ -178,7 +178,7 @@ class SearchController extends AbstractController
         $linkConf['forceAbsoluteUrl.']['scheme'] = !empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http';
         $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false);
 
-        $this->redirect('main', 'Search', NULL, NULL);
+        $this->redirect('main', 'Search', null, null);
     }
 
     /**
@@ -564,7 +564,7 @@ class SearchController extends AbstractController
         // Get operator options.
         $operatorOptions = [];
         foreach (['AND', 'OR', 'NOT'] as $operator) {
-            $operatorOptions[$operator] = htmlspecialchars(LocalizationUtility::translate('search.'.$operator, 'dlf'));
+            $operatorOptions[$operator] = htmlspecialchars(LocalizationUtility::translate('search.' . $operator, 'dlf'));
         }
         // Get field selector options.
         $fieldSelectorOptions = [];
