@@ -11,22 +11,17 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
-class CollectionController extends ActionController
+class CollectionController extends AbstractController
 {
-    const PARAMETER_PREFIX = 'tx_dlf';
-
     /**
      * This holds the hook objects
      *
@@ -36,31 +31,11 @@ class CollectionController extends ActionController
     protected $hookObjects = [];
 
     /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
-     * SearchController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-    }
-
-    /**
      * The plugin main method
      */
     public function mainAction()
     {
-        $collection = GeneralUtility::_GP(self::PARAMETER_PREFIX)['collection'];
+        $collection = GeneralUtility::_GP('dlf')['collection'];
 
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->settings['pages'])) {
