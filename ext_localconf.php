@@ -50,12 +50,6 @@ plugin.tx_dlf_collection {
 }
 tt_content.list.20.dlf_collection < plugin.tx_dlf_collection
 
-plugin.tx_dlf_listview = USER_INT
-plugin.tx_dlf_listview {
-    userFunc = Kitodo\Dlf\Plugin\ListView->main
-}
-tt_content.list.20.dlf_listview < plugin.tx_dlf_listview
-
 plugin.tx_dlf_metadata = USER
 plugin.tx_dlf_metadata {
     userFunc = Kitodo\Dlf\Plugin\Metadata->main
@@ -68,71 +62,11 @@ plugin.tx_dlf_oaipmh {
 }
 tt_content.list.20.dlf_oaipmh < plugin.tx_dlf_oaipmh
 
-plugin.tx_dlf_pageview = USER
-plugin.tx_dlf_pageview {
-    userFunc = Kitodo\Dlf\Plugin\PageView->main
-}
-tt_content.list.20.dlf_pageview < plugin.tx_dlf_pageview
-
-plugin.tx_dlf_search = USER
-plugin.tx_dlf_search {
-    userFunc = Kitodo\Dlf\Plugin\Search->main
-}
-tt_content.list.20.dlf_search < plugin.tx_dlf_search
-
-plugin.tx_dlf_toolbox = USER
-plugin.tx_dlf_toolbox {
-    userFunc = Kitodo\Dlf\Plugin\Toolbox->main
-}
-tt_content.list.20.dlf_toolbox < plugin.tx_dlf_toolbox
-
 plugin.tx_dlf_validator = USER_INT
 plugin.tx_dlf_validator {
     userFunc = Kitodo\Dlf\Plugin\Validator->main
 }
 tt_content.list.20.dlf_validator < plugin.tx_dlf_validator
-
-plugin.tx_dlf_fulltexttool = USER
-plugin.tx_dlf_fulltexttool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\FulltextTool->main
-}
-tt_content.list.20.dlf_fulltexttool < plugin.tx_dlf_fulltexttool
-
-plugin.tx_dlf_annotationtool = USER
-plugin.tx_dlf_annotationtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\AnnotationTool->main
-}
-tt_content.list.20.dlf_annotationtool < plugin.tx_dlf_annotationtool
-
-plugin.tx_dlf_fulltextdownloadtool = USER
-plugin.tx_dlf_fulltextdownloadtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\FulltextDownloadTool->main
-}
-tt_content.list.20.dlf_fulltextdownloadtool < plugin.tx_dlf_fulltextdownloadtool
-
-plugin.tx_dlf_imagedownloadtool = USER
-plugin.tx_dlf_imagedownloadtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\ImageDownloadTool->main
-}
-tt_content.list.20.dlf_imagedownloadtool < plugin.tx_dlf_imagedownloadtool
-
-plugin.tx_dlf_imagemanipulationtool = USER
-plugin.tx_dlf_imagemanipulationtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\ImageManipulationTool->main
-}
-tt_content.list.20.dlf_imagemanipulationtool < plugin.tx_dlf_imagemanipulationtool
-
-plugin.tx_dlf_pdfdownloadtool = USER
-plugin.tx_dlf_pdfdownloadtool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\PdfDownloadTool->main
-}
-tt_content.list.20.dlf_pdfdownloadtool < plugin.tx_dlf_pdfdownloadtool
-
-plugin.tx_dlf_searchindocumenttool = USER
-plugin.tx_dlf_searchindocumenttool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\SearchInDocumentTool->main
-}
-tt_content.list.20.dlf_searchindocumenttool < plugin.tx_dlf_searchindocumenttool
 '
 );
 // Register plugin icons.
@@ -207,10 +141,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
 ];
 
+
 // Add migration wizards
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
     = \Kitodo\Dlf\Updates\MigrateSettings::class;
-
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',
@@ -341,5 +275,17 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         Toolbox::class => '',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'ListView',
+    [
+        ListView::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        ListView::class => 'main',
     ]
 );

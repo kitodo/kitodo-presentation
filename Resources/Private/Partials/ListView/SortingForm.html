@@ -1,0 +1,53 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+
+<f:if condition="{sortables}">
+    <f:form action="main" name="sort" object="{sort}"
+            addQueryString="1"
+            argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
+            enctype="multipart/form-data" method="get"
+            fieldNamePrefix="tx_dlf"
+            additionalParams="{f:if(condition: '{logicalPage}', then:'{logicalPage:logicalPage}', else:'{}')}"
+    >
+        <div>
+            <label for="listview-form-oderby">
+                <f:translate key="listview.orderBy"/>
+            </label>
+            <f:form.select id="listview-form-oderby" property="order" value="{documentList.metadata.options.order}" onclick="javascript:this.form.submit();">
+                <f:if condition="{documentList.metadata.options.source} == 'search'">
+                    <f:form.select.option value="score">
+                        <f:translate key="listview.relevance" />
+                    </f:form.select.option>
+                </f:if>
+
+                <f:for each="{sortables}" key="indexName" as="label">
+                    <f:form.select.option value="{indexName -> f:format.htmlspecialchars()}">
+                        {label}
+                    </f:form.select.option>
+                </f:for>
+            </f:form.select>
+
+            <label for="listview-form-sortby">
+                <f:translate key="listview.direction"/>
+            </label>
+            <f:form.select id="listview-form-sortby" property="orderBy" value="{documentList.metadata.options.orderBy}" onclick="javascript:this.form.submit();">
+                <f:form.select.option value="asc">
+                        <f:translate key="listview.direction.asc"/>
+                </f:form.select.option>
+                <f:form.select.option value="desc">
+                    <f:translate key="listview.direction.desc"/>
+                </f:form.select.option>
+            </f:form.select>
+        </div>
+    </f:form>
+</f:if>

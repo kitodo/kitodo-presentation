@@ -260,6 +260,18 @@
 			<trans-unit id="flexform.solrcore">
 				<source><![CDATA[Solr Core]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.listview.title">
+				<source><![CDATA[Kitodo: List View]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.listview.description">
+				<source><![CDATA[List View Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.listview.flexform.limit">
+				<source><![CDATA[Documents per page]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.listview.flexform.getTitle">
+				<source><![CDATA[Show title of parent document if document has no title itself]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
