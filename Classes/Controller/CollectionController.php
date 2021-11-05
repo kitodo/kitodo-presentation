@@ -31,7 +31,9 @@ class CollectionController extends AbstractController
     protected $hookObjects = [];
 
     /**
-     * The plugin main method
+     * The main method of the plugin
+     *
+     * @return void
      */
     public function mainAction()
     {

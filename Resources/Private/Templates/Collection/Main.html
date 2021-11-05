@@ -19,7 +19,6 @@
                     <f:link.action action="main"
                                    pageUid="{currentPageUid}"
                                    additionalParams="{'tx_dlf[collection]':collection.uid}"
-                                   absolute="{forceAbsoluteUrl}"
                                    addQueryString="1"
                                    argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
                     >
@@ -33,30 +32,29 @@
                                            pluginName="Feeds"
                                            pageUid="{settings.targetFeed}"
                                            additionalParams="{'tx_dlf[collection]':collection.uid}"
-                                           absolute="{forceAbsoluteUrl}"
                                            addQueryString="1"
                                            argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
                             >
-                                <img src="{f:uri.image(src:'EXT:dlf/Resources/Public/Icons/txdlffeeds.png')}"
-                                     alt="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/Collection.xml:feedAlt')}"
-                                     title="{f:translate(key:'LLL:EXT:dlf/Resources/Private/Language/Collection.xml:feedTitle')}"
-                                />
+                            <f:image src="EXT:dlf/Resources/Public/Icons/txdlffeeds.png"
+                                    title="{f:translate(key:'collection.feed.title')}"
+                                    alt="{f:translate(key:'collection.feed.alt')}"
+                                    />
                             </f:link.action>
                         </span>
                     </f:if>
                 </h2>
                 <div class="tx-dlf-collection-thumbnail">
                     <f:if condition="{collection.thumbnail}">
-                        <img alt="" title="{collection.label -> f:format.htmlspecialchars()}" src="{collection.thumbnail}" />';
-                    </f:if>
+                        <f:image src="{collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {collection.label}" title="{collection.label}" maxWidth="250" />
+                     </f:if>
                 </div>
                 <f:format.html>{collection.description}</f:format.html>
                 <p class="tx-dlf-collection-counts">
                     ({collection.countTitles}
-                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Collection.xml:{f:if(condition:'{collection.countTitles} > 1', then: 'titles', else: 'title')}" />
+                    <f:translate key="{f:if(condition:'{collection.countTitles} > 1', then: 'titles', else: 'title')}" />
                     /
                     {collection.countVolumes}
-                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Collection.xml:{f:if(condition:'{collection.countTitles} > 1', then: 'volumes', else: 'volume')}" />)
+                    <f:translate key="{f:if(condition:'{collection.countTitles} > 1', then: 'volumes', else: 'volume')}" />)
                 </p>
             </li>
         </f:for>
