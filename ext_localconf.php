@@ -32,24 +32,6 @@ if (!defined('LOG_SEVERITY_ERROR')) {
 // Register plugins without addPItoST43() as this is not working with TYPO3 9.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
     '
-plugin.tx_dlf_basket = USER_INT
-plugin.tx_dlf_basket {
-    userFunc = Kitodo\Dlf\Plugin\Basket->main
-}
-tt_content.list.20.dlf_basket < plugin.tx_dlf_basket
-
-plugin.tx_dlf_calendar = USER
-plugin.tx_dlf_calendar {
-    userFunc = Kitodo\Dlf\Plugin\Calendar->main
-}
-tt_content.list.20.dlf_calendar < plugin.tx_dlf_calendar
-
-plugin.tx_dlf_collection = USER
-plugin.tx_dlf_collection {
-    userFunc = Kitodo\Dlf\Plugin\Collection->main
-}
-tt_content.list.20.dlf_collection < plugin.tx_dlf_collection
-
 plugin.tx_dlf_metadata = USER
 plugin.tx_dlf_metadata {
     userFunc = Kitodo\Dlf\Plugin\Metadata->main
@@ -287,5 +269,17 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         ListView::class => 'main',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Collection',
+    [
+        Collection::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        Collection::class => '',
     ]
 );

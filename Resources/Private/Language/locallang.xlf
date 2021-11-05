@@ -302,6 +302,12 @@
 			<trans-unit id="listview.direction.desc">
 				<source><![CDATA[descending]]></source>
 			</trans-unit>
+			<trans-unit id="collection.feed.alt">
+				<source><![CDATA[RSS feed]]></source>
+			</trans-unit>
+			<trans-unit id="collection.feed.title">
+				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

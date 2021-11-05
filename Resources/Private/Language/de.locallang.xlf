@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-27T14:35:33Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-05T10:14:37Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -88,6 +88,14 @@
 			<trans-unit id="calendar.view_list" approved="yes">
 				<source><![CDATA[List View]]></source>
 				<target><![CDATA[Listenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="collection.feed.alt" approved="yes">
+				<source><![CDATA[RSS feed]]></source>
+				<target><![CDATA[RSS-Feed]]></target>
+			</trans-unit>
+			<trans-unit id="collection.feed.title" approved="yes">
+				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
+				<target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
 			</trans-unit>
 			<trans-unit id="doublePage+1" approved="yes">
 				<source><![CDATA[Adjust recto/verso]]></source>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-27T14:03:54Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-04T17:27:25Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -44,6 +44,10 @@
 			<trans-unit id="flexform.targetBasket" approved="yes">
 				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "DLF: Warenkorb")]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.targetPidFeed" approved="yes">
+				<source><![CDATA[Target page (with "Kitodo: Feeds" plugin)]]></source>
+				<target><![CDATA[Zielseite (mit Plugin "Kitodo: Feeds")]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.targetPidListView" approved="yes">
 				<source><![CDATA[Target page (with "Kitodo: List View" plugin)]]></source>
@@ -120,6 +124,42 @@
 			<trans-unit id="plugins.calendar.title" approved="yes">
 				<source><![CDATA[Kitodo: Calendar]]></source>
 				<target><![CDATA[Kitodo: Kalender]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.description" approved="yes">
+				<source><![CDATA[Collection Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Kollektionen Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.collections" approved="yes">
+				<source><![CDATA[Show only these collections]]></source>
+				<target><![CDATA[Nur diese Kollektionen anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.dont_show_single" approved="yes">
+				<source><![CDATA[Show single collection in overview?]]></source>
+				<target><![CDATA[Einzelne Kollektion in Übersicht anzeigen?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.randomize" approved="yes">
+				<source><![CDATA[Randomize sorting?]]></source>
+				<target><![CDATA[Zufällige Sortierung?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined" approved="yes">
+				<source><![CDATA[Show user-defined collections?]]></source>
+				<target><![CDATA[Benutzerdefinierte Kollektionen anzeigen?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined.all" approved="yes">
+				<source><![CDATA[both]]></source>
+				<target><![CDATA[beides]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined.exclusive" approved="yes">
+				<source><![CDATA[exclusively]]></source>
+				<target><![CDATA[exklusiv]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.flexform.show_userdefined.none" approved="yes">
+				<source><![CDATA[no]]></source>
+				<target><![CDATA[nein]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.collection.title" approved="yes">
+				<source><![CDATA[Kitodo: Collection]]></source>
+				<target><![CDATA[Kitodo: Kollektion]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.description" approved="yes">
 				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
