@@ -290,6 +290,51 @@
 			<trans-unit id="oaipmh.error">
 				<source><![CDATA[An error occurred, please try again later. If this happens consistently, please contact the administrator.]]></source>
 			</trans-unit>
+			<trans-unit id="listview.hits">
+				<source><![CDATA[%d hits found in %d documents.]]></source>
+			</trans-unit>
+			<trans-unit id="listview.nohits">
+				<source><![CDATA[Nothing found.]]></source>
+			</trans-unit>
+			<trans-unit id="listview.count">
+				<source><![CDATA[Entries %d to %d of %d.]]></source>
+			</trans-unit>
+			<trans-unit id="listview.prevPage">
+				<source><![CDATA[&lt;]]></source>
+			</trans-unit>
+			<trans-unit id="listview.nextPage">
+				<source><![CDATA[&gt;]]></source>
+			</trans-unit>
+			<trans-unit id="listview.page">
+				<source><![CDATA[%d]]></source>
+			</trans-unit>
+			<trans-unit id="listview.separator">
+				<source><![CDATA[ - ]]></source>
+			</trans-unit>
+			<trans-unit id="listview.skip">
+				<source><![CDATA[...]]></source>
+			</trans-unit>
+			<trans-unit id="listview.orderBy">
+				<source><![CDATA[Order by:]]></source>
+			</trans-unit>
+			<trans-unit id="listview.relevance">
+				<source><![CDATA[relevance]]></source>
+			</trans-unit>
+			<trans-unit id="listview.direction">
+				<source><![CDATA[Direction:]]></source>
+			</trans-unit>
+			<trans-unit id="listview.direction.asc">
+				<source><![CDATA[ascending]]></source>
+			</trans-unit>
+			<trans-unit id="listview.direction.desc">
+				<source><![CDATA[descending]]></source>
+			</trans-unit>
+			<trans-unit id="collection.feed.alt">
+				<source><![CDATA[RSS feed]]></source>
+			</trans-unit>
+			<trans-unit id="collection.feed.title">
+				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

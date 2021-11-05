@@ -32,18 +32,6 @@ if (!defined('LOG_SEVERITY_ERROR')) {
 // Register plugins without addPItoST43() as this is not working with TYPO3 9.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
     '
-plugin.tx_dlf_collection = USER
-plugin.tx_dlf_collection {
-    userFunc = Kitodo\Dlf\Plugin\Collection->main
-}
-tt_content.list.20.dlf_collection < plugin.tx_dlf_collection
-
-plugin.tx_dlf_listview = USER_INT
-plugin.tx_dlf_listview {
-    userFunc = Kitodo\Dlf\Plugin\ListView->main
-}
-tt_content.list.20.dlf_listview < plugin.tx_dlf_listview
-
 plugin.tx_dlf_metadata = USER
 plugin.tx_dlf_metadata {
     userFunc = Kitodo\Dlf\Plugin\Metadata->main
@@ -54,13 +42,6 @@ plugin.tx_dlf_validator = USER_INT
 plugin.tx_dlf_validator {
     userFunc = Kitodo\Dlf\Plugin\Validator->main
 }
-tt_content.list.20.dlf_validator < plugin.tx_dlf_validator
-
-plugin.tx_dlf_fulltexttool = USER
-plugin.tx_dlf_fulltexttool {
-    userFunc = Kitodo\Dlf\Plugin\Tools\FulltextTool->main
-}
-tt_content.list.20.dlf_fulltexttool < plugin.tx_dlf_fulltexttool
 '
 );
 // Register plugin icons.
@@ -135,10 +116,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
 ];
 
+
 // Add migration wizards
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
     = \Kitodo\Dlf\Updates\MigrateSettings::class;
-
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',
@@ -281,5 +262,29 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         OaiPmh::class => 'main',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'ListView',
+    [
+        ListView::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        ListView::class => 'main',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Collection',
+    [
+        Collection::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        Collection::class => '',
     ]
 );
