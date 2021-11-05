@@ -62,7 +62,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Collection.xml:tt_content.pi_flexform.solrcore</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
                                 <items type="array"></items>
