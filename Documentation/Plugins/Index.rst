@@ -632,12 +632,6 @@ OAI-PMH
    :Default:
        0
 
- - :Property:
-       unqualified_epicur
-   :Data Type:
-       :ref:`t3tsref:data-type-boolean`
-   :Default:
-       0
 
 Page Grid
 ---------
