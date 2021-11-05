@@ -17,29 +17,21 @@
             <li>
                 <h2>
                     <f:link.action action="main"
-                                   pageUid="{currentPageUid}"
-                                   additionalParams="{'tx_dlf[collection]':collection.uid}"
-                                   addQueryString="1"
-                                   argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
-                    >
-                        {collection.label -> f:format.htmlspecialchars()}
+                                   arguments="{collection : collection.uid}"
+                                   pageUid="{currentPageUid}">
+                        {collection.label}
                     </f:link.action>
 
                     <f:if condition="{settings.targetFeed}">
                         <span>
-                            <f:link.action action="main"
-                                           controller="Feeds"
-                                           pluginName="Feeds"
-                                           pageUid="{settings.targetFeed}"
-                                           additionalParams="{'tx_dlf[collection]':collection.uid}"
-                                           addQueryString="1"
-                                           argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
-                            >
-                            <f:image src="EXT:dlf/Resources/Public/Icons/txdlffeeds.png"
-                                    title="{f:translate(key:'collection.feed.title')}"
-                                    alt="{f:translate(key:'collection.feed.alt')}"
-                                    />
-                            </f:link.action>
+                            <f:link.page
+                                pageUid="{settings.targetFeed}"
+                                additionalParams="{'tx_dlf_feeds[collection]':collection.uid}"
+                                target="_blank">
+                                <f:image src="EXT:dlf/Resources/Public/Icons/txdlffeeds.png"
+                                        title="{f:translate(key:'collection.feed.title')}"
+                                        alt="{f:translate(key:'collection.feed.alt')}" />
+                            </f:link.page>
                         </span>
                     </f:if>
                 </h2>

@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -37,7 +36,10 @@ class CollectionController extends AbstractController
      */
     public function mainAction()
     {
-        $collection = GeneralUtility::_GP('dlf')['collection'];
+        // access to GET parameter tx_dlf_collection['collection']
+        $requestData = $this->request->getArguments();
+
+        $collection = $requestData['collection'];
 
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->settings['pages'])) {
@@ -53,9 +55,6 @@ class CollectionController extends AbstractController
             $this->showCollectionList();
         }
 
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-
-        $this->view->assign('forceAbsoluteUrl', $extensionConfiguration['forceAbsoluteUrl']);
         $this->view->assign('currentPageUid', $GLOBALS['TSFE']->id);
     }
 
@@ -390,22 +389,10 @@ class CollectionController extends AbstractController
         // Clean output buffer.
         ob_end_clean();
 
-        // Send headers.
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-
-        $this->uriBuilder->reset()->setTargetPageUid($this->settings['targetPid'])
-            ->setCreateAbsoluteUri((!empty($extensionConfiguration['forceAbsoluteUrl']) ? true : false));
-
-        if (
-            !empty($extensionConfiguration['forceAbsoluteUrl']) &&
-            !empty($extensionConfiguration['forceAbsoluteUrlHttps'])
-        ) {
-            $this->uriBuilder->setAbsoluteUriScheme('https');
-        } else {
-            $this->uriBuilder->setAbsoluteUriScheme('http');
-        }
-
-        $uri = $this->uriBuilder->uriFor('main', [], 'ListView', 'dlf', 'ListView');
+        $uri = $this->uriBuilder
+            ->reset()
+            ->setTargetPageUid($this->settings['targetPid'])
+            ->uriFor('main', [], 'ListView', 'dlf', 'ListView');
         $this->redirectToURI($uri);
     }
 }
