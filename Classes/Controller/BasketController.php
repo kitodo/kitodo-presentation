@@ -14,6 +14,9 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Repository\MailRepository;
+use Kitodo\Dlf\Domain\Repository\BasketRepository;
+use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,6 +24,46 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class BasketController extends AbstractController
 {
+
+    /**
+     * @var BasketRepository
+     */
+    protected $basketRepository;
+
+    /**
+     * @var MailRepository
+     */
+    protected $mailRepository;
+
+    /**
+     * @var PrinterRepository
+     */
+    protected $printerRepository;
+
+    /**
+     * @param BasketRepository $basketRepository
+     */
+    public function injectBasketRepository(BasketRepository $basketRepository)
+    {
+        $this->basketRepository = $basketRepository;
+    }
+
+    /**
+     * @param MailRepository $mailRepository
+     */
+    public function injectMailRepository(MailRepository $mailRepository)
+    {
+        $this->mailRepository = $mailRepository;
+    }
+
+    /**
+     * @param PrinterRepository $printerRepository
+     */
+    public function injectPrinterRepository(PrinterRepository $printerRepository)
+    {
+        $this->printerRepository = $printerRepository;
+    }
+
     /**
      * Different actions which depends on the choosen action (form)
      *
@@ -82,7 +125,6 @@ class BasketController extends AbstractController
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $basketData = $this->getBasketData();
-
         if (
             !empty($requestData['id'])
             && $requestData['addToBasket']
@@ -116,47 +158,24 @@ class BasketController extends AbstractController
         }
         $this->view->assign('count', $count);
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_mail');
-
-        // get mail addresses
-        $resultMail = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_mail')
-            ->where(
-                '1=1',
-                Helper::whereExpression('tx_dlf_mail')
-            )
-            ->orderBy('tx_dlf_mail.sorting')
-            ->execute();
+        $allMails = $this->mailRepository->findAllWithPid($this->settings['pages']);
 
         $mailSelect = [];
-        if ($resultMail->rowCount() > 0) {
+        if ($allMails->count() > 0) {
             $mailSelect[0] = htmlspecialchars(LocalizationUtility::translate('basket.chooseMail', 'dlf'));
-            while ($row = $resultMail->fetch()) {
-                $mailSelect[$row['uid']] = htmlspecialchars($row['name']) . ' (' . htmlspecialchars($row['mail']) . ')';
+            foreach ($allMails as $mail) {
+                $mailSelect[$mail->getUid()] = htmlspecialchars($mail->getName()) . ' (' . htmlspecialchars($mail->getMail()) . ')';
             }
             $this->view->assign('mailSelect', $mailSelect);
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_printer');
-
-        // get mail addresses
-        $resultPrinter = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_printer')
-            ->where(
-                '1=1',
-                Helper::whereExpression('tx_dlf_printer')
-            )
-            ->execute();
+        $allPrinter = $this->printerRepository->findAllWithPid($this->settings['pages']);
 
         $printSelect = [];
-        if ($resultPrinter->rowCount() > 0) {
+        if ($allPrinter->count() > 0) {
             $printSelect[0] = htmlspecialchars(LocalizationUtility::translate('basket.choosePrinter', 'dlf'));
-            while ($row = $resultPrinter->fetch()) {
-                $printSelect[$row['uid']] = htmlspecialchars($row['label']);
+            foreach ($allPrinter as $printer) {
+                $printSelect[$printer->getUid()] = htmlspecialchars($printer->getLabel());
             }
             $this->view->assign('printSelect', $printSelect);
         }
@@ -180,35 +199,18 @@ class BasketController extends AbstractController
     {
         // get user session
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_basket');
 
         if ($GLOBALS['TSFE']->loginUser) {
-            $result = $queryBuilder
-                ->select('*')
-                ->from('tx_dlf_basket')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_basket.fe_user_id', (int) $GLOBALS['TSFE']->fe_user->user['uid']),
-                    Helper::whereExpression('tx_dlf_basket')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
         } else {
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
             $GLOBALS['TSFE']->fe_user->sesData_change = true;
             $GLOBALS['TSFE']->fe_user->storeSessionData();
-            $result = $queryBuilder
-                ->select('*')
-                ->from('tx_dlf_basket')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_basket.session_id', $queryBuilder->createNamedParameter($sessionId)),
-                    Helper::whereExpression('tx_dlf_basket')
-                )
-                ->setMaxResults(1)
-                ->execute();
+
+            $basket = $this->basketRepository->findOneBySessionId($sessionId)->getFirst();
         }
         // session already exists
-        if ($result->rowCount() === 0) {
+        if ($basket === null) {
             // create new basket in db
             $insertArray['fe_user_id'] = $GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0;
             $insertArray['session_id'] = $sessionId;
@@ -221,9 +223,11 @@ class BasketController extends AbstractController
                     'tx_dlf_basket',
                     $insertArray
                 );
+
+            return '';
         }
-        $basketData = $result->fetchAll()[0];
-        $basketData['doc_ids'] = json_decode($basketData['doc_ids']);
+
+        $basketData['doc_ids'] = json_decode($basket->getDocIds());
         return $basketData;
     }
 
@@ -507,22 +511,8 @@ class BasketController extends AbstractController
         // send mail
         $mailId = $requestData['mail_action'];
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_mail');
+        $mailObject = $this->mailRepository->findByUid(intval($mailId))->getFirst();
 
-        // get id from db and send selected doc download link
-        $resultMail = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_mail')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_mail.uid', intval($mailId)),
-                Helper::whereExpression('tx_dlf_mail')
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        $allResults = $resultMail->fetchAll();
-        $mailData = $allResults[0];
         $mailText = htmlspecialchars(LocalizationUtility::translate('basket.mailBody', 'dlf')) . "\n";
         $numberOfPages = 0;
         $pdfUrl = $this->settings['pdfdownload'];
@@ -561,7 +551,7 @@ class BasketController extends AbstractController
             // Set the From address with an associative array
             ->setFrom($from)
             // Set the To addresses with an associative array
-            ->setTo([$mailData['mail'] => $mailData['name']])
+            ->setTo([$mailObject->getMail() => $mailObject->getName()])
             ->setBody($mailBody, 'text/html')
             ->send();
         // protocol
@@ -575,12 +565,12 @@ class BasketController extends AbstractController
             // internal user
             $insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
             $insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-            $insertArray['label'] = 'Mail: ' . $mailData['mail'];
+            $insertArray['label'] = 'Mail: ' . $mailObject->getMail();
         } else {
             // external user
             $insertArray['user_id'] = 0;
             $insertArray['name'] = 'n/a';
-            $insertArray['label'] = 'Mail: ' . $mailData['mail'];
+            $insertArray['label'] = 'Mail: ' . $mailObject->getMail();
         }
         // add action to protocol
         GeneralUtility::makeInstance(ConnectionPool::class)
@@ -613,25 +603,12 @@ class BasketController extends AbstractController
         // get printer data
         $printerId = $requestData['print_action'];
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_printer');
-
         // get id from db and send selected doc download link
-        $resultPrinter = $queryBuilder
-            ->select('*')
-            ->from('tx_dlf_printer')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_printer.uid', intval($printerId)),
-                Helper::whereExpression('tx_dlf_printer')
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $printer = $this->printerRepository->findByUid($printerId)->getFirst();
 
-        $allResults = $resultPrinter->fetchAll();
-        $printerData = $allResults[0];
         // printer is selected
-        if ($printerData) {
-            $pdfUrl = $printerData['print'];
+        if ($printer) {
+            $pdfUrl = $printer->getPrint();
             $numberOfPages = 0;
             foreach ($requestData['selected'] as $docId => $docValue) {
                 if ($docValue['id']) {
@@ -654,12 +631,12 @@ class BasketController extends AbstractController
             // internal user
             $insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
             $insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-            $insertArray['label'] = 'Print: ' . $printerData['label'];
+            $insertArray['label'] = 'Print: ' . $printer->getLabel();
         } else {
             // external user
             $insertArray['user_id'] = 0;
             $insertArray['name'] = 'n/a';
-            $insertArray['label'] = 'Print: ' . $printerData['label'];
+            $insertArray['label'] = 'Print: ' . $printer->getLabel();
         }
         // add action to protocol
         GeneralUtility::makeInstance(ConnectionPool::class)
