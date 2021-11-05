@@ -95,9 +95,6 @@
 			<trans-unit id="text.none">
 				<source><![CDATA[none]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.search.flexform.solrcore">
-				<source><![CDATA[Solr Core]]></source>
-			</trans-unit>
 			<trans-unit id="plugins.search.flexform.extSearch.slotCount">
 				<source><![CDATA[Number of search slots]]></source>
 			</trans-unit>
@@ -259,6 +256,30 @@
 			</trans-unit>
 			<trans-unit id="flexform.solrcore">
 				<source><![CDATA[Solr Core]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.title">
+				<source><![CDATA[Kitodo: OAI-PMH Interface]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.description">
+				<source><![CDATA[OAI-PMH Interface Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.limit">
+				<source><![CDATA[Records per request]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.expired">
+				<source><![CDATA[Expiration time for resumption token (seconds)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.show_userdefined">
+				<source><![CDATA[Show user-defined collections?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.show_userdefined">
+				<source><![CDATA[Show user-defined collections?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.solr_limit">
+				<source><![CDATA[Maximum Solr results]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.stylesheet">
+				<source><![CDATA[Transformation stylesheet]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.listview.title">
 				<source><![CDATA[Kitodo: List View]]></source>

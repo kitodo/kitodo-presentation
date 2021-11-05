@@ -205,6 +205,34 @@
 				<source><![CDATA[Kitodo: Navigation]]></source>
 				<target><![CDATA[Kitodo: Navigation]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.oaipmh.description" approved="yes">
+				<source><![CDATA[OAI-PMH Interface Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[OAI-PMH-Schnittstelle Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.expired" approved="yes">
+				<source><![CDATA[Expiration time for resumption token (seconds)]]></source>
+				<target><![CDATA[Gültigkeitsdauer des Resumption Tokens (Sekunden)]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.limit" approved="yes">
+				<source><![CDATA[Records per request]]></source>
+				<target><![CDATA[Datensätze pro Abfrage]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.show_userdefined" approved="yes">
+				<source><![CDATA[Show user-defined collections?]]></source>
+				<target><![CDATA[Benutzerdefinierte Kollektionen anzeigen?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.solr_limit" approved="yes">
+				<source><![CDATA[Maximum Solr results]]></source>
+				<target><![CDATA[Maximale Solr-Ergebnisse]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.flexform.stylesheet" approved="yes">
+				<source><![CDATA[Transformation stylesheet]]></source>
+				<target><![CDATA[XSL-Stylesheet]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.oaipmh.title" approved="yes">
+				<source><![CDATA[Kitodo: OAI-PMH Interface]]></source>
+				<target><![CDATA[Kitodo: OAI-PMH-Schnittstelle]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.pagegrid.description" approved="yes">
 				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
 				<target><![CDATA[Seitenvorschau Plugin für Kitodo.Presentation]]></target>
@@ -332,10 +360,6 @@
 			<trans-unit id="plugins.search.flexform.showSingleResult" approved="yes">
 				<source><![CDATA[Show single result in Page View?]]></source>
 				<target><![CDATA[Einzelnes Ergebnis in Seitenansicht anzeigen?]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.solrcore" approved="yes">
-				<source><![CDATA[Solr Core]]></source>
-				<target><![CDATA[Solr Kern]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.suggest" approved="yes">
 				<source><![CDATA[Show search suggestions]]></source>

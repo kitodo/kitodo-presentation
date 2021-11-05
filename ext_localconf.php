@@ -38,17 +38,10 @@ plugin.tx_dlf_metadata {
 }
 tt_content.list.20.dlf_metadata < plugin.tx_dlf_metadata
 
-plugin.tx_dlf_oaipmh = USER_INT
-plugin.tx_dlf_oaipmh {
-    userFunc = Kitodo\Dlf\Plugin\OaiPmh->main
-}
-tt_content.list.20.dlf_oaipmh < plugin.tx_dlf_oaipmh
-
 plugin.tx_dlf_validator = USER_INT
 plugin.tx_dlf_validator {
     userFunc = Kitodo\Dlf\Plugin\Validator->main
 }
-tt_content.list.20.dlf_validator < plugin.tx_dlf_validator
 '
 );
 // Register plugin icons.
@@ -257,6 +250,18 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         Toolbox::class => '',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'OaiPmh',
+    [
+        OaiPmh::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        OaiPmh::class => 'main',
     ]
 );
 

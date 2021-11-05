@@ -49,7 +49,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_navigati
 // Plugin "oaipmh".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_oaipmh'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_oaipmh'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tt_content.dlf_oaipmh', 'dlf_oaipmh'], 'list_type', 'dlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_oaipmh', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/OaiPmh.xml');
 // Plugin "pagegrid".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_pagegrid'] = 'layout,select_key,pages,recursive';
@@ -156,6 +155,13 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_validato
     'Toolbox',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'OaiPmh',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-oaipmh.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(

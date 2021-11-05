@@ -40,3 +40,9 @@ if (!defined('TYPO3_MODE')) {
     'Configuration/TypoScript/Plugins/Feeds/',
     'RSS Feed Plugin Configuration'
 );
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'Configuration/TypoScript/Plugins/OaiPmh/',
+    'OAI-PMH Plugin Configuration'
+);

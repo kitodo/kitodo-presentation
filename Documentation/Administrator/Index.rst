@@ -70,6 +70,19 @@ This section contains version specific instructions on upgrading an existing Kit
 Version 3.3 -> 4.0
 ==================
 
+Plugin Feeds
+------------
+
+The plugin feeds uses the fluid template engine to render XML now. To enable this output format, you must create
+a TypoScript extension template on the page with the feed plugin and include the template "RSS Feed Plugin Configuration".
+
+Plugin OAI-PMH
+--------------
+
+The plugin oai-pmh uses the fluid template engine to render XML now. To enable this output format, you must create
+a TypoScript extension template on the page with the oai-pmh plugin and include the template "OAI-PMH Plugin Configuration".
+
+
 Plugin Page Grid
 ----------------
 

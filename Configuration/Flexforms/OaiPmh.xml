@@ -16,7 +16,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -46,7 +46,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.library</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.library</label>
                             <config>
                                 <type>select</type>
                                 <renderType>selectSingle</renderType>
@@ -61,7 +61,7 @@
                     <settings.limit>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.limit</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.limit</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,num,int</eval>
@@ -72,7 +72,7 @@
                     <settings.expired>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.expired</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.expired</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,num,int</eval>
@@ -83,7 +83,7 @@
                     <settings.show_userdefined>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.show_userdefined</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.show_userdefined</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
@@ -94,7 +94,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.solrcore</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
                                 <items type="array"></items>
@@ -109,7 +109,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.solr_limit</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.solr_limit</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,num,int</eval>
@@ -120,7 +120,7 @@
                     <settings.stylesheet>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.stylesheet</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.stylesheet</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>
@@ -132,16 +132,6 @@
                             </config>
                         </TCEforms>
                     </settings.stylesheet>
-                    <settings.unqualified_epicur>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/OaiPmh.xml:tt_content.pi_flexform.unqualified_epicur</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
-                    </settings.unqualified_epicur>
                 </el>
             </ROOT>
         </sDEF>
