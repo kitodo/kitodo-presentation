@@ -317,7 +317,7 @@ class OaiPmhController extends AbstractController
         } else {
             // No resumption token found or resumption token expired.
             $this->error = 'badResumptionToken';
-            return;
+            return null;
         }
     }
 
@@ -711,17 +711,15 @@ class OaiPmhController extends AbstractController
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) < 1) {
-                $this->error = 'noSetHierarchy';
-                return;
-            }
-            $resArray = $allResults[0];
-            if ($resArray['index_query'] != "") {
-                $solr_query .= '(' . $resArray['index_query'] . ')';
+            if ($resArray = $result->fetch()) {
+                if ($resArray['index_query'] != "") {
+                    $solr_query .= '(' . $resArray['index_query'] . ')';
+                } else {
+                    $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
+                }
             } else {
-                $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
+                $this->error = 'noSetHierarchy';
+                return null;
             }
         } else {
             // If no set is specified we have to query for all collections
