@@ -158,15 +158,8 @@ class TableOfContentsController extends AbstractController
         if (empty($this->conf['settings.menuConf.'])) {
             $this->logger->warning('Incomplete plugin configuration');
         }
-        // Load template file.
-        $this->getTemplate();
-        $TSconfig = [];
-        $TSconfig['special'] = 'userfunction';
-        $TSconfig['special.']['userFunc'] = \Kitodo\Dlf\Plugin\TableOfContents::class . '->makeMenuArray';
-        $TSconfig = Helper::mergeRecursiveWithOverrule($this->conf['settings.menuConf.'], $TSconfig);
-        $markerArray['###TOCMENU###'] = $this->cObj->cObjGetSingle('HMENU', $TSconfig);
-        $content .= $this->templateService->substituteMarkerArray($this->template, $markerArray);
-        return $this->pi_wrapInBaseClass($content);
+
+        $this->view->assign('toc', $this->makeMenuArray($requestData));
     }
 
     /**
