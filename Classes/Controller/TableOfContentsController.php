@@ -155,7 +155,7 @@ class TableOfContentsController extends AbstractController
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // Check for typoscript configuration to prevent fatal error.
-        if (empty($this->pluginConf['menuConf.'])) {
+        if (empty($this->conf['settings.menuConf.'])) {
             $this->logger->warning('Incomplete plugin configuration');
         }
 
