@@ -95,6 +95,9 @@
 			<trans-unit id="text.none">
 				<source><![CDATA[none]]></source>
 			</trans-unit>
+			<trans-unit id="text.all">
+				<source><![CDATA[all]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.search.flexform.extSearch.slotCount">
 				<source><![CDATA[Number of search slots]]></source>
 			</trans-unit>
@@ -290,7 +293,7 @@
 			<trans-unit id="plugins.listview.flexform.limit">
 				<source><![CDATA[Documents per page]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.listview.flexform.getTitle">
+			<trans-unit id="flexform.getTitle">
 				<source><![CDATA[Show title of parent document if document has no title itself]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.collection.title">
@@ -322,6 +325,45 @@
 			</trans-unit>
 			<trans-unit id="flexform.targetPidFeed">
 				<source><![CDATA[Target page (with "Kitodo: Feeds" plugin)]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.title">
+				<source><![CDATA[Kitodo: Metadata]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.description">
+				<source><![CDATA[Metadata Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.linkTitle">
+				<source><![CDATA[Link title to target page]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.showFull">
+				<source><![CDATA[Show all available metadata]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.rootline">
+				<source><![CDATA[Show metadata of superior structures]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.rootline.titledata">
+				<source><![CDATA[titledata only]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.originalIiifMetadata">
+				<source><![CDATA[Display metadata from IIIF manifests completely as given in the manifest]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.iiifMetadataWrap">
+				<source><![CDATA[TypoScript-Wrap for IIIF manifest metadata]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.displayIiifDescription">
+				<source><![CDATA[Display description for IIIF resources]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.displayIiifRights">
+				<source><![CDATA[Display attributions and license for IIIF resources]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.displayIiifLinks">
+				<source><![CDATA[Display external links for IIIF resources]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.separator">
+				<source><![CDATA[Separator for multi-valued fields]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.separator">
+				<source><![CDATA[Separator for multi-valued fields]]></source>
 			</trans-unit>
 		</body>
 	</file>
