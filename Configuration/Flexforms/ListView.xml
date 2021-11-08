@@ -74,7 +74,7 @@
                     <settings.getTitle>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.listview.flexform.getTitle</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.getTitle</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>

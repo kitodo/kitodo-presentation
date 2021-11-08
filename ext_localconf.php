@@ -32,12 +32,6 @@ if (!defined('LOG_SEVERITY_ERROR')) {
 // Register plugins without addPItoST43() as this is not working with TYPO3 9.
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
     '
-plugin.tx_dlf_metadata = USER
-plugin.tx_dlf_metadata {
-    userFunc = Kitodo\Dlf\Plugin\Metadata->main
-}
-tt_content.list.20.dlf_metadata < plugin.tx_dlf_metadata
-
 plugin.tx_dlf_validator = USER_INT
 plugin.tx_dlf_validator {
     userFunc = Kitodo\Dlf\Plugin\Validator->main
@@ -286,5 +280,16 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         Collection::class => '',
+    ]
+);
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Metadata',
+    [
+        Metadata::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        Metadata::class => '',
     ]
 );

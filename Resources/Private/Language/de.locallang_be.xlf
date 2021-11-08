@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-04T17:27:25Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-08T09:49:54Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -16,6 +16,10 @@
 			<trans-unit id="flexform.excludeOtherCollections" approved="yes">
 				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
 				<target><![CDATA[Nur Dokumente der ausgewählten Kollektion(en) berücksichtigen]]></target>
+			</trans-unit>
+			<trans-unit id="flexform.getTitle" approved="yes">
+				<source><![CDATA[Show title of parent document if document has no title itself]]></source>
+				<target><![CDATA[Bei Bedarf Titel des übergeordneten Dokuments anzeigen]]></target>
 			</trans-unit>
 			<trans-unit id="flexform.library" approved="yes">
 				<source><![CDATA[Providing library]]></source>
@@ -181,10 +185,6 @@
 				<source><![CDATA[List View Plugin for Kitodo.Presentation]]></source>
 				<target><![CDATA[Listenansicht Plugin für Kitodo.Presentation]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.listview.flexform.getTitle" approved="yes">
-				<source><![CDATA[Show title of parent document if document has no title itself]]></source>
-				<target><![CDATA[Bei Bedarf Titel des übergeordneten Dokuments anzeigen]]></target>
-			</trans-unit>
 			<trans-unit id="plugins.listview.flexform.limit" approved="yes">
 				<source><![CDATA[Documents per page]]></source>
 				<target><![CDATA[Dokumente pro Seite]]></target>
@@ -192,6 +192,54 @@
 			<trans-unit id="plugins.listview.title" approved="yes">
 				<source><![CDATA[Kitodo: List View]]></source>
 				<target><![CDATA[Kitodo: Listenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.description" approved="yes">
+				<source><![CDATA[Metadata Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Metadata Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.displayIiifDescription" approved="yes">
+				<source><![CDATA[Display description for IIIF resources]]></source>
+				<target><![CDATA[Beschreibung von IIIF-Ressourcen anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.displayIiifLinks" approved="yes">
+				<source><![CDATA[Display external links for IIIF resources]]></source>
+				<target><![CDATA[Externe Verlinkungen für IIIF-Ressourcen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.displayIiifRights" approved="yes">
+				<source><![CDATA[Display attributions and license for IIIF resources]]></source>
+				<target><![CDATA[Namensnennung und Lizenzinformationen bei IIIF-Ressourcen anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.iiifMetadataWrap" approved="yes">
+				<source><![CDATA[TypoScript-Wrap for IIIF manifest metadata]]></source>
+				<target><![CDATA[TypoScript-Wrap für IIIF-Manifest-Metadaten]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.linkTitle" approved="yes">
+				<source><![CDATA[Link title to target page]]></source>
+				<target><![CDATA[Titel zur Zielseite verlinken]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.originalIiifMetadata" approved="yes">
+				<source><![CDATA[Display metadata from IIIF manifests completely as given in the manifest]]></source>
+				<target><![CDATA[Metadaten für IIIF-Manifeste komplett wie im Manifest angegeben darstellen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.rootline" approved="yes">
+				<source><![CDATA[Show metadata of superior structures]]></source>
+				<target><![CDATA[Metadaten übergeordneter Strukturen anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.rootline.titledata" approved="yes">
+				<source><![CDATA[titledata only]]></source>
+				<target><![CDATA[nur Titeldaten]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.separator" approved="yes">
+				<source><![CDATA[Separator for multi-valued fields]]></source>
+				<target><![CDATA[Trennzeichen für mehrwertige Felder]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.flexform.showFull" approved="yes">
+				<source><![CDATA[Show all available metadata]]></source>
+				<target><![CDATA[Alle verfügbaren Metadaten anzeigen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.metadata.title" approved="yes">
+				<source><![CDATA[Kitodo: Metadata]]></source>
+				<target><![CDATA[Kitodo: Metadata]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.navigation.description" approved="yes">
 				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
@@ -404,6 +452,10 @@
 			<trans-unit id="plugins.toolbox.title" approved="yes">
 				<source><![CDATA[Kitodo: Toolbox]]></source>
 				<target><![CDATA[Kitodo: Werkzeugkasten]]></target>
+			</trans-unit>
+			<trans-unit id="text.all" approved="yes">
+				<source><![CDATA[all]]></source>
+				<target><![CDATA[alle]]></target>
 			</trans-unit>
 			<trans-unit id="text.no" approved="yes">
 				<source><![CDATA[No]]></source>

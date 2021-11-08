@@ -16,7 +16,7 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
@@ -43,7 +43,7 @@
                     <settings.excludeOther>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.excludeOther</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
@@ -54,7 +54,7 @@
                         <TCEforms>
                             <onChange>reload</onChange>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.linkTitle</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.linkTitle</label>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
@@ -65,7 +65,7 @@
                         <TCEforms>
                             <displayCond>FIELD:settings.linkTitle:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.targetPid</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -85,7 +85,7 @@
                     <settings.getTitle>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.getTitle</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.getTitle</label>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
@@ -95,7 +95,7 @@
                     <settings.showFull>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.showFull</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.showFull</label>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
@@ -105,20 +105,20 @@
                     <settings.rootline>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.rootline</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.rootline</label>
                             <config>
                                 <type>select</type>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.rootline.none</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.none</numIndex>
                                         <numIndex index="1">0</numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.rootline.all</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.all</numIndex>
                                         <numIndex index="1">1</numIndex>
                                     </numIndex>
                                     <numIndex index="2" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.rootline.titledata</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.rootline.titledata</numIndex>
                                         <numIndex index="1">2</numIndex>
                                     </numIndex>
                                 </items>
@@ -132,7 +132,7 @@
                     <settings.originalIiifMetadata>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.originalIiifMetadata</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.originalIiifMetadata</label>
                             <onChange>reload</onChange>
                             <config>
                                 <type>check</type>
@@ -143,7 +143,7 @@
                     <settings.iiifMetadataWrap>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.iiifMetadataWrap</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.iiifMetadataWrap</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>text</type>
@@ -154,7 +154,7 @@
                     <settings.displayIiifDescription>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifDescription</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifDescription</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>check</type>
@@ -165,7 +165,7 @@
                     <settings.displayIiifRights>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifRights</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifRights</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>check</type>
@@ -176,7 +176,7 @@
                     <settings.displayIiifLinks>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.displayIiifLinks</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifLinks</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
                                 <type>check</type>
@@ -187,7 +187,7 @@
                     <settings.separator>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.separator</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.separator</label>
                             <config>
                                 <type>input</type>
                                 <eval>required,trim</eval>
@@ -198,7 +198,7 @@
                     <settings.templateFile>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:tt_content.pi_flexform.templateFile</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.templateFile</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>file_reference</internal_type>
