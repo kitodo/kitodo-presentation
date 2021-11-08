@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,103 +11,17 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use Kitodo\Dlf\Common\Document;
-use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use \Kitodo\Dlf\Domain\Model\SearchForm;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Ubl\Iiif\Context\IRI;
 
-class MetadataController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class MetadataController extends AbstractController
 {
     public $prefixId = 'tx_dlf';
-    public $extKey = 'dlf';
-
-    /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\LogManager
-     */
-    protected $logger;
-
-    /**
-     * SearchController constructor.
-     * @param $configurationManager
-     */
-    public function __construct(ConfigurationManager $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-    }
-
-    // TODO: Needs to be placed in an abstract class
-    /**
-     * Loads the current document into $this->doc
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    protected function loadDocument($requestData)
-    {
-        // Check for required variable.
-        if (
-            !empty($requestData['id'])
-            && !empty($this->settings['pages'])
-        ) {
-            // Should we exclude documents from other pages than $this->settings['pages']?
-            $pid = (!empty($this->settings['excludeOther']) ? intval($this->settings['pages']) : 0);
-            // Get instance of \Kitodo\Dlf\Common\Document.
-            $this->doc = Document::getInstance($requestData['id'], $pid);
-            if (!$this->doc->ready) {
-                // Destroy the incomplete object.
-                $this->doc = null;
-                $this->logger->error('Failed to load document with UID ' . $requestData['id']);
-            } else {
-                // Set configuration PID.
-                $this->doc->cPid = $this->settings['pages'];
-            }
-        } elseif (!empty($requestData['recordId'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
-            // Get UID of document with given record identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($requestData['recordId'])),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
-
-            if ($resArray = $result->fetch()) {
-                $requestData['id'] = $resArray['uid'];
-                // Set superglobal $_GET array and unset variables to avoid infinite looping.
-                $_GET[$this->prefixId]['id'] = $requestData['id'];
-                unset($requestData['recordId'], $_GET[$this->prefixId]['recordId']);
-                // Try to load document.
-                $this->loadDocument();
-            } else {
-                $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
-            }
-        } else {
-            $this->logger->error('Invalid UID ' . $requestData['id'] . ' or PID ' . $this->settings['pages'] . ' for document loading');
-        }
-    }
 
     /**
      * @return string|void
