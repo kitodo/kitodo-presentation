@@ -25,7 +25,6 @@ class NavigationController extends AbstractController
     public function mainAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         if (empty($requestData['page'])) {
             $requestData['page'] = 1;
@@ -64,15 +63,9 @@ class NavigationController extends AbstractController
         $pageSteps = $this->settings['pageStep'] * ($requestData['double'] + 1);
 
         $this->view->assign('page', $requestData['page']);
-        $this->view->assign('docId', $this->doc->uid);
-        $this->view->assign('pageId', $GLOBALS['TSFE']->id);
         $this->view->assign('pageSteps', $pageSteps);
         $this->view->assign('double', $requestData['double']);
         $this->view->assign('numPages', $this->doc->numPages);
-
-        // TODO: Check if f:link.action can be used in template Navigation->main
-        $this->view->assign('pageToList', $this->settings['targetPid']);
-        $this->view->assign('forceAbsoluteUrl', !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0);
 
         $pageOptions = [];
         for ($i = 1; $i <= $this->doc->numPages; $i++) {
@@ -81,5 +74,10 @@ class NavigationController extends AbstractController
         $this->view->assign('uniqueId', uniqid(Helper::getUnqualifiedClassName(get_class($this)) . '-'));
         $this->view->assign('pageOptions', $pageOptions);
 
+        // prepare feature array for fluid
+        foreach (explode(',', $this->settings['features']) as $key => $value) {
+            $features[$value] = true;
+        }
+        $this->view->assign('features', $features);
     }
 }

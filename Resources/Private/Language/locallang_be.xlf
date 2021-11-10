@@ -161,6 +161,42 @@
 			<trans-unit id="plugins.navigation.flexform.pageStep">
 				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features">
+				<source><![CDATA[Show selected navigation features]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageStepBack">
+				<source><![CDATA[Rewind X pages]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageStepForward">
+				<source><![CDATA[Forward X pages]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageForward">
+				<source><![CDATA[One page forward]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageBack">
+				<source><![CDATA[One page back]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageFirst">
+				<source><![CDATA[First page]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageLast">
+				<source><![CDATA[Last page]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.rotation">
+				<source><![CDATA[Buttons for rotate image left, right and reset]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.zoom">
+				<source><![CDATA[Buttons for zoom-in, zoom-out and full screen]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.doublepage">
+				<source><![CDATA[Buttons for double page mode and recto/verso adjustment]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageselect">
+				<source><![CDATA[Page navigation menu]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.listview">
+				<source><![CDATA[Link to page with listview plugin]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.navigation.title">
 				<source><![CDATA[Kitodo: Navigation]]></source>
 			</trans-unit>
