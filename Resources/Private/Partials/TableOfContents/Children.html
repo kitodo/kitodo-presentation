@@ -33,39 +33,40 @@
         </f:defaultCase>
     </f:switch>
 
-        <f:if condition="{child.doNotLinkIt}">
-            <f:then>
-                <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
-            </f:then>
-            <f:else>
+    <f:if condition="{child.doNotLinkIt}">
+        <f:then>
+            <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
+        </f:then>
+        <f:else>
+            <f:link.action
+                action="main"
+                pageUid="{settings.targetPid}"
+                additionalParams="{f:if(condition:'{child.id}', then:'{\'tx_dlf[id]\':child.id, \'tx_dlf[page]\':child.page}', else: '{\'tx_dlf[page]\':child.page}')}"
+                addQueryString="1"
+                title="{f:if(condition:'{child.type}', then: '{child.type}', else: '{child.orderlabel}')}">
+                    <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
+            </f:link.action>
+        </f:else>
+    </f:if>
+
+    <f:if condition="{settings.basketButton} && {settings.targetBasket}">
+        <span class="tx-dlf-basket-button">
                 <f:link.action
+                    pageUid="{settings.targetBasket}"
                     action="main"
-                    pageUid="{settings.targetPid}"
-                    additionalParams="{f:if(condition:'{child.id}', then:'{\'tx_dlf[id]\':child.id, \'tx_dlf[page]\':child.page}', else: '{\'tx_dlf[page]\':child.page}')}"
-                    addQueryString="1"
-                    title="{f:if(condition:'{child.type}', then: '{child.type}', else: '{child.orderlabel}')}">
-                        <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
+                    controller="Basket"
+                    additionalParams="{'tx_dlf[addToBasket]':'toc', 'tx_dlf[logId]':child.basketButton.logId, 'tx_dlf[startpage]':child.basketButton.startpage}"
+                    addQueryString="1">
+                        <f:translate key="AddToBasket" />
                 </f:link.action>
-            </f:else>
-        </f:if>
+        </span>
+    </f:if>
 
-        <f:if condition="{settings.basketButton} && {settings.targetBasket}">
-            <span class="tx-dlf-basket-button">
-                    <f:link.action
-                        pageUid="{settings.targetBasket}"
-                        action="main"
-                        controller="Basket"
-                        additionalParams="{'tx_dlf[addToBasket]':'toc', 'tx_dlf[logId]':child.basketButton.logId, 'tx_dlf[startpage]':child.basketButton.startpage}"
-                        addQueryString="1">
-                            <f:translate key="AddToBasket" />
-                    </f:link.action>
-            </span>
-        </f:if>
+    <f:if condition="{child._SUB_MENU} && ({child.ITEM_STATE} == 'ACTIFSUB' || {child.ITEM_STATE} == 'CURIFSUB')">
+        <ul>
+            <f:render partial="TableOfContents/Children" arguments="{children: child._SUB_MENU}"/>
+        </ul>
+    </f:if>
 
-        <f:if condition="{child._SUB_MENU} && ({child.ITEM_STATE} == 'ACTIFSUB' || {child.ITEM_STATE} == 'CURIFSUB')">
-            <ul>
-                <f:render partial="TableOfContents/Children" arguments="{children: child._SUB_MENU}"/>
-            </ul>
-        </f:if>
     </li>
 </f:for>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-08T09:49:54Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-09T21:57:06Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -244,6 +244,54 @@
 			<trans-unit id="plugins.navigation.description" approved="yes">
 				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
 				<target><![CDATA[Navigation Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features" approved="yes">
+				<source><![CDATA[Show selected navigation features]]></source>
+				<target><![CDATA[Zeige ausgewählte Navigations-Funktionen]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.doublepage" approved="yes">
+				<source><![CDATA[Buttons for double page mode and recto/verso adjustment]]></source>
+				<target><![CDATA[Buttons für Doppelseitenansicht und Recto/Verso-Korrektur]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.listview" approved="yes">
+				<source><![CDATA[Link to page with listview plugin]]></source>
+				<target><![CDATA[Link zur Listenansicht]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageBack" approved="yes">
+				<source><![CDATA[One page back]]></source>
+				<target><![CDATA[Eine Seite zurück]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageFirst" approved="yes">
+				<source><![CDATA[First page]]></source>
+				<target><![CDATA[Erste Seite]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageForward" approved="yes">
+				<source><![CDATA[One page forward]]></source>
+				<target><![CDATA[Eine Seite vor]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageLast" approved="yes">
+				<source><![CDATA[Last page]]></source>
+				<target><![CDATA[Letzte Seite]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageStepBack" approved="yes">
+				<source><![CDATA[Rewind X pages]]></source>
+				<target><![CDATA[X Seiten zurück]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageStepForward" approved="yes">
+				<source><![CDATA[Forward X pages]]></source>
+				<target><![CDATA[X Seiten vor]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.pageselect" approved="yes">
+				<source><![CDATA[Page navigation menu]]></source>
+				<target><![CDATA[Seitennavigation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.rotation" approved="yes">
+				<source><![CDATA[Buttons for rotate image left, right and reset]]></source>
+				<target><![CDATA[Rotations-Buttons: links, rechts und zurück]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.zoom" approved="yes">
+				<source><![CDATA[Buttons for zoom-in, zoom-out and full screen]]></source>
+				<target><![CDATA[Zoom-Buttons und Vollbild-Modus]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.navigation.flexform.pageStep" approved="yes">
 				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
