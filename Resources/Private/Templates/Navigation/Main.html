@@ -10,47 +10,58 @@
 -->
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+
+<f:comment>Render all navigation features in the given order.</f:comment>
+<f:for each="{features}" key="feature" as="enabled">
+    <f:if condition="{feature}">
+        <f:render section="render.{feature}" arguments="{_all}"/>
+    </f:if>
+</f:for>
+
+<f:comment>One section for each feature.</f:comment>
+<f:section name="render.doublepage">
     <f:if condition="{numPages} > 0">
         <f:then>
-            <div class="tx-dlf-navigation-double">
-                <f:if condition="{double}">
-                    <f:then>
+            <f:if condition="{double}">
+                <f:then>
+                    <div class="tx-dlf-navigation-double">
                         <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}">
                             <f:translate key="doublePageOn"/>
                         </f:link.action>
-                    </f:then>
-                    <f:else>
-                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'1'}">
-                            <f:translate key="doublePageOn"/>
-                        </f:link.action>
-                    </f:else>
-                </f:if>
-            </div>
-            <div class="tx-dlf-navigation-double+">
-                <f:if condition="{double} && {page} < {numPages}">
-                    <f:then>
-                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + 1}'}">
-                            <f:translate key="doublePage+1"/>
-                        </f:link.action>
-                    </f:then>
-                    <f:else>
-                        <span title="{f:translate(key: 'doublePage+1') -> f:format.htmlspecialchars()}">
-                            <f:translate key="doublePage+1"/>
-                        </span>
-                    </f:else>
-                </f:if>
-            </div>
+                    </div>
+                    <div class="tx-dlf-navigation-double+">
+                        <f:if condition="{double} && ({page} < {numPages})">
+                            <f:then>
+                                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + 1}'}">
+                                    <f:translate key="doublePage+1"/>
+                                </f:link.action>
+                            </f:then>
+                            <f:else>
+                                <span title="{f:translate(key: 'doublePage+1')}">
+                                    <f:translate key="doublePage+1"/>
+                                </span>
+                            </f:else>
+                        </f:if>
+                    </div>
+                </f:then>
+                <f:else>
+                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'1'}">
+                        <f:translate key="doublePageOn"/>
+                    </f:link.action>
+                </f:else>
+            </f:if>
         </f:then>
         <f:else>
-            <span title="{f:translate(key: 'doublePageOn') -> f:format.htmlspecialchars()}">
-                <f:translate key="doublePageOn"/>
-            </span>
-            <span title="{f:translate(key: 'doublePage+1') -> f:format.htmlspecialchars()}">
-                <f:translate key="doublePage+1"/>
-            </span>
+            <div class="tx-dlf-navigation-double">
+                <span title="{f:translate(key: 'doublePageOn')}">
+                    <f:translate key="doublePageOn"/>
+                </span>
+            </div>
         </f:else>
     </f:if>
+</f:section>
 
+<f:section name="render.pageFirst">
     <div class="tx-dlf-navigation-first">
         <f:if condition="{page} > 1">
             <f:then>
@@ -59,13 +70,15 @@
                 </f:link.action>
             </f:then>
             <f:else>
-                <span title="{f:translate(key: 'firstPage') -> f:format.htmlspecialchars()}">
+                <span title="{f:translate(key: 'firstPage')}">
                     <f:translate key="firstPage"/>
                 </span>
             </f:else>
         </f:if>
     </div>
+</f:section>
 
+<f:section name="render.pageBack">
     <div class="tx-dlf-navigation-back">
         <f:if condition="{page} > {pageSteps}">
             <f:then>
@@ -74,13 +87,16 @@
                 </f:link.action>
             </f:then>
             <f:else>
-                <span title="{f:translate(key: 'backXPages', arguments: '{0: pageSteps}') -> f:format.htmlspecialchars()}">
+                <span title="{f:translate(key: 'backXPages', arguments: '{0: pageSteps}')}">
                     <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
                 </span>
             </f:else>
         </f:if>
     </div>
-    <div class="tx-dlf-navigation-prev-1">
+</f:section>
+
+<f:section name="render.pageStepBack">
+    <div class="tx-dlf-navigation-prev">
         <f:if condition="{page} > {double + 1}">
             <f:then>
                 <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page - 1 + double}'}">
@@ -88,21 +104,30 @@
                 </f:link.action>
             </f:then>
             <f:else>
-                <span title="{f:translate(key: 'prevPage') -> f:format.htmlspecialchars()}">
+                <span title="{f:translate(key: 'prevPage')}">
                     <f:translate key="prevPage"/>
                 </span>
             </f:else>
         </f:if>
     </div>
+</f:section>
+
+<f:section name="render.pageselect">
     <div class="tx-dlf-navigation-pageselect">
-        <f:form action="" method="POST" fieldNamePrefix="tx_dlf" addQueryString="1" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" absolute="{forceAbsoluteUrl}">
+        <f:form method="get" fieldNamePrefix="tx_dlf" addQueryString="1" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}">
             <label for="{uniqueId}">
                 <f:translate key="selectPage"/>
             </label>
-            <f:form.select id="{uniqueId}" name="page" options="{pageOptions}" value="{page}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
+            <f:form.select id="{uniqueId}" name="page"
+                options="{pageOptions}"
+                value="{page}"
+                additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
             </f:form.select>
         </f:form>
     </div>
+</f:section>
+
+<f:section name="render.pageForward">
     <div class="tx-dlf-navigation-next">
         <f:if condition="{page} < {numPages}">
             <f:then>
@@ -111,26 +136,32 @@
                 </f:link.action>
             </f:then>
             <f:else>
-                <span title="{f:translate(key: 'nextPage') -> f:format.htmlspecialchars()}">
+                <span title="{f:translate(key: 'nextPage')}">
                     <f:translate key="nextPage"/>
                 </span>
             </f:else>
         </f:if>
     </div>
-    <div class="tx-dlf-navigation-fwd">
-        <f:if condition="{page} <= {numPages - pageSteps}">
-            <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + pageSteps}'}">
-                    <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
-                </f:link.action>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'forwardXPages', arguments: '{0: pageSteps}') -> f:format.htmlspecialchars()}">
-                    <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+</f:section>
+
+<f:section name="render.pageStepForward">
+        <div class="tx-dlf-navigation-fwd">
+            <f:if condition="{page} <= {numPages - pageSteps}">
+                <f:then>
+                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + pageSteps}'}">
+                        <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
+                    </f:link.action>
+                </f:then>
+                <f:else>
+                    <span title="{f:translate(key: 'forwardXPages', arguments: '{0: pageSteps}')}">
+                        <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
+                    </span>
+                </f:else>
+            </f:if>
+        </div>
+</f:section>
+
+<f:section name="render.pageLast">
     <div class="tx-dlf-navigation-last">
         <f:if condition="{page} < {numPages}">
             <f:then>
@@ -139,47 +170,55 @@
                 </f:link.action>
             </f:then>
             <f:else>
-                <span title="{f:translate(key: 'lastPage') -> f:format.htmlspecialchars()}">
+                <span title="{f:translate(key: 'lastPage'}">
                     <f:translate key="lastPage"/>
                 </span>
             </f:else>
         </f:if>
     </div>
-    <div class="tx-dlf-navigation-listview">
-        <f:link.typolink parameter="{pageToList}" absolute="{forceAbsoluteUrl}" title="{f:translate(key: 'linkToList') -> f:format.htmlspecialchars()}">
-            <f:translate key="linkToList"/>
-        </f:link.typolink>
-    </div>
+</f:section>
+
+<f:section name="render.listview">
+        <div class="tx-dlf-navigation-listview">
+            <f:link.page pageUid="{settings.targetPid}">
+                <f:translate key="linkToList"/>
+            </f:link.page>
+        </div>
+</f:section>
+
+<f:section name="render.zoom">
     <div class="tx-dlf-navigation-zoom-in">
-        <span title="{f:translate(key: 'zoomIn') -> f:format.htmlspecialchars()}">
+        <a href="#" title="{f:translate(key: 'zoomIn')}" onclick="tx_dlf_viewer.map.zoomIn();">
             <f:translate key="zoomIn"/>
-        </span>
+        </a>
     </div>
     <div class="tx-dlf-navigation-zoom-out">
-        <span title="{f:translate(key: 'zoomOut') -> f:format.htmlspecialchars()}">
+        <a href="#" title="{f:translate(key: 'zoomOut')}" onclick="tx_dlf_viewer.map.zoomOut();">
             <f:translate key="zoomOut"/>
-        </span>
+        </a>
     </div>
     <div class="tx-dlf-navigation-fullscreen">
-        <span title="{f:translate(key: 'zoomFullscreen') -> f:format.htmlspecialchars()}">
+        <a href="#" title="{f:translate(key: 'zoomFullscreen')}">
             <f:translate key="zoomFullscreen"/>
-        </span>
+        </a>
     </div>
+</f:section>
+
+<f:section name="render.rotation">
     <div class="tx-dlf-navigation-rotate-left">
-        <span title="{f:translate(key: 'rotateLeft') -> f:format.htmlspecialchars()}">
+        <a href="#" title="{f:translate(key: 'rotateLeft')}" onclick="tx_dlf_viewer.map.rotateLeft();">
             <f:translate key="rotateLeft"/>
-        </span>
+        </a>
     </div>
     <div class="tx-dlf-navigation-rotate-right">
-        <span title="{f:translate(key: 'rotateRight') -> f:format.htmlspecialchars()}">
+        <a href="#" title="{f:translate(key: 'rotateRight')}" onclick="tx_dlf_viewer.map.rotateRight();">
             <f:translate key="rotateRight"/>
-        </span>
+        </a>
     </div>
     <div class="tx-dlf-navigation-rotate-reset">
-        <span title="{f:translate(key: 'rotateReset') -> f:format.htmlspecialchars()}">
+        <a href="#" title="{f:translate(key: 'rotateReset')}" onclick="tx_dlf_viewer.map.resetRotation();">
             <f:translate key="rotateReset"/>
-        </span>
+        </a>
     </div>
-
-
+</f:section>
 </html>
