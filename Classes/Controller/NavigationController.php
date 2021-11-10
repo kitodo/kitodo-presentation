@@ -75,6 +75,7 @@ class NavigationController extends AbstractController
         $this->view->assign('pageOptions', $pageOptions);
 
         // prepare feature array for fluid
+        $features = [];
         foreach (explode(',', $this->settings['features']) as $key => $value) {
             $features[$value] = true;
         }
