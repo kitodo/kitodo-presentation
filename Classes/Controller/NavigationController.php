@@ -76,8 +76,8 @@ class NavigationController extends AbstractController
 
         // prepare feature array for fluid
         $features = [];
-        foreach (explode(',', $this->settings['features']) as $key => $value) {
-            $features[$value] = true;
+        foreach (explode(',', $this->settings['features']) as $feature) {
+            $features[$feature] = true;
         }
         $this->view->assign('features', $features);
     }
