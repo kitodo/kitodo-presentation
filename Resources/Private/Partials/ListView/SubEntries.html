@@ -63,7 +63,7 @@
     <div>
         <f:if condition="{settings.basketButton} && {settings.targetBasket}">
             <f:link.page pageUid="{settings.targetBasket}"
-                         additionalParams="{'tx_dlf[id]':entry.uid, 'tx_dlf[startpage]':subentry.page, 'tx_dlf[endpage]':subentry.page, 'tx_dlf[logId]':subentry.sid, 'tx_dlf[addToBasket]':'subentry'}">
+                         additionalParams="{'tx_dlf[id]':entry.uid, 'tx_dlf[startpage]':subentry.page, 'tx_dlf[endpage]':subentry.page, 'tx_dlf[logId]':subentry.sid, 'tx_dlf[addToBasket]':'subentry', 'tx_dlf_basket[action]':'add', 'tx_dlf_basket[controller]':'Basket'}">
                 <f:translate key="AddToBasket"/>
             </f:link.page>
         </f:if>

@@ -125,6 +125,7 @@ class BasketController extends AbstractController
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         $basketData = $this->getBasketData();
+
         if (
             !empty($requestData['id'])
             && $requestData['addToBasket']
@@ -207,7 +208,7 @@ class BasketController extends AbstractController
             $GLOBALS['TSFE']->fe_user->sesData_change = true;
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
-            $basket = $this->basketRepository->findOneBySessionId($sessionId)->getFirst();
+            $basket = $this->basketRepository->findOneBySessionId($sessionId);
         }
         // session already exists
         if ($basket === null) {
@@ -227,6 +228,7 @@ class BasketController extends AbstractController
             return '';
         }
 
+        $basketData['uid'] = $basket->getUid();
         $basketData['doc_ids'] = json_decode($basket->getDocIds());
         return $basketData;
     }
