@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-27T09:34:27Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-05T10:14:37Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -89,6 +89,14 @@
 				<source><![CDATA[List View]]></source>
 				<target><![CDATA[Listenansicht]]></target>
 			</trans-unit>
+			<trans-unit id="collection.feed.alt" approved="yes">
+				<source><![CDATA[RSS feed]]></source>
+				<target><![CDATA[RSS-Feed]]></target>
+			</trans-unit>
+			<trans-unit id="collection.feed.title" approved="yes">
+				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
+				<target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
+			</trans-unit>
 			<trans-unit id="doublePage+1" approved="yes">
 				<source><![CDATA[Adjust recto/verso]]></source>
 				<target><![CDATA[Recto/Verso korrigieren]]></target>
@@ -133,6 +141,58 @@
 				<source><![CDATA[Return to list view]]></source>
 				<target><![CDATA[Zurück zur Listenansicht]]></target>
 			</trans-unit>
+			<trans-unit id="listview.count" approved="yes">
+				<source><![CDATA[Entries %d to %d of %d.]]></source>
+				<target><![CDATA[Einträge %d bis %d von %d.]]></target>
+			</trans-unit>
+			<trans-unit id="listview.direction" approved="yes">
+				<source><![CDATA[Direction:]]></source>
+				<target><![CDATA[Richtung:]]></target>
+			</trans-unit>
+			<trans-unit id="listview.direction.asc" approved="yes">
+				<source><![CDATA[ascending]]></source>
+				<target><![CDATA[aufsteigend]]></target>
+			</trans-unit>
+			<trans-unit id="listview.direction.desc" approved="yes">
+				<source><![CDATA[descending]]></source>
+				<target><![CDATA[absteigend]]></target>
+			</trans-unit>
+			<trans-unit id="listview.hits" approved="yes">
+				<source><![CDATA[%d hits found in %d documents.]]></source>
+				<target><![CDATA[Die Suche ergab %d Treffer in %d Dokumenten.]]></target>
+			</trans-unit>
+			<trans-unit id="listview.nextPage" approved="yes">
+				<source><![CDATA[&gt;]]></source>
+				<target><![CDATA[&gt;]]></target>
+			</trans-unit>
+			<trans-unit id="listview.nohits" approved="yes">
+				<source><![CDATA[Nothing found.]]></source>
+				<target><![CDATA[Keine Treffer.]]></target>
+			</trans-unit>
+			<trans-unit id="listview.orderBy" approved="yes">
+				<source><![CDATA[Order by:]]></source>
+				<target><![CDATA[Sortieren nach:]]></target>
+			</trans-unit>
+			<trans-unit id="listview.page" approved="yes">
+				<source><![CDATA[%d]]></source>
+				<target><![CDATA[%d]]></target>
+			</trans-unit>
+			<trans-unit id="listview.prevPage" approved="yes">
+				<source><![CDATA[&lt;]]></source>
+				<target><![CDATA[&lt;]]></target>
+			</trans-unit>
+			<trans-unit id="listview.relevance" approved="yes">
+				<source><![CDATA[relevance]]></source>
+				<target><![CDATA[Relevanz]]></target>
+			</trans-unit>
+			<trans-unit id="listview.separator" approved="yes">
+				<source><![CDATA[ - ]]></source>
+				<target><![CDATA[ - ]]></target>
+			</trans-unit>
+			<trans-unit id="listview.skip" approved="yes">
+				<source><![CDATA[...]]></source>
+				<target><![CDATA[...]]></target>
+			</trans-unit>
 			<trans-unit id="nextPage" approved="yes">
 				<source><![CDATA[Next Page]]></source>
 				<target><![CDATA[Nächste Seite]]></target>
@@ -140,6 +200,42 @@
 			<trans-unit id="noTitle" approved="yes">
 				<source><![CDATA[[no title]]]></source>
 				<target><![CDATA[[kein Titel]]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.badArgument" approved="yes">
+				<source><![CDATA[The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.]]></source>
+				<target><![CDATA[Die Anfrage enthält ungültige Parameter, es fehlen benötigte Parameter oder Parameter haben ungültige Werte.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.badResumptionToken" approved="yes">
+				<source><![CDATA[The value of the resumptionToken argument is invalid or expired.]]></source>
+				<target><![CDATA[Das "resumptionToken" ist ungültig oder abgelaufen.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.badVerb" approved="yes">
+				<source><![CDATA[Value of the verb argument is not a legal OAI-PMH verb or the verb argument is missing.]]></source>
+				<target><![CDATA[Der Parameter "verb" fehlt oder hat keinen gültigen OAI-PMH-Wert.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.cannotDisseminateFormat" approved="yes">
+				<source><![CDATA[The metadata format identified by the value given for the metadataPrefix argument is not supported by the item or by the repository.]]></source>
+				<target><![CDATA[Das im Parameter "metadataPrefix" angegebene Format wird vom gewünschten Datensatz oder dem Repository nicht unterstützt.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.error" approved="yes">
+				<source><![CDATA[An error occurred, please try again later. If this happens consistently, please contact the administrator.]]></source>
+				<target><![CDATA[Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal. Sollte der Fehler dauerhaft auftreten, kontaktieren Sie bitte den Administrator.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.idDoesNotExist" approved="yes">
+				<source><![CDATA[The value of the identifier argument is unknown or illegal in this repository.]]></source>
+				<target><![CDATA[Der im Parameter "identifier" angegebene Wert existiert nicht im Repository.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.noMetadataFormats" approved="yes">
+				<source><![CDATA[There are no metadata formats available for the specified item.]]></source>
+				<target><![CDATA[Für den gewünschten Datensatz werden keine Datenformate unterstützt.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.noRecordsMatch" approved="yes">
+				<source><![CDATA[The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.]]></source>
+				<target><![CDATA[Die Anfrage ergab eine leere Treffermenge.]]></target>
+			</trans-unit>
+			<trans-unit id="oaipmh.noSetHierarchy" approved="yes">
+				<source><![CDATA[The repository does not support sets or the value of the set argument is invalid.]]></source>
+				<target><![CDATA[Das Repository unterstützt keine Sets oder der Wert des Parameters "set" ist ungültig.]]></target>
 			</trans-unit>
 			<trans-unit id="page" approved="yes">
 				<source><![CDATA[Page]]></source>

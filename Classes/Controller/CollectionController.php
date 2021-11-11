@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -10,7 +9,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Plugin;
+namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
@@ -18,19 +17,10 @@ use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
-/**
- * Plugin 'Collection' for the 'dlf' extension
- *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @package TYPO3
- * @subpackage dlf
- * @access public
- */
-class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
+class CollectionController extends AbstractController
 {
-    public $scriptRelPath = 'Classes/Plugin/Collection.php';
-
     /**
      * This holds the hook objects
      *
@@ -40,43 +30,37 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
     protected $hookObjects = [];
 
     /**
-     * The main method of the PlugIn
+     * The main method of the plugin
      *
-     * @access public
-     *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
-     * @return string The content that is displayed on the website
+     * @return void
      */
-    public function main($content, $conf)
+    public function mainAction()
     {
-        $this->init($conf);
-        // Turn cache on.
-        $this->setCache(true);
+        // access to GET parameter tx_dlf_collection['collection']
+        $requestData = $this->request->getArguments();
+
+        $collection = $requestData['collection'];
+
         // Quit without doing anything if required configuration variables are not set.
-        if (empty($this->conf['settings.pages'])) {
+        if (empty($this->settings['pages'])) {
             $this->logger->warning('Incomplete plugin configuration');
-            return $content;
         }
-        // Load template file.
-        $this->getTemplate();
+
         // Get hook objects.
-        $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);
-        if (!empty($this->piVars['collection'])) {
-            $this->showSingleCollection(intval($this->piVars['collection']));
+        // TODO: $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);
+
+        if ($collection) {
+            $this->showSingleCollection($collection);
         } else {
-            $content .= $this->showCollectionList();
+            $this->showCollectionList();
         }
-        return $this->pi_wrapInBaseClass($content);
+
+        $this->view->assign('currentPageUid', $GLOBALS['TSFE']->id);
     }
 
     /**
      * Builds a collection list
-     *
-     * @access protected
-     *
-     * @return string The list of collections ready to output
+     * @return void
      */
     protected function showCollectionList()
     {
@@ -87,19 +71,20 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $orderBy = 'tx_dlf_collections.label';
         $showUserDefinedColls = '';
         // Handle collections set by configuration.
-        if ($this->conf['settings.collections']) {
+        if ($this->settings['collections']) {
             if (
-                count(explode(',', $this->conf['settings.collections'])) == 1
-                && empty($this->conf['settings.dont_show_single'])
+                count(explode(',', $this->settings['collections'])) == 1
+                && empty($this->settings['dont_show_single'])
             ) {
-                $this->showSingleCollection(intval(trim($this->conf['settings.collections'], ' ,')));
+                $this->showSingleCollection(intval(trim($this->settings['collections'], ' ,')));
             }
-            $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', implode(',', GeneralUtility::intExplode(',', $this->conf['settings.collections'])));
+            $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', implode(',', GeneralUtility::intExplode(',', $this->settings['collections'])));
         }
+
         // Should user-defined collections be shown?
-        if (empty($this->conf['settings.show_userdefined'])) {
+        if (empty($this->settings['show_userdefined'])) {
             $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-        } elseif ($this->conf['settings.show_userdefined'] > 0) {
+        } elseif ($this->settings['show_userdefined'] > 0) {
             if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
                 $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', intval($GLOBALS['TSFE']->fe_user->user['uid']));
             } else {
@@ -124,7 +109,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             ->where(
                 $selectedCollections,
                 $showUserDefinedColls,
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['settings.pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->settings['pages'])),
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->orX(
                         $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
@@ -137,15 +122,15 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $result = $queryBuilder->execute();
         $count = $queryBuilder->count('uid')->execute()->fetchColumn(0);
-        $content = '';
-        if ($count == 1 && empty($this->conf['settings.dont_show_single'])) {
+
+        if ($count == 1 && empty($this->settings['dont_show_single'])) {
             $resArray = $result->fetch();
             $this->showSingleCollection(intval($resArray['uid']));
         }
-        $solr = Solr::getInstance($this->conf['settings.solrcore']);
+        $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
-            return $content;
+            //return $content;
         }
         // We only care about the UID and partOf in the results and want them sorted
         $params['fields'] = 'uid,partof';
@@ -153,7 +138,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $collections = [];
 
         // Get language overlay if on alterative website language.
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         while ($collectionData = $result->fetch()) {
             if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
                 $collections[$collectionData['uid']] = $pageRepository->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
@@ -164,14 +149,16 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             }
         }
         // Sort collections according to flexform configuration
-        if ($this->conf['settings.collections']) {
+        if ($this->settings['collections']) {
             $sortedCollections = [];
-            foreach (GeneralUtility::intExplode(',', $this->conf['settings.collections']) as $uid) {
+            foreach (GeneralUtility::intExplode(',', $this->settings['collections']) as $uid) {
                 $sortedCollections[$uid] = $collections[$uid];
             }
             $collections = $sortedCollections;
         }
-        $markerArray = [];
+
+        $processedCollections = [];
+
         // Process results.
         foreach ($collections as $collection) {
             $solr_query = '';
@@ -196,65 +183,32 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                 // If a document is referenced via partof, it’s not a volume anymore.
                 unset($collection['volumes'][$doc->partof]);
             }
+
             // Generate random but unique array key taking priority into account.
             do {
                 $_key = ($collection['priority'] * 1000) + mt_rand(0, 1000);
-            } while (!empty($markerArray[$_key]));
-            // Merge plugin variables with new set of values.
-            $additionalParams = ['collection' => $collection['uid']];
-            if (is_array($this->piVars)) {
-                $piVars = $this->piVars;
-                unset($piVars['DATA']);
-                $additionalParams = Helper::mergeRecursiveWithOverrule($piVars, $additionalParams);
-            }
-            // Build typolink configuration array.
-            $conf = [
-                'useCacheHash' => 1,
-                'parameter' => $GLOBALS['TSFE']->id,
-                'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
-                'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                'additionalParams' => GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false)
-            ];
-            // Link collection's title to list view.
-            $markerArray[$_key]['###TITLE###'] = $this->cObj->typoLink(htmlspecialchars($collection['label']), $conf);
-            // Add feed link if applicable.
-            if (!empty($this->conf['settings.targetFeed'])) {
-                $img = '<img src="' . \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Icons/txdlffeeds.png" alt="' . htmlspecialchars($this->pi_getLL('feedAlt', '')) . '" title="' . htmlspecialchars($this->pi_getLL('feedTitle', '')) . '" />';
-                $markerArray[$_key]['###FEED###'] = $this->pi_linkTP($img, [$this->prefixId => ['collection' => $collection['uid']]], false, $this->conf['settings.targetFeed']);
-            } else {
-                $markerArray[$_key]['###FEED###'] = '';
-            }
-            // Add thumbnail.
-            if (!empty($collection['thumbnail'])) {
-                $markerArray[$_key]['###THUMBNAIL###'] = '<img alt="" title="' . htmlspecialchars($collection['label']) . '" src="' . $collection['thumbnail'] . '" />';
-            } else {
-                $markerArray[$_key]['###THUMBNAIL###'] = '';
-            }
-            // Add description.
-            $markerArray[$_key]['###DESCRIPTION###'] = $this->pi_RTEcssText($collection['description']);
-            // Build statistic's output.
-            $labelTitles = $this->pi_getLL((count($collection['titles']) > 1 ? 'titles' : 'title'), '');
-            $markerArray[$_key]['###COUNT_TITLES###'] = htmlspecialchars(count($collection['titles']) . $labelTitles);
-            $labelVolumes = $this->pi_getLL((count($collection['volumes']) > 1 ? 'volumes' : 'volume'), '');
-            $markerArray[$_key]['###COUNT_VOLUMES###'] = htmlspecialchars(count($collection['volumes']) . $labelVolumes);
+            } while (!empty($processedCollections[$_key]));
+
+            $collection['countTitles'] = count($collection['titles']);
+            $collection['countVolumes'] = count($collection['volumes']);
+
+            $processedCollections[$_key] = $collection;
         }
+
         // Randomize sorting?
-        if (!empty($this->conf['settings.randomize'])) {
-            ksort($markerArray, SORT_NUMERIC);
-            // Don't cache the output.
-            $this->setCache(false);
+        if (!empty($this->settings['randomize'])) {
+            ksort($processedCollections, SORT_NUMERIC);
         }
-        $entry = $this->templateService->getSubpart($this->template, '###ENTRY###');
-        foreach ($markerArray as $marker) {
-            $content .= $this->templateService->substituteMarkerArray($entry, $marker);
-        }
-        // Hook for getting custom collection hierarchies/subentries (requested by SBB).
-        foreach ($this->hookObjects as $hookObj) {
-            if (method_exists($hookObj, 'showCollectionList_getCustomCollectionList')) {
-                $hookObj->showCollectionList_getCustomCollectionList($this, $this->conf['settings.templateFile'], $content, $markerArray);
+
+        // TODO: Hook for getting custom collection hierarchies/subentries (requested by SBB).
+        /*    foreach ($this->hookObjects as $hookObj) {
+                if (method_exists($hookObj, 'showCollectionList_getCustomCollectionList')) {
+                    $hookObj->showCollectionList_getCustomCollectionList($this, $this->settings['templateFile'], $content, $markerArray);
+                }
             }
-        }
-        return $this->templateService->substituteSubpart($this->template, '###ENTRY###', $content, true);
+        */
+
+        $this->view->assign('collections', $processedCollections);
     }
 
     /**
@@ -273,9 +227,9 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
 
         $additionalWhere = '';
         // Should user-defined collections be shown?
-        if (empty($this->conf['settings.show_userdefined'])) {
+        if (empty($this->settings['show_userdefined'])) {
             $additionalWhere = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-        } elseif ($this->conf['settings.show_userdefined'] > 0) {
+        } elseif ($this->settings['show_userdefined'] > 0) {
             $additionalWhere = $queryBuilder->expr()->neq('tx_dlf_collections.fe_cruser_id', 0);
         }
 
@@ -294,7 +248,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             )
             ->from('tx_dlf_collections')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->conf['settings.pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->settings['pages'])),
                 $queryBuilder->expr()->eq('tx_dlf_collections.uid', intval($id)),
                 $additionalWhere,
                 $queryBuilder->expr()->andX(
@@ -310,7 +264,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             ->execute();
 
         // Get language overlay if on alterative website language.
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
         if ($resArray = $collection->fetch()) {
             if ($resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
                 $collectionData = $pageRepository->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
@@ -329,7 +283,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         } else {
             $solr_query = 'collection:("' . $collectionData['index_name'] . '") AND toplevel:true';
         }
-        $solr = Solr::getInstance($this->conf['settings.solrcore']);
+        $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return;
@@ -356,7 +310,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             )
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->conf['settings.pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->settings['pages'])),
                 $queryBuilder->expr()->in('tx_dlf_documents.uid', $documentSet),
                 Helper::whereExpression('tx_dlf_documents')
             )
@@ -370,7 +324,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             if (empty($listMetadata)) {
                 $listMetadata = [
                     'label' => htmlspecialchars($collectionData['label']),
-                    'description' => $this->pi_RTEcssText($collectionData['description']),
+                    'description' => $collectionData['description'],
                     'thumbnail' => htmlspecialchars($collectionData['thumbnail']),
                     'options' => [
                         'source' => 'collection',
@@ -378,7 +332,7 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
                         'userid' => $collectionData['userid'],
                         'params' => ['filterquery' => [['query' => 'collection_faceting:("' . $collectionData['index_name'] . '")']]],
                         'core' => '',
-                        'pid' => $this->conf['settings.pages'],
+                        'pid' => $this->settings['pages'],
                         'order' => 'title',
                         'order.asc' => true
                     ]
@@ -387,13 +341,13 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
             // Prepare document's metadata for sorting.
             $sorting = unserialize($resArray['metadata_sorting']);
             if (!empty($sorting['type']) && MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->conf['settings.pages']);
+                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->settings['pages']);
             }
             if (!empty($sorting['owner']) && MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->conf['settings.pages']);
+                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->settings['pages']);
             }
             if (!empty($sorting['collection']) && MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->conf['settings.pages']);
+                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->settings['pages']);
             }
             // Split toplevel documents from volumes.
             if ($resArray['partof'] == 0) {
@@ -434,13 +388,11 @@ class Collection extends \Kitodo\Dlf\Common\AbstractPlugin
         $list->save();
         // Clean output buffer.
         ob_end_clean();
-        // Send headers.
-        $linkConf = [
-            'parameter' => $this->conf['settings.targetPid'],
-            'forceAbsoluteUrl' => !empty($this->conf['settings.forceAbsoluteUrl']) ? 1 : 0,
-            'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['settings.forceAbsoluteUrl']) && !empty($this->conf['settings.forceAbsoluteUrlHttps']) ? 'https' : 'http']
-        ];
-        header('Location: ' . GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkConf)));
-        exit;
+
+        $uri = $this->uriBuilder
+            ->reset()
+            ->setTargetPageUid($this->settings['targetPid'])
+            ->uriFor('main', [], 'ListView', 'dlf', 'ListView');
+        $this->redirectToURI($uri);
     }
 }

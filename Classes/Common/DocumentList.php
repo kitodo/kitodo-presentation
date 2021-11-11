@@ -132,7 +132,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      *
      * @access public
      *
-     * @return array The current element
+     * @return array|null The current element
      */
     public function current()
     {
@@ -484,7 +484,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      *
      * @param mixed $offset: The offset to return
      *
-     * @return array The element at the given offset
+     * @return array|null The element at the given offset
      */
     public function offsetGet($offset)
     {
@@ -526,7 +526,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      *
      * @param int $position: Numeric position for removing
      *
-     * @return array The removed element
+     * @return array|null The removed element
      */
     public function remove($position)
     {
@@ -551,7 +551,7 @@ class DocumentList implements \ArrayAccess, \Countable, \Iterator, LoggerAwareIn
      * @param int $position: Numeric position for start of range
      * @param int $length: Numeric position for length of range
      *
-     * @return array The indizes of the removed elements
+     * @return array|null The indizes of the removed elements
      */
     public function removeRange($position, $length)
     {
