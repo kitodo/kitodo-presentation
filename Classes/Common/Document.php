@@ -1612,6 +1612,7 @@ abstract class Document
      */
     protected function __construct($uid, $pid, $preloadedDocument)
     {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
         $location = '';
