@@ -76,6 +76,12 @@ plugin.tx_dlf {
                     recordType = \Kitodo\Dlf\Domain\Model\Structure
                 }
             }
+            Kitodo\Dlf\Domain\Model\Token {
+                mapping {
+                    tableName = tx_dlf_tokens
+                    recordType = \Kitodo\Dlf\Domain\Model\Token
+                }
+            }
         }
     }
 }
