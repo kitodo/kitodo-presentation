@@ -199,7 +199,6 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 
-        $solr_query = '';
         $where = '';
         if (!$settings['show_userdefined']) {
             $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);

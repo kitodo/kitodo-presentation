@@ -32,6 +32,8 @@ class LibraryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             )
             ->setMaxResults(1)
             ->execute();
+
+        return $result;
     }
 
 }

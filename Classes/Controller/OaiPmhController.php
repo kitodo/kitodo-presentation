@@ -108,17 +108,6 @@ class OaiPmhController extends AbstractController
     protected function deleteExpiredTokens()
     {
         // Delete expired resumption tokens.
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
-//
-//        $result = $queryBuilder
-//            ->delete('tx_dlf_tokens')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-//                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp',
-//                    $queryBuilder->createNamedParameter((int) ($GLOBALS['EXEC_TIME'] - $this->settings['expired'])))
-//            )
-//            ->execute();
-
         $result = $this->tokenRepository->deleteExpiredTokens($GLOBALS['EXEC_TIME'], $this->settings['expired']);
 
         if ($result === -1) {
@@ -735,17 +724,6 @@ class OaiPmhController extends AbstractController
     {
         if ($documentListSet->count() !== 0) {
             $token = uniqid('', false);
-
-//            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
-//            $affectedRows = $queryBuilder
-//                ->insert('tx_dlf_tokens')
-//                ->values([
-//                    'tstamp' => $GLOBALS['EXEC_TIME'],
-//                    'token' => $token,
-//                    'options' => serialize($documentListSet),
-//                    'ident' => 'oai',
-//                ])
-//                ->execute();
 
             $affectedRows = $this->tokenRepository->generateResumptionToken($token, $documentListSet);
 
