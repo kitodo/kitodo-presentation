@@ -12,7 +12,90 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Common\Helper;
+
 class MetadataRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
+    public function getMetadataForListview($pages) {
+        $query = $this->createQuery();
+
+        $query->matching($query->logicalOr(
+            $query->equals('is_listed', 1),
+            $query->equals('is_sortable', 1)
+        ));
+        $query->matching($query->equals('pid', $pages));
+
+        $query->setOrderings([
+            'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+        ]);
+
+        return $query->execute();
+
+//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+//            ->getQueryBuilderForTable('tx_dlf_metadata');
+//
+//        $result = $queryBuilder
+//            ->select(
+//                'tx_dlf_metadata.index_name AS index_name',
+//                'tx_dlf_metadata.wrap AS wrap',
+//                'tx_dlf_metadata.is_listed AS is_listed',
+//                'tx_dlf_metadata.is_sortable AS is_sortable'
+//            )
+//            ->from('tx_dlf_metadata')
+//            ->where(
+//                $queryBuilder->expr()->orX(
+//                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
+//                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)
+//                ),
+//                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pages)),
+//                Helper::whereExpression('tx_dlf_metadata')
+//            )
+//            ->orderBy('tx_dlf_metadata.sorting')
+//            ->execute();
+//
+//        return $result;
+    }
+
+    public function getMetadata($pages, $sysLangUid) {
+        $query = $this->createQuery();
+
+        $query->matching($query->logicalAnd(
+            $query->logicalOr(
+                $query->in('sys_language_uid', [-1, 0]),
+                $query->equals('sys_language_uid', $sysLangUid)
+            ),
+            $query->equals('l18n_parent', 0)
+        ));
+        $query->matching('pid', $pages);
+
+        return $query->execute();
+
+//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+//            ->getQueryBuilderForTable('tx_dlf_metadata');
+//        $result = $queryBuilder
+//            ->select(
+//                'tx_dlf_metadata.index_name AS index_name',
+//                'tx_dlf_metadata.is_listed AS is_listed',
+//                'tx_dlf_metadata.wrap AS wrap',
+//                'tx_dlf_metadata.sys_language_uid AS sys_language_uid'
+//            )
+//            ->from('tx_dlf_metadata')
+//            ->where(
+//                $queryBuilder->expr()->andX(
+//                    $queryBuilder->expr()->orX(
+//                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
+//                        $queryBuilder->expr()->eq('tx_dlf_metadata.sys_language_uid', $sysLangUid)
+//                    ),
+//                    $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
+//                ),
+//                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pages))
+//            )
+//            ->orderBy('tx_dlf_metadata.sorting')
+//            ->execute();
+//
+//        return $result;
+    }
 
 }

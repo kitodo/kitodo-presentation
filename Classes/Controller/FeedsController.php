@@ -26,12 +26,22 @@ class FeedsController extends AbstractController
      */
     protected $libraryRepository;
 
+    protected $documentRepository;
+
     /**
      * @param LibraryRepository $libraryRepository
      */
     public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
         $this->libraryRepository = $libraryRepository;
+    }
+
+    /**
+     * @param DocumentRepository $documentRepository
+     */
+    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
     }
 
     /**
@@ -71,52 +81,54 @@ class FeedsController extends AbstractController
             || empty($requestData['collection'])
             || GeneralUtility::inList($this->settings['collections'], $requestData['collection'])
         ) {
-            $additionalWhere = '';
-            // Check for pre-selected collections.
-            if (!empty($requestData['collection'])) {
-                $additionalWhere = 'tx_dlf_collections.uid=' . intval($requestData['collection']);
-            } elseif (!empty($this->settings['collections'])) {
-                $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->settings['collections'])) . ')';
-            }
+//            $additionalWhere = '';
+//            // Check for pre-selected collections.
+//            if (!empty($requestData['collection'])) {
+//                $additionalWhere = 'tx_dlf_collections.uid=' . intval($requestData['collection']);
+//            } elseif (!empty($this->settings['collections'])) {
+//                $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $this->settings['collections'])) . ')';
+//            }
 
-            // get documents
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
+//            // get documents
+//            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+//                ->getQueryBuilderForTable('tx_dlf_documents');
+//
+//            $result = $queryBuilder
+//                ->select(
+//                    'tx_dlf_documents.uid AS uid',
+//                    'tx_dlf_documents.partof AS partof',
+//                    'tx_dlf_documents.title AS title',
+//                    'tx_dlf_documents.volume AS volume',
+//                    'tx_dlf_documents.author AS author',
+//                    'tx_dlf_documents.record_id AS record_id',
+//                    'tx_dlf_documents.tstamp AS tstamp',
+//                    'tx_dlf_documents.crdate AS crdate'
+//                )
+//                ->from('tx_dlf_documents')
+//                ->join(
+//                    'tx_dlf_documents',
+//                    'tx_dlf_relations',
+//                    'tx_dlf_documents_collections_mm',
+//                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
+//                )
+//                ->join(
+//                    'tx_dlf_documents_collections_mm',
+//                    'tx_dlf_collections',
+//                    'tx_dlf_collections',
+//                    $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
+//                )
+//                ->where(
+//                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
+//                    $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
+//                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
+//                    $additionalWhere
+//                )
+//                ->groupBy('tx_dlf_documents.uid')
+//                ->orderBy('tx_dlf_documents.tstamp', 'DESC')
+//                ->setMaxResults((int) $this->settings['limit'])
+//                ->execute();
 
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_documents.uid AS uid',
-                    'tx_dlf_documents.partof AS partof',
-                    'tx_dlf_documents.title AS title',
-                    'tx_dlf_documents.volume AS volume',
-                    'tx_dlf_documents.author AS author',
-                    'tx_dlf_documents.record_id AS record_id',
-                    'tx_dlf_documents.tstamp AS tstamp',
-                    'tx_dlf_documents.crdate AS crdate'
-                )
-                ->from('tx_dlf_documents')
-                ->join(
-                    'tx_dlf_documents',
-                    'tx_dlf_relations',
-                    'tx_dlf_documents_collections_mm',
-                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
-                )
-                ->join(
-                    'tx_dlf_documents_collections_mm',
-                    'tx_dlf_collections',
-                    'tx_dlf_collections',
-                    $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
-                )
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
-                    $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $this->settings['pages'])),
-                    $additionalWhere
-                )
-                ->groupBy('tx_dlf_documents.uid')
-                ->orderBy('tx_dlf_documents.tstamp', 'DESC')
-                ->setMaxResults((int) $this->settings['limit'])
-                ->execute();
+            $result = $this->documentRepository->getDocumentsForFeeds($this->settings, $requestData['collection']);
 
             $rows = $result->fetchAll();
 

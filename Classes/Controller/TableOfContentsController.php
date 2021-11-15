@@ -16,6 +16,8 @@ use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+
 
 /**
  * Controller for plugin 'Table Of Contents' for the 'dlf' extension
@@ -39,6 +41,16 @@ class TableOfContentsController extends AbstractController
      * @var array
      */
     protected $pluginConf;
+
+    protected $documentRepository;
+
+    /**
+     * @param DocumentRepository $documentRepository
+     */
+    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
+    }
 
     /**
      * SearchController constructor.
@@ -225,42 +237,44 @@ class TableOfContentsController extends AbstractController
             foreach ($this->doc->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, false);
             }
-            // Build table of contents from database.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
+//            // Build table of contents from database.
+//            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+//                ->getQueryBuilderForTable('tx_dlf_documents');
+//
+//            $excludeOtherWhere = '';
+//            if ($this->settings['excludeOther']) {
+//                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->settings['pages']);
+//            }
+//            // Check if there are any metadata to suggest.
+//            $result = $queryBuilder
+//                ->select(
+//                    'tx_dlf_documents.uid AS uid',
+//                    'tx_dlf_documents.title AS title',
+//                    'tx_dlf_documents.volume AS volume',
+//                    'tx_dlf_documents.mets_label AS mets_label',
+//                    'tx_dlf_documents.mets_orderlabel AS mets_orderlabel',
+//                    'tx_dlf_structures_join.index_name AS type'
+//                )
+//                ->innerJoin(
+//                    'tx_dlf_documents',
+//                    'tx_dlf_structures',
+//                    'tx_dlf_structures_join',
+//                    $queryBuilder->expr()->eq(
+//                        'tx_dlf_structures_join.uid',
+//                        'tx_dlf_documents.structure'
+//                    )
+//                )
+//                ->from('tx_dlf_documents')
+//                ->where(
+//                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval(c)),
+//                    $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($this->doc->pid)),
+//                    $excludeOtherWhere
+//                )
+//                ->addOrderBy('tx_dlf_documents.volume_sorting')
+//                ->addOrderBy('tx_dlf_documents.mets_orderlabel')
+//                ->execute();
 
-            $excludeOtherWhere = '';
-            if ($this->settings['excludeOther']) {
-                $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($this->settings['pages']);
-            }
-            // Check if there are any metadata to suggest.
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_documents.uid AS uid',
-                    'tx_dlf_documents.title AS title',
-                    'tx_dlf_documents.volume AS volume',
-                    'tx_dlf_documents.mets_label AS mets_label',
-                    'tx_dlf_documents.mets_orderlabel AS mets_orderlabel',
-                    'tx_dlf_structures_join.index_name AS type'
-                )
-                ->innerJoin(
-                    'tx_dlf_documents',
-                    'tx_dlf_structures',
-                    'tx_dlf_structures_join',
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_structures_join.uid',
-                        'tx_dlf_documents.structure'
-                    )
-                )
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
-                    $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($this->doc->pid)),
-                    $excludeOtherWhere
-                )
-                ->addOrderBy('tx_dlf_documents.volume_sorting')
-                ->addOrderBy('tx_dlf_documents.mets_orderlabel')
-                ->execute();
+            $result = $this->documentRepository->getTableOfContentsFromDb($this->doc->uid, $this->doc->pid, $this->settings);
 
             $allResults = $result->fetchAll();
 
