@@ -12,10 +12,8 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -111,26 +109,6 @@ class CalendarController extends AbstractController
             return;
         }
 
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_documents');
-//
-//        // Get all children of year anchor.
-//        $result = $queryBuilder
-//            ->select(
-//                'tx_dlf_documents.uid AS uid',
-//                'tx_dlf_documents.title AS title',
-//                'tx_dlf_documents.year AS year',
-//                'tx_dlf_documents.mets_label AS label',
-//                'tx_dlf_documents.mets_orderlabel AS orderlabel'
-//            )
-//            ->from('tx_dlf_documents')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('issue', 'tx_dlf_structures', $this->doc->cPid)),
-//                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
-//                Helper::whereExpression('tx_dlf_documents')
-//            )
-//            ->orderBy('tx_dlf_documents.mets_orderlabel')
-//            ->execute();
         $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, $this->doc->cPid, 'issue');
 
         $issues = [];
@@ -154,23 +132,6 @@ class CalendarController extends AbstractController
             ];
         }
 
-//        // Process results.
-//        while ($resArray = $result->fetch()) {
-//            // Set title for display in calendar view.
-//            if (!empty($resArray['title'])) {
-//                $title = $resArray['title'];
-//            } else {
-//                $title = !empty($resArray['label']) ? $resArray['label'] : $resArray['orderlabel'];
-//                if (strtotime($title) !== false) {
-//                    $title = strftime('%x', strtotime($title));
-//                }
-//            }
-//            $issues[] = [
-//                'uid' => $resArray['uid'],
-//                'title' => $title,
-//                'year' => $resArray['year']
-//            ];
-//        }
         //  We need an array of issues with year => month => day number as key.
         $calendarIssuesByYear = [];
         foreach ($issues as $issue) {
@@ -258,22 +219,7 @@ class CalendarController extends AbstractController
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
-//        // Get all children of anchor. This should be the year anchor documents
-//        $result = $queryBuilder
-//            ->select(
-//                'tx_dlf_documents.uid AS uid',
-//                'tx_dlf_documents.title AS title',
-//                'tx_dlf_documents.mets_label AS label',
-//                'tx_dlf_documents.mets_orderlabel AS orderlabel'
-//            )
-//            ->from('tx_dlf_documents')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_documents.structure', Helper::getUidFromIndexName('year', 'tx_dlf_structures', $this->doc->cPid)),
-//                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($this->doc->uid)),
-//                Helper::whereExpression('tx_dlf_documents')
-//            )
-//            ->orderBy('tx_dlf_documents.mets_orderlabel')
-//            ->execute();
+        // Get all children of anchor. This should be the year anchor documents
         $documents = $this->docucmentRepository->getChildrenOfYearAnchor($this->doc->cPid, $this->doc->uid, 'year');
 
         $years = [];
@@ -285,12 +231,7 @@ class CalendarController extends AbstractController
                 'uid' => $document->getUid()
             ];
         }
-//        while ($resArray = $result->fetch()) {
-//            $years[] = [
-//                'title' => !empty($resArray['label']) ? $resArray['label'] : (!empty($resArray['orderlabel']) ? $resArray['orderlabel'] : $resArray['title']),
-//                'uid' => $resArray['uid']
-//            ];
-//        }
+
         $yearArray = [];
         if (count($years) > 0) {
             foreach ($years as $year) {

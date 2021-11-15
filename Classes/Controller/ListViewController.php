@@ -18,7 +18,6 @@ use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
@@ -296,27 +295,6 @@ class ListViewController extends AbstractController
      */
     protected function loadConfig()
     {
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_metadata');
-//
-//        $result = $queryBuilder
-//            ->select(
-//                'tx_dlf_metadata.index_name AS index_name',
-//                'tx_dlf_metadata.wrap AS wrap',
-//                'tx_dlf_metadata.is_listed AS is_listed',
-//                'tx_dlf_metadata.is_sortable AS is_sortable'
-//            )
-//            ->from('tx_dlf_metadata')
-//            ->where(
-//                $queryBuilder->expr()->orX(
-//                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
-//                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)
-//                ),
-//                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->settings['pages'])),
-//                Helper::whereExpression('tx_dlf_metadata')
-//            )
-//            ->orderBy('tx_dlf_metadata.sorting')
-//            ->execute();
         $metadataResult = $this->metadataRepository->getMetadataForListview($this->settings['pages']);
 
         /** @var Metadata $metadata */
@@ -331,18 +309,6 @@ class ListViewController extends AbstractController
                 $this->sortables[$metadata->getIndexName()] = Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages']);
             }
         }
-
-//        while ($resArray = $result->fetch()) {
-//            if ($resArray['is_listed']) {
-//                $this->metadata[$resArray['index_name']] = [
-//                    'wrap' => $resArray['wrap'],
-//                    'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->settings['pages'])
-//                ];
-//            }
-//            if ($resArray['is_sortable']) {
-//                $this->sortables[$resArray['index_name']] = Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->settings['pages']);
-//            }
-//        }
     }
 
     /**

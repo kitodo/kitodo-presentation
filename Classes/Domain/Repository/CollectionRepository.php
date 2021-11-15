@@ -155,19 +155,6 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->equals('pid', $pages));
 
         return $query->execute();
-
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_collections');
-//        $collList = [];
-//        $result = $queryBuilder
-//            ->select('tx_dlf_collections.index_name AS index_name')
-//            ->from('tx_dlf_collections')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($pages))
-//            )
-//            ->execute();
-//
-//        return $result;
     }
 
     public function getFacetCollections($facetCollections) {
@@ -176,22 +163,6 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->in('uid', GeneralUtility::intExplode(',', $facetCollections)));
 
         return $query->execute();
-
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_collections');
-//
-//        $result = $queryBuilder
-//            ->select('tx_dlf_collections.index_name AS index_name')
-//            ->from('tx_dlf_collections')
-//            ->where(
-//                $queryBuilder->expr()->in(
-//                    'tx_dlf_collections.uid',
-//                    $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $facetCollections), Connection::PARAM_INT_ARRAY)
-//                )
-//            )
-//            ->execute();
-//
-//        return $result;
     }
 
     public function getOai1($settings) {

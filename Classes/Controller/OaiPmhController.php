@@ -14,10 +14,7 @@ namespace Kitodo\Dlf\Controller;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Controller for the plugin 'OAI-PMH Interface' for the 'dlf' extension
@@ -201,19 +198,6 @@ class OaiPmhController extends AbstractController
 
             $document = $this->documentRepository->findOneByPartOf($metadata['partof']);
 
-//            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//                ->getQueryBuilderForTable('tx_dlf_documents');
-//
-//            $result = $queryBuilder
-//                ->select('tx_dlf_documents.record_id')
-//                ->from('tx_dlf_documents')
-//                ->where(
-//                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($metadata['partof'])),
-//                    Helper::whereExpression('tx_dlf_documents')
-//                )
-//                ->setMaxResults(1)
-//                ->execute();
-
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
             }
@@ -321,22 +305,6 @@ class OaiPmhController extends AbstractController
      */
     protected function resume(): ?DocumentList
     {
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_tokens');
-//
-//        // Get resumption token.
-//        $result = $queryBuilder
-//            ->select('tx_dlf_tokens.options AS options')
-//            ->from('tx_dlf_tokens')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-//                $queryBuilder->expr()->eq('tx_dlf_tokens.token',
-//                    $queryBuilder->expr()->literal($this->parameters['resumptionToken'])
-//                )
-//            )
-//            ->setMaxResults(1)
-//            ->execute();
-
         $result = $this->tokenRepository->getResumptionToken($this->parameters['resumptionToken']);
 
         if ($resArray = $result->fetch()) {
@@ -365,39 +333,8 @@ class OaiPmhController extends AbstractController
             $this->error = 'cannotDisseminateFormat';
             return;
         }
-//        $where = '';
-//        if (!$this->settings['show_userdefined']) {
-//            $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
-//        }
-//
-//        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
-//
-//        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
-//            'FROM `tx_dlf_documents` ' .
-//            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
-//            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-//            'WHERE `tx_dlf_documents`.`record_id` = ? ' .
-//            'AND `tx_dlf_documents`.`pid` = ? ' .
-//            'AND `tx_dlf_collections`.`pid` = ? ' .
-//            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-//            $where .
-//            'AND ' . Helper::whereExpression('tx_dlf_collections');
-//
-//        $values = [
-//            $this->parameters['identifier'],
-//            $this->settings['pages'],
-//            $this->settings['pages']
-//        ];
-//        $types = [
-//            Connection::PARAM_STR,
-//            Connection::PARAM_INT,
-//            Connection::PARAM_INT
-//        ];
-//        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-//        $statement = $connection->executeQuery($sql, $values, $types);
-//
-//        $resArray = $statement->fetch();
-        $resArray = $this->documentRepository->getOai1($this->settings);
+
+        $resArray = $this->documentRepository->getOaiRecord($this->settings);
 
         if (!$resArray['uid']) {
             $this->error = 'idDoesNotExist';
@@ -440,23 +377,6 @@ class OaiPmhController extends AbstractController
      */
     protected function verbIdentify()
     {
-//        // Get repository name and administrative contact.
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_libraries');
-//
-//        $result = $queryBuilder
-//            ->select(
-//                'tx_dlf_libraries.oai_label AS oai_label',
-//                'tx_dlf_libraries.contact AS contact'
-//            )
-//            ->from('tx_dlf_libraries')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($this->settings['pages'])),
-//                $queryBuilder->expr()->eq('tx_dlf_libraries.uid', intval($this->settings['library']))
-//            )
-//            ->setMaxResults(1)
-//            ->execute();
-
         $result = $this->libraryRepository->getLibraryByUidAndPid($this->settings['library'], $this->settings['pages']);
 
         $oaiIdentifyInfo = $result->fetch();
@@ -474,19 +394,6 @@ class OaiPmhController extends AbstractController
             $oaiIdentifyInfo['contact'] = 'unknown@example.org';
             $this->logger->notice('Incomplete plugin configuration (contact is missing)');
         }
-
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_documents');
-//
-//        $result = $queryBuilder
-//            ->select('tx_dlf_documents.tstamp AS tstamp')
-//            ->from('tx_dlf_documents')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->settings['pages']))
-//            )
-//            ->orderBy('tx_dlf_documents.tstamp')
-//            ->setMaxResults(1)
-//            ->execute();
 
         $document = $this->documentRepository->oaiDocumentByTstmp($this->settings['pages']);
 
@@ -565,25 +472,7 @@ class OaiPmhController extends AbstractController
         $resArray = [];
         // check for the optional "identifier" parameter
         if (isset($this->parameters['identifier'])) {
-//            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//                ->getQueryBuilderForTable('tx_dlf_documents');
-//
-//            // Check given identifier.
-//            $result = $queryBuilder
-//                ->select('tx_dlf_documents.*')
-//                ->from('tx_dlf_documents')
-//                ->where(
-//                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->settings['pages'])),
-//                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id',
-//                    $queryBuilder->expr()->literal($this->parameters['identifier']))
-//                )
-//                ->orderBy('tx_dlf_documents.tstamp')
-//                ->setMaxResults(1)
-//                ->execute();
-//
-//            $resArray = $result->fetch();
-
-            $resArray = $this->documentRepository->getOai2($this->settings['pages'], $this->parameters['identifier']);
+            $resArray = $this->documentRepository->getOaiMetadataFormats($this->settings['pages'], $this->parameters['identifier']);
         }
 
         $resultSet = [];
@@ -668,43 +557,7 @@ class OaiPmhController extends AbstractController
      */
     protected function verbListSets()
     {
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_collections');
-//
-//        // Check for invalid arguments.
-//        if (count($this->parameters) > 1) {
-//            if (!empty($this->parameters['resumptionToken'])) {
-//                $this->error = 'badResumptionToken';
-//                return;
-//            } else {
-//                $this->error = 'badArgument';
-//                return;
-//            }
-//        }
-//        $where = '';
-//        if (!$this->settings['show_userdefined']) {
-//            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-//        }
-//
-//        $result = $queryBuilder
-//            ->select(
-//                'tx_dlf_collections.oai_name AS oai_name',
-//                'tx_dlf_collections.label AS label'
-//            )
-//            ->from('tx_dlf_collections')
-//            ->where(
-//                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-//                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->settings['pages'])),
-//                $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', $queryBuilder->createNamedParameter('')),
-//                $where,
-//                Helper::whereExpression('tx_dlf_collections')
-//            )
-//            ->orderBy('tx_dlf_collections.oai_name')
-//            ->execute();
-//
-//        $allResults = $result->fetchAll();
-
-        $allResults = $this->collectionRepository->getOai1($this->settings);
+        $allResults = $this->collectionRepository->getOaiRecord($this->settings);
 
         $this->view->assign('oaiSets', $allResults);
     }
@@ -718,34 +571,12 @@ class OaiPmhController extends AbstractController
      */
     protected function fetchDocumentUIDs()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
-
         $solr_query = '';
-        $where = '';
-        if (!$this->settings['show_userdefined']) {
-            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-        }
         // Check "set" for valid value.
         if (!empty($this->parameters['set'])) {
-//            // For SOLR we need the index_name of the collection,
-//            // For DB Query we need the UID of the collection
-//            $result = $queryBuilder
-//                ->select(
-//                    'tx_dlf_collections.index_name AS index_name',
-//                    'tx_dlf_collections.uid AS uid',
-//                    'tx_dlf_collections.index_search as index_query'
-//                )
-//                ->from('tx_dlf_collections')
-//                ->where(
-//                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->settings['pages'])),
-//                    $queryBuilder->expr()->eq('tx_dlf_collections.oai_name',
-//                        $queryBuilder->expr()->literal($this->parameters['set'])),
-//                    $where,
-//                    Helper::whereExpression('tx_dlf_collections')
-//                )
-//                ->setMaxResults(1)
-//                ->execute();
+            // For SOLR we need the index_name of the collection,
+            // For DB Query we need the UID of the collection
+
             $result = $this->collectionRepository->getIndexNameForSolr($this->settings, $this->parameters['set']);
 
             if ($resArray = $result->fetch()) {
@@ -856,37 +687,7 @@ class OaiPmhController extends AbstractController
         }
         $verb = $this->parameters['verb'];
 
-//        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getConnectionForTable('tx_dlf_documents');
-//
-//        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
-//            'FROM `tx_dlf_documents` ' .
-//            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
-//            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-//            'WHERE `tx_dlf_documents`.`uid` IN ( ? ) ' .
-//            'AND `tx_dlf_documents`.`pid` = ? ' .
-//            'AND `tx_dlf_collections`.`pid` = ? ' .
-//            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-//            'AND ' . Helper::whereExpression('tx_dlf_collections') . ' ' .
-//            'GROUP BY `tx_dlf_documents`.`uid` ' .
-//            'LIMIT ?';
-//
-//        $values = [
-//            $documentsToProcess,
-//            $this->settings['pages'],
-//            $this->settings['pages'],
-//            $this->settings['limit']
-//        ];
-//        $types = [
-//            Connection::PARAM_INT_ARRAY,
-//            Connection::PARAM_INT,
-//            Connection::PARAM_INT,
-//            Connection::PARAM_INT
-//        ];
-//        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-//        $documents = $connection->executeQuery($sql, $values, $types);
-
-        $documents = $this->documentRepository->getOai3($this->settings, $documentsToProcess);
+        $documents = $this->documentRepository->getOaiDocumentList($this->settings, $documentsToProcess);
 
         $records = [];
         while ($resArray = $documents->fetch()) {

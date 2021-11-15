@@ -66,25 +66,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->in('uid', $documentSet));
 
         return $query->execute();
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_documents');
-//        // Fetch document info for UIDs in $documentSet from DB
-//        $documents = $queryBuilder
-//            ->select(
-//                'tx_dlf_documents.uid AS uid',
-//                'tx_dlf_documents.metadata_sorting AS metadata_sorting',
-//                'tx_dlf_documents.volume_sorting AS volume_sorting',
-//                'tx_dlf_documents.partof AS partof'
-//            )
-//            ->from('tx_dlf_documents')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pages)),
-//                $queryBuilder->expr()->in('tx_dlf_documents.uid', $documentSet),
-//                Helper::whereExpression('tx_dlf_documents')
-//            )
-//            ->execute();
-//
-//        return $documents;
     }
 
     public function getDocumentsForFeeds($settings, $collectionUid) {
@@ -312,7 +293,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $result;
     }
 
-    public function getOai1($settings) {
+    public function getOaiRecord($settings) {
         $where = '';
         if (!$settings['show_userdefined']) {
             $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
@@ -349,7 +330,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $resArray;
     }
 
-    public function getOai2($pid, $id) {
+    public function getOaiMetadataFormats($pid, $id) {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -370,7 +351,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $resArray;
     }
 
-    public function getOai3($settings, $documentsToProcess) {
+    public function getOaiDocumentList($settings, $documentsToProcess) {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_dlf_documents');
 

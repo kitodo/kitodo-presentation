@@ -15,7 +15,6 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Document;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -87,64 +86,6 @@ class CollectionController extends AbstractController
      */
     protected function showCollectionList()
     {
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_collections');
-//
-//        $selectedCollections = $queryBuilder->expr()->neq('tx_dlf_collections.uid', 0);
-//        $orderBy = 'tx_dlf_collections.label';
-//        $showUserDefinedColls = '';
-//        // Handle collections set by configuration.
-//        if ($this->settings['collections']) {
-//            if (
-//                count(explode(',', $this->settings['collections'])) == 1
-//                && empty($this->settings['dont_show_single'])
-//            ) {
-//                $this->showSingleCollection(intval(trim($this->settings['collections'], ' ,')));
-//            }
-//            $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', implode(',', GeneralUtility::intExplode(',', $this->settings['collections'])));
-//        }
-//
-//        // Should user-defined collections be shown?
-//        if (empty($this->settings['show_userdefined'])) {
-//            $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-//        } elseif ($this->settings['show_userdefined'] > 0) {
-//            if (!empty($GLOBALS['TSFE']->fe_user->user['uid'])) {
-//                $showUserDefinedColls = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', intval($GLOBALS['TSFE']->fe_user->user['uid']));
-//            } else {
-//                $showUserDefinedColls = $queryBuilder->expr()->neq('tx_dlf_collections.fe_cruser_id', 0);
-//            }
-//        }
-//
-//        // Get collections.
-//        $queryBuilder
-//            ->select(
-//                'tx_dlf_collections.uid AS uid', // required by getRecordOverlay()
-//                'tx_dlf_collections.pid AS pid', // required by getRecordOverlay()
-//                'tx_dlf_collections.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
-//                'tx_dlf_collections.index_name AS index_name',
-//                'tx_dlf_collections.index_search as index_query',
-//                'tx_dlf_collections.label AS label',
-//                'tx_dlf_collections.thumbnail AS thumbnail',
-//                'tx_dlf_collections.description AS description',
-//                'tx_dlf_collections.priority AS priority'
-//            )
-//            ->from('tx_dlf_collections')
-//            ->where(
-//                $selectedCollections,
-//                $showUserDefinedColls,
-//                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->settings['pages'])),
-//                $queryBuilder->expr()->andX(
-//                    $queryBuilder->expr()->orX(
-//                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-//                        $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
-//                    ),
-//                    $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
-//                )
-//            )
-//            ->orderBy($orderBy);
-//
-//        $result = $queryBuilder->execute();
-//        $count = $queryBuilder->count('uid')->execute()->fetchColumn(0);
 
         $result = $this->collectionRepository->getCollections($this->settings, $GLOBALS['TSFE']->fe_user->user['uid'], $GLOBALS['TSFE']->sys_language_uid);
         $count = $result['count'];
@@ -249,47 +190,6 @@ class CollectionController extends AbstractController
      */
     protected function showSingleCollection($id)
     {
-//        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-//        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_collections');
-//
-//        $additionalWhere = '';
-//        // Should user-defined collections be shown?
-//        if (empty($this->settings['show_userdefined'])) {
-//            $additionalWhere = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
-//        } elseif ($this->settings['show_userdefined'] > 0) {
-//            $additionalWhere = $queryBuilder->expr()->neq('tx_dlf_collections.fe_cruser_id', 0);
-//        }
-//
-//        // Get collection information from DB
-//        $collection = $queryBuilder
-//            ->select(
-//                'tx_dlf_collections.uid AS uid', // required by getRecordOverlay()
-//                'tx_dlf_collections.pid AS pid', // required by getRecordOverlay()
-//                'tx_dlf_collections.sys_language_uid AS sys_language_uid', // required by getRecordOverlay()
-//                'tx_dlf_collections.index_name AS index_name',
-//                'tx_dlf_collections.index_search as index_search',
-//                'tx_dlf_collections.label AS label',
-//                'tx_dlf_collections.description AS description',
-//                'tx_dlf_collections.thumbnail AS thumbnail',
-//                'tx_dlf_collections.fe_cruser_id'
-//            )
-//            ->from('tx_dlf_collections')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->settings['pages'])),
-//                $queryBuilder->expr()->eq('tx_dlf_collections.uid', intval($id)),
-//                $additionalWhere,
-//                $queryBuilder->expr()->andX(
-//                    $queryBuilder->expr()->orX(
-//                        $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-//                        $queryBuilder->expr()->eq('tx_dlf_collections.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
-//                    ),
-//                    $queryBuilder->expr()->eq('tx_dlf_collections.l18n_parent', 0)
-//                ),
-//                Helper::whereExpression('tx_dlf_collections')
-//            )
-//            ->setMaxResults(1)
-//            ->execute();
-
         $collection = $this->collectionRepository->getSingleCollection($this->settings, $id, $GLOBALS['TSFE']->sys_language_uid);
 
         // Get language overlay if on alterative website language.
@@ -328,22 +228,6 @@ class CollectionController extends AbstractController
             }
         }
         $documentSet = array_unique($documentSet);
-//        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
-//        // Fetch document info for UIDs in $documentSet from DB
-//        $documents = $queryBuilder
-//            ->select(
-//                'tx_dlf_documents.uid AS uid',
-//                'tx_dlf_documents.metadata_sorting AS metadata_sorting',
-//                'tx_dlf_documents.volume_sorting AS volume_sorting',
-//                'tx_dlf_documents.partof AS partof'
-//            )
-//            ->from('tx_dlf_documents')
-//            ->where(
-//                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($this->settings['pages'])),
-//                $queryBuilder->expr()->in('tx_dlf_documents.uid', $documentSet),
-//                Helper::whereExpression('tx_dlf_documents')
-//            )
-//            ->execute();
 
         $documents = $this->documentRepository->getDocumentsFromDocumentset($documentSet, $this->settings['pages']);
 
@@ -399,53 +283,7 @@ class CollectionController extends AbstractController
                 ];
             }
         }
-//        while ($resArray = $documents->fetch()) {
-//            if (empty($listMetadata)) {
-//                $listMetadata = [
-//                    'label' => htmlspecialchars($collectionData['label']),
-//                    'description' => $collectionData['description'],
-//                    'thumbnail' => htmlspecialchars($collectionData['thumbnail']),
-//                    'options' => [
-//                        'source' => 'collection',
-//                        'select' => $id,
-//                        'userid' => $collectionData['userid'],
-//                        'params' => ['filterquery' => [['query' => 'collection_faceting:("' . $collectionData['index_name'] . '")']]],
-//                        'core' => '',
-//                        'pid' => $this->settings['pages'],
-//                        'order' => 'title',
-//                        'order.asc' => true
-//                    ]
-//                ];
-//            }
-//            // Prepare document's metadata for sorting.
-//            $sorting = unserialize($resArray['metadata_sorting']);
-//            if (!empty($sorting['type']) && MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-//                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->settings['pages']);
-//            }
-//            if (!empty($sorting['owner']) && MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-//                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->settings['pages']);
-//            }
-//            if (!empty($sorting['collection']) && MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-//                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->settings['pages']);
-//            }
-//            // Split toplevel documents from volumes.
-//            if ($resArray['partof'] == 0) {
-//                $toplevel[$resArray['uid']] = [
-//                    'u' => $resArray['uid'],
-//                    'h' => '',
-//                    's' => $sorting,
-//                    'p' => []
-//                ];
-//            } else {
-//                // volume_sorting should be always set - but it's not a required field. We append the uid to the array key to make it always unique.
-//                $subparts[$resArray['partof']][$resArray['volume_sorting'] . str_pad($resArray['uid'], 9, '0', STR_PAD_LEFT)] = [
-//                    'u' => $resArray['uid'],
-//                    'h' => '',
-//                    's' => $sorting,
-//                    'p' => []
-//                ];
-//            }
-//        }
+
         // Add volumes to the corresponding toplevel documents.
         foreach ($subparts as $partof => $parts) {
             ksort($parts);

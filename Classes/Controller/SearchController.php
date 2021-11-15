@@ -19,8 +19,6 @@ use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 
@@ -432,29 +430,12 @@ class SearchController extends AbstractController
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->settings['facetCollections']);
 
         if (!empty($facetCollections)) {
-//            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//                ->getQueryBuilderForTable('tx_dlf_collections');
-//
-//            $result = $queryBuilder
-//                ->select('tx_dlf_collections.index_name AS index_name')
-//                ->from('tx_dlf_collections')
-//                ->where(
-//                    $queryBuilder->expr()->in(
-//                        'tx_dlf_collections.uid',
-//                        $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $facetCollections), Connection::PARAM_INT_ARRAY)
-//                    )
-//                )
-//                ->execute();
             $collections = $this->collectionRepository->getFacetCollections($facetCollections);
 
             /** @var Collection $collection */
             foreach ($collections as $collection) {
                 $facetCollectionArray[] = $collection->getIndexName();
             }
-
-//            while ($collection = $result->fetch()) {
-//                $facetCollectionArray[] = $collection['index_name'];
-//            }
         }
 
         // Process results.

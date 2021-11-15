@@ -32,30 +32,6 @@ class MetadataRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         ]);
 
         return $query->execute();
-
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_metadata');
-//
-//        $result = $queryBuilder
-//            ->select(
-//                'tx_dlf_metadata.index_name AS index_name',
-//                'tx_dlf_metadata.wrap AS wrap',
-//                'tx_dlf_metadata.is_listed AS is_listed',
-//                'tx_dlf_metadata.is_sortable AS is_sortable'
-//            )
-//            ->from('tx_dlf_metadata')
-//            ->where(
-//                $queryBuilder->expr()->orX(
-//                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
-//                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)
-//                ),
-//                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pages)),
-//                Helper::whereExpression('tx_dlf_metadata')
-//            )
-//            ->orderBy('tx_dlf_metadata.sorting')
-//            ->execute();
-//
-//        return $result;
     }
 
     public function getMetadata($pages, $sysLangUid) {
@@ -71,31 +47,6 @@ class MetadataRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching('pid', $pages);
 
         return $query->execute();
-
-//        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-//            ->getQueryBuilderForTable('tx_dlf_metadata');
-//        $result = $queryBuilder
-//            ->select(
-//                'tx_dlf_metadata.index_name AS index_name',
-//                'tx_dlf_metadata.is_listed AS is_listed',
-//                'tx_dlf_metadata.wrap AS wrap',
-//                'tx_dlf_metadata.sys_language_uid AS sys_language_uid'
-//            )
-//            ->from('tx_dlf_metadata')
-//            ->where(
-//                $queryBuilder->expr()->andX(
-//                    $queryBuilder->expr()->orX(
-//                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
-//                        $queryBuilder->expr()->eq('tx_dlf_metadata.sys_language_uid', $sysLangUid)
-//                    ),
-//                    $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
-//                ),
-//                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pages))
-//            )
-//            ->orderBy('tx_dlf_metadata.sorting')
-//            ->execute();
-//
-//        return $result;
     }
 
 }
