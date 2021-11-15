@@ -133,7 +133,21 @@ class TableOfContentsController extends AbstractController
      */
     public function mainAction()
     {
-        $this->view->assign('toc', $this->makeMenuArray());
+        // Load current document.
+        $this->loadDocument($this->requestData);
+        if (
+            $this->document === null
+            || $this->document->getDoc() === null
+        ) {
+            // Quit without doing anything if required variables are not set.
+            return '';
+        } else {
+            if ($this->document->getDoc()->metadataArray['LOG_0000']['type'][0] != 'collection') {
+                $this->view->assign('toc', $this->makeMenuArray());
+            } else {
+                $this->view->assign('toc', $this->makeMenuFor3DObjects());
+            }
+        }
     }
 
     /**
@@ -144,34 +158,22 @@ class TableOfContentsController extends AbstractController
      */
     public function makeMenuArray()
     {
-        // Load current document.
-        $this->loadDocument($this->requestData);
-        if (
-            $this->document === null
-            || $this->document->getDoc() === null
-        ) {
-            // Quit without doing anything if required variables are not set.
-            return [];
-        } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values for page if not set.
-            // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'],
-                    1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
-            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'],
-                0, 1, 0);
+        if (!empty($this->requestData['logicalPage'])) {
+             $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
+            // The logical page parameter should not appear again
+            unset($this->requestData['logicalPage']);
         }
+        // Set default values for page if not set.
+        // $this->requestData['page'] may be integer or string (physical structure @ID)
+        if (
+            (int) $this->requestData['page'] > 0
+            || empty($this->requestData['page'])
+        ) {
+            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+        } else {
+            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
+        }
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
@@ -224,5 +226,98 @@ class TableOfContentsController extends AbstractController
             }
         }
         return $menuArray;
+    }
+
+    /**
+     * This builds a menu for list of 3D objects
+     *
+     * @access public
+     *
+     * @param string $content: The PlugIn content
+     * @param array $conf: The PlugIn configuration
+     *
+     * @return array HMENU array
+     */
+    public function makeMenuFor3DObjects($content, $conf)
+    {
+        if (!empty($this->requestData['logicalPage'])) {
+            $this->requestData['page'] = $this->doc->getPhysicalPage($this->requestData['logicalPage']);
+            // The logical page parameter should not appear again
+            unset($this->requestData['logicalPage']);
+        }
+        // Set default values for page if not set.
+        // $this->requestData['page'] may be integer or string (physical structure @ID)
+        if (
+            (int) $this->requestData['page'] > 0
+            || empty($this->requestData['page'])
+        ) {
+            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+        } else {
+            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
+        }
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+        $menuArray = [];
+        // Is the document an external file?
+        if (!MathUtility::canBeInterpretedAsInteger($this->document->getDoc()->uid)) {
+            // Go through table of contents and create all menu entries.
+            foreach ($this->doc->tableOfContents as $entry) {
+                $menuArray[] = $this->getMenuEntryWithImage($entry, true);
+            }
+        }
+        return $menuArray;
+    }
+
+    protected function getMenuEntryWithImage(array $entry, $recursive = false)
+    {
+        $entryArray = [];
+        // Set "title", "volume", "type" and "pagination" from $entry array.
+        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
+        $entryArray['orderlabel'] = $entry['orderlabel'];
+        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
+        $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
+        $entryArray['doNotLinkIt'] = 1;
+
+        if($entry['children'] == NULL) {
+            $entryArray['description'] = $entry['description'];
+            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['THUMBS']);;
+            $entryArray['doNotLinkIt'] = 0;
+            $entryArray['_OVERRIDE_HREF'] = '/index.php?id=' . GeneralUtility::_GET('id') . '&html=1&tx_dlf%5Bid%5D=' . urlencode($entry['points']);
+        }
+
+        $entryArray['ITEM_STATE'] = 'NO';
+
+        // Set "ITEM_STATE" to "CUR" if this entry points to current page.
+        if (in_array($entry['id'], $this->activeEntries)) {
+            $entryArray['ITEM_STATE'] = 'CUR';
+        }
+        // Build sub-menu if available and called recursively.
+        if (
+            $recursive == true
+            && !empty($entry['children'])
+        ) {
+            // Build sub-menu only if one of the following conditions apply:
+            // 1. "expAll" is set for menu
+            // 2. Current menu node is in rootline
+            // 3. Current menu node points to another file
+            // 4. Current menu node has no corresponding images
+            if (
+                !empty($this->pluginConf['previewConf.']['expAll'])
+                || $entryArray['ITEM_STATE'] == 'CUR'
+                || is_string($entry['points'])
+                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
+            ) {
+                $entryArray['_SUB_MENU'] = [];
+                foreach ($entry['children'] as $child) {
+                    // Set "ITEM_STATE" to "ACT" if this entry points to current page and has sub-entries pointing to the same page.
+                    if (in_array($child['id'], $this->activeEntries)) {
+                        $entryArray['ITEM_STATE'] = 'ACT';
+                    }
+                    $entryArray['_SUB_MENU'][] = $this->getMenuEntryWithImage($child, true);
+                }
+            }
+            // Append "IFSUB" to "ITEM_STATE" if this entry has sub-entries.
+            $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'] . 'IFSUB');
+        }
+        return $entryArray;
     }
 }
