@@ -220,7 +220,7 @@ class CalendarController extends AbstractController
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->docucmentRepository->getChildrenOfYearAnchor($this->doc->cPid, $this->doc->uid, 'year');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->cPid, $this->doc->uid, 'year');
 
         $years = [];
         // Process results.
