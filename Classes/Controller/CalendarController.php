@@ -27,7 +27,7 @@ class CalendarController extends AbstractController
      */
     protected $allIssues = [];
 
-    protected $docucmentRepository;
+    protected $documentRepository;
 
     /**
      * @param DocumentRepository $documentRepository
