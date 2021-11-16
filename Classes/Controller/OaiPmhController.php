@@ -15,6 +15,8 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Repository\TokenRepository;
 
 /**
  * Controller for the plugin 'OAI-PMH Interface' for the 'dlf' extension
@@ -44,6 +46,26 @@ class OaiPmhController extends AbstractController
     public function injectTokenRepository(TokenRepository $tokenRepository)
     {
         $this->tokenRepository = $tokenRepository;
+    }
+
+    protected $collectionRepository;
+
+    /**
+     * @param CollectionRepository $collectionRepository
+     */
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    {
+        $this->collectionRepository = $collectionRepository;
+    }
+
+    protected $libraryRepository;
+
+    /**
+     * @param LibraryRepository $libraryRepository
+     */
+    public function injectLibraryRepository(LibraryRepository $libraryRepository)
+    {
+        $this->libraryRepository = $libraryRepository;
     }
 
     /**
@@ -323,7 +345,7 @@ class OaiPmhController extends AbstractController
             return;
         }
 
-        $resArray = $this->documentRepository->getOaiRecord($this->settings);
+        $resArray = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
 
         if (!$resArray['uid']) {
             $this->error = 'idDoesNotExist';
@@ -546,7 +568,7 @@ class OaiPmhController extends AbstractController
      */
     protected function verbListSets()
     {
-        $allResults = $this->collectionRepository->getOaiRecord($this->settings);
+        $allResults = $this->collectionRepository->getOaiRecord($this->settings, $this->parameters);
 
         $this->view->assign('oaiSets', $allResults);
     }

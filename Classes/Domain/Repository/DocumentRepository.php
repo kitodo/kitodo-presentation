@@ -42,7 +42,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * @param $structure
      * @param $partOf
-     * @param $indexName (can be issue or year)
+     * @param $indexName
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function getChildrenOfYearAnchor($structure, $partOf, $indexName)
@@ -293,7 +293,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $result;
     }
 
-    public function getOaiRecord($settings) {
+    public function getOaiRecord($settings, $parameters) {
         $where = '';
         if (!$settings['show_userdefined']) {
             $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
@@ -313,7 +313,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             'AND ' . Helper::whereExpression('tx_dlf_collections');
 
         $values = [
-            $this->parameters['identifier'],
+            $parameters['identifier'],
             $settings['pages'],
             $settings['pages']
         ];

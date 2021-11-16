@@ -21,10 +21,10 @@ class MetadataRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function getMetadataForListview($pages) {
         $query = $this->createQuery();
 
-        $query->matching($query->logicalOr(
+        $query->matching($query->logicalOr([
             $query->equals('is_listed', 1),
             $query->equals('is_sortable', 1)
-        ));
+        ]));
         $query->matching($query->equals('pid', $pages));
 
         $query->setOrderings([
@@ -37,14 +37,11 @@ class MetadataRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function getMetadata($pages, $sysLangUid) {
         $query = $this->createQuery();
 
-        $query->matching($query->logicalAnd(
-            $query->logicalOr(
-                $query->in('sys_language_uid', [-1, 0]),
-                $query->equals('sys_language_uid', $sysLangUid)
-            ),
-            $query->equals('l18n_parent', 0)
-        ));
-        $query->matching('pid', $pages);
+        $querySettings = $query->getQuerySettings();
+        $querySettings->setLanguageUid($sysLangUid);
+        $querySettings->setLanguageOverlayMode('strict');
+
+        $query->matching($query->equals('pid', $pages));
 
         return $query->execute();
     }

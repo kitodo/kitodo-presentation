@@ -223,13 +223,13 @@ class MetadataController extends AbstractController
                 }
             }
         } else {
-            $metadataResult = $this->metadataRepository->getMetadata($this->settings['pages'], $GLOBALS['TSFE']->sys_language_uid);
+            $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+            $currentLanguageUid = $context->getPropertyFromAspect('language', 'id');
+
+            $metadataResult = $this->metadataRepository->getMetadata($this->settings['pages'], $currentLanguageUid);
 
             /** @var Metadata $metadata */
             foreach ($metadataResult as $metadata) {
-                if ($metadata && $metadata->getSysLanguageUid() != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
-                    $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
-                }
                 if ($metadata) {
                     if ($this->settings['showFull'] || $metadata->getIsListed()) {
                         $metaList[$metadata->getIndexName()] = [

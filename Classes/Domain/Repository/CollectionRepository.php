@@ -49,12 +49,6 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $showUserDefinedColls = '';
         // Handle collections set by configuration.
         if ($settings['collections']) {
-            if (
-                count(explode(',', $settings['collections'])) == 1
-                && empty($settings['dont_show_single'])
-            ) {
-                $this->showSingleCollection(intval(trim($settings['collections'], ' ,')));
-            }
             $selectedCollections = $queryBuilder->expr()->in('tx_dlf_collections.uid', implode(',', GeneralUtility::intExplode(',', $settings['collections'])));
         }
 
