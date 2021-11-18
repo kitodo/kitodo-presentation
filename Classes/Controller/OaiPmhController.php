@@ -110,7 +110,7 @@ class OaiPmhController extends AbstractController
         'oai_dc' => [
             'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
             'namespace' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-            'requiredFields' => ['record_id'],
+            'requiredFields' => ['recordId'],
         ],
         'epicur' => [
             'schema' => 'http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd',
@@ -497,7 +497,7 @@ class OaiPmhController extends AbstractController
         $resArray = [];
         // check for the optional "identifier" parameter
         if (isset($this->parameters['identifier'])) {
-            $resArray = $this->documentRepository->getOaiMetadataFormats($this->settings['pages'], $this->parameters['identifier']);
+            $resArray = $this->documentRepository->findOneByRecordId($this->parameters['identifier']);
         }
 
         $resultSet = [];
@@ -505,7 +505,8 @@ class OaiPmhController extends AbstractController
             if (!empty($resArray)) {
                 // check, if all required fields are available for a given identifier
                 foreach ($details['requiredFields'] as $required) {
-                    if (empty($resArray[$required])) {
+                    $methodName = 'get' . ucfirst(trim($required));
+                    if (empty($resArray->$methodName())) {
                         // Skip metadata formats whose requirements are not met.
                         continue 2;
                     }

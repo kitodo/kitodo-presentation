@@ -330,27 +330,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $resArray;
     }
 
-    public function getOaiMetadataFormats($pid, $id) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
-        // Check given identifier.
-        $result = $queryBuilder
-            ->select('tx_dlf_documents.*')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_documents.record_id',
-                    $queryBuilder->expr()->literal($id))
-            )
-            ->orderBy('tx_dlf_documents.tstamp')
-            ->setMaxResults(1)
-            ->execute();
-
-        $resArray = $result->fetch();
-        return $resArray;
-    }
-
     /**
      * Finds all documents for the given settings
      *
