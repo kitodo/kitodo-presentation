@@ -15,7 +15,9 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 
 /**
@@ -28,6 +30,9 @@ use Kitodo\Dlf\Domain\Repository\TokenRepository;
  */
 class OaiPmhController extends AbstractController
 {
+    /**
+     * @var DocumentRepository
+     */
     protected $documentRepository;
 
     /**
@@ -38,6 +43,9 @@ class OaiPmhController extends AbstractController
         $this->documentRepository = $documentRepository;
     }
 
+    /**
+     * @var TokenRepository
+     */
     protected $tokenRepository;
 
     /**
@@ -48,6 +56,9 @@ class OaiPmhController extends AbstractController
         $this->tokenRepository = $tokenRepository;
     }
 
+    /**
+     * @var CollectionRepository
+     */
     protected $collectionRepository;
 
     /**
@@ -58,6 +69,9 @@ class OaiPmhController extends AbstractController
         $this->collectionRepository = $collectionRepository;
     }
 
+    /**
+     * @var LibraryRepository
+     */
     protected $libraryRepository;
 
     /**
@@ -568,7 +582,7 @@ class OaiPmhController extends AbstractController
      */
     protected function verbListSets()
     {
-        $allResults = $this->collectionRepository->getOaiRecord($this->settings, $this->parameters);
+        $allResults = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
 
         $this->view->assign('oaiSets', $allResults);
     }
