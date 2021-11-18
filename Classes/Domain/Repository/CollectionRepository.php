@@ -165,7 +165,7 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param array $settings
      *
-     * @return array The found Collection Objects
+     * @return array The found collection objects
      */
     public function findCollectionsBySettings($settings = [])
     {

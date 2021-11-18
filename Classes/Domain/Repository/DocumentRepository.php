@@ -351,7 +351,16 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $resArray;
     }
 
-    public function getOaiDocumentList($settings, $documentsToProcess) {
+    /**
+     * Finds all documents for the given settings
+     *
+     * @param array $settings
+     * @param array $documentsToProcess
+     *
+     * @return array The found document objects
+     */
+    public function getOaiDocumentList($settings, $documentsToProcess)
+    {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_dlf_documents');
 
@@ -360,27 +369,21 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
             'WHERE `tx_dlf_documents`.`uid` IN ( ? ) ' .
-            'AND `tx_dlf_documents`.`pid` = ? ' .
-            'AND `tx_dlf_collections`.`pid` = ? ' .
             'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
             'AND ' . Helper::whereExpression('tx_dlf_collections') . ' ' .
-            'GROUP BY `tx_dlf_documents`.`uid` ' .
-            'LIMIT ?';
+            'GROUP BY `tx_dlf_documents`.`uid` ';
 
         $values = [
             $documentsToProcess,
-            $settings['pages'],
-            $settings['pages'],
-            $settings['limit']
         ];
+
         $types = [
             Connection::PARAM_INT_ARRAY,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT
         ];
+
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $documents = $connection->executeQuery($sql, $values, $types);
+
         return $documents;
     }
 
