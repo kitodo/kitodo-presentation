@@ -157,8 +157,6 @@ class MetadataController extends AbstractController
      */
     protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = false)
     {
-        // Get list of metadata to show.
-        $metaList = [];
         if ($useOriginalIiifManifestMetadata) {
             $iiifData = [];
             foreach ($metadataArray as $metadata) {
@@ -218,18 +216,6 @@ class MetadataController extends AbstractController
             $currentLanguageUid = $context->getPropertyFromAspect('language', 'id');
 
             $metadataResult = $this->metadataRepository->getMetadata($this->settings['pages'], $currentLanguageUid);
-
-            /** @var Metadata $metadata */
-            foreach ($metadataResult as $metadata) {
-                if ($metadata) {
-                    if ($this->settings['showFull'] || $metadata->getIsListed()) {
-                        $metaList[$metadata->getIndexName()] = [
-                            'wrap' => $metadata->getWrap(),
-                            'label' => Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages'])
-                        ];
-                    }
-                }
-            }
 
             // Get collections to check if they are hidden
             $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['pages']);
