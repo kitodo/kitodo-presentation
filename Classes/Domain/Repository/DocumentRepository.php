@@ -300,41 +300,45 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $result;
     }
 
-    public function getOaiRecord($settings, $parameters) {
+    /**
+     * Find one document by given settings and identifier
+     *
+     * @param array $settings
+     * @param array $parameters
+     *
+     * @return array The found document object
+     */
+    public function getOaiRecord($settings, $parameters)
+    {
         $where = '';
+
         if (!$settings['show_userdefined']) {
             $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
         }
 
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_dlf_documents');
 
         $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
             'WHERE `tx_dlf_documents`.`record_id` = ? ' .
-            'AND `tx_dlf_documents`.`pid` = ? ' .
-            'AND `tx_dlf_collections`.`pid` = ? ' .
             'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-            $where .
-            'AND ' . Helper::whereExpression('tx_dlf_collections');
+            $where;
 
         $values = [
-            $parameters['identifier'],
-            $settings['pages'],
-            $settings['pages']
+            $parameters['identifier']
         ];
+
         $types = [
-            Connection::PARAM_STR,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT
+            Connection::PARAM_STR
         ];
+
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $statement = $connection->executeQuery($sql, $values, $types);
 
-        $resArray = $statement->fetch();
-
-        return $resArray;
+        return $statement->fetch();
     }
 
     /**

@@ -110,7 +110,7 @@ class OaiPmhController extends AbstractController
         'oai_dc' => [
             'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
             'namespace' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-            'requiredFields' => ['recordId'],
+            'requiredFields' => ['record_id'],
         ],
         'epicur' => [
             'schema' => 'http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd',
@@ -221,7 +221,7 @@ class OaiPmhController extends AbstractController
         $record[] = ['dc:type' => $record['Text']];
         if (!empty($record['partof'])) {
 
-            $document = $this->documentRepository->findOneByPartOf($metadata['partof']);
+            $document = $this->documentRepository->findOneByPartof($metadata['partof']);
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
@@ -354,43 +354,44 @@ class OaiPmhController extends AbstractController
             $this->error = 'badArgument';
             return;
         }
+
         if (!array_key_exists($this->parameters['metadataPrefix'], $this->formats)) {
             $this->error = 'cannotDisseminateFormat';
             return;
         }
 
-        $resArray = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
+        $document = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
 
-        if (!$resArray['uid']) {
+        if (!$document['uid']) {
             $this->error = 'idDoesNotExist';
             return;
         }
 
         // Check for required fields.
         foreach ($this->formats[$this->parameters['metadataPrefix']]['requiredFields'] as $required) {
-            if (empty($resArray[$required])) {
+            if (empty($document[$required])) {
                 $this->error = 'cannotDisseminateFormat';
                 return;
             }
         }
 
         // we need the collections as array later
-        $resArray['collections'] = explode(' ', $resArray['collections']);
+        $document['collections'] = explode(' ', $document['collections']);
 
         // Add metadata
         switch ($this->parameters['metadataPrefix']) {
             case 'oai_dc':
-                $resArray['metadata'] = $this->getDcData($resArray);
+                $document['metadata'] = $this->getDcData($document);
                 break;
             case 'epicur':
-                $resArray['metadata'] = $resArray;
+                $document['metadata'] = $document;
                 break;
             case 'mets':
-                $resArray['metadata'] = $this->getMetsData($resArray);
+                $document['metadata'] = $this->getMetsData($document);
                 break;
         }
 
-        $this->view->assign('record', $resArray);
+        $this->view->assign('record', $document);
     }
 
     /**
@@ -515,7 +516,7 @@ class OaiPmhController extends AbstractController
             if (!empty($resArray)) {
                 // check, if all required fields are available for a given identifier
                 foreach ($details['requiredFields'] as $required) {
-                    $methodName = 'get' . ucfirst(trim($required));
+                    $methodName = 'get' . GeneralUtility::underscoredToUpperCamelCase($required);
                     if (empty($resArray->$methodName())) {
                         // Skip metadata formats whose requirements are not met.
                         continue 2;
