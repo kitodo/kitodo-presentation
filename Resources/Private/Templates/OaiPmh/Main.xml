@@ -85,7 +85,7 @@
             <ListSets>
                 <f:for each="{oaiSets}" as="set">
                     <set>
-                        <setSpec>{set.oai_name}</setSpec>
+                        <setSpec>{set.oaiName}</setSpec>
                         <setName>{set.label}</setName>
                     </set>
                 </f:for>

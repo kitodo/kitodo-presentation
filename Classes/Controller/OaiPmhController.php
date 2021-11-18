@@ -582,9 +582,12 @@ class OaiPmhController extends AbstractController
      */
     protected function verbListSets()
     {
-        $allResults = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
+        // It is required to set a oai_name inside the collection record to be shown in oai-pmh plugin.
+        $this->settings['hideEmptyOaiNames'] = true;
 
-        $this->view->assign('oaiSets', $allResults);
+        $oaiSets = $this->collectionRepository->findCollectionsBySettings($this->settings);
+
+        $this->view->assign('oaiSets', $oaiSets);
     }
 
     /**

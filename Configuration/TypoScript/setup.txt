@@ -1,8 +1,7 @@
 # Model database table mapping
 plugin.tx_dlf {
     persistence {
-        #storagePid = {$plugin.tx_dlf.persistence.storagePid}
-        #storagePid = 2
+        storagePid = {$plugin.tx_dlf.persistence.storagePid}
         classes {
             Kitodo\Dlf\Domain\Model\ActionLog {
                 mapping {
