@@ -428,7 +428,14 @@ class OaiPmhController extends AbstractController
         if ($document) {
             $oaiIdentifyInfo['earliestDatestamp'] = gmdate('Y-m-d\TH:i:s\Z', $document->getTstamp()->getTimestamp());
         } else {
-            $this->logger->notice('No records found with PID ' . $this->settings['pages']);
+            // access storagePid from TypoScript
+            $pageSettings = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+            $storagePid = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
+            if ($storagePid > 0) {
+                $this->logger->notice('No records found with PID ' . $storagePid);
+            } else {
+                $this->logger->notice('No records found');
+            }
         }
         $this->view->assign('oaiIdentifyInfo', $oaiIdentifyInfo);
     }
