@@ -248,12 +248,14 @@ CREATE TABLE tx_dlf_libraries (
 --
 CREATE TABLE tx_dlf_tokens (
     uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
     tstamp int(11) DEFAULT '0' NOT NULL,
     token varchar(255) DEFAULT '' NOT NULL,
     options mediumtext NOT NULL,
     ident varchar(30) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),
+    KEY parent (pid),
     KEY token (token)
 );
 

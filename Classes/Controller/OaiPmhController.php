@@ -15,6 +15,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Model\Token;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
@@ -144,12 +145,7 @@ class OaiPmhController extends AbstractController
     protected function deleteExpiredTokens()
     {
         // Delete expired resumption tokens.
-        $result = $this->tokenRepository->deleteExpiredTokens($GLOBALS['EXEC_TIME'], $this->settings['expired']);
-
-        if ($result === -1) {
-            // Deletion failed.
-            $this->logger->warning('Could not delete expired resumption tokens');
-        }
+        $this->tokenRepository->deleteExpiredTokens($this->settings['expired']);
     }
 
     /**
@@ -330,10 +326,13 @@ class OaiPmhController extends AbstractController
      */
     protected function resume(): ?DocumentList
     {
-        $result = $this->tokenRepository->getResumptionToken($this->parameters['resumptionToken']);
+        $token = $this->tokenRepository->findOneByToken($this->parameters['resumptionToken']);
 
-        if ($resArray = $result->fetch()) {
-            return unserialize($resArray['options']);
+        if ($token) {
+            $options = $token->getOptions();
+        }
+        if ($options instanceof DocumentList) {
+            return $options;
         } else {
             // No resumption token found or resumption token expired.
             $this->error = 'badResumptionToken';
@@ -774,17 +773,15 @@ class OaiPmhController extends AbstractController
     protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet)
     {
         if ($documentListSet->count() !== 0) {
-            $token = uniqid('', false);
+            $resumptionToken = uniqid('', false);
 
-            $affectedRows = $this->tokenRepository->generateResumptionToken($token, $documentListSet);
+            // create new token
+            $newToken = $this->objectManager->get(Token::class);
+            $newToken->setToken($resumptionToken);
+            $newToken->setOptions($documentListSet);
 
-            if ($affectedRows === 1) {
-                $resumptionToken = $token;
-            } else {
-                $this->logger->error('Could not create resumption token');
-                $this->error = 'badResumptionToken';
-                return;
-            }
+            // add to tokenRepository
+            $this->tokenRepository->add($newToken);
         } else {
             // Result set complete. We don't need a token.
             $resumptionToken = '';
