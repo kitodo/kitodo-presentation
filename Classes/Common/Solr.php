@@ -483,7 +483,9 @@ class Solr implements LoggerAwareInterface
                 $resultSet[] = $doc;
             }
             // Save value in cache.
-            $cache->set($cacheIdentifier, $resultSet);
+            if ($resultSet) {
+                $cache->set($cacheIdentifier, $resultSet);
+            }
         } else {
             // Return cache hit.
             $resultSet = $entry;
