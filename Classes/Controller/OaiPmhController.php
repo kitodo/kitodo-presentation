@@ -420,10 +420,10 @@ class OaiPmhController extends AbstractController
             $this->logger->notice('Incomplete plugin configuration (contact is missing)');
         }
 
-        $document = $this->documentRepository->oaiDocumentByTstmp($this->settings['pages']);
+        $document = $this->documentRepository->findOldestDocument();
 
         if ($document) {
-            $oaiIdentifyInfo['earliestDatestamp'] = gmdate('Y-m-d\TH:i:s\Z', $document->getTstmp());
+            $oaiIdentifyInfo['earliestDatestamp'] = gmdate('Y-m-d\TH:i:s\Z', $document->getTstamp()->getTimestamp());
         } else {
             $this->logger->notice('No records found with PID ' . $this->settings['pages']);
         }

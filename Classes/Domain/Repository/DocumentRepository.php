@@ -31,12 +31,19 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function oaiDocumentByTstmp($pid) {
+    /**
+     * Find the oldest document
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findOldestDocument()
+    {
         $query = $this->createQuery();
 
-        $query->matching($query->equals('pid', $pid));
-        $query->setOrderings(['tstmp' => QueryInterface::ORDER_ASCENDING]);
+        $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
         $query->setLimit(1);
+
+        return $query->execute()->getFirst();
     }
 
     /**

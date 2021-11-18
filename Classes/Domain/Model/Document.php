@@ -15,6 +15,11 @@ namespace Kitodo\Dlf\Domain\Model;
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
+     * @var \DateTime
+     */
+    protected $tstamp;
+
+    /**
      * @var string
      */
     protected $title;
@@ -663,6 +668,26 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     public function setDocumentFormat(string $documentFormat): void
     {
         $this->documentFormat = $documentFormat;
+    }
+
+    /**
+     * Returns the timestamp
+     *
+     * @return \DateTime
+     */
+    public function getTstamp(): \DateTime
+    {
+        return $this->tstamp;
+    }
+
+    /**
+     * Sets the timestamp
+     *
+     * @param \DateTime $tstamp
+     */
+    public function setTstamp($tstamp): void
+    {
+        $this->tstamp = $tstamp;
     }
 
 }
