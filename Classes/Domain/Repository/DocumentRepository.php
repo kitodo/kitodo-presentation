@@ -21,6 +21,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
+    /**
+     * Array of all document structures
+     *
+     * @var array
+     */
+    protected $documentStructures;
+
+
     public function findByUidAndPartOf($uid, $partOf)
     {
         $query = $this->createQuery();
@@ -47,16 +55,17 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
-     * @param $structure
-     * @param $partOf
-     * @param $indexName
+     * @param int $partOf
+     * @param string $structure
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function getChildrenOfYearAnchor($structure, $partOf, $indexName)
+    public function getChildrenOfYearAnchor($partOf, $structure)
     {
+        $this->documentStructures = $this->getDocumentStructures();
+
         $query = $this->createQuery();
 
-        $query->matching($query->equals('structure', Helper::getUidFromIndexName($indexName, 'tx_dlf_structures', $structure)));
+        $query->matching($query->equals('structure', $this->documentStructures[$structure]));
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([
@@ -107,7 +116,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         return $query->execute();
     }
-
 
 
     public function getStatisticsForCollection($settings)
@@ -363,4 +371,29 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $documents;
     }
 
+    /**
+     * Get all document structures as array
+     *
+     * @return array
+     */
+    private function getDocumentStructures()
+    {
+        // make lookup-table of structures uid -> indexName
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
+        // Fetch document info for UIDs in $documentSet from DB
+        $kitodoStructures = $queryBuilder
+            ->select(
+                'tx_dlf_structures.uid AS uid',
+                'tx_dlf_structures.index_name AS indexName'
+            )
+            ->from('tx_dlf_structures')
+            ->execute();
+
+        $allStructures = $kitodoStructures->fetchAll();
+        // make lookup-table uid -> indexName
+        $allStructures = array_column($allStructures, 'indexName', 'uid');
+
+        return $allStructures;
+    }
 }

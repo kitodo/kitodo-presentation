@@ -27,6 +27,9 @@ class CalendarController extends AbstractController
      */
     protected $allIssues = [];
 
+    /**
+     * @var DocumentRepository
+     */
     protected $documentRepository;
 
     /**
@@ -109,7 +112,7 @@ class CalendarController extends AbstractController
             return;
         }
 
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, $this->doc->cPid, 'issue');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'issue');
 
         $issues = [];
 
@@ -217,7 +220,7 @@ class CalendarController extends AbstractController
         }
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->cPid, $this->doc->uid, 'year');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'year');
 
         $years = [];
         // Process results.
