@@ -74,7 +74,7 @@ class BasketController extends AbstractController
     /**
      * @param ActionLogRepository $actionLogRepository
      */
-    public function injectPrinterRepository(ActionLogRepository $actionLogRepository)
+    public function injectActionLogRepository(ActionLogRepository $actionLogRepository)
     {
         $this->actionLogRepository = $actionLogRepository;
     }
@@ -659,3 +659,4 @@ class BasketController extends AbstractController
 
         $this->redirectToUri($pdfUrl);
     }
+}
