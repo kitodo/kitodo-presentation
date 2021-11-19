@@ -66,7 +66,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getDocumentsFromDocumentset($documentSet, $pages) {
+    public function getDocumentsFromDocumentset($documentSet, $pages)
+    {
         $query = $this->createQuery();
 
         $query->matching($query->equals('pid', $pages));
@@ -75,59 +76,42 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getDocumentsForFeeds($settings, $collectionUid) {
-        $additionalWhere = '';
-        // Check for pre-selected collections.
-        if (!empty($collectionUid)) {
-            $additionalWhere = 'tx_dlf_collections.uid=' . intval($collectionUid);
-        } elseif (!empty($settings['collections'])) {
-            $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $settings['collections'])) . ')';
+    /**
+     * Finds all documents for the given collections
+     *
+     * @param array $collections separated by comma
+     * @param int $limit
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findAllByCollectionsLimited($collections, $limit = 50)
+    {
+        $query = $this->createQuery();
+
+        // order by start_date -> start_time...
+        $query->setOrderings(
+            ['tstamp' => QueryInterface::ORDER_DESCENDING]
+        );
+
+        $constraints = [];
+        if ($collections) {
+            $constraints[] = $query->in('collections.uid', $collections);
         }
 
-        // get documents
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+        if (count($constraints)) {
+            $query->matching(
+                $query->logicalAnd($constraints)
+            );
+        }
+        $query->setLimit((int) $limit);
 
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.partof AS partof',
-                'tx_dlf_documents.title AS title',
-                'tx_dlf_documents.volume AS volume',
-                'tx_dlf_documents.author AS author',
-                'tx_dlf_documents.record_id AS record_id',
-                'tx_dlf_documents.tstamp AS tstamp',
-                'tx_dlf_documents.crdate AS crdate'
-            )
-            ->from('tx_dlf_documents')
-            ->join(
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_documents_collections_mm',
-                $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
-            )
-            ->join(
-                'tx_dlf_documents_collections_mm',
-                'tx_dlf_collections',
-                'tx_dlf_collections',
-                $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
-            )
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $settings['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $settings['pages'])),
-                $additionalWhere
-            )
-            ->groupBy('tx_dlf_documents.uid')
-            ->orderBy('tx_dlf_documents.tstamp', 'DESC')
-            ->setMaxResults((int) $settings['limit'])
-            ->execute();
-
-        return $result;
-
+        return $query->execute();
     }
 
-    public function getStatisticsForCollection($settings) {
+
+
+    public function getStatisticsForCollection($settings)
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
@@ -170,7 +154,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return ['titles' => $countTitles, 'volumes' => $countVolumes];
     }
 
-    public function getStatisticsForSelectedCollection($settings) {
+    public function getStatisticsForSelectedCollection($settings)
+    {
         // Include only selected collections.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
@@ -260,7 +245,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return ['titles' => $countTitles, 'volumes' => $countVolumes];
     }
 
-    public function getTableOfContentsFromDb($uid, $pid, $settings) {
+    public function getTableOfContentsFromDb($uid, $pid, $settings)
+    {
         // Build table of contents from database.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');

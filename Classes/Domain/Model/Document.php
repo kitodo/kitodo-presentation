@@ -17,6 +17,11 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var \DateTime
      */
+    protected $crdate;
+
+    /**
+     * @var \DateTime
+     */
     protected $tstamp;
 
     /**
@@ -688,6 +693,26 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     public function setTstamp($tstamp): void
     {
         $this->tstamp = $tstamp;
+    }
+
+    /**
+     * Returns the creation date
+     *
+     * @return \DateTime
+     */
+    public function getCrdate(): \DateTime
+    {
+        return $this->crdate;
+    }
+
+    /**
+     * Sets the creation date
+     *
+     * @param \DateTime $crdate
+     */
+    public function setCrdate($crdate): void
+    {
+        $this->crdate = $crdate;
     }
 
 }

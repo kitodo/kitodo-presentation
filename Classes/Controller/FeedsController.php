@@ -25,8 +25,6 @@ class FeedsController extends AbstractController
      */
     protected $libraryRepository;
 
-    protected $documentRepository;
-
     /**
      * @param LibraryRepository $libraryRepository
      */
@@ -34,6 +32,11 @@ class FeedsController extends AbstractController
     {
         $this->libraryRepository = $libraryRepository;
     }
+
+    /**
+     * @var DocumentRepository
+     */
+    protected $documentRepository;
 
     /**
      * @param DocumentRepository $documentRepository
@@ -81,49 +84,44 @@ class FeedsController extends AbstractController
             || GeneralUtility::inList($this->settings['collections'], $requestData['collection'])
         ) {
 
-            $result = $this->documentRepository->getDocumentsForFeeds($this->settings, $requestData['collection']);
+            $documents = $this->documentRepository->findAllByCollectionsLimited(GeneralUtility::intExplode(',', $requestData['collection'], true), $this->settings['limit']);
 
-            $rows = $result->fetchAll();
-
-            foreach ($rows as $resArray) {
+            foreach ($documents as $document) {
 
                 $title = '';
                 // Get title of superior document.
-                if ((empty($resArray['title']) || !empty($this->settings['prependSuperiorTitle']))
-                    && !empty($resArray['partof'])
+                if ((empty($document->getTitle()) || !empty($this->settings['prependSuperiorTitle']))
+                    && !empty($document->getPartof())
                 ) {
-                    $superiorTitle = Document::getTitle($resArray['partof'], true);
+                    $superiorTitle = Document::getTitle($document->getPartof(), true);
                     if (!empty($superiorTitle)) {
                         $title .= '[' . $superiorTitle . ']';
                     }
                 }
                 // Get title of document.
-                if (!empty($resArray['title'])) {
-                    $title .= ' ' . $resArray['title'];
+                if (!empty($document->getTitle())) {
+                    $title .= ' ' . $document->getTitle();
                 }
                 // Set default title if empty.
                 if (empty($title)) {
                     $title = LocalizationUtility::translate('noTitle', 'dlf');
                 }
                 // Append volume information.
-                if (!empty($resArray['volume'])) {
-                    $title .= ', ' . LocalizationUtility::translate('volume', 'dlf') . ' ' . $resArray['volume'];
+                if (!empty($document->getVolume())) {
+                    $title .= ', ' . LocalizationUtility::translate('volume', 'dlf') . ' ' . $document->getVolume();
                 }
                 // Is this document new or updated?
-                if ($resArray['crdate'] == $resArray['tstamp']) {
+                if ($document->getCrdate() == $document->getTstamp()) {
                     $title = LocalizationUtility::translate('plugins.feeds.new', 'dlf') . ' ' . trim($title);
                 } else {
                     $title = LocalizationUtility::translate('plugins.feeds.update', 'dlf') . ' ' . trim($title);
                 }
 
-                $resArray['title'] = $title;
-                $documents[] = $resArray;
+                $document->setTitle($title);
             }
-
         }
 
         $this->view->assign('documents', $documents);
         $this->view->assign('feedMeta', $feedMeta);
-
     }
 }
