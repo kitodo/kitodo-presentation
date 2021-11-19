@@ -75,12 +75,28 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getDocumentsFromDocumentset($documentSet, $pages)
+    /**
+     * Finds all documents for the given settings
+     *
+     * @param array $settings
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findDocumentsBySettings($settings = [])
     {
         $query = $this->createQuery();
 
-        $query->matching($query->equals('pid', $pages));
-        $query->matching($query->in('uid', $documentSet));
+        $constraints = [];
+
+        if ($settings['documentSets']) {
+            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['documentSets']));
+        }
+
+        if (count($constraints)) {
+            $query->matching(
+                $query->logicalAnd($constraints)
+            );
+        }
 
         return $query->execute();
     }

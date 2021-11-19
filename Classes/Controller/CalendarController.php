@@ -100,10 +100,10 @@ class CalendarController extends AbstractController
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // access arguments passed by the mainAction()
-        $mainrquestData = $this->request->getArguments();
+        $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrquestData);
+        $requestData = array_merge($requestData, $mainrequestData);
 
         // Load current document.
         $this->loadDocument($requestData);
@@ -207,10 +207,10 @@ class CalendarController extends AbstractController
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // access arguments passed by the mainAction()
-        $mainrquestData = $this->request->getArguments();
+        $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrquestData);
+        $requestData = array_merge($requestData, $mainrequestData);
 
         // Load current document.
         $this->loadDocument($requestData);
