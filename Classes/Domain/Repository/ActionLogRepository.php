@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
-class ActionlogRepository extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
+class ActionLogRepository extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
 
 }
