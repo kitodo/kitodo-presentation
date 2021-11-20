@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Domain\Model;
+namespace Kitodo\Dlf\Domain\Repository;
 
 class ActionLogRepository extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {

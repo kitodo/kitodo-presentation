@@ -32,6 +32,9 @@ class CollectionController extends AbstractController
      */
     protected $hookObjects = [];
 
+    /**
+     * @var CollectionRepository
+     */
     protected $collectionRepository;
 
     /**
@@ -42,6 +45,9 @@ class CollectionController extends AbstractController
         $this->collectionRepository = $collectionRepository;
     }
 
+    /**
+     * @var DocumentRepository
+     */
     protected $documentRepository;
 
     /**

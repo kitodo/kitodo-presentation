@@ -133,24 +133,60 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-
-    public function getStatisticsForCollection($settings)
+    /**
+     * Find all the titles
+     *
+     * documents with partof == 0
+     *
+     * @param array $settings
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findAllTitles($settings = [])
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+        $query = $this->createQuery();
 
-        // Include all collections.
-        $countTitles = $queryBuilder
-            ->count('tx_dlf_documents.uid')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
-                Helper::whereExpression('tx_dlf_documents')
-            )
-            ->execute()
-            ->fetchColumn(0);
+        $constraints = [];
+        $constraints[] = $query->equals('partof', 0);
 
+        if ($settings['collections']) {
+            $constraints[] = $query->in('collections.uid', GeneralUtility::intExplode(',', $settings['collections']));
+        }
+
+        if (count($constraints)) {
+            $query->matching(
+                $query->logicalAnd($constraints)
+            );
+        }
+
+        return $query->execute();
+    }
+
+    /**
+     * Count the titles
+     *
+     * documents with partof == 0
+     *
+     * @param array $settings
+     *
+     * @return int
+     */
+    public function countAllTitles($settings = [])
+    {
+        return $this->findAllTitles($settings)->count();
+    }
+
+    /**
+     * Count the volumes
+     *
+     * documents with partof != 0
+     *
+     * @param array $settings
+     *
+     * @return int
+     */
+    public function countAllVolumes($settings = [])
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
         $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -175,7 +211,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute()
             ->fetchColumn(0);
 
-        return ['titles' => $countTitles, 'volumes' => $countVolumes];
+        return $countVolumes;
     }
 
     public function getStatisticsForSelectedCollection($settings)

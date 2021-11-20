@@ -563,16 +563,19 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
         $this->rightsInfo = $rightsInfo;
     }
 
+
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * Returns the collections
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
      */
-    public function getCollections(): ?\TYPO3\CMS\Extbase\Persistence\ObjectStorage
+    public function getCollections()
     {
         return $this->collections;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $collections
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
      */
     public function setCollections(?\TYPO3\CMS\Extbase\Persistence\ObjectStorage $collections): void
     {
