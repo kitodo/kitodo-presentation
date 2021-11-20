@@ -20,28 +20,6 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <settings.pages>
-                        <TCEforms>
-                            <onChange>reload</onChange>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
-                            <onChange>reload</onChange>
-                            <config>
-                                <type>group</type>
-                                <internal_type>db</internal_type>
-                                <allowed>pages</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>1</minitems>
-                                <show_thumbs>1</show_thumbs>
-                                <wizards>
-                                    <suggest>
-                                        <type>suggest</type>
-                                    </suggest>
-                                </wizards>
-                            </config>
-                        </TCEforms>
-                    </settings.pages>
                     <settings.fulltext>
                         <TCEforms>
                             <exclude>1</exclude>
@@ -65,13 +43,13 @@
                     </settings.fulltext>
                     <settings.solrcore>
                         <TCEforms>
-                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->solrList</itemsProcFunc>
+                                <renderType>selectSingle</renderType>
+                                <foreign_table>tx_dlf_solrcores</foreign_table>
+                                <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
                                 <minitems>0</minitems>
@@ -80,7 +58,6 @@
                     </settings.solrcore>
                     <settings.extendedSlotCount>
                         <TCEforms>
-                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.slotCount</label>
                             <config>
@@ -96,7 +73,6 @@
                     </settings.extendedSlotCount>
                     <settings.extendedFields>
                         <TCEforms>
-                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.fields</label>
                             <config>
@@ -143,13 +119,15 @@
                     </settings.searchIn>
                     <settings.collections>
                         <TCEforms>
-                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.collections</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"/>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->collectionList</itemsProcFunc>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <foreign_table>tx_dlf_collections</foreign_table>
+                                <foreign_table_where>AND tx_dlf_collections.hidden = 0 AND tx_dlf_collections.sys_language_uid IN (-1,0)
+                                    ORDER BY tx_dlf_collections.label ASC
+                                </foreign_table_where>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
@@ -160,7 +138,6 @@
                     </settings.collections>
                     <settings.facets>
                         <TCEforms>
-                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets</label>
                             <config>
@@ -177,13 +154,15 @@
                     </settings.facets>
                     <settings.facetCollections>
                         <TCEforms>
-                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.collections</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"/>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->collectionList</itemsProcFunc>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <foreign_table>tx_dlf_collections</foreign_table>
+                                <foreign_table_where>AND tx_dlf_collections.hidden = 0 AND tx_dlf_collections.sys_language_uid IN (-1,0)
+                                    ORDER BY tx_dlf_collections.label ASC
+                                </foreign_table_where>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
@@ -194,7 +173,6 @@
                     </settings.facetCollections>
                     <settings.limitFacets>
                         <TCEforms>
-                            <displayCond>FIELD:settings.pages:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.limit</label>
                             <config>
@@ -306,21 +284,6 @@
                             </config>
                         </TCEforms>
                     </settings.targetPidPageView>
-                    <settings.templateFile>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.templateFile</label>
-                            <config>
-                                <type>group</type>
-                                <internal_type>file_reference</internal_type>
-                                <allowed>tmpl,tpl,html,htm,txt</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>0</minitems>
-                                <disable_controls>upload</disable_controls>
-                            </config>
-                        </TCEforms>
-                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>
