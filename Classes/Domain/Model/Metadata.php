@@ -90,6 +90,11 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     protected $status;
 
     /**
+     * @var int
+     */
+    protected $sysLanguageUid;
+
+    /**
      * @return int
      */
     public function getSorting(): int
@@ -327,6 +332,22 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     public function setStatus(int $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSysLanguageUid(): int
+    {
+        return $this->sysLanguageUid;
+    }
+
+    /**
+     * @param int $sysLanguageUid
+     */
+    public function setSysLanguageUid(int $sysLanguageUid): void
+    {
+        $this->sysLanguageUid = $sysLanguageUid;
     }
 
 }

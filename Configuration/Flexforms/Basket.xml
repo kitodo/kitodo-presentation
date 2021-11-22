@@ -20,20 +20,6 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <settings.pages>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
-                            <config>
-                                <type>group</type>
-                                <internal_type>db</internal_type>
-                                <allowed>pages</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>1</minitems>
-                            </config>
-                        </TCEforms>
-                    </settings.pages>
                     <settings.pregeneration>
                         <TCEforms>
                             <exclude>1</exclude>
@@ -128,21 +114,6 @@
                                 </config>
                         </TCEforms>
                     </settings.targetBasket>
-                    <settings.templateFile>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.templateFile</label>
-                            <config>
-                                <type>group</type>
-                                <internal_type>file_reference</internal_type>
-                                <allowed>tmpl,tpl,html,htm,txt</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>0</minitems>
-                                <disable_controls>upload</disable_controls>
-                            </config>
-                        </TCEforms>
-                    </settings.templateFile>
                 </el>
             </ROOT>
         </sDEF>

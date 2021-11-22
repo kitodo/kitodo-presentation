@@ -16,16 +16,29 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 
 class SearchController extends AbstractController
 {
     public $prefixId = 'tx_dlf';
     public $extKey = 'dlf';
+
+    /**
+     * @var CollectionRepository
+     */
+    protected $collectionRepository;
+
+    /**
+     * @param CollectionRepository $collectionRepository
+     */
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    {
+        $this->collectionRepository = $collectionRepository;
+    }
 
     /**
      * Search action
@@ -420,56 +433,47 @@ class SearchController extends AbstractController
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->settings['facetCollections']);
 
         if (!empty($facetCollections)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_collections');
+            $collections = $this->collectionRepository->findCollectionsBySettings(['collections' => $facetCollections]);
 
-            $result = $queryBuilder
-                ->select('tx_dlf_collections.index_name AS index_name')
-                ->from('tx_dlf_collections')
-                ->where(
-                    $queryBuilder->expr()->in(
-                        'tx_dlf_collections.uid',
-                        $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $facetCollections), Connection::PARAM_INT_ARRAY)
-                    )
-                )
-                ->execute();
-
-            while ($collection = $result->fetch()) {
-                $facetCollectionArray[] = $collection['index_name'];
+            /** @var Collection $collection */
+            foreach ($collections as $collection) {
+                $facetCollectionArray[] = $collection->getIndexName();
             }
         }
 
         // Process results.
-        foreach ($facet as $field => $values) {
-            $entryArray = [];
-            $entryArray['title'] = htmlspecialchars($facets[$field]);
-            $entryArray['count'] = 0;
-            $entryArray['_OVERRIDE_HREF'] = '';
-            $entryArray['doNotLinkIt'] = 1;
-            $entryArray['ITEM_STATE'] = 'NO';
-            // Count number of facet values.
-            $i = 0;
-            foreach ($values as $value => $count) {
-                if ($count > 0) {
-                    // check if facet collection configuration exists
-                    if (!empty($this->settings['facetCollections'])) {
-                        if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
-                            continue;
+        if ($facet) {
+            foreach ($facet as $field => $values) {
+                $entryArray = [];
+                $entryArray['title'] = htmlspecialchars($facets[$field]);
+                $entryArray['count'] = 0;
+                $entryArray['_OVERRIDE_HREF'] = '';
+                $entryArray['doNotLinkIt'] = 1;
+                $entryArray['ITEM_STATE'] = 'NO';
+                // Count number of facet values.
+                $i = 0;
+                foreach ($values as $value => $count) {
+                    if ($count > 0) {
+                        // check if facet collection configuration exists
+                        if (!empty($this->settings['facetCollections'])) {
+                            if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
+                                continue;
+                            }
                         }
-                    }
-                    $entryArray['count']++;
-                    if ($entryArray['ITEM_STATE'] == 'NO') {
-                        $entryArray['ITEM_STATE'] = 'IFSUB';
-                    }
-                    $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
-                    if (++$i == $this->settings['limit']) {
+                        $entryArray['count']++;
+                        if ($entryArray['ITEM_STATE'] == 'NO') {
+                            $entryArray['ITEM_STATE'] = 'IFSUB';
+                        }
+                        $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
+                        if (++$i == $this->settings['limit']) {
+                            break;
+                        }
+                    } else {
                         break;
                     }
-                } else {
-                    break;
                 }
+                $menuArray[] = $entryArray;
             }
-            $menuArray[] = $entryArray;
         }
         return $menuArray;
     }

@@ -14,15 +14,36 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Model\Collection;
+use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Ubl\Iiif\Context\IRI;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 
 class MetadataController extends AbstractController
 {
     public $prefixId = 'tx_dlf';
+
+    protected $metadataRepository;
+
+    protected $collectionRepository;
+
+    /**
+     * @param CollectionRepository $collectionRepository
+     */
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    {
+        $this->collectionRepository = $collectionRepository;
+    }
+
+    /**
+     * @param MetadataRepository $metadataRepository
+     */
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    {
+        $this->metadataRepository = $metadataRepository;
+    }
 
     /**
      * @return string|void
@@ -202,55 +223,30 @@ class MetadataController extends AbstractController
                 }
             }
         } else {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            $result = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.is_listed AS is_listed',
-                    'tx_dlf_metadata.wrap AS wrap',
-                    'tx_dlf_metadata.sys_language_uid AS sys_language_uid'
-                )
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->orX(
-                            $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq('tx_dlf_metadata.sys_language_uid', $GLOBALS['TSFE']->sys_language_uid)
-                        ),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
-                    ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($this->settings['pages']))
-                )
-                ->orderBy('tx_dlf_metadata.sorting')
-                ->execute();
-            while ($resArray = $result->fetch()) {
-                if (is_array($resArray) && $resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content && $GLOBALS['TSFE']->sys_language_contentOL) {
-                    $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dlf_metadata', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
-                }
-                if ($resArray) {
-                    if ($this->settings['showFull'] || $resArray['is_listed']) {
-                        $metaList[$resArray['index_name']] = [
-                            'wrap' => $resArray['wrap'],
-                            'label' => Helper::translate($resArray['index_name'], 'tx_dlf_metadata', $this->settings['pages'])
+            $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+            $currentLanguageUid = $context->getPropertyFromAspect('language', 'id');
+
+            $metadataResult = $this->metadataRepository->findAll();
+
+            /** @var Metadata $metadata */
+            foreach ($metadataResult as $metadata) {
+                if ($metadata) {
+                    if ($this->settings['showFull'] || $metadata->getIsListed()) {
+                        $metaList[$metadata->getIndexName()] = [
+                            'wrap' => $metadata->getWrap(),
+                            'label' => Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages'])
                         ];
                     }
                 }
             }
-            // Get list of collections to show.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_collections');
-            $collList = [];
-            $result = $queryBuilder
-                ->select('tx_dlf_collections.index_name AS index_name')
-                ->from('tx_dlf_collections')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($this->settings['pages']))
-                )
-                ->execute();
-            while ($resArray = $result->fetch()) {
-                $collList[] = $resArray['index_name'];
+
+            $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['pages']);
+
+            /** @var Collection $collection */
+            foreach ($collections as $collection) {
+                $collList[] = $collection->getIndexName();
             }
+
             // Parse the metadata arrays.
             foreach ($metadataArray as $metadata) {
                 $markerArray['METADATA'] = '';
