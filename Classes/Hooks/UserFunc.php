@@ -36,7 +36,6 @@ class UserFunc implements LoggerAwareInterface
 
     /**
      * This holds the extension's parameter prefix
-     * @see \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @var string
      * @access protected

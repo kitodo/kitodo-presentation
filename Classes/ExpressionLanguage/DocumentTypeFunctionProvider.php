@@ -36,7 +36,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
     /**
      * This holds the extension's parameter prefix
-     * @see \Kitodo\Dlf\Common\AbstractPlugin
      *
      * @var string
      * @access protected
@@ -105,7 +104,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
     /**
      * Loads the current document
-     * @see \Kitodo\Dlf\Common\AbstractPlugin->loadDocument()
      *
      * @access protected
      *
