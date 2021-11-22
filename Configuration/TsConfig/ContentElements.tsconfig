@@ -137,15 +137,6 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_toolbox
         }
       }
-      tx_dlf_validator {
-        iconIdentifier = tx-dlf-validator
-        title = LLL:EXT:dlf/Resources/Private/Language/Validator.xml:tt_content.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/Validator.xml:tt_content.plugin.description
-        tt_content_defValues {
-          CType = list
-          list_type = dlf_validator
-        }
-      }
     }
     show = *
   }
