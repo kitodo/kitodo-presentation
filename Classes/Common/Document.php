@@ -467,7 +467,7 @@ abstract class Document
         $documentRepository = $objectManager->get(DocumentRepository::class);
 
         // Sanitize input.
-        $pid = max(intval($pid), 0);
+        $pid = max(intval($settings['storagePid']), 0);
         if (!$forceReload) {
             $regObj = Helper::digest($uid);
             if (
@@ -1511,7 +1511,7 @@ abstract class Document
     {
         if (!$this->rootIdLoaded) {
             if ($this->parentId) {
-                $parent = self::getInstance($this->parentId, $this->pid);
+                $parent = self::getInstance($this->parentId, ['storagePid' => $this->pid]);
                 $this->rootId = $parent->rootId;
             }
             $this->rootIdLoaded = true;

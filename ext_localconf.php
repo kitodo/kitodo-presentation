@@ -29,15 +29,7 @@ if (!defined('LOG_SEVERITY_WARNING')) {
 if (!defined('LOG_SEVERITY_ERROR')) {
     define('LOG_SEVERITY_ERROR', 3);
 }
-// Register plugins without addPItoST43() as this is not working with TYPO3 9.
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
-    '
-plugin.tx_dlf_validator = USER_INT
-plugin.tx_dlf_validator {
-    userFunc = Kitodo\Dlf\Plugin\Validator->main
-}
-'
-);
+
 // Register plugin icons.
 $iconArray = [
     'tx-dlf-audioplayer' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-audioplayer.svg',
