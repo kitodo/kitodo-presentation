@@ -210,7 +210,7 @@ class CollectionController extends AbstractController
                     'thumbnail' => htmlspecialchars($collection->getThumbnail()),
                     'options' => [
                         'source' => 'collection',
-                        'select' => $id,
+                        'select' => $collection->getUid(),
                         'userid' => $collection->getFeCruserId(),
                         'params' => ['filterquery' => [['query' => 'collection_faceting:("' . $collection->getIndexName() . '")']]],
                         'core' => '',
