@@ -12,10 +12,10 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use Kitodo\Dlf\Common\Helper;
 
 class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
@@ -36,7 +36,7 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->equals('fe_cruser_id', $showUserDefined));
 
         $query->setOrderings([
-            'label' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+            'label' => QueryInterface::ORDER_ASCENDING
         ]);
 
     }

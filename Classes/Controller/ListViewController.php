@@ -73,6 +73,9 @@ class ListViewController extends AbstractController
      */
     protected $metadataList = [];
 
+    /**
+     * @var MetadataRepository
+     */
     protected $metadataRepository;
 
     /**
@@ -295,7 +298,7 @@ class ListViewController extends AbstractController
      */
     protected function loadConfig()
     {
-        $metadataResult = $this->metadataRepository->getMetadataForListview($this->settings['pages']);
+        $metadataResult = $this->metadataRepository->findBySettings(['is_listed' => 1, 'is_sortable' => 1]);
 
         /** @var Metadata $metadata */
         foreach ($metadataResult as $metadata) {

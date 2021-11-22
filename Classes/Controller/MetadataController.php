@@ -226,7 +226,7 @@ class MetadataController extends AbstractController
             $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
             $currentLanguageUid = $context->getPropertyFromAspect('language', 'id');
 
-            $metadataResult = $this->metadataRepository->getMetadata($this->settings['pages'], $currentLanguageUid);
+            $metadataResult = $this->metadataRepository->findAll();
 
             /** @var Metadata $metadata */
             foreach ($metadataResult as $metadata) {
