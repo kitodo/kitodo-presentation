@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -26,19 +25,6 @@ class CalendarController extends AbstractController
      * @access protected
      */
     protected $allIssues = [];
-
-    /**
-     * @var DocumentRepository
-     */
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
 
     /**
      * The main method of the plugin

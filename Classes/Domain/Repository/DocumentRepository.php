@@ -78,6 +78,21 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all documents for the given settings
      *
+     * @param int $uid
+     * @param array $settings
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findOneByIdAndSettings($uid, $settings = [])
+    {
+        $settings['documentSets'] = $uid;
+
+        return $this->findDocumentsBySettings($settings)->getFirst();
+    }
+
+    /**
+     * Finds all documents for the given settings
+     *
      * @param array $settings
      *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -90,6 +105,10 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         if ($settings['documentSets']) {
             $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['documentSets']));
+        }
+
+        if (isset($settings['excludeOther']) && (int) $settings['excludeOther'] === 0) {
+            $query->getQuerySettings()->setRespectStoragePage(false);
         }
 
         if (count($constraints)) {

@@ -77,8 +77,12 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.fields</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->extendedSearchList</itemsProcFunc>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <foreign_table>tx_dlf_metadata</foreign_table>
+                                <foreign_table_where>AND tx_dlf_metadata.hidden = 0 AND tx_dlf_metadata.sys_language_uid IN (-1,0)
+                                    AND tx_dlf_metadata.index_indexed=1 = 1
+                                    ORDER BY tx_dlf_metadata.label ASC
+                                </foreign_table_where>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>10</maxitems>
@@ -142,8 +146,12 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->facetsList</itemsProcFunc>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <foreign_table>tx_dlf_metadata</foreign_table>
+                                <foreign_table_where>AND tx_dlf_metadata.hidden = 0 AND tx_dlf_metadata.sys_language_uid IN (-1,0)
+                                    AND tx_dlf_metadata.is_facet = 1
+                                    ORDER BY tx_dlf_metadata.label ASC
+                                </foreign_table_where>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>

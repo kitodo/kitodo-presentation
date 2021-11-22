@@ -12,7 +12,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 
 /**
  * Controller for the plugin 'Statistics' for the 'dlf' extension
@@ -24,19 +23,6 @@ use Kitodo\Dlf\Domain\Repository\DocumentRepository;
  */
 class StatisticsController extends AbstractController
 {
-    /**
-     * @var DocumentRepository
-     */
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
-
     /**
      * The main method of the plugin
      *
