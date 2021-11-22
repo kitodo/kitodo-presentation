@@ -27,6 +27,9 @@ class SearchController extends AbstractController
     public $prefixId = 'tx_dlf';
     public $extKey = 'dlf';
 
+    /**
+     * @var CollectionRepository
+     */
     protected $collectionRepository;
 
     /**
@@ -430,7 +433,7 @@ class SearchController extends AbstractController
         $facetCollections = preg_replace('/[^0-9,]/', '', $this->settings['facetCollections']);
 
         if (!empty($facetCollections)) {
-            $collections = $this->collectionRepository->getFacetCollections($facetCollections);
+            $collections = $this->collectionRepository->findCollectionsBySettings(['collections' => $facetCollections]);
 
             /** @var Collection $collection */
             foreach ($collections as $collection) {
@@ -439,36 +442,38 @@ class SearchController extends AbstractController
         }
 
         // Process results.
-        foreach ($facet as $field => $values) {
-            $entryArray = [];
-            $entryArray['title'] = htmlspecialchars($facets[$field]);
-            $entryArray['count'] = 0;
-            $entryArray['_OVERRIDE_HREF'] = '';
-            $entryArray['doNotLinkIt'] = 1;
-            $entryArray['ITEM_STATE'] = 'NO';
-            // Count number of facet values.
-            $i = 0;
-            foreach ($values as $value => $count) {
-                if ($count > 0) {
-                    // check if facet collection configuration exists
-                    if (!empty($this->settings['facetCollections'])) {
-                        if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
-                            continue;
+        if ($facet) {
+            foreach ($facet as $field => $values) {
+                $entryArray = [];
+                $entryArray['title'] = htmlspecialchars($facets[$field]);
+                $entryArray['count'] = 0;
+                $entryArray['_OVERRIDE_HREF'] = '';
+                $entryArray['doNotLinkIt'] = 1;
+                $entryArray['ITEM_STATE'] = 'NO';
+                // Count number of facet values.
+                $i = 0;
+                foreach ($values as $value => $count) {
+                    if ($count > 0) {
+                        // check if facet collection configuration exists
+                        if (!empty($this->settings['facetCollections'])) {
+                            if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
+                                continue;
+                            }
                         }
-                    }
-                    $entryArray['count']++;
-                    if ($entryArray['ITEM_STATE'] == 'NO') {
-                        $entryArray['ITEM_STATE'] = 'IFSUB';
-                    }
-                    $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
-                    if (++$i == $this->settings['limit']) {
+                        $entryArray['count']++;
+                        if ($entryArray['ITEM_STATE'] == 'NO') {
+                            $entryArray['ITEM_STATE'] = 'IFSUB';
+                        }
+                        $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
+                        if (++$i == $this->settings['limit']) {
+                            break;
+                        }
+                    } else {
                         break;
                     }
-                } else {
-                    break;
                 }
+                $menuArray[] = $entryArray;
             }
-            $menuArray[] = $entryArray;
         }
         return $menuArray;
     }

@@ -152,14 +152,6 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getFacetCollections($facetCollections) {
-        $query = $this->createQuery();
-
-        $query->matching($query->in('uid', GeneralUtility::intExplode(',', $facetCollections)));
-
-        return $query->execute();
-    }
-
     /**
      * Finds all collection for the given settings
      *
