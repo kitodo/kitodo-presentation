@@ -15,6 +15,16 @@ namespace Kitodo\Dlf\Domain\Model;
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
+     * @var \DateTime
+     */
+    protected $crdate;
+
+    /**
+     * @var \DateTime
+     */
+    protected $tstamp;
+
+    /**
      * @var string
      */
     protected $title;
@@ -553,16 +563,19 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
         $this->rightsInfo = $rightsInfo;
     }
 
+
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * Returns the collections
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
      */
-    public function getCollections(): ?\TYPO3\CMS\Extbase\Persistence\ObjectStorage
+    public function getCollections()
     {
         return $this->collections;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $collections
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
      */
     public function setCollections(?\TYPO3\CMS\Extbase\Persistence\ObjectStorage $collections): void
     {
@@ -663,6 +676,46 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     public function setDocumentFormat(string $documentFormat): void
     {
         $this->documentFormat = $documentFormat;
+    }
+
+    /**
+     * Returns the timestamp
+     *
+     * @return \DateTime
+     */
+    public function getTstamp(): \DateTime
+    {
+        return $this->tstamp;
+    }
+
+    /**
+     * Sets the timestamp
+     *
+     * @param \DateTime $tstamp
+     */
+    public function setTstamp($tstamp): void
+    {
+        $this->tstamp = $tstamp;
+    }
+
+    /**
+     * Returns the creation date
+     *
+     * @return \DateTime
+     */
+    public function getCrdate(): \DateTime
+    {
+        return $this->crdate;
+    }
+
+    /**
+     * Sets the creation date
+     *
+     * @param \DateTime $crdate
+     */
+    public function setCrdate($crdate): void
+    {
+        $this->crdate = $crdate;
     }
 
 }

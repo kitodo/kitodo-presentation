@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Domain\Model;
 
 class Token extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
-
     /**
      * @var string
      */
@@ -47,19 +46,19 @@ class Token extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     }
 
     /**
-     * @return string
+     * @return \Kitodo\Dlf\Common\DocumentList
      */
-    public function getOptions(): string
+    public function getOptions(): \Kitodo\Dlf\Common\DocumentList
     {
-        return $this->options;
+        return unserialize($this->options);
     }
 
     /**
-     * @param string $options
+     * @param \Kitodo\Dlf\Common\DocumentList $options
      */
-    public function setOptions(string $options): void
+    public function setOptions(\Kitodo\Dlf\Common\DocumentList $options): void
     {
-        $this->options = $options;
+        $this->options = serialize($options);
     }
 
     /**

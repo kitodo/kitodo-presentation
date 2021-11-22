@@ -12,8 +12,9 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use Kitodo\Dlf\Common\Helper;
 
 class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
@@ -159,34 +160,45 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getOai1($settings) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
+    /**
+     * Finds all collection for the given settings
+     *
+     * @param array $settings
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findCollectionsBySettings($settings = [])
+    {
+        $query = $this->createQuery();
 
-        $where = '';
-        if (!$settings['show_userdefined']) {
-            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
+        $constraints = [];
+
+        if ($settings['collections']) {
+            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['collections']));
         }
 
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_collections.oai_name AS oai_name',
-                'tx_dlf_collections.label AS label'
-            )
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0]),
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($settings['pages'])),
-                $queryBuilder->expr()->neq('tx_dlf_collections.oai_name', $queryBuilder->createNamedParameter('')),
-                $where,
-                Helper::whereExpression('tx_dlf_collections')
-            )
-            ->orderBy('tx_dlf_collections.oai_name')
-            ->execute();
+        // do not find user created collections (used by oai-pmh plugin)
+        if (!$settings['show_userdefined']) {
+            $constraints[] = $query->equals('fe_cruser_id', 0);
+        }
 
-        $allResults = $result->fetchAll();
+        // do not find collections without oai_name set (used by oai-pmh plugin)
+        if ($settings['hideEmptyOaiNames']) {
+            $constraints[] =  $query->logicalNot($query->equals('oai_name', ''));
+        }
 
-        return $allResults;
+        if (count($constraints)) {
+            $query->matching(
+                $query->logicalAnd($constraints)
+            );
+        }
+
+        // order by oai_name
+        $query->setOrderings(
+            array('oai_name' => QueryInterface::ORDER_ASCENDING)
+        );
+
+        return $query->execute();
     }
 
     public function getIndexNameForSolr($settings, $set) {

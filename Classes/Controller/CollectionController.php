@@ -15,6 +15,7 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -31,6 +32,9 @@ class CollectionController extends AbstractController
      */
     protected $hookObjects = [];
 
+    /**
+     * @var CollectionRepository
+     */
     protected $collectionRepository;
 
     /**
@@ -41,6 +45,9 @@ class CollectionController extends AbstractController
         $this->collectionRepository = $collectionRepository;
     }
 
+    /**
+     * @var DocumentRepository
+     */
     protected $documentRepository;
 
     /**
@@ -72,7 +79,7 @@ class CollectionController extends AbstractController
         // TODO: $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);
 
         if ($collection) {
-            $this->showSingleCollection($collection);
+            $this->showSingleCollection($this->collectionRepository->findByUid($collection[0]));
         } else {
             $this->showCollectionList();
         }
@@ -86,43 +93,28 @@ class CollectionController extends AbstractController
      */
     protected function showCollectionList()
     {
-
-        $result = $this->collectionRepository->getCollections($this->settings, $GLOBALS['TSFE']->fe_user->user['uid'], $GLOBALS['TSFE']->sys_language_uid);
-        $count = $result['count'];
-        $result = $result['result'];
-
-        if ($count == 1 && empty($this->settings['dont_show_single'])) {
-            $resArray = $result->fetch();
-            $this->showSingleCollection(intval($resArray['uid']));
-        }
         $solr = Solr::getInstance($this->settings['solrcore']);
+
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
-            //return $content;
+            return;
         }
         // We only care about the UID and partOf in the results and want them sorted
         $params['fields'] = 'uid,partof';
         $params['sort'] = ['uid' => 'asc'];
         $collections = [];
 
-        // Get language overlay if on alterative website language.
-        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
-        while ($collectionData = $result->fetch()) {
-            if ($collectionData['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
-                $collections[$collectionData['uid']] = $pageRepository->getRecordOverlay('tx_dlf_collections', $collectionData, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
-                // keep the index_name of the default language
-                $collections[$collectionData['uid']]['index_name'] = $collectionData['index_name'];
-            } else {
-                $collections[$collectionData['uid']] = $collectionData;
-            }
-        }
         // Sort collections according to flexform configuration
         if ($this->settings['collections']) {
             $sortedCollections = [];
             foreach (GeneralUtility::intExplode(',', $this->settings['collections']) as $uid) {
-                $sortedCollections[$uid] = $collections[$uid];
+                $sortedCollections[$uid] = $this->collectionRepository->findByUid($uid);
             }
             $collections = $sortedCollections;
+        }
+
+        if (count($collections) == 1 && empty($this->settings['dont_show_single'])) {
+            $this->showSingleCollection(array_pop($collections));
         }
 
         $processedCollections = [];
@@ -130,37 +122,35 @@ class CollectionController extends AbstractController
         // Process results.
         foreach ($collections as $collection) {
             $solr_query = '';
-            if ($collection['index_query'] != '') {
-                $solr_query .= '(' . $collection['index_query'] . ')';
+            if ($collection->getIndexSearch() != '') {
+                $solr_query .= '(' . $collection->getIndexSearch() . ')';
             } else {
-                $solr_query .= 'collection:("' . $collection['index_name'] . '")';
+                $solr_query .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
             }
             $partOfNothing = $solr->search_raw($solr_query . ' AND partof:0 AND toplevel:true', $params);
             $partOfSomething = $solr->search_raw($solr_query . ' AND NOT partof:0 AND toplevel:true', $params);
             // Titles are all documents that are "root" elements i.e. partof == 0
-            $collection['titles'] = [];
+            $collectionInfo['titles'] = [];
             foreach ($partOfNothing as $doc) {
-                $collection['titles'][$doc->uid] = $doc->uid;
+                $collectionInfo['titles'][$doc->uid] = $doc->uid;
             }
             // Volumes are documents that are both
             // a) "leaf" elements i.e. partof != 0
             // b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
-            $collection['volumes'] = $collection['titles'];
+            $collectionInfo['volumes'] = $collectionInfo['titles'];
             foreach ($partOfSomething as $doc) {
-                $collection['volumes'][$doc->uid] = $doc->uid;
+                $collectionInfo['volumes'][$doc->uid] = $doc->uid;
                 // If a document is referenced via partof, it’s not a volume anymore.
-                unset($collection['volumes'][$doc->partof]);
+                unset($collectionInfo['volumes'][$doc->partof]);
             }
 
             // Generate random but unique array key taking priority into account.
             do {
-                $_key = ($collection['priority'] * 1000) + mt_rand(0, 1000);
+                $_key = ($collectionInfo['priority'] * 1000) + mt_rand(0, 1000);
             } while (!empty($processedCollections[$_key]));
 
-            $collection['countTitles'] = count($collection['titles']);
-            $collection['countVolumes'] = count($collection['volumes']);
-
-            $processedCollections[$_key] = $collection;
+            $processedCollections[$_key]['collection'] = $collection;
+            $processedCollections[$_key]['info'] = $collectionInfo;
         }
 
         // Randomize sorting?
@@ -184,33 +174,21 @@ class CollectionController extends AbstractController
      *
      * @access protected
      *
-     * @param int $id: The collection's UID
+     * @param \Kitodo\Dlf\Domain\Model\Collection The collection object
      *
      * @return void
      */
-    protected function showSingleCollection($id)
+    protected function showSingleCollection(\Kitodo\Dlf\Domain\Model\Collection $collection)
     {
-        $collection = $this->collectionRepository->getSingleCollection($this->settings, $id, $GLOBALS['TSFE']->sys_language_uid);
+        // access storagePid from TypoScript
+        $pageSettings = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        $this->settings['pages'] = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
 
-        // Get language overlay if on alterative website language.
-        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
-        if ($resArray = $collection->fetch()) {
-            if ($resArray['sys_language_uid'] != $GLOBALS['TSFE']->sys_language_content) {
-                $collectionData = $pageRepository->getRecordOverlay('tx_dlf_collections', $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
-                // keep the index_name of the default language
-                $collectionData['index_name'] = $resArray['index_name'];
-            } else {
-                $collectionData = $resArray;
-            }
-        } else {
-            $this->logger->warning('No collection with UID ' . $id . ' found.');
-            return;
-        }
         // Fetch corresponding document UIDs from Solr.
-        if ($collectionData['index_search'] != '') {
-            $solr_query = '(' . $collectionData['index_search'] . ')';
+        if ($collection->getIndexSearch() != '') {
+            $solr_query = '(' . $collection->getIndexSearch() . ')';
         } else {
-            $solr_query = 'collection:("' . $collectionData['index_name'] . '") AND toplevel:true';
+            $solr_query = 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '") AND toplevel:true';
         }
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
@@ -229,7 +207,9 @@ class CollectionController extends AbstractController
         }
         $documentSet = array_unique($documentSet);
 
-        $documents = $this->documentRepository->getDocumentsFromDocumentset($documentSet, $this->settings['pages']);
+        $this->settings['documentSets'] = implode(',', $documentSet);
+
+        $documents = $this->documentRepository->findDocumentsBySettings($this->settings);
 
         $toplevel = [];
         $subparts = [];
@@ -239,16 +219,15 @@ class CollectionController extends AbstractController
         foreach ($documents as $document) {
             if (empty($listMetadata)) {
                 $listMetadata = [
-                    'label' => htmlspecialchars($collectionData['label']),
-                    'description' => $collectionData['description'],
-                    'thumbnail' => htmlspecialchars($collectionData['thumbnail']),
+                    'label' => htmlspecialchars($collection->getLabel()),
+                    'description' => $collection->getDescription(),
+                    'thumbnail' => htmlspecialchars($collection->getThumbnail()),
                     'options' => [
                         'source' => 'collection',
                         'select' => $id,
-                        'userid' => $collectionData['userid'],
-                        'params' => ['filterquery' => [['query' => 'collection_faceting:("' . $collectionData['index_name'] . '")']]],
+                        'userid' => $collection->getFeCruserId(),
+                        'params' => ['filterquery' => [['query' => 'collection_faceting:("' . $collection->getIndexName() . '")']]],
                         'core' => '',
-                        'pid' => $this->settings['pages'],
                         'order' => 'title',
                         'order.asc' => true
                     ]

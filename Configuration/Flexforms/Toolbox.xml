@@ -46,6 +46,7 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.tools</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <items type="array"></items>
                                 <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->toolList</itemsProcFunc>
                                 <size>5</size>
@@ -62,8 +63,9 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->solrList</itemsProcFunc>
+                                <renderType>selectSingle</renderType>
+                                <foreign_table>tx_dlf_solrcores</foreign_table>
+                                <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
                                 <minitems>0</minitems>

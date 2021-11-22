@@ -22,7 +22,7 @@
                         <author>{document.author}</author>
                     </f:if>
                     <pubDate><f:format.date format="r">{document.crdate}</f:format.date></pubDate>
-                    <guid>{document.record_id}</guid>
+                    <guid>{document.recordId}</guid>
                 </item>
             </f:for>
          </channel>

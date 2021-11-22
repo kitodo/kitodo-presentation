@@ -24,8 +24,9 @@ use Kitodo\Dlf\Domain\Repository\DocumentRepository;
  */
 class StatisticsController extends AbstractController
 {
-    protected $collectionRepository;
-
+    /**
+     * @var DocumentRepository
+     */
     protected $documentRepository;
 
     /**
@@ -43,21 +44,8 @@ class StatisticsController extends AbstractController
      */
     public function mainAction()
     {
-        // Quit without doing anything if required configuration variables are not set.
-        if (empty($this->settings['pages'])) {
-            $this->logger->warning('Incomplete plugin configuration');
-        }
-
-        // Check for selected collections.
-        if ($this->settings['collections']) {
-            // Include only selected collections.
-            $result = $this->documentRepository->getStatisticsForSelectedCollection($this->settings);
-        } else {
-            $result = $this->documentRepository->getStatisticsForCollection($this->settings);
-        }
-
-        $countTitles = $result['titles'];
-        $countVolumes = $result['volumes'];
+        $countTitles = $this->documentRepository->countAllTitles($this->settings);
+        $countVolumes = $this->documentRepository->countAllVolumes($this->settings);
 
         // Set replacements.
         $args['###TITLES###'] = $countTitles . ' ' . htmlspecialchars(
