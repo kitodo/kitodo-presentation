@@ -13,7 +13,6 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -31,19 +30,6 @@ class FeedsController extends AbstractController
     public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
         $this->libraryRepository = $libraryRepository;
-    }
-
-    /**
-     * @var DocumentRepository
-     */
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
     }
 
     /**

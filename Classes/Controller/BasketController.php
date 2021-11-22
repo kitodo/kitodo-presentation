@@ -26,7 +26,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class BasketController extends AbstractController
 {
-
     /**
      * @var BasketRepository
      */

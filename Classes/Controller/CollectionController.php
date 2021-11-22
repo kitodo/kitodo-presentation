@@ -20,7 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 
 class CollectionController extends AbstractController
 {
@@ -43,19 +42,6 @@ class CollectionController extends AbstractController
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
-    }
-
-    /**
-     * @var DocumentRepository
-     */
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
     }
 
     /**

@@ -17,7 +17,6 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Token;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 
@@ -31,19 +30,6 @@ use Kitodo\Dlf\Domain\Repository\TokenRepository;
  */
 class OaiPmhController extends AbstractController
 {
-    /**
-     * @var DocumentRepository
-     */
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
-
     /**
      * @var TokenRepository
      */
