@@ -39,7 +39,7 @@ class TokenRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $tokensToBeRemoved = $query->execute();
 
-        foreach($tokensToBeRemoved as $token) {
+        foreach ($tokensToBeRemoved as $token) {
             $this->remove($token);
         }
     }

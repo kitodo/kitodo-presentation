@@ -41,7 +41,8 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     }
 
-    public function getCollections($settings, $uid, $sysLangUid) {
+    public function getCollections($settings, $uid, $sysLangUid)
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 
@@ -98,7 +99,8 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return ['result' => $result, 'count' => $count];
     }
 
-    public function getSingleCollection($settings, $id, $sysLangUid) {
+    public function getSingleCollection($settings, $id, $sysLangUid)
+    {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_collections');
 
@@ -143,7 +145,8 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $collection;
     }
 
-    public function getCollectionForMetadata($pages) {
+    public function getCollectionForMetadata($pages)
+    {
         // Get list of collections to show.
         $query = $this->createQuery();
 
@@ -176,7 +179,7 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         // do not find collections without oai_name set (used by oai-pmh plugin)
         if ($settings['hideEmptyOaiNames']) {
-            $constraints[] =  $query->logicalNot($query->equals('oai_name', ''));
+            $constraints[] = $query->logicalNot($query->equals('oai_name', ''));
         }
 
         if (count($constraints)) {
@@ -193,7 +196,8 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getIndexNameForSolr($settings, $set) {
+    public function getIndexNameForSolr($settings, $set)
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
 
