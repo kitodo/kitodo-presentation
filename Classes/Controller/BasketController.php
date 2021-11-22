@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\ActionLog;
+use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
@@ -24,21 +26,10 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class BasketController extends AbstractController
 {
-
     /**
      * @var BasketRepository
      */
     protected $basketRepository;
-
-    /**
-     * @var MailRepository
-     */
-    protected $mailRepository;
-
-    /**
-     * @var PrinterRepository
-     */
-    protected $printerRepository;
 
     /**
      * @param BasketRepository $basketRepository
@@ -49,6 +40,11 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @var MailRepository
+     */
+    protected $mailRepository;
+
+    /**
      * @param MailRepository $mailRepository
      */
     public function injectMailRepository(MailRepository $mailRepository)
@@ -57,11 +53,29 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @var PrinterRepository
+     */
+    protected $printerRepository;
+
+    /**
      * @param PrinterRepository $printerRepository
      */
     public function injectPrinterRepository(PrinterRepository $printerRepository)
     {
         $this->printerRepository = $printerRepository;
+    }
+
+    /**
+     * @var ActionLogRepository
+     */
+    protected $actionLogRepository;
+
+    /**
+     * @param ActionLogRepository $actionLogRepository
+     */
+    public function injectActionLogRepository(ActionLogRepository $actionLogRepository)
+    {
+        $this->actionLogRepository = $actionLogRepository;
     }
 
     /**
@@ -170,7 +184,7 @@ class BasketController extends AbstractController
             $this->view->assign('mailSelect', $mailSelect);
         }
 
-        $allPrinter = $this->printerRepository->findAllWithPid($this->settings['pages']);
+        $allPrinter = $this->printerRepository->findAll();
 
         $printSelect = [];
         if ($allPrinter->count() > 0) {
@@ -556,31 +570,25 @@ class BasketController extends AbstractController
             ->setTo([$mailObject->getMail() => $mailObject->getName()])
             ->setBody($mailBody, 'text/html')
             ->send();
-        // protocol
-        $insertArray = [
-            'pid' => $this->settings['pages'],
-            'file_name' => $pdfUrl,
-            'count_pages' => $numberOfPages,
-            'crdate' => time(),
-        ];
+
+        // create entry for action log
+        $newActionLog = $this->objectManager->get(ActionLog::class);
+        $newActionLog->setFileName($pdfUrl);
+        $newActionLog->setCountPages($numberOfPages);
+        $newActionLog->setLabel('Mail: ' . $mailObject->getMail());
+
         if ($GLOBALS["TSFE"]->loginUser) {
             // internal user
-            $insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
-            $insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-            $insertArray['label'] = 'Mail: ' . $mailObject->getMail();
+            $newActionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
+            $newActionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
         } else {
             // external user
-            $insertArray['user_id'] = 0;
-            $insertArray['name'] = 'n/a';
-            $insertArray['label'] = 'Mail: ' . $mailObject->getMail();
+            $newActionLog->setUserId(0);
+            $newActionLog->setName('n/a');
         }
-        // add action to protocol
-        GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_dlf_actionlog')
-            ->insert(
-                'tx_dlf_actionlog',
-                $insertArray
-            );
+
+        $this->actionLogRepository->add($newActionLog);
+
         $this->redirect('main');
     }
 
@@ -650,5 +658,4 @@ class BasketController extends AbstractController
 
         $this->redirectToUri($pdfUrl);
     }
-
 }

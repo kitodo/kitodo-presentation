@@ -81,7 +81,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
 
                 // Load document with current plugin parameters.
-                $doc = $this->loadDocument($queryParams[$this->prefixId]);
+                $doc = $this->loadDocument($queryParams[$this->prefixId], $cPid);
                 if ($doc === null) {
                     return $type;
                 }
@@ -110,15 +110,16 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @access protected
      *
      * @param array $piVars The current plugin variables containing a document identifier
+     * @param int $pid: Storage Pid
      *
      * @return \Kitodo\Dlf\Common\Document Instance of the current document
      */
-    protected function loadDocument(array $piVars)
+    protected function loadDocument(array $piVars, int $pid)
     {
         // Check for required variable.
         if (!empty($piVars['id'])) {
             // Get instance of document.
-            $doc = Document::getInstance($piVars['id']);
+            $doc = Document::getInstance($piVars['id'], ['storagePid' => $pid]);
             if ($doc->ready) {
                 return $doc;
             } else {

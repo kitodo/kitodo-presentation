@@ -21,6 +21,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
+    /**
+     * Array of all document structures
+     *
+     * @var array
+     */
+    protected $documentStructures;
+
+
     public function findByUidAndPartOf($uid, $partOf)
     {
         $query = $this->createQuery();
@@ -31,25 +39,33 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function oaiDocumentByTstmp($pid) {
-        $query = $this->createQuery();
-
-        $query->matching($query->equals('pid', $pid));
-        $query->setOrderings(['tstmp' => QueryInterface::ORDER_ASCENDING]);
-        $query->setLimit(1);
-    }
-
     /**
-     * @param $structure
-     * @param $partOf
-     * @param $indexName
+     * Find the oldest document
+     *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function getChildrenOfYearAnchor($structure, $partOf, $indexName)
+    public function findOldestDocument()
     {
         $query = $this->createQuery();
 
-        $query->matching($query->equals('structure', Helper::getUidFromIndexName($indexName, 'tx_dlf_structures', $structure)));
+        $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
+        $query->setLimit(1);
+
+        return $query->execute()->getFirst();
+    }
+
+    /**
+     * @param int $partOf
+     * @param string $structure
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function getChildrenOfYearAnchor($partOf, $structure)
+    {
+        $this->documentStructures = $this->getDocumentStructures();
+
+        $query = $this->createQuery();
+
+        $query->matching($query->equals('structure', $this->documentStructures[$structure]));
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([
@@ -59,83 +75,137 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getDocumentsFromDocumentset($documentSet, $pages) {
+    /**
+     * Finds all documents for the given settings
+     *
+     * @param int $uid
+     * @param array $settings
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findOneByIdAndSettings($uid, $settings = [])
+    {
+        $settings['documentSets'] = $uid;
+
+        return $this->findDocumentsBySettings($settings)->getFirst();
+    }
+
+    /**
+     * Finds all documents for the given settings
+     *
+     * @param array $settings
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findDocumentsBySettings($settings = [])
+    {
         $query = $this->createQuery();
 
-        $query->matching($query->equals('pid', $pages));
-        $query->matching($query->in('uid', $documentSet));
+        $constraints = [];
+
+        if ($settings['documentSets']) {
+            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['documentSets']));
+        }
+
+        if (isset($settings['excludeOther']) && (int) $settings['excludeOther'] === 0) {
+            $query->getQuerySettings()->setRespectStoragePage(false);
+        }
+
+        if (count($constraints)) {
+            $query->matching(
+                $query->logicalAnd($constraints)
+            );
+        }
 
         return $query->execute();
     }
 
-    public function getDocumentsForFeeds($settings, $collectionUid) {
-        $additionalWhere = '';
-        // Check for pre-selected collections.
-        if (!empty($collectionUid)) {
-            $additionalWhere = 'tx_dlf_collections.uid=' . intval($collectionUid);
-        } elseif (!empty($settings['collections'])) {
-            $additionalWhere = 'tx_dlf_collections.uid IN (' . implode(',', GeneralUtility::intExplode(',', $settings['collections'])) . ')';
+    /**
+     * Finds all documents for the given collections
+     *
+     * @param array $collections separated by comma
+     * @param int $limit
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findAllByCollectionsLimited($collections, $limit = 50)
+    {
+        $query = $this->createQuery();
+
+        // order by start_date -> start_time...
+        $query->setOrderings(
+            ['tstamp' => QueryInterface::ORDER_DESCENDING]
+        );
+
+        $constraints = [];
+        if ($collections) {
+            $constraints[] = $query->in('collections.uid', $collections);
         }
 
-        // get documents
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+        if (count($constraints)) {
+            $query->matching(
+                $query->logicalAnd($constraints)
+            );
+        }
+        $query->setLimit((int) $limit);
 
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.partof AS partof',
-                'tx_dlf_documents.title AS title',
-                'tx_dlf_documents.volume AS volume',
-                'tx_dlf_documents.author AS author',
-                'tx_dlf_documents.record_id AS record_id',
-                'tx_dlf_documents.tstamp AS tstamp',
-                'tx_dlf_documents.crdate AS crdate'
-            )
-            ->from('tx_dlf_documents')
-            ->join(
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_documents_collections_mm',
-                $queryBuilder->expr()->eq('tx_dlf_documents.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_local'))
-            )
-            ->join(
-                'tx_dlf_documents_collections_mm',
-                'tx_dlf_collections',
-                'tx_dlf_collections',
-                $queryBuilder->expr()->eq('tx_dlf_collections.uid', $queryBuilder->quoteIdentifier('tx_dlf_documents_collections_mm.uid_foreign'))
-            )
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', $queryBuilder->createNamedParameter((int) $settings['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_documents_collections_mm.ident', $queryBuilder->createNamedParameter('docs_colls')),
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', $queryBuilder->createNamedParameter((int) $settings['pages'])),
-                $additionalWhere
-            )
-            ->groupBy('tx_dlf_documents.uid')
-            ->orderBy('tx_dlf_documents.tstamp', 'DESC')
-            ->setMaxResults((int) $settings['limit'])
-            ->execute();
-
-        return $result;
-
+        return $query->execute();
     }
 
-    public function getStatisticsForCollection($settings) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+    /**
+     * Find all the titles
+     *
+     * documents with partof == 0
+     *
+     * @param array $settings
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findAllTitles($settings = [])
+    {
+        $query = $this->createQuery();
 
-        // Include all collections.
-        $countTitles = $queryBuilder
-            ->count('tx_dlf_documents.uid')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['pages'])),
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
-                Helper::whereExpression('tx_dlf_documents')
-            )
-            ->execute()
-            ->fetchColumn(0);
+        $constraints = [];
+        $constraints[] = $query->equals('partof', 0);
 
+        if ($settings['collections']) {
+            $constraints[] = $query->in('collections.uid', GeneralUtility::intExplode(',', $settings['collections']));
+        }
+
+        if (count($constraints)) {
+            $query->matching(
+                $query->logicalAnd($constraints)
+            );
+        }
+
+        return $query->execute();
+    }
+
+    /**
+     * Count the titles
+     *
+     * documents with partof == 0
+     *
+     * @param array $settings
+     *
+     * @return int
+     */
+    public function countAllTitles($settings = [])
+    {
+        return $this->findAllTitles($settings)->count();
+    }
+
+    /**
+     * Count the volumes
+     *
+     * documents with partof != 0
+     *
+     * @param array $settings
+     *
+     * @return int
+     */
+    public function countAllVolumes($settings = [])
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
         $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -160,10 +230,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute()
             ->fetchColumn(0);
 
-        return ['titles' => $countTitles, 'volumes' => $countVolumes];
+        return $countVolumes;
     }
 
-    public function getStatisticsForSelectedCollection($settings) {
+    public function getStatisticsForSelectedCollection($settings)
+    {
         // Include only selected collections.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
@@ -253,7 +324,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return ['titles' => $countTitles, 'volumes' => $countVolumes];
     }
 
-    public function getTableOfContentsFromDb($uid, $pid, $settings) {
+    public function getTableOfContentsFromDb($uid, $pid, $settings)
+    {
         // Build table of contents from database.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
@@ -293,65 +365,57 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $result;
     }
 
-    public function getOaiRecord($settings, $parameters) {
+    /**
+     * Find one document by given settings and identifier
+     *
+     * @param array $settings
+     * @param array $parameters
+     *
+     * @return array The found document object
+     */
+    public function getOaiRecord($settings, $parameters)
+    {
         $where = '';
+
         if (!$settings['show_userdefined']) {
             $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
         }
 
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_dlf_documents');
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_dlf_documents');
 
         $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
             'FROM `tx_dlf_documents` ' .
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
             'WHERE `tx_dlf_documents`.`record_id` = ? ' .
-            'AND `tx_dlf_documents`.`pid` = ? ' .
-            'AND `tx_dlf_collections`.`pid` = ? ' .
             'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-            $where .
-            'AND ' . Helper::whereExpression('tx_dlf_collections');
+            $where;
 
         $values = [
-            $parameters['identifier'],
-            $settings['pages'],
-            $settings['pages']
+            $parameters['identifier']
         ];
+
         $types = [
-            Connection::PARAM_STR,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT
+            Connection::PARAM_STR
         ];
+
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $statement = $connection->executeQuery($sql, $values, $types);
 
-        $resArray = $statement->fetch();
-
-        return $resArray;
+        return $statement->fetch();
     }
 
-    public function getOaiMetadataFormats($pid, $id) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
-        // Check given identifier.
-        $result = $queryBuilder
-            ->select('tx_dlf_documents.*')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_documents.record_id',
-                    $queryBuilder->expr()->literal($id))
-            )
-            ->orderBy('tx_dlf_documents.tstamp')
-            ->setMaxResults(1)
-            ->execute();
-
-        $resArray = $result->fetch();
-        return $resArray;
-    }
-
-    public function getOaiDocumentList($settings, $documentsToProcess) {
+    /**
+     * Finds all documents for the given settings
+     *
+     * @param array $settings
+     * @param array $documentsToProcess
+     *
+     * @return array The found document objects
+     */
+    public function getOaiDocumentList($settings, $documentsToProcess)
+    {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_dlf_documents');
 
@@ -360,28 +424,47 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
             'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
             'WHERE `tx_dlf_documents`.`uid` IN ( ? ) ' .
-            'AND `tx_dlf_documents`.`pid` = ? ' .
-            'AND `tx_dlf_collections`.`pid` = ? ' .
             'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
             'AND ' . Helper::whereExpression('tx_dlf_collections') . ' ' .
-            'GROUP BY `tx_dlf_documents`.`uid` ' .
-            'LIMIT ?';
+            'GROUP BY `tx_dlf_documents`.`uid` ';
 
         $values = [
             $documentsToProcess,
-            $settings['pages'],
-            $settings['pages'],
-            $settings['limit']
         ];
+
         $types = [
             Connection::PARAM_INT_ARRAY,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT,
-            Connection::PARAM_INT
         ];
+
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $documents = $connection->executeQuery($sql, $values, $types);
+
         return $documents;
     }
 
+    /**
+     * Get all document structures as array
+     *
+     * @return array
+     */
+    private function getDocumentStructures()
+    {
+        // make lookup-table of structures uid -> indexName
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
+        // Fetch document info for UIDs in $documentSet from DB
+        $kitodoStructures = $queryBuilder
+            ->select(
+                'tx_dlf_structures.uid AS uid',
+                'tx_dlf_structures.index_name AS indexName'
+            )
+            ->from('tx_dlf_structures')
+            ->execute();
+
+        $allStructures = $kitodoStructures->fetchAll();
+        // make lookup-table uid -> indexName
+        $allStructures = array_column($allStructures, 'indexName', 'uid');
+
+        return $allStructures;
+    }
 }

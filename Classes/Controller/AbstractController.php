@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -27,6 +28,19 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     use LoggerAwareTrait;
 
     public $prefixId = 'tx_dlf';
+
+    /**
+     * @var DocumentRepository
+     */
+    protected $documentRepository;
+
+    /**
+     * @param DocumentRepository $documentRepository
+     */
+    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
+    }
 
     /**
      * @var
@@ -46,19 +60,16 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @access protected
      *
+     * @param array $requestData: The request data
+     *
      * @return void
      */
     protected function loadDocument($requestData)
     {
         // Check for required variable.
-        if (
-            !empty($requestData['id'])
-            && !empty($this->settings['pages'])
-        ) {
-            // Should we exclude documents from other pages than $this->settings['pages']?
-            $pid = (!empty($this->settings['excludeOther']) ? intval($this->settings['pages']) : 0);
+        if (!empty($requestData['id'])) {
             // Get instance of \Kitodo\Dlf\Common\Document.
-            $this->doc = Document::getInstance($requestData['id'], $pid);
+            $this->doc = Document::getInstance($requestData['id'], $this->settings);
             if (!$this->doc->ready) {
                 // Destroy the incomplete object.
                 $this->doc = null;

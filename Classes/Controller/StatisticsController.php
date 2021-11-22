@@ -12,7 +12,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 
 /**
  * Controller for the plugin 'Statistics' for the 'dlf' extension
@@ -24,18 +23,6 @@ use Kitodo\Dlf\Domain\Repository\DocumentRepository;
  */
 class StatisticsController extends AbstractController
 {
-    protected $collectionRepository;
-
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
-
     /**
      * The main method of the plugin
      *
@@ -43,21 +30,8 @@ class StatisticsController extends AbstractController
      */
     public function mainAction()
     {
-        // Quit without doing anything if required configuration variables are not set.
-        if (empty($this->settings['pages'])) {
-            $this->logger->warning('Incomplete plugin configuration');
-        }
-
-        // Check for selected collections.
-        if ($this->settings['collections']) {
-            // Include only selected collections.
-            $result = $this->documentRepository->getStatisticsForSelectedCollection($this->settings);
-        } else {
-            $result = $this->documentRepository->getStatisticsForCollection($this->settings);
-        }
-
-        $countTitles = $result['titles'];
-        $countVolumes = $result['volumes'];
+        $countTitles = $this->documentRepository->countAllTitles($this->settings);
+        $countVolumes = $this->documentRepository->countAllVolumes($this->settings);
 
         // Set replacements.
         $args['###TITLES###'] = $countTitles . ' ' . htmlspecialchars(

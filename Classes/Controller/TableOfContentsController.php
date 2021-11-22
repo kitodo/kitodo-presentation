@@ -14,8 +14,6 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-
 
 /**
  * Controller for plugin 'Table Of Contents' for the 'dlf' extension
@@ -39,16 +37,6 @@ class TableOfContentsController extends AbstractController
      * @var array
      */
     protected $pluginConf;
-
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
 
     /**
      * SearchController constructor.

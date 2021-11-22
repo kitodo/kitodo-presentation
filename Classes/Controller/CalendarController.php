@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -26,16 +25,6 @@ class CalendarController extends AbstractController
      * @access protected
      */
     protected $allIssues = [];
-
-    protected $documentRepository;
-
-    /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
 
     /**
      * The main method of the plugin
@@ -97,10 +86,10 @@ class CalendarController extends AbstractController
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // access arguments passed by the mainAction()
-        $mainrquestData = $this->request->getArguments();
+        $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrquestData);
+        $requestData = array_merge($requestData, $mainrequestData);
 
         // Load current document.
         $this->loadDocument($requestData);
@@ -109,7 +98,7 @@ class CalendarController extends AbstractController
             return;
         }
 
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, $this->doc->cPid, 'issue');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'issue');
 
         $issues = [];
 
@@ -204,10 +193,10 @@ class CalendarController extends AbstractController
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // access arguments passed by the mainAction()
-        $mainrquestData = $this->request->getArguments();
+        $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrquestData);
+        $requestData = array_merge($requestData, $mainrequestData);
 
         // Load current document.
         $this->loadDocument($requestData);
@@ -217,7 +206,7 @@ class CalendarController extends AbstractController
         }
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->cPid, $this->doc->uid, 'year');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'year');
 
         $years = [];
         // Process results.

@@ -37,8 +37,7 @@
     "typo3/cms-tstemplate": "^9.5",
     "caseyamcl/phpoaipmh": "^3.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
-    "solarium/solarium": "^4.2|^5.2",
-	"fluidtypo3/vhs": "6.0.5"
+    "solarium/solarium": "^4.2|^5.2"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"

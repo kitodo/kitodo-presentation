@@ -15,7 +15,9 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Solr;
-use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Model\Token;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 
 /**
@@ -28,16 +30,9 @@ use Kitodo\Dlf\Domain\Repository\TokenRepository;
  */
 class OaiPmhController extends AbstractController
 {
-    protected $documentRepository;
-
     /**
-     * @param DocumentRepository $documentRepository
+     * @var TokenRepository
      */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
-
     protected $tokenRepository;
 
     /**
@@ -48,6 +43,9 @@ class OaiPmhController extends AbstractController
         $this->tokenRepository = $tokenRepository;
     }
 
+    /**
+     * @var CollectionRepository
+     */
     protected $collectionRepository;
 
     /**
@@ -58,6 +56,9 @@ class OaiPmhController extends AbstractController
         $this->collectionRepository = $collectionRepository;
     }
 
+    /**
+     * @var LibraryRepository
+     */
     protected $libraryRepository;
 
     /**
@@ -130,12 +131,7 @@ class OaiPmhController extends AbstractController
     protected function deleteExpiredTokens()
     {
         // Delete expired resumption tokens.
-        $result = $this->tokenRepository->deleteExpiredTokens($GLOBALS['EXEC_TIME'], $this->settings['expired']);
-
-        if ($result === -1) {
-            // Deletion failed.
-            $this->logger->warning('Could not delete expired resumption tokens');
-        }
+        $this->tokenRepository->deleteExpiredTokens($this->settings['expired']);
     }
 
     /**
@@ -207,7 +203,7 @@ class OaiPmhController extends AbstractController
         $record[] = ['dc:type' => $record['Text']];
         if (!empty($record['partof'])) {
 
-            $document = $this->documentRepository->findOneByPartOf($metadata['partof']);
+            $document = $this->documentRepository->findOneByPartof($metadata['partof']);
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
@@ -316,10 +312,13 @@ class OaiPmhController extends AbstractController
      */
     protected function resume(): ?DocumentList
     {
-        $result = $this->tokenRepository->getResumptionToken($this->parameters['resumptionToken']);
+        $token = $this->tokenRepository->findOneByToken($this->parameters['resumptionToken']);
 
-        if ($resArray = $result->fetch()) {
-            return unserialize($resArray['options']);
+        if ($token) {
+            $options = $token->getOptions();
+        }
+        if ($options instanceof DocumentList) {
+            return $options;
         } else {
             // No resumption token found or resumption token expired.
             $this->error = 'badResumptionToken';
@@ -340,43 +339,44 @@ class OaiPmhController extends AbstractController
             $this->error = 'badArgument';
             return;
         }
+
         if (!array_key_exists($this->parameters['metadataPrefix'], $this->formats)) {
             $this->error = 'cannotDisseminateFormat';
             return;
         }
 
-        $resArray = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
+        $document = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
 
-        if (!$resArray['uid']) {
+        if (!$document['uid']) {
             $this->error = 'idDoesNotExist';
             return;
         }
 
         // Check for required fields.
         foreach ($this->formats[$this->parameters['metadataPrefix']]['requiredFields'] as $required) {
-            if (empty($resArray[$required])) {
+            if (empty($document[$required])) {
                 $this->error = 'cannotDisseminateFormat';
                 return;
             }
         }
 
         // we need the collections as array later
-        $resArray['collections'] = explode(' ', $resArray['collections']);
+        $document['collections'] = explode(' ', $document['collections']);
 
         // Add metadata
         switch ($this->parameters['metadataPrefix']) {
             case 'oai_dc':
-                $resArray['metadata'] = $this->getDcData($resArray);
+                $document['metadata'] = $this->getDcData($document);
                 break;
             case 'epicur':
-                $resArray['metadata'] = $resArray;
+                $document['metadata'] = $document;
                 break;
             case 'mets':
-                $resArray['metadata'] = $this->getMetsData($resArray);
+                $document['metadata'] = $this->getMetsData($document);
                 break;
         }
 
-        $this->view->assign('record', $resArray);
+        $this->view->assign('record', $document);
     }
 
     /**
@@ -388,30 +388,40 @@ class OaiPmhController extends AbstractController
      */
     protected function verbIdentify()
     {
-        $result = $this->libraryRepository->getLibraryByUidAndPid($this->settings['library'], $this->settings['pages']);
+        $library = $this->libraryRepository->findByUid($this->settings['library']);
 
-        $oaiIdentifyInfo = $result->fetch();
+        $oaiIdentifyInfo = [];
+
         if (!$oaiIdentifyInfo) {
             $this->logger->notice('Incomplete plugin configuration');
         }
 
+        $oaiIdentifyInfo['oai_label'] = $library->getOaiLabel();
         // Use default values for an installation with incomplete plugin configuration.
         if (empty($oaiIdentifyInfo['oai_label'])) {
             $oaiIdentifyInfo['oai_label'] = 'Kitodo.Presentation OAI-PMH Interface (default configuration)';
             $this->logger->notice('Incomplete plugin configuration (oai_label is missing)');
         }
 
+        $oaiIdentifyInfo['contact'] = $library->getContact();
         if (empty($oaiIdentifyInfo['contact'])) {
             $oaiIdentifyInfo['contact'] = 'unknown@example.org';
             $this->logger->notice('Incomplete plugin configuration (contact is missing)');
         }
 
-        $document = $this->documentRepository->oaiDocumentByTstmp($this->settings['pages']);
+        $document = $this->documentRepository->findOldestDocument();
 
         if ($document) {
-            $oaiIdentifyInfo['earliestDatestamp'] = gmdate('Y-m-d\TH:i:s\Z', $document->getTstmp());
+            $oaiIdentifyInfo['earliestDatestamp'] = gmdate('Y-m-d\TH:i:s\Z', $document->getTstamp()->getTimestamp());
         } else {
-            $this->logger->notice('No records found with PID ' . $this->settings['pages']);
+            // access storagePid from TypoScript
+            $pageSettings = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+            $storagePid = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
+            if ($storagePid > 0) {
+                $this->logger->notice('No records found with PID ' . $storagePid);
+            } else {
+                $this->logger->notice('No records found');
+            }
         }
         $this->view->assign('oaiIdentifyInfo', $oaiIdentifyInfo);
     }
@@ -483,7 +493,7 @@ class OaiPmhController extends AbstractController
         $resArray = [];
         // check for the optional "identifier" parameter
         if (isset($this->parameters['identifier'])) {
-            $resArray = $this->documentRepository->getOaiMetadataFormats($this->settings['pages'], $this->parameters['identifier']);
+            $resArray = $this->documentRepository->findOneByRecordId($this->parameters['identifier']);
         }
 
         $resultSet = [];
@@ -491,7 +501,8 @@ class OaiPmhController extends AbstractController
             if (!empty($resArray)) {
                 // check, if all required fields are available for a given identifier
                 foreach ($details['requiredFields'] as $required) {
-                    if (empty($resArray[$required])) {
+                    $methodName = 'get' . GeneralUtility::underscoredToUpperCamelCase($required);
+                    if (empty($resArray->$methodName())) {
                         // Skip metadata formats whose requirements are not met.
                         continue 2;
                     }
@@ -568,9 +579,12 @@ class OaiPmhController extends AbstractController
      */
     protected function verbListSets()
     {
-        $allResults = $this->collectionRepository->getOaiRecord($this->settings, $this->parameters);
+        // It is required to set a oai_name inside the collection record to be shown in oai-pmh plugin.
+        $this->settings['hideEmptyOaiNames'] = true;
 
-        $this->view->assign('oaiSets', $allResults);
+        $oaiSets = $this->collectionRepository->findCollectionsBySettings($this->settings);
+
+        $this->view->assign('oaiSets', $oaiSets);
     }
 
     /**
@@ -745,17 +759,15 @@ class OaiPmhController extends AbstractController
     protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet)
     {
         if ($documentListSet->count() !== 0) {
-            $token = uniqid('', false);
+            $resumptionToken = uniqid('', false);
 
-            $affectedRows = $this->tokenRepository->generateResumptionToken($token, $documentListSet);
+            // create new token
+            $newToken = $this->objectManager->get(Token::class);
+            $newToken->setToken($resumptionToken);
+            $newToken->setOptions($documentListSet);
 
-            if ($affectedRows === 1) {
-                $resumptionToken = $token;
-            } else {
-                $this->logger->error('Could not create resumption token');
-                $this->error = 'badResumptionToken';
-                return;
-            }
+            // add to tokenRepository
+            $this->tokenRepository->add($newToken);
         } else {
             // Result set complete. We don't need a token.
             $resumptionToken = '';

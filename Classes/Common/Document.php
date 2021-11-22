@@ -12,12 +12,15 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
 use Ubl\Iiif\Tools\IiifHelper;
 
@@ -418,13 +421,51 @@ abstract class Document
      * @static
      *
      * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
-     * @param int $pid: If > 0, then only document with this PID gets loaded
+     * @param array $settings
      * @param bool $forceReload: Force reloading the document instead of returning the cached instance
      *
      * @return \Kitodo\Dlf\Common\Document Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance($uid, $pid = 0, $forceReload = false)
+    public static function &getInstance($uid, $settings = [], $forceReload = false)
     {
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager = $objectManager->get(ConfigurationManager::class);
+
+        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+
+        // override storagePid if given
+        if ($settings['storagePid']) {
+            $frameworkConfiguration['persistence']['storagePid'] = $settings['storagePid'];
+        }
+
+        /**
+         * Set table mapping if missing.
+         *
+         * This should be evaluated with TYPO3 10 again. In TYPO3 9.5 the mapping set via TypoScript is not always present.
+         * This could be omitted if we rename all tables to the Extbase naming schema.
+         *  */
+        if (empty($frameworkConfiguration['persistence']['classes'])) {
+            $frameworkConfiguration['persistence']['classes'] = [
+                'Kitodo\Dlf\Domain\Model\Document' => [
+                    'mapping' => [
+                        'tableName' => 'tx_dlf_documents'
+                    ]
+                ],
+                'Kitodo\Dlf\Domain\Model\Collection' => [
+                    'mapping' => [
+                        'tableName' => 'tx_dlf_collections'
+                    ]
+                ]
+            ];
+        }
+
+        // set modified configuration
+        $configurationManager->setConfiguration($frameworkConfiguration);
+
+        /** Fill documentRepository */
+        $documentRepository = $objectManager->get(DocumentRepository::class);
+
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if (!$forceReload) {
@@ -469,39 +510,12 @@ abstract class Document
         $iiif = null;
         // Try to get document format from database
         if (MathUtility::canBeInterpretedAsInteger($uid)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
 
-            $queryBuilder
-                ->select(
-                    'tx_dlf_documents.location AS location',
-                    'tx_dlf_documents.document_format AS document_format'
-                )
-                ->from('tx_dlf_documents');
-
-            // Get UID of document with given record identifier.
-            if ($pid) {
-                $queryBuilder
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($pid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    );
-            } else {
-                $queryBuilder
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    );
+            $document = $documentRepository->findOneByIdAndSettings($uid, $settings);
+            if ($document !== null) {
+                $documentFormat = $document->getDocumentFormat();
             }
 
-            $result = $queryBuilder
-                ->setMaxResults(1)
-                ->execute();
-
-            if ($resArray = $result->fetch()) {
-                $documentFormat = $resArray['document_format'];
-            }
         } else {
             // Get document format from content of remote document
             // Cast to string for safety reasons.

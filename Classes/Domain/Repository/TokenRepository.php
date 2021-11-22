@@ -18,54 +18,29 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TokenRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-    public function deleteExpiredTokens($execTime, $expired) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
+    /**
+     * Delete all expired token
+     *
+     * @param int $expireTime
+     *
+     * @return void
+     */
+    public function deleteExpiredTokens($expireTime)
+    {
+        $query = $this->createQuery();
 
-        $result = $queryBuilder
-            ->delete('tx_dlf_tokens')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-                $queryBuilder->expr()->lt('tx_dlf_tokens.tstamp',
-                    $queryBuilder->createNamedParameter((int) ($execTime - $expired)))
-            )
-            ->execute();
+        $constraints = [];
 
-        return $result;
+        $constraints[] = $query->lessThan('tstamp', (int) (time() - $expireTime));
+
+        if (count($constraints)) {
+            $query->matching($query->logicalAnd($constraints));
+        }
+
+        $tokensToBeRemoved = $query->execute();
+
+        foreach ($tokensToBeRemoved as $token) {
+            $this->remove($token);
+        }
     }
-
-    public function getResumptionToken($token) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_tokens');
-
-        // Get resumption token.
-        $result = $queryBuilder
-            ->select('tx_dlf_tokens.options AS options')
-            ->from('tx_dlf_tokens')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_tokens.ident', $queryBuilder->createNamedParameter('oai')),
-                $queryBuilder->expr()->eq('tx_dlf_tokens.token',
-                    $queryBuilder->expr()->literal($token)
-                )
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        return $result;
-    }
-
-    public function generateResumptionToken($token, $documentListSet) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_tokens');
-        $affectedRows = $queryBuilder
-            ->insert('tx_dlf_tokens')
-            ->values([
-                'tstamp' => $GLOBALS['EXEC_TIME'],
-                'token' => $token,
-                'options' => serialize($documentListSet),
-                'ident' => 'oai',
-            ])
-            ->execute();
-
-        return $affectedRows;
-    }
-
 }

@@ -15,9 +15,14 @@ namespace Kitodo\Dlf\Domain\Model;
 class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
+     * @var int
+     */
+    protected $feCruserId;
+
+    /**
      * @var string
      */
-    protected $fe_group;
+    protected $feGroup;
 
     /**
      * @var string
@@ -70,19 +75,35 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     protected $status;
 
     /**
+     * @return int
+     */
+    public function getFeCruserId(): int
+    {
+        return $this->feCruserId;
+    }
+
+    /**
+     * @param string $feCruserId
+     */
+    public function setFeCruserId(string $feCruserId): void
+    {
+        $this->feCruserId = $feCruserId;
+    }
+
+    /**
      * @return string
      */
     public function getFeGroup(): string
     {
-        return $this->fe_group;
+        return $this->feGroup;
     }
 
     /**
-     * @param string $fe_group
+     * @param string $feGroup
      */
-    public function setFeGroup(string $fe_group): void
+    public function setFeGroup(string $feGroup): void
     {
-        $this->fe_group = $fe_group;
+        $this->feGroup = $feGroup;
     }
 
     /**

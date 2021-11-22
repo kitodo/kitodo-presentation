@@ -15,12 +15,4 @@ namespace Kitodo\Dlf\Domain\Repository;
 class PrinterRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
-    public function findAllWithPid($pid)
-    {
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
-        $querySettings->setStoragePageIds(array($pid));
-        $this->setDefaultQuerySettings($querySettings);
-
-        return $this->findAll();
-    }
 }
