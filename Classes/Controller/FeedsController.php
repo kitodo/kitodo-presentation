@@ -53,7 +53,7 @@ class FeedsController extends AbstractController
         $requestData = $this->request->getArguments();
 
         // get library information
-        /** @var \Kitodo\Dlf\Domain\Model\Library $library */
+        /** @var \Kitodo\Dlf\Domain\Model\Library|null $library */
         $library = $this->libraryRepository->findByUid($this->settings['library']);
 
         $feedMeta = [];
