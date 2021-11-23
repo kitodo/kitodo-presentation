@@ -53,6 +53,7 @@ class FeedsController extends AbstractController
         $requestData = $this->request->getArguments();
 
         // get library information
+        /** @var \Kitodo\Dlf\Domain\Model\Library|null $library */
         $library = $this->libraryRepository->findByUid($this->settings['library']);
 
         $feedMeta = [];
@@ -90,7 +91,7 @@ class FeedsController extends AbstractController
                 }
                 // Set default title if empty.
                 if (empty($title)) {
-                    $title = LocalizationUtility::translate('noTitle', 'dlf');
+                    $title = LocalizationUtility::translate('noTitle', 'dlf') ? : '';
                 }
                 // Append volume information.
                 if (!empty($document->getVolume())) {

@@ -158,7 +158,7 @@ class CollectionController extends AbstractController
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection The collection object
+     * @param \Kitodo\Dlf\Domain\Model\Collection $collection: The collection object
      *
      * @return void
      */
