@@ -157,181 +157,132 @@ class MetadataController extends AbstractController
      */
     protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = false)
     {
-        // Save original data array.
-        $cObjData = $this->cObj->data;
-        // Get list of metadata to show.
-        $metaList = [];
         if ($useOriginalIiifManifestMetadata) {
-            if ($this->settings['iiifMetadataWrap']) {
-                $iiifwrap = $this->parseTS($this->settings['iiifMetadataWrap']);
-            } else {
-                $iiifwrap['key.']['wrap'] = '<dt>|</dt>';
-                $iiifwrap['value.']['required'] = 1;
-                $iiifwrap['value.']['wrap'] = '<dd>|</dd>';
-            }
-            $iiifLink = [];
-            $iiifLink['key.']['wrap'] = '<dt>|</dt>';
-            $iiifLink['value.']['required'] = 1;
-            $iiifLink['value.']['setContentToCurrent'] = 1;
-            $iiifLink['value.']['typolink.']['parameter.']['current'] = 1;
-            $iiifLink['value.']['typolink.']['forceAbsoluteUrl'] = !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0;
-            $iiifLink['value.']['typolink.']['forceAbsoluteUrl.']['scheme'] = !empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http';
-            $iiifLink['value.']['wrap'] = '<dd>|</dd>';
+            $iiifData = [];
             foreach ($metadataArray as $metadata) {
                 foreach ($metadata as $key => $group) {
-                    $markerArray['METADATA'] = '<span class="tx-dlf-metadata-group">' . $this->pi_getLL($key) . '</span>';
-                    // Reset content object's data array.
-                    $this->cObj->data = $cObjData;
+                    if ($key == '_id') {
+                        continue;
+                    }
                     if (!is_array($group)) {
-                        if ($key == '_id') {
-                            continue;
-                        }
-                        $this->cObj->data[$key] = $group;
                         if (
-                            IRI::isAbsoluteIri($this->cObj->data[$key])
-                            && (($scheme = (new IRI($this->cObj->data[$key]))->getScheme()) == 'http' || $scheme == 'https')
+                            IRI::isAbsoluteIri($group)
+                            && (($scheme = (new IRI($group))->getScheme()) == 'http' || $scheme == 'https')
                         ) {
-                            $field = $this->cObj->stdWrap('', $iiifLink['key.']);
-                            $field .= $this->cObj->stdWrap($this->cObj->data[$key], $iiifLink['value.']);
+                            // Build link
+                            $iiifData[$key] = [
+                                'label' => $key,
+                                'value' => $group,
+                                'buildUrl' => true
+                            ];
                         } else {
-                            $field = $this->cObj->stdWrap('', $iiifwrap['key.']);
-                            $field .= $this->cObj->stdWrap($this->cObj->data[$key], $iiifwrap['value.']);
+                            // Data output
+                            $iiifData[$key] = [
+                                'label' => $key,
+                                'value' => $group,
+                                'buildUrl' => false
+                            ];
                         }
-                        $markerArray['METADATA'] .= $this->cObj->stdWrap($field, $iiifwrap['all.']);
                     } else {
-                        // Load all the metadata values into the content object's data array.
                         foreach ($group as $label => $value) {
                             if ($label == '_id') {
                                 continue;
                             }
                             if (is_array($value)) {
-                                $this->cObj->data[$label] = implode($this->settings['separator'], $value);
-                            } else {
-                                $this->cObj->data[$label] = $value;
+                                $value = implode($this->settings['separator'], $value);
                             }
-                            if (IRI::isAbsoluteIri($this->cObj->data[$label]) && (($scheme = (new IRI($this->cObj->data[$label]))->getScheme()) == 'http' || $scheme == 'https')) {
-                                $nolabel = $this->cObj->data[$label] == $label;
-                                $field = $this->cObj->stdWrap($nolabel ? '' : htmlspecialchars($label), $iiifLink['key.']);
-                                $field .= $this->cObj->stdWrap($this->cObj->data[$label], $iiifLink['value.']);
+                            if (IRI::isAbsoluteIri($value) && (($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https')) {
+                                $nolabel = $value == $label;
+                                $iiifData[$key]['data'][] = [
+                                    'label' => $nolabel ? '' : htmlspecialchars($label),
+                                    'value' => $value,
+                                    'buildUrl' => true
+                                ];
                             } else {
-                                $field = $this->cObj->stdWrap(htmlspecialchars($label), $iiifwrap['key.']);
-                                $field .= $this->cObj->stdWrap($this->cObj->data[$label], $iiifwrap['value.']);
+                                $iiifData[$key]['data'][] = [
+                                    'label' => htmlspecialchars($label),
+                                    'value' => $value,
+                                    'buildUrl' => false
+                                ];
                             }
-                            $markerArray['METADATA'] .= $this->cObj->stdWrap($field, $iiifwrap['all.']);
                         }
                     }
+                    $this->view->assign('useIiif', true);
+                    $this->view->assign('iiifData', $iiifData);
                 }
             }
         } else {
 
             $metadataResult = $this->metadataRepository->findAll();
 
-            /** @var Metadata $metadata */
-            foreach ($metadataResult as $metadata) {
-                if ($metadata) {
-                    if ($this->settings['showFull'] || $metadata->getIsListed()) {
-                        $metaList[$metadata->getIndexName()] = [
-                            'wrap' => $metadata->getWrap(),
-                            'label' => Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages'])
-                        ];
-                    }
-                }
-            }
-
+            // Get collections to check if they are hidden
             $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['pages']);
 
+            $collList = [];
             /** @var Collection $collection */
             foreach ($collections as $collection) {
                 $collList[] = $collection->getIndexName();
             }
 
-            // Parse the metadata arrays.
-            foreach ($metadataArray as $metadata) {
-                $markerArray['METADATA'] = '';
-                // Reset content object's data array.
-                $this->cObj->data = $cObjData;
-                // Load all the metadata values into the content object's data array.
-                foreach ($metadata as $index_name => $value) {
-                    if (is_array($value)) {
-                        $this->cObj->data[$index_name] = implode($this->settings['separator'], $value);
-                    } else {
-                        $this->cObj->data[$index_name] = $value;
-                    }
-                }
-                // Process each metadate.
-                foreach ($metaList as $index_name => $metaConf) {
-                    $parsedValue = '';
-                    $fieldwrap = $this->parseTS($metaConf['wrap']);
-                    do {
-                        $value = @array_shift($metadata[$index_name]);
-                        if ($index_name == 'title') {
-                            // Get title of parent document if needed.
-                            if (empty($value) && $this->settings['getTitle'] && $this->doc->parentId) {
-                                $superiorTitle = Document::getTitle($this->doc->parentId, true);
-                                if (!empty($superiorTitle)) {
-                                    $value = '[' . $superiorTitle . ']';
-                                }
+            $buildUrl = [];
+            $i = 0;
+            foreach ($metadataArray as $metadataSection) {
+                foreach ($metadataSection as $metadataName => $metadataValue) {
+                    if ($metadataName == 'title') {
+                        // Get title of parent document if needed.
+                        if (empty($metadataValue) && $this->settings['getTitle'] && $this->doc->parentId) {
+                            $superiorTitle = Document::getTitle($this->doc->parentId, true);
+                            if (!empty($superiorTitle)) {
+                                $metadataArray[$i][$metadataName] = ['[' . $superiorTitle . ']'];
                             }
-                            if (!empty($value)) {
-                                $value = htmlspecialchars($value);
-                                // Link title to pageview.
-                                if ($this->settings['linkTitle'] && $metadata['_id']) {
-                                    $details = $this->doc->getLogicalStructure($metadata['_id']);
-                                    $uri = $this->uriBuilder->reset()
-                                        ->setArguments([
-                                            $this->prefixId => [
-                                                'id' => $this->doc->uid,
-                                                'page' => (!empty($details['points']) ? intval($details['points']) : 1)
-                                            ]
-                                        ])
-                                        ->setTargetPageUid($this->settings['targetPid'])
-                                        ->build();
-                                    $value = '<a href="' . $uri . '">' . $value . '</a>';
-                                }
+                        }
+                        if (!empty($metadataValue)) {
+                            $metadataArray[$i][$metadataName][0] = htmlspecialchars($metadataArray[$i][$metadataName][0]);
+                            // Link title to pageview.
+                            if ($this->settings['linkTitle'] && $metadataSection['_id']) {
+                                $details = $this->doc->getLogicalStructure($metadataSection['_id']);
+                                $buildUrl[$i][$metadataName]['buildUrl'] = [
+                                    'id' => $this->doc->uid,
+                                    'page' => (!empty($details['points']) ? intval($details['points']) : 1),
+                                    'targetPid' => (!empty($this->settings['targetPid']) ? $this->settings['targetPid'] : 0)
+                                ];
                             }
-                        } elseif ($index_name == 'owner' && !empty($value)) {
-                            // Translate name of holding library.
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['pages']));
-                        } elseif ($index_name == 'type' && !empty($value)) {
-                            // Translate document type.
-                            $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['pages']));
-                        } elseif ($index_name == 'collection' && !empty($value)) {
-                            // Check if collections isn't hidden.
-                            if (in_array($value, $collList)) {
+                        }
+                    } elseif ($metadataName == 'owner' && !empty($metadataValue)) {
+                        // Translate name of holding library.
+                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_libraries', $this->settings['pages']));
+                    } elseif ($metadataName == 'type' && !empty($metadataValue)) {
+                        // Translate document type.
+                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_structures', $this->settings['pages']));
+                    } elseif ($metadataName == 'collection' && !empty($metadataValue)) {
+                        // Check if collections isn't hidden.
+                        $j = 0;
+                        foreach ($metadataValue as $metadataEntry) {
+                            if (in_array($metadataEntry, $collList)) {
                                 // Translate collection.
-                                $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['pages']));
+                                $metadataArray[$i][$metadataName][$j] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][$j], 'tx_dlf_collections', $this->settings['pages']));
                             } else {
-                                $value = '';
+                                $metadataArray[$i][$metadataName][$j] = '';
                             }
-                        } elseif ($index_name == 'language' && !empty($value)) {
-                            // Translate ISO 639 language code.
-                            $value = htmlspecialchars(Helper::getLanguageName($value));
-                        } elseif (!empty($value)) {
-                            // Sanitize value for output.
-                            $value = htmlspecialchars($value);
+                            $j++;
                         }
-                        // Hook for getting a customized value (requested by SBB).
-                        foreach ($this->hookObjects as $hookObj) {
-                            if (method_exists($hookObj, 'printMetadata_customizeMetadata')) {
-                                $hookObj->printMetadata_customizeMetadata($value);
-                            }
-                        }
-                        // $value might be empty for aggregation metadata fields including other "hidden" fields.
-                        $value = $this->cObj->stdWrap($value, $fieldwrap['value.']);
-                        if (!empty($value)) {
-                            $parsedValue .= $value;
-                        }
-                    } while (is_array($metadata[$index_name]) && count($metadata[$index_name]) > 0);
-
-                    if (!empty($parsedValue)) {
-                        $field = $this->cObj->stdWrap(htmlspecialchars($metaConf['label']), $fieldwrap['key.']);
-                        $field .= $parsedValue;
-                        $markerArray['METADATA'] .= $this->cObj->stdWrap($field, $fieldwrap['all.']);
+                    } elseif ($metadataName == 'language' && !empty($metadataValue)) {
+                        // Translate ISO 639 language code.
+                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::getLanguageName($metadataArray[$i][$metadataName][0]));
+                    } elseif (!empty($metadataValue)) {
+                        // Sanitize value for output.
+                        $metadataArray[$i][$metadataName][0] = htmlspecialchars($metadataArray[$i][$metadataName][0]);
                     }
                 }
+                $i++;
             }
+
+            $this->view->assign('buildUrl', $buildUrl);
+            $this->view->assign('documentMetadataSections', $metadataArray);
+            $this->view->assign('configMetadata', $metadataResult);
+            $this->view->assign('separator', $this->settings['separator']);
+
         }
-        $this->view->assign('metadata', $markerArray['METADATA']);
     }
 
     // TODO: Needs to be placed in an abstract class (like before in AbstractPlugin)
