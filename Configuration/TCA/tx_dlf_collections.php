@@ -173,15 +173,11 @@ return [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.thumbnail',
-            'config' => [
-                'type' => 'group',
-                'internal_type' => 'file_reference',
-                'allowed' => 'gif,jpg,png',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                'default' => '',
-            ],
+            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('image', [
+                'appearance' => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                ],
+            ], $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'])
         ],
         'priority' => [
             'exclude' => 1,

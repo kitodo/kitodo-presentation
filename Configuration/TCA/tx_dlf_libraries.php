@@ -118,17 +118,11 @@ return [
         'image' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.image',
-            'config' => [
-                'type' => 'group',
-                'internal_type' => 'file',
-                'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
-                'max_size' => 256,
-                'uploadfolder' => 'uploads/tx_dlf',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                'default' => '',
-            ],
+            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('image', [
+                'appearance' => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                ],
+            ], $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']),
         ],
         'oai_label' => [
             'exclude' => 1,
