@@ -15,10 +15,8 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 
 class CollectionController extends AbstractController

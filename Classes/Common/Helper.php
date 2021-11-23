@@ -15,6 +15,8 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Context\Context;
 
 /**
  * Helper class for the 'dlf' extension
@@ -490,16 +492,17 @@ class Helper
             // No ISO code, return unchanged.
             return $code;
         }
+        $languageService = GeneralUtility::makeInstance(LanguageService::class);
         // Load ISO table and get localized full name of language.
         if (\TYPO3_MODE === 'FE') {
-            $iso639 = $GLOBALS['TSFE']->readLLfile($file);
+            $iso639 = $languageService->includeLLFile($file);
             if (!empty($iso639['default'][$isoCode])) {
-                $lang = $GLOBALS['TSFE']->getLLL($isoCode, $iso639);
+                $lang = $languageService->getLLL($isoCode, $iso639);
             }
         } elseif (\TYPO3_MODE === 'BE') {
-            $iso639 = $GLOBALS['LANG']->includeLLFile($file, false, true);
+            $iso639 = $languageService->includeLLFile($file, false, true);
             if (!empty($iso639['default'][$isoCode])) {
-                $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639);
+                $lang = $languageService->getLLL($isoCode, $iso639);
             }
         } else {
             self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
@@ -528,13 +531,17 @@ class Helper
     {
         // Set initial output to default value.
         $translated = (string) $default;
+
+        /** @var LanguageService $languageService */
+        $languageService = GeneralUtility::makeInstance(LanguageService::class);
+
         // Load common messages file.
         if (empty(self::$messages)) {
             $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/FlashMessages.xml');
             if (\TYPO3_MODE === 'FE') {
-                self::$messages = $GLOBALS['TSFE']->readLLfile($file);
+                self::$messages = $languageService->includeLLFile($file);
             } elseif (\TYPO3_MODE === 'BE') {
-                self::$messages = $GLOBALS['LANG']->includeLLFile($file, false, true);
+                self::$messages = $languageService->includeLLFile($file, false, true);
             } else {
                 self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             }
@@ -542,9 +549,9 @@ class Helper
         // Get translation.
         if (!empty(self::$messages['default'][$key])) {
             if (\TYPO3_MODE === 'FE') {
-                $translated = $GLOBALS['TSFE']->getLLL($key, self::$messages);
+                $translated = $languageService->sL($key);
             } elseif (\TYPO3_MODE === 'BE') {
-                $translated = $GLOBALS['LANG']->getLLL($key, self::$messages);
+                $translated = $languageService->sL($key);
             } else {
                 self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             }
@@ -862,6 +869,11 @@ class Helper
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $index_name;
         }
+        /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+
+        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+
         // Check if "index_name" is an UID.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
             $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
@@ -900,7 +912,7 @@ class Helper
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
                     $queryBuilder->expr()->eq($table . '.uid', $resArray['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content)),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId())),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
@@ -915,15 +927,15 @@ class Helper
         }
 
         // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
+        if (empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
-                if ($GLOBALS['TSFE']->sys_language_content > 0) {
+                if ($languageAspect->getContentId() > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content))
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId()))
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -944,11 +956,12 @@ class Helper
                 if ($result->rowCount() > 0) {
                     while ($resArray = $result->fetch()) {
                         // Overlay localized labels if available.
-                        if ($GLOBALS['TSFE']->sys_language_content > 0) {
-                            $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                        if ($languageAspect->getContentId() > 0) {
+                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageAspect->getContentId(), $languageAspect->getLegacyOverlayType());
+//                            $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
                         }
                         if ($resArray) {
-                            $labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$resArray['index_name']] = $resArray['label'];
+                            $labels[$table][$pid][$languageAspect->getContentId()][$resArray['index_name']] = $resArray['label'];
                         }
                     }
                 } else {
@@ -959,8 +972,8 @@ class Helper
             }
         }
 
-        if (!empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
-            return $labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name];
+        if (!empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
+            return $labels[$table][$pid][$languageAspect->getContentId()][$index_name];
         } else {
             return $index_name;
         }
@@ -984,7 +997,11 @@ class Helper
             if ($showHidden) {
                 $ignoreHide = 1;
             }
-            $expression = $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
+            /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
+            $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+
+            $expression = $pageRepository->enableFields($table, $ignoreHide);
+//            $expression = $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
                 return substr($expression, 5);
             } else {
