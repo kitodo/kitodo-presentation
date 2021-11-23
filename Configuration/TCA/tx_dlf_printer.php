@@ -21,7 +21,6 @@ return [
         'searchFields' => 'label,print',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,name,address',
     ],
     'feInterface' => [
         'fe_admin_fieldList' => '',

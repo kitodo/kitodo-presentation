@@ -18,7 +18,6 @@ return [
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -30,7 +29,6 @@ return [
         'fe_admin_fieldList' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,website,contact',
     ],
     'columns' => [
         'sys_language_uid' => [

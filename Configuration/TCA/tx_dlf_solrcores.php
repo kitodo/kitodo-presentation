@@ -27,7 +27,6 @@ return [
         'fe_admin_fieldList' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,index_name',
     ],
     'columns' => [
         'label' => [

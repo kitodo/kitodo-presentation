@@ -108,6 +108,7 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.rootline</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <items type="array">
                                     <numIndex index="0" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.none</numIndex>

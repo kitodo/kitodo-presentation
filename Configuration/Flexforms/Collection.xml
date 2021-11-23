@@ -35,7 +35,6 @@
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
                     </settings.collections>
@@ -62,6 +61,7 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.show_userdefined</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <items type="array">
                                     <numIndex index="0" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.show_userdefined.all</numIndex>

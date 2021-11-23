@@ -28,7 +28,6 @@ return [
         'fe_admin_fieldList' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'parent_id,encoded,xpath,xpath_sorting',
     ],
     'columns' => [
         'parent_id' => [
