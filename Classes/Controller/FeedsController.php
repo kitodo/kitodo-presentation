@@ -91,7 +91,7 @@ class FeedsController extends AbstractController
                 }
                 // Set default title if empty.
                 if (empty($title)) {
-                    $title = LocalizationUtility::translate('noTitle', 'dlf') ?: '';
+                    $title = LocalizationUtility::translate('noTitle', 'dlf') ? : '';
                 }
                 // Append volume information.
                 if (!empty($document->getVolume())) {
