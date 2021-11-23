@@ -18,7 +18,6 @@ use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 
 class CollectionController extends AbstractController
@@ -160,7 +159,7 @@ class CollectionController extends AbstractController
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection The collection object
+     * @param \Kitodo\Dlf\Domain\Model\Collection $collection: The collection object
      *
      * @return void
      */
