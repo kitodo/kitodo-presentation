@@ -88,7 +88,7 @@ class IndexCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = $this->getStartingPoint($input->getOption('pid'));
+        $startingPoint = $this->initializeDocumentRepository($input->getOption('pid'));
 
         if ($startingPoint == 0) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
@@ -164,6 +164,7 @@ class IndexCommand extends BaseCommand
         }
 
         $io->success('All done!');
+
         return 0;
     }
 }

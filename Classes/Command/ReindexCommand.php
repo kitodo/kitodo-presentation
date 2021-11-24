@@ -87,7 +87,7 @@ class ReindexCommand extends BaseCommand
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -96,9 +96,9 @@ class ReindexCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = $this->getStartingPoint($input->getOption('pid'));
+        $startingPoint = $this->initializeDocumentRepository($input->getOption('pid'));
 
-        if ($startingPoint == 0) {
+        if ($startingPoint === false) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
             exit(1);
         }
@@ -141,7 +141,7 @@ class ReindexCommand extends BaseCommand
 
         if (!empty($input->getOption('all'))) {
             // Get all documents.
-            $documents = $this->getAllDocuments($startingPoint);
+            $documents = $this->documentRepository->findAll();
         } elseif (
             !empty($input->getOption('coll'))
             && !is_array($input->getOption('coll'))
@@ -151,14 +151,15 @@ class ReindexCommand extends BaseCommand
                 $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
                 exit(1);
             }
-            $documents = $this->getDocumentsToProceed($input->getOption('coll'), $startingPoint);
+            // Get all documents of given collections.
+            $documents = $this->documentRepository->findAllByCollectionsLimited(GeneralUtility::intExplode(',', $input->getOption('coll'), true), 0);
         } else {
             $io->error('ERROR: One of parameters --all|-a or --coll|-c must be given.');
             exit(1);
         }
 
         foreach ($documents as $id => $document) {
-            $doc = Document::getInstance($document, ['storagePid' => $startingPoint], true);
+            $doc = Document::getInstance($document->getUid(), ['storagePid' => $startingPoint], true);
             if ($doc->ready) {
                 if ($dryRun) {
                     $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
@@ -179,102 +180,7 @@ class ReindexCommand extends BaseCommand
         }
 
         $io->success('All done!');
-    }
 
-    /**
-     * Fetches all documents with given collection.
-     *
-     * @param string $collId A comma separated list of collection UIDs
-     * @param int $pageId The PID of the collections' documents
-     *
-     * @return array Array of documents to index
-     */
-    protected function getDocumentsToProceed(string $collIds, int $pageId): array
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
-        $documents = [];
-        $result = $queryBuilder
-            ->select('tx_dlf_documents.uid')
-            ->from('tx_dlf_documents')
-            ->join(
-                'tx_dlf_documents',
-                'tx_dlf_relations',
-                'tx_dlf_relations_joins',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_relations_joins.uid_local',
-                    'tx_dlf_documents.uid'
-                )
-            )
-            ->join(
-                'tx_dlf_relations_joins',
-                'tx_dlf_collections',
-                'tx_dlf_collections_join',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_relations_joins.uid_foreign',
-                    'tx_dlf_collections_join.uid'
-                )
-            )
-            ->where(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->in(
-                        'tx_dlf_collections_join.uid',
-                        $queryBuilder->createNamedParameter(
-                            GeneralUtility::intExplode(',', $collIds, true),
-                            Connection::PARAM_INT_ARRAY
-                        )
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_collections_join.pid',
-                        $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_relations_joins.ident',
-                        $queryBuilder->createNamedParameter('docs_colls')
-                    )
-                )
-            )
-            ->groupBy('tx_dlf_documents.uid')
-            ->orderBy('tx_dlf_documents.uid', 'ASC')
-            ->execute();
-
-        while ($record = $result->fetch()) {
-            $documents[] = $record['uid'];
-        }
-
-        return $documents;
-    }
-
-    /**
-     * Fetches all documents of given page.
-     *
-     * @param int $pageId The documents' PID
-     *
-     * @return array Array of documents to index
-     */
-    protected function getAllDocuments(int $pageId): array
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-
-        $documents = [];
-        $pageId = (int) $pageId;
-        $result = $queryBuilder
-            ->select('uid')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_documents.pid',
-                    $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
-                )
-            )
-            ->orderBy('tx_dlf_documents.uid', 'ASC')
-            ->execute();
-
-        while ($record = $result->fetch()) {
-            $documents[] = $record['uid'];
-        }
-        return $documents;
+        return 0;
     }
 }

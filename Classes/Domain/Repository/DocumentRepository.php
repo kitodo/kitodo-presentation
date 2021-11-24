@@ -123,7 +123,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all documents for the given collections
      *
-     * @param array $collections separated by comma
+     * @param array $collections
      * @param int $limit
      *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -147,7 +147,10 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $query->logicalAnd($constraints)
             );
         }
-        $query->setLimit((int) $limit);
+
+        if ($limit > 0) {
+            $query->setLimit((int) $limit);
+        }
 
         return $query->execute();
     }

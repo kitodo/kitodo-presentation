@@ -95,7 +95,7 @@ class HarvestCommand extends BaseCommand
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -104,10 +104,8 @@ class HarvestCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = 0;
-        if (MathUtility::canBeInterpretedAsInteger($input->getOption('pid'))) {
-            $startingPoint = MathUtility::forceIntegerInRange((int) $input->getOption('pid'), 0);
-        }
+        $startingPoint = $this->initializeDocumentRepository($input->getOption('pid'));
+
         if ($startingPoint == 0) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
             exit(1);
@@ -254,6 +252,8 @@ class HarvestCommand extends BaseCommand
         }
 
         $io->success('All done!');
+
+        return 0;
     }
 
     /**
