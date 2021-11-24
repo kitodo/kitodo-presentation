@@ -958,7 +958,6 @@ class Helper
                         // Overlay localized labels if available.
                         if ($languageAspect->getContentId() > 0) {
                             $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageAspect->getContentId(), $languageAspect->getLegacyOverlayType());
-//                            $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
                         }
                         if ($resArray) {
                             $labels[$table][$pid][$languageAspect->getContentId()][$resArray['index_name']] = $resArray['label'];
@@ -1001,7 +1000,6 @@ class Helper
             $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
 
             $expression = $pageRepository->enableFields($table, $ignoreHide);
-//            $expression = $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
                 return substr($expression, 5);
             } else {
