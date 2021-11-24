@@ -64,7 +64,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      */
     public function getIdentifier(): string
     {
-        return 'dlfFileLocationUpdater';
+        return self::class;
     }
 
     /**
