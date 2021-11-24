@@ -85,7 +85,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findOneByIdAndSettings($uid, $settings = [])
     {
-        $settings['documentSets'] = $uid;
+        $settings = ['documentSets' => $uid];
 
         return $this->findDocumentsBySettings($settings)->getFirst();
     }

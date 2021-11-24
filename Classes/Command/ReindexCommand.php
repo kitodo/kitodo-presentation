@@ -16,7 +16,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -92,9 +91,6 @@ class ReindexCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Make sure the _cli_ user is loaded
-        Bootstrap::getInstance()->initializeBackendAuthentication();
-
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
@@ -162,7 +158,7 @@ class ReindexCommand extends BaseCommand
         }
 
         foreach ($documents as $id => $document) {
-            $doc = Document::getInstance($document, $startingPoint, true);
+            $doc = Document::getInstance($document, ['storagePid' => $startingPoint], true);
             if ($doc->ready) {
                 if ($dryRun) {
                     $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');

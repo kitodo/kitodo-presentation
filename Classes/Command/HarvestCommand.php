@@ -16,7 +16,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -100,9 +99,6 @@ class HarvestCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Make sure the _cli_ user is loaded
-        Bootstrap::getInstance()->initializeBackendAuthentication();
-
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
@@ -237,7 +233,7 @@ class HarvestCommand extends BaseCommand
             ];
             $docLocation = $baseLocation . http_build_query($params);
             // ...index the document...
-            $doc = Document::getInstance($docLocation, $startingPoint, true);
+            $doc = Document::getInstance($docLocation, ['storagePid' => $startingPoint], true);
             if ($doc->ready) {
                 if ($dryRun) {
                     $io->writeln('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
