@@ -125,7 +125,7 @@
                                     </numIndex>
                                 </foreign_types>
                                 <foreign_match_fields>
-                                    <fieldname>stylesheet</fieldname> <!-- CAUTION!! Replace "fal" with the variable name of this field! -->
+                                    <fieldname>stylesheet</fieldname>
                                 </foreign_match_fields>
                                 <appearance type="array">
                                     <newRecordLinkAddTitle>1</newRecordLinkAddTitle>

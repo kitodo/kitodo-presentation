@@ -61,7 +61,7 @@
                                     </numIndex>
                                 </foreign_types>
                                 <foreign_match_fields>
-                                    <fieldname>image</fieldname> <!-- CAUTION!! Replace "fal" with the variable name of this field! -->
+                                    <fieldname>image</fieldname>
                                 </foreign_match_fields>
                                 <appearance type="array">
                                     <newRecordLinkAddTitle>1</newRecordLinkAddTitle>
