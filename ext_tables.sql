@@ -201,7 +201,7 @@ CREATE TABLE tx_dlf_collections (
     index_search text NOT NULL,
     oai_name varchar(255) DEFAULT '' NOT NULL,
     description text NOT NULL,
-    thumbnail int(11) NOT NULL,
+    thumbnail text NOT NULL,
     priority smallint(6) DEFAULT '3' NOT NULL,
     documents int(11) DEFAULT '0' NOT NULL,
     owner int(11) DEFAULT '0' NOT NULL,

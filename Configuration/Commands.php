@@ -15,6 +15,10 @@
  * is the name of the command (to be called as the first argument after "typo3").
  * Required parameter is the "class" of the command which needs to be a subclass
  * of \Symfony\Component\Console\Command\Command.
+ *
+ * This file is deprecated in TYPO3 v10 and will be removed in TYPO3 v11.
+ * See Deprecation: #89139 - Console Commands configuration format Commands.php
+ * https://docs.typo3.org/c/typo3/cms-core/master/en-us/Changelog/10.3/Deprecation-89139-ConsoleCommandsConfigurationFormatCommandsPhp.html
  */
 return [
     'kitodo:harvest' => [

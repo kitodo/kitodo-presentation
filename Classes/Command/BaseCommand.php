@@ -12,11 +12,14 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Symfony\Component\Console\Command\Command;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Base class for CLI Command classes.
@@ -29,18 +32,35 @@ use TYPO3\CMS\Core\Database\Connection;
 class BaseCommand extends Command
 {
     /**
-     * Return starting point for indexing command.
+     * @var DocumentRepository
+     */
+    protected $documentRepository;
+
+    /**
+     * Initialize the documentRepository based on the given storagePid.
      *
      * @param string|string[]|bool|null $inputPid possible pid
      *
-     * @return int starting point for indexing command
+     * @return int|bool validated storagePid
      */
-    protected function getStartingPoint($inputPid): int
+    protected function initializeDocumentRepository($storagePid)
     {
-        if (MathUtility::canBeInterpretedAsInteger($inputPid)) {
-            return MathUtility::forceIntegerInRange((int) $inputPid, 0);
+        if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+            $configurationManager = $objectManager->get(ConfigurationManager::class);
+            $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+
+            $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
+            $configurationManager->setConfiguration($frameworkConfiguration);
+
+            $this->documentRepository = $objectManager->get(
+                DocumentRepository::class
+            );
+        } else {
+            return false;
         }
-        return 0;
+        return MathUtility::forceIntegerInRange((int) $storagePid, 0);
     }
 
     /**

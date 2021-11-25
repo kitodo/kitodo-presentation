@@ -16,7 +16,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Command\BaseCommand;
@@ -80,19 +79,16 @@ class IndexCommand extends BaseCommand
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Make sure the _cli_ user is loaded
-        Bootstrap::getInstance()->initializeBackendAuthentication();
-
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = $this->getStartingPoint($input->getOption('pid'));
+        $startingPoint = $this->initializeDocumentRepository($input->getOption('pid'));
 
         if ($startingPoint == 0) {
             $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
@@ -148,7 +144,7 @@ class IndexCommand extends BaseCommand
         }
 
         // Get the document...
-        $doc = Document::getInstance($input->getOption('doc'), $startingPoint, true);
+        $doc = Document::getInstance($input->getOption('doc'), ['storagePid' => $startingPoint], true);
         if ($doc->ready) {
             if ($dryRun) {
                 $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
@@ -168,5 +164,7 @@ class IndexCommand extends BaseCommand
         }
 
         $io->success('All done!');
+
+        return 0;
     }
 }
