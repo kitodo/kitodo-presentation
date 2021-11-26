@@ -84,7 +84,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      */
     public function getDescription(): string
     {
-        return 'Convert file reference of thumbnail in in collection records.';
+        return 'Convert file reference of thumbnail images in collection records.';
     }
 
     /**
@@ -209,7 +209,6 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     protected function performUpdate(): bool
     {
         $result = true;
-        $title = "Perform Update";
 
         try {
             $storages = GeneralUtility::makeInstance(StorageRepository::class)->findAll();
@@ -242,8 +241,6 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
         if (empty($fieldItem) || is_numeric($fieldItem)) {
             return;
         }
-        $fileadminDirectory = rtrim($GLOBALS['TYPO3_CONF_VARS']['BE']['fileadminDir'], '/') . '/';
-        $i = 0;
 
         $storageUid = (int)$this->storage->getUid();
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
@@ -253,7 +250,6 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
 
         // maybe the file was already moved, so check if the original file still exists
         if (file_exists($sourcePath)) {
-            $title = 'Migrate field ' . $sourcePath;
 
             // see if the file already exists in the storage
             $fileSha1 = sha1_file($sourcePath);
@@ -290,7 +286,6 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                 'tablenames' => $table,
                 'crdate' => time(),
                 'tstamp' => time(),
-                'sorting_foreign' => $i,
             ];
 
             $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_file_reference');
@@ -300,19 +295,13 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                 ->values($fields)
                 ->execute();
 
-            ++$i;
-        }
-
-        // Update referencing table's original field to now contain the count of references,
-        // but only if all new references could be set
-        if ($i === 1) {
             $queryBuilder = $connectionPool->getQueryBuilderForTable($table);
             $queryBuilder->update($table)->where(
                 $queryBuilder->expr()->eq(
                     'uid',
                     $queryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
                 )
-            )->set($this->fieldsToMigrate[$table], $i)->execute();
+            )->set($this->fieldsToMigrate[$table])->execute();
         }
     }
 }

@@ -10,11 +10,11 @@
     -->
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      xmlns:adm="http://typo3.org/ns/TYPO3/CMS/Adminpanel/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:for each="{iiifData}" as="data" key="key">
-    <f:if condition="{data.data} && {dlf:isArray(variable: '{data.data}')}">
+    <f:if condition="{data.data} && {adm:isArray(value: '{data.data}')}">
         <f:then>
             <f:for each="{data.data}" as="subData" iteration="subIterator">
                 <f:if condition="{subIterator.isFirst}">
@@ -36,4 +36,3 @@
         </f:else>
     </f:if>
 </f:for>
-
