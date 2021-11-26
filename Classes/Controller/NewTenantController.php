@@ -105,15 +105,15 @@ class NewTenantController extends AbstractController
         if (count($_ids) == $i) {
             // Fine.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.metadataAddedMsg', 'dlf'),
-                LocalizationUtility::translate('flash.metadataAdded', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataAddedMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataAdded'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Something went wrong.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.metadataNotAddedMsg', 'dlf'),
-                LocalizationUtility::translate('flash.metadataNotAdded', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataNotAddedMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataNotAdded'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }
@@ -134,15 +134,15 @@ class NewTenantController extends AbstractController
         if (count($_ids) == 1) {
             // Fine.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.solrcoreAddedMsg', 'dlf'),
-                LocalizationUtility::translate('flash.solrcoreAdded', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreAddedMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreAdded'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Something went wrong.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.solrcoreNotAddedMsg', 'dlf'),
-                LocalizationUtility::translate('flash.solrcoreNotAdded', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreNotAddedMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreNotAdded'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }
@@ -170,15 +170,15 @@ class NewTenantController extends AbstractController
         if (count($_ids) == count($structureDefaults)) {
             // Fine.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.structureAddedMsg', 'dlf'),
-                LocalizationUtility::translate('flash.structureAdded', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureAddedMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureAdded'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Something went wrong.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.structureNotAddedMsg', 'dlf'),
-                LocalizationUtility::translate('flash.structureNotAdded', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureNotAddedMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureNotAdded'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
         }
@@ -219,8 +219,8 @@ class NewTenantController extends AbstractController
         $this->pid = (int) GeneralUtility::_GP('id');
         if ($this->pageInfo['doktype'] != 254) {
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.wrongPageTypeMsg', 'dlf'),
-                LocalizationUtility::translate('flash.wrongPageType', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.wrongPageTypeMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.wrongPageType'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             return;
@@ -231,15 +231,15 @@ class NewTenantController extends AbstractController
         if (count($structures) > 0) {
             // Fine.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.structureOkayMsg', 'dlf'),
-                LocalizationUtility::translate('flash.structureOkay', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureOkayMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Configuration missing.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.structureNotOkayMsg', 'dlf'),
-                LocalizationUtility::translate('flash.structureNotOkay', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureNotOkayMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.structureNotOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             $this->view->assign('structure', 1);
@@ -250,15 +250,15 @@ class NewTenantController extends AbstractController
         if (count($metadata) > 0) {
             // Fine.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.metadataOkayMsg', 'dlf'),
-                LocalizationUtility::translate('flash.metadataOkay', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataOkayMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             // Configuration missing.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.metadataNotOkayMsg', 'dlf'),
-                LocalizationUtility::translate('flash.metadataNotOkay', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataNotOkayMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.metadataNotOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             $this->view->assign('metadata', 1);
@@ -271,15 +271,15 @@ class NewTenantController extends AbstractController
             if (count($solrCore) > 0) {
                 // Fine.
                 $this->addFlashMessage(
-                    LocalizationUtility::translate('flash.solrcoreOkayMsg', 'dlf'),
-                    LocalizationUtility::translate('flash.solrcoreOkay', 'dlf'),
+                    $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreOkayMsg'),
+                    $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreOkay'),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::OK
                 );
             } else {
                 // Default core available, but this is deprecated.
                 $this->addFlashMessage(
-                    LocalizationUtility::translate('flash.solrcoreDeprecatedMsg', 'dlf'),
-                    LocalizationUtility::translate('flash.solrcoreDeprecatedOkay', 'dlf'),
+                    $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreDeprecatedMsg'),
+                    $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreDeprecatedOkay'),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::NOTICE
                 );
                 $this->view->assign('solr', 1);
@@ -287,8 +287,8 @@ class NewTenantController extends AbstractController
         } else {
             // Solr core missing.
             $this->addFlashMessage(
-                LocalizationUtility::translate('flash.solrcoreMissingMsg', 'dlf'),
-                LocalizationUtility::translate('flash.solrcoreMissing', 'dlf'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreMissingMsg'),
+                $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/FlashMessages.xlf:flash.solrcoreMissing'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
             $this->view->assign('solr', 1);
