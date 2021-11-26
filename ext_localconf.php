@@ -320,3 +320,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
         }
     }'
 );
+
+// Register a node in ext_localconf.php
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry']['thumbnail'] = [
+    'nodeName' => 'thumbnailCustomElement',
+    'priority' => 40,
+    'class' => \Kitodo\Dlf\Hooks\ThumbnailCustomElement::class
+];

@@ -240,7 +240,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.thumbnail',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \Kitodo\Dlf\Hooks\UserFunc::class . '->displayThumbnail',
+                'renderType' => 'thumbnailCustomElement'
             ],
         ],
         'metadata' => [
