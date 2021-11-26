@@ -13,7 +13,7 @@
       xmlns:adm="http://typo3.org/ns/TYPO3/CMS/Adminpanel/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-      <f:for each="{iiifData}" as="data" key="key">
+<f:for each="{iiifData}" as="data" key="key">
     <f:if condition="{data.data} && {adm:isArray(value: '{data.data}')}">
         <f:then>
             <f:for each="{data.data}" as="subData" iteration="subIterator">
