@@ -13,17 +13,17 @@
 // Register backend module.
 if (\TYPO3_MODE === 'BE') {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'Dlf',
+        'Kitodo.Dlf',
         'tools',          // Main area
         'newTenantModule',         // Name of the module
-        '',             // Position of the module
+        'bottom',             // Position of the module
         [               // Allowed controller action combinations
-            \Kitodo\Dlf\Controller\NewTenantController::class => 'index,addMetadata,addSolrCore,addStructure',
+            NewTenant::class => 'index,addMetadata,addSolrCore,addStructure',
         ],
         [               // Additional configuration
             'access'    => 'admin',
             'icon'      => 'EXT:dlf/Resources/Public/Icons/Extension.svg',
-            'labels'    => 'LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml',
+            'labels'    => 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf',
             'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
         ],
     );
