@@ -1,0 +1,42 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+
+<h1></h1>
+<div style="padding: 5px;">
+    <f:if condition="{structure}">
+        <f:then>
+            <f:form action="addStructure" name="structure" addQueryString="1">
+                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createStructure')}" class="btn btn-primary"/>
+            </f:form>
+        </f:then>
+    </f:if>
+</div>
+
+<div style="padding: 5px;">
+    <f:if condition="{metadata}">
+        <f:then>
+            <f:form action="addMetadata" name="metadata" addQueryString="1">
+                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMetadata')}" class="btn btn-primary"/>
+            </f:form>
+        </f:then>
+    </f:if>
+</div>
+
+<div style="padding: 5px;">
+    <f:if condition="{solr}">
+        <f:then>
+            <f:form action="addSolrCore" name="solr" addQueryString="1">
+                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createSolrCore')}" class="btn btn-primary"/>
+            </f:form>
+        </f:then>
+    </f:if>
+</div>

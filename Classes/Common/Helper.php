@@ -537,7 +537,7 @@ class Helper
 
         // Load common messages file.
         if (empty(self::$messages)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/FlashMessages.xml');
+            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/FlashMessages.xlf');
             if (\TYPO3_MODE === 'FE') {
                 self::$messages = $languageService->includeLLFile($file);
             } elseif (\TYPO3_MODE === 'BE') {

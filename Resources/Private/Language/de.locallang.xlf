@@ -453,6 +453,254 @@
 				<source><![CDATA[Zoom Out]]></source>
 				<target><![CDATA[Ansicht verkleinern]]></target>
 			</trans-unit>
+			<trans-unit id="flash.wrongPageType" approved="yes">
+				<source><![CDATA[Page is no Folder!]]></source>
+				<target><![CDATA[Seite ist kein Ordner!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.wrongPageTypeMsg" approved="yes">
+				<source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
+				<target><![CDATA[Die Konfigurationsdatensätze von Kitodo.Presentation müssen in Ordnern abgelegt werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureOkay" approved="yes">
+				<source><![CDATA[Structures found!]]></source>
+				<target><![CDATA[Strukturdaten gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureOkayMsg" approved="yes">
+				<source><![CDATA[There are configuration records for structural metadata. They can be edited in the list module.]]></source>
+				<target><![CDATA[Es ist eine Konfiguration für Strukturdaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureNotOkay" approved="yes">
+				<source><![CDATA[No structures found!]]></source>
+				<target><![CDATA[Keine Strukturdaten gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureNotOkayMsg" approved="yes">
+				<source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
+				<target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureAdded" approved="yes">
+				<source><![CDATA[Basic configuration added!]]></source>
+				<target><![CDATA[Grundkonfiguration angelegt!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureAddedMsg" approved="yes">
+				<source><![CDATA[Basic configuration records for structural metadata were added. The records should be checked in the list module!]]></source>
+				<target><![CDATA[Es wurde eine Grundkonfiguration für Strukturdaten angelegt. Die Datensätze sollten über das Listenmodul kontrolliert und ggf. angepasst werden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureNotAdded" approved="yes">
+				<source><![CDATA[No configuration added!]]></source>
+				<target><![CDATA[Keine Grundkonfiguration angelegt!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.structureNotAddedMsg" approved="yes">
+				<source><![CDATA[While adding the configuration records an error occurred. The records should be checked in the list module!]]></source>
+				<target><![CDATA[Beim Anlegen der Grundkonfiguration für Strukturdaten ist ein Fehler aufgetreten. Die Konfiguration wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataOkay" approved="yes">
+				<source><![CDATA[Metadata found!]]></source>
+				<target><![CDATA[Metadaten gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataOkayMsg" approved="yes">
+				<source><![CDATA[There are configuration records for bibliographic metadata. They can be edited in the list module.]]></source>
+				<target><![CDATA[Es ist eine Konfiguration für Metadaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataNotOkay" approved="yes">
+				<source><![CDATA[No metadata found!]]></source>
+				<target><![CDATA[Keine Metadaten gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataNotOkayMsg" approved="yes">
+				<source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.]]></source>
+				<target><![CDATA[Es wurde keine Konfiguration für Metadaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataAdded" approved="yes">
+				<source><![CDATA[Basic configuration added!]]></source>
+				<target><![CDATA[Grundkonfiguration angelegt!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataAddedMsg" approved="yes">
+				<source><![CDATA[Basic configuration records for bibliographic metadata were added. The records should be checked in the list module!]]></source>
+				<target><![CDATA[Es wurde eine Grundkonfiguration für Metadaten angelegt. Die Datensätze sollten über das Listenmodul kontrolliert und ggf. angepasst werden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataNotAdded" approved="yes">
+				<source><![CDATA[No configuration added!]]></source>
+				<target><![CDATA[Keine Grundkonfiguration angelegt!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.metadataNotAddedMsg" approved="yes">
+				<source><![CDATA[While adding the configuration records an error occurred. The records should be checked in the list module!]]></source>
+				<target><![CDATA[Beim Anlegen der Grundkonfiguration für Metadaten ist ein Fehler aufgetreten. Die Konfiguration wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreOkay" approved="yes">
+				<source><![CDATA[Solr core found!]]></source>
+				<target><![CDATA[Solr Kern gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreOkayMsg" approved="yes">
+				<source><![CDATA[There are configuration records for Solr cores. They can be edited in the list module.]]></source>
+				<target><![CDATA[Es wurde die Konfiguration für einen Solr Kern gefunden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreDeprecated" approved="yes">
+				<source><![CDATA[Deprecated configuration found!]]></source>
+				<target><![CDATA[Veraltete Konfiguration gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreDeprecatedMsg" approved="yes">
+				<source><![CDATA[A common Solr core was found in the root-page. This is deprecated since Kitodo.Presentation 1.1. Solr cores should be stored in the client's SysFolder instead. Move a Solr core to this SysFolder (manually) or create a new one automatically.]]></source>
+				<target><![CDATA[Es wurde ein allgemeiner Solr Kern in der Root-Page gefunden. Das entspricht dem Verhalten von Kitodo.Presentation 1.0. Seit Version 1.1 sollten Solr Kerne im SysOrdner des jeweiligen Mandanten konfiguriert werden. Es sollte entweder einer der Solr Kerne aus der Root-Page in diesen SysOrdner verschoben werden (manuell) oder ein neuer Solr Kern angelegt werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreMissing" approved="yes">
+				<source><![CDATA[No Solr core found!]]></source>
+				<target><![CDATA[Kein Solr Kern gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreMissingMsg" approved="yes">
+				<source><![CDATA[There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.]]></source>
+				<target><![CDATA[Es wurde kein Solr Kern gefunden. Ohne Solr Kern kann das Plugin zur Recherche in den Meta- und Strukturdaten nicht verwendet werden. Ein Solr Kern kann automatisch angelegt werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreAdded" approved="yes">
+				<source><![CDATA[Solr core created!]]></source>
+				<target><![CDATA[Solr Kern angelegt!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreAddedMsg" approved="yes">
+				<source><![CDATA[A new Solr core was created. It can be edited in the list module.]]></source>
+				<target><![CDATA[Es wurde ein Solr Kern angelegt. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreNotAdded" approved="yes">
+				<source><![CDATA[No Solr core created!]]></source>
+				<target><![CDATA[Kein Solr Kern angelegt!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrcoreNotAddedMsg" approved="yes">
+				<source><![CDATA[While creating a new Solr core an error occurred. The record should be checked in the list module!]]></source>
+				<target><![CDATA[Beim Anlegen eines Solr Kerns ist ein Fehler aufgetreten. Der Solr Kern wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrException" approved="yes">
+				<source><![CDATA[Apache Solr exception thrown:]]></source>
+				<target><![CDATA[Apache Solr meldet Ausnahmefehler:]]></target>
+			</trans-unit>
+			<trans-unit id="flash.solrNoConnection" approved="yes">
+				<source><![CDATA[Could not connect to Apache Solr server.]]></source>
+				<target><![CDATA[Verbindung zu Apache Solr Server konnte nicht hergestellt werden.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.seeLog" approved="yes">
+				<source><![CDATA[See administration log for more details.]]></source>
+				<target><![CDATA[Alle Details des Indexierungslaufs stehen im Administrationsprotokoll.]]></target>
+			</trans-unit>
+			<trans-unit id="flash.editInProductionWarning" approved="yes">
+				<source><![CDATA[Changing this most likely requires re-indexing all documents.]]></source>
+				<target><![CDATA[Eine Änderung erfordert höchstwahrscheinlich die Re-Indexierung aller Dokumente.]]></target>
+			</trans-unit>
+			<trans-unit id="update.metadataConfig" approved="yes">
+				<source><![CDATA[Updating metadata configuration...]]></source>
+				<target><![CDATA[Aktualisierung der Metadatenkonfiguration...]]></target>
+			</trans-unit>
+			<trans-unit id="update.metadataConfigOkay" approved="yes">
+				<source><![CDATA[...successfully completed!]]></source>
+				<target><![CDATA[...erfolgreich beendet! Alle Datensätze wurden ins IRRE-Schema konvertiert.]]></target>
+			</trans-unit>
+			<trans-unit id="update.metadataConfigNotOkay" approved="yes">
+				<source><![CDATA[...incomplete! Please check your configuration manually.]]></source>
+				<target><![CDATA[...abgebrochen! Die Überführung der Datensätze ins IRRE-Schema muss manuell erfolgen.]]></target>
+			</trans-unit>
+			<trans-unit id="update.copyIndexRelatedColumns" approved="yes">
+				<source><![CDATA[Copy index related columns...]]></source>
+				<target><![CDATA[Kopieren der Index bezogenen Tabellenspalten...]]></target>
+			</trans-unit>
+			<trans-unit id="update.copyIndexRelatedColumnsOkay" approved="yes">
+				<source><![CDATA[...successfully completed!]]></source>
+				<target><![CDATA[...erfolgreich beendet! Tabellen wurden erfolgreich kopiert.]]></target>
+			</trans-unit>
+			<trans-unit id="update.copyIndexRelatedColumnsNotOkay" approved="yes">
+				<source><![CDATA[...incomplete! The index related columns (tokenized, stored, indexed, boost, autocomplete) of table tx_dlf_metadata have to be copied manually.]]></source>
+				<target><![CDATA[...abgebrochen! Das Kopieren der Index bezogenen Tabellenspalten (tokenized, stored, indexed, boost, autocomplete) der Tabelle tx_dlf_metadata muss manuell erfolgen.]]></target>
+			</trans-unit>
+			<trans-unit id="update.solariumSolrUpdate" approved="yes">
+				<source><![CDATA[Re-adding cores to Solr...]]></source>
+				<target><![CDATA[Hinzufügen der Solr Kerne...]]></target>
+			</trans-unit>
+			<trans-unit id="update.solariumSolrUpdateOkay" approved="yes">
+				<source><![CDATA[...successfully completed! Please re-index your documents now.]]></source>
+				<target><![CDATA[...erfolgreich beendet! Bitte re-indexieren Sie jetzt alle Dokumente.]]></target>
+			</trans-unit>
+			<trans-unit id="update.solariumSolrUpdateNotOkay" approved="yes">
+				<source><![CDATA[...failed for core %s! Please check your Solr configuration.]]></source>
+				<target><![CDATA[...für Kern %s fehlgeschlagen! Bitte überprüfen Sie die Solr-Konfiguration.]]></target>
+			</trans-unit>
+			<trans-unit id="update.FormatClasses" approved="yes">
+				<source><![CDATA[Switching format classes to namespaces...]]></source>
+				<target><![CDATA[Format-Klassen auf Namensräume umstellen...]]></target>
+			</trans-unit>
+			<trans-unit id="update.FormatClassesOkay" approved="yes">
+				<source><![CDATA[...successfully completed! Please check all format records in the page tree's root.]]></source>
+				<target><![CDATA[...erfolgreich beendet! Bitte prüfen Sie dennoch alle Formateinträge im Wurzelknoten des Seitenbaums.]]></target>
+			</trans-unit>
+			<trans-unit id="update.documentAddFormat" approved="yes">
+				<source><![CDATA[Add document format column...]]></source>
+				<target><![CDATA[Füge Format-Spalte zu Dokument-Tabelle hinzu...]]></target>
+			</trans-unit>
+			<trans-unit id="update.documentAddFormatOkay" approved="yes">
+				<source><![CDATA[...successfully completed!]]></source>
+				<target><![CDATA[...erfolgreich beendet!]]></target>
+			</trans-unit>
+			<trans-unit id="update.documentAddFormatNotOkay" approved="yes">
+				<source><![CDATA[...incomplete! Please add column document_format for table tx_dlf_document manually.]]></source>
+				<target><![CDATA[...abgebrochen! Bitte fügen Sie die Spalte document_format manuell zur Tabelle table tx_dlf_document hinzu.]]></target>
+			</trans-unit>
+			<trans-unit id="update.documentSetFormatForOldEntries" approved="yes">
+				<source><![CDATA[Set document format for existing entries to 'METS'...]]></source>
+				<target><![CDATA[Setze das Format für bestehende Dokumente auf 'METS'...]]></target>
+			</trans-unit>
+			<trans-unit id="update.documentSetFormatForOldEntriesOkay" approved="yes">
+				<source><![CDATA[...successfully completed!]]></source>
+				<target><![CDATA[...erfolgreich beendet!]]></target>
+			</trans-unit>
+			<trans-unit id="update.documentSetFormatForOldEntriesNotOkay" approved="yes">
+				<source><![CDATA[...incomplete! Please set missing tx_dlf_document.document_format values to 'METS'.]]></source>
+				<target><![CDATA[...abgebrochen! Bitte in der Tabelle tx_dlf_document.document_format 'METS'.]]></target>
+			</trans-unit>
+			<trans-unit id="solr.connected" approved="yes">
+				<source><![CDATA[Connection established!]]></source>
+				<target><![CDATA[Verbindung hergestellt!]]></target>
+			</trans-unit>
+			<trans-unit id="solr.status" approved="yes">
+				<source><![CDATA[Apache Solr is running and taking requests.]]></source>
+				<target><![CDATA[Apache Solr ist verfügbar und nimmt Anfragen entgegen.]]></target>
+			</trans-unit>
+			<trans-unit id="solr.notConnected" approved="yes">
+				<source><![CDATA[Connection failed!]]></source>
+				<target><![CDATA[Verbindung fehlgeschlagen!]]></target>
+			</trans-unit>
+			<trans-unit id="solr.error" approved="yes">
+				<source><![CDATA[Apache Solr not reachable with given configuration.]]></source>
+				<target><![CDATA[Apache Solr ist mit der gegebenen Konfiguration nicht erreichbar.]]></target>
+			</trans-unit>
+			<trans-unit id="metadataFormats.nsOkay" approved="yes">
+				<source><![CDATA[Default namespaces found!]]></source>
+				<target><![CDATA[Standard-Namensräume gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="metadataFormats.nsOkayMsg" approved="yes">
+				<source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
+				<target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.]]></target>
+			</trans-unit>
+			<trans-unit id="metadataFormats.nsCreated" approved="yes">
+				<source><![CDATA[Default namespaces created successfully!]]></source>
+				<target><![CDATA[Standard-Namensräume erfolgreich angelegt!]]></target>
+			</trans-unit>
+			<trans-unit id="metadataFormats.nsCreatedMsg" approved="yes">
+				<source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
+				<target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.]]></target>
+			</trans-unit>
+			<trans-unit id="metadataFormats.nsNotCreated" approved="yes">
+				<source><![CDATA[Default namespaces not found!]]></source>
+				<target><![CDATA[Standard-Namensräume nicht gefunden!]]></target>
+			</trans-unit>
+			<trans-unit id="metadataFormats.nsNotCreatedMsg" approved="yes">
+				<source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
+				<target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createSolrCore" approved="yes">
+				<source><![CDATA[Create solr core]]></source>
+				<target><![CDATA[Solr Kern anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createStructure" approved="yes">
+				<source><![CDATA[Create structure]]></source>
+				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createMetadata" approved="yes">
+				<source><![CDATA[Create metadata]]></source>
+				<target><![CDATA[Metadaten Konfiguration anlegen]]></target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
