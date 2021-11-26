@@ -50,9 +50,11 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     protected $description;
 
     /**
-     * @var string
+     * thumbnail
+     *
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
-    protected $thumbnail;
+    protected $thumbnail = null;
 
     /**
      * @var int
@@ -187,17 +189,17 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     }
 
     /**
-     * @return string
+     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
-    public function getThumbnail(): string
+    public function getThumbnail(): ?\TYPO3\CMS\Extbase\Domain\Model\FileReference
     {
         return $this->thumbnail;
     }
 
     /**
-     * @param string $thumbnail
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $thumbnail
      */
-    public function setThumbnail(string $thumbnail): void
+    public function setThumbnail(?\TYPO3\CMS\Extbase\Domain\Model\FileReference $thumbnail): void
     {
         $this->thumbnail = $thumbnail;
     }

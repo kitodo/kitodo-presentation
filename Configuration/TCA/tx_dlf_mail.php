@@ -21,7 +21,6 @@ return [
         'searchFields' => 'label,name,mail',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,name,mail',
     ],
     'feInterface' => [
         'fe_admin_fieldList' => '',

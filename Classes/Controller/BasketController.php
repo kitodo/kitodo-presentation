@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Document;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\ActionLog;
+use Kitodo\Dlf\Domain\Model\Basket;
 use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
@@ -88,13 +89,13 @@ class BasketController extends AbstractController
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        $basketData = $this->getBasketData();
+        $basket = $this->getBasketData();
 
         // action remove from basket
         if ($requestData['basket_action'] === 'remove') {
             // remove entry from list
             if (isset($requestData['selected'])) {
-                $basketData = $this->removeFromBasket($requestData, $basketData);
+                $basket = $this->removeFromBasket($requestData, $basket);
             }
         }
         // action remove from basket
@@ -115,7 +116,7 @@ class BasketController extends AbstractController
         if ($requestData['print_action']) {
             // open selected documents
             if (isset($requestData['selected'])) {
-                $this->printDocument($requestData, $basketData);
+                $this->printDocument($requestData, $basket);
             }
         }
         // action send mail
@@ -138,14 +139,13 @@ class BasketController extends AbstractController
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        $basketData = $this->getBasketData();
+        $basket = $this->getBasketData();
 
         if (
             !empty($requestData['id'])
             && $requestData['addToBasket']
         ) {
-            $returnData = $this->addToBasket($requestData, $basketData);
-            $this->view->assign('pregenerateJs', $returnData['jsOutput']);
+            $basket = $this->addToBasket($requestData, $basket);
         }
 
         $this->redirect('main');
@@ -161,13 +161,10 @@ class BasketController extends AbstractController
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
         unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
-        $basketData = $this->getBasketData();
+        $basket = $this->getBasketData();
 
-        if ($basketData['doc_ids']) {
-            if (is_object($basketData['doc_ids'])) {
-                $basketData['doc_ids'] = get_object_vars($basketData['doc_ids']);
-            }
-            $count = sprintf(LocalizationUtility::translate('basket.count', 'dlf'), count($basketData['doc_ids']));
+        if ($basket->getDocIds()) {
+            $count = sprintf(LocalizationUtility::translate('basket.count', 'dlf'), count(json_decode($basket->getDocIds())));
         } else {
             $count = sprintf(LocalizationUtility::translate('basket.count', 'dlf'), 0);
         }
@@ -196,9 +193,9 @@ class BasketController extends AbstractController
         }
 
         $entries = [];
-        if (isset($basketData['doc_ids'])) {
+        if ($basket->getDocIds()) {
             // get each entry
-            foreach ($basketData['doc_ids'] as $value) {
+            foreach (json_decode($basket->getDocIds()) as $value) {
                 $entries[] = $this->getEntry($value);
             }
             $this->view->assign('entries', $entries);
@@ -208,7 +205,7 @@ class BasketController extends AbstractController
     /**
      * The basket data from user session.
      *
-     * @return array The found data from user session.
+     * @return Basket The found data from user session.
      */
     protected function getBasketData()
     {
@@ -224,27 +221,22 @@ class BasketController extends AbstractController
 
             $basket = $this->basketRepository->findOneBySessionId($sessionId);
         }
-        // session already exists
+        // session doesnt exists
         if ($basket === null) {
             // create new basket in db
-            $insertArray['fe_user_id'] = $GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0;
-            $insertArray['session_id'] = $sessionId;
-            $insertArray['doc_ids'] = '';
-            $insertArray['label'] = '';
-            $insertArray['l18n_diffsource'] = '';
-            GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable('tx_dlf_basket')
-                ->insert(
-                    'tx_dlf_basket',
-                    $insertArray
-                );
+            $basket = new Basket();
+            $basket->setSessionId($sessionId);
+            $basket->setFeUserId($GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
 
-            return '';
+            $this->basketRepository->add($basket);
+
+            $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+            $persistenceManager->persistAll();
+
+            return $basket;
         }
 
-        $basketData['uid'] = $basket->getUid();
-        $basketData['doc_ids'] = json_decode($basket->getDocIds());
-        return $basketData;
+        return $basket;
     }
 
     /**
@@ -375,11 +367,11 @@ class BasketController extends AbstractController
      * @access protected
      *
      * @param array $_piVars: piVars
-     * @param array $basketData: basket data
+     * @param Basket $basket: basket object
      *
      * @return array Basket data and Javascript output
      */
-    protected function addToBasket($_piVars, $basketData)
+    protected function addToBasket($_piVars, $basket)
     {
         $output = '';
         if (!$_piVars['startpage']) {
@@ -398,9 +390,10 @@ class BasketController extends AbstractController
                 'endY' => !isset($_piVars['endY']) || $_piVars['endY'] === "" ? "" : (int) $_piVars['endY'],
                 'rotation' => !isset($_piVars['rotation']) || $_piVars['rotation'] === "" ? "" : (int) $_piVars['rotation']
             ];
+
             // update basket
-            if (!empty($basketData['doc_ids'])) {
-                $items = $basketData['doc_ids'];
+            if (!empty(json_decode($basket->getDocIds()))) {
+                $items = json_decode($basket->getDocIds());
                 $items = get_object_vars($items);
             } else {
                 $items = [];
@@ -455,17 +448,13 @@ class BasketController extends AbstractController
      </script>';
                 }
             }
-            $update = ['doc_ids' => json_encode($items)];
-            GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable('tx_dlf_basket')
-                ->update(
-                    'tx_dlf_basket',
-                    $update,
-                    ['uid' => (int) $basketData['uid']]
-                );
-            $basketData['doc_ids'] = $items;
+
+            $basket->setDocIds(json_encode($items));
+            $this->basketRepository->update($basket);
         }
-        return ['basketData' => $basketData, 'jsOutput' => $output];
+        $this->view->assign('pregenerateJs', $output);
+
+        return $basket;
     }
 
     /**
@@ -474,14 +463,14 @@ class BasketController extends AbstractController
      * @access protected
      *
      * @param array $_piVars: plugin variables
-     * @param array $basketData: array with document information
+     * @param Basket $basket: basket object
      *
-     * @return array basket data
+     * @return Basket basket
      */
-    protected function removeFromBasket($_piVars, $basketData)
+    protected function removeFromBasket($_piVars, $basket)
     {
-        if (!empty($basketData['doc_ids'])) {
-            $items = $basketData['doc_ids'];
+        if (!empty($basket->getDocIds())) {
+            $items = json_decode($basket->getDocIds());
             $items = get_object_vars($items);
         }
         foreach ($_piVars['selected'] as $value) {
@@ -499,20 +488,15 @@ class BasketController extends AbstractController
             }
         }
         if (empty($items)) {
-            $update = ['doc_ids' => ''];
+            $update = '';
         } else {
-            $update = ['doc_ids' => json_encode($items)];
+            $update = json_encode($items);
         }
 
-        GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_dlf_basket')
-            ->update(
-                'tx_dlf_basket',
-                    $update,
-                ['uid' => (int) $basketData['uid']]
-            );
-        $basketData['doc_ids'] = $items;
-        return $basketData;
+        $basket->setDocIds($update);
+        $this->basketRepository->update($basket);
+
+        return $basket;
     }
 
     /**
@@ -596,10 +580,11 @@ class BasketController extends AbstractController
      * Sends document information to an external printer (url)
      *
      * @access protected
+     * @param Basket basket object
      *
      * @return void
      */
-    protected function printDocument($requestData, $basketData)
+    protected function printDocument($requestData, $basket)
     {
         $pdfUrl = $this->settings['pdfprint'];
         $numberOfPages = 0;
@@ -614,7 +599,7 @@ class BasketController extends AbstractController
         $printerId = $requestData['print_action'];
 
         // get id from db and send selected doc download link
-        $printer = $this->printerRepository->findByUid($printerId)->getFirst();
+        $printer = $this->printerRepository->findOneByUid($printerId);
 
         // printer is selected
         if ($printer) {
@@ -630,31 +615,26 @@ class BasketController extends AbstractController
             }
             $pdfUrl = trim($pdfUrl, $this->settings['pdfparamseparator']);
         }
+
+        $actionLog = new ActionLog();
         // protocol
-        $insertArray = [
-            'pid' => $this->settings['pages'],
-            'file_name' => $pdfUrl,
-            'count_pages' => $numberOfPages,
-            'crdate' => time(),
-        ];
+        $actionLog->setPid($this->settings['pages']);
+        $actionLog->setFileName($pdfUrl);
+        $actionLog->setCountPages($numberOfPages);
+
         if ($GLOBALS["TSFE"]->loginUser) {
             // internal user
-            $insertArray['user_id'] = $GLOBALS["TSFE"]->fe_user->user['uid'];
-            $insertArray['name'] = $GLOBALS["TSFE"]->fe_user->user['username'];
-            $insertArray['label'] = 'Print: ' . $printer->getLabel();
+            $actionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
+            $actionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
+            $actionLog->setLabel('Print: ' . $printer->getLabel());
         } else {
             // external user
-            $insertArray['user_id'] = 0;
-            $insertArray['name'] = 'n/a';
-            $insertArray['label'] = 'Print: ' . $printer->getLabel();
+            $actionLog->setUserId(0);
+            $actionLog->setName('n/a');
+            $actionLog->setLabel('Print: ' . $printer->getLabel());
         }
         // add action to protocol
-        GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_dlf_actionlog')
-            ->insert(
-                'tx_dlf_actionlog',
-                $insertArray
-            );
+        $this->actionLogRepository->add($actionLog);
 
         $this->redirectToUri($pdfUrl);
     }

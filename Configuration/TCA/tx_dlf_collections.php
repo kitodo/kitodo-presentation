@@ -20,7 +20,6 @@ return [
         'fe_cruser_id' => 'fe_cruser_id',
         'fe_admin_lock' => 'fe_admin_lock',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -36,7 +35,6 @@ return [
         'fe_admin_fieldList' => 'label,description,thumbnail,documents',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,index_name,oai_name,fe_cruser_id',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -175,15 +173,20 @@ return [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.thumbnail',
-            'config' => [
-                'type' => 'group',
-                'internal_type' => 'file_reference',
-                'allowed' => 'gif,jpg,png',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                'default' => '',
-            ],
+            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+                'image',
+                [
+                    'appearance' => [
+                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                    ],
+                    'foreign_match_fields' => [
+                        'fieldname' => 'thumbnail',
+                        'tablenames' => 'tx_dlf_collections',
+                        'table_local' => 'sys_file',
+                    ],
+                ],
+                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
+            )
         ],
         'priority' => [
             'exclude' => 1,

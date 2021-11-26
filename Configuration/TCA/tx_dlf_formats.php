@@ -27,7 +27,6 @@ return [
         'fe_admin_fieldList' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'type,class',
     ],
     'columns' => [
         'type' => [

@@ -37,7 +37,7 @@
                 </h2>
                 <div class="tx-dlf-collection-thumbnail">
                     <f:if condition="{item.collection.thumbnail}">
-                        <f:image src="{item.collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
+                        <f:image image="{item.collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
                      </f:if>
                 </div>
                 <f:format.html>{item.collection.description}</f:format.html>

@@ -23,7 +23,6 @@ return [
         'searchFields' => 'label,name,crdate',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,name,crdate',
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,
     ],

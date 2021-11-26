@@ -34,7 +34,6 @@
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
                     </settings.collections>

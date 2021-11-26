@@ -18,7 +18,6 @@ return [
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -30,7 +29,6 @@ return [
         'fe_admin_fieldList' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,website,contact',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -120,17 +118,11 @@ return [
         'image' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.image',
-            'config' => [
-                'type' => 'group',
-                'internal_type' => 'file',
-                'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
-                'max_size' => 256,
-                'uploadfolder' => 'uploads/tx_dlf',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                'default' => '',
-            ],
+            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('image', [
+                'appearance' => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                ],
+            ], $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']),
         ],
         'oai_label' => [
             'exclude' => 1,

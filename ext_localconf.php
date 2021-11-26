@@ -63,6 +63,7 @@ foreach ($iconArray as $key => $value) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
     '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:dlf/Configuration/TsConfig/ContentElements.tsconfig">'
 );
+$_EXTKEY = 'dlf';
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
@@ -106,6 +107,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
 // Add migration wizards
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\MigrateSettings::class]
     = \Kitodo\Dlf\Updates\MigrateSettings::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\FileLocationUpdater::class]
+    = \Kitodo\Dlf\Updates\FileLocationUpdater::class;
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',
@@ -285,3 +288,42 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
         Metadata::class => '',
     ]
 );
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
+    'module.tx_dlf {
+        view {
+            templateRootPaths {
+                0 = EXT:dlf/Resources/Private/Backend/Templates/
+                1 = {$module.tx_dlf.view.templateRootPath}
+            }
+            partialRootPaths {
+                0 = EXT:dlf/Resources/Private/Backend/Partials/
+                1 = {$module.tx_dlf.view.partialRootPath}
+            }
+            layoutRootPaths {
+                0 = EXT:dlf/Resources/Private/Backend/Layouts/
+                1 = {$module.tx_dlf.view.layoutRootPath}
+            }
+        }
+        persistence < plugin.tx_dlf.persistence
+    }'
+);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptConstants(
+    'module.tx_dlf {
+        view {
+            # cat=module.tx_dlf/file; type=string; label=Path to template root (BE)
+            templateRootPath = EXT:dlf/Resources/Private/Backend/Templates/
+            # cat=module.tx_dlf/file; type=string; label=Path to template partials (BE)
+            partialRootPath = EXT:dlf/Resources/Private/Backend/Partials/
+            # cat=module.tx_dlf/file; type=string; label=Path to template layouts (BE)
+            layoutRootPath = EXT:dlf/Resources/Private/Backend/Layouts/
+        }
+    }'
+);
+
+// Register a node in ext_localconf.php
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry']['thumbnail'] = [
+    'nodeName' => 'thumbnailCustomElement',
+    'priority' => 40,
+    'class' => \Kitodo\Dlf\Hooks\ThumbnailCustomElement::class
+];

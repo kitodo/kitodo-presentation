@@ -87,7 +87,6 @@
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>10</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
                     </settings.extendedFields>
@@ -97,6 +96,7 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <items type="array">
                                     <numIndex index="0" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.none</numIndex>
@@ -136,7 +136,6 @@
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
                     </settings.collections>
@@ -156,7 +155,6 @@
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
                     </settings.facets>
@@ -175,7 +173,6 @@
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
                     </settings.facetCollections>
@@ -210,6 +207,7 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <items type="array">
                                     <numIndex index="0" type="array">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting.count</numIndex>

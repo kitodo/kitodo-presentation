@@ -33,7 +33,6 @@ return [
         'fe_admin_fieldList' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn,document_format',
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,
     ],
@@ -241,7 +240,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.thumbnail',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \Kitodo\Dlf\Hooks\UserFunc::class . '->displayThumbnail',
+                'renderType' => 'thumbnailCustomElement'
             ],
         ],
         'metadata' => [
@@ -395,7 +394,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'enableMultiSelectFilterTextfield' => 1,
                 'foreign_table' => 'tx_dlf_collections',
                 'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0) ORDER BY tx_dlf_collections.label',
                 'size' => 5,

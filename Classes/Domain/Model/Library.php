@@ -35,7 +35,9 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     protected $contact;
 
     /**
-     * @var string
+     * image
+     *
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
     protected $image;
 
@@ -134,17 +136,17 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     }
 
     /**
-     * @return string
+     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
-    public function getImage(): string
+    public function getImage(): \TYPO3\CMS\Extbase\Domain\Model\FileReference
     {
         return $this->image;
     }
 
     /**
-     * @param string $image
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
      */
-    public function setImage(string $image): void
+    public function setImage(\TYPO3\CMS\Extbase\Domain\Model\FileReference $image): void
     {
         $this->image = $image;
     }

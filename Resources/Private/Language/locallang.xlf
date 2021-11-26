@@ -335,6 +335,15 @@
 			<trans-unit id="collection.feed.title">
 				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
 			</trans-unit>
+			<trans-unit id="newTenant.createSolrCore" approved="yes">
+				<source><![CDATA[Create solr core]]></source>
+			</trans-unit>
+			<trans-unit id="newTenant.createStructure" approved="yes">
+				<source><![CDATA[Create structure]]></source>
+			</trans-unit>
+			<trans-unit id="newTenant.createMetadata" approved="yes">
+				<source><![CDATA[Create metadata]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
