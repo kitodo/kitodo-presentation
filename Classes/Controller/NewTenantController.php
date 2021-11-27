@@ -264,7 +264,7 @@ class NewTenantController extends AbstractController
 
         $structures = $this->structureRepository->findByPid($this->pid);
 
-        if (count($structures) > 0) {
+        if ($structures) {
             // Fine.
             $this->addFlashMessage(
                 $this->getLanguageService()->getLL('flash.structureOkayMsg'),
@@ -283,7 +283,7 @@ class NewTenantController extends AbstractController
 
         $metadata = $this->metadataRepository->findByPid($this->pid);
 
-        if (count($metadata) > 0) {
+        if ($metadata) {
             // Fine.
             $this->addFlashMessage(
                 $this->getLanguageService()->getLL('flash.metadataOkayMsg'),
