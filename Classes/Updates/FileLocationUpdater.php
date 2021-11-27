@@ -158,7 +158,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $allResults = [];
         $numResults = 0;
-        foreach(array_keys($this->fieldsToMigrate) as $table) {
+        foreach (array_keys($this->fieldsToMigrate) as $table) {
             $queryBuilder = $connectionPool->getQueryBuilderForTable($table);
             $queryBuilder->getRestrictions()->removeAll();
             try {
@@ -242,11 +242,11 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             return;
         }
 
-        $storageUid = (int)$this->storage->getUid();
+        $storageUid = (int) $this->storage->getUid();
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 
         $fileUid = null;
-        $sourcePath = Environment::getPublicPath() . '/'  . $fieldItem;
+        $sourcePath = Environment::getPublicPath() . '/' . $fieldItem;
 
         // maybe the file was already moved, so check if the original file still exists
         if (file_exists($sourcePath)) {

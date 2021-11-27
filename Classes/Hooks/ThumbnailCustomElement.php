@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace Kitodo\Dlf\Hooks;
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
