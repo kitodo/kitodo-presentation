@@ -87,6 +87,7 @@ class NewTenantController extends AbstractController
     {
         // Load backend localization file.
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
+        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf');
     }
 
     /**
@@ -110,7 +111,7 @@ class NewTenantController extends AbstractController
             }
             $data['tx_dlf_metadata'][uniqid('NEW')] = [
                 'pid' => intval($this->pid),
-                'label' => $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml:metadata.' . $index_name),
+                'label' => $this->getLanguageService()->getLL('metadata.' . $index_name),
                 'index_name' => $index_name,
                 'format' => implode(',', $formatIds),
                 'default_value' => $values['default_value'],
@@ -156,7 +157,7 @@ class NewTenantController extends AbstractController
         // Build data array.
         $data['tx_dlf_solrcores'][uniqid('NEW')] = [
             'pid' => intval($this->pid),
-            'label' => $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml:solrcore') . ' (PID ' . $this->pid . ')',
+            'label' => $this->getLanguageService()->getLL('solrcore') . ' (PID ' . $this->pid . ')',
             'index_name' => '',
         ];
         $_ids = Helper::processDBasAdmin($data);
@@ -193,7 +194,7 @@ class NewTenantController extends AbstractController
             $data['tx_dlf_structures'][uniqid('NEW')] = [
                 'pid' => intval($this->pid),
                 'toplevel' => $values['toplevel'],
-                'label' => $GLOBALS['LANG']->sL('LLL:EXT:dlf/Resources/Private/Language/NewTenant.xml:structure.' . $index_name),
+                'label' => $this->getLanguageService()->getLL('structure.' . $index_name),
                 'index_name' => $index_name,
                 'oai_name' => $values['oai_name'],
                 'thumbnail' => 0,

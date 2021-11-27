@@ -23,7 +23,7 @@ if (\TYPO3_MODE === 'BE') {
         [// Additional configuration
             'access'    => 'admin',
             'icon'      => 'EXT:dlf/Resources/Public/Icons/Extension.svg',
-            'labels'    => 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf',
+            'labels'    => 'LLL:EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf',
             'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
         ],
     );
