@@ -503,12 +503,6 @@
             <trans-unit id="flash.solrcoreOkayMsg" approved="yes">
                 <source><![CDATA[There are configuration records for Solr cores. They can be edited in the list module.]]></source>
             </trans-unit>
-            <trans-unit id="flash.solrcoreDeprecated" approved="yes">
-                <source><![CDATA[Deprecated configuration found!]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreDeprecatedMsg" approved="yes">
-                <source><![CDATA[A common Solr core was found in the root-page. This is deprecated since Kitodo.Presentation 1.1. Solr cores should be stored in the client's SysFolder instead. Move a Solr core to this SysFolder (manually) or create a new one automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;]]></source>
-            </trans-unit>
             <trans-unit id="flash.solrcoreMissing" approved="yes">
                 <source><![CDATA[No Solr core found!]]></source>
             </trans-unit>

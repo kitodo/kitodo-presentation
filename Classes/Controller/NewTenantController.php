@@ -301,25 +301,14 @@ class NewTenantController extends AbstractController
         }
 
         $solrCore = $this->solrCoreRepository->findByPid($this->pid);
-        $solrCore2 = $this->solrCoreRepository->findByPid(0);
 
-        if (count($solrCore) > 0 or count($solrCore2) > 0) {
-            if (count($solrCore) > 0) {
-                // Fine.
-                $this->addFlashMessage(
-                    $this->getLanguageService()->getLL('flash.solrcoreOkayMsg'),
-                    $this->getLanguageService()->getLL('flash.solrcoreOkay'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-                );
-            } else {
-                // Default core available, but this is deprecated.
-                $this->addFlashMessage(
-                    $this->getLanguageService()->getLL('flash.solrcoreDeprecatedMsg'),
-                    $this->getLanguageService()->getLL('flash.solrcoreDeprecatedOkay'),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::NOTICE
-                );
-                $this->view->assign('solr', 1);
-            }
+        if ($solrCore) {
+            // Fine.
+            $this->addFlashMessage(
+                $this->getLanguageService()->getLL('flash.solrcoreOkayMsg'),
+                $this->getLanguageService()->getLL('flash.solrcoreOkay'),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+            );
         } else {
             // Solr core missing.
             $this->addFlashMessage(

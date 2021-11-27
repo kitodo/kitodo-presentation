@@ -653,14 +653,6 @@
                 <source><![CDATA[There are configuration records for Solr cores. They can be edited in the list module.]]></source>
                 <target><![CDATA[Es wurde die Konfiguration für einen Solr Kern gefunden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
             </trans-unit>
-            <trans-unit id="flash.solrcoreDeprecated" approved="yes">
-                <source><![CDATA[Deprecated configuration found!]]></source>
-                <target><![CDATA[Veraltete Konfiguration gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreDeprecatedMsg" approved="yes">
-                <source><![CDATA[A common Solr core was found in the root-page. This is deprecated since Kitodo.Presentation 1.1. Solr cores should be stored in the client's SysFolder instead. Move a Solr core to this SysFolder (manually) or create a new one automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;]]></source>
-                <target><![CDATA[Es wurde ein allgemeiner Solr Kern in der Root-Page gefunden. Das entspricht dem Verhalten von Kitodo.Presentation 1.0. Seit Version 1.1 sollten Solr Kerne im SysOrdner des jeweiligen Mandanten konfiguriert werden. Es sollte entweder einer der Solr Kerne aus der Root-Page in diesen SysOrdner verschoben werden (manuell) oder ein neuer Solr Kern angelegt werden.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Neuen Solr Kern jetzt anlegen!&lt;/a&gt;]]></target>
-            </trans-unit>
             <trans-unit id="flash.solrcoreMissing" approved="yes">
                 <source><![CDATA[No Solr core found!]]></source>
                 <target><![CDATA[Kein Solr Kern gefunden!]]></target>
