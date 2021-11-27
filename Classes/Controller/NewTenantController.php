@@ -302,7 +302,7 @@ class NewTenantController extends AbstractController
         $solrCore = $this->solrCoreRepository->findByPid($this->pid);
         $solrCore2 = $this->solrCoreRepository->findByPid(0);
 
-        if (count($solrCore) > 0 OR count($solrCore2) > 0) {
+        if (count($solrCore) > 0 or count($solrCore2) > 0) {
             if (count($solrCore) > 0) {
                 // Fine.
                 $this->addFlashMessage(
