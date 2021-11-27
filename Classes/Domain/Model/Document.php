@@ -15,11 +15,6 @@ namespace Kitodo\Dlf\Domain\Model;
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
-     * @var int
-     */
-    protected $pid;
-
-    /**
      * @var \DateTime
      */
     protected $crdate;
@@ -183,22 +178,6 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var string
      */
     protected $documentFormat;
-
-    /**
-     * @return string
-     */
-    public function getPid(): int
-    {
-        return $this->pid;
-    }
-
-    /**
-     * @param string $pid
-     */
-    public function setPid(int $pid): void
-    {
-        $this->pid = $pid;
-    }
 
     /**
      * @return string

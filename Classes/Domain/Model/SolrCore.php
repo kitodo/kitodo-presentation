@@ -15,6 +15,11 @@ namespace Kitodo\Dlf\Domain\Model;
 class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
+     * @var int
+     */
+    protected $pid;
+
+    /**
      * @var string
      */
     protected $label;
@@ -23,6 +28,22 @@ class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var string
      */
     protected $indexName;
+
+    /**
+     * @return string
+     */
+    public function getPid(): int
+    {
+        return $this->pid;
+    }
+
+    /**
+     * @param string $pid
+     */
+    public function setPid(int $pid): void
+    {
+        $this->pid = $pid;
+    }
 
     /**
      * @return string
@@ -55,5 +76,4 @@ class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     {
         $this->indexName = $indexName;
     }
-
 }
