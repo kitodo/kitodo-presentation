@@ -284,27 +284,4 @@ class MetadataController extends AbstractController
 
         }
     }
-
-    // TODO: Needs to be placed in an abstract class (like before in AbstractPlugin)
-    /**
-     * Parses a string into a Typoscript array
-     *
-     * @access protected
-     *
-     * @param string $string: The string to parse
-     *
-     * @return array The resulting typoscript array
-     */
-    protected function parseTS($string = '')
-    {
-        $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
-        $parser->parse($string);
-        return $parser->setup;
-    }
-
-    protected function pi_getLL($label)
-    {
-        return $GLOBALS['TSFE']->sL('LLL:EXT:dlf/Resources/Private/Language/Metadata.xml:' . $label);
-    }
-
 }
