@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
@@ -51,14 +52,14 @@ class ConfigurationForm
         $solr = Solr::getInstance();
         if ($solr->ready) {
             Helper::addMessage(
-                htmlspecialchars($GLOBALS['LANG']->getLL('solr.status')),
-                htmlspecialchars($GLOBALS['LANG']->getLL('solr.connected')),
+                $this->getLanguageService()->getLL('solr.status'),
+                $this->getLanguageService()->getLL('solr.connected'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             Helper::addMessage(
-                htmlspecialchars($GLOBALS['LANG']->getLL('solr.error')),
-                htmlspecialchars($GLOBALS['LANG']->getLL('solr.notConnected')),
+                $this->getLanguageService()->getLL('solr.error'),
+                $this->getLanguageService()->getLL('solr.notConnected'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
         }
@@ -75,7 +76,7 @@ class ConfigurationForm
     public function checkMetadataFormats()
     {
         if (explode('.', VersionNumberUtility::getCurrentTypo3Version())[0] < 10) {
-            // We need to do some bootstrapping manually as of TYPO3 9.
+            // We need to do some bootstrapping manually in TYPO3 9.
             // Load table configuration array into $GLOBALS['TCA'].
             ExtensionManagementUtility::loadBaseTca(false);
             // Get extension configuration from dlf/ext_localconf.php.
@@ -176,21 +177,21 @@ class ConfigurationForm
             $substUid = Helper::processDBasAdmin($data);
             if (!empty($substUid)) {
                 Helper::addMessage(
-                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsCreatedMsg')),
-                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsCreated')),
+                    $this->getLanguageService()->getLL('metadataFormats.nsCreatedMsg'),
+                    $this->getLanguageService()->getLL('metadataFormats.nsCreated'),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                 );
             } else {
                 Helper::addMessage(
-                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsNotCreatedMsg')),
-                    htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsNotCreated')),
+                    $this->getLanguageService()->getLL('metadataFormats.nsNotCreatedMsg'),
+                    $this->getLanguageService()->getLL('metadataFormats.nsNotCreated'),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
         } else {
             Helper::addMessage(
-                htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsOkayMsg')),
-                htmlspecialchars($GLOBALS['LANG']->getLL('metadataFormats.nsOkay')),
+                $this->getLanguageService()->getLL('metadataFormats.nsOkayMsg'),
+                $this->getLanguageService()->getLL('metadataFormats.nsOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         }
@@ -206,9 +207,20 @@ class ConfigurationForm
      */
     public function __construct()
     {
-        // Load localization file.
-        $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
+        // Load backend localization file.
+        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
+
         // Get current configuration.
         $this->conf = array_merge(GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf'), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));
+    }
+
+    /**
+     * Returns the LanguageService
+     *
+     * @return LanguageService
+     */
+    protected function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 }
