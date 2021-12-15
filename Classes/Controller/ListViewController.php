@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
@@ -110,7 +110,7 @@ class ListViewController extends AbstractController
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->settings['getTitle']) {
-                            $superiorTitle = Document::getTitle($this->list[$number]['uid'], true);
+                            $superiorTitle = Doc::getTitle($this->list[$number]['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
                             }
@@ -228,7 +228,7 @@ class ListViewController extends AbstractController
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->settings['getTitle']) {
-                            $superiorTitle = Document::getTitle($subpart['uid'], true);
+                            $superiorTitle = Doc::getTitle($subpart['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
                             }

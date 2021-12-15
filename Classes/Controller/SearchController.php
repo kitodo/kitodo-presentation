@@ -11,7 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
@@ -115,7 +115,7 @@ class SearchController extends AbstractController
                 $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $requestData['id'] . '"' .
                     ' OR {!join from=uid to=partof}uid:' . $requestData['id'] .
                     ' OR uid:' . $requestData['id'];
-                $label .= ' ' . htmlspecialchars(sprintf(LocalizationUtility::translate('search.in', 'dlf'), Document::getTitle($requestData['id'])));
+                $label .= ' ' . htmlspecialchars(sprintf(LocalizationUtility::translate('search.in', 'dlf'), Doc::getTitle($requestData['id'])));
             }
         }
         // Add filter query for in-collection searching.
@@ -261,8 +261,8 @@ class SearchController extends AbstractController
         ) {
             $this->loadDocument($requestData);
             // Get document's UID
-            if ($this->doc->ready) {
-                $this->view->assign('DOCUMENT_ID', $this->doc->uid);
+            if ($this->document) {
+                $this->view->assign('DOCUMENT_ID', $this->document->getUid());
             }
         } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
             // Get document's UID from search metadata.

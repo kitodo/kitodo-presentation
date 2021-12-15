@@ -31,14 +31,14 @@ class NavigationController extends AbstractController
         }
         // Load current document.
         $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
             // Set default values if not set.
-            if ($this->doc->numPages > 0) {
+            if ($this->document->getDoc()->numPages > 0) {
                 if (!empty($requestData['logicalPage'])) {
-                    $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                    $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                     // The logical page parameter should not appear
                     unset($requestData['logicalPage']);
                 }
@@ -48,9 +48,9 @@ class NavigationController extends AbstractController
                     (int) $requestData['page'] > 0
                     || empty($requestData['page'])
                 ) {
-                    $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                    $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
                 } else {
-                    $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                    $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
                 }
                 $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
             } else {
@@ -65,11 +65,11 @@ class NavigationController extends AbstractController
         $this->view->assign('page', $requestData['page']);
         $this->view->assign('pageSteps', $pageSteps);
         $this->view->assign('double', $requestData['double']);
-        $this->view->assign('numPages', $this->doc->numPages);
+        $this->view->assign('numPages', $this->document->getDoc()->numPages);
 
         $pageOptions = [];
-        for ($i = 1; $i <= $this->doc->numPages; $i++) {
-            $pageOptions[$i] = '[' . $i . ']' . ($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$i]]['orderlabel']) : '');
+        for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {
+            $pageOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel']) : '');
         }
         $this->view->assign('uniqueId', uniqid(Helper::getUnqualifiedClassName(get_class($this)) . '-'));
         $this->view->assign('pageOptions', $pageOptions);

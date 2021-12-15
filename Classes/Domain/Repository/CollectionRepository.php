@@ -172,6 +172,10 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['collections']));
         }
 
+        if ($settings['index_name']) {
+            $constraints[] = $query->in('index_name', $settings['index_name']);
+        }
+
         // do not find user created collections (used by oai-pmh plugin)
         if (!$settings['show_userdefined']) {
             $constraints[] = $query->equals('fe_cruser_id', 0);

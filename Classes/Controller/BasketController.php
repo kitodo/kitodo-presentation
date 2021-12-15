@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\ActionLog;
 use Kitodo\Dlf\Domain\Model\Basket;
@@ -305,7 +305,7 @@ class BasketController extends AbstractController
     protected function getDocumentData($id, $data)
     {
         // get document instance to load further information
-        $document = Document::getInstance($id, 0);
+        $document = Doc::getInstance($id, 0);
         if ($document) {
             // replace url param placeholder
             $urlParams = str_replace("##page##", (int) $data['page'], $this->settings['pdfparams']);
@@ -399,7 +399,7 @@ class BasketController extends AbstractController
                 $items = [];
             }
             // get document instance to load further information
-            $document = Document::getInstance($documentItem['id'], 0);
+            $document = Doc::getInstance($documentItem['id'], 0);
             // set endpage for toc and subentry based on logid
             if (($_piVars['addToBasket'] == 'subentry') or ($_piVars['addToBasket'] == 'toc')) {
                 $smLinks = $document->smLinks;

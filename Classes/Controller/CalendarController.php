@@ -93,12 +93,12 @@ class CalendarController extends AbstractController
 
         // Load current document.
         $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
         }
 
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'issue');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), 'issue');
 
         $issues = [];
 
@@ -171,13 +171,13 @@ class CalendarController extends AbstractController
         $this->view->assign('issueData', $issueData);
 
         // Link to current year.
-        $linkTitleData = $this->doc->getTitledata();
+        $linkTitleData = $this->document->getDoc()->getTitledata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
-        $this->view->assign('documentId', $this->doc->uid);
+        $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
-        $this->view->assign('parentDocumentId', $this->doc->parentId);
-        $this->view->assign('allYearDocTitle', $this->doc->getTitle($this->doc->parentId));
+        $this->view->assign('parentDocumentId', $this->document->getPartof());
+        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()));
     }
 
     /**
@@ -190,7 +190,6 @@ class CalendarController extends AbstractController
     public function yearsAction()
     {
         $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
 
         // access arguments passed by the mainAction()
         $mainrequestData = $this->request->getArguments();
@@ -200,13 +199,13 @@ class CalendarController extends AbstractController
 
         // Load current document.
         $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
         }
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'year');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), 'year');
 
         $years = [];
         // Process results.
@@ -229,8 +228,8 @@ class CalendarController extends AbstractController
             $this->view->assign('yearName', $yearArray);
         }
 
-        $this->view->assign('documentId', $this->doc->uid);
-        $this->view->assign('allYearDocTitle', $this->doc->getTitle($this->doc->uid));
+        $this->view->assign('documentId', $this->document->getUid());
+        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()));
     }
 
     /**

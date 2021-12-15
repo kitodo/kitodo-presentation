@@ -27,7 +27,7 @@ return [
         ],
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfdocuments.png',
         'rootLevel' => 0,
-        'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
+        'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,record_id,oai_id,opac_id,union_id,urn',
     ],
     'feInterface' => [
         'fe_admin_fieldList' => '',
@@ -418,6 +418,12 @@ return [
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
+                'default' => 0,
+            ],
+        ],
+        'solrcore' => [
+            'config' => [
+                'type' => 'passthrough',
                 'default' => 0,
             ],
         ],

@@ -51,7 +51,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read mixed $uid This holds the UID or the URL of the document
  * @abstract
  */
-abstract class Document
+abstract class Doc
 {
     /**
      * This holds the logger
@@ -237,7 +237,7 @@ abstract class Document
     /**
      * This holds the singleton object of the document
      *
-     * @var array (\Kitodo\Dlf\Common\Document)
+     * @var array (\Kitodo\Dlf\Common\Doc)
      * @static
      * @access protected
      */
@@ -420,140 +420,54 @@ abstract class Document
      *
      * @static
      *
-     * @param mixed $uid: The unique identifier of the document to parse, the URL of XML file or the IRI of the IIIF resource
+     * @param string $location: The URL of XML file or the IRI of the IIIF resource
      * @param array $settings
      * @param bool $forceReload: Force reloading the document instead of returning the cached instance
      *
-     * @return \Kitodo\Dlf\Common\Document Instance of this class, either MetsDocument or IiifManifest
+     * @return \Kitodo\Dlf\Common\Doc Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance($uid, $settings = [], $forceReload = false)
+    public static function &getInstance($location, $settings = [], $forceReload = false)
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
-
-        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
-        // override storagePid if given
-        if ($settings['storagePid']) {
-            $frameworkConfiguration['persistence']['storagePid'] = $settings['storagePid'];
-        }
-
-        /**
-         * Set table mapping if missing.
-         *
-         * This should be evaluated with TYPO3 10 again. In TYPO3 9.5 the mapping set via TypoScript is not always present.
-         * This could be omitted if we rename all tables to the Extbase naming schema.
-         *  */
-        if (empty($frameworkConfiguration['persistence']['classes'])) {
-            $frameworkConfiguration['persistence']['classes'] = [
-                'Kitodo\Dlf\Domain\Model\Document' => [
-                    'mapping' => [
-                        'tableName' => 'tx_dlf_documents'
-                    ]
-                ],
-                'Kitodo\Dlf\Domain\Model\Collection' => [
-                    'mapping' => [
-                        'tableName' => 'tx_dlf_collections'
-                    ]
-                ]
-            ];
-        }
-
-        // set modified configuration
-        $configurationManager->setConfiguration($frameworkConfiguration);
-
-        /** Fill documentRepository */
-        $documentRepository = $objectManager->get(DocumentRepository::class);
-
-        // Sanitize input.
-        $pid = max(intval($settings['storagePid']), 0);
-        if (!$forceReload) {
-            $regObj = Helper::digest($uid);
-            if (
-                is_object(self::$registry[$regObj])
-                && self::$registry[$regObj] instanceof self
-            ) {
-                // Check if instance has given PID.
-                if (
-                    !$pid
-                    || !self::$registry[$regObj]->pid
-                    || $pid == self::$registry[$regObj]->pid
-                ) {
-                    // Return singleton instance if available.
-                    return self::$registry[$regObj];
-                }
-            } else {
-                // Check the user's session...
-                $sessionData = Helper::loadFromSession(get_called_class());
-                if (
-                    is_object($sessionData[$regObj])
-                    && $sessionData[$regObj] instanceof self
-                ) {
-                    // Check if instance has given PID.
-                    if (
-                        !$pid
-                        || !$sessionData[$regObj]->pid
-                        || $pid == $sessionData[$regObj]->pid
-                    ) {
-                        // ...and restore registry.
-                        self::$registry[$regObj] = $sessionData[$regObj];
-                        return self::$registry[$regObj];
-                    }
-                }
-            }
-        }
         // Create new instance depending on format (METS or IIIF) ...
         $instance = null;
         $documentFormat = null;
         $xml = null;
         $iiif = null;
-        // Try to get document format from database
-        if (MathUtility::canBeInterpretedAsInteger($uid)) {
 
-            $document = $documentRepository->findOneByIdAndSettings($uid, $settings);
-            if ($document !== null) {
-                $documentFormat = $document->getDocumentFormat();
+        // Try to load a file from the url
+        if (GeneralUtility::isValidUrl($location)) {
+            // Load extension configuration
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            // Set user-agent to identify self when fetching XML data.
+            if (!empty($extConf['useragent'])) {
+                @ini_set('user_agent', $extConf['useragent']);
             }
-
-        } else {
-            // Get document format from content of remote document
-            // Cast to string for safety reasons.
-            $location = (string) $uid;
-            // Try to load a file from the url
-            if (GeneralUtility::isValidUrl($location)) {
-                // Load extension configuration
-                $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-                // Set user-agent to identify self when fetching XML data.
-                if (!empty($extConf['useragent'])) {
-                    @ini_set('user_agent', $extConf['useragent']);
-                }
-                $content = GeneralUtility::getUrl($location);
-                if ($content !== false) {
-                    $xml = Helper::getXmlFileAsString($content);
-                    if ($xml !== false) {
-                        /* @var $xml \SimpleXMLElement */
-                        $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
-                        $xpathResult = $xml->xpath('//mets:mets');
-                        $documentFormat = !empty($xpathResult) ? 'METS' : null;
-                    } else {
-                        // Try to load file as IIIF resource instead.
-                        $contentAsJsonArray = json_decode($content, true);
-                        if ($contentAsJsonArray !== null) {
-                            // Load plugin configuration.
-                            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-                            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                            IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
-                            IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
-                            $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
-                            if ($iiif instanceof IiifResourceInterface) {
-                                $documentFormat = 'IIIF';
-                            }
+            $content = GeneralUtility::getUrl($location);
+            if ($content !== false) {
+                $xml = Helper::getXmlFileAsString($content);
+                if ($xml !== false) {
+                    /* @var $xml \SimpleXMLElement */
+                    $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
+                    $xpathResult = $xml->xpath('//mets:mets');
+                    $documentFormat = !empty($xpathResult) ? 'METS' : null;
+                } else {
+                    // Try to load file as IIIF resource instead.
+                    $contentAsJsonArray = json_decode($content, true);
+                    if ($contentAsJsonArray !== null) {
+                        // Load plugin configuration.
+                        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+                        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+                        IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
+                        IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
+                        $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
+                        if ($iiif instanceof IiifResourceInterface) {
+                            $documentFormat = 'IIIF';
                         }
                     }
                 }
             }
         }
+
         // Sanitize input.
         $pid = max(intval($pid), 0);
         if ($documentFormat == 'METS') {
@@ -561,23 +475,7 @@ abstract class Document
         } elseif ($documentFormat == 'IIIF') {
             $instance = new IiifManifest($uid, $pid, $iiif);
         }
-        // Save instance to registry.
-        if (
-            $instance instanceof self
-            && $instance->ready) {
-            self::$registry[Helper::digest($instance->uid)] = $instance;
-            if ($instance->uid != $instance->location) {
-                self::$registry[Helper::digest($instance->location)] = $instance;
-            }
-            // Load extension configuration
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            // Save registry to session if caching is enabled.
-            if (!empty($extConf['caching'])) {
-                Helper::saveToSession(self::$registry, get_class($instance));
-            }
-            $instance->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($instance));
-        }
-        // Return new instance.
+
         return $instance;
     }
 
@@ -1600,20 +1498,8 @@ abstract class Document
     }
 
     /**
-     * This magic method is invoked each time a clone is called on the object variable
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    protected function __clone()
-    {
-        // This method is defined as protected because singleton objects should not be cloned.
-    }
-
-    /**
      * This is a singleton class, thus the constructor should be private/protected
-     * (Get an instance of this class by calling \Kitodo\Dlf\Common\Document::getInstance())
+     * (Get an instance of this class by calling \Kitodo\Dlf\Common\Doc::getInstance())
      *
      * @access protected
      *
@@ -1626,7 +1512,12 @@ abstract class Document
      */
     protected function __construct($uid, $pid, $preloadedDocument)
     {
+        $this->setPreloadedDocument($preloadedDocument);
+        $this->init();
+        $this->establishRecordId($pid);
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
+        return;
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
         $location = '';

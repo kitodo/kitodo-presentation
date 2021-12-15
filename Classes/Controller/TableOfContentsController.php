@@ -52,7 +52,7 @@ class TableOfContentsController extends AbstractController
      *
      * @access protected
      *
-     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Document->getLogicalStructure
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
      * @param bool $recursive : Whether to include the child entries
      *
      * @return array HMENU array for menu entry
@@ -125,7 +125,7 @@ class TableOfContentsController extends AbstractController
                 !empty($this->pluginConf['menuConf.']['expAll'])
                 || $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
-                || empty($this->doc->smLinks['l2p'][$entry['id']])
+                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
             ) {
                 $entryArray['_SUB_MENU'] = [];
                 foreach ($entry['children'] as $child) {
@@ -170,12 +170,12 @@ class TableOfContentsController extends AbstractController
     {
         // Load current document.
         $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return [];
         } else {
             if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($requestData['logicalPage']);
             }
@@ -186,9 +186,9 @@ class TableOfContentsController extends AbstractController
                 || empty($requestData['page'])
             ) {
                 $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'],
-                    1, $this->doc->numPages, 1);
+                    1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
             $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'],
                 0, 1, 0);
@@ -196,35 +196,35 @@ class TableOfContentsController extends AbstractController
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
-            !empty($this->doc->physicalStructure)
-            || !MathUtility::canBeInterpretedAsInteger($this->doc->uid)
+            !empty($this->document->getDoc()->physicalStructure)
+            || !MathUtility::canBeInterpretedAsInteger($this->document->getDoc()->uid)
         ) {
             // Get all logical units the current page or track is a part of.
             if (
                 !empty($requestData['page'])
-                && !empty($this->doc->physicalStructure)
+                && !empty($this->document->getDoc()->physicalStructure)
             ) {
-                $this->activeEntries = array_merge((array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[0]],
-                    (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page']]]);
+                $this->activeEntries = array_merge((array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[0]],
+                    (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$requestData['page']]]);
                 if (
                     !empty($requestData['double'])
-                    && $requestData['page'] < $this->doc->numPages
+                    && $requestData['page'] < $this->document->getDoc()->numPages
                 ) {
                     $this->activeEntries = array_merge($this->activeEntries,
-                        (array) $this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page'] + 1]]);
+                        (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$requestData['page'] + 1]]);
                 }
             }
             // Go through table of contents and create all menu entries.
-            foreach ($this->doc->tableOfContents as $entry) {
+            foreach ($this->document->getDoc()->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, true);
             }
         } else {
             // Go through table of contents and create top-level menu entries.
-            foreach ($this->doc->tableOfContents as $entry) {
+            foreach ($this->document->getDoc()->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, false);
             }
             // Build table of contents from database.
-            $result = $this->documentRepository->getTableOfContentsFromDb($this->doc->uid, $this->doc->pid, $this->settings);
+            $result = $this->documentRepository->getTableOfContentsFromDb($this->document->getUid(), $this->document->getPid(), $this->settings);
 
             $allResults = $result->fetchAll();
 

@@ -11,7 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\Collection;
@@ -57,7 +57,7 @@ class MetadataController extends AbstractController
 
         // Load current document.
         $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
@@ -78,14 +78,14 @@ class MetadataController extends AbstractController
                 $this->settings['displayIiifLinks'] = 1;
             }
         }
-        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
+        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
         $metadata = [];
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
-            if (!empty($this->doc->physicalStructure[$requestData['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page']]])) {
-                foreach ($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$requestData['page']]] as $logId) {
-                    $count = $this->doc->getStructureDepth($logId);
+            if (!empty($this->document->getDoc()->physicalStructure[$requestData['page']]) && !empty($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$requestData['page']]])) {
+                foreach ($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$requestData['page']]] as $logId) {
+                    $count = $this->document->getDoc()->getStructureDepth($logId);
                     $ids[$count][] = $logId;
                 }
             }
@@ -96,9 +96,9 @@ class MetadataController extends AbstractController
                 foreach ($ids as $id) {
                     foreach ($id as $sid) {
                         if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->doc->getManifestMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['pages']);
                         } else {
-                            $data = $this->doc->getMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['pages']);
                         }
                         if (!empty($data)) {
                             $data['_id'] = $sid;
@@ -111,9 +111,9 @@ class MetadataController extends AbstractController
                 if (is_array($id)) {
                     foreach ($id as $sid) {
                         if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->doc->getManifestMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['pages']);
                         } else {
-                            $data = $this->doc->getMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['pages']);
                         }
                         if (!empty($data)) {
                             $data['_id'] = $sid;
@@ -124,13 +124,13 @@ class MetadataController extends AbstractController
             }
         }
         // Get titledata?
-        if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
-            $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId, $this->settings['pages']) : $this->doc->getTitleData($this->settings['pages']);
-            $data['_id'] = $this->doc->toplevelId;
+        if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->document->getDoc()->toplevelId)) {
+            $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['pages']) : $this->document->getDoc()->getTitleData($this->settings['pages']);
+            $data['_id'] = $this->document->getDoc()->toplevelId;
             array_unshift($metadata, $data);
         }
         if (empty($metadata)) {
-            $this->logger->warning('No metadata found for document with UID ' . $this->doc->uid);
+            $this->logger->warning('No metadata found for document with UID ' . $this->document->getUid());
             return '';
         }
         ksort($metadata);
@@ -230,8 +230,8 @@ class MetadataController extends AbstractController
                 foreach ($metadataSection as $metadataName => $metadataValue) {
                     if ($metadataName == 'title') {
                         // Get title of parent document if needed.
-                        if (empty($metadataValue) && $this->settings['getTitle'] && $this->doc->parentId) {
-                            $superiorTitle = Document::getTitle($this->doc->parentId, true);
+                        if (empty($metadataValue) && $this->settings['getTitle'] && $this->document->getDoc()->parentId) {
+                            $superiorTitle = Doc::getTitle($this->document->getPartof(), true);
                             if (!empty($superiorTitle)) {
                                 $metadataArray[$i][$metadataName] = ['[' . $superiorTitle . ']'];
                             }
@@ -240,9 +240,9 @@ class MetadataController extends AbstractController
                             $metadataArray[$i][$metadataName][0] = htmlspecialchars($metadataArray[$i][$metadataName][0]);
                             // Link title to pageview.
                             if ($this->settings['linkTitle'] && $metadataSection['_id']) {
-                                $details = $this->doc->getLogicalStructure($metadataSection['_id']);
+                                $details = $this->document->getDoc()->getLogicalStructure($metadataSection['_id']);
                                 $buildUrl[$i][$metadataName]['buildUrl'] = [
-                                    'id' => $this->doc->uid,
+                                    'id' => $this->document->getUid(),
                                     'page' => (!empty($details['points']) ? intval($details['points']) : 1),
                                     'targetPid' => (!empty($this->settings['targetPid']) ? $this->settings['targetPid'] : 0)
                                 ];

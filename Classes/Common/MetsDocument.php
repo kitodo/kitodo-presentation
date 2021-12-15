@@ -48,7 +48,7 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
  * @property-read mixed $uid This holds the UID or the URL of the document
  */
-final class MetsDocument extends Document
+final class MetsDocument extends Doc
 {
     /**
      * This holds the whole XML file as string for serialization purposes
@@ -141,7 +141,7 @@ final class MetsDocument extends Document
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::establishRecordId()
+     * @see \Kitodo\Dlf\Common\Doc::establishRecordId()
      */
     protected function establishRecordId($pid)
     {
@@ -162,7 +162,7 @@ final class MetsDocument extends Document
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getDownloadLocation()
+     * @see \Kitodo\Dlf\Common\Doc::getDownloadLocation()
      */
     public function getDownloadLocation($id)
     {
@@ -188,7 +188,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFileLocation()
+     * @see \Kitodo\Dlf\Common\Doc::getFileLocation()
      */
     public function getFileLocation($id)
     {
@@ -206,7 +206,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFileMimeType()
+     * @see \Kitodo\Dlf\Common\Doc::getFileMimeType()
      */
     public function getFileMimeType($id)
     {
@@ -224,7 +224,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getLogicalStructure()
+     * @see \Kitodo\Dlf\Common\Doc::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
     {
@@ -364,7 +364,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getMetadata()
+     * @see \Kitodo\Dlf\Common\Doc::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
     {
@@ -667,7 +667,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFullText()
+     * @see \Kitodo\Dlf\Common\Doc::getFullText()
      */
     public function getFullText($id)
     {
@@ -683,7 +683,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getStructureDepth()
+     * @see Doc::getStructureDepth()
      */
     public function getStructureDepth($logId)
     {
@@ -697,7 +697,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::init()
+     * @see \Kitodo\Dlf\Common\Doc::init()
      */
     protected function init()
     {
@@ -715,7 +715,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::loadLocation()
+     * @see \Kitodo\Dlf\Common\Doc::loadLocation()
      */
     protected function loadLocation($location)
     {
@@ -734,7 +734,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::ensureHasFulltextIsSet()
+     * @see \Kitodo\Dlf\Common\Doc::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
     {
@@ -746,7 +746,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getParentDocumentUid()
+     * @see Doc::getParentDocumentUid()
      */
     protected function getParentDocumentUidForSaving($pid, $core, $owner)
     {
@@ -770,7 +770,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::setPreloadedDocument()
+     * @see Doc::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
     {
@@ -784,7 +784,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getDocument()
+     * @see Doc::getDocument()
      */
     protected function getDocument()
     {
@@ -881,7 +881,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
+     * @see \Kitodo\Dlf\Common\Doc::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
     {
@@ -909,7 +909,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getPhysicalStructure()
+     * @see \Kitodo\Dlf\Common\Doc::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
     {
@@ -970,7 +970,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getSmLinks()
+     * @see \Kitodo\Dlf\Common\Doc::_getSmLinks()
      */
     protected function _getSmLinks()
     {
@@ -988,8 +988,74 @@ final class MetsDocument extends Document
     }
 
     /**
+     * return @string
+     */
+    public function getThumbnail()
+    {
+        // Load extension configuration.
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+        if (empty($extConf['fileGrpThumbs'])) {
+            $this->logger->warning('No fileGrp for thumbnails specified');
+            $this->thumbnailLoaded = true;
+            return $this->thumbnail;
+        }
+        $strctId = $this->_getToplevelId();
+        $metadata = $this->getTitledata($cPid);
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_structures');
+
+        // Get structure element to get thumbnail from.
+        $result = $queryBuilder
+            ->select('tx_dlf_structures.thumbnail AS thumbnail')
+            ->from('tx_dlf_structures')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($this->cPid)),
+                $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
+                Helper::whereExpression('tx_dlf_structures')
+            )
+            ->setMaxResults(1)
+            ->execute();
+
+        $allResults = $result->fetchAll();
+
+        if (count($allResults) == 1) {
+            $resArray = $allResults[0];
+            // Get desired thumbnail structure if not the toplevel structure itself.
+            if (!empty($resArray['thumbnail'])) {
+                $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $this->cPid);
+                // Check if this document has a structure element of the desired type.
+                $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="' . $strctType . '"]/@ID');
+                if (!empty($strctIds)) {
+                    $strctId = (string) $strctIds[0];
+                }
+            }
+            // Load smLinks.
+            $this->_getSmLinks();
+            // Get thumbnail location.
+            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+                if (
+                    $this->_getPhysicalStructure()
+                    && !empty($this->smLinks['l2p'][$strctId])
+                    && !empty($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb])
+                ) {
+                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb]);
+                    break;
+                } elseif (!empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])) {
+                    $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb]);
+                    break;
+                }
+            }
+        } else {
+            $this->logger->error('No structure of type "' . $metadata['type'][0] . '" found in database');
+        }
+        return $this->thumbnail;
+    }
+
+    /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
+     * @see \Kitodo\Dlf\Common\Doc::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
     {
@@ -1069,7 +1135,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
+     * @see \Kitodo\Dlf\Common\Doc::_getToplevelId()
      */
     protected function _getToplevelId()
     {

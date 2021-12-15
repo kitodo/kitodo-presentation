@@ -21,7 +21,8 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\Indexer;
 
 /**
  * CLI Command for re-indexing collections into database and Solr.
@@ -96,10 +97,10 @@ class ReindexCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = $this->initializeDocumentRepository($input->getOption('pid'));
+        $this->initializeRepositories($input->getOption('pid'));
 
-        if ($startingPoint === false) {
-            $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
+        if ($this->storagePid == 0) {
+            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
             exit(1);
         }
 
@@ -107,7 +108,7 @@ class ReindexCommand extends BaseCommand
             !empty($input->getOption('solr'))
             && !is_array($input->getOption('solr'))
         ) {
-            $allSolrCores = $this->getSolrCores($startingPoint);
+            $allSolrCores = $this->getSolrCores($this->storagePid);
             $solrCoreUid = $this->getSolrCoreUid($allSolrCores, $input->getOption('solr'));
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
@@ -117,7 +118,7 @@ class ReindexCommand extends BaseCommand
                     $output_solrCores[] = $uid . ' : ' . $index_name;
                 }
                 if (empty($output_solrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $startingPoint . ".\n");
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
                     exit(1);
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
@@ -131,12 +132,12 @@ class ReindexCommand extends BaseCommand
 
         if (!empty($input->getOption('owner'))) {
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
-                $owner = MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1);
+                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
             } else {
-                $owner = (string) $input->getOption('owner');
+                $this->owner = $this->libraryRepository->findOneByIndexName((string) $input->getOption('owner'));
             }
         } else {
-            $owner = null;
+            $this->owner = null;
         }
 
         if (!empty($input->getOption('all'))) {
@@ -159,24 +160,25 @@ class ReindexCommand extends BaseCommand
         }
 
         foreach ($documents as $id => $document) {
-            $doc = Document::getInstance($document->getUid(), ['storagePid' => $startingPoint], true);
-            if ($doc->ready) {
+            $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
+
+            if ($doc !== null) {
                 if ($dryRun) {
-                    $io->writeln('DRY RUN: Would index ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                    $io->writeln('DRY RUN: Would index ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 } else {
                     if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $id . '/' . count($documents) . ' ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                     }
-                    // ...and save it to the database...
-                    if (!$doc->save($startingPoint, $solrCoreUid, $owner)) {
-                        $io->error('ERROR: Document "' . $id . '" not saved and indexed.');
+                    $document->setDoc($doc);
+                    if ($this->owner !== null) {
+                        $document->setOwner($this->owner);
                     }
+                    $this->saveToDatabase($document);
+                    Indexer::add($document, $solrCoreUid);
                 }
             } else {
-                $io->error('ERROR: Document "' . $id . '" could not be loaded.');
+                $io->error('ERROR: Document "' . $document->getUid() . '" could not be loaded.');
             }
-            // Clear document registry to prevent memory exhaustion.
-            Document::clearRegistry();
         }
 
         $io->success('All done!');

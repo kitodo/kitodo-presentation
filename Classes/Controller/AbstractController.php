@@ -11,14 +11,16 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 
 /**
@@ -27,8 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    public $prefixId = 'tx_dlf';
 
     /**
      * @var DocumentRepository
@@ -51,10 +51,10 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * This holds the current document
      *
-     * @var \Kitodo\Dlf\Common\Document
+     * @var \Kitodo\Dlf\Domain\Model\Document
      * @access protected
      */
-    protected $doc;
+    protected $document;
 
     /**
      * Loads the current document into $this->doc
@@ -67,42 +67,48 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function loadDocument($requestData)
     {
-        // Check for required variable.
+        // Try to get document format from database
         if (!empty($requestData['id'])) {
-            // Get instance of \Kitodo\Dlf\Common\Document.
-            $this->doc = Document::getInstance($requestData['id'], $this->settings);
-            if (!$this->doc->ready) {
-                // Destroy the incomplete object.
-                $this->doc = null;
-                $this->logger->error('Failed to load document with UID ' . $requestData['id']);
-            } else {
-                // Set configuration PID.
-                $this->doc->cPid = $this->settings['pages'];
+
+            if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
+                // find document from repository by uid
+                $this->document = $this->documentRepository->findByUid((int) $requestData['id']);
+                if ($this->document) {
+                    $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                }
+            } else  if (GeneralUtility::isValidUrl($requestData['id'])) {
+
+                $doc = Doc::getInstance($requestData['id'], $this->settings, true);
+
+                if ($doc->recordId) {
+                    $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                }
+
+                if ($document === null) {
+                    // create new dummy Document object
+                    $this->document = $this->objectManager->get(Document::class);
+                }
+
+                if ($this->document) {
+                    $this->document->setLocation($requestData['id']);
+                }
             }
+
+            if ($this->document !== null && $doc !== null) {
+                $this->document->setDoc($doc);
+            }
+
         } elseif (!empty($requestData['recordId'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
 
-            // Get UID of document with given record identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($requestData['recordId'])),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
 
-            if ($resArray = $result->fetch()) {
-                $requestData['id'] = $resArray['uid'];
-                // Set superglobal $_GET array and unset variables to avoid infinite looping.
-                $_GET[$this->prefixId]['id'] = $requestData['id'];
-                unset($requestData['recordId'], $_GET[$this->prefixId]['recordId']);
-                // Try to load document.
-                $this->loadDocument($requestData);
-            } else {
-                $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
+            if ($this->document !== null) {
+                $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                if ($this->document !== null && $doc !== null) {
+                    $this->document->setDoc($doc);
+                } else {
+                    $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
+                }
             }
         } else {
             $this->logger->error('Invalid UID ' . $requestData['id'] . ' or PID ' . $this->settings['pages'] . ' for document loading');

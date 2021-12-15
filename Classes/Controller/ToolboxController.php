@@ -53,14 +53,14 @@ class ToolboxController extends AbstractController
     public function annotationtool($requestData)
     {
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
             if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($requestData['logicalPage']);
             }
@@ -70,13 +70,13 @@ class ToolboxController extends AbstractController
                 (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
         }
 
-        $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['annotationContainers'];
+        $annotationContainers = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$requestData['page']]]['annotationContainers'];
         if (
             $annotationContainers != null
             && sizeof($annotationContainers) > 0
@@ -95,15 +95,15 @@ class ToolboxController extends AbstractController
     public function fulltextdownloadtool($requestData)
     {
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
             if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($requestData['logicalPage']);
             }
@@ -113,16 +113,16 @@ class ToolboxController extends AbstractController
                 (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
         }
         // Get text download.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext])) {
-                $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext];
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext])) {
+                $fullTextFile = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext];
                 break;
             }
         }
@@ -141,15 +141,15 @@ class ToolboxController extends AbstractController
     public function fulltexttool($requestData)
     {
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
             if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($requestData['logicalPage']);
             }
@@ -159,15 +159,15 @@ class ToolboxController extends AbstractController
                 (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
         }
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext])) {
-                $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext];
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext])) {
+                $fullTextFile = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext];
                 break;
             }
         }
@@ -187,15 +187,15 @@ class ToolboxController extends AbstractController
     public function imagedownloadtool($requestData)
     {
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
             || empty($this->settings['fileGrpsImageDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
             if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($requestData['logicalPage']);
             }
@@ -205,9 +205,9 @@ class ToolboxController extends AbstractController
                 (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
         }
         $imageArray = [];
@@ -235,9 +235,9 @@ class ToolboxController extends AbstractController
         $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
-                $image['url'] = $this->doc->getDownloadLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
-                $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrp])) {
+                $image['url'] = $this->document->getDoc()->getDownloadLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrp]);
+                $image['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrp]);
                 switch ($image['mimetype']) {
                     case 'image/jpeg':
                         $mimetypeLabel = ' (JPG)';
@@ -278,15 +278,15 @@ class ToolboxController extends AbstractController
     public function pdfdownloadtool($requestData)
     {
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
             || empty($this->extConf['fileGrpDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
             if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($requestData['logicalPage']);
             }
@@ -296,9 +296,9 @@ class ToolboxController extends AbstractController
                 (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
         }
         // Get single page downloads.
@@ -323,15 +323,15 @@ class ToolboxController extends AbstractController
         $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
         // Get image link.
         while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]]['files'][$fileGrpDownload])) {
-                $page1Link = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]]['files'][$fileGrpDownload]);
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$pageNumber]]['files'][$fileGrpDownload])) {
+                $page1Link = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$pageNumber]]['files'][$fileGrpDownload]);
                 // Get second page, too, if double page view is activated.
                 if (
                     $requestData['double']
-                    && $pageNumber < $this->doc->numPages
-                    && !empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload])
+                    && $pageNumber < $this->document->getDoc()->numPages
+                    && !empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload])
                 ) {
-                    $page2Link = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload]);
+                    $page2Link = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload]);
                 }
                 break;
             }
@@ -365,13 +365,13 @@ class ToolboxController extends AbstractController
         $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
         // Get work link.
         while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$fileGrpDownload])) {
-                $workLink = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[0]]['files'][$fileGrpDownload]);
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[0]]['files'][$fileGrpDownload])) {
+                $workLink = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[0]]['files'][$fileGrpDownload]);
                 break;
             } else {
-                $details = $this->doc->getLogicalStructure($this->doc->toplevelId);
+                $details = $this->document->getDoc()->getLogicalStructure($this->document->getDoc()->toplevelId);
                 if (!empty($details['files'][$fileGrpDownload])) {
-                    $workLink = $this->doc->getFileLocation($details['files'][$fileGrpDownload]);
+                    $workLink = $this->document->getDoc()->getFileLocation($details['files'][$fileGrpDownload]);
                     break;
                 }
             }
@@ -392,8 +392,8 @@ class ToolboxController extends AbstractController
     public function searchindocumenttool($requestData)
     {
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
             || empty($this->extConf['fileGrpFulltext'])
             || empty($this->settings['solrcore'])
         ) {
@@ -401,7 +401,7 @@ class ToolboxController extends AbstractController
             return;
         } else {
             if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
                 // The logical page parameter should not appear again
                 unset($requestData['logicalPage']);
             }
@@ -411,17 +411,17 @@ class ToolboxController extends AbstractController
                 (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
         }
 
         // Quit if no fulltext file is present
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->settings['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext])) {
-                $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext];
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext])) {
+                $fullTextFile = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$requestData['page']]]['files'][$fileGrpFulltext];
                 break;
             }
         }
@@ -477,7 +477,7 @@ class ToolboxController extends AbstractController
      */
     protected function getCurrentDocumentId()
     {
-        $id = $this->doc->uid;
+        $id = $this->document->getDoc()->uid;
 
         if (!empty($this->settings['documentIdUrlSchema'])) {
             $arr = explode('*', $this->settings['documentIdUrlSchema']);

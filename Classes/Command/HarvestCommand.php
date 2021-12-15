@@ -21,7 +21,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Library;
 use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\BaseoaipmhException;
 
@@ -104,10 +106,10 @@ class HarvestCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = $this->initializeDocumentRepository($input->getOption('pid'));
+        $this->initializeRepositories($input->getOption('pid'));
 
-        if ($startingPoint == 0) {
-            $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
+        if ($this->storagePid == 0) {
+            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
             exit(1);
         }
 
@@ -115,7 +117,7 @@ class HarvestCommand extends BaseCommand
             !empty($input->getOption('solr'))
             && !is_array($input->getOption('solr'))
         ) {
-            $allSolrCores = $this->getSolrCores($startingPoint);
+            $allSolrCores = $this->getSolrCores($this->storagePid);
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('solr'))) {
                 $solrCoreUid = MathUtility::forceIntegerInRange((int) $input->getOption('solr'), 0);
             } else {
@@ -128,7 +130,7 @@ class HarvestCommand extends BaseCommand
                     $output_solrCores[] = $uid . ' : ' . $index_name;
                 }
                 if (empty($output_solrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $startingPoint . ".\n");
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
                     exit(1);
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
@@ -141,27 +143,9 @@ class HarvestCommand extends BaseCommand
         }
 
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_libraries');
+            $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('lib'), 1));
 
-            $result = $queryBuilder
-                ->select('oai_base')
-                ->from('tx_dlf_libraries')
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'uid',
-                        $queryBuilder->createNamedParameter((int) $input->getOption('lib'), Connection::PARAM_INT)
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'pid',
-                        $queryBuilder->createNamedParameter((int) $startingPoint, Connection::PARAM_INT)
-                    )
-                )
-                ->setMaxResults(1)
-                ->execute();
-
-            $record = $result->fetch();
-            $baseUrl = $record['oai_base'];
+            $baseUrl = $this->owner->getOaiBase();
         } else {
             $io->error('ERROR: Required parameter --lib|-l is not a valid UID.');
             exit(1);
@@ -231,24 +215,42 @@ class HarvestCommand extends BaseCommand
             ];
             $docLocation = $baseLocation . http_build_query($params);
             // ...index the document...
-            $doc = Document::getInstance($docLocation, ['storagePid' => $startingPoint], true);
-            if ($doc->ready) {
+            $doc = Doc::getInstance($docLocation, ['storagePid' => $this->storagePid], true);
+
+//            if ($doc->ready) {
+                if ($doc->recordId) {
+                    $document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                }
+
+                if ($document === null) {
+                    // create new Document object
+                    $document = $this->objectManager->get(Document::class);
+                }
+
+                if ($document) {
+                    $document->setLocation($docLocation);
+                }
+
+                if ($doc !== null) {
+                    $document->setDoc($doc);
+                }
+
+                if ($this->owner !== null) {
+                    $document->setOwner($this->owner);
+                }
+
                 if ($dryRun) {
-                    $io->writeln('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                    $io->writeln('DRY RUN: Would index ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 } else {
                     if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                     }
                     // ...and save it to the database...
-                    if (!$doc->save($startingPoint, $solrCoreUid, (int) $input->getOption('lib'))) {
-                        $io->error('ERROR: Document "' . $doc->location . '" not saved and indexed.');
-                    }
+                    $this->saveToDatabase($document);
                 }
-            } else {
-                $io->error('ERROR: Document "' . $docLocation . '" could not be loaded.');
-            }
-            // Clear document registry to prevent memory exhaustion.
-            Document::clearRegistry();
+            // } else {
+            //     $io->error('ERROR: Document "' . $docLocation . '" could not be loaded.');
+            // }
         }
 
         $io->success('All done!');

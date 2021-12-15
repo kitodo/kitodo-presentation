@@ -12,13 +12,18 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+
 class MailRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
     public function findAllWithPid($pid)
     {
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
-        $querySettings->setStoragePageIds(array($pid));
+        /** @var Typo3QuerySettings $querySettings */
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+
+        $querySettings->setStoragePageIds([$pid]);
+
         $this->setDefaultQuerySettings($querySettings);
 
         return $this->findAll();

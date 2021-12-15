@@ -12,7 +12,12 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
+use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Command\Command;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -20,6 +25,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Base class for CLI Command classes.
@@ -32,35 +38,70 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class BaseCommand extends Command
 {
     /**
+     * @var CollectionRepository
+     */
+    protected $collectionRepository;
+
+    /**
      * @var DocumentRepository
      */
     protected $documentRepository;
 
     /**
-     * Initialize the documentRepository based on the given storagePid.
+     * @var LibraryRepository
+     */
+    protected $libraryRepository;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @var int
+     */
+    protected $storagePid;
+
+    /**
+     * @var \Kitodo\Dlf\Domain\Model\Library
+     */
+    protected $owner;
+
+    /**
+     * Initialize the extbase repository based on the given storagePid.
+     *
+     * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependancy Injection.
      *
      * @param string|string[]|bool|null $inputPid possible pid
      *
-     * @return int|bool validated storagePid
+     * @return bool
      */
-    protected function initializeDocumentRepository($storagePid)
+    protected function initializeRepositories($storagePid)
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-            $configurationManager = $objectManager->get(ConfigurationManager::class);
+            $configurationManager = $this->objectManager->get(ConfigurationManager::class);
             $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
             $configurationManager->setConfiguration($frameworkConfiguration);
 
-            $this->documentRepository = $objectManager->get(
+            $this->collectionRepository = $this->objectManager->get(
+                CollectionRepository::class
+            );
+            $this->documentRepository = $this->objectManager->get(
                 DocumentRepository::class
+            );
+            $this->libraryRepository = $this->objectManager->get(
+                LibraryRepository::class
             );
         } else {
             return false;
         }
-        return MathUtility::forceIntegerInRange((int) $storagePid, 0);
+        $this->storagePid = MathUtility::forceIntegerInRange((int) $storagePid, 0);
+
+        return true;
     }
 
     /**
@@ -111,4 +152,142 @@ class BaseCommand extends Command
 
         return $solrCores;
     }
+
+    /**
+     * Load XML file / IIIF resource from URL
+     *
+     * @access protected
+     *
+     * @param string $location: The URL of the file to load
+     *
+     * @return string|bool the found xml as string or false on failure
+     */
+    protected function loadLocation($location)
+    {
+        // Load XML / JSON-LD file.
+        if (GeneralUtility::isValidUrl($location)) {
+            // Load extension configuration
+            // $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            // // Set user-agent to identify self when fetching XML / JSON-LD data.
+            // if (!empty($extConf['useragent'])) {
+            //     @ini_set('user_agent', $extConf['useragent']);
+            // }
+            $fileResource = GeneralUtility::getUrl($location);
+            if ($fileResource !== false) {
+                $xml = Helper::getXmlFileAsString($fileResource);
+                if ($xml !== false) {
+                    return $xml;
+                }
+            }
+        } else {
+            $this->logger->error('Invalid file location "' . $location . '" for document loading');
+        }
+        return false;
+    }
+
+    /**
+     * Update or insert document to database
+     *
+     * @param int|string $doc The document uid from DB OR the location of a mets document.
+     *
+     * @return bool true on success
+     */
+    protected function saveToDatabase(Document $document)
+    {
+        $success = false;
+
+        $doc = $document->getDoc();
+        if ($doc === null) {
+            return $success;
+        }
+        $doc->cPid = $this->storagePid;
+
+        $metadata = $doc->getTitledata($this->storagePid);
+
+        // set title data
+        $document->setTitle($metadata['title'][0] ? : '');
+        $document->setTitleSorting($metadata['title_sorting'][0]);
+        $document->setPlace(implode('; ', $metadata['place']));
+        $document->setYear(implode('; ', $metadata['year']));
+
+        // Remove appended "valueURI" from authors' names for storing in database.
+        foreach ($metadata['author'] as $i => $author) {
+            $splitName = explode(chr(31), $author);
+            $metadata['author'][$i] = $splitName[0];
+        }
+        $document->setAuthor(implode('; ', $metadata['author']));
+        $document->setThumbnail($doc->getThumbnail() ? : 'la');
+        $document->setMetsLabel($metadata['mets_label'][0] ? : '');
+        $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
+
+        $document->setStructure(Helper::getUidFromIndexName($metadata['type'][0], 'tx_dlf_structures') ? : 0);
+
+        $collections = $this->collectionRepository->findCollectionsBySettings(['index_name' => $metadata['collection']]);
+        if ($collections) {
+            foreach ($collections as $collection) {
+                $document->addCollection($collection);
+            }
+        }
+
+        // set identifiers
+        $document->setProdId($metadata['prod_id'][0] ? : '');
+        $document->setOpacId($metadata['opac_id'][0] ? : '');
+        $document->setUnionId($metadata['union_id'][0] ? : '');
+
+        $document->setRecordId($metadata['record_id'][0] ? : ''); // (?) $doc->recordId
+        $document->setUrn($metadata['urn'][0] ? : '');
+        $document->setPurl($metadata['purl'][0] ? : '');
+        $document->setDocumentFormat($metadata['document_format'][0] ? : '');
+
+        // set access
+        $document->setLicense($metadata['license'][0] ? : '');
+        $document->setTerms($metadata['terms'][0] ? : '');
+        $document->setRestrictions($metadata['restrictions'][0] ? : '');
+        $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
+        $document->setRightsInfo($metadata['rights_info'][0] ? : '');
+        $document->setStatus(0);
+
+        if ($this->library) {
+            // library / owner is set by parameter --> take it.
+            $document->setOwner($this->library);
+        } else {
+            // owner is not set set but found by metadata --> take it or take default library
+            $owner = $metadata['owner'][0] ? : 'default';
+            $library = $this->libraryRepository->findOneByIndexName($owner);
+            if ($library) {
+                $document->setOwner($library);
+            } else {
+                // create library
+                $newLibrary = $this->objectManager->get(Library::class);
+
+                $newLibrary->setLabel($owner);
+                $newLibrary->setIndexName($owner);
+                $this->libraryRepository->add($newLibrary);
+                $document->setOwner($newLibrary);
+            }
+        }
+
+        // 'metadata' => serialize($listed),
+        // 'metadata_sorting' => serialize($sortable),
+        // 'partof' => $partof,
+        // 'volume' => $metadata['volume'][0],
+        // 'volume_sorting' => $metadata['volume_sorting'][0],
+
+        $document->setMetadata('holla Metadata');
+        $document->setMetadataSorting('holla Metadata');
+
+        if ($document->getUid() === null) {
+            // new document
+            $this->documentRepository->add($document);
+        } else {
+            // update of existing document
+            $this->documentRepository->update($document);
+        }
+
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+
+        return $success;
+    }
+
 }

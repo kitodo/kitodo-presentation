@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\ExpressionLanguage;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Psr\Log\LoggerAwareInterface;
@@ -110,14 +110,14 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @param array $piVars The current plugin variables containing a document identifier
      * @param int $pid: Storage Pid
      *
-     * @return \Kitodo\Dlf\Common\Document Instance of the current document
+     * @return \Kitodo\Dlf\Common\Doc Instance of the current document
      */
     protected function loadDocument(array $piVars, int $pid)
     {
         // Check for required variable.
         if (!empty($piVars['id'])) {
             // Get instance of document.
-            $doc = Document::getInstance($piVars['id'], ['storagePid' => $pid]);
+            $doc = Doc::getInstance($piVars['id'], ['storagePid' => $pid]);
             if ($doc->ready) {
                 return $doc;
             } else {
