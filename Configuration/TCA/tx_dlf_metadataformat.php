@@ -17,8 +17,6 @@ return [
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
-        'languageField' => 'sys_language_uid',
-        'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY encoded',
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfmetadata.png',
