@@ -468,7 +468,7 @@ abstract class Doc
         }
 
         // Sanitize input.
-        $pid = max(intval($pid), 0);
+        $pid = max(intval($settings['storagePid']), 0);
         if ($documentFormat == 'METS') {
             $instance = new MetsDocument($uid, $pid, $xml);
         } elseif ($documentFormat == 'IIIF') {

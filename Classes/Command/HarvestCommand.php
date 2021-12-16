@@ -218,10 +218,11 @@ class HarvestCommand extends BaseCommand
             ];
             $docLocation = $baseLocation . http_build_query($params);
             // ...index the document...
+            $document = null;
             $doc = Doc::getInstance($docLocation, ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {
-                $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
+                $io->warning('WARNING: Document "' . $docLocation . '" could not be loaded. Skip to next document.');
                 continue;
             }
 

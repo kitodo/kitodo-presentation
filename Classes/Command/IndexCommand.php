@@ -149,6 +149,9 @@ class IndexCommand extends BaseCommand
             $this->owner = null;
         }
 
+        $document = null;
+        $doc = null;
+
         // Try to find existing document in database
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))) {
 
