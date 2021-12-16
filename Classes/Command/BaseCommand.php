@@ -274,6 +274,9 @@ class BaseCommand extends Command
         // 'volume' => $metadata['volume'][0],
         // 'volume_sorting' => $metadata['volume_sorting'][0],
 
+        $document->setMetadata('');
+        $document->setMetadataSorting('');
+
         if ($document->getUid() === null) {
             // new document
             $this->documentRepository->add($document);
