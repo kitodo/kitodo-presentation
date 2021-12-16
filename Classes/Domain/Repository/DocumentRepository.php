@@ -38,7 +38,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function findOneByParameters($parameters)
     {
         $doc = null;
-        $document =null;
+        $document = null;
 
         if (isset($parameters['id']) && MathUtility::canBeInterpretedAsInteger($parameters['id'])) {
 

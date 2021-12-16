@@ -243,10 +243,10 @@ class HarvestCommand extends BaseCommand
             }
 
             if ($dryRun) {
-                $io->writeln('DRY RUN: Would index ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                $io->writeln('DRY RUN: Would index ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
             } else {
                 if ($io->isVerbose()) {
-                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 $document->setDoc($doc);
                 // save to database

@@ -161,7 +161,7 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', true) . ' '. htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.solrException', true) . ' ' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
                         FlashMessage::ERROR,
                         true,
