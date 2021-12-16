@@ -149,18 +149,15 @@ class IndexCommand extends BaseCommand
             $this->owner = null;
         }
 
-        // Try to get document format from database
+        // Try to find existing document in database
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))) {
 
-            // find uid globally
             $document = $this->documentRepository->findByUid($input->getOption('doc'));
 
-            // find by uid for given pid
-//            $document = $this->documentRepository->findOneByIdAndSettings($input->getOption('doc'), ['storagePid' => $startingPoint]);
-            // if ($document !== null) {
-            //     $documentFormat = $document->getDocumentFormat();
-            // }
-            if ($document !== null) {
+            if ($document === null) {
+                $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
+                exit(1);
+            } else {
                 $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
             }
 
@@ -176,14 +173,18 @@ class IndexCommand extends BaseCommand
                 $document = $this->objectManager->get(Document::class);
             }
 
+            // now there must exist a document object
             if ($document) {
                 $document->setLocation($input->getOption('doc'));
             }
         }
 
-        if ($doc !== null) {
-            $document->setDoc($doc);
+        if ($doc === null) {
+            $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
+            exit(1);
         }
+
+        $document->setDoc($doc);
 
         if ($this->owner !== null) {
             $document->setOwner($this->owner);
@@ -197,48 +198,15 @@ class IndexCommand extends BaseCommand
             if ($io->isVerbose()) {
                 $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
             }
+            // save to database
             $this->saveToDatabase($document);
-            // document is now persisted
+            // add to index
             Indexer::add($document, $solrCoreUid);
         }
-
-
-
-
-
-
-
-        // Get the document...
-        // $doc = Doc::getInstance($input->getOption('doc'), ['storagePid' => $startingPoint], true);
-        // if ($doc->ready) {
-        //     if ($dryRun) {
-        //         $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
-        //     } else {
-        //         if ($io->isVerbose()) {
-        //             $io->section('Indexing ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
-        //         }
-        //         $document = $this->documentRepository->findByUid($input->getOption('doc'));
-        //         if ($document) {
-        //             // ...and save it to the database...
-        //             $document->setDoc($doc);
-        //             $this->saveToDatabase($document);
-        //         }
-
-        //         // if (!$doc->save($startingPoint, $solrCoreUid, $owner)) {
-        //         //     $io->error('ERROR: Document "' . $input->getOption('doc') . '" not saved and indexed.');
-        //         //     exit(1);
-        //         // }
-        //     }
-        // } else {
-        //     $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
-        //     exit(1);
-        // }
 
         $io->success('All done!');
 
         return 0;
     }
-
-
 
 }

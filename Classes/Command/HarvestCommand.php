@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
 use Phpoaipmh\Endpoint;
@@ -217,40 +218,40 @@ class HarvestCommand extends BaseCommand
             // ...index the document...
             $doc = Doc::getInstance($docLocation, ['storagePid' => $this->storagePid], true);
 
-//            if ($doc->ready) {
-                if ($doc->recordId) {
-                    $document = $this->documentRepository->findOneByRecordId($doc->recordId);
-                }
+            if ($doc === null) {
+                $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
+                continue;
+            }
 
-                if ($document === null) {
-                    // create new Document object
-                    $document = $this->objectManager->get(Document::class);
-                }
+            if ($doc->recordId) {
+                $document = $this->documentRepository->findOneByRecordId($doc->recordId);
+            }
 
-                if ($document) {
-                    $document->setLocation($docLocation);
-                }
+            if ($document === null) {
+                // create new Document object
+                $document = $this->objectManager->get(Document::class);
+            }
 
-                if ($doc !== null) {
-                    $document->setDoc($doc);
-                }
+            if ($document) {
+                $document->setLocation($docLocation);
+            }
 
-                if ($this->owner !== null) {
-                    $document->setOwner($this->owner);
-                }
+            if ($this->owner !== null) {
+                $document->setOwner($this->owner);
+            }
 
-                if ($dryRun) {
-                    $io->writeln('DRY RUN: Would index ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
-                } else {
-                    if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
-                    }
-                    // ...and save it to the database...
-                    $this->saveToDatabase($document);
+            if ($dryRun) {
+                $io->writeln('DRY RUN: Would index ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+            } else {
+                if ($io->isVerbose()) {
+                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' .  $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
-            // } else {
-            //     $io->error('ERROR: Document "' . $docLocation . '" could not be loaded.');
-            // }
+                $document->setDoc($doc);
+                // save to database
+                $this->saveToDatabase($document);
+                // add to index
+                Indexer::add($document, $solrCoreUid);
+            }
         }
 
         $io->success('All done!');

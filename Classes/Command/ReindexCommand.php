@@ -162,22 +162,25 @@ class ReindexCommand extends BaseCommand
         foreach ($documents as $id => $document) {
             $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
 
-            if ($doc !== null) {
-                if ($dryRun) {
-                    $io->writeln('DRY RUN: Would index ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
-                } else {
-                    if ($io->isVerbose()) {
-                        $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
-                    }
-                    $document->setDoc($doc);
-                    if ($this->owner !== null) {
-                        $document->setOwner($this->owner);
-                    }
-                    $this->saveToDatabase($document);
-                    Indexer::add($document, $solrCoreUid);
-                }
+            if ($doc === null) {
+                $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
+                continue;
+            }
+
+            if ($dryRun) {
+                $io->writeln('DRY RUN: Would index ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
             } else {
-                $io->error('ERROR: Document "' . $document->getUid() . '" could not be loaded.');
+                if ($io->isVerbose()) {
+                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                }
+                $document->setDoc($doc);
+                if ($this->owner !== null) {
+                    $document->setOwner($this->owner);
+                }
+                // save to database
+                $this->saveToDatabase($document);
+                // add to index
+                Indexer::add($document, $solrCoreUid);
             }
         }
 

@@ -203,7 +203,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @return \Kitodo\Dlf\Common\Doc
      */
-    public function getDoc(): \Kitodo\Dlf\Common\Doc
+    public function getDoc(): ?\Kitodo\Dlf\Common\Doc
     {
         return $this->doc;
     }
