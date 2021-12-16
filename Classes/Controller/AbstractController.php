@@ -76,7 +76,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 if ($this->document) {
                     $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
                 }
-            } else  if (GeneralUtility::isValidUrl($requestData['id'])) {
+            } else if (GeneralUtility::isValidUrl($requestData['id'])) {
 
                 $doc = Doc::getInstance($requestData['id'], $this->settings, true);
 
@@ -84,7 +84,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                     $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
                 }
 
-                if ($document === null) {
+                if ($this->document === null) {
                     // create new dummy Document object
                     $this->document = $this->objectManager->get(Document::class);
                 }

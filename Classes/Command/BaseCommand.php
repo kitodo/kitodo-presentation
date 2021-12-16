@@ -247,9 +247,9 @@ class BaseCommand extends Command
         $document->setRightsInfo($metadata['rights_info'][0] ? : '');
         $document->setStatus(0);
 
-        if ($this->library) {
+        if ($this->owner) {
             // library / owner is set by parameter --> take it.
-            $document->setOwner($this->library);
+            $document->setOwner($this->owner);
         } else {
             // owner is not set set but found by metadata --> take it or take default library
             $owner = $metadata['owner'][0] ? : 'default';
@@ -267,14 +267,12 @@ class BaseCommand extends Command
             }
         }
 
+        // to be still (re-) implemented
         // 'metadata' => serialize($listed),
         // 'metadata_sorting' => serialize($sortable),
         // 'partof' => $partof,
         // 'volume' => $metadata['volume'][0],
         // 'volume_sorting' => $metadata['volume_sorting'][0],
-
-        $document->setMetadata('holla Metadata');
-        $document->setMetadataSorting('holla Metadata');
 
         if ($document->getUid() === null) {
             // new document

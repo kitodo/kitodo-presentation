@@ -145,7 +145,9 @@ class HarvestCommand extends BaseCommand
 
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
             $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('lib'), 1));
+        }
 
+        if ($this->owner) {
             $baseUrl = $this->owner->getOaiBase();
         } else {
             $io->error('ERROR: Required parameter --lib|-l is not a valid UID.');
