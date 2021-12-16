@@ -470,9 +470,9 @@ abstract class Doc
         // Sanitize input.
         $pid = max(intval($settings['storagePid']), 0);
         if ($documentFormat == 'METS') {
-            $instance = new MetsDocument($uid, $pid, $xml);
+            $instance = new MetsDocument($location, $pid, $xml);
         } elseif ($documentFormat == 'IIIF') {
-            $instance = new IiifManifest($uid, $pid, $iiif);
+            $instance = new IiifManifest($location, $pid, $iiif);
         }
 
         return $instance;
@@ -901,326 +901,6 @@ abstract class Doc
     }
 
     /**
-     * This saves the document to the database and index
-     *
-     * @access public
-     *
-     * @param int $pid: The PID of the saved record
-     * @param int $core: The UID of the Solr core for indexing
-     * @param int|string $owner: UID or index_name of owner to set while indexing
-     *
-     * @return bool true on success or false on failure
-     */
-    public function save($pid = 0, $core = 0, $owner = null)
-    {
-        if (\TYPO3_MODE !== 'BE') {
-            $this->logger->error('Saving a document is only allowed in the backend');
-            return false;
-        }
-        // Make sure $pid is a non-negative integer.
-        $pid = max(intval($pid), 0);
-        // Make sure $core is a non-negative integer.
-        $core = max(intval($core), 0);
-        // If $pid is not given, try to get it elsewhere.
-        if (
-            !$pid
-            && $this->pid
-        ) {
-            // Retain current PID.
-            $pid = $this->pid;
-        } elseif (!$pid) {
-            $this->logger->error('Invalid PID ' . $pid . ' for document saving');
-            return false;
-        }
-        // Set PID for metadata definitions.
-        $this->cPid = $pid;
-        // Set UID placeholder if not updating existing record.
-        if ($pid != $this->pid) {
-            $this->uid = uniqid('NEW');
-        }
-        // Get metadata array.
-        $metadata = $this->getTitledata($pid);
-        // Check for record identifier.
-        if (empty($metadata['record_id'][0])) {
-            $this->logger->error('No record identifier found to avoid duplication');
-            return false;
-        }
-        // Load plugin configuration.
-        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_structures');
-
-        // Get UID for structure type.
-        $result = $queryBuilder
-            ->select('tx_dlf_structures.uid AS uid')
-            ->from('tx_dlf_structures')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($pid)),
-                $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
-                Helper::whereExpression('tx_dlf_structures')
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        if ($resArray = $result->fetch()) {
-            $structure = $resArray['uid'];
-        } else {
-            $this->logger->error('Could not identify document/structure type "' . $queryBuilder->expr()->literal($metadata['type'][0]) . '"');
-            return false;
-        }
-        $metadata['type'][0] = $structure;
-
-        // Remove appended "valueURI" from authors' names for storing in database.
-        foreach ($metadata['author'] as $i => $author) {
-            $splitName = explode(chr(31), $author);
-            $metadata['author'][$i] = $splitName[0];
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-
-        // Get UIDs for collections.
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_collections.index_name AS index_name',
-                'tx_dlf_collections.uid AS uid'
-            )
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($pid)),
-                $queryBuilder->expr()->in('tx_dlf_collections.sys_language_uid', [-1, 0])
-            )
-            ->execute();
-
-        $collUid = [];
-        while ($resArray = $result->fetch()) {
-            $collUid[$resArray['index_name']] = $resArray['uid'];
-        }
-        $collections = [];
-        foreach ($metadata['collection'] as $collection) {
-            if (!empty($collUid[$collection])) {
-                // Add existing collection's UID.
-                $collections[] = $collUid[$collection];
-            } else {
-                // Insert new collection.
-                $collNewUid = uniqid('NEW');
-                $collData['tx_dlf_collections'][$collNewUid] = [
-                    'pid' => $pid,
-                    'label' => $collection,
-                    'index_name' => $collection,
-                    'oai_name' => (!empty($conf['publishNewCollections']) ? Helper::getCleanString($collection) : ''),
-                    'description' => '',
-                    'documents' => 0,
-                    'owner' => 0,
-                    'status' => 0,
-                ];
-                $substUid = Helper::processDBasAdmin($collData);
-                // Prevent double insertion.
-                unset($collData);
-                // Add new collection's UID.
-                $collections[] = $substUid[$collNewUid];
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
-                    Helper::addMessage(
-                        htmlspecialchars(sprintf(Helper::getMessage('flash.newCollection'), $collection, $substUid[$collNewUid])),
-                        Helper::getMessage('flash.attention', true),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                        true
-                    );
-                }
-            }
-        }
-        $metadata['collection'] = $collections;
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_libraries');
-
-        // Get UID for owner.
-        if (empty($owner)) {
-            $owner = empty($metadata['owner'][0]) ? $metadata['owner'][0] : 'default';
-        }
-        if (!MathUtility::canBeInterpretedAsInteger($owner)) {
-            $result = $queryBuilder
-                ->select('tx_dlf_libraries.uid AS uid')
-                ->from('tx_dlf_libraries')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_libraries.pid', intval($pid)),
-                    $queryBuilder->expr()->eq('tx_dlf_libraries.index_name', $queryBuilder->expr()->literal($owner)),
-                    Helper::whereExpression('tx_dlf_libraries')
-                )
-                ->setMaxResults(1)
-                ->execute();
-
-            if ($resArray = $result->fetch()) {
-                $ownerUid = $resArray['uid'];
-            } else {
-                // Insert new library.
-                $libNewUid = uniqid('NEW');
-                $libData['tx_dlf_libraries'][$libNewUid] = [
-                    'pid' => $pid,
-                    'label' => $owner,
-                    'index_name' => $owner,
-                    'website' => '',
-                    'contact' => '',
-                    'image' => '',
-                    'oai_label' => '',
-                    'oai_base' => '',
-                    'opac_label' => '',
-                    'opac_base' => '',
-                    'union_label' => '',
-                    'union_base' => '',
-                ];
-                $substUid = Helper::processDBasAdmin($libData);
-                // Add new library's UID.
-                $ownerUid = $substUid[$libNewUid];
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
-                    Helper::addMessage(
-                        htmlspecialchars(sprintf(Helper::getMessage('flash.newLibrary'), $owner, $ownerUid)),
-                        Helper::getMessage('flash.attention', true),
-                        \TYPO3\CMS\Core\Messaging\FlashMessage::INFO,
-                        true
-                    );
-                }
-            }
-            $owner = $ownerUid;
-        }
-        $metadata['owner'][0] = $owner;
-        // Get UID of parent document.
-        $partof = $this->getParentDocumentUidForSaving($pid, $core, $owner);
-        // Use the date of publication or title as alternative sorting metric for parts of multi-part works.
-        if (!empty($partof)) {
-            if (
-                empty($metadata['volume'][0])
-                && !empty($metadata['year'][0])
-            ) {
-                $metadata['volume'] = $metadata['year'];
-            }
-            if (empty($metadata['volume_sorting'][0])) {
-                // If METS @ORDER is given it is preferred over year_sorting and year.
-                if (!empty($metadata['mets_order'][0])) {
-                    $metadata['volume_sorting'][0] = $metadata['mets_order'][0];
-                } elseif (!empty($metadata['year_sorting'][0])) {
-                    $metadata['volume_sorting'][0] = $metadata['year_sorting'][0];
-                } elseif (!empty($metadata['year'][0])) {
-                    $metadata['volume_sorting'][0] = $metadata['year'][0];
-                }
-            }
-            // If volume_sorting is still empty, try to use title_sorting or METS @ORDERLABEL finally (workaround for newspapers)
-            if (empty($metadata['volume_sorting'][0])) {
-                if (!empty($metadata['title_sorting'][0])) {
-                    $metadata['volume_sorting'][0] = $metadata['title_sorting'][0];
-                } elseif (!empty($metadata['mets_orderlabel'][0])) {
-                    $metadata['volume_sorting'][0] = $metadata['mets_orderlabel'][0];
-                }
-            }
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-
-        // Get metadata for lists and sorting.
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadata.is_listed AS is_listed',
-                'tx_dlf_metadata.is_sortable AS is_sortable'
-            )
-            ->from('tx_dlf_metadata')
-            ->where(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_listed', 1),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.is_sortable', 1)
-                ),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                Helper::whereExpression('tx_dlf_metadata')
-            )
-            ->execute();
-
-        $listed = [];
-        $sortable = [];
-
-        while ($resArray = $result->fetch()) {
-            if (!empty($metadata[$resArray['index_name']])) {
-                if ($resArray['is_listed']) {
-                    $listed[$resArray['index_name']] = $metadata[$resArray['index_name']];
-                }
-                if ($resArray['is_sortable']) {
-                    $sortable[$resArray['index_name']] = $metadata[$resArray['index_name']][0];
-                }
-            }
-        }
-        // Fill data array.
-        $data['tx_dlf_documents'][$this->uid] = [
-            'pid' => $pid,
-            $GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['starttime'] => 0,
-            $GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['endtime'] => 0,
-            'prod_id' => $metadata['prod_id'][0],
-            'location' => $this->location,
-            'record_id' => $metadata['record_id'][0],
-            'opac_id' => $metadata['opac_id'][0],
-            'union_id' => $metadata['union_id'][0],
-            'urn' => $metadata['urn'][0],
-            'purl' => $metadata['purl'][0],
-            'title' => $metadata['title'][0],
-            'title_sorting' => $metadata['title_sorting'][0],
-            'author' => implode('; ', $metadata['author']),
-            'year' => implode('; ', $metadata['year']),
-            'place' => implode('; ', $metadata['place']),
-            'thumbnail' => $this->_getThumbnail(true),
-            'metadata' => serialize($listed),
-            'metadata_sorting' => serialize($sortable),
-            'structure' => $metadata['type'][0],
-            'partof' => $partof,
-            'volume' => $metadata['volume'][0],
-            'volume_sorting' => $metadata['volume_sorting'][0],
-            'license' => $metadata['license'][0],
-            'terms' => $metadata['terms'][0],
-            'restrictions' => $metadata['restrictions'][0],
-            'out_of_print' => $metadata['out_of_print'][0],
-            'rights_info' => $metadata['rights_info'][0],
-            'collections' => $metadata['collection'],
-            'mets_label' => $metadata['mets_label'][0],
-            'mets_orderlabel' => $metadata['mets_orderlabel'][0],
-            'mets_order' => $metadata['mets_order'][0],
-            'owner' => $metadata['owner'][0],
-            'solrcore' => $core,
-            'status' => 0,
-            'document_format' => $metadata['document_format'][0],
-        ];
-        // Unhide hidden documents.
-        if (!empty($conf['unhideOnIndex'])) {
-            $data['tx_dlf_documents'][$this->uid][$GLOBALS['TCA']['tx_dlf_documents']['ctrl']['enablecolumns']['disabled']] = 0;
-        }
-        // Process data.
-        $newIds = Helper::processDBasAdmin($data);
-        // Replace placeholder with actual UID.
-        if (strpos($this->uid, 'NEW') === 0) {
-            $this->uid = $newIds[$this->uid];
-            $this->pid = $pid;
-            $this->parentId = $partof;
-        }
-        if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
-            Helper::addMessage(
-                htmlspecialchars(sprintf(Helper::getMessage('flash.documentSaved'), $metadata['title'][0], $this->uid)),
-                Helper::getMessage('flash.done', true),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK,
-                true
-            );
-        }
-        // Add document to index.
-        if ($core) {
-            return Indexer::add($this, $core);
-        } else {
-            $this->logger->notice('Invalid UID "' . $core . '" for Solr core');
-            return false;
-        }
-    }
-
-    /**
      * Get the ID of the parent document if the current document has one. Also save a parent document
      * to the database and the Solr index if their $pid and the current $pid differ.
      * Currently only applies to METS documents.
@@ -1502,14 +1182,14 @@ abstract class Doc
      *
      * @access protected
      *
-     * @param int $uid: The UID of the document to parse or URL to XML file
+     * @param int $location: The location URL of the XML file to parse
      * @param int $pid: If > 0, then only document with this PID gets loaded
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
      */
-    protected function __construct($uid, $pid, $preloadedDocument)
+    protected function __construct($location, $pid, $preloadedDocument)
     {
         $this->setPreloadedDocument($preloadedDocument);
         $this->init();
@@ -1520,46 +1200,38 @@ abstract class Doc
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
         $location = '';
-        // Prepare to check database for the requested document.
-        if (MathUtility::canBeInterpretedAsInteger($uid)) {
+        // Try to load METS file / IIIF manifest.
+        if ($this->setPreloadedDocument($preloadedDocument) || (GeneralUtility::isValidUrl($location)
+            && $this->load($location))) {
+            // Initialize core METS object.
+            $this->init();
+            if ($this->getDocument() !== null) {
+                // Cast to string for safety reasons.
+                $location = (string) $location;
+                $this->establishRecordId($pid);
+            } else {
+                // No METS / IIIF part found.
+                return;
+            }
+        } else {
+            // Loading failed.
+            return;
+        }
+        if (
+            !empty($location)
+            && !empty($this->recordId)
+        ) {
+            // Try to match record identifier or location (both should be unique).
             $whereClause = $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($uid)),
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.location', $queryBuilder->expr()->literal($location)),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->recordId))
+                ),
                 Helper::whereExpression('tx_dlf_documents')
             );
         } else {
-            // Try to load METS file / IIIF manifest.
-            if ($this->setPreloadedDocument($preloadedDocument) || (GeneralUtility::isValidUrl($uid)
-                && $this->load($uid))) {
-                // Initialize core METS object.
-                $this->init();
-                if ($this->getDocument() !== null) {
-                    // Cast to string for safety reasons.
-                    $location = (string) $uid;
-                    $this->establishRecordId($pid);
-                } else {
-                    // No METS / IIIF part found.
-                    return;
-                }
-            } else {
-                // Loading failed.
-                return;
-            }
-            if (
-                !empty($location)
-                && !empty($this->recordId)
-            ) {
-                // Try to match record identifier or location (both should be unique).
-                $whereClause = $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.location', $queryBuilder->expr()->literal($location)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($this->recordId))
-                    ),
-                    Helper::whereExpression('tx_dlf_documents')
-                );
-            } else {
-                // Can't persistently identify document, don't try to match at all.
-                $whereClause = '1=-1';
-            }
+            // Can't persistently identify document, don't try to match at all.
+            $whereClause = '1=-1';
         }
         // Check for PID if needed.
         if ($pid) {
@@ -1615,7 +1287,7 @@ abstract class Doc
             // Document ready!
             $this->ready = true;
         } else {
-            $this->logger->error('No document with UID ' . $uid . ' found or document not accessible');
+            $this->logger->error('No document with UID ' . $location . ' found or document not accessible');
         }
     }
 
