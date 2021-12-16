@@ -231,7 +231,7 @@ class HarvestCommand extends BaseCommand
 
             if ($document === null) {
                 // create new Document object
-                $document = $this->objectManager->get(Document::class);
+                $document = GeneralUtility::makeInstance(Document::class);
             }
 
             if ($document) {

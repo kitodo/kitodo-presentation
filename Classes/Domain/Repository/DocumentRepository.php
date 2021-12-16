@@ -58,7 +58,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
             if ($document === null) {
                 // create new (dummy) Document object
-                $document = $this->objectManager->get(Document::class);
+                $document = GeneralUtility::makeInstance(Document::class);
                 $document->setLocation($parameters['location']);
             }
 

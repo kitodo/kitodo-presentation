@@ -86,7 +86,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
                 if ($this->document === null) {
                     // create new dummy Document object
-                    $this->document = $this->objectManager->get(Document::class);
+                    $this->document = GeneralUtility::makeInstance(Document::class);
                 }
 
                 if ($this->document) {

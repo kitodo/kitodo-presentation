@@ -170,7 +170,7 @@ class IndexCommand extends BaseCommand
 
             if ($document === null) {
                 // create new Document object
-                $document = $this->objectManager->get(Document::class);
+                $document = GeneralUtility::makeInstance(Document::class);
             }
 
             // now there must exist a document object

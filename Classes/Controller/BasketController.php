@@ -556,7 +556,7 @@ class BasketController extends AbstractController
             ->send();
 
         // create entry for action log
-        $newActionLog = $this->objectManager->get(ActionLog::class);
+        $newActionLog = GeneralUtility::makeInstance(ActionLog::class);
         $newActionLog->setFileName($pdfUrl);
         $newActionLog->setCountPages($numberOfPages);
         $newActionLog->setLabel('Mail: ' . $mailObject->getMail());

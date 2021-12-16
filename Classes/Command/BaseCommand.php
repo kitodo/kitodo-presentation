@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -53,11 +52,6 @@ class BaseCommand extends Command
     protected $libraryRepository;
 
     /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
      * @var int
      */
     protected $storagePid;
@@ -79,23 +73,15 @@ class BaseCommand extends Command
     protected function initializeRepositories($storagePid)
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-            $configurationManager = $this->objectManager->get(ConfigurationManager::class);
+            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
             $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
             $configurationManager->setConfiguration($frameworkConfiguration);
 
-            $this->collectionRepository = $this->objectManager->get(
-                CollectionRepository::class
-            );
-            $this->documentRepository = $this->objectManager->get(
-                DocumentRepository::class
-            );
-            $this->libraryRepository = $this->objectManager->get(
-                LibraryRepository::class
-            );
+            $this->collectionRepository = GeneralUtility::makeInstance(CollectionRepository::class);
+            $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+            $this->libraryRepository = GeneralUtility::makeInstance(LibraryRepository::class);
         } else {
             return false;
         }
@@ -258,7 +244,7 @@ class BaseCommand extends Command
                 $document->setOwner($library);
             } else {
                 // create library
-                $newLibrary = $this->objectManager->get(Library::class);
+                $newLibrary = GeneralUtility::makeInstance(Library::class);
 
                 $newLibrary->setLabel($owner);
                 $newLibrary->setIndexName($owner);
@@ -285,7 +271,7 @@ class BaseCommand extends Command
             $this->documentRepository->update($document);
         }
 
-        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
         return $success;

@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
@@ -39,11 +38,6 @@ class DataHandler implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
      * @var DocumentRepository
      */
     protected $documentRepository;
@@ -55,11 +49,7 @@ class DataHandler implements LoggerAwareInterface
      */
     protected function initializeRepositories()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $this->documentRepository = $this->objectManager->get(
-            DocumentRepository::class
-        );
+        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
     }
 
 
