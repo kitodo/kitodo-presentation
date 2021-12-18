@@ -43,12 +43,12 @@ class CalendarController extends AbstractController
 
         // Load current document.
         $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
         }
 
-        $metadata = $this->doc->getTitledata();
+        $metadata = $this->document->getDoc()->getTitledata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {

@@ -96,7 +96,7 @@ class AudioplayerController extends AbstractController
                 (int) $requestData['page'] > 0
                 || empty($requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
                 $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
             }
