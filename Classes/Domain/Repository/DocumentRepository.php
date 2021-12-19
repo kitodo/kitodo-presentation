@@ -90,7 +90,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find the oldest document
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \Kitodo\Dlf\Domain\Model\Document|null
      */
     public function findOldestDocument()
     {
@@ -127,7 +127,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $uid
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \Kitodo\Dlf\Domain\Model\Document|null
      */
     public function findOneByIdAndSettings($uid, $settings = [])
     {
