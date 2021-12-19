@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -98,13 +99,21 @@ class Indexer
         } elseif (self::solrConnect($core, $document->getPid())) {
             $success = true;
             // Handle multi-volume documents.
-            if ($document->getDoc()->parentId) {
-                $parent = Doc::getInstance($document->getDoc()->parentId, 0, true);
-                if ($parent->ready) {
-                    $success = self::add($parent, $core);
-                } else {
-                    Helper::log('Could not load parent document with UID ' . $document->getDoc()->parentId, LOG_SEVERITY_ERROR);
-                    return false;
+            if ($parentId = $document->getPartof()) {
+                // initialize documentRepository
+                $documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+                // get parent document
+                $parent = $documentRepository->findByUid($parentId);
+                if ($parent) {
+                    // get XML document of parent
+                    $doc = Doc::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true);
+                    if ($doc !== null) {
+                        $parent->setDoc($doc);
+                        $success = self::add($parent, $core);
+                    } else {
+                        Helper::log('Could not load parent document with UID ' . $document->getDoc()->parentId, LOG_SEVERITY_ERROR);
+                        return false;
+                    }
                 }
             }
             try {
@@ -331,7 +340,7 @@ class Indexer
             } elseif (!empty($logicalUnit['thumbnailId'])) {
                 $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
             }
-            $solrDoc->setField('partof', $doc->parentId);
+            $solrDoc->setField('partof', $document->getPartof());
             $solrDoc->setField('root', $doc->rootId);
             $solrDoc->setField('sid', $logicalUnit['id']);
             // There can be only one toplevel unit per UID, independently of backend configuration
