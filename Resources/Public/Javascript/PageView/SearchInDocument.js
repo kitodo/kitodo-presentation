@@ -160,7 +160,7 @@ function getNeededQueryParams(element) {
 
     var queryParams = [];
 
-    if(id && getBaseUrl(element['uid']).split('?')[0].indexOf(element['uid']) === -1) {
+    if(id && !isUrlConfiguredAsSlug(element)) {
         queryParams.push(id);
         queryParams[id] = element['uid'];
     }
@@ -170,12 +170,26 @@ function getNeededQueryParams(element) {
         queryParams[highlightWord] = encodeURIComponent($("input[id='tx-dlf-search-in-document-query']").val());
     }
 
-    if(page) {
+    if(page && !isUrlConfiguredAsSlug(element)) {
         queryParams.push(page);
         queryParams[page] = element['page'];
     }
 
     return queryParams;
+}
+
+/**
+ * Check if the URL is configured as SLUG
+ * (id is included in main URL, not in parameter).
+ * // TODO: make it more flexible
+ *
+ * @param {array} element
+ *
+ * @returns {string}
+ */
+function isUrlConfiguredAsSlug(element) {
+    var baseUrl = getBaseUrl(element['uid']).split('?')[0]
+    return baseUrl.indexOf(element['uid']) > -1;
 }
 
 /**
@@ -193,6 +207,14 @@ function getLink(element) {
     if (baseUrl.indexOf('?') > 0) {
         queryParams = getAllQueryParams(baseUrl, queryParams);
         baseUrl = baseUrl.split('?')[0];
+    }
+
+    // replace last element of URL with page
+    if (isUrlConfiguredAsSlug(element)) {
+        var url = baseUrl.split('/');
+        url.pop();
+        url.push(element['page'])
+        baseUrl = url.join('/');
     }
 
     var link = baseUrl + '?';
@@ -234,13 +256,20 @@ function getNavigationButtons(start, numFound) {
 function getCurrentPage() {
     var page = 1;
     var queryParams = getCurrentQueryParams(getBaseUrl(" "));
+    var pageFound = false;
 
     for(var i = 0; i < queryParams.length; i++) {
         var queryParam = queryParams[i].split('=');
 
         if(decodeURIComponent(queryParam[0]) === $("input[id='tx-dlf-search-in-document-page']").attr('name')) {
             page = parseInt(queryParam[1], 10);
+            pageFound = true;
         }
+    }
+
+    if (!pageFound) {
+        var url = baseUrl.split('/');
+        page = url.pop();
     }
 
     return page;
