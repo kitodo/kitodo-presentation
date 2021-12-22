@@ -146,6 +146,20 @@ function getAllQueryParams(baseUrl, queryParams) {
 }
 
 /**
+ * Check if the URL is configured as SLUG
+ * (id is included in main URL, not in parameter).
+ * // TODO: make it more flexible
+ *
+ * @param {array} element
+ *
+ * @returns {string}
+ */
+ function isUrlConfiguredAsSlug(element) {
+    var baseUrl = getBaseUrl(element['uid']).split('?')[0];
+    return baseUrl.indexOf(element['uid']) > -1;
+}
+
+/**
  * Get needed URL query parameters.
  * It returns array of params as objects 'param' => 'value'. It contains exactly 3 params which are taken out of search result.
  *
@@ -179,20 +193,6 @@ function getNeededQueryParams(element) {
 }
 
 /**
- * Check if the URL is configured as SLUG
- * (id is included in main URL, not in parameter).
- * // TODO: make it more flexible
- *
- * @param {array} element
- *
- * @returns {string}
- */
-function isUrlConfiguredAsSlug(element) {
-    var baseUrl = getBaseUrl(element['uid']).split('?')[0]
-    return baseUrl.indexOf(element['uid']) > -1;
-}
-
-/**
  * Get snippet link.
  *
  * @param {array} element
@@ -213,7 +213,7 @@ function getLink(element) {
     if (isUrlConfiguredAsSlug(element)) {
         var url = baseUrl.split('/');
         url.pop();
-        url.push(element['page'])
+        url.push(element['page']);
         baseUrl = url.join('/');
     }
 
