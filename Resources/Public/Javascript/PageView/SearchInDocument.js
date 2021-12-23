@@ -255,7 +255,8 @@ function getNavigationButtons(start, numFound) {
  */
 function getCurrentPage() {
     var page = 1;
-    var queryParams = getCurrentQueryParams(getBaseUrl(" "));
+    var baseUrl = getBaseUrl(" ");
+    var queryParams = getCurrentQueryParams(baseUrl);
     var pageFound = false;
 
     for(var i = 0; i < queryParams.length; i++) {
@@ -271,7 +272,7 @@ function getCurrentPage() {
         var url = baseUrl.split('/');
         page = url.pop();
     }
-
+    console.log('Page for highlight: ' + page);
     return page;
 }
 
