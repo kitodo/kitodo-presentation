@@ -270,7 +270,7 @@ function getCurrentPage() {
 
     if (!pageFound) {
         var url = baseUrl.split('/');
-        page = url.pop();
+        page = parseInt(url.pop(), 10);
     }
     console.log('Page for highlight: ' + page);
     return page;
