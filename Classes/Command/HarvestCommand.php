@@ -235,9 +235,7 @@ class HarvestCommand extends BaseCommand
                 $document = GeneralUtility::makeInstance(Document::class);
             }
 
-            if ($document) {
-                $document->setLocation($docLocation);
-            }
+            $document->setLocation($docLocation);
 
             if ($this->owner !== null) {
                 $document->setOwner($this->owner);

@@ -604,7 +604,7 @@ class Helper
      * @param string $table: Get the "index_name" from this table
      * @param int $pid: Get the "index_name" from this page
      *
-     * @return string "uid" for the given index_name
+     * @return int "uid" for the given index_name
      */
     public static function getUidFromIndexName($index_name, $table, $pid = -1)
     {
@@ -640,10 +640,10 @@ class Helper
         $allResults = $result->fetchAll();
 
         if (count($allResults) == 1) {
-            return $allResults[0]['uid'];
+            return (int) $allResults[0]['uid'];
         } else {
             self::log('No UID for given index_name "' . $index_name . '" and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return '';
+            return 0;
         }
     }
 

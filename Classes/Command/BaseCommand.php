@@ -202,7 +202,7 @@ class BaseCommand extends Command
             $metadata['author'][$i] = $splitName[0];
         }
         $document->setAuthor(implode('; ', $metadata['author']));
-        $document->setThumbnail($doc->getThumbnail() ? : 'la');
+        $document->setThumbnail($doc->getThumbnail() ? : '');
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
