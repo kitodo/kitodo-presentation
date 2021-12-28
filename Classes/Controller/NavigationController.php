@@ -31,7 +31,10 @@ class NavigationController extends AbstractController
         }
         // Load current document.
         $this->loadDocument($requestData);
-        if ($this->document === null) {
+        if (
+            $this->document === null
+            || $this->document->getDoc() === null
+        ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {

@@ -72,7 +72,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
-                $this->document = $this->documentRepository->findByUid((int) $requestData['id']);
+                $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id']);
                 if ($this->document) {
                     $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
                 }

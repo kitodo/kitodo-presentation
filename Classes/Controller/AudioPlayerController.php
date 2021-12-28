@@ -85,6 +85,7 @@ class AudioplayerController extends AbstractController
         $this->loadDocument($requestData);
         if (
             $this->document === null
+            || $this->document->getDoc() === null
             || $this->document->getDoc()->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.

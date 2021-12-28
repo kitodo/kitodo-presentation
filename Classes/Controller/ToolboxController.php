@@ -279,6 +279,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->document === null
+            || $this->document->getDoc() === null
             || $this->document->getDoc()->numPages < 1
             || empty($this->extConf['fileGrpDownload'])
         ) {

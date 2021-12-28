@@ -42,7 +42,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         if (isset($parameters['id']) && MathUtility::canBeInterpretedAsInteger($parameters['id'])) {
 
-            $document = $this->findByUid($parameters['id']);
+            $document = $this->findOneByIdAndSettings($parameters['id']);
 
         } else if (isset($parameters['recordId'])) {
 
