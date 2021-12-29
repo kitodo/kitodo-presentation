@@ -900,19 +900,6 @@ abstract class Doc
     }
 
     /**
-     * Get the ID of the parent document if the current document has one. Also save a parent document
-     * to the database and the Solr index if their $pid and the current $pid differ.
-     * Currently only applies to METS documents.
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return int The parent document's id.
-     */
-    protected abstract function getParentDocumentUidForSaving($pid, $core, $owner);
-
-    /**
      * This returns $this->cPid via __get()
      *
      * @access protected

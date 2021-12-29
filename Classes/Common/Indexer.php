@@ -88,15 +88,14 @@ class Indexer
      * @access public
      *
      * @param \Kitodo\Dlf\Domain\Model\Document $document: The document to add
-     * @param int $core: UID of the Solr core to use
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document $document, $core = 0)
+    public static function add(Document $document)
     {
         if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
-        } elseif (self::solrConnect($core, $document->getPid())) {
+        } elseif (self::solrConnect($document->getSolrcore(), $document->getPid())) {
             $success = true;
             // Handle multi-volume documents.
             if ($parentId = $document->getPartof()) {
@@ -109,7 +108,7 @@ class Indexer
                     $doc = Doc::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true);
                     if ($doc !== null) {
                         $parent->setDoc($doc);
-                        $success = self::add($parent, $core);
+                        $success = self::add($parent);
                     } else {
                         Helper::log('Could not load parent document with UID ' . $document->getDoc()->parentId, LOG_SEVERITY_ERROR);
                         return false;

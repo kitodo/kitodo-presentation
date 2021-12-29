@@ -12,6 +12,11 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Command\BaseCommand;
+use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,11 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
-use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
-use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Model\Library;
 use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\BaseoaipmhException;
 
@@ -236,10 +236,7 @@ class HarvestCommand extends BaseCommand
             }
 
             $document->setLocation($docLocation);
-
-            if ($this->owner !== null) {
-                $document->setOwner($this->owner);
-            }
+            $document->setSolrcore($solrCoreUid);
 
             if ($dryRun) {
                 $io->writeln('DRY RUN: Would index ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
@@ -251,7 +248,7 @@ class HarvestCommand extends BaseCommand
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
-                Indexer::add($document, $solrCoreUid);
+                Indexer::add($document);
             }
         }
 

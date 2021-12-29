@@ -746,30 +746,6 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getParentDocumentUid()
-     */
-    protected function getParentDocumentUidForSaving($pid, $core, $owner)
-    {
-        $partof = 0;
-        // Get the closest ancestor of the current document which has a MPTR child.
-        $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->_getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
-        if (!empty($parentMptr)) {
-            $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-            if ($parentLocation != $this->location) {
-                $parentDoc = self::getInstance($parentLocation, $pid);
-                if ($parentDoc->ready) {
-                    if ($parentDoc->pid != $pid) {
-                        $parentDoc->save($pid, $core, $owner);
-                    }
-                    $partof = $parentDoc->uid;
-                }
-            }
-        }
-        return $partof;
-    }
-
-    /**
-     * {@inheritDoc}
      * @see Doc::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)

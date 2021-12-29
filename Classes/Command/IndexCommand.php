@@ -12,18 +12,18 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * CLI Command for indexing single documents into database and Solr.
@@ -187,12 +187,6 @@ class IndexCommand extends BaseCommand
             exit(1);
         }
 
-        $document->setDoc($doc);
-
-        if ($this->owner !== null) {
-            $document->setOwner($this->owner);
-        }
-
         $document->setSolrcore($solrCoreUid);
 
         if ($dryRun) {
@@ -201,10 +195,11 @@ class IndexCommand extends BaseCommand
             if ($io->isVerbose()) {
                 $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
             }
+            $document->setDoc($doc);
             // save to database
             $this->saveToDatabase($document);
             // add to index
-            Indexer::add($document, $solrCoreUid);
+            Indexer::add($document);
         }
 
         $io->success('All done!');

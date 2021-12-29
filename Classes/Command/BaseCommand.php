@@ -12,7 +12,9 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
@@ -239,26 +241,30 @@ class BaseCommand extends Command
         } else {
             // owner is not set set but found by metadata --> take it or take default library
             $owner = $metadata['owner'][0] ? : 'default';
-            $library = $this->libraryRepository->findOneByIndexName($owner);
-            if ($library) {
-                $document->setOwner($library);
+            $this->owner = $this->libraryRepository->findOneByIndexName($owner);
+            if ($this->owner) {
+                $document->setOwner($this->owner);
             } else {
                 // create library
-                $newLibrary = GeneralUtility::makeInstance(Library::class);
+                $this->owner = GeneralUtility::makeInstance(Library::class);
 
-                $newLibrary->setLabel($owner);
-                $newLibrary->setIndexName($owner);
-                $this->libraryRepository->add($newLibrary);
-                $document->setOwner($newLibrary);
+                $this->owner->setLabel($owner);
+                $this->owner->setIndexName($owner);
+                $this->libraryRepository->add($this->owner);
+                $document->setOwner($this->owner);
             }
         }
 
         // to be still (re-) implemented
         // 'metadata' => serialize($listed),
         // 'metadata_sorting' => serialize($sortable),
-        // 'partof' => $partof,
         // 'volume' => $metadata['volume'][0],
         // 'volume_sorting' => $metadata['volume_sorting'][0],
+
+        // Get UID of parent document.
+        if ($document->getDocumentFormat() === 'METS') {
+            $document->setPartof($this->getParentDocumentUidForSaving($document));
+        }
 
         $document->setMetadata('');
         $document->setMetadataSorting('');
@@ -274,7 +280,57 @@ class BaseCommand extends Command
         $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
+        $success = true;
+
         return $success;
+    }
+
+    /**
+     * Get the ID of the parent document if the current document has one.
+     * Currently only applies to METS documents.
+     *
+     * @access protected
+     *
+     * @return int The parent document's id.
+     */
+    protected function getParentDocumentUidForSaving(Document $document)
+    {
+        $doc = $document->getDoc();
+
+        if ($doc) {
+            // Get the closest ancestor of the current document which has a MPTR child.
+            $parentMptr = $doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $doc->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
+            if (!empty($parentMptr)) {
+                $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+
+                // find document object by record_id of parent
+                $parentDoc = Doc::getInstance($parentLocation, ['storagePid' => $pid]);
+
+                if ($parentDoc->recordId) {
+                    $parentDocument = $this->documentRepository->findOneByRecordId($parentDoc->recordId);
+
+                    if ($parentDocument === null) {
+                        // create new Document object
+                        $parentDocument = GeneralUtility::makeInstance(Document::class);
+                    }
+
+                    $parentDocument->setOwner($this->owner);
+                    $parentDocument->setDoc($parentDoc);
+                    $parentDocument->setLocation($parentLocation);
+                    $parentDocument->setSolrcore($document->getSolrcore());
+
+                    $success = $this->saveToDatabase($parentDocument);
+
+                    if ($success === true) {
+                        // add to index
+                        Indexer::add($parentDocument);
+                        return $parentDocument->getUid();
+                    }
+                }
+            }
+        }
+
+        return 0;
     }
 
 }

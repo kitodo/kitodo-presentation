@@ -255,7 +255,7 @@ class DataHandler implements LoggerAwareInterface
                                 $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setDoc($doc);
-                                    Indexer::add($document, $resArray['core']);
+                                    Indexer::add($document);
                                 } else {
                                     $this->logger->error('Failed to re-index document with UID ' . $id);
                                 }
@@ -338,7 +338,7 @@ class DataHandler implements LoggerAwareInterface
                         // Reindex document.
                         $doc = Doc::getInstance($id);
                         if ($doc->ready) {
-                            Indexer::add($doc, $resArray['core']);
+                            Indexer::add($doc);
                         } else {
                             $this->logger->error('Failed to re-index document with UID ' . $id);
                         }

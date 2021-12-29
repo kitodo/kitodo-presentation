@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Command\BaseCommand;
+use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,9 +23,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
-use Kitodo\Dlf\Common\Indexer;
 
 /**
  * CLI Command for re-indexing collections into database and Solr.
@@ -174,13 +174,10 @@ class ReindexCommand extends BaseCommand
                     $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 $document->setDoc($doc);
-                if ($this->owner !== null) {
-                    $document->setOwner($this->owner);
-                }
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
-                Indexer::add($document, $solrCoreUid);
+                Indexer::add($document);
             }
         }
 

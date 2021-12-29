@@ -114,7 +114,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var int
      */
-    protected $partof;
+    protected $partof = 0;
 
     /**
      * @var string

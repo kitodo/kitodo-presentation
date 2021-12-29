@@ -773,19 +773,6 @@ final class IiifManifest extends Document
     }
 
     /**
-     * Currently not supported for IIIF. Multivolume works _could_ be modelled
-     * as IIIF Collections, but we can't tell them apart from actual collections.
-     *
-     * @access protected
-     *
-     * @see Doc::getParentDocumentUidForSaving()
-     */
-    protected function getParentDocumentUidForSaving($pid, $core, $owner)
-    {
-        // Do nothing.
-    }
-
-    /**
      * {@inheritDoc}
      * @see Doc::getFullText()
      */
