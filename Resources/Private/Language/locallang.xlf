@@ -56,6 +56,12 @@
 			<trans-unit id="basket.count">
 				<source><![CDATA[%d Entries]]></source>
 			</trans-unit>
+			<trans-unit id="basket.no_entries">
+				<source><![CDATA[No entries]]></source>
+			</trans-unit>
+			<trans-unit id="basket.one_entry">
+				<source><![CDATA[One entry]]></source>
+			</trans-unit>
 			<trans-unit id="basket.cutout">
 				<source><![CDATA[Cutout]]></source>
 			</trans-unit>

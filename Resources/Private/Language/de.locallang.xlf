@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-11-05T10:14:37Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-12-29T14:02:58Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -68,6 +68,14 @@
 			<trans-unit id="basket.noTitle" approved="yes">
 				<source><![CDATA[No title]]></source>
 				<target><![CDATA[Kein Titel vorhanden]]></target>
+			</trans-unit>
+			<trans-unit id="basket.no_entries" approved="yes">
+				<source><![CDATA[No entries]]></source>
+				<target><![CDATA[Keine Einträge]]></target>
+			</trans-unit>
+			<trans-unit id="basket.one_entry" approved="yes">
+				<source><![CDATA[One entry]]></source>
+				<target><![CDATA[Ein Eintrag]]></target>
 			</trans-unit>
 			<trans-unit id="basket.remove" approved="yes">
 				<source><![CDATA[Remove]]></source>
@@ -192,6 +200,18 @@
 			<trans-unit id="listview.skip" approved="yes">
 				<source><![CDATA[...]]></source>
 				<target><![CDATA[...]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createMetadata" approved="yes">
+				<source><![CDATA[Create metadata]]></source>
+				<target><![CDATA[Metadaten Konfiguration anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createSolrCore" approved="yes">
+				<source><![CDATA[Create solr core]]></source>
+				<target><![CDATA[Solr Kern anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createStructure" approved="yes">
+				<source><![CDATA[Create structure]]></source>
+				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
 			</trans-unit>
 			<trans-unit id="nextPage" approved="yes">
 				<source><![CDATA[Next Page]]></source>
@@ -405,10 +425,6 @@
 				<source><![CDATA[Loading...]]></source>
 				<target><![CDATA[Laden...]]></target>
 			</trans-unit>
-			<trans-unit id="tools.searchindocument.logicalPage" approved="yes">
-				<source><![CDATA[]]></source>
-				<target><![CDATA[Seite]]></target>
-			</trans-unit>
 			<trans-unit id="tools.searchindocument.next" approved="yes">
 				<source><![CDATA[next]]></source>
 				<target><![CDATA[weiter]]></target>
@@ -421,17 +437,9 @@
 				<source><![CDATA[previous]]></source>
 				<target><![CDATA[zurück]]></target>
 			</trans-unit>
-			<trans-unit id="tools.searchindocument.query" approved="yes">
-				<source><![CDATA[]]></source>
-				<target><![CDATA[Suchen nach:]]></target>
-			</trans-unit>
 			<trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
 				<source><![CDATA[Search in document]]></source>
 				<target><![CDATA[Im Dokument suchen]]></target>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.submit" approved="yes">
-				<source><![CDATA[]]></source>
-				<target><![CDATA[Suchen]]></target>
 			</trans-unit>
 			<trans-unit id="volume" approved="yes">
 				<source><![CDATA[volume]]></source>
@@ -452,18 +460,6 @@
 			<trans-unit id="zoomOut" approved="yes">
 				<source><![CDATA[Zoom Out]]></source>
 				<target><![CDATA[Ansicht verkleinern]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createSolrCore" approved="yes">
-				<source><![CDATA[Create solr core]]></source>
-				<target><![CDATA[Solr Kern anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createStructure" approved="yes">
-				<source><![CDATA[Create structure]]></source>
-				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createMetadata" approved="yes">
-				<source><![CDATA[Create metadata]]></source>
-				<target><![CDATA[Metadaten Konfiguration anlegen]]></target>
 			</trans-unit>
 		</body>
 	</file>

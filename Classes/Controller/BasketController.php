@@ -163,12 +163,11 @@ class BasketController extends AbstractController
 
         $basket = $this->getBasketData();
 
+        $countDocs = 0;
         if ($basket->getDocIds()) {
-            $count = sprintf(LocalizationUtility::translate('basket.count', 'dlf'), count(json_decode($basket->getDocIds())));
-        } else {
-            $count = sprintf(LocalizationUtility::translate('basket.count', 'dlf'), 0);
+            $countDocs = count(json_decode($basket->getDocIds(), true));
         }
-        $this->view->assign('count', $count);
+        $this->view->assign('countDocs', $countDocs);
 
         $allMails = $this->mailRepository->findAllWithPid($this->settings['pages']);
 
