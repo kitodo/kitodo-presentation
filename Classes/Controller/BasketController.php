@@ -20,8 +20,6 @@ use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -223,16 +221,9 @@ class BasketController extends AbstractController
         // session doesnt exists
         if ($basket === null) {
             // create new basket in db
-            $basket = new Basket();
+            $basket = GeneralUtility::makeInstance(Basket::class);
             $basket->setSessionId($sessionId);
             $basket->setFeUserId($GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
-
-            $this->basketRepository->add($basket);
-
-            $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-            $persistenceManager->persistAll();
-
-            return $basket;
         }
 
         return $basket;
@@ -304,11 +295,11 @@ class BasketController extends AbstractController
     protected function getDocumentData($id, $data)
     {
         // get document instance to load further information
-        $document = Doc::getInstance($id, 0);
-        if ($document) {
+        $this->loadDocument(['id' => $id]);
+        if ($this->document) {
             // replace url param placeholder
             $urlParams = str_replace("##page##", (int) $data['page'], $this->settings['pdfparams']);
-            $urlParams = str_replace("##docId##", $document->recordId, $urlParams);
+            $urlParams = str_replace("##docId##", $this->document->getRecordId(), $urlParams);
             $urlParams = str_replace("##startpage##", (int) $data['startpage'], $urlParams);
             if ($data['startpage'] != $data['endpage']) {
                 $urlParams = str_replace("##endpage##", $data['endpage'] === "" ? "" : (int) $data['endpage'], $urlParams);
@@ -324,7 +315,7 @@ class BasketController extends AbstractController
 
             $downloadUrl = $this->settings['pdfgenerate'] . $urlParams;
 
-            $title = $document->getTitle($id, true);
+            $title = $this->document->getTitle();
             if (empty($title)) {
                 $title = LocalizationUtility::translate('basket.noTitle', 'dlf') ? : '';
             }
@@ -354,7 +345,7 @@ class BasketController extends AbstractController
                 'downloadLink' => $downloadLink,
                 'pageNums' => $pageNums,
                 'urlParams' => $urlParams,
-                'record_id' => $document->recordId,
+                'record_id' => $this->document->getRecordId(),
             ];
         }
         return false;
@@ -449,7 +440,11 @@ class BasketController extends AbstractController
             }
 
             $basket->setDocIds(json_encode($items));
-            $this->basketRepository->update($basket);
+            if ($basket->getUid() === null) {
+                $this->basketRepository->add($basket);
+            } else {
+                $this->basketRepository->update($basket);
+            }
         }
         $this->view->assign('pregenerateJs', $output);
 
@@ -615,7 +610,7 @@ class BasketController extends AbstractController
             $pdfUrl = trim($pdfUrl, $this->settings['pdfparamseparator']);
         }
 
-        $actionLog = new ActionLog();
+        $actionLog = GeneralUtility::makeInstance(ActionLog::class);
         // protocol
         $actionLog->setPid($this->settings['pages']);
         $actionLog->setFileName($pdfUrl);
