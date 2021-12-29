@@ -237,8 +237,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        $resArray = $result->fetch();
-                        if ($resArray !== null) {
+                        if ($resArray = $result->fetch()) {
                             if ($resArray['hidden']) {
                                 // Establish Solr connection.
                                 $solr = Solr::getInstance($resArray['core']);
@@ -315,10 +314,7 @@ class DataHandler implements LoggerAwareInterface
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) == 1) {
-                $resArray = $allResults[0];
+            if ($resArray = $result->fetch()) {
                 switch ($command) {
                     case 'move':
                     case 'delete':
@@ -336,9 +332,11 @@ class DataHandler implements LoggerAwareInterface
                         }
                     case 'undelete':
                         // Reindex document.
-                        $doc = Doc::getInstance($id);
-                        if ($doc->ready) {
-                            Indexer::add($doc);
+                        $document = $this->documentRepository->findByUid($id);
+                        $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                        if ($document !== null && $doc !== null) {
+                            $document->setDoc($doc);
+                            Indexer::add($document);
                         } else {
                             $this->logger->error('Failed to re-index document with UID ' . $id);
                         }
@@ -370,10 +368,7 @@ class DataHandler implements LoggerAwareInterface
                     ->setMaxResults(1)
                     ->execute();
 
-                $allResults = $result->fetchAll();
-
-                if (count($allResults) == 1) {
-                    $resArray = $allResults[0];
+                if ($resArray = $result->fetch()) {
                     // Establish Solr connection.
                     $solr = Solr::getInstance();
                     if ($solr->ready) {

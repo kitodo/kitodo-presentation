@@ -50,7 +50,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
-            $doc = Doc::getInstance($parameters['location'], ['storagePid' => $this->storagePid], true);
+            $doc = Doc::getInstance($parameters['location'], [], true);
 
             if ($doc->recordId) {
                 $document = $this->findOneByRecordId($doc->recordId);
@@ -65,7 +65,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         if ($document !== null && $doc === null) {
-            $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
+            $doc = Doc::getInstance($document->getLocation(), [], true);
         }
 
         if ($doc !== null) {

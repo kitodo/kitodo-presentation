@@ -364,6 +364,7 @@ class BasketController extends AbstractController
     protected function addToBasket($_piVars, $basket)
     {
         $output = '';
+
         if (!$_piVars['startpage']) {
             $page = 0;
         } else {
@@ -389,16 +390,23 @@ class BasketController extends AbstractController
                 $items = [];
             }
             // get document instance to load further information
-            $document = Doc::getInstance($documentItem['id'], 0);
+            $this->loadDocument(['id' => $documentItem['id']]);
+            if (
+                $this->document === null
+                || $this->document->getDoc() === null
+            ) {
+                // Quit without doing anything if required variables are not set.
+                return;
+            }
             // set endpage for toc and subentry based on logid
             if (($_piVars['addToBasket'] == 'subentry') or ($_piVars['addToBasket'] == 'toc')) {
-                $smLinks = $document->smLinks;
+                $smLinks = $this->document->getDoc()->smLinks;
                 $pageCounter = sizeof($smLinks['l2p'][$_piVars['logId']]);
                 $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
             }
             // add whole document
             if ($_piVars['addToBasket'] == 'list') {
-                $documentItem['endpage'] = $document->numPages;
+                $documentItem['endpage'] = $this->document->getDoc()->numPages;
             }
             $arrayKey = $documentItem['id'] . '_' . $page;
             if (!empty($documentItem['startX'])) {
