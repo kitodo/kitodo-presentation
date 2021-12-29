@@ -613,7 +613,7 @@ class Helper
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
             self::log('Invalid UID ' . $index_name . ' or table "' . $table . '"', LOG_SEVERITY_ERROR);
-            return '';
+            return 0;
         }
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
