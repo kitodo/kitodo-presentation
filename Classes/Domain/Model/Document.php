@@ -27,7 +27,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     protected $tstamp;
 
     /**
-     * @var \Kitodo\Dlf\Common\Doc
+     * @var \Kitodo\Dlf\Common\Doc|null
      */
     protected $doc = null;
 

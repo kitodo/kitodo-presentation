@@ -204,7 +204,7 @@ class BaseCommand extends Command
             $metadata['author'][$i] = $splitName[0];
         }
         $document->setAuthor(implode('; ', $metadata['author']));
-        $document->setThumbnail($doc->getThumbnail() ? : '');
+        $document->setThumbnail($doc->thumbnail ? : '');
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
@@ -297,14 +297,14 @@ class BaseCommand extends Command
     {
         $doc = $document->getDoc();
 
-        if ($doc) {
+        if ($doc !== null) {
             // Get the closest ancestor of the current document which has a MPTR child.
             $parentMptr = $doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $doc->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
             if (!empty($parentMptr)) {
                 $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
 
                 // find document object by record_id of parent
-                $parentDoc = Doc::getInstance($parentLocation, ['storagePid' => $pid]);
+                $parentDoc = Doc::getInstance($parentLocation, ['storagePid' => $this->storagePid]);
 
                 if ($parentDoc->recordId) {
                     $parentDocument = $this->documentRepository->findOneByRecordId($parentDoc->recordId);
