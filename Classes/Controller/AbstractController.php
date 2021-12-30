@@ -44,7 +44,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * @var
+     * @var array
+     * @access protected
      */
     protected $extConf;
 
@@ -77,22 +78,26 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id']);
                 if ($this->document) {
                     $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                } else {
+                    $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
                 }
             } else if (GeneralUtility::isValidUrl($requestData['id'])) {
 
                 $doc = Doc::getInstance($requestData['id'], $this->settings, true);
 
-                if ($doc->recordId) {
-                    $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
-                }
+                if ($doc !== null) {
+                    if ($doc->recordId) {
+                        $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                    }
 
-                if ($this->document === null) {
-                    // create new dummy Document object
-                    $this->document = GeneralUtility::makeInstance(Document::class);
-                }
+                    if ($this->document === null) {
+                        // create new dummy Document object
+                        $this->document = GeneralUtility::makeInstance(Document::class);
+                    }
 
-                if ($this->document) {
                     $this->document->setLocation($requestData['id']);
+                } else {
+                    $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');
                 }
             }
 
@@ -113,7 +118,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 }
             }
         } else {
-            $this->logger->error('Invalid UID ' . $requestData['id'] . ' or PID ' . $this->settings['pages'] . ' for document loading');
+            $this->logger->error('Invalid ID "' . $requestData['id'] . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
     }
 

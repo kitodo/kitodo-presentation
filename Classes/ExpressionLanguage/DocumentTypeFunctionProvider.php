@@ -151,22 +151,26 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id'], ['storagePid' => $pid]);
                 if ($this->document) {
                     $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                } else {
+                    $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
                 }
             } else if (GeneralUtility::isValidUrl($requestData['id'])) {
 
                 $doc = Doc::getInstance($requestData['id'], ['storagePid' => $pid], true);
 
-                if ($doc->recordId) {
-                    $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
-                }
+                if ($doc !== null) {
+                    if ($doc->recordId) {
+                        $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                    }
 
-                if ($this->document === null) {
-                    // create new dummy Document object
-                    $this->document = GeneralUtility::makeInstance(Document::class);
-                }
+                    if ($this->document === null) {
+                        // create new dummy Document object
+                        $this->document = GeneralUtility::makeInstance(Document::class);
+                    }
 
-                if ($this->document) {
                     $this->document->setLocation($requestData['id']);
+                } else {
+                    $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');
                 }
             }
 
@@ -179,7 +183,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
 
             if ($this->document !== null) {
-                $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                $doc = Doc::getInstance($this->document->getLocation(), $pid, true);
                 if ($this->document !== null && $doc !== null) {
                     $this->document->setDoc($doc);
                 } else {
@@ -187,7 +191,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
             }
         } else {
-            $this->logger->error('Invalid UID ' . $requestData['id'] . ' or PID ' . $this->settings['pages'] . ' for document loading');
+            $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
         }
     }
 }
