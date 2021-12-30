@@ -57,7 +57,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected $document;
 
     /**
-     * Loads the current document into $this->doc
+     * Loads the current document into $this->document
      *
      * @access protected
      *

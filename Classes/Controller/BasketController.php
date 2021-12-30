@@ -420,7 +420,7 @@ class BasketController extends AbstractController
                 $items[$arrayKey] = $documentItem;
                 // replace url param placeholder
                 $pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->settings['pdfparams']);
-                $pdfParams = str_replace("##docId##", $document->recordId, $pdfParams);
+                $pdfParams = str_replace("##docId##", $this->document->getRecordId(), $pdfParams);
                 $pdfParams = str_replace("##startx##", $documentItem['startX'], $pdfParams);
                 $pdfParams = str_replace("##starty##", $documentItem['startY'], $pdfParams);
                 $pdfParams = str_replace("##endx##", $documentItem['endX'], $pdfParams);

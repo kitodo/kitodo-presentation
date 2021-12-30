@@ -68,7 +68,7 @@ class BaseCommand extends Command
      *
      * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependancy Injection.
      *
-     * @param string|string[]|bool|null $inputPid possible pid
+     * @param int $storagePid The storage pid
      *
      * @return bool
      */
