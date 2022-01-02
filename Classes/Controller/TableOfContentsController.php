@@ -149,27 +149,24 @@ class TableOfContentsController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-
         // Check for typoscript configuration to prevent fatal error.
         if (empty($this->settings['menuConf'])) {
             $this->logger->warning('Incomplete plugin configuration');
         }
 
-        $this->view->assign('toc', $this->makeMenuArray($requestData));
+        $this->view->assign('toc', $this->makeMenuArray());
     }
 
     /**
      * This builds a menu array for HMENU
      *
      * @access public
-     * @param array $requestData
      * @return array HMENU array
      */
-    public function makeMenuArray($requestData)
+    public function makeMenuArray()
     {
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if (
             $this->document === null
             || $this->document->getDoc() === null
@@ -177,23 +174,23 @@ class TableOfContentsController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return [];
         } else {
-            if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
+            if (!empty($this->requestData['logicalPage'])) {
+                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
                 // The logical page parameter should not appear again
-                unset($requestData['logicalPage']);
+                unset($this->requestData['logicalPage']);
             }
             // Set default values for page if not set.
             // $this->piVars['page'] may be integer or string (physical structure @ID)
             if (
-                (int) $requestData['page'] > 0
-                || empty($requestData['page'])
+                (int) $this->requestData['page'] > 0
+                || empty($this->requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'],
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'],
                     1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
+                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
             }
-            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'],
+            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'],
                 0, 1, 0);
         }
         $menuArray = [];
@@ -204,17 +201,17 @@ class TableOfContentsController extends AbstractController
         ) {
             // Get all logical units the current page or track is a part of.
             if (
-                !empty($requestData['page'])
+                !empty($this->requestData['page'])
                 && !empty($this->document->getDoc()->physicalStructure)
             ) {
                 $this->activeEntries = array_merge((array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[0]],
-                    (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$requestData['page']]]);
+                    (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]]);
                 if (
-                    !empty($requestData['double'])
-                    && $requestData['page'] < $this->document->getDoc()->numPages
+                    !empty($this->requestData['double'])
+                    && $this->requestData['page'] < $this->document->getDoc()->numPages
                 ) {
                     $this->activeEntries = array_merge($this->activeEntries,
-                        (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$requestData['page'] + 1]]);
+                        (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page'] + 1]]);
                 }
             }
             // Go through table of contents and create all menu entries.

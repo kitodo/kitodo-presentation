@@ -44,18 +44,54 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * @var array
-     * @access protected
-     */
-    protected $extConf;
-
-    /**
      * This holds the current document
      *
      * @var \Kitodo\Dlf\Domain\Model\Document
      * @access protected
      */
     protected $document;
+
+    /**
+     * @var array
+     * @access protected
+     */
+    protected $extConf;
+
+    /**
+     * This holds the request parameter
+     *
+     * @var array
+     * @access protected
+     */
+    protected $requestData;
+
+    /**
+     * This holds some common data for the fluid view
+     *
+     * @var array
+     * @access protected
+     */
+    protected $viewData;
+
+    /**
+     * Initialize the plugin controller
+     *
+     * @access protected
+     * @return void
+     */
+     protected function initialize()
+     {
+        $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
+        if (empty($this->requestData['page'])) {
+            $this->requestData['page'] = 1;
+        }
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+
+        $this->viewData = [
+            'pageUid' => $GLOBALS['TSFE']->id,
+            'requestData' => $this->requestData
+        ];
+     }
 
     /**
      * Loads the current document into $this->document
@@ -132,4 +168,15 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         return $GLOBALS['LANG'];
     }
 
+    /**
+     * This is the constructor
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->initialize();
+    }
 }

@@ -24,13 +24,8 @@ class NavigationController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-
-        if (empty($requestData['page'])) {
-            $requestData['page'] = 1;
-        }
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if (
             $this->document === null
             || $this->document->getDoc() === null
@@ -40,35 +35,34 @@ class NavigationController extends AbstractController
         } else {
             // Set default values if not set.
             if ($this->document->getDoc()->numPages > 0) {
-                if (!empty($requestData['logicalPage'])) {
-                    $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
+                if (!empty($this->requestData['logicalPage'])) {
+                    $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
                     // The logical page parameter should not appear
-                    unset($requestData['logicalPage']);
+                    unset($this->requestData['logicalPage']);
                 }
                 // Set default values if not set.
-                // $requestData['page'] may be integer or string (physical structure @ID)
+                // $this->requestData['page'] may be integer or string (physical structure @ID)
                 if (
-                    (int) $requestData['page'] > 0
-                    || empty($requestData['page'])
+                    (int) $this->requestData['page'] > 0
+                    || empty($this->requestData['page'])
                 ) {
-                    $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+                    $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
                 } else {
-                    $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
+                    $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
                 }
-                $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
+                $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
             } else {
-                $requestData['page'] = 0;
-                $requestData['double'] = 0;
+                $this->requestData['page'] = 0;
+                $this->requestData['double'] = 0;
             }
         }
 
         // Steps for X pages backward / forward. Double page view uses double steps.
-        $pageSteps = $this->settings['pageStep'] * ($requestData['double'] + 1);
+        $pageSteps = $this->settings['pageStep'] * ($this->requestData['double'] + 1);
 
-        $this->view->assign('page', $requestData['page']);
         $this->view->assign('pageSteps', $pageSteps);
-        $this->view->assign('double', $requestData['double']);
         $this->view->assign('numPages', $this->document->getDoc()->numPages);
+        $this->view->assign('viewData', $this->viewData);
 
         $pageOptions = [];
         for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {

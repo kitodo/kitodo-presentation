@@ -84,24 +84,24 @@ class BasketController extends AbstractController
      */
     public function basketAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
+        $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
+        unset($this->requestData['__referrer'], $this->requestData['__trustedProperties']);
 
         $basket = $this->getBasketData();
 
         // action remove from basket
-        if ($requestData['basket_action'] === 'remove') {
+        if ($this->requestData['basket_action'] === 'remove') {
             // remove entry from list
-            if (isset($requestData['selected'])) {
-                $basket = $this->removeFromBasket($requestData, $basket);
+            if (isset($this->requestData['selected'])) {
+                $basket = $this->removeFromBasket($this->requestData, $basket);
             }
         }
         // action remove from basket
-        if ($requestData['basket_action'] == 'download') {
+        if ($this->requestData['basket_action'] == 'download') {
             // open selected documents
-            if (isset($requestData['selected'])) {
+            if (isset($this->requestData['selected'])) {
                 $pdfUrl = $this->settings['pdfgenerate'];
-                foreach ($requestData['selected'] as $docValue) {
+                foreach ($this->requestData['selected'] as $docValue) {
                     if ($docValue['id']) {
                         $docData = $this->getDocumentData($docValue['id'], $docValue);
                         $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
@@ -111,16 +111,16 @@ class BasketController extends AbstractController
             }
         }
         // action print from basket
-        if ($requestData['print_action']) {
+        if ($this->requestData['print_action']) {
             // open selected documents
-            if (isset($requestData['selected'])) {
-                $this->printDocument($requestData, $basket);
+            if (isset($this->requestData['selected'])) {
+                $this->printDocument($basket);
             }
         }
         // action send mail
-        if ($requestData['mail_action']) {
-            if (isset($requestData['selected'])) {
-                $this->sendMail($requestData);
+        if ($this->requestData['mail_action']) {
+            if (isset($this->requestData['selected'])) {
+                $this->sendMail();
             }
         }
 
@@ -134,16 +134,13 @@ class BasketController extends AbstractController
      */
     public function addAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         $basket = $this->getBasketData();
 
         if (
-            !empty($requestData['id'])
-            && $requestData['addToBasket']
+            !empty($this->requestData['id'])
+            && $this->requestData['addToBasket']
         ) {
-            $basket = $this->addToBasket($requestData, $basket);
+            $basket = $this->addToBasket($this->requestData, $basket);
         }
 
         $this->redirect('main');
@@ -156,9 +153,6 @@ class BasketController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         $basket = $this->getBasketData();
 
         $countDocs = 0;
@@ -508,10 +502,10 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    protected function sendMail($requestData)
+    protected function sendMail()
     {
         // send mail
-        $mailId = $requestData['mail_action'];
+        $mailId = $this->requestData['mail_action'];
 
         $mailObject = $this->mailRepository->findByUid(intval($mailId))->getFirst();
 
@@ -519,7 +513,7 @@ class BasketController extends AbstractController
         $numberOfPages = 0;
         $pdfUrl = $this->settings['pdfdownload'];
         // prepare links
-        foreach ($requestData['selected'] as $docValue) {
+        foreach ($this->requestData['selected'] as $docValue) {
             if ($docValue['id']) {
                 $explodeId = explode("_", $docValue['id']);
                 $docData = $this->getDocumentData($explodeId[0], $docValue);
@@ -586,11 +580,11 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    protected function printDocument($requestData, $basket)
+    protected function printDocument($basket)
     {
         $pdfUrl = $this->settings['pdfprint'];
         $numberOfPages = 0;
-        foreach ($requestData['selected'] as $docId => $docValue) {
+        foreach ($this->requestData['selected'] as $docId => $docValue) {
             if ($docValue['id']) {
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
@@ -598,7 +592,7 @@ class BasketController extends AbstractController
             }
         }
         // get printer data
-        $printerId = $requestData['print_action'];
+        $printerId = $this->requestData['print_action'];
 
         // get id from db and send selected doc download link
         $printer = $this->printerRepository->findOneByUid($printerId);
@@ -607,7 +601,7 @@ class BasketController extends AbstractController
         if ($printer) {
             $pdfUrl = $printer->getPrint();
             $numberOfPages = 0;
-            foreach ($requestData['selected'] as $docId => $docValue) {
+            foreach ($this->requestData['selected'] as $docId => $docValue) {
                 if ($docValue['id']) {
                     $explodeId = explode("_", $docId);
                     $docData = $this->getDocumentData($explodeId[0], $docValue);

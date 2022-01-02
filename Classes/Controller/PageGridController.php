@@ -23,12 +23,9 @@ class PageGridController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if (
             $this->document === null
             || $this->document->getDoc()->numPages < 1
@@ -44,12 +41,12 @@ class PageGridController extends AbstractController
         // Iterate through visible page set and display thumbnails.
         for ($i = 1; $i < $numPages; $i++) {
             $foundEntry = $this->getEntry($i, $extConf['fileGrpThumbs']);
-            $foundEntry['state'] = ($i == $requestData['page']) ? 'cur' : 'no';
+            $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
             $entryArray[] = $foundEntry;
         }
 
         $this->view->assign('pageGridEntries', $entryArray);
-        $this->view->assign('docUid', $requestData['id']);
+        $this->view->assign('docUid', $this->requestData['id']);
     }
 
     /**

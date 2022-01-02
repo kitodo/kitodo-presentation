@@ -33,16 +33,13 @@ class CalendarController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         // Set initial document (anchor or year file) if configured.
-        if (empty($requestData['id']) && !empty($this->settings['initialDocument'])) {
-            $requestData['id'] = $this->settings['initialDocument'];
+        if (empty($this->requestData['id']) && !empty($this->settings['initialDocument'])) {
+            $this->requestData['id'] = $this->settings['initialDocument'];
         }
 
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -58,10 +55,10 @@ class CalendarController extends AbstractController
         switch ($type) {
             case 'newspaper':
             case 'ephemera':
-                $this->forward('years', null, null, $requestData);
+                $this->forward('years', null, null, $this->requestData);
                 break;
             case 'year':
-                $this->forward('calendar', null, null, $requestData);
+                $this->forward('calendar', null, null, $this->requestData);
                 break;
             case 'issue':
             default:
@@ -82,17 +79,14 @@ class CalendarController extends AbstractController
      */
     public function calendarAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         // access arguments passed by the mainAction()
         $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainrequestData);
 
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -189,16 +183,14 @@ class CalendarController extends AbstractController
      */
     public function yearsAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-
         // access arguments passed by the mainAction()
         $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainrequestData);
 
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;

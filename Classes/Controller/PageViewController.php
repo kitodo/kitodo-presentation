@@ -60,13 +60,10 @@ class PageViewController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if (
             $this->document === null
             || $this->document->getDoc()->numPages < 1
@@ -74,28 +71,28 @@ class PageViewController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return;
         } else {
-            if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->document->getDoc()->getPhysicalPage($requestData['logicalPage']);
+            if (!empty($this->requestData['logicalPage'])) {
+                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
                 // The logical page parameter should not appear again
-                unset($requestData['logicalPage']);
+                unset($this->requestData['logicalPage']);
             }
             // Set default values if not set.
-            // $requestData['page'] may be integer or string (physical structure @ID)
-            if ((int) $requestData['page'] > 0 || empty($requestData['page'])) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+            // $this->requestData['page'] may be integer or string (physical structure @ID)
+            if ((int) $this->requestData['page'] > 0 || empty($this->requestData['page'])) {
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->document->getDoc()->physicalStructure);
+                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
             }
-            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
+            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         }
         // Get image data.
-        $this->images[0] = $this->getImage($requestData['page']);
-        $this->fulltexts[0] = $this->getFulltext($requestData['page']);
-        $this->annotationContainers[0] = $this->getAnnotationContainers($requestData['page']);
-        if ($requestData['double'] && $requestData['page'] < $this->document->getDoc()->numPages) {
-            $this->images[1] = $this->getImage($requestData['page'] + 1);
-            $this->fulltexts[1] = $this->getFulltext($requestData['page'] + 1);
-            $this->annotationContainers[1] = $this->getAnnotationContainers($requestData['page'] + 1);
+        $this->images[0] = $this->getImage($this->requestData['page']);
+        $this->fulltexts[0] = $this->getFulltext($this->requestData['page']);
+        $this->annotationContainers[0] = $this->getAnnotationContainers($this->requestData['page']);
+        if ($this->requestData['double'] && $this->requestData['page'] < $this->document->getDoc()->numPages) {
+            $this->images[1] = $this->getImage($this->requestData['page'] + 1);
+            $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
+            $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
         }
 
         // Get the controls for the map.
@@ -106,8 +103,8 @@ class PageViewController extends AbstractController
         $this->addViewerJS();
 
         $this->view->assign('images', $this->images);
-        $this->view->assign('docId', $requestData['id']);
-        $this->view->assign('page', $requestData['page']);
+        $this->view->assign('docId', $this->requestData['id']);
+        $this->view->assign('page', $this->requestData['page']);
     }
 
     /**

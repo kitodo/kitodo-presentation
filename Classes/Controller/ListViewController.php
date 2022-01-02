@@ -321,11 +321,9 @@ class ListViewController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-
-        $sort = $requestData['sort'];
-        $pointer = $requestData['pointer'];
-        $logicalPage = $requestData['logicalPage'];
+        $sort = $this->requestData['sort'];
+        $pointer = $this->requestData['pointer'];
+        $logicalPage = $this->requestData['logicalPage'];
 
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
@@ -413,10 +411,10 @@ class ListViewController extends AbstractController
 
         // Pagination of Results
         // pass the currentPage to the fluid template to calculate current index of search result
-        if (empty($requestData['@widget_0'])) {
+        if (empty($this->requestData['@widget_0'])) {
             $widgetPage = ['currentPage' => 1];
         } else {
-            $widgetPage = $requestData['@widget_0'];
+            $widgetPage = $this->requestData['@widget_0'];
         }
 
         // convert documentList to array --> use widget.pagination viewhelper
