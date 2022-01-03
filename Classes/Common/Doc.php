@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
@@ -432,6 +433,10 @@ abstract class Doc
         $xml = null;
         $iiif = null;
 
+        if ($instance = self::getDocCache($location)) {
+            return $instance;
+        }
+
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
             // Load extension configuration
@@ -474,6 +479,7 @@ abstract class Doc
             $instance = new IiifManifest($location, $pid, $iiif);
         }
 
+        self::setDocCache($location, $instance);
         return $instance;
     }
 
@@ -1244,4 +1250,36 @@ abstract class Doc
             $this->$method($value);
         }
     }
+
+    /**
+     * get Cache Hit for $doc
+     *
+     * @param string $location
+     * @return Doc|false
+     */
+    private static function getDocCache(string $location)
+    {
+        $cacheIdentifier = md5($location);
+        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
+        $cacheHit = $cache->get($cacheIdentifier);
+
+        return $cacheHit;
+    }
+
+    /**
+     * set Cache for $doc
+     *
+     * @param string $location
+     * @param Doc $doc
+     * @return void
+     */
+    private static function setDocCache(string $location, Doc $doc)
+    {
+        $cacheIdentifier = md5($location);
+        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
+
+        // Save value in cache
+        $cache->set($cacheIdentifier, $doc);
+    }
+
 }

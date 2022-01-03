@@ -124,10 +124,10 @@ class ListViewController extends AbstractController
 
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
                     } elseif ($index_name == 'language' && !empty($value)) {
                         // Translate ISO 639 language code.
                         $value = htmlspecialchars(Helper::getLanguageName($value));
@@ -241,11 +241,11 @@ class ListViewController extends AbstractController
                         $value = htmlspecialchars($value);
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
                         $_value = $value;
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
                         // Add page number for single pages.
                         if ($_value == 'page') {
                             $value .= ' ' . intval($subpart['page']);
@@ -305,11 +305,11 @@ class ListViewController extends AbstractController
             if ($metadata->getIsListed()) {
                 $this->metadata[$metadata->getIndexName()] = [
                     'wrap' => $metadata->getWrap(),
-                    'label' => Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages'])
+                    'label' => Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['storagePid'])
                 ];
             }
             if ($metadata->getIsSortable()) {
-                $this->sortables[$metadata->getIndexName()] = Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages']);
+                $this->sortables[$metadata->getIndexName()] = Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['storagePid']);
             }
         }
     }

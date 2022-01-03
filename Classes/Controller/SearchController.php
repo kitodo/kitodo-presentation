@@ -68,7 +68,7 @@ class SearchController extends AbstractController
             }
         } else {
             // Retain given search field if valid.
-            $query = Solr::escapeQueryKeepField(trim($this->requestData['query']), $this->settings['pages']);
+            $query = Solr::escapeQueryKeepField(trim($this->requestData['query']), $this->settings['storagePid']);
         }
         // Add extended search query.
         if (
@@ -87,7 +87,7 @@ class SearchController extends AbstractController
                         if (!empty($query)) {
                             $query .= ' ' . $this->requestData['extOperator'][$i] . ' ';
                         }
-                        $query .= Indexer::getIndexFieldName($this->requestData['extField'][$i], $this->settings['pages']) . ':(' . Solr::escapeQuery($this->requestData['extQuery'][$i]) . ')';
+                        $query .= Indexer::getIndexFieldName($this->requestData['extField'][$i], $this->settings['storagePid']) . ':(' . Solr::escapeQuery($this->requestData['extQuery'][$i]) . ')';
                     }
                 }
             }
@@ -124,9 +124,9 @@ class SearchController extends AbstractController
                 !empty($this->requestData['collection'])
                 && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->requestData['collection'])
             ) {
-                $index_name = Helper::getIndexNameFromUid($this->requestData['collection'], 'tx_dlf_collections', $this->settings['pages']);
+                $index_name = Helper::getIndexNameFromUid($this->requestData['collection'], 'tx_dlf_collections', $this->settings['storagePid']);
                 $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
-                $label .= ' ' . sprintf(LocalizationUtility::translate('search.in', 'dlf'), Helper::translate($index_name, 'tx_dlf_collections', $this->settings['pages']));
+                $label .= ' ' . sprintf(LocalizationUtility::translate('search.in', 'dlf'), Helper::translate($index_name, 'tx_dlf_collections', $this->settings['storagePid']));
             }
         }
         // Add filter query for collection restrictions.
@@ -134,7 +134,7 @@ class SearchController extends AbstractController
             $collIds = explode(',', $this->settings['collections']);
             $collIndexNames = [];
             foreach ($collIds as $collId) {
-                $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->settings['pages']));
+                $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->settings['storagePid']));
             }
             // Last value is fake and used for distinction in $this->addCurrentCollection()
             $params['filterquery'][]['query'] = 'collection_faceting:("' . implode('" OR "', $collIndexNames) . '" OR "FakeValueForDistinction")';
@@ -152,7 +152,7 @@ class SearchController extends AbstractController
             //return $this->responseFactory->createHtmlResponse($this->view->render());
         }
         // Set search parameters.
-        $solr->cPid = $this->settings['pages'];
+        $solr->cPid = $this->settings['storagePid'];
         $solr->params = $params;
         // Perform search.
         $list = $solr->search();
@@ -352,7 +352,7 @@ class SearchController extends AbstractController
         // Get facets from plugin configuration.
         $facets = [];
         foreach (GeneralUtility::trimExplode(',', $this->settings['facets'], true) as $facet) {
-            $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->settings['pages']);
+            $facets[$facet . '_faceting'] = Helper::translate($facet, 'tx_dlf_metadata', $this->settings['storagePid']);
         }
 
         $this->view->assign('facetsMenu', $this->makeFacetsMenuArray($facets));
@@ -491,13 +491,13 @@ class SearchController extends AbstractController
         // Translate value.
         if ($field == 'owner_faceting') {
             // Translate name of holding library.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
         } elseif ($field == 'type_faceting') {
             // Translate document type.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
         } elseif ($field == 'collection_faceting') {
             // Translate name of collection.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['pages']));
+            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
         } elseif ($field == 'language_faceting') {
             // Translate ISO 639 language code.
             $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
@@ -568,7 +568,7 @@ class SearchController extends AbstractController
         $fieldSelectorOptions = [];
         $searchFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
         foreach ($searchFields as $searchField) {
-            $fieldSelectorOptions[$searchField] = Helper::translate($searchField, 'tx_dlf_metadata', $this->settings['pages']);
+            $fieldSelectorOptions[$searchField] = Helper::translate($searchField, 'tx_dlf_metadata', $this->settings['storagePid']);
         }
         $slotCountArray = [];
         for ($i = 0; $i < $this->settings['extendedSlotCount']; $i++) {

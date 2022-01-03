@@ -96,9 +96,9 @@ class MetadataController extends AbstractController
                 foreach ($ids as $id) {
                     foreach ($id as $sid) {
                         if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['storagePid']);
                         } else {
-                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['storagePid']);
                         }
                         if (!empty($data)) {
                             $data['_id'] = $sid;
@@ -111,9 +111,9 @@ class MetadataController extends AbstractController
                 if (is_array($id)) {
                     foreach ($id as $sid) {
                         if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['storagePid']);
                         } else {
-                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['pages']);
+                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['storagePid']);
                         }
                         if (!empty($data)) {
                             $data['_id'] = $sid;
@@ -125,7 +125,7 @@ class MetadataController extends AbstractController
         }
         // Get titledata?
         if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->document->getDoc()->toplevelId)) {
-            $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['pages']) : $this->document->getDoc()->getTitleData($this->settings['pages']);
+            $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['storagePid']) : $this->document->getDoc()->getTitleData($this->settings['storagePid']);
             $data['_id'] = $this->document->getDoc()->toplevelId;
             array_unshift($metadata, $data);
         }
@@ -216,7 +216,7 @@ class MetadataController extends AbstractController
             $metadataResult = $this->metadataRepository->findAll();
 
             // Get collections to check if they are hidden
-            $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['pages']);
+            $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['storagePid']);
 
             $collList = [];
             /** @var Collection $collection */
@@ -250,17 +250,17 @@ class MetadataController extends AbstractController
                         }
                     } elseif ($metadataName == 'owner' && !empty($metadataValue)) {
                         // Translate name of holding library.
-                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_libraries', $this->settings['pages']));
+                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_libraries', $this->settings['storagePid']));
                     } elseif ($metadataName == 'type' && !empty($metadataValue)) {
                         // Translate document type.
-                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_structures', $this->settings['pages']));
+                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_structures', $this->settings['storagePid']));
                     } elseif ($metadataName == 'collection' && !empty($metadataValue)) {
                         // Check if collections isn't hidden.
                         $j = 0;
                         foreach ($metadataValue as $metadataEntry) {
                             if (in_array($metadataEntry, $collList)) {
                                 // Translate collection.
-                                $metadataArray[$i][$metadataName][$j] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][$j], 'tx_dlf_collections', $this->settings['pages']));
+                                $metadataArray[$i][$metadataName][$j] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][$j], 'tx_dlf_collections', $this->settings['storagePid']));
                             } else {
                                 $metadataArray[$i][$metadataName][$j] = '';
                             }

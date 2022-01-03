@@ -55,7 +55,7 @@ class CollectionController extends AbstractController
         $collection = $requestData['collection'];
 
         // Quit without doing anything if required configuration variables are not set.
-        if (empty($this->settings['pages'])) {
+        if (empty($this->settings['storagePid'])) {
             $this->logger->warning('Incomplete plugin configuration');
         }
 
@@ -166,7 +166,7 @@ class CollectionController extends AbstractController
     {
         // access storagePid from TypoScript
         $pageSettings = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        $this->settings['pages'] = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
+        $this->settings['storagePid'] = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
 
         // Fetch corresponding document UIDs from Solr.
         if ($collection->getIndexSearch() != '') {
@@ -220,13 +220,13 @@ class CollectionController extends AbstractController
             // Prepare document's metadata for sorting.
             $sorting = unserialize($document->getMetadataSorting());
             if (!empty($sorting['type']) && MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->settings['pages']);
+                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->settings['storagePid']);
             }
             if (!empty($sorting['owner']) && MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->settings['pages']);
+                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->settings['storagePid']);
             }
             if (!empty($sorting['collection']) && MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->settings['pages']);
+                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->settings['storagePid']);
             }
             // Split toplevel documents from volumes.
             if ($document->getPartof() == 0) {

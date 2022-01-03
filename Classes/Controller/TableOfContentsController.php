@@ -64,7 +64,7 @@ class TableOfContentsController extends AbstractController
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['pages']);
+        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;

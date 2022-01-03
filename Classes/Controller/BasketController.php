@@ -161,7 +161,7 @@ class BasketController extends AbstractController
         }
         $this->view->assign('countDocs', $countDocs);
 
-        $allMails = $this->mailRepository->findAllWithPid($this->settings['pages']);
+        $allMails = $this->mailRepository->findAllWithPid($this->settings['storagePid']);
 
         $mailSelect = [];
         if ($allMails->count() > 0) {
@@ -614,7 +614,7 @@ class BasketController extends AbstractController
 
         $actionLog = GeneralUtility::makeInstance(ActionLog::class);
         // protocol
-        $actionLog->setPid($this->settings['pages']);
+        $actionLog->setPid($this->settings['storagePid']);
         $actionLog->setFileName($pdfUrl);
         $actionLog->setCountPages($numberOfPages);
 
