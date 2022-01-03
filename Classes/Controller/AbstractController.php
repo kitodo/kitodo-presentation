@@ -79,8 +79,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * @access protected
      * @return void
      */
-     protected function initialize()
-     {
+        protected function initialize()
+        {
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
         if (empty($this->requestData['page'])) {
             $this->requestData['page'] = 1;
@@ -91,7 +91,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             'pageUid' => $GLOBALS['TSFE']->id,
             'requestData' => $this->requestData
         ];
-     }
+        }
 
     /**
      * Loads the current document into $this->document
