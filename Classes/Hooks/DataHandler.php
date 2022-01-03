@@ -52,7 +52,6 @@ class DataHandler implements LoggerAwareInterface
         $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
     }
 
-
     /**
      * Field post-processing hook for the process_datamap() method.
      *
