@@ -452,7 +452,7 @@ class ToolboxController extends AbstractController
      */
     protected function getCurrentDocumentId()
     {
-        $id = $this->document->getDoc()->uid;
+        $id = $this->document->getUid();
 
         if (!empty($this->settings['documentIdUrlSchema'])) {
             $arr = explode('*', $this->settings['documentIdUrlSchema']);
