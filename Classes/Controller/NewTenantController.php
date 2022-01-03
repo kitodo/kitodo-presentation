@@ -157,7 +157,7 @@ class NewTenantController extends AbstractController
         // Build data array.
         $data['tx_dlf_solrcores'][uniqid('NEW')] = [
             'pid' => intval($this->pid),
-            'label' => $this->getLanguageService()->getLL('solrcore') . ' (PID ' . $this->pid . ')',
+            'label' => $this->getLanguageService()->getLL('flexform.solrcore') . ' (PID ' . $this->pid . ')',
             'index_name' => '',
         ];
         $_ids = Helper::processDBasAdmin($data);
@@ -262,7 +262,7 @@ class NewTenantController extends AbstractController
             return;
         }
 
-        $structures = $this->structureRepository->findByPid($this->pid);
+        $structures = $this->structureRepository->countByPid($this->pid);
 
         if ($structures) {
             // Fine.
@@ -281,7 +281,7 @@ class NewTenantController extends AbstractController
             $this->view->assign('structure', 1);
         }
 
-        $metadata = $this->metadataRepository->findByPid($this->pid);
+        $metadata = $this->metadataRepository->countByPid($this->pid);
 
         if ($metadata) {
             // Fine.
@@ -300,7 +300,7 @@ class NewTenantController extends AbstractController
             $this->view->assign('metadata', 1);
         }
 
-        $solrCore = $this->solrCoreRepository->findByPid($this->pid);
+        $solrCore = $this->solrCoreRepository->countByPid($this->pid);
 
         if ($solrCore) {
             // Fine.
