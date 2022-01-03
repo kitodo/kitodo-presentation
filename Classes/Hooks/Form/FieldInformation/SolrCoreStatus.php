@@ -69,7 +69,7 @@ class SolrCoreStatus extends AbstractNode
             } else {
                 // Could not fetch core status.
                 Helper::addMessage(
-                    htmlspecialchars(Helper::getLanguageService()->getLL('solr.error')),
+                    Helper::getLanguageService()->getLL('solr.error'),
                     '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );

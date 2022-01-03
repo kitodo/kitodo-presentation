@@ -534,8 +534,8 @@
                 <target><![CDATA[Fehler!]]></target>
             </trans-unit>
             <trans-unit id="flash.coreStatus" approved="yes">
-                <source><![CDATA[Start Time: %s&lt;br /&gt;Uptime: %s&lt;br /&gt;Last Modified: %s&lt;br /&gt;Number of Documents: %u]]></source>
-                <target><![CDATA[Startzeit: %s&lt;br /&gt;Laufzeit: %s&lt;br /&gt;Letzte Änderung: %s&lt;br /&gt;Anzahl Dokumente: %u]]></target>
+                <source><![CDATA[Start Time: %s<br />Uptime: %s<br />Last Modified: %ss<br />Number of Documents: %u]]></source>
+                <target><![CDATA[Startzeit: %s<br />Laufzeit: %s<br />Letzte Änderung: %s<br />Anzahl Dokumente: %u]]></target>
             </trans-unit>
             <trans-unit id="flash.days" approved="yes">
                 <source><![CDATA[days]]></source>
