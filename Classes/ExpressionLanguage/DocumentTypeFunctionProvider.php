@@ -183,7 +183,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
 
             if ($this->document !== null) {
-                $doc = Doc::getInstance($this->document->getLocation(), $pid, true);
+                $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
                 if ($this->document !== null && $doc !== null) {
                     $this->document->setDoc($doc);
                 } else {

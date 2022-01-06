@@ -423,18 +423,19 @@ abstract class Doc
      * @param array $settings
      * @param bool $forceReload: Force reloading the document instead of returning the cached instance
      *
-     * @return \Kitodo\Dlf\Common\Doc Instance of this class, either MetsDocument or IiifManifest
+     * @return \Kitodo\Dlf\Common\Doc|null Instance of this class, either MetsDocument or IiifManifest
      */
     public static function &getInstance($location, $settings = [], $forceReload = false)
     {
         // Create new instance depending on format (METS or IIIF) ...
-        $instance = null;
         $documentFormat = null;
         $xml = null;
         $iiif = null;
 
         if ($instance = self::getDocCache($location)) {
             return $instance;
+        } else {
+            $instance = null;
         }
 
         // Try to load a file from the url
@@ -479,7 +480,10 @@ abstract class Doc
             $instance = new IiifManifest($location, $pid, $iiif);
         }
 
-        self::setDocCache($location, $instance);
+        if ($instance) {
+            self::setDocCache($location, $instance);
+        }
+
         return $instance;
     }
 

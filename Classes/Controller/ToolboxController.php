@@ -444,7 +444,9 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Get current document id
+     * Get current document id. As default the uid will be used.
+     * In case there is defined documentIdUrlSchema then the id will
+     * extracted from this URL.
      *
      * @access protected
      *
@@ -454,6 +456,18 @@ class ToolboxController extends AbstractController
     {
         $id = $this->document->getUid();
 
+        if ($id)  {
+            // we found the document uid
+            return (string) $id;
+        } else {
+            $id = $this->requestData['id'];
+            if (! GeneralUtility::isValidUrl($id)) {
+                // we found no valid URI --> something unexpected we cannot search within.
+                return '';
+            }
+        }
+
+        // example: https://host.de/items/*id*/record
         if (!empty($this->settings['documentIdUrlSchema'])) {
             $arr = explode('*', $this->settings['documentIdUrlSchema']);
 
