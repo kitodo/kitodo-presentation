@@ -11,14 +11,16 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 
 /**
@@ -27,8 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    public $prefixId = 'tx_dlf';
 
     /**
      * @var DocumentRepository
@@ -44,20 +44,57 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * @var
+     * This holds the current document
+     *
+     * @var \Kitodo\Dlf\Domain\Model\Document
+     * @access protected
+     */
+    protected $document;
+
+    /**
+     * @var array
+     * @access protected
      */
     protected $extConf;
 
     /**
-     * This holds the current document
+     * This holds the request parameter
      *
-     * @var \Kitodo\Dlf\Common\Document
+     * @var array
      * @access protected
      */
-    protected $doc;
+    protected $requestData;
 
     /**
-     * Loads the current document into $this->doc
+     * This holds some common data for the fluid view
+     *
+     * @var array
+     * @access protected
+     */
+    protected $viewData;
+
+    /**
+     * Initialize the plugin controller
+     *
+     * @access protected
+     * @return void
+     */
+    protected function initialize()
+    {
+        $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
+        if (empty($this->requestData['page'])) {
+            $this->requestData['page'] = 1;
+        }
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+
+        $this->viewData = [
+            'pageUid' => $GLOBALS['TSFE']->id,
+            'requestData' => $this->requestData
+        ];
+    }
+
+    /**
+     * Loads the current document into $this->document
      *
      * @access protected
      *
@@ -67,45 +104,57 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function loadDocument($requestData)
     {
-        // Check for required variable.
+        // Try to get document format from database
         if (!empty($requestData['id'])) {
-            // Get instance of \Kitodo\Dlf\Common\Document.
-            $this->doc = Document::getInstance($requestData['id'], $this->settings);
-            if (!$this->doc->ready) {
-                // Destroy the incomplete object.
-                $this->doc = null;
-                $this->logger->error('Failed to load document with UID ' . $requestData['id']);
-            } else {
-                // Set configuration PID.
-                $this->doc->cPid = $this->settings['pages'];
+
+            $doc = null;
+
+            if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
+                // find document from repository by uid
+                $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id']);
+                if ($this->document) {
+                    $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                } else {
+                    $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
+                }
+            } else if (GeneralUtility::isValidUrl($requestData['id'])) {
+
+                $doc = Doc::getInstance($requestData['id'], $this->settings, true);
+
+                if ($doc !== null) {
+                    if ($doc->recordId) {
+                        $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                    }
+
+                    if ($this->document === null) {
+                        // create new dummy Document object
+                        $this->document = GeneralUtility::makeInstance(Document::class);
+                    }
+
+                    $this->document->setLocation($requestData['id']);
+                } else {
+                    $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');
+                }
             }
+
+            if ($this->document !== null && $doc !== null) {
+                $this->document->setDoc($doc);
+            }
+
         } elseif (!empty($requestData['recordId'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
 
-            // Get UID of document with given record identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($requestData['recordId'])),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
 
-            if ($resArray = $result->fetch()) {
-                $requestData['id'] = $resArray['uid'];
-                // Set superglobal $_GET array and unset variables to avoid infinite looping.
-                $_GET[$this->prefixId]['id'] = $requestData['id'];
-                unset($requestData['recordId'], $_GET[$this->prefixId]['recordId']);
-                // Try to load document.
-                $this->loadDocument($requestData);
-            } else {
-                $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
+            if ($this->document !== null) {
+                $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                if ($this->document !== null && $doc !== null) {
+                    $this->document->setDoc($doc);
+                } else {
+                    $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
+                }
             }
         } else {
-            $this->logger->error('Invalid UID ' . $requestData['id'] . ' or PID ' . $this->settings['pages'] . ' for document loading');
+            $this->logger->error('Invalid ID "' . $requestData['id'] . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
     }
 
@@ -119,4 +168,15 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         return $GLOBALS['LANG'];
     }
 
+    /**
+     * This is the constructor
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->initialize();
+    }
 }

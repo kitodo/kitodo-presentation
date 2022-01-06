@@ -12,10 +12,12 @@
 
 namespace Kitodo\Dlf\Hooks;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Model\Document;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -34,6 +36,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class DataHandler implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
+
+    /**
+     * @var DocumentRepository
+     */
+    protected $documentRepository;
+
+    /**
+     * Initialize the extbase repositories
+     *
+     * @return void
+     */
+    protected function initializeRepositories()
+    {
+        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+    }
 
     /**
      * Field post-processing hook for the process_datamap() method.
@@ -179,6 +196,8 @@ class DataHandler implements LoggerAwareInterface
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray)
     {
+        $this->initializeRepositories();
+
         if ($status == 'update') {
             switch ($table) {
                     // After database operations for table "tx_dlf_documents".
@@ -217,10 +236,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        $allResults = $result->fetchAll();
-
-                        if (count($allResults) == 1) {
-                            $resArray = $allResults[0];
+                        if ($resArray = $result->fetch()) {
                             if ($resArray['hidden']) {
                                 // Establish Solr connection.
                                 $solr = Solr::getInstance($resArray['core']);
@@ -233,9 +249,11 @@ class DataHandler implements LoggerAwareInterface
                                 }
                             } else {
                                 // Reindex document.
-                                $doc = Document::getInstance($id);
-                                if ($doc->ready) {
-                                    Indexer::add($doc, $resArray['core']);
+                                $document = $this->documentRepository->findByUid($id);
+                                $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                                if ($document !== null && $doc !== null) {
+                                    $document->setDoc($doc);
+                                    Indexer::add($document);
                                 } else {
                                     $this->logger->error('Failed to re-index document with UID ' . $id);
                                 }
@@ -295,10 +313,7 @@ class DataHandler implements LoggerAwareInterface
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
-
-            if (count($allResults) == 1) {
-                $resArray = $allResults[0];
+            if ($resArray = $result->fetch()) {
                 switch ($command) {
                     case 'move':
                     case 'delete':
@@ -316,9 +331,11 @@ class DataHandler implements LoggerAwareInterface
                         }
                     case 'undelete':
                         // Reindex document.
-                        $doc = Document::getInstance($id);
-                        if ($doc->ready) {
-                            Indexer::add($doc, $resArray['core']);
+                        $document = $this->documentRepository->findByUid($id);
+                        $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                        if ($document !== null && $doc !== null) {
+                            $document->setDoc($doc);
+                            Indexer::add($document);
                         } else {
                             $this->logger->error('Failed to re-index document with UID ' . $id);
                         }
@@ -350,10 +367,7 @@ class DataHandler implements LoggerAwareInterface
                     ->setMaxResults(1)
                     ->execute();
 
-                $allResults = $result->fetchAll();
-
-                if (count($allResults) == 1) {
-                    $resArray = $allResults[0];
+                if ($resArray = $result->fetch()) {
                     // Establish Solr connection.
                     $solr = Solr::getInstance();
                     if ($solr->ready) {

@@ -48,7 +48,7 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
  * @property-read mixed $uid This holds the UID or the URL of the document
  */
-final class MetsDocument extends Document
+final class MetsDocument extends Doc
 {
     /**
      * This holds the whole XML file as string for serialization purposes
@@ -141,7 +141,7 @@ final class MetsDocument extends Document
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::establishRecordId()
+     * @see \Kitodo\Dlf\Common\Doc::establishRecordId()
      */
     protected function establishRecordId($pid)
     {
@@ -162,7 +162,7 @@ final class MetsDocument extends Document
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getDownloadLocation()
+     * @see \Kitodo\Dlf\Common\Doc::getDownloadLocation()
      */
     public function getDownloadLocation($id)
     {
@@ -188,7 +188,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFileLocation()
+     * @see \Kitodo\Dlf\Common\Doc::getFileLocation()
      */
     public function getFileLocation($id)
     {
@@ -206,7 +206,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFileMimeType()
+     * @see \Kitodo\Dlf\Common\Doc::getFileMimeType()
      */
     public function getFileMimeType($id)
     {
@@ -224,7 +224,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getLogicalStructure()
+     * @see \Kitodo\Dlf\Common\Doc::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
     {
@@ -364,7 +364,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getMetadata()
+     * @see \Kitodo\Dlf\Common\Doc::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
     {
@@ -667,7 +667,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::getFullText()
+     * @see \Kitodo\Dlf\Common\Doc::getFullText()
      */
     public function getFullText($id)
     {
@@ -683,7 +683,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getStructureDepth()
+     * @see Doc::getStructureDepth()
      */
     public function getStructureDepth($logId)
     {
@@ -697,7 +697,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::init()
+     * @see \Kitodo\Dlf\Common\Doc::init()
      */
     protected function init()
     {
@@ -715,7 +715,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::loadLocation()
+     * @see \Kitodo\Dlf\Common\Doc::loadLocation()
      */
     protected function loadLocation($location)
     {
@@ -734,7 +734,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::ensureHasFulltextIsSet()
+     * @see \Kitodo\Dlf\Common\Doc::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
     {
@@ -746,31 +746,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getParentDocumentUid()
-     */
-    protected function getParentDocumentUidForSaving($pid, $core, $owner)
-    {
-        $partof = 0;
-        // Get the closest ancestor of the current document which has a MPTR child.
-        $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->_getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
-        if (!empty($parentMptr)) {
-            $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-            if ($parentLocation != $this->location) {
-                $parentDoc = self::getInstance($parentLocation, $pid);
-                if ($parentDoc->ready) {
-                    if ($parentDoc->pid != $pid) {
-                        $parentDoc->save($pid, $core, $owner);
-                    }
-                    $partof = $parentDoc->uid;
-                }
-            }
-        }
-        return $partof;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see Document::setPreloadedDocument()
+     * @see Doc::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
     {
@@ -784,7 +760,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getDocument()
+     * @see Doc::getDocument()
      */
     protected function getDocument()
     {
@@ -881,7 +857,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
+     * @see \Kitodo\Dlf\Common\Doc::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
     {
@@ -909,7 +885,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getPhysicalStructure()
+     * @see \Kitodo\Dlf\Common\Doc::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
     {
@@ -970,7 +946,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getSmLinks()
+     * @see \Kitodo\Dlf\Common\Doc::_getSmLinks()
      */
     protected function _getSmLinks()
     {
@@ -989,7 +965,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
+     * @see \Kitodo\Dlf\Common\Doc::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
     {
@@ -1069,7 +1045,7 @@ final class MetsDocument extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
+     * @see \Kitodo\Dlf\Common\Doc::_getToplevelId()
      */
     protected function _getToplevelId()
     {

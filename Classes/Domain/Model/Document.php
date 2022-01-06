@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
 {
     /**
@@ -23,6 +25,11 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var \DateTime
      */
     protected $tstamp;
+
+    /**
+     * @var \Kitodo\Dlf\Common\Doc|null
+     */
+    protected $doc = null;
 
     /**
      * @var string
@@ -107,7 +114,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @var int
      */
-    protected $partof;
+    protected $partof = 0;
 
     /**
      * @var string
@@ -160,7 +167,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     protected $metsOrderlabel;
 
     /**
-     * @var int
+     * @var \Kitodo\Dlf\Domain\Model\Library
      */
     protected $owner;
 
@@ -178,6 +185,36 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
      * @var string
      */
     protected $documentFormat;
+
+    /**
+     * constructor
+     */
+    public function __construct()
+    {
+        // Do not remove the next line: It would break the functionality
+        $this->initStorageObjects();
+    }
+
+    protected function initStorageObjects()
+    {
+        $this->collections = new ObjectStorage();
+    }
+
+    /**
+     * @return \Kitodo\Dlf\Common\Doc
+     */
+    public function getDoc(): ?\Kitodo\Dlf\Common\Doc
+    {
+        return $this->doc;
+    }
+
+    /**
+     * @param \Kitodo\Dlf\Common\Doc $doc
+     */
+    public function setDoc(\Kitodo\Dlf\Common\Doc $doc): void
+    {
+        $this->doc = $doc;
+    }
 
     /**
      * @return string
@@ -577,9 +614,31 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     /**
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
      */
-    public function setCollections(?\TYPO3\CMS\Extbase\Persistence\ObjectStorage $collections): void
+    public function setCollections(?ObjectStorage $collections): void
     {
         $this->collections = $collections;
+    }
+
+    /**
+     * Adds a collection
+     *
+     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
+     */
+    public function addCollection(Collection $collection): void
+    {
+        $this->collections->attach($collection);
+    }
+
+    /**
+     * Removes a collection
+     *
+     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> collections
+     */
+    public function removeCollection(Collection $collection)
+    {
+        $this->collections->detach($collection);
     }
 
     /**
@@ -615,17 +674,17 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
     }
 
     /**
-     * @return int
+     * @return \Kitodo\Dlf\Domain\Model\Library
      */
-    public function getOwner(): int
+    public function getOwner(): \Kitodo\Dlf\Domain\Model\Library
     {
         return $this->owner;
     }
 
     /**
-     * @param int $owner
+     * @param \Kitodo\Dlf\Domain\Model\Library $owner
      */
-    public function setOwner(int $owner): void
+    public function setOwner(\Kitodo\Dlf\Domain\Model\Library $owner): void
     {
         $this->owner = $owner;
     }

@@ -517,7 +517,7 @@ class Helper
     }
 
     /**
-     * Wrapper function for getting localized messages in frontend and backend
+     * Wrapper function for getting localized messages in backend
      *
      * @access public
      *
@@ -533,25 +533,20 @@ class Helper
         $translated = (string) $default;
 
         /** @var LanguageService $languageService */
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
+        $languageService = self::getLanguageService();
 
         // Load common messages file.
         if (empty(self::$messages)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/FlashMessages.xlf');
-            if (\TYPO3_MODE === 'FE') {
-                self::$messages = $languageService->includeLLFile($file);
-            } elseif (\TYPO3_MODE === 'BE') {
-                self::$messages = $languageService->includeLLFile($file, false, true);
+            if (\TYPO3_MODE === 'BE') {
+                self::$messages = $languageService->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             } else {
                 self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             }
         }
         // Get translation.
         if (!empty(self::$messages['default'][$key])) {
-            if (\TYPO3_MODE === 'FE') {
-                $translated = $languageService->sL($key);
-            } elseif (\TYPO3_MODE === 'BE') {
-                $translated = $languageService->sL($key);
+            if (\TYPO3_MODE === 'BE') {
+                $translated = $languageService->getLL($key);
             } else {
                 self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
             }
@@ -564,6 +559,43 @@ class Helper
     }
 
     /**
+     * Get all document structures as array
+     *
+     * @param int $pid: Get the "index_name" from this page only
+     *
+     * @return array
+     */
+    public static function getDocumentStructures($pid = -1)
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
+
+        $where = '';
+        // Should we check for a specific PID, too?
+        if ($pid !== -1) {
+            $pid = max(intval($pid), 0);
+            $where = $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid);
+        }
+
+        // Fetch document info for UIDs in $documentSet from DB
+        $kitodoStructures = $queryBuilder
+            ->select(
+                'tx_dlf_structures.uid AS uid',
+                'tx_dlf_structures.index_name AS indexName'
+            )
+            ->from('tx_dlf_structures')
+            ->where($where)
+            ->execute();
+
+        $allStructures = $kitodoStructures->fetchAll();
+
+        // make lookup-table indexName -> uid
+        $allStructures = array_column($allStructures, 'indexName', 'uid');
+
+        return $allStructures;
+    }
+
+    /**
      * Get the UID for a given "index_name"
      *
      * @access public
@@ -572,7 +604,7 @@ class Helper
      * @param string $table: Get the "index_name" from this table
      * @param int $pid: Get the "index_name" from this page
      *
-     * @return string "uid" for the given index_name
+     * @return int "uid" for the given index_name
      */
     public static function getUidFromIndexName($index_name, $table, $pid = -1)
     {
@@ -581,7 +613,7 @@ class Helper
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
             self::log('Invalid UID ' . $index_name . ' or table "' . $table . '"', LOG_SEVERITY_ERROR);
-            return '';
+            return 0;
         }
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -608,10 +640,10 @@ class Helper
         $allResults = $result->fetchAll();
 
         if (count($allResults) == 1) {
-            return $allResults[0]['uid'];
+            return (int) $allResults[0]['uid'];
         } else {
             self::log('No UID for given index_name "' . $index_name . '" and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return '';
+            return 0;
         }
     }
 
@@ -1025,4 +1057,16 @@ class Helper
     {
         // This is a static class, thus no instances should be created.
     }
+
+    /**
+     * Returns the LanguageService
+     *
+     * @return LanguageService
+     */
+    public static function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
+    }
+
+
 }

@@ -414,7 +414,7 @@
                 <source><![CDATA[Error!]]></source>
             </trans-unit>
             <trans-unit id="flash.coreStatus" approved="yes">
-                <source><![CDATA[Start Time: %s&lt;br /&gt;Uptime: %s&lt;br /&gt;Last Modified: %s&lt;br /&gt;Number of Documents: %u]]></source>
+                <source><![CDATA[Start Time: %s<br />Uptime: %s<br />Last Modified: %ss<br />Number of Documents: %u]]></source>
             </trans-unit>
             <trans-unit id="flash.days" approved="yes">
                 <source><![CDATA[days]]></source>
@@ -459,7 +459,7 @@
                 <source><![CDATA[No structures found!]]></source>
             </trans-unit>
             <trans-unit id="flash.structureNotOkayMsg" approved="yes">
-                <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;]]></source>
+                <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
             </trans-unit>
             <trans-unit id="flash.structureAdded" approved="yes">
                 <source><![CDATA[Basic configuration added!]]></source>
@@ -483,7 +483,7 @@
                 <source><![CDATA[No metadata found!]]></source>
             </trans-unit>
             <trans-unit id="flash.metadataNotOkayMsg" approved="yes">
-                <source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Add basic configuration!&lt;/a&gt;]]></source>
+                <source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.]]></source>
             </trans-unit>
             <trans-unit id="flash.metadataAdded" approved="yes">
                 <source><![CDATA[Basic configuration added!]]></source>
@@ -507,7 +507,7 @@
                 <source><![CDATA[No Solr core found!]]></source>
             </trans-unit>
             <trans-unit id="flash.solrcoreMissingMsg" approved="yes">
-                <source><![CDATA[There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Create new Solr core!&lt;/a&gt;]]></source>
+                <source><![CDATA[There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.]]></source>
             </trans-unit>
             <trans-unit id="flash.solrcoreAdded" approved="yes">
                 <source><![CDATA[Solr core created!]]></source>

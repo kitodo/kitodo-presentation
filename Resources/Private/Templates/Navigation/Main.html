@@ -22,7 +22,7 @@
 <f:section name="render.doublepage">
     <f:if condition="{numPages} > 0">
         <f:then>
-            <f:if condition="{double}">
+            <f:if condition="{viewData.requestData.double}">
                 <f:then>
                     <div class="tx-dlf-navigation-double">
                         <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}">
@@ -30,9 +30,9 @@
                         </f:link.action>
                     </div>
                     <div class="tx-dlf-navigation-double+">
-                        <f:if condition="{double} && ({page} < {numPages})">
+                        <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
                             <f:then>
-                                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + 1}'}">
+                                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}">
                                     <f:translate key="doublePage+1"/>
                                 </f:link.action>
                             </f:then>
@@ -63,7 +63,7 @@
 
 <f:section name="render.pageFirst">
     <div class="tx-dlf-navigation-first">
-        <f:if condition="{page} > 1">
+        <f:if condition="{viewData.requestData.page} > 1">
             <f:then>
                 <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'1'}">
                     <f:translate key="firstPage"/>
@@ -80,9 +80,9 @@
 
 <f:section name="render.pageBack">
     <div class="tx-dlf-navigation-back">
-        <f:if condition="{page} > {pageSteps}">
+        <f:if condition="{viewData.requestData.page} > {pageSteps}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page - pageSteps}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}">
                     <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
                 </f:link.action>
             </f:then>
@@ -97,9 +97,9 @@
 
 <f:section name="render.pageStepBack">
     <div class="tx-dlf-navigation-prev">
-        <f:if condition="{page} > {double + 1}">
+        <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page - 1 + double}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}">
                     <f:translate key="prevPage"/>
                 </f:link.action>
             </f:then>
@@ -113,25 +113,34 @@
 </f:section>
 
 <f:section name="render.pageselect">
-    <div class="tx-dlf-navigation-pageselect">
-        <f:form method="get" fieldNamePrefix="tx_dlf" addQueryString="1" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}">
+    <li class="pages">
+        <form method="get" action="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}">
+            <f:if condition="{viewData.requestData.id}">
+                <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
+            </f:if>
+            <f:if condition="{viewData.requestData.recordId}">
+                <f:form.hidden name="tx_dlf[recordId]" value="{viewData.requestData.recordId}"/>
+            </f:if>
+            <f:if condition="{viewData.requestData.double}">
+                <f:form.hidden name="tx_dlf[double]" value="{viewData.requestData.double}"/>
+            </f:if>
             <label for="{uniqueId}">
                 <f:translate key="selectPage"/>
             </label>
-            <f:form.select id="{uniqueId}" name="page"
+            <f:form.select id="{uniqueId}" name="tx_dlf[page]"
                 options="{pageOptions}"
-                value="{page}"
+                value="{viewData.requestData.page}"
                 additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
             </f:form.select>
-        </f:form>
-    </div>
+        </form>
+    </li>
 </f:section>
 
 <f:section name="render.pageForward">
     <div class="tx-dlf-navigation-next">
-        <f:if condition="{page} < {numPages}">
+        <f:if condition="{viewData.requestData.page + viewData.requestData.double} < {numPages}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + 1}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}'}">
                     <f:translate key="nextPage"/>
                 </f:link.action>
             </f:then>
@@ -146,9 +155,9 @@
 
 <f:section name="render.pageStepForward">
         <div class="tx-dlf-navigation-fwd">
-            <f:if condition="{page} <= {numPages - pageSteps}">
+            <f:if condition="{viewData.requestData.page} <= {numPages - pageSteps}">
                 <f:then>
-                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{page + pageSteps}'}">
+                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}">
                         <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
                     </f:link.action>
                 </f:then>
@@ -163,9 +172,9 @@
 
 <f:section name="render.pageLast">
     <div class="tx-dlf-navigation-last">
-        <f:if condition="{page} < {numPages}">
+        <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{numPages}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}">
                     <f:translate key="lastPage"/>
                 </f:link.action>
             </f:then>

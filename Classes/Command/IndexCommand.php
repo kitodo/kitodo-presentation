@@ -12,14 +12,18 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Command\BaseCommand;
+use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Document;
 
 /**
  * CLI Command for indexing single documents into database and Solr.
@@ -31,6 +35,7 @@ use Kitodo\Dlf\Common\Document;
  */
 class IndexCommand extends BaseCommand
 {
+
     /**
      * Configure the command by defining the name, options and arguments
      *
@@ -88,10 +93,10 @@ class IndexCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $startingPoint = $this->initializeDocumentRepository($input->getOption('pid'));
+        $this->initializeRepositories($input->getOption('pid'));
 
-        if ($startingPoint == 0) {
-            $io->error('ERROR: No valid PID (' . $startingPoint . ') given.');
+        if ($this->storagePid == 0) {
+            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
             exit(1);
         }
 
@@ -99,7 +104,7 @@ class IndexCommand extends BaseCommand
             !empty($input->getOption('solr'))
             && !is_array($input->getOption('solr'))
         ) {
-            $allSolrCores = $this->getSolrCores($startingPoint);
+            $allSolrCores = $this->getSolrCores($this->storagePid);
             $solrCoreUid = $this->getSolrCoreUid($allSolrCores, $input->getOption('solr'));
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
@@ -109,7 +114,7 @@ class IndexCommand extends BaseCommand
                     $output_solrCores[] = $uid . ' : ' . $index_name;
                 }
                 if (empty($output_solrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $startingPoint . ".\n");
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
                     exit(1);
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
@@ -135,36 +140,70 @@ class IndexCommand extends BaseCommand
 
         if (!empty($input->getOption('owner'))) {
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
-                $owner = MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1);
+                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
             } else {
-                $owner = (string) $input->getOption('owner');
+                $this->owner = $this->libraryRepository->findOneByIndexName((string) $input->getOption('owner'));
             }
         } else {
-            $owner = null;
+            $this->owner = null;
         }
 
-        // Get the document...
-        $doc = Document::getInstance($input->getOption('doc'), ['storagePid' => $startingPoint], true);
-        if ($doc->ready) {
-            if ($dryRun) {
-                $io->section('DRY RUN: Would index ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
+        $document = null;
+        $doc = null;
+
+        // Try to find existing document in database
+        if (MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))) {
+
+            $document = $this->documentRepository->findByUid($input->getOption('doc'));
+
+            if ($document === null) {
+                $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
+                exit(1);
             } else {
-                if ($io->isVerbose()) {
-                    $io->section('Indexing ' . $doc->uid . ' ("' . $doc->location . '") on PID ' . $startingPoint . ' and Solr core ' . $solrCoreUid . '.');
-                }
-                // ...and save it to the database...
-                if (!$doc->save($startingPoint, $solrCoreUid, $owner)) {
-                    $io->error('ERROR: Document "' . $input->getOption('doc') . '" not saved and indexed.');
-                    exit(1);
-                }
+                $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
             }
-        } else {
+
+        } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
+            $doc = Doc::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
+
+            if ($doc->recordId) {
+                $document = $this->documentRepository->findOneByRecordId($doc->recordId);
+            }
+
+            if ($document === null) {
+                // create new Document object
+                $document = GeneralUtility::makeInstance(Document::class);
+            }
+
+            // now there must exist a document object
+            if ($document) {
+                $document->setLocation($input->getOption('doc'));
+            }
+        }
+
+        if ($doc === null) {
             $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
             exit(1);
+        }
+
+        $document->setSolrcore($solrCoreUid);
+
+        if ($dryRun) {
+            $io->section('DRY RUN: Would index ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+        } else {
+            if ($io->isVerbose()) {
+                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+            }
+            $document->setDoc($doc);
+            // save to database
+            $this->saveToDatabase($document);
+            // add to index
+            Indexer::add($document);
         }
 
         $io->success('All done!');
 
         return 0;
     }
+
 }

@@ -3,13 +3,16 @@ plugin.tx_dlf {
     persistence {
         storagePid = {$plugin.tx_dlf.persistence.storagePid}
     }
+    settings {
+        storagePid = {$plugin.tx_dlf.persistence.storagePid}
+    }
 }
 
 config {
-  # concatenate all JavaScript files by default
-  concatenateJs = 1
-  # concatenate all CSS files by default
-  concatenateCss = 1
+    # concatenate all JavaScript files by default
+    concatenateJs = 1
+    # concatenate all CSS files by default
+    concatenateCss = 1
 }
 
 page {

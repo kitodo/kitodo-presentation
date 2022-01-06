@@ -33,22 +33,19 @@ class CalendarController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         // Set initial document (anchor or year file) if configured.
-        if (empty($requestData['id']) && !empty($this->settings['initialDocument'])) {
-            $requestData['id'] = $this->settings['initialDocument'];
+        if (empty($this->requestData['id']) && !empty($this->settings['initialDocument'])) {
+            $this->requestData['id'] = $this->settings['initialDocument'];
         }
 
         // Load current document.
-        $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        $this->loadDocument($this->requestData);
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
         }
 
-        $metadata = $this->doc->getTitledata();
+        $metadata = $this->document->getDoc()->getTitledata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
@@ -58,10 +55,10 @@ class CalendarController extends AbstractController
         switch ($type) {
             case 'newspaper':
             case 'ephemera':
-                $this->forward('years', null, null, $requestData);
+                $this->forward('years', null, null, $this->requestData);
                 break;
             case 'year':
-                $this->forward('calendar', null, null, $requestData);
+                $this->forward('calendar', null, null, $this->requestData);
                 break;
             case 'issue':
             default:
@@ -82,23 +79,20 @@ class CalendarController extends AbstractController
      */
     public function calendarAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         // access arguments passed by the mainAction()
         $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainrequestData);
 
         // Load current document.
-        $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        $this->loadDocument($this->requestData);
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
         }
 
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'issue');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), 'issue');
 
         $issues = [];
 
@@ -171,13 +165,13 @@ class CalendarController extends AbstractController
         $this->view->assign('issueData', $issueData);
 
         // Link to current year.
-        $linkTitleData = $this->doc->getTitledata();
+        $linkTitleData = $this->document->getDoc()->getTitledata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
-        $this->view->assign('documentId', $this->doc->uid);
+        $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
-        $this->view->assign('parentDocumentId', $this->doc->parentId);
-        $this->view->assign('allYearDocTitle', $this->doc->getTitle($this->doc->parentId));
+        $this->view->assign('parentDocumentId', $this->document->getPartof());
+        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()));
     }
 
     /**
@@ -189,24 +183,21 @@ class CalendarController extends AbstractController
      */
     public function yearsAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         // access arguments passed by the mainAction()
         $mainrequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $requestData = array_merge($requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainrequestData);
 
         // Load current document.
-        $this->loadDocument($requestData);
-        if ($this->doc === null) {
+        $this->loadDocument($this->requestData);
+        if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return;
         }
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->doc->uid, 'year');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), 'year');
 
         $years = [];
         // Process results.
@@ -229,8 +220,8 @@ class CalendarController extends AbstractController
             $this->view->assign('yearName', $yearArray);
         }
 
-        $this->view->assign('documentId', $this->doc->uid);
-        $this->view->assign('allYearDocTitle', $this->doc->getTitle($this->doc->uid));
+        $this->view->assign('documentId', $this->document->getUid());
+        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()));
     }
 
     /**

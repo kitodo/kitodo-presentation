@@ -23,15 +23,12 @@ class PageGridController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
             || empty($extConf['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
@@ -40,16 +37,16 @@ class PageGridController extends AbstractController
 
         $entryArray = [];
 
-        $numPages = $this->doc->numPages;
+        $numPages = $this->document->getDoc()->numPages;
         // Iterate through visible page set and display thumbnails.
         for ($i = 1; $i < $numPages; $i++) {
             $foundEntry = $this->getEntry($i, $extConf['fileGrpThumbs']);
-            $foundEntry['state'] = ($i == $requestData['page']) ? 'cur' : 'no';
+            $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
             $entryArray[] = $foundEntry;
         }
 
         $this->view->assign('pageGridEntries', $entryArray);
-        $this->view->assign('docUid', $requestData['id']);
+        $this->view->assign('docUid', $this->requestData['id']);
     }
 
     /**
@@ -65,17 +62,17 @@ class PageGridController extends AbstractController
     protected function getEntry($number, $fileGrpThumbs)
     {
         // Set pagination.
-        $entry['pagination'] = htmlspecialchars($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['orderlabel']);
+        $entry['pagination'] = htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['orderlabel']);
         $entry['page'] = $number;
         $entry['thumbnail'] = '';
 
         // Get thumbnail or placeholder.
         $fileGrpsThumb = GeneralUtility::trimExplode(',', $fileGrpThumbs);
-        if (is_array($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) {
-            if (array_intersect($fileGrpsThumb, array_keys($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'])) !== []) {
+        if (is_array($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'])) {
+            if (array_intersect($fileGrpsThumb, array_keys($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'])) !== []) {
                 while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                    if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb])) {
-                        $entry['thumbnail'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$number]]['files'][$fileGrpThumb]);
+                    if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'][$fileGrpThumb])) {
+                        $entry['thumbnail'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'][$fileGrpThumb]);
                         break;
                     }
                 }

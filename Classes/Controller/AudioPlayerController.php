@@ -79,38 +79,35 @@ class AudioplayerController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc() === null
+            || $this->document->getDoc()->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
             // Set default values if not set.
-            // $requestData['page'] may be integer or string (physical structure @ID)
+            // $this->requestData['page'] may be integer or string (physical structure @ID)
             if (
-                (int) $requestData['page'] > 0
-                || empty($requestData['page'])
+                (int) $this->requestData['page'] > 0
+                || empty($this->requestData['page'])
             ) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
             }
-            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
         }
         // Check if there are any audio files available.
         $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->settings['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpAudio])) {
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio])) {
                 // Get audio data.
-                $this->audio['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpAudio]);
-                $this->audio['label'] = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['label'];
-                $this->audio['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$requestData['page']]]['files'][$fileGrpAudio]);
+                $this->audio['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio]);
+                $this->audio['label'] = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['label'];
+                $this->audio['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio]);
                 break;
             }
         }

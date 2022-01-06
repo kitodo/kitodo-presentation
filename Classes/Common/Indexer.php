@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -85,48 +87,55 @@ class Indexer
      *
      * @access public
      *
-     * @param \Kitodo\Dlf\Common\Document &$doc: The document to add
-     * @param int $core: UID of the Solr core to use
+     * @param \Kitodo\Dlf\Domain\Model\Document $document: The document to add
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document &$doc, $core = 0)
+    public static function add(Document $document)
     {
-        if (in_array($doc->uid, self::$processedDocs)) {
+        if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
-        } elseif (self::solrConnect($core, $doc->pid)) {
+        } elseif (self::solrConnect($document->getSolrcore(), $document->getPid())) {
             $success = true;
             // Handle multi-volume documents.
-            if ($doc->parentId) {
-                $parent = Document::getInstance($doc->parentId, 0, true);
-                if ($parent->ready) {
-                    $success = self::add($parent, $core);
-                } else {
-                    Helper::log('Could not load parent document with UID ' . $doc->parentId, LOG_SEVERITY_ERROR);
-                    return false;
+            if ($parentId = $document->getPartof()) {
+                // initialize documentRepository
+                $documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+                // get parent document
+                $parent = $documentRepository->findByUid($parentId);
+                if ($parent) {
+                    // get XML document of parent
+                    $doc = Doc::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true);
+                    if ($doc !== null) {
+                        $parent->setDoc($doc);
+                        $success = self::add($parent);
+                    } else {
+                        Helper::log('Could not load parent document with UID ' . $document->getDoc()->parentId, LOG_SEVERITY_ERROR);
+                        return false;
+                    }
                 }
             }
             try {
                 // Add document to list of processed documents.
-                self::$processedDocs[] = $doc->uid;
+                self::$processedDocs[] = $document->getUid();
                 // Delete old Solr documents.
                 $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addDeleteQuery('uid:' . $doc->uid);
+                $updateQuery->addDeleteQuery('uid:' . $document->getUid());
                 self::$solr->service->update($updateQuery);
 
                 // Index every logical unit as separate Solr document.
-                foreach ($doc->tableOfContents as $logicalUnit) {
+                foreach ($document->getDoc()->tableOfContents as $logicalUnit) {
                     if ($success) {
-                        $success = self::processLogical($doc, $logicalUnit);
+                        $success = self::processLogical($document, $logicalUnit);
                     } else {
                         break;
                     }
                 }
                 // Index full text files if available.
-                if ($doc->hasFulltext) {
-                    foreach ($doc->physicalStructure as $pageNumber => $xmlId) {
+                if ($document->getDoc()->hasFulltext) {
+                    foreach ($document->getDoc()->physicalStructure as $pageNumber => $xmlId) {
                         if ($success) {
-                            $success = self::processPhysical($doc, $pageNumber, $doc->physicalStructureInfo[$xmlId]);
+                            $success = self::processPhysical($document, $pageNumber, $document->getDoc()->physicalStructureInfo[$xmlId]);
                         } else {
                             break;
                         }
@@ -137,26 +146,10 @@ class Indexer
                 $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
 
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
-                // Get document title from database.
-                $result = $queryBuilder
-                    ->select('tx_dlf_documents.title AS title')
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($doc->uid)),
-                        Helper::whereExpression('tx_dlf_documents')
-                    )
-                    ->setMaxResults(1)
-                    ->execute();
-
-                $allResults = $result->fetchAll();
-                $resArray = $allResults[0];
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     if ($success) {
                         Helper::addMessage(
-                            htmlspecialchars(sprintf(Helper::getMessage('flash.documentIndexed'), $resArray['title'], $doc->uid)),
+                            sprintf(Helper::getMessage('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
                             Helper::getMessage('flash.done', true),
                             FlashMessage::OK,
                             true,
@@ -164,7 +157,7 @@ class Indexer
                         );
                     } else {
                         Helper::addMessage(
-                            htmlspecialchars(sprintf(Helper::getMessage('flash.documentNotIndexed'), $resArray['title'], $doc->uid)),
+                            sprintf(Helper::getMessage('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()),
                             Helper::getMessage('flash.error', true),
                             FlashMessage::ERROR,
                             true,
@@ -176,7 +169,7 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
+                        Helper::getMessage('flash.solrException', true) . ' ' . htmlspecialchars($e->getMessage()),
                         Helper::getMessage('flash.error', true),
                         FlashMessage::ERROR,
                         true,
@@ -304,14 +297,16 @@ class Indexer
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
+     * @param \Kitodo\Dlf\Domain\Model\Document $document: The METS document
      * @param array $logicalUnit: Array of the logical unit to process
      *
      * @return bool true on success or false on failure
      */
-    protected static function processLogical(Document &$doc, array $logicalUnit)
+    protected static function processLogical(Document $document, array $logicalUnit)
     {
         $success = true;
+        $doc = $document->getDoc();
+        $doc->cPid = $document->getPid();
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
         if (!empty($metadata)) {
@@ -333,9 +328,9 @@ class Indexer
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = $updateQuery->createDocument();
             // Create unique identifier from document's UID and unit's XML ID.
-            $solrDoc->setField('id', $doc->uid . $logicalUnit['id']);
-            $solrDoc->setField('uid', $doc->uid);
-            $solrDoc->setField('pid', $doc->pid);
+            $solrDoc->setField('id', $document->getUid() . $logicalUnit['id']);
+            $solrDoc->setField('uid', $document->getUid());
+            $solrDoc->setField('pid', $document->getPid());
             if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                 $solrDoc->setField('page', $logicalUnit['points']);
             }
@@ -344,7 +339,7 @@ class Indexer
             } elseif (!empty($logicalUnit['thumbnailId'])) {
                 $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
             }
-            $solrDoc->setField('partof', $doc->parentId);
+            $solrDoc->setField('partof', $document->getPartof());
             $solrDoc->setField('root', $doc->rootId);
             $solrDoc->setField('sid', $logicalUnit['id']);
             // There can be only one toplevel unit per UID, independently of backend configuration
@@ -371,7 +366,7 @@ class Indexer
                     !empty($data)
                     && substr($index_name, -8) !== '_sorting'
                 ) {
-                    $solrDoc->setField(self::getIndexFieldName($index_name, $doc->pid), $data, self::$fields['fieldboost'][$index_name]);
+                    $solrDoc->setField(self::getIndexFieldName($index_name, $document->getPid()), $data, self::$fields['fieldboost'][$index_name]);
                     if (in_array($index_name, self::$fields['sortables'])) {
                         // Add sortable fields to index.
                         $solrDoc->setField($index_name . '_sorting', $metadata[$index_name . '_sorting'][0]);
@@ -419,7 +414,7 @@ class Indexer
             foreach ($logicalUnit['children'] as $child) {
                 if ($success) {
                     // ...and process them, too.
-                    $success = self::processLogical($doc, $child);
+                    $success = self::processLogical($document, $child);
                 } else {
                     break;
                 }
@@ -433,14 +428,16 @@ class Indexer
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Common\Document &$doc: The METS document
+     * @param \Kitodo\Dlf\Domain\Model\Document $document: The METS document
      * @param int $page: The page number
      * @param array $physicalUnit: Array of the physical unit to process
      *
      * @return bool true on success or false on failure
      */
-    protected static function processPhysical(Document &$doc, $page, array $physicalUnit)
+    protected static function processPhysical(Document $document, $page, array $physicalUnit)
     {
+        $doc = $document->getDoc();
+        $doc->cPid = $document->getPid();
         if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
@@ -448,9 +445,9 @@ class Indexer
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = $updateQuery->createDocument();
             // Create unique identifier from document's UID and unit's XML ID.
-            $solrDoc->setField('id', $doc->uid . $physicalUnit['id']);
-            $solrDoc->setField('uid', $doc->uid);
-            $solrDoc->setField('pid', $doc->pid);
+            $solrDoc->setField('id', $document->getUid() . $physicalUnit['id']);
+            $solrDoc->setField('uid', $document->getUid());
+            $solrDoc->setField('pid', $document->getPid());
             $solrDoc->setField('page', $page);
             $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
             while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
@@ -467,23 +464,25 @@ class Indexer
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
 
             $solrDoc->setField('fulltext', $fullText);
-            // Add faceting information to physical sub-elements if applicable.
-            foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
-                if (
-                    !empty($data)
-                    && substr($index_name, -8) !== '_sorting'
-                ) {
+            if (is_array($doc->metadataArray[$doc->toplevelId])) {
+                // Add faceting information to physical sub-elements if applicable.
+                foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
+                    if (
+                        !empty($data)
+                        && substr($index_name, -8) !== '_sorting'
+                    ) {
 
-                    if (in_array($index_name, self::$fields['facets'])) {
-                        // Remove appended "valueURI" from authors' names for indexing.
-                        if ($index_name == 'author') {
-                            foreach ($data as $i => $author) {
-                                $splitName = explode(chr(31), $author);
-                                $data[$i] = $splitName[0];
+                        if (in_array($index_name, self::$fields['facets'])) {
+                            // Remove appended "valueURI" from authors' names for indexing.
+                            if ($index_name == 'author') {
+                                foreach ($data as $i => $author) {
+                                    $splitName = explode(chr(31), $author);
+                                    $data[$i] = $splitName[0];
+                                }
                             }
+                            // Add facets to index.
+                            $solrDoc->setField($index_name . '_faceting', $data);
                         }
-                        // Add facets to index.
-                        $solrDoc->setField($index_name . '_faceting', $data);
                     }
                 }
             }

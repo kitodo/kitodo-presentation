@@ -11,11 +11,22 @@
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
-<h2 class="tx-dlf-basket-label">
-    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/Basket.xml:basket"/>
-</h2>
 <p class="tx-dlf-basket-counts">
-    {count}
+    <f:if condition="{countDocs} > 0">
+        <f:then>
+            <f:if condition="{countDocs} == 1">
+                <f:then>
+                    <f:translate key="basket.one_entry" />
+                </f:then>
+                <f:else>
+                    <f:translate key="basket.count" arguments="{0: '{countDocs}'}" />
+                </f:else>
+            </f:if>
+        </f:then>
+        <f:else>
+            <f:translate key="basket.no_entries" />
+        </f:else>
+    </f:if>
 </p>
 <f:form pageUid="{settings.targetBasket}" action="basket" fieldNamePrefix="tx_dlf">
     <ol class="tx-dlf-basket-list">

@@ -18,6 +18,7 @@ return [
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
         'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -166,6 +167,6 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.tab1,toplevel,label,--palette--;;1,thumbnail,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_structures.tab3,hidden,status'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'index_name, --linebreak--, oai_name', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'index_name, --linebreak--, oai_name'],
     ],
 ];

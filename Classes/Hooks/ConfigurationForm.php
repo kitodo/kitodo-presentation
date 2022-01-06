@@ -32,13 +32,6 @@ use TYPO3\CMS\Core\Utility\VersionNumberUtility;
  */
 class ConfigurationForm
 {
-    /**
-     * This holds the current configuration
-     *
-     * @var array
-     * @access protected
-     */
-    protected $conf = [];
 
     /**
      * Check if a connection to a Solr server could be established with the given credentials.
@@ -52,14 +45,14 @@ class ConfigurationForm
         $solr = Solr::getInstance();
         if ($solr->ready) {
             Helper::addMessage(
-                $this->getLanguageService()->getLL('solr.status'),
-                $this->getLanguageService()->getLL('solr.connected'),
+                Helper::getLanguageService()->getLL('solr.status'),
+                Helper::getLanguageService()->getLL('solr.connected'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         } else {
             Helper::addMessage(
-                $this->getLanguageService()->getLL('solr.error'),
-                $this->getLanguageService()->getLL('solr.notConnected'),
+                Helper::getLanguageService()->getLL('solr.error'),
+                Helper::getLanguageService()->getLL('solr.notConnected'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
         }
@@ -177,21 +170,21 @@ class ConfigurationForm
             $substUid = Helper::processDBasAdmin($data);
             if (!empty($substUid)) {
                 Helper::addMessage(
-                    $this->getLanguageService()->getLL('metadataFormats.nsCreatedMsg'),
-                    $this->getLanguageService()->getLL('metadataFormats.nsCreated'),
+                    Helper::getLanguageService()->getLL('metadataFormats.nsCreatedMsg'),
+                    Helper::getLanguageService()->getLL('metadataFormats.nsCreated'),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                 );
             } else {
                 Helper::addMessage(
-                    $this->getLanguageService()->getLL('metadataFormats.nsNotCreatedMsg'),
-                    $this->getLanguageService()->getLL('metadataFormats.nsNotCreated'),
+                    Helper::getLanguageService()->getLL('metadataFormats.nsNotCreatedMsg'),
+                    Helper::getLanguageService()->getLL('metadataFormats.nsNotCreated'),
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
         } else {
             Helper::addMessage(
-                $this->getLanguageService()->getLL('metadataFormats.nsOkayMsg'),
-                $this->getLanguageService()->getLL('metadataFormats.nsOkay'),
+                Helper::getLanguageService()->getLL('metadataFormats.nsOkayMsg'),
+                Helper::getLanguageService()->getLL('metadataFormats.nsOkay'),
                 \TYPO3\CMS\Core\Messaging\FlashMessage::OK
             );
         }
@@ -208,19 +201,7 @@ class ConfigurationForm
     public function __construct()
     {
         // Load backend localization file.
-        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
-
-        // Get current configuration.
-        $this->conf = array_merge(GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf'), (array) \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('data'));
+        Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
     }
 
-    /**
-     * Returns the LanguageService
-     *
-     * @return LanguageService
-     */
-    protected function getLanguageService(): LanguageService
-    {
-        return $GLOBALS['LANG'];
-    }
 }

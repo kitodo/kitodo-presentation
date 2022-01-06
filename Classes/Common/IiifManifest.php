@@ -117,7 +117,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::establishRecordId()
+     * @see Doc::establishRecordId()
      */
     protected function establishRecordId($pid)
     {
@@ -169,7 +169,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getDocument()
+     * @see Doc::getDocument()
      */
     protected function getDocument()
     {
@@ -254,7 +254,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::_getPhysicalStructure()
+     * @see Doc::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
     {
@@ -368,7 +368,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getDownloadLocation()
+     * @see Doc::getDownloadLocation()
      */
     public function getDownloadLocation($id)
     {
@@ -382,7 +382,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getFileLocation()
+     * @see Doc::getFileLocation()
      */
     public function getFileLocation($id)
     {
@@ -407,7 +407,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getFileMimeType()
+     * @see Doc::getFileMimeType()
      */
     public function getFileMimeType($id)
     {
@@ -433,7 +433,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getLogicalStructure()
+     * @see Doc::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
     {
@@ -605,7 +605,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::getMetadata()
+     * @see Doc::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
     {
@@ -713,7 +713,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::_getSmLinks()
+     * @see Doc::_getSmLinks()
      */
     protected function _getSmLinks()
     {
@@ -773,21 +773,8 @@ final class IiifManifest extends Document
     }
 
     /**
-     * Currently not supported for IIIF. Multivolume works _could_ be modelled
-     * as IIIF Collections, but we can't tell them apart from actual collections.
-     *
-     * @access protected
-     *
-     * @see Document::getParentDocumentUidForSaving()
-     */
-    protected function getParentDocumentUidForSaving($pid, $core, $owner)
-    {
-        // Do nothing.
-    }
-
-    /**
      * {@inheritDoc}
-     * @see Document::getFullText()
+     * @see Doc::getFullText()
      */
     //TODO: rewrite it to get full OCR
     public function getFullText($id)
@@ -855,7 +842,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::init()
+     * @see Doc::init()
      */
     protected function init()
     {
@@ -864,7 +851,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::loadLocation()
+     * @see Doc::loadLocation()
      */
     protected function loadLocation($location)
     {
@@ -888,7 +875,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::prepareMetadataArray()
+     * @see \Kitodo\Dlf\Common\Doc::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
     {
@@ -898,7 +885,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::setPreloadedDocument()
+     * @see Doc::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
     {
@@ -911,7 +898,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see Document::ensureHasFulltextIsSet()
+     * @see Docu::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
     {
@@ -958,7 +945,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getThumbnail()
+     * @see \Kitodo\Dlf\Common\Doc::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
     {
@@ -967,7 +954,7 @@ final class IiifManifest extends Document
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Document::_getToplevelId()
+     * @see \Kitodo\Dlf\Common\Doc::_getToplevelId()
      */
     protected function _getToplevelId()
     {

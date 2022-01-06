@@ -12,15 +12,18 @@
 
 namespace Kitodo\Dlf\ExpressionLanguage;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
@@ -35,14 +38,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     use LoggerAwareTrait;
 
     /**
-     * This holds the extension's parameter prefix
-     *
-     * @var string
-     * @access protected
-     */
-    protected $prefixId = 'tx_dlf';
-
-    /**
      * @return ExpressionFunction[] An array of Function instances
      */
     public function getFunctions()
@@ -50,6 +45,37 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         return [
             $this->getDocumentTypeFunction(),
         ];
+    }
+
+    /**
+     * This holds the current document
+     *
+     * @var \Kitodo\Dlf\Domain\Model\Document
+     * @access protected
+     */
+    protected $document;
+
+    /**
+     * @var DocumentRepository
+     */
+    protected $documentRepository;
+
+    /**
+     * Initialize the extbase repositories
+     *
+     * @param int $storagePid The storage pid
+     *
+     * @return void
+     */
+    protected function initializeRepositories($storagePid)
+    {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+
+        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
+        $configurationManager->setConfiguration($frameworkConfiguration);
+
+        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
     }
 
     /**
@@ -75,23 +101,23 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // It happens that $queryParams is an empty array or does not contain a key 'tx_dlf'
                 // in case of other contexts. In this case we have to return here to avoid log messages.
-                if (empty($queryParams) || !isset($queryParams[$this->prefixId])) {
+                if (empty($queryParams) || !isset($queryParams['tx_dlf'])) {
                     return $type;
                 }
 
                 // Load document with current plugin parameters.
-                $doc = $this->loadDocument($queryParams[$this->prefixId], $cPid);
-                if ($doc === null) {
+                $this->loadDocument($queryParams['tx_dlf'], $cPid);
+                if ($this->document === null) {
                     return $type;
                 }
                 // Set PID for metadata definitions.
-                $doc->cPid = $cPid;
+                $this->document->getDoc()->cPid = $cPid;
 
-                $metadata = $doc->getTitledata($cPid);
+                $metadata = $this->document->getDoc()->getTitledata($cPid);
                 if (!empty($metadata['type'][0])) {
                     // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
                     if (
-                        $doc instanceof IiifManifest
+                        $this->document->getDoc() instanceof IiifManifest
                         && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
                     ) {
                         return $type;
@@ -103,47 +129,69 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     }
 
     /**
-     * Loads the current document
+     * Loads the current document into $this->document
      *
      * @access protected
      *
-     * @param array $piVars The current plugin variables containing a document identifier
+     * @param array $requestData: The request data
      * @param int $pid: Storage Pid
      *
-     * @return \Kitodo\Dlf\Common\Document Instance of the current document
+     * @return void
      */
-    protected function loadDocument(array $piVars, int $pid)
+    protected function loadDocument($requestData, int $pid)
     {
-        // Check for required variable.
-        if (!empty($piVars['id'])) {
-            // Get instance of document.
-            $doc = Document::getInstance($piVars['id'], ['storagePid' => $pid]);
-            if ($doc->ready) {
-                return $doc;
-            } else {
-                $this->logger->warning('Failed to load document with UID ' . $piVars['id']);
-            }
-        } elseif (!empty($piVars['recordId'])) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
+        // Try to get document format from database
+        if (!empty($requestData['id'])) {
 
-            // Get UID of document with given record identifier.
-            $result = $queryBuilder
-                ->select('tx_dlf_documents.uid AS uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->expr()->literal($piVars['recordId'])),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->execute();
+            $this->initializeRepositories($pid);
 
-            if ($resArray = $result->fetch()) {
-                // Try to load document.
-                return $this->loadDocument(['id' => $resArray['uid']]);
-            } else {
-                $this->logger->warning('Failed to load document with record ID "' . $piVars['recordId'] . '"');
+            $doc = null;
+            if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
+                // find document from repository by uid
+                $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id'], ['storagePid' => $pid]);
+                if ($this->document) {
+                    $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                } else {
+                    $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
+                }
+            } else if (GeneralUtility::isValidUrl($requestData['id'])) {
+
+                $doc = Doc::getInstance($requestData['id'], ['storagePid' => $pid], true);
+
+                if ($doc !== null) {
+                    if ($doc->recordId) {
+                        $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                    }
+
+                    if ($this->document === null) {
+                        // create new dummy Document object
+                        $this->document = GeneralUtility::makeInstance(Document::class);
+                    }
+
+                    $this->document->setLocation($requestData['id']);
+                } else {
+                    $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');
+                }
             }
+
+            if ($this->document !== null && $doc !== null) {
+                $this->document->setDoc($doc);
+            }
+
+        } elseif (!empty($requestData['recordId'])) {
+
+            $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
+
+            if ($this->document !== null) {
+                $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                if ($this->document !== null && $doc !== null) {
+                    $this->document->setDoc($doc);
+                } else {
+                    $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
+                }
+            }
+        } else {
+            $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
         }
     }
 }

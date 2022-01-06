@@ -11,7 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -80,7 +80,7 @@ class FeedsController extends AbstractController
                 if ((empty($document->getTitle()) || !empty($this->settings['prependSuperiorTitle']))
                     && !empty($document->getPartof())
                 ) {
-                    $superiorTitle = Document::getTitle($document->getPartof(), true);
+                    $superiorTitle = Doc::getTitle($document->getPartof(), true);
                     if (!empty($superiorTitle)) {
                         $title .= '[' . $superiorTitle . ']';
                     }

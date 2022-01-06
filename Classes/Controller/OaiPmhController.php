@@ -762,7 +762,7 @@ class OaiPmhController extends AbstractController
             $resumptionToken = uniqid('', false);
 
             // create new token
-            $newToken = $this->objectManager->get(Token::class);
+            $newToken = GeneralUtility::makeInstance(Token::class);
             $newToken->setToken($resumptionToken);
             $newToken->setOptions($documentListSet);
 

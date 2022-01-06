@@ -60,42 +60,39 @@ class PageViewController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($requestData['__referrer'], $requestData['__trustedProperties']);
-
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         // Load current document.
-        $this->loadDocument($requestData);
+        $this->loadDocument($this->requestData);
         if (
-            $this->doc === null
-            || $this->doc->numPages < 1
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
-            if (!empty($requestData['logicalPage'])) {
-                $requestData['page'] = $this->doc->getPhysicalPage($requestData['logicalPage']);
+            if (!empty($this->requestData['logicalPage'])) {
+                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
                 // The logical page parameter should not appear again
-                unset($requestData['logicalPage']);
+                unset($this->requestData['logicalPage']);
             }
             // Set default values if not set.
-            // $requestData['page'] may be integer or string (physical structure @ID)
-            if ((int) $requestData['page'] > 0 || empty($requestData['page'])) {
-                $requestData['page'] = MathUtility::forceIntegerInRange((int) $requestData['page'], 1, $this->doc->numPages, 1);
+            // $this->requestData['page'] may be integer or string (physical structure @ID)
+            if ((int) $this->requestData['page'] > 0 || empty($this->requestData['page'])) {
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             } else {
-                $requestData['page'] = array_search($requestData['page'], $this->doc->physicalStructure);
+                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
             }
-            $requestData['double'] = MathUtility::forceIntegerInRange($requestData['double'], 0, 1, 0);
+            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         }
         // Get image data.
-        $this->images[0] = $this->getImage($requestData['page']);
-        $this->fulltexts[0] = $this->getFulltext($requestData['page']);
-        $this->annotationContainers[0] = $this->getAnnotationContainers($requestData['page']);
-        if ($requestData['double'] && $requestData['page'] < $this->doc->numPages) {
-            $this->images[1] = $this->getImage($requestData['page'] + 1);
-            $this->fulltexts[1] = $this->getFulltext($requestData['page'] + 1);
-            $this->annotationContainers[1] = $this->getAnnotationContainers($requestData['page'] + 1);
+        $this->images[0] = $this->getImage($this->requestData['page']);
+        $this->fulltexts[0] = $this->getFulltext($this->requestData['page']);
+        $this->annotationContainers[0] = $this->getAnnotationContainers($this->requestData['page']);
+        if ($this->requestData['double'] && $this->requestData['page'] < $this->document->getDoc()->numPages) {
+            $this->images[1] = $this->getImage($this->requestData['page'] + 1);
+            $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
+            $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
         }
 
         // Get the controls for the map.
@@ -106,8 +103,8 @@ class PageViewController extends AbstractController
         $this->addViewerJS();
 
         $this->view->assign('images', $this->images);
-        $this->view->assign('docId', $requestData['id']);
-        $this->view->assign('page', $requestData['page']);
+        $this->view->assign('docId', $this->requestData['id']);
+        $this->view->assign('page', $this->requestData['page']);
     }
 
     /**
@@ -125,8 +122,8 @@ class PageViewController extends AbstractController
         // Get fulltext link.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
-                $fulltext['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
+                $fulltext['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 if ($this->settings['useInternalProxy']) {
                     // Configure @action URL for form.
                     $uri = $this->uriBuilder->reset()
@@ -137,7 +134,7 @@ class PageViewController extends AbstractController
 
                     $fulltext['url'] = $uri;
                 }
-                $fulltext['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+                $fulltext['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 break;
             } else {
                 $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $fileGrpFulltext . '"');
@@ -187,9 +184,9 @@ class PageViewController extends AbstractController
      */
     protected function getAnnotationContainers($page)
     {
-        if ($this->doc instanceof IiifManifest) {
-            $canvasId = $this->doc->physicalStructure[$page];
-            $iiif = $this->doc->getIiif();
+        if ($this->document->getDoc() instanceof IiifManifest) {
+            $canvasId = $this->document->getDoc()->physicalStructure[$page];
+            $iiif = $this->document->getDoc()->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
@@ -249,8 +246,8 @@ class PageViewController extends AbstractController
         $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']);
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
-            if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages])) {
-                $image['url'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages]);
+            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages])) {
+                $image['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
                 if ($this->settings['useInternalProxy']) {
                     // Configure @action URL for form.
                     $uri = $this->uriBuilder->reset()
@@ -260,7 +257,7 @@ class PageViewController extends AbstractController
                         ->build();
                     $image['url'] = $uri;
                 }
-                $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrpImages]);
+                $image['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
                 break;
             } else {
                 $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');

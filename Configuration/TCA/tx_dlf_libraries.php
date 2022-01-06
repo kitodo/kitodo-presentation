@@ -18,6 +18,7 @@ return [
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
         'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -192,9 +193,9 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab1,label,--palette--;;1,website,contact,image,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab3,oai_label,--palette--;;2,opac_label,--palette--;;3,union_label,--palette--;;4'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'index_name', 'canNotCollapse' => 1],
-        '2' => ['showitem' => 'oai_base', 'canNotCollapse' => 1],
-        '3' => ['showitem' => 'opac_base', 'canNotCollapse' => 1],
-        '4' => ['showitem' => 'union_base', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'index_name'],
+        '2' => ['showitem' => 'oai_base'],
+        '3' => ['showitem' => 'opac_base'],
+        '4' => ['showitem' => 'union_base'],
     ],
 ];

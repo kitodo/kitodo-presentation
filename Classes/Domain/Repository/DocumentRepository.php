@@ -12,21 +12,70 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\Document;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-
     /**
-     * Array of all document structures
+     * Find one document by given parameters
      *
-     * @var array
+     * GET parameters may be:
+     *
+     * - 'id': the uid of the document
+     * - 'location': the URL of the location of the XML file
+     * - 'recordId': the record_id of the document
+     *
+     * @param array $parameters
+     *
+     * @return \Kitodo\Dlf\Domain\Model\Document|null
      */
-    protected $documentStructures;
+    public function findOneByParameters($parameters)
+    {
+        $doc = null;
+        $document = null;
+
+        if (isset($parameters['id']) && MathUtility::canBeInterpretedAsInteger($parameters['id'])) {
+
+            $document = $this->findOneByIdAndSettings($parameters['id']);
+
+        } else if (isset($parameters['recordId'])) {
+
+            $document = $this->findOneByRecordId($parameters['recordId']);
+
+        } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
+
+            $doc = Doc::getInstance($parameters['location'], [], true);
+
+            if ($doc->recordId) {
+                $document = $this->findOneByRecordId($doc->recordId);
+            }
+
+            if ($document === null) {
+                // create new (dummy) Document object
+                $document = GeneralUtility::makeInstance(Document::class);
+                $document->setLocation($parameters['location']);
+            }
+
+        }
+
+        if ($document !== null && $doc === null) {
+            $doc = Doc::getInstance($document->getLocation(), [], true);
+        }
+
+        if ($doc !== null) {
+            $document->setDoc($doc);
+        }
+
+        return $document;
+
+    }
 
 
     public function findByUidAndPartOf($uid, $partOf)
@@ -42,7 +91,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find the oldest document
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \Kitodo\Dlf\Domain\Model\Document|null
      */
     public function findOldestDocument()
     {
@@ -61,11 +110,9 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function getChildrenOfYearAnchor($partOf, $structure)
     {
-        $this->documentStructures = $this->getDocumentStructures();
-
         $query = $this->createQuery();
 
-        $query->matching($query->equals('structure', $this->documentStructures[$structure]));
+        $query->matching($query->equals('structure', Helper::getUidFromIndexName($structure, 'tx_dlf_structures')));
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([
@@ -81,7 +128,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $uid
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \Kitodo\Dlf\Domain\Model\Document|null
      */
     public function findOneByIdAndSettings($uid, $settings = [])
     {
@@ -445,29 +492,4 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $documents;
     }
 
-    /**
-     * Get all document structures as array
-     *
-     * @return array
-     */
-    private function getDocumentStructures()
-    {
-        // make lookup-table of structures uid -> indexName
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
-        // Fetch document info for UIDs in $documentSet from DB
-        $kitodoStructures = $queryBuilder
-            ->select(
-                'tx_dlf_structures.uid AS uid',
-                'tx_dlf_structures.index_name AS indexName'
-            )
-            ->from('tx_dlf_structures')
-            ->execute();
-
-        $allStructures = $kitodoStructures->fetchAll();
-        // make lookup-table uid -> indexName
-        $allStructures = array_column($allStructures, 'indexName', 'uid');
-
-        return $allStructures;
-    }
 }

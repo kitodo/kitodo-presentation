@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
-use Kitodo\Dlf\Common\Document;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
@@ -110,7 +110,7 @@ class ListViewController extends AbstractController
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->settings['getTitle']) {
-                            $superiorTitle = Document::getTitle($this->list[$number]['uid'], true);
+                            $superiorTitle = Doc::getTitle($this->list[$number]['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
                             }
@@ -124,10 +124,10 @@ class ListViewController extends AbstractController
 
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
                     } elseif ($index_name == 'language' && !empty($value)) {
                         // Translate ISO 639 language code.
                         $value = htmlspecialchars(Helper::getLanguageName($value));
@@ -228,7 +228,7 @@ class ListViewController extends AbstractController
                     if ($index_name == 'title') {
                         // Get title of parent document if needed.
                         if (empty($value) && $this->settings['getTitle']) {
-                            $superiorTitle = Document::getTitle($subpart['uid'], true);
+                            $superiorTitle = Doc::getTitle($subpart['uid'], true);
                             if (!empty($superiorTitle)) {
                                 $value = '[' . $superiorTitle . ']';
                             }
@@ -241,11 +241,11 @@ class ListViewController extends AbstractController
                         $value = htmlspecialchars($value);
                     } elseif ($index_name == 'owner' && !empty($value)) {
                         // Translate name of holding library.
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
                     } elseif ($index_name == 'type' && !empty($value)) {
                         // Translate document type.
                         $_value = $value;
-                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['pages']));
+                        $value = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
                         // Add page number for single pages.
                         if ($_value == 'page') {
                             $value .= ' ' . intval($subpart['page']);
@@ -305,11 +305,11 @@ class ListViewController extends AbstractController
             if ($metadata->getIsListed()) {
                 $this->metadata[$metadata->getIndexName()] = [
                     'wrap' => $metadata->getWrap(),
-                    'label' => Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages'])
+                    'label' => Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['storagePid'])
                 ];
             }
             if ($metadata->getIsSortable()) {
-                $this->sortables[$metadata->getIndexName()] = Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['pages']);
+                $this->sortables[$metadata->getIndexName()] = Helper::translate($metadata->getIndexName(), 'tx_dlf_metadata', $this->settings['storagePid']);
             }
         }
     }
@@ -321,11 +321,9 @@ class ListViewController extends AbstractController
      */
     public function mainAction()
     {
-        $requestData = GeneralUtility::_GPmerged('tx_dlf');
-
-        $sort = $requestData['sort'];
-        $pointer = $requestData['pointer'];
-        $logicalPage = $requestData['logicalPage'];
+        $sort = $this->requestData['sort'];
+        $pointer = $this->requestData['pointer'];
+        $logicalPage = $this->requestData['logicalPage'];
 
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
@@ -413,10 +411,10 @@ class ListViewController extends AbstractController
 
         // Pagination of Results
         // pass the currentPage to the fluid template to calculate current index of search result
-        if (empty($requestData['@widget_0'])) {
+        if (empty($this->requestData['@widget_0'])) {
             $widgetPage = ['currentPage' => 1];
         } else {
-            $widgetPage = $requestData['@widget_0'];
+            $widgetPage = $this->requestData['@widget_0'];
         }
 
         // convert documentList to array --> use widget.pagination viewhelper

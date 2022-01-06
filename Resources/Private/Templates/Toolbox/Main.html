@@ -171,7 +171,15 @@
     <f:if condition="{searchindocumenttool}">
         <f:then>
             <li>
-                <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{ACTION_URL}" method="get" enctype="multipart/form-data">
+                <f:if condition="{settings.searchUrl}">
+                    <f:then>
+                        <f:variable name="actionUrl" value="{settings.searchUrl}" />
+                    </f:then>
+                    <f:else>
+                        <f:variable name="actionUrl" value="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}" />
+                    </f:else>
+                </f:if>
+                <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{actionUrl}" method="get" enctype="multipart/form-data">
                     <div>
                         <label for="tx-dlf-search-in-document-query">
                             <f:translate key="search.query"/>
@@ -179,11 +187,11 @@
                         <!-- Never change the @id of this input field! Otherwise search won't work! -->
                         <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{LABEL_QUERY_URL}" />
                         <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
-                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{LABEL_START}" value="0" />
-                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{LABEL_ID}" value="{CURRENT_DOCUMENT}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{LABEL_PAGE_URL}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{LABEL_HIGHLIGHT_WORD}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{LABEL_ENCRYPTED}" value="{SOLR_ENCRYPTED}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.LABEL_START}" value="0" />
+                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.LABEL_ID}" value="{searchInDocument.CURRENT_DOCUMENT}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.LABEL_PAGE_URL}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.LABEL_HIGHLIGHT_WORD}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.LABEL_ENCRYPTED}" value="{searchInDocument.SOLR_ENCRYPTED}" />
                     </div>
                 </form>
                 <div id="tx-dlf-search-in-document-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>
@@ -192,7 +200,7 @@
                 <div id="tx-dlf-search-in-document-labels" style="display:none;">
                     <span id="tx-dlf-search-in-document-label-next"><f:translate key="tools.searchindocument.next"/></span>
                     <span id="tx-dlf-search-in-document-label-previous"><f:translate key="tools.searchindocument.previous"/></span>
-                    <span id="tx-dlf-search-in-document-label-page"><f:translate key="tools.searchindocument.logicalPage"/></span>
+                    <span id="tx-dlf-search-in-document-label-page"><f:translate key="search.logicalPage"/></span>
                     <span id="tx-dlf-search-in-document-label-noresult"><f:translate key="tools.searchindocument.noresult"/></span>
                 </div>
             </li>
