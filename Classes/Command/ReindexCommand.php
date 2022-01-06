@@ -159,7 +159,7 @@ class ReindexCommand extends BaseCommand
             exit(1);
         }
 
-        foreach ($documents as $id => $document) {
+        foreach ($documents as $document) {
             $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {

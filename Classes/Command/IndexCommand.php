@@ -100,7 +100,6 @@ class IndexCommand extends BaseCommand
             exit(1);
         }
 
-
         if (
             !empty($input->getOption('solr'))
             && !is_array($input->getOption('solr'))
