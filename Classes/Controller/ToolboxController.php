@@ -456,12 +456,12 @@ class ToolboxController extends AbstractController
     {
         $id = $this->document->getUid();
 
-        if ($id)  {
+        if ($id !== null && $id > 0) {
             // we found the document uid
             return (string) $id;
         } else {
             $id = $this->requestData['id'];
-            if (! GeneralUtility::isValidUrl($id)) {
+            if (!GeneralUtility::isValidUrl($id)) {
                 // we found no valid URI --> something unexpected we cannot search within.
                 return '';
             }
