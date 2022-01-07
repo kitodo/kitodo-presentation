@@ -1178,7 +1178,7 @@ abstract class Doc
      *
      * @access protected
      *
-     * @param int $location: The location URL of the XML file to parse
+     * @param string $location: The location URL of the XML file to parse
      * @param int $pid: If > 0, then only document with this PID gets loaded
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
@@ -1190,8 +1190,6 @@ abstract class Doc
         $this->setPreloadedDocument($preloadedDocument);
         $this->init();
         $this->establishRecordId($pid);
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
-
         return;
     }
 

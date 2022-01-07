@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
+use TYPO3\CMS\Core\Log\LogManager;
 
 /**
  * MetsDocument class for the 'dlf' extension.
@@ -589,70 +590,6 @@ final class MetsDocument extends Doc
                 $metadata['title'][0] = '';
                 $metadata['title_sorting'][0] = '';
             }
-            // Add collections and owner from database to toplevel element if document is already saved.
-            if (
-                \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
-                && $id == $this->_getToplevelId()
-            ) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_collections_join.index_name AS index_name'
-                    )
-                    ->from('tx_dlf_documents')
-                    ->innerJoin(
-                        'tx_dlf_documents',
-                        'tx_dlf_relations',
-                        'tx_dlf_relations_joins',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_local',
-                            'tx_dlf_documents.uid'
-                        )
-                    )
-                    ->innerJoin(
-                        'tx_dlf_relations_joins',
-                        'tx_dlf_collections',
-                        'tx_dlf_collections_join',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_foreign',
-                            'tx_dlf_collections_join.uid'
-                        )
-                    )
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
-                    )
-                    ->orderBy('tx_dlf_collections_join.index_name', 'ASC')
-                    ->execute();
-
-                $allResults = $result->fetchAll();
-
-                foreach ($allResults as $resArray) {
-                    if (!in_array($resArray['index_name'], $metadata['collection'])) {
-                        $metadata['collection'][] = $resArray['index_name'];
-                    }
-                }
-
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_documents.owner AS owner'
-                    )
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
-                    )
-                    ->execute();
-
-                $resArray = $result->fetch();
-
-                $metadata['owner'][0] = $resArray['owner'];
-            }
             // Extract metadata only from first supported dmdSec.
             $hasSupportedMetadata = true;
             break;
@@ -701,6 +638,7 @@ final class MetsDocument extends Doc
      */
     protected function init()
     {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);
         $mets = $this->xml->xpath('//mets:mets');
@@ -709,7 +647,7 @@ final class MetsDocument extends Doc
             // Register namespaces.
             $this->registerNamespaces($this->mets);
         } else {
-            $this->logger->error('No METS part found in document with UID ' . $this->uid);
+            $this->logger->error('No METS part found in document with location "' . $this->location . '"');
         }
     }
 
@@ -1119,6 +1057,7 @@ final class MetsDocument extends Doc
             // Rebuild the unserializable properties.
             $this->init();
         } else {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
             $this->logger->error('Could not load XML after deserialization');
         }
     }
