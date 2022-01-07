@@ -30,41 +30,6 @@ return [
     'interface' => [
     ],
     'columns' => [
-        'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
-                'items' => [
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
-                ],
-                'default' => 0,
-            ],
-        ],
-        'l18n_parent' => [
-            'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'tx_dlf_metadataformat',
-                'foreign_table_where' => 'AND tx_dlf_metadataformat.pid=###CURRENT_PID### AND tx_dlf_metadataformat.sys_language_uid IN (-1,0)',
-                'items' => [
-                    ['', 0],
-                ],
-                'default' => 0,
-            ],
-        ],
-        'l18n_diffsource' => [
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
         'parent_id' => [
             'config' => [
                 'type' => 'passthrough',
