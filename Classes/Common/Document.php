@@ -668,7 +668,7 @@ abstract class Document
                 if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
                     // Get full text file.
                     $fileContent = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
-                    if ($fileContent !== false) {
+                    if ($fileContent !== false && !empty($fileContent)) {
                         $textFormat = $this->getTextFormat($fileContent);
                     } else {
                         $this->logger->warning('Couldn\'t load full text file for structure node @ID "' . $id . '"');
