@@ -12,7 +12,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Domain\Model\Metadata;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\DocumentList;
@@ -324,8 +323,6 @@ class ListViewController extends AbstractController
         $sort = $this->requestData['sort'];
         $pointer = $this->requestData['pointer'];
         $logicalPage = $this->requestData['logicalPage'];
-
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         // Load the list.
         $this->list = GeneralUtility::makeInstance(DocumentList::class);

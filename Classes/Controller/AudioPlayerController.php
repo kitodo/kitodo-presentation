@@ -28,11 +28,6 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 class AudioplayerController extends AbstractController
 {
     /**
-     * @var string
-     */
-    protected $extKey = 'dlf';
-
-    /**
      * Holds the current audio file's URL, MIME type and optional label
      *
      * @var array
@@ -62,7 +57,7 @@ class AudioplayerController extends AbstractController
                         url:  "' . $this->audio['url'] . '"
                     },
                     parentElId: "tx-dlf-audio",
-                    swfPath: "' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath($this->extKey)) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                    swfPath: "' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('dlf')) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
                 });
             });
         ';

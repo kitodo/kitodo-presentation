@@ -45,6 +45,7 @@ class TableOfContentsController extends AbstractController
     {
         // Read plugin TS configuration.
         $this->pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_tableofcontents.'];
+        $this->initialize();
     }
 
     /**

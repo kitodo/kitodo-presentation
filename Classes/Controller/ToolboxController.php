@@ -12,7 +12,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -25,8 +24,6 @@ class ToolboxController extends AbstractController
      */
     public function mainAction()
     {
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-
         // Load current document.
         $this->loadDocument($this->requestData);
 

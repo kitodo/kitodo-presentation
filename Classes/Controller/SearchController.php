@@ -18,7 +18,6 @@ use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 
@@ -45,8 +44,6 @@ class SearchController extends AbstractController
      */
     public function searchAction()
     {
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey);
-
         // Build label for result list.
         $label = htmlspecialchars(LocalizationUtility::translate('search.search', 'dlf'));
         if (!empty($this->requestData['query'])) {

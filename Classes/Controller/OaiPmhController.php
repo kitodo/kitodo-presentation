@@ -11,7 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Solr;
@@ -110,11 +109,6 @@ class OaiPmhController extends AbstractController
             'requiredFields' => ['location'],
         ]
     ];
-
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
 
     /**
      * @var array
@@ -269,9 +263,6 @@ class OaiPmhController extends AbstractController
     {
         // Get allowed GET and POST variables.
         $this->getUrlParams();
-
-        // Get extension configuration.
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
