@@ -49,9 +49,36 @@ composer update --with=typo3/cms-core:^10.4
 composer test
 ```
 
+### Run Tests Manually
+
+Tests may be run either via a locally installed Composer / PHP setup, or within a Docker container.
+
+```bash
+# Run locally
+vendor/bin/phpunit -c Build/Test/UnitTests.xml
+
+# Run in Docker
+Build/Test/runTests.sh
+```
+
+To learn about available options (e.g., to select the PHP version), check the usage info:
+
+```bash
+Build/Test/runTests.sh -h
+```
+
+You may also interact with the Docker containers directly:
+
+```bash
+cd Build/Test/
+vim .env  # Edit configuration
+docker-compose run unit
+docker-compose down
+```
+
 ### File Structure
 
-- [Build/UnitTests.xml](Build/UnitTests.xml): PHPUnit configuration file for unit tests
+- `Build/Test/`: Test-related setup files (e.g. configuration for PHPUnit and testing container)
 - `Tests/`: Test cases. In unit tests, namespacing follows the structure of `Classes/`.
 
 ### External Links

@@ -71,7 +71,7 @@
       "rm -f public/typo3conf/ext/dlf",
       "ln -s ../../../ public/typo3conf/ext/dlf"
     ],
-    "test": "phpunit -c Build/UnitTests.xml",
+    "test": "phpunit -c Build/Test/UnitTests.xml",
 	"docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
 	"docs:setup": "./Build/Documentation/sphinx.sh install",
 	"docs:serve": "./Build/Documentation/sphinx.sh serve",
