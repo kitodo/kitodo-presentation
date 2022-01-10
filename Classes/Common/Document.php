@@ -1136,7 +1136,7 @@ abstract class Document
 
         // Get UID for owner.
         if (empty($owner)) {
-            $owner = empty($metadata['owner'][0]) ? $metadata['owner'][0] : 'default';
+            $owner = $metadata['owner'][0] ? : 'default';
         }
         if (!MathUtility::canBeInterpretedAsInteger($owner)) {
             $result = $queryBuilder
