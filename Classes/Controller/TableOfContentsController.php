@@ -43,10 +43,10 @@ class TableOfContentsController extends AbstractController
      */
     public function __construct()
     {
+        parent::__construct();
         // Read plugin TS configuration.
         // TODO: This is more or less obsolete - the table of document plugin does not use the TypoScript anymore
         $this->pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_tableofcontents.'];
-        $this->initialize();
     }
 
     /**
