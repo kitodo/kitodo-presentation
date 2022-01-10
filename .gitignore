@@ -13,4 +13,5 @@ composer.lock
 Documentation-GENERATED-temp/
 nbproject/
 public/
+var/
 vendor/

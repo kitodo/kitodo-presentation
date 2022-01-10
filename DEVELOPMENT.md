@@ -30,6 +30,36 @@ As of TYPO3 10 a new pagination API has been introduced. This could be used as r
 
 https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Pagination/Index.html
 
+## Testing
+
+Before running the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
+
+```bash
+# (a)
+composer update --with=typo3/cms-core:^9.5
+
+# (b)
+composer update --with=typo3/cms-core:^10.4
+```
+
+### Quick Start
+
+```bash
+# Run all tests
+composer test
+```
+
+### File Structure
+
+- [Build/UnitTests.xml](Build/UnitTests.xml): PHPUnit configuration file for unit tests
+- `Tests/`: Test cases. In unit tests, namespacing follows the structure of `Classes/`.
+
+### External Links
+
+- [TYPO3 Testing Framework](https://github.com/TYPO3/testing-framework)
+- [TYPO3 Explained: Extension testing](https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/Testing/ExtensionTesting.html)
+- [typo3/cms-styleguide](https://github.com/TYPO3/styleguide)
+
 ## Documentation
 
 Following TYPO3's practices, the main documentation of the extension is located in `Documentation` and written in [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText). The build system is [Sphinx](https://en.wikipedia.org/wiki/Sphinx_(documentation_generator)).
