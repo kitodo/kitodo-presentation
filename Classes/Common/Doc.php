@@ -619,8 +619,14 @@ abstract class Doc
      */
     private function getTextFormat($fileContent)
     {
-        // Get the root element's name as text format.
-        return strtoupper(Helper::getXmlFileAsString($fileContent)->getName());
+        $xml = Helper::getXmlFileAsString($fileContent);
+
+        if ($xml !== false) {
+            // Get the root element's name as text format.
+            return strtoupper($xml->getName());
+        } else {
+            return '';
+        }
     }
 
     /**
