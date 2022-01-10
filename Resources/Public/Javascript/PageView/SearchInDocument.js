@@ -146,6 +146,20 @@ function getAllQueryParams(baseUrl, queryParams) {
 }
 
 /**
+ * Check if the URL is configured as SLUG
+ * (id is included in main URL, not in parameter).
+ * // TODO: make it more flexible
+ *
+ * @param {array} element
+ *
+ * @returns {string}
+ */
+ function isUrlConfiguredAsSlug(element) {
+    var baseUrl = getBaseUrl(element['uid']).split('?')[0];
+    return baseUrl.indexOf(element['uid']) > -1;
+}
+
+/**
  * Get needed URL query parameters.
  * It returns array of params as objects 'param' => 'value'. It contains exactly 3 params which are taken out of search result.
  *
@@ -160,7 +174,7 @@ function getNeededQueryParams(element) {
 
     var queryParams = [];
 
-    if(id && getBaseUrl(element['uid']).split('?')[0].indexOf(element['uid']) === -1) {
+    if(id && !isUrlConfiguredAsSlug(element)) {
         queryParams.push(id);
         queryParams[id] = element['uid'];
     }
@@ -170,7 +184,7 @@ function getNeededQueryParams(element) {
         queryParams[highlightWord] = encodeURIComponent($("input[id='tx-dlf-search-in-document-query']").val());
     }
 
-    if(page) {
+    if(page && !isUrlConfiguredAsSlug(element)) {
         queryParams.push(page);
         queryParams[page] = element['page'];
     }
@@ -193,6 +207,14 @@ function getLink(element) {
     if (baseUrl.indexOf('?') > 0) {
         queryParams = getAllQueryParams(baseUrl, queryParams);
         baseUrl = baseUrl.split('?')[0];
+    }
+
+    // replace last element of URL with page
+    if (isUrlConfiguredAsSlug(element)) {
+        var url = baseUrl.split('/');
+        url.pop();
+        url.push(element['page']);
+        baseUrl = url.join('/');
     }
 
     var link = baseUrl + '?';
@@ -233,16 +255,23 @@ function getNavigationButtons(start, numFound) {
  */
 function getCurrentPage() {
     var page = 1;
-    var queryParams = getCurrentQueryParams(getBaseUrl(" "));
+    var baseUrl = getBaseUrl(" ");
+    var queryParams = getCurrentQueryParams(baseUrl);
+    var pageFound = false;
 
     for(var i = 0; i < queryParams.length; i++) {
         var queryParam = queryParams[i].split('=');
 
         if(decodeURIComponent(queryParam[0]) === $("input[id='tx-dlf-search-in-document-page']").attr('name')) {
             page = parseInt(queryParam[1], 10);
+            pageFound = true;
         }
     }
 
+    if (!pageFound) {
+        var url = baseUrl.split('/');
+        page = parseInt(url.pop(), 10);
+    }
     return page;
 }
 
@@ -259,7 +288,7 @@ function addImageHighlight(data) {
     data['documents'].forEach(function (element, i) {
         if(element['page'] === page) {
             if (element['highlight'].length > 0) {
-                if(tx_dlf_viewer.map != null) {
+                if (typeof tx_dlf_viewer !== 'undefined' && tx_dlf_viewer.map != null) { // eslint-disable-line camelcase
                     tx_dlf_viewer.displayHighlightWord(encodeURIComponent(getHighlights(element['highlight'])));
                 } else {
                     setTimeout(addImageHighlight, 500, data);
